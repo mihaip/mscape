@@ -152,12 +152,11 @@ class icnsClass
 		PixMapHandle	ics4Pix;
 		
 		
-		
+		IconFamilyHandle Geticns();
 		void			RefreshIconMembers(void);
 		void 			SaveOldStyle();
 		void			LoadFromIconSuite(IconSuiteRef theIconSuite);
 		void			LoadFromIconFamily(IconFamilyHandle icnsHandle);
-		
 	public:
 		short			ID;
 		Str255			name;
@@ -172,10 +171,15 @@ class icnsClass
 						~icnsClass(void);
 		void 			Load();
 		void			LoadFileIcon();
+		void			LoadICO();
+		void			LoadTIFF();
+		
 		void 			Display(Rect targetRect);
 		void			ExportToPixMap(PixMapHandle targetPix);
 		void			ImportFromClipboard(bool dither);
 		void 			Save(long flags);
+		void			SaveICO();
+		void			SaveTIFF();
 		long			GetSize();
 		
 	friend void MergeIcon(int ID, Str255 name, icnsClass* baseicns);

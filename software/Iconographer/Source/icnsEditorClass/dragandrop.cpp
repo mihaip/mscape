@@ -179,10 +179,10 @@ pascal OSErr DragReceiveHandler (WindowPtr theWindow, void *, DragReference theD
 	OSErr			err = noErr;
 	FlavorType		flavorType;
 	ItemReference	theItem;
-	GWorldPtr		targetGW, tempGW;
-	PixMapHandle	targetPix, tempPix;
+	GWorldPtr		targetGW;
+	PixMapHandle	targetPix;
 	Point			theMouse, localMouse;
-	long			targetName, tempName;
+	long			targetName;
 	long			iconType, typeSize=sizeof(long);
 	bool			approved, replaceIcon = false;
 	PicHandle		pic;
@@ -243,20 +243,7 @@ pascal OSErr DragReceiveHandler (WindowPtr theWindow, void *, DragReference theD
 			}
 			
 			if (parentEditor->currentPix != targetPix)
-			{
-				parentEditor->status |= (dontRestoreCurrentPix | skipState);
-				tempPix = parentEditor->currentPix;
-				tempGW = parentEditor->currentGW;
-				tempName = parentEditor->currentPixName;
-				parentEditor->currentPix = targetPix;
-				parentEditor->currentGW = targetGW;
-				parentEditor->currentPixName = targetName;
-				parentEditor->currentState = new drawingStateClass(parentEditor->currentState, parentEditor);
-				parentEditor->currentPix = tempPix;
-				parentEditor->currentGW = tempGW;
-				parentEditor->currentPixName = tempName;
-				parentEditor->status &= ~(dontRestoreCurrentPix | skipState);
-			}
+				parentEditor->SaveState(targetGW, targetPix, targetName);
 			
 			GetFlavorType(theDragRef,theItem,2,&flavorType);
 			if (replaceIcon)
@@ -297,20 +284,7 @@ pascal OSErr DragReceiveHandler (WindowPtr theWindow, void *, DragReference theD
 			
 			
 			if (parentEditor->currentPix != targetPix)
-			{
-				parentEditor->status |= (dontRestoreCurrentPix | skipState);
-				tempPix = parentEditor->currentPix;
-				tempGW = parentEditor->currentGW;
-				tempName = parentEditor->currentPixName;
-				parentEditor->currentPix = targetPix;
-				parentEditor->currentGW = targetGW;
-				parentEditor->currentPixName = targetName;
-				parentEditor->currentState = new drawingStateClass(parentEditor->currentState, parentEditor);	
-				parentEditor->currentPix = tempPix;
-				parentEditor->currentGW = tempGW;
-				parentEditor->currentPixName = tempName;
-				parentEditor->status &= ~(dontRestoreCurrentPix | skipState);
-			}
+				parentEditor->SaveState(targetGW, targetPix, targetName);
 			
 			parentEditor->currentState = new drawingStateClass(parentEditor->currentState, parentEditor);	
 				
@@ -359,44 +333,9 @@ void InsertPicIntoIcon(icnsEditorPtr parentEditor, PicHandle pic)
 									 &targetMaskName);
 	
 	if (targetIconName != parentEditor->currentPixName)
-	{
-		GWorldPtr tempGW;
-		PixMapHandle tempPix;
-		long	tempName;
-		
-		parentEditor->status |= (dontRestoreCurrentPix | skipState);
-		tempPix = parentEditor->currentPix;
-		tempGW = parentEditor->currentGW;
-		tempName = parentEditor->currentPixName;
-		parentEditor->currentPix = targetIconPix;
-		parentEditor->currentGW = targetIconGW;
-		parentEditor->currentPixName = targetIconName;
-		parentEditor->currentState = new drawingStateClass(parentEditor->currentState, parentEditor);
-		parentEditor->currentPix = tempPix;
-		parentEditor->currentGW = tempGW;
-		parentEditor->currentPixName = tempName;
-		parentEditor->status &= ~(dontRestoreCurrentPix | skipState);
-	
-	}
+		parentEditor->SaveState(targetIconGW, targetIconPix, targetIconName);
 	else
-	{
-		GWorldPtr tempGW;
-		PixMapHandle tempPix;
-		long	tempName;
-		
-		parentEditor->status |= (dontRestoreCurrentPix | skipState);
-		tempPix = parentEditor->currentPix;
-		tempGW = parentEditor->currentGW;
-		tempName = parentEditor->currentPixName;
-		parentEditor->currentPix = targetMaskPix;
-		parentEditor->currentGW = targetMaskGW;
-		parentEditor->currentPixName = targetMaskName;
-		parentEditor->currentState = new drawingStateClass(parentEditor->currentState, parentEditor);
-		parentEditor->currentPix = tempPix;
-		parentEditor->currentGW = tempGW;
-		parentEditor->currentPixName = tempName;
-		parentEditor->status &= ~(dontRestoreCurrentPix | skipState);
-	}
+		parentEditor->SaveState(targetMaskGW, targetMaskPix, targetMaskName);
 	
 	
 	targetRect = srcRect;
@@ -408,43 +347,9 @@ void InsertPicIntoIcon(icnsEditorPtr parentEditor, PicHandle pic)
 	MergePix(targetIconPix, targetMaskPix, iconPix, maskPix, targetIconPix, targetMaskPix);
 
 	if (targetIconName != parentEditor->currentPixName)
-	{
-		GWorldPtr tempGW;
-		PixMapHandle tempPix;
-		long	tempName;
-		
-		parentEditor->status |= (dontRestoreCurrentPix | skipState);
-		tempPix = parentEditor->currentPix;
-		tempGW = parentEditor->currentGW;
-		tempName = parentEditor->currentPixName;
-		parentEditor->currentPix = targetIconPix;
-		parentEditor->currentGW = targetIconGW;
-		parentEditor->currentPixName = targetIconName;
-		parentEditor->currentState = new drawingStateClass(parentEditor->currentState, parentEditor);
-		parentEditor->currentPix = tempPix;
-		parentEditor->currentGW = tempGW;
-		parentEditor->currentPixName = tempName;
-		parentEditor->status &= ~(dontRestoreCurrentPix | skipState);
-	}
+		parentEditor->SaveState(targetIconGW, targetIconPix, targetIconName);
 	else
-	{
-		GWorldPtr tempGW;
-		PixMapHandle tempPix;
-		long	tempName;
-		
-		parentEditor->status |= (dontRestoreCurrentPix | skipState);
-		tempPix = parentEditor->currentPix;
-		tempGW = parentEditor->currentGW;
-		tempName = parentEditor->currentPixName;
-		parentEditor->currentPix = targetMaskPix;
-		parentEditor->currentGW = targetMaskGW;
-		parentEditor->currentPixName = targetMaskName;
-		parentEditor->currentState = new drawingStateClass(parentEditor->currentState, parentEditor);
-		parentEditor->currentPix = tempPix;
-		parentEditor->currentGW = tempGW;
-		parentEditor->currentPixName = tempName;
-		parentEditor->status &= ~(dontRestoreCurrentPix | skipState);
-	}
+		parentEditor->SaveState(targetMaskGW, targetMaskPix, targetMaskName);
 	
 	UnlockPixels(iconPix);
 	DisposeGWorld(iconGW);

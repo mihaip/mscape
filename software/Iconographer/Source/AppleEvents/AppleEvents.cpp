@@ -55,8 +55,12 @@ pascal OSErr AEOpenApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long 
 	refCon;
 	
 	if (gLastEditor == NULL)
-		NewIcon(true);
-	
+	{
+		if ((**icnsEditorClass::statics.preferences.data).flags & prefsOpenIcon)
+			OpenIcon(NULL);
+		else if (!((**icnsEditorClass::statics.preferences.data).flags & prefsDontMakeNewEditor))
+			NewIcon(true);
+	}
 	return AEGotRequiredParams(theAppleEvent);
 }
 
@@ -81,7 +85,14 @@ pascal OSErr AEOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long 
 	{
 		err = AEGetNthPtr(&fileSpecList, i, typeFSS, &keyword, &type, (Ptr)&desc, sizeof(FSSpec), &actual);
 		if (err == noErr)
-			OpenIcon(&desc);	
+		{
+			if (IsICOFile(desc.name))
+				OpenICO(&desc);
+			else if (IsTIFFFile(desc.name))
+				OpenTIFF(&desc);
+			else
+				OpenIcon(&desc);
+		}
 	}
 	return AEGotRequiredParams(theAppleEvent);
 }

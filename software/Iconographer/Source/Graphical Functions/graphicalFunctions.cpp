@@ -107,90 +107,140 @@ OSErr PictureToRegion(PicHandle srcPic, Rect bounds, RgnHandle targetRgn)
 
 void FillPixMap(PixMapHandle targetPix, int x, int y, RGBColor colorRGB, RgnHandle clipRgn)
 {
-	GetPixelFuncPtr	GetPixel; // pointer to the GetPixel function we'll use (based on the depth)
-	SetPixelFuncPtr	SetPixel; // ditto, but for SetPixel
-	long			color, // the fill color
-					colorToReplace; // the color we're replacing
+	FillPixMapParams params;
+	
+	params.x = x;
+	params.y = y;
+	params.pix = targetPix;
+	params.clipRgn = clipRgn;
 	
 	switch ((**targetPix).pixelSize) // based on the depth
 	{
 		// depths 1, 4 and 8 use an indexed color table, thus the color is the color table index
 		case 1:
-			GetPixel = GetPixel1;
-			SetPixel = SetPixel1;
-			color = GetColorIndex(colorRGB, (**targetPix).pmTable);
+			params.GetPixel = GetPixel1;
+			params.SetPixel = SetPixel1;
+			params.newColor = GetColorIndex(colorRGB, (**targetPix).pmTable);
 			break;
 		case 4:
-			GetPixel = GetPixel4;
-			SetPixel = SetPixel4;
-			color = GetColorIndex(colorRGB, (**targetPix).pmTable);
+			params.GetPixel = GetPixel4;
+			params.SetPixel = SetPixel4;
+			params.newColor = GetColorIndex(colorRGB, (**targetPix).pmTable);
 			break;
 		case 8:
-			GetPixel = GetPixel8; 
-			SetPixel = SetPixel8;
-			color = GetColorIndex(colorRGB, (**targetPix).pmTable);
+			params.GetPixel = GetPixel8; 
+			params.SetPixel = SetPixel8;
+			params.newColor = GetColorIndex(colorRGB, (**targetPix).pmTable);
 			break;
 		case 32:
-			GetPixel = GetPixel32;
-			SetPixel = SetPixel32;
+			params.GetPixel = GetPixel32;
+			params.SetPixel = SetPixel32;
 			// for this depth we must merge the RGB components into a long
-			color = ((colorRGB.red << 8)	& 0x00FF0000) +
-					((colorRGB.green)		& 0x0000FF00) +
-					((colorRGB.blue >> 8)	& 0x000000FF);
+			params.newColor = ((colorRGB.red << 8)	& 0x00FF0000) +
+							  ((colorRGB.green)		& 0x0000FF00) +
+							  ((colorRGB.blue >> 8)	& 0x000000FF);
 			break;
 	}
 	
-	colorToReplace = GetPixel(x, y, targetPix);
+	params.oldColor = params.GetPixel(x, y, targetPix);
 	// the color we are replacing is whatever is undernath the pixel
 	
-	if (colorToReplace == color)
+	if (params.oldColor == params.newColor)
 		return;
 	
 	// then we start the filling
-	FillPixel(targetPix, x, y, color, colorToReplace, GetPixel, SetPixel, clipRgn);
+	FillRun(&params);
 }
 
-// __________________________________________________________________________________________
-// Name			: FillPixel
-// Input		: targetPix: the pixmap which we are filling
-//				  x, y: coordinates of the pixel we must fill
-//				  color: color which which we must fill
-//				  colorToReplace: color which we are replacing with the color above
-//				  clipRgn: region to which we're limiting the filling
-//				  GetPixel, SetPixel: pointers to function used to do these operations
-// Output		: None
-// Description	: If the current pixel is the color to be replaced, then it changes it to the
-//				  new color, and calls itself for its neighboring pixels (unless its out of
-//				  bounds)
-
-void FillPixel(PixMapHandle targetPix,
-			   int x, int y,
-			   long color,
-			   long colorToReplace,
-			   GetPixelFuncPtr GetPixel,
-			   SetPixelFuncPtr SetPixel,
-			   RgnHandle clipRgn)
+void FillRun(FillPixMapParamsPtr params)
 {
-	Point temp = {y, x};
-	if ((colorToReplace == GetPixel(x, y, targetPix)) &&
-	    (PtInRgn(temp, clipRgn) || clipRgn == NULL)) // if this is a color we can fill
+	long currentColor, currentX, currentY, runStart, runEnd;
+	Rect bounds;
+	Point tempPoint;
+	
+	bounds = (**params->pix).bounds;
+	
+	currentX = params->x;
+	currentY = params->y;
+	currentColor = params->GetPixel(currentX, currentY, params->pix);
+	
+	while (currentColor == params->oldColor)
 	{
-		Rect	bounds; // the dimensions of the target pixmap
+		currentX--;
+		if (currentX < bounds.left)
+			currentColor = params->newColor;
+		else
+			currentColor = params->GetPixel(currentX, currentY, params->pix);
+	}
+	
+	runStart = currentX + 1;
+	
+	currentX = params->x;
+	
+	currentColor = params->GetPixel(currentX, currentY, params->pix);
+	
+	while (currentColor == params->oldColor)
+	{
+		currentX++;
+		if (currentX >= bounds.right)
+			currentColor = params->newColor;
+		else
+			currentColor = params->GetPixel(currentX, currentY, params->pix);
+	}
+	
+	runEnd = currentX;
+	
+	for (currentX = runStart; currentX < runEnd; currentX++)
+		{
+			tempPoint.h = currentX;
+			tempPoint.v = currentY;
+			if ((params->clipRgn == NULL) || PtInRgn(tempPoint, params->clipRgn))
+				params->SetPixel(currentX, currentY, params->newColor, params->pix);
+		}
 		
-		SetPixel(x, y, color, targetPix); // we change it
-		bounds = (**targetPix).bounds; // and we get the bounds
-		
-		// and call ourselves for the neighboring pixels, if we're within the bounds
-		if (y - 1 >= bounds.top)
-			FillPixel(targetPix, x, y - 1, color, colorToReplace, GetPixel, SetPixel, clipRgn);
-		if (y + 1 <= bounds.bottom)
-			FillPixel(targetPix, x, y + 1, color, colorToReplace, GetPixel, SetPixel, clipRgn);
-		if (x - 1 >= bounds.left)
-			FillPixel(targetPix, x - 1, y, color, colorToReplace, GetPixel, SetPixel, clipRgn);
-		if (x + 1 <= bounds.right)
-			FillPixel(targetPix, x + 1, y, color, colorToReplace, GetPixel, SetPixel, clipRgn);
+	currentX = runStart;
+	currentY--;
+	
+	if ((currentY >= bounds.top))
+	{
+		for (currentX = runStart; currentX < runEnd; currentX++)
+		{
+			currentColor = params->GetPixel(currentX, currentY, params->pix);
+			
+			tempPoint.h = currentX;
+			tempPoint.v = currentY;
+	
+			if (currentColor == params->oldColor && (params->clipRgn == NULL || PtInRgn(tempPoint, params->clipRgn)))
+				{
+					params->x = currentX;
+					params->y = currentY;
+					FillRun(params);
+				}
+		}
+	}
+	
+	currentX = runStart;
+	currentY += 2;
+	
+	if ((currentY < bounds.bottom))
+	{
+		for (currentX = runStart; currentX < runEnd; currentX++)
+		{
+			currentColor = params->GetPixel(currentX, currentY, params->pix);
+			
+			tempPoint.h = currentX;
+			tempPoint.v = currentY;
+			
+			if (currentColor == params->oldColor && (params->clipRgn == NULL || PtInRgn(tempPoint, params->clipRgn)))
+				{
+					params->x = currentX;
+					params->y = currentY;
+					FillRun(params);
+				}
+		}
 	}
 }
+
 
 // __________________________________________________________________________________________
 // Name			: FlipVertical
@@ -277,7 +327,7 @@ void FlipHorizontal(PixMapHandle srcPix)
 				{
 					temp = GetPixel4(x, y, srcPix);
 					SetPixel4(x, y,
-							 GetPixel1(bounds.right - (x - bounds.left) - 1 , y, srcPix),
+							 GetPixel4(bounds.right - (x - bounds.left) - 1 , y, srcPix),
 							 srcPix);
 					SetPixel4(bounds.right - (x - bounds.left) - 1 , y, temp, srcPix);
 				}
@@ -499,9 +549,9 @@ RGBColor GetRadialGradientColor(int x, int y, gradientParams* params)
 	else
 		blendRatio = d/params->d;
 	
-	returnColor.red = params->startColor.red * blendRatio + params->endColor.red * (1 - blendRatio);
-	returnColor.green = params->startColor.green * blendRatio + params->endColor.green * (1 - blendRatio);
-	returnColor.blue = params->startColor.blue * blendRatio + params->endColor.blue * (1 - blendRatio);
+	returnColor.red = params->startColor.red * (1 - blendRatio) + params->endColor.red * blendRatio;
+	returnColor.green = params->startColor.green * (1- blendRatio) + params->endColor.green * blendRatio;
+	returnColor.blue = params->startColor.blue * (1 - blendRatio) + params->endColor.blue * blendRatio;
 	
 	return returnColor;
 }
@@ -514,20 +564,28 @@ RGBColor GetRadialGradientColor(int x, int y, gradientParams* params)
 // Description	: This function displays a color picker and allows the user to choose among
 //				  the displayed colors.
 
-void ColorPicker(RGBColor* color, WindowPtr window, Point where, PicHandle pickerPic, RgnHandle swatchRgn, CTabHandle drawingTable)
+void ColorPicker(RGBColor* color,
+				 WindowPtr window,
+				 Point where,
+				 PicHandle pickerPic,
+				 CTabHandle drawingTable,
+				 colorUpdateFn UpdateColors,
+				 void* clientData)
 {
 	Rect			menuRect, pickerRect, saveRect;
 	GWorldPtr		savedGW, pickerGW;
 	PixMapHandle	savedPix, pickerPix;
 	OSErr			err;
-	RgnHandle		savedVis, pickerRgn, tempRgn, hiliteRgn;
+	RgnHandle		savedVis, pickerRgn, unclippedRgn, clippedRgn, hiliteRgn;
 	BitMapPtr		currentPortBits;
 	Point			theMouse;
-	RGBColor		nearestColor, newColor, tempColor, previousColor;
+	RGBColor		savedColor, nearestColor, newColor, tempColor, previousColor;
 	short			paddingH, paddingV;
 	
 	SAVEGWORLD;
 	SAVECOLORS;
+	
+	savedColor = *color;
 	
 	nearestColor = GetNearestColor(*color, drawingTable);
 	newColor = nearestColor;
@@ -537,11 +595,15 @@ void ColorPicker(RGBColor* color, WindowPtr window, Point where, PicHandle picke
 	
 	savedVis = NewRgn();
 	CopyRgn(window->visRgn, savedVis);
-	SetRectRgn(window->visRgn,
+	
+	unclippedRgn = NewRgn();
+	clippedRgn = NewRgn();
+	SetRectRgn(unclippedRgn,
 			   -32767,
 			   -32767,
 			   32767,
 			   32767);
+	CopyRgn(unclippedRgn, window->visRgn);
 	
 	pickerRgn = NewRgn();
 	PictureToRegion(pickerPic, (**pickerPic).picFrame, pickerRgn);
@@ -568,10 +630,9 @@ void ColorPicker(RGBColor* color, WindowPtr window, Point where, PicHandle picke
 	saveRect.bottom += 2;
 	saveRect.right += 2;
 	
-	tempRgn = NewRgn();
-	RectRgn(tempRgn, &saveRect);
-	DiffRgn(swatchRgn, tempRgn, swatchRgn);
-	DisposeRgn(tempRgn);
+	clippedRgn = NewRgn();
+	RectRgn(clippedRgn, &saveRect);
+	DiffRgn(unclippedRgn, clippedRgn, clippedRgn);
 	
 	err = NewGWorld(&savedGW, 32, &saveRect, NULL, NULL, 0);
 	savedPix = GetGWorldPixMap(savedGW);
@@ -605,21 +666,23 @@ void ColorPicker(RGBColor* color, WindowPtr window, Point where, PicHandle picke
 		GetMouse(&theMouse);
 		
 		if (PtInRgn(theMouse, pickerRgn))
-			{
-				SetGWorld(pickerGW, NULL);
-				GetCPixel(theMouse.h, theMouse.v, &tempColor);
-				if (tempColor.red != 257 || tempColor.green != 0 || tempColor.blue != 0)
-					newColor = tempColor;
-				RESTOREGWORLD;
-			}
+		{
+			SetGWorld(pickerGW, NULL);
+			GetCPixel(theMouse.h, theMouse.v, &tempColor);
+			if (tempColor.red != 257 || tempColor.green != 0 || tempColor.blue != 0)
+				newColor = tempColor;
+			RESTOREGWORLD;
+		}
 		else
 			newColor = nearestColor;
 		
 		if (!AreEqualRGB(previousColor, newColor))
 		{
+			*color = newColor;
 			
-			RGBForeColor(&newColor);
-			PaintRgn(swatchRgn);
+			CopyRgn(clippedRgn, window->visRgn);
+			UpdateColors(color, clientData);
+			CopyRgn(unclippedRgn, window->visRgn);
 			
 			ForeColor(blackColor);
 			BackColor(whiteColor);
@@ -629,7 +692,7 @@ void ColorPicker(RGBColor* color, WindowPtr window, Point where, PicHandle picke
 					 &pickerRect,
 					 &pickerRect,
 					 srcCopy,
-					 pickerRgn);	
+					 pickerRgn);
 			
 			GetSimilarColors(&newColor, 1, pickerPix, pickerRgn, hiliteRgn);
 			ForeColor(whiteColor);
@@ -664,8 +727,13 @@ void ColorPicker(RGBColor* color, WindowPtr window, Point where, PicHandle picke
 	CopyRgn(savedVis, window->visRgn);
 	DisposeRgn(savedVis);
 	
+	DisposeRgn(unclippedRgn);
+	DisposeRgn(clippedRgn);
+	
 	if (!AreEqualRGB(newColor, nearestColor))
-	*color = newColor;
+		*color = newColor;
+	else
+		*color = savedColor;
 }
 
 void GetSimilarColors(RGBColor* colorList, int noOfColors, PixMapHandle pix, RgnHandle clipRgn, RgnHandle region)
@@ -677,18 +745,23 @@ void GetSimilarColors(RGBColor* colorList, int noOfColors, PixMapHandle pix, Rgn
 	register long	top, bottom, left, right;
 	long			*colorLongList;
 	
+	SAVEGWORLD;
+	SAVECOLORS;
+	
 	if ((**pix).pixelSize != 32)
 	{
-		NewGWorld(&picGW, 32, &(**pix).bounds, NULL, NULL, 0);
+		NewGWorldUnpadded(&picGW, 32, &(**pix).bounds, NULL);
 		picPix = GetGWorldPixMap(picGW);
 		LockPixels(picPix);
+		SetGWorld(picGW, NULL);
+		ForeColor(blackColor);
+		BackColor(whiteColor);
 		CopyPixMap(pix, picPix, &(**pix).bounds, &(**pix).bounds, srcCopy, NULL);
 	}
 	else
 		picPix = pix;
 	
-	SAVEGWORLD;
-	SAVECOLORS;
+
 	
 	colorLongList = new long[noOfColors];
 	for (int i = 0; i < noOfColors; i++)
@@ -716,7 +789,7 @@ void GetSimilarColors(RGBColor* colorList, int noOfColors, PixMapHandle pix, Rgn
 	BitMapToRegion(region, (BitMap*)*tempPix);
 	if (clipRgn != NULL)
 		SectRgn(region, clipRgn, region);
-	
+		
 	
 	RESTOREGWORLD;
 	RESTORECOLORS;
@@ -964,7 +1037,7 @@ void MergePix(PixMapHandle basePicPix,
 	RESTORECOLORS;
 }
 
-OSErr NewGWorldUnpadded(GWorldPtr* gWorld, short depth, Rect* bounds, CTabHandle colorTable)
+OSErr NewGWorldUnpadded(GWorldPtr* gWorld, short depth, const Rect* bounds, CTabHandle colorTable)
 {
 	PixMapHandle tempPix;
 	int realRowBytes, currentRowBytes;
@@ -1095,6 +1168,7 @@ void DrawPictureDithered(PicHandle srcPic, Rect* targetRect)
 {
 	GWorldPtr tempGW;
 	PixMapHandle tempPix;
+	RgnHandle	tempRgn;
 	
 	SAVEGWORLD;
 	SAVECOLORS;
@@ -1105,6 +1179,10 @@ void DrawPictureDithered(PicHandle srcPic, Rect* targetRect)
 	
 	SetGWorld(tempGW, NULL);
 	
+	tempRgn = NewRgn();
+	
+	PictureToRegion(srcPic, *targetRect, tempRgn);
+	
 	DrawPicture(srcPic, targetRect);
 	
 	RESTOREGWORLD;
@@ -1114,12 +1192,274 @@ void DrawPictureDithered(PicHandle srcPic, Rect* targetRect)
 			 targetRect,
 			 targetRect,
 			 srcCopy + ditherCopy,
-			 NULL);
+			 tempRgn);
 			 
 
 	RESTORECOLORS;
 	
 	UnlockPixels(tempPix);
-	DisposeGWorld(tempGW);	
+	DisposeGWorld(tempGW);
+	
+	DisposeRgn(tempRgn);	
+}
+
+void Mask8ToMask1(PixMapHandle mask8Pix, PixMapHandle mask1Pix)
+{
+	long		white;
+	Rect		bounds;
+	
+	bounds = (**mask8Pix).bounds;
+	
+	white = GetColorIndex(kWhiteAsRGB, (**mask8Pix).pmTable);
+	
+	for (int y = bounds.top; y < bounds.bottom; y++)
+		for (int x = bounds.left; x < bounds.right; x++)
+			if (GetPixel8(x, y, mask8Pix) != white)
+				SetPixel1(x, y, 1, mask1Pix);
+			else
+				SetPixel1(x, y, 0, mask1Pix);
+}
+
+PicHandle ARGBPixMapToPicture(PixMapHandle imagePix, PixMapHandle maskPix)
+{
+	long                            maxCompressedSize = 0;
+	Handle                          compressedDataH = nil;
+	Ptr                             compressedDataP;
+	ImageDescriptionHandle          imageDescH = nil;
+	OSErr                           theErr;
+	PicHandle                       myPic = nil;
+	Rect                            bounds = (**imagePix).bounds;
+	CodecType                       theCodecType = kAnimationCodecType;
+	CodecComponent                  theCodec = (CodecComponent)anyCodec;
+	CodecQ                          spatialQuality = codecNormalQuality;
+	short                           depth = 0;/* let ICM choose depth */
+	        
+
+	theErr = GetMaxCompressionSize(imagePix, &bounds, depth,
+	                                spatialQuality, theCodecType, 
+	                                (CompressorComponent)theCodec,
+	                                &maxCompressedSize);
+	if (theErr) return nil;
+
+	imageDescH = (ImageDescriptionHandle)NewHandle(4);
+	compressedDataH = NewHandle(maxCompressedSize);
+	if ( compressedDataH != nil && imageDescH != nil ) 
+	{ 
+		MoveHHi(compressedDataH);
+		HLock(compressedDataH);
+		compressedDataP = StripAddress(*compressedDataH);
+
+		theErr = CompressImage(imagePix,
+							   &bounds,
+							   spatialQuality,
+							   theCodecType,
+							   imageDescH,
+							   compressedDataP);
+
+		if (theErr == noErr) 
+		{
+			OpenCPicParams	picParams;
+			
+			picParams.srcRect = bounds;
+			picParams.hRes =  0x00480000;
+			picParams.vRes =  0x00480000;
+			picParams.version = -2;
+			picParams.reserved1 = 0;
+			picParams.reserved2 = 0;
+
+		    ClipRect(&bounds);
+		    myPic = OpenCPicture(&picParams);
+		  
+			FDecompressImage(compressedDataP,
+							 imageDescH,
+							 imagePix,
+							 &bounds,
+							 NULL, // matrix
+							 srcCopy,
+							 NULL,
+							 maskPix,
+							 &bounds,
+							 codecLosslessQuality,
+							 anyCodec,
+							 0, // buffer size
+							 NULL, // data loading proc
+							 NULL); // progress proc	
+		ClosePicture();
+		}
+		if ( theErr 
+		        || GetHandleSize((Handle)myPic) == sizeof(Picture) ) 
+		{
+		    KillPicture(myPic);
+		    myPic = nil;
+		}
+	}
+	if (imageDescH) DisposeHandle( (Handle)imageDescH);
+	if (compressedDataH) DisposeHandle( compressedDataH);
+
+	return myPic;
+}
+
+inline int max(int a, int b, int c)
+{
+	if (a > b)
+		if (a > c)
+			return a;
+		else
+			return c;
+	else if (b > c)
+		return b;
+	else
+		return c;
+}
+
+inline int constrain (int a, int lower, int upper)
+{
+	if (a < lower)
+		return lower;
+	if (a > upper)
+		return upper;
+	
+	return a;
+}
+
+int GetAverageLuminance(PixMapHandle pix)
+{
+	int sum, numberOfPixels;
+	unsigned char* pixelData;
+	int	rowWidth;
+	Rect bounds;
+	int r, g, b;
+	
+	bounds = (**pix).bounds;
+	
+	rowWidth = (**pix).rowBytes & 0x3FFF;
+	
+	pixelData = (unsigned char*)(**pix).baseAddr;
+	
+	sum = numberOfPixels = 0;
+	
+	for (int i=bounds.top; i < bounds.bottom; i++)
+	{
+		pixelData += rowWidth * i;
+		for (int j=0; j < (bounds.right - bounds.left) * 4; j+=4)
+		{
+		
+			sum += kRLuminance * (float)pixelData[j + 1] +
+				   kGLuminance * (float)pixelData[j + 2] + 
+				   kBLuminance * (float)pixelData[j + 3];
+			numberOfPixels++;
+		}
+		
+	}
+	
+	//DisplayValue(sum/num);
+	
+	return sum/numberOfPixels;
+}
+
+void ChangeContrast(PixMapHandle pix, int contrast)
+{
+	int avg, numberOfBytes;
+	unsigned char* pixelData;
+	float c;
+	
+	c = 1.0 + (float)contrast/100.0;
+	
+	avg = GetAverageLuminance(pix);
+	
+	pixelData = (unsigned char*)(**pix).baseAddr;
+	
+	numberOfBytes = ((**pix).bounds.bottom - (**pix).bounds.top) * ((**pix).rowBytes & 0x3FFF);
+	
+	for (int j=0; j < numberOfBytes; j+=4)
+	{
+		pixelData[j + 1] = constrain((1.0 - c) * avg + c * pixelData[j + 1], 0, 255);
+		pixelData[j + 2] = constrain((1.0 - c) * avg + c * pixelData[j + 2], 0, 255);
+		pixelData[j + 3] = constrain((1.0 - c) * avg + c * pixelData[j + 3], 0, 255);
+	}
+}
+
+void ColorizePixMap(PixMapHandle pix, int hue, float saturation)
+{
+	unsigned char value, r, g, b;
+	unsigned char* pixelData;
+	int			numberOfBytes;
+	//int i;
+    float h, v, s, f, p, q, t;
+    
+    pixelData = (unsigned char*)(**pix).baseAddr;
+	
+	numberOfBytes = ((**pix).bounds.bottom - (**pix).bounds.top) * ((**pix).rowBytes & 0x3FFF);
+	
+	for (int j=0; j < numberOfBytes; j+=4)
+	{
+		value = max(pixelData[j + 1], pixelData[j + 2], pixelData[j + 3]);
+		
+		if (saturation == 0)
+		{
+			pixelData[j + 1] = pixelData[j + 2] = pixelData[j + 3] = value;
+		}
+		/*else if (pixelData[j + 1] == pixelData[j + 2] &&
+				 pixelData[j + 2] == pixelData[j + 3] &&
+				 pixelData[j + 3] == 255)
+		{
+			;
+		}*/
+		else
+		{
+			h = hue;
+			v = (float)value/255.0;
+			s = saturation;
+			if (v > 0.5)
+				s -= s*2*(v - 0.5);
+			//s -= s*v*v;
+			
+			h /= 60;                        // sector 0 to 5
+			if (h == 6.0) h = 0.0;
+	        //i = floor( h );
+	        f = h - (int)h;                      // factorial part of h
+	        p = v * ( 1 - s );
+	        q = v * ( 1 - s * f );
+	        t = v * ( 1 - s * ( 1 - f ) );
+
+	        switch((int)h)
+	        {
+				case 0:
+					r = v * 255;
+					g = t * 255;
+					b = p * 255;
+					break;
+				case 1:
+					r = q * 255;
+					g = v * 255;
+					b = p * 255;
+					break;
+				case 2:
+					r = p * 255;
+					g = v * 255;
+					b = t * 255;
+					break;
+				case 3:
+					r = p * 255;
+					g = q * 255;
+					b = v * 255;
+					break;
+				case 4:
+					r = t * 255;
+					g = p * 255;
+					b = v * 255;
+					break;
+				default:                // case 5:
+					r = v * 255;
+					g = p * 255;
+					b = q * 255;
+					break;
+        	}
+        	
+        	pixelData[j + 1] = r;
+        	pixelData[j + 2] = g;
+        	pixelData[j + 3] = b;
+		}
+	}
 }
 

@@ -40,6 +40,9 @@ editorStaticsClass::editorStaticsClass(void)
 	gray8PickerPic = GetPicture(r8BitGrayPicker);
 	HLock((Handle)gray8PickerPic);
 	
+	win4PickerPic = GetPicture(r4BitWinPicker);
+	HLock((Handle)win4PickerPic);
+	
 	SetRect(&canvasRect, 0, 0, kMaxIconSize * kMaxMagnification, kMaxIconSize * kMaxMagnification);
 	NewGWorld(&canvasGW, 32, &canvasRect, NULL, NULL, 0);
 	canvasPix = GetGWorldPixMap(canvasGW);
@@ -105,6 +108,7 @@ editorStaticsClass::~editorStaticsClass(void)
 	HUnlock((Handle)sys4PickerPic);
 	HUnlock((Handle)sys1PickerPic);
 	HUnlock((Handle)gray8PickerPic);
+	HUnlock((Handle)win4PickerPic);
 	
 	delete [] iconPartNames;
 	
@@ -309,7 +313,11 @@ void editorPreferencesClass::Edit()
 						defaultZoomLevelArrows,
 						drawGrid,
 						checkSync,
-						dither;
+						dither,
+						newEditor,
+						openIcon,
+						doNothing,
+						generateOldStyle;
 	Str255				tempString;
 	short				itemHit;
 	bool				dialogDone;
@@ -346,7 +354,20 @@ void editorPreferencesClass::Edit()
 	SetControlValue(checkSync, !((**data).flags & prefsDontCheckSync));
 	
 	GetDialogItemAsControl(preferencesDialog, iDither, &dither);
-	SetControlValue(dither, (**data).flags & prefsDither);
+	SetControlValue(dither, bool((**data).flags & prefsDither));
+	
+	GetDialogItemAsControl(preferencesDialog, iGenerateOldStyle, &generateOldStyle);
+	SetControlValue(generateOldStyle, bool((**data).flags & prefsGenerateOldStyle));
+	
+	GetDialogItemAsControl(preferencesDialog, iStartupCreateNewEditor, &newEditor);
+	SetControlValue(newEditor, bool(!((**data).flags & prefsDontMakeNewEditor)));
+	
+	GetDialogItemAsControl(preferencesDialog, iStartupOpenIcon, &openIcon);
+	SetControlValue(openIcon, bool((**data).flags & prefsOpenIcon));
+	
+	GetDialogItemAsControl(preferencesDialog, iStartupDoNothing, &doNothing);
+	SetControlValue(doNothing, bool((**data).flags & prefsDontMakeNewEditor) &&
+							   bool(!((**data).flags & prefsOpenIcon)));
 	
 	ClearKeyboardFocus(preferencesDialog);
 	
@@ -366,7 +387,25 @@ void editorPreferencesClass::Edit()
 				StringToNum(tempString, &(**data).defaultZoomLevel);
 				(**data).flags = (GetControlValue(drawGrid) << 0) |
 								 ((GetControlValue(checkSync) ^ 1) << 1) |
-								 (GetControlValue(dither) << 2);
+								 (GetControlValue(dither) << 2) |
+								 (GetControlValue(generateOldStyle) << 5);
+				
+				if (GetControlValue(doNothing))
+				{
+					(**data).flags |= prefsDontMakeNewEditor;
+					(**data).flags &= ~prefsOpenIcon;
+				}
+				else if (GetControlValue(newEditor))
+				{
+					(**data).flags &= ~prefsDontMakeNewEditor;
+					(**data).flags &= ~prefsOpenIcon;	
+				}
+				else
+				{
+					(**data).flags |= prefsDontMakeNewEditor;
+					(**data).flags |= prefsOpenIcon;
+				}
+				
 				dialogDone = true;
 				break;
 			case iCancel:
@@ -375,6 +414,22 @@ void editorPreferencesClass::Edit()
 			case iDrawGrid: ToggleCheckbox(drawGrid); break;
 			case iCheckSync: ToggleCheckbox(checkSync); break;
 			case iDither: ToggleCheckbox(dither); break;
+			case iGenerateOldStyle: ToggleCheckbox(generateOldStyle); break;
+			case iStartupCreateNewEditor :
+				SetControlValue(newEditor, 1);
+				SetControlValue(openIcon, 0);
+				SetControlValue(doNothing, 0);
+				break;
+			case iStartupOpenIcon:
+				SetControlValue(newEditor, 0);
+				SetControlValue(openIcon, 1);
+				SetControlValue(doNothing, 0);
+				break;
+			case iStartupDoNothing :
+				SetControlValue(newEditor, 0);
+				SetControlValue(openIcon, 0);
+				SetControlValue(doNothing, 1);
+				break;
 		}
 	}
 	

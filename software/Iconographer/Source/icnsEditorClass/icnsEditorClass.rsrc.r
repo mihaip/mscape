@@ -23,6 +23,12 @@ resource 'dlgx' (1001) {
 	}
 };
 
+resource 'dlgx' (1010) {
+	versionZero {
+		15
+	}
+};
+
 resource 'dctb' (1410) {
 	{	/* array ColorSpec: 5 elements */
 		/* [1] */
@@ -53,6 +59,21 @@ resource 'dctb' (9999) {
 	}
 };
 
+resource 'dctb' (1001) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
+	}
+};
+
 resource 'dctb' (1000) {
 	{	/* array ColorSpec: 5 elements */
 		/* [1] */
@@ -68,7 +89,37 @@ resource 'dctb' (1000) {
 	}
 };
 
-resource 'dctb' (1001) {
+resource 'dctb' (1010) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
+	}
+};
+
+resource 'dctb' (1011) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
+	}
+};
+
+resource 'dctb' (1012) {
 	{	/* array ColorSpec: 5 elements */
 		/* [1] */
 		wContentColor, 65535, 65535, 65535,
@@ -646,6 +697,33 @@ data 'cicn' (153, "Gradient (Radial)") {
 	$"0000 0000 0000"                                     /* ...... */
 };
 
+data 'cicn' (154, "Lasso Polygonal") {
+	$"0000 0000 8004 0000 0000 0016 001A 0000"            /* ....€........... */
+	$"0000 0000 0000 0048 0000 0048 0000 0000"            /* .......H...H.... */
+	$"0001 0001 0001 0000 0000 0000 015A 0000"            /* .............Z.. */
+	$"0000 0000 0000 0004 0000 0000 0016 001A"            /* ................ */
+	$"0000 0000 0004 0000 0000 0016 001A 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0800 0300 1800 02C0 2800 0230"            /* ...........À(..0 */
+	$"4800 010C 8800 0103 0800 0080 0800 0080"            /* H...ˆ......€...€ */
+	$"0800 0040 1800 0070 6000 00C9 8000 00AE"            /* ...@...p`..É€..® */
+	$"0000 0078 0000 0010 0000 0010 0000 0020"            /* ...x...........  */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0800 0300"            /* ................ */
+	$"1800 02C0 2800 0230 4800 010C 8800 0103"            /* ...À(..0H...ˆ... */
+	$"0800 0080 0800 0080 0800 0040 1800 0070"            /* ...€...€...@...p */
+	$"6000 00C9 8000 00AE 0000 0078 0000 0010"            /* `..É€..®...x.... */
+	$"0000 0010 0000 0020 0000 0000 0000 0000"            /* ....... ........ */
+	$"0000 0001 07B3 0000 0001 0000 FFFF FFFF"            /* .....³......ÿÿÿÿ */
+	$"FFFF 0001 0000 0000 0000 0000 0000 0000"            /* ÿÿ.............. */
+	$"0000 0000 0000 0000 0000 0000 0800 0300"            /* ................ */
+	$"1800 02C0 2800 0230 4800 010C 8800 0103"            /* ...À(..0H...ˆ... */
+	$"0800 0080 0800 0080 0800 0040 1800 0070"            /* ...€...€...@...p */
+	$"6000 00C9 8000 00AE 0000 0078 0000 0010"            /* `..É€..®...x.... */
+	$"0000 0010 0000 0020 0000 0000 0000 0000"            /* ....... ........ */
+	$"0000"                                               /* .. */
+};
+
 resource 'cctb' (128) {
 	{	/* array ColorSpec: 4 elements */
 		/* [1] */
@@ -1010,169 +1088,69 @@ resource 'cctb' (1410) {
 	}
 };
 
-resource 'CNTL' (128, "Pen Tool", purgeable) {
-	{44, 0, 66, 26},
-	0,
-	visible,
-	128,
-	258,
-	32,
-	0,
-	""
+resource 'cctb' (1002) {
+	{	/* array ColorSpec: 4 elements */
+		/* [1] */
+		cFrameColor, 0, 0, 0,
+		/* [2] */
+		cBodyColor, 65535, 65535, 65535,
+		/* [3] */
+		cTextColor, 0, 0, 0,
+		/* [4] */
+		cElevatorColor, 65535, 65535, 65535
+	}
 };
 
-resource 'CNTL' (129, "Eyedropper Tool", purgeable) {
-	{44, 26, 66, 52},
-	0,
-	visible,
-	129,
-	258,
-	32,
-	0,
-	""
+resource 'cctb' (1003) {
+	{	/* array ColorSpec: 4 elements */
+		/* [1] */
+		cFrameColor, 0, 0, 0,
+		/* [2] */
+		cBodyColor, 65535, 65535, 65535,
+		/* [3] */
+		cTextColor, 0, 0, 0,
+		/* [4] */
+		cElevatorColor, 65535, 65535, 65535
+	}
 };
 
-resource 'CNTL' (130, "Fill Tool", purgeable) {
-	{66, 0, 88, 26},
-	0,
-	visible,
-	130,
-	258,
-	32,
-	0,
-	""
+resource 'cctb' (1011) {
+	{	/* array ColorSpec: 4 elements */
+		/* [1] */
+		cFrameColor, 0, 0, 0,
+		/* [2] */
+		cBodyColor, 65535, 65535, 65535,
+		/* [3] */
+		cTextColor, 0, 0, 0,
+		/* [4] */
+		cElevatorColor, 65535, 65535, 65535
+	}
 };
 
-resource 'CNTL' (131, "Eraser Tool", purgeable) {
-	{66, 26, 88, 52},
-	0,
-	visible,
-	131,
-	258,
-	32,
-	0,
-	""
+resource 'cctb' (1012) {
+	{	/* array ColorSpec: 4 elements */
+		/* [1] */
+		cFrameColor, 0, 0, 0,
+		/* [2] */
+		cBodyColor, 65535, 65535, 65535,
+		/* [3] */
+		cTextColor, 0, 0, 0,
+		/* [4] */
+		cElevatorColor, 65535, 65535, 65535
+	}
 };
 
-resource 'CNTL' (132, "Marquee Tool", purgeable) {
-	{0, 0, 22, 26},
-	0,
-	visible,
-	132,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (133, "Move Tool", purgeable) {
-	{0, 26, 22, 52},
-	0,
-	visible,
-	133,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (134, "Lasso Tool", purgeable) {
-	{22, 0, 44, 26},
-	0,
-	visible,
-	134,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (135, "Wand Tool", purgeable) {
-	{22, 26, 44, 52},
-	0,
-	visible,
-	135,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (200, "Icon Edit Well", purgeable) {
-	{9, 61, 203, 255},
-	0,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (136, "Line Tool", purgeable) {
-	{110, 0, 132, 26},
-	0,
-	visible,
-	136,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (137, "Rectangle Tool", purgeable) {
-	{88, 0, 110, 26},
-	0,
-	visible,
-	137,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (138, "Oval Tool", purgeable) {
-	{88, 26, 110, 52},
-	0,
-	visible,
-	138,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (139, "Polygon Tool", purgeable) {
-	{110, 26, 132, 52},
-	0,
-	visible,
-	139,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (140, "Gradient Tool", purgeable) {
-	{132, 0, 154, 26},
-	0,
-	visible,
-	140,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (141, "Text Tool", purgeable) {
-	{132, 26, 154, 52},
-	0,
-	visible,
-	141,
-	258,
-	32,
-	0,
-	""
+resource 'cctb' (1013) {
+	{	/* array ColorSpec: 4 elements */
+		/* [1] */
+		cFrameColor, 0, 0, 0,
+		/* [2] */
+		cBodyColor, 65535, 65535, 65535,
+		/* [3] */
+		cTextColor, 0, 0, 0,
+		/* [4] */
+		cElevatorColor, 65535, 65535, 65535
+	}
 };
 
 resource 'CNTL' (1411, "Size Popup", purgeable) {
@@ -1197,138 +1175,6 @@ resource 'CNTL' (1412, "Size Popup", purgeable) {
 	"Style:"
 };
 
-resource 'CNTL' (203, "Fore/Back Color", purgeable) {
-	{159, 5, 201, 47},
-	0,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (204, "Icon Display", purgeable) {
-	{25, 261, 115, 315},
-	0,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (205, "Mask Display", purgeable) {
-	{25, 322, 115, 376},
-	0,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (206, "Icon Popup", purgeable) {
-	{8, 259, 22, 317},
-	0,
-	visible,
-	0,
-	200,
-	401,
-	0,
-	""
-};
-
-resource 'CNTL' (207, "Mask Popup", purgeable) {
-	{8, 320, 22, 378},
-	0,
-	visible,
-	0,
-	201,
-	401,
-	0,
-	""
-};
-
-resource 'CNTL' (208, "Icon Label", purgeable) {
-	{118, 260, 130, 314},
-	0,
-	visible,
-	100,
-	0,
-	288,
-	0,
-	"Icon"
-};
-
-resource 'CNTL' (209, "Mask Label", purgeable) {
-	{118, 323, 130, 377},
-	0,
-	visible,
-	100,
-	0,
-	288,
-	0,
-	"Mask"
-};
-
-resource 'CNTL' (211, "Preview Label", purgeable) {
-	{190, 261, 202, 376},
-	0,
-	visible,
-	100,
-	0,
-	288,
-	0,
-	"Preview"
-};
-
-resource 'CNTL' (1000, "Zoom Level Arrows", purgeable) {
-	{13, 188, 37, 201},
-	0,
-	visible,
-	100,
-	0,
-	96,
-	0,
-	""
-};
-
-resource 'CNTL' (201, "Zoom Placard", purgeable) {
-	{210, 4294967295, 226, 63},
-	32,
-	visible,
-	0,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (202, "Info Placard", purgeable) {
-	{210, 62, 226, 384},
-	32,
-	visible,
-	0,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (1001, "Flags Group Box", purgeable) {
-	{70, 10, 150, 258},
-	0,
-	visible,
-	100,
-	0,
-	160,
-	0,
-	"Flags"
-};
-
 resource 'CNTL' (1410, "Font Popup", purgeable) {
 	{8, 8, 28, 188},
 	0,
@@ -1340,8 +1186,404 @@ resource 'CNTL' (1410, "Font Popup", purgeable) {
 	"Font:"
 };
 
+resource 'CNTL' (1001, "Flags Group Box", purgeable) {
+	{70, 10, 150, 271},
+	0,
+	visible,
+	100,
+	0,
+	160,
+	0,
+	"Flags"
+};
+
+resource 'CNTL' (1002, "ID Popup", purgeable) {
+	{11, 124, 31, 146},
+	0,
+	visible,
+	0,
+	202,
+	400,
+	0,
+	""
+};
+
+resource 'CNTL' (1000, "Zoom Level Arrows", purgeable) {
+	{13, 293, 37, 306},
+	0,
+	visible,
+	100,
+	0,
+	96,
+	0,
+	""
+};
+
+resource 'CNTL' (1003, "Startup Options Group Box", purgeable) {
+	{93, 7, 169, 308},
+	0,
+	visible,
+	100,
+	0,
+	160,
+	0,
+	"Startup Options"
+};
+
+resource 'CNTL' (1013, "Lightness Slider", purgeable) {
+	{124, 92, 155, 312},
+	6,
+	visible,
+	100,
+	-100,
+	51,
+	0,
+	"Lightness:"
+};
+
+resource 'CNTL' (128, "Pen Tool", purgeable) {
+	{51, 5, 73, 31},
+	0,
+	visible,
+	128,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (129, "Eyedropper Tool", purgeable) {
+	{51, 31, 73, 57},
+	0,
+	visible,
+	129,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (130, "Fill Tool", purgeable) {
+	{73, 5, 95, 31},
+	0,
+	visible,
+	130,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (131, "Eraser Tool", purgeable) {
+	{73, 31, 95, 57},
+	0,
+	visible,
+	131,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (132, "Marquee Tool", purgeable) {
+	{7, 5, 29, 31},
+	0,
+	visible,
+	132,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (133, "Move Tool", purgeable) {
+	{7, 31, 29, 57},
+	0,
+	visible,
+	133,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (134, "Lasso Tool", purgeable) {
+	{29, 5, 51, 31},
+	0,
+	visible,
+	134,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (135, "Wand Tool", purgeable) {
+	{29, 31, 51, 57},
+	0,
+	visible,
+	135,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (136, "Line Tool", purgeable) {
+	{117, 5, 139, 31},
+	0,
+	visible,
+	136,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (137, "Rectangle Tool", purgeable) {
+	{95, 5, 117, 31},
+	0,
+	visible,
+	137,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (138, "Oval Tool", purgeable) {
+	{95, 31, 117, 57},
+	0,
+	visible,
+	138,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (139, "Polygon Tool", purgeable) {
+	{117, 31, 139, 57},
+	0,
+	visible,
+	139,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (140, "Gradient Tool", purgeable) {
+	{139, 5, 161, 31},
+	0,
+	visible,
+	140,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (141, "Text Tool", purgeable) {
+	{139, 31, 161, 57},
+	0,
+	visible,
+	141,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (200, "Icon Edit Well", purgeable) {
+	{8, 64, 202, 258},
+	0,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (1010, "Adjust Tabs", purgeable) {
+	{8, 4294967295, 151, 368},
+	1010,
+	visible,
+	100,
+	0,
+	128,
+	0,
+	""
+};
+
+resource 'CNTL' (1011, "Hue Slider", purgeable) {
+	{47, 83, 78, 303},
+	6,
+	visible,
+	180,
+	-180,
+	51,
+	0,
+	"Hue:"
+};
+
+resource 'CNTL' (1012, "Saturation Slider", purgeable) {
+	{85, 83, 116, 303},
+	6,
+	visible,
+	100,
+	-100,
+	51,
+	0,
+	"Saturation:"
+};
+
+resource 'CNTL' (1014, "Brightness Slider", purgeable) {
+	{47, 90, 78, 310},
+	6,
+	visible,
+	100,
+	-100,
+	51,
+	0,
+	"Brightness:"
+};
+
+resource 'CNTL' (1015, "Contrast Slider", purgeable) {
+	{85, 90, 116, 310},
+	6,
+	visible,
+	100,
+	-100,
+	51,
+	0,
+	"Contrast:"
+};
+
+resource 'CNTL' (204, "Icon Display", purgeable) {
+	{24, 296, 124, 356},
+	0,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (205, "Mask Display", purgeable) {
+	{24, 360, 124, 420},
+	0,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (206, "Icon Popup", purgeable) {
+	{7, 296, 21, 356},
+	0,
+	visible,
+	0,
+	200,
+	401,
+	0,
+	""
+};
+
+resource 'CNTL' (207, "Mask Popup", purgeable) {
+	{7, 360, 21, 420},
+	0,
+	visible,
+	0,
+	201,
+	401,
+	0,
+	""
+};
+
+resource 'CNTL' (208, "Icon Label", purgeable) {
+	{126, 298, 138, 352},
+	0,
+	visible,
+	100,
+	0,
+	288,
+	0,
+	"Icon"
+};
+
+resource 'CNTL' (209, "Mask Label", purgeable) {
+	{126, 366, 138, 420},
+	0,
+	visible,
+	100,
+	0,
+	288,
+	0,
+	"Mask"
+};
+
 resource 'CNTL' (210, "Preview", purgeable) {
-	{132, 261, 186, 376},
+	{141, 296, 195, 420},
+	32,
+	visible,
+	0,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (211, "Preview Label", purgeable) {
+	{196, 296, 208, 420},
+	0,
+	visible,
+	100,
+	0,
+	288,
+	0,
+	"Preview"
+};
+
+resource 'CNTL' (212, "Patterns", purgeable) {
+	{167, 7, 181, 55},
+	0,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (203, "Fore/Back Color", purgeable) {
+	{187, 11, 227, 51},
+	0,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (201, "Zoom Placard", purgeable) {
+	{241, 4294967295, 257, 62},
+	32,
+	visible,
+	0,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (202, "Info Placard", purgeable) {
+	{241, 62, 257, 418},
 	32,
 	visible,
 	0,
@@ -1575,12 +1817,124 @@ data 'crsr' (200, "Marquee Additive") {
 	$"FFFF 0001 0000 0000 0000"                           /* ÿÿ........ */
 };
 
+data 'crsr' (206, "Move Selection Outline") {
+	$"8001 0000 0060 0000 0092 0000 0000 0000"            /* €....`...’...... */
+	$"0000 0000 0000 4000 6000 5000 4800 4400"            /* ......@.`.P.H.D. */
+	$"4200 4F00 5000 636C 4204 0000 0204 036C"            /* B.O.P.clB......l */
+	$"0000 0000 C000 E000 F000 F800 FC00 FE00"            /* ....À.à.ð.ø.ü.þ. */
+	$"FF00 FF80 FFFE F7FE E7FE C7FE 07FE 07FE"            /* ÿ.ÿ€ÿþ÷þçþÇþ.þ.þ */
+	$"07FE 0000 0001 0001 0000 0000 0000 0000"            /* .þ.............. */
+	$"0000 0000 8002 0000 0000 0010 0010 0000"            /* ....€........... */
+	$"0000 0000 0000 0048 0000 0048 0000 0000"            /* .......H...H.... */
+	$"0001 0001 0001 0000 0000 0000 00B2 0000"            /* .............².. */
+	$"0000 0000 4000 6000 5000 4800 4400 4200"            /* ....@.`.P.H.D.B. */
+	$"4F00 5000 636C 4204 0000 0204 036C 0000"            /* O.P.clB......l.. */
+	$"0000 0000 C646 0000 0001 0000 FFFF FFFF"            /* ....ÆF......ÿÿÿÿ */
+	$"FFFF 0001 0000 0000 0000"                           /* ÿÿ........ */
+};
+
+data 'crsr' (207, "Move Selection Contents") {
+	$"8001 0000 0060 0000 0092 0000 0000 0000"            /* €....`...’...... */
+	$"0000 0000 0000 4000 6000 7000 7800 7C00"            /* ......@.`.p.x.|. */
+	$"7E00 7F00 7000 6000 4000 0000 0000 0000"            /* ~...p.`.@....... */
+	$"0000 0000 C000 E000 F000 F800 FC00 FE00"            /* ....À.à.ð.ø.ü.þ. */
+	$"FF00 FF80 FF80 F000 E000 C000 0000 0000"            /* ÿ.ÿ€ÿ€ð.à.À..... */
+	$"0000 0000 0001 0001 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 8002 0000 0000 0010 0010 0000"            /* ....€........... */
+	$"0000 0000 0000 0048 0000 0048 0000 0000"            /* .......H...H.... */
+	$"0001 0001 0001 0000 0000 0000 00B2 0000"            /* .............².. */
+	$"0000 0000 4000 6000 7000 7800 7C00 7E00"            /* ....@.`.p.x.|.~. */
+	$"7F00 7000 6000 4000 0000 0000 0000 0000"            /* ..p.`.@......... */
+	$"0000 0000 D58C 0000 0001 0000 FFFF FFFF"            /* ....ÕŒ......ÿÿÿÿ */
+	$"FFFF 0001 0000 0000 0000"                           /* ÿÿ........ */
+};
+
+data 'crsr' (208, "Move Float Selection") {
+	$"8001 0000 0060 0000 0092 0000 0000 0000"            /* €....`...’...... */
+	$"0000 0000 0000 4000 6000 7000 7800 7C00"            /* ......@.`.p.x.|. */
+	$"7E00 7F00 700C 6712 41DC 0070 01DC 0712"            /* ~...p.g.AÜ.p.Ü.. */
+	$"000C 0000 C000 E000 F000 F800 FC00 FE00"            /* ....À.à.ð.ø.ü.þ. */
+	$"FF00 FF8C FF9E FFFF EFFE E1FC 0FFE 0FFF"            /* ÿ.ÿŒÿžÿÿïþáü.þ.ÿ */
+	$"0F1E 000C 0001 0001 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 8002 0000 0000 0010 0010 0000"            /* ....€........... */
+	$"0000 0000 0000 0048 0000 0048 0000 0000"            /* .......H...H.... */
+	$"0001 0001 0001 0000 0000 0000 00B2 0000"            /* .............².. */
+	$"0000 0000 4000 6000 7000 7800 7C00 7E00"            /* ....@.`.p.x.|.~. */
+	$"7F00 700C 6712 41DC 0070 01DC 0712 000C"            /* ..p.g.AÜ.p.Ü.... */
+	$"0000 0000 F9D2 0000 0001 0000 FFFF FFFF"            /* ....ùÒ......ÿÿÿÿ */
+	$"FFFF 0001 0000 0000 0000"                           /* ÿÿ........ */
+};
+
+data 'crsr' (154, "Lasso Polygonal") {
+	$"8001 0000 0060 0000 0092 0000 0000 0000"            /* €....`...’...... */
+	$"0000 0000 0002 C006 B00A 8C12 4322 40C2"            /* ......À.°.Œ.C"@Â */
+	$"2002 2002 1006 1C18 3260 2B80 1E00 0400"            /*  . .....2`+€.... */
+	$"0400 0800 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 000F 0004 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 8002 0000 0000 0010 0010 0000"            /* ....€........... */
+	$"0000 0000 0000 0048 0000 0048 0000 0000"            /* .......H...H.... */
+	$"0001 0001 0001 0000 0000 0000 00B2 0000"            /* .............².. */
+	$"0000 0002 C006 B00A 8C12 4322 40C2 2002"            /* ....À.°.Œ.C"@Â . */
+	$"2002 1006 1C18 3260 2B80 1E00 0400 0400"            /*  .....2`+€...... */
+	$"0800 0001 0911 0000 0001 0000 FFFF FFFF"            /* ............ÿÿÿÿ */
+	$"FFFF 0001 0000 0000 0000"                           /* ÿÿ........ */
+};
+
+data 'crsr' (209, "Lasso Polygonal Additive") {
+	$"8001 0000 0060 0000 0092 0000 0000 0000"            /* €....`...’...... */
+	$"0000 0000 0002 C006 B00A 8C12 4322 40C2"            /* ......À.°.Œ.C"@Â */
+	$"2002 2002 1006 1C18 3260 2B84 1E04 041F"            /*  . .....2`+„.... */
+	$"0404 0804 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 000F 0004 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 8002 0000 0000 0010 0010 0000"            /* ....€........... */
+	$"0000 0000 0000 0048 0000 0048 0000 0000"            /* .......H...H.... */
+	$"0001 0001 0001 0000 0000 0000 00B2 0000"            /* .............².. */
+	$"0000 0002 C006 B00A 8C12 4322 40C2 2002"            /* ....À.°.Œ.C"@Â . */
+	$"2002 1006 1C18 3260 2B84 1E04 041F 0404"            /*  .....2`+„...... */
+	$"0804 0001 0FC3 0000 0001 0000 FFFF FFFF"            /* .....Ã......ÿÿÿÿ */
+	$"FFFF 0001 0000 0000 0000"                           /* ÿÿ........ */
+};
+
+data 'crsr' (210, "Lasso Polygonal Subtractive") {
+	$"8001 0000 0060 0000 0092 0000 0000 0000"            /* €....`...’...... */
+	$"0000 0000 0002 C006 B00A 8C12 4322 40C2"            /* ......À.°.Œ.C"@Â */
+	$"2002 2002 1006 1C18 3260 2B80 1E00 041F"            /*  . .....2`+€.... */
+	$"0400 0800 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 000F 0004 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 8002 0000 0000 0010 0010 0000"            /* ....€........... */
+	$"0000 0000 0000 0048 0000 0048 0000 0000"            /* .......H...H.... */
+	$"0001 0001 0001 0000 0000 0000 00B2 0000"            /* .............².. */
+	$"0000 0002 C006 B00A 8C12 4322 40C2 2002"            /* ....À.°.Œ.C"@Â . */
+	$"2002 1006 1C18 3260 2B80 1E00 041F 0400"            /*  .....2`+€...... */
+	$"0800 0001 1FB5 0000 0001 0000 FFFF FFFF"            /* .....µ......ÿÿÿÿ */
+	$"FFFF 0001 0000 0000 0000"                           /* ÿÿ........ */
+};
+
 data 'PAT#' (1000, purgeable) {
 	$"0008 F0E1 C387 0F1E 3C78 78F0 E1C3 870F"            /* ..ðáÃ‡..<xxðáÃ‡. */
 	$"1E3C 3C78 F0E1 C387 0F1E 1E3C 78F0 E1C3"            /* .<<xðáÃ‡...<xðáÃ */
 	$"870F 0F1E 3C78 F0E1 C387 870F 1E3C 78F0"            /* ‡...<xðáÃ‡‡..<xð */
 	$"E1C3 C387 0F1E 3C78 F0E1 E1C3 870F 1E3C"            /* áÃÃ‡..<xðááÃ‡..< */
 	$"78F0"                                               /* xð */
+};
+
+data 'PAT#' (1001, preload) {
+	$"0018 FFFF FFFF FFFF FFFF 7FFF F7FF 7FFF"            /* ..ÿÿÿÿÿÿÿÿ.ÿ÷ÿ.ÿ */
+	$"F7FF DDFF 77FF DDFF 77FF DD77 DD77 DD77"            /* ÷ÿÝÿwÿÝÿwÿÝwÝwÝw */
+	$"DD77 AA55 AA55 AA55 AA55 55FF 55FF 55FF"            /* ÝwªUªUªUªUUÿUÿUÿ */
+	$"55FF AAAA AAAA AAAA AAAA EEDD BB77 EEDD"            /* UÿªªªªªªªªîÝ»wîÝ */
+	$"BB77 FEFD FBF7 EFDF BF7F 8888 8888 8888"            /* »wþýû÷ïß¿.ˆˆˆˆˆˆ */
+	$"8888 FF88 8888 FF88 8888 00FF 00FF 00FF"            /* ˆˆÿˆˆˆÿˆˆˆ.ÿ.ÿ.ÿ */
+	$"00FF 0000 0000 0000 0000 8000 0800 8000"            /* .ÿ........€...€. */
+	$"0800 8800 2200 8800 2200 8822 8822 8822"            /* ..ˆ.".ˆ.".ˆ"ˆ"ˆ" */
+	$"8822 55AA 55AA 55AA 55AA AA00 AA00 AA00"            /* ˆ"UªUªUªUªª.ª.ª. */
+	$"AA00 5555 5555 5555 5555 8000 0000 0000"            /* ª.UUUUUUUU€..... */
+	$"0000 1122 4488 1122 4488 0102 0408 1020"            /* ..."Dˆ."Dˆ.....  */
+	$"4080 FF00 0000 FF00 0000 FF00 FF00 FF00"            /* @€ÿ...ÿ...ÿ.ÿ.ÿ. */
+	$"FF00"                                               /* ÿ. */
 };
 
 resource 'STR#' (201, "Labels", purgeable) {
@@ -1673,44 +2027,8 @@ resource 'STR#' (200, "Basic Strings", purgeable) {
 	}
 };
 
-resource 'STR#' (204, "Icon Info Balloon Help", purgeable) {
-	{	/* array StringArray: 10 elements */
-		/* [1] */
-		"Sets the selected attributes and closes "
-		"this dialog.",
-		/* [2] */
-		"Closes this dialog without making any ch"
-		"anges.",
-		/* [3] */
-		"Each icon within a file must have an uni"
-		"que ID.",
-		/* [4] */
-		"This is the size of the final icon resou"
-		"rce.",
-		/* [5] */
-		"Names are optional, but they can help yo"
-		"u identify icon resources quickly.",
-		/* [6] */
-		"If an icon is purgeable, it will be unlo"
-		"aded from memory is space is short.",
-		/* [7] */
-		"If an icon is preloaded, it will be load"
-		"ed automatically once a file is opened.",
-		/* [8] */
-		"If an icon is locked, then it cannot be "
-		"moved while loaded in memory.",
-		/* [9] */
-		"If an icon is protected, then it cannot "
-		"be modified.",
-		/* [10] */
-		"If an icon is part of the system heap, t"
-		"hen it will be placed in the area of mem"
-		"ory that is used by the system."
-	}
-};
-
 resource 'STR#' (203, "Editor Balloon Help", purgeable) {
-	{	/* array StringArray: 23 elements */
+	{	/* array StringArray: 24 elements */
 		/* [1] */
 		"Rectangular Marquee Tool (M)",
 		/* [2] */
@@ -1789,7 +2107,49 @@ resource 'STR#' (203, "Editor Balloon Help", purgeable) {
 		"t backgrounds (white and the current des"
 		"ktop pattern). You can click on the prev"
 		"iew in order to view the icon in the sel"
-		"ected state."
+		"ected state.",
+		/* [24] */
+		"The current color pattern is displayed h"
+		"ere. Click on the swatch to change it."
+	}
+};
+
+resource 'STR#' (204, "Icon Info Balloon Help", purgeable) {
+	{	/* array StringArray: 11 elements */
+		/* [1] */
+		"Sets the selected attributes and closes "
+		"this dialog.",
+		/* [2] */
+		"Closes this dialog without making any ch"
+		"anges.",
+		/* [3] */
+		"Each icon within a file must have an uni"
+		"que ID.",
+		/* [4] */
+		"This is the size of the final icon resou"
+		"rce.",
+		/* [5] */
+		"Names are optional, but they can help yo"
+		"u identify icon resources quickly.",
+		/* [6] */
+		"If an icon is purgeable, it will be unlo"
+		"aded from memory is space is short.",
+		/* [7] */
+		"If an icon is preloaded, it will be load"
+		"ed automatically once a file is opened.",
+		/* [8] */
+		"If an icon is locked, then it cannot be "
+		"moved while loaded in memory.",
+		/* [9] */
+		"If an icon is protected, then it cannot "
+		"be modified.",
+		/* [10] */
+		"If an icon is part of the system heap, t"
+		"hen it will be placed in the area of mem"
+		"ory that is used by the system.",
+		/* [11] */
+		"This pop-up menu can be used to select c"
+		"ommonly used icon IDs."
 	}
 };
 
@@ -1843,6 +2203,125 @@ resource 'mctb' (1412) {
 };
 
 resource 'mctb' (1411) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (202) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (203) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (204) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (205) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (206) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (207) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (208) {
 	{	/* array MCTBArray: 1 elements */
 		/* [1] */
 		mctbLast, 0,
@@ -1957,7 +2436,447 @@ resource 'MENU' (1411) {
 	}
 };
 
-resource 'DITL' (1410, purgeable) {
+resource 'MENU' (203) {
+	203,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Item Icon",
+	{	/* array: 1 elements */
+		/* [1] */
+		"Ð16455 Item Icon", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (204) {
+	204,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"System Folders",
+	{	/* array: 56 elements */
+		/* [1] */
+		"Ð20803 Language & Region Support", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Ð20801 Internet Search Sites", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Ð20797 Scripts", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"Ð20792 ColorSync Profiles", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"Ð20744 Internet", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"Ð20729 Favorites", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"Ð20724 Speakable Items", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"Ð20723 Appearance", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"Ð3999 Generic Folder", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"Ð3997 Open Folder", noIcon, noKey, noMark, plain,
+		/* [11] */
+		"Ð3994 Private Folder", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"Ð3993 Trash Empty", noIcon, noKey, noMark, plain,
+		/* [13] */
+		"Ð3992 Desktop", noIcon, noKey, noMark, plain,
+		/* [14] */
+		"Ð3984 Trash Full", noIcon, noKey, noMark, plain,
+		/* [15] */
+		"Ð3983 System Folder", noIcon, noKey, noMark, plain,
+		/* [16] */
+		"Ð3982 Apple Menu Items", noIcon, noKey, noMark, plain,
+		/* [17] */
+		"Ð3981 Startup Items", noIcon, noKey, noMark, plain,
+		/* [18] */
+		"Ð3980 Shared Folder", noIcon, noKey, noMark, plain,
+		/* [19] */
+		"Ð3979 Drop Folder", noIcon, noKey, noMark, plain,
+		/* [20] */
+		"Ð3978 Share Point", noIcon, noKey, noMark, plain,
+		/* [21] */
+		"Ð3977 Mounted Folder", noIcon, noKey, noMark, plain,
+		/* [22] */
+		"Ð3976 Control Panels", noIcon, noKey, noMark, plain,
+		/* [23] */
+		"Ð3975 Print Spool", noIcon, noKey, noMark, plain,
+		/* [24] */
+		"Ð3974 Preferences", noIcon, noKey, noMark, plain,
+		/* [25] */
+		"Ð3973 Extensions", noIcon, noKey, noMark, plain,
+		/* [26] */
+		"Ð3972 File Server", noIcon, noKey, noMark, plain,
+		/* [27] */
+		"Ð3968 Fonts", noIcon, noKey, noMark, plain,
+		/* [28] */
+		"Ð3966 Recent Documents", noIcon, noKey, noMark, plain,
+		/* [29] */
+		"Ð3965 Recent Applications", noIcon, noKey, noMark, plain,
+		/* [30] */
+		"Ð3964 Recent Servers", noIcon, noKey, noMark, plain,
+		/* [31] */
+		"Ð3963 MacOS Read Me Files", noIcon, noKey, noMark, plain,
+		/* [32] */
+		"Ð3962 Control Strip Modules", noIcon, noKey, noMark, plain,
+		/* [33] */
+		"Ð3961 Sounds", noIcon, noKey, noMark, plain,
+		/* [34] */
+		"Ð3960 Help", noIcon, noKey, noMark, plain,
+		/* [35] */
+		"Ð3959 Scripting Additions", noIcon, noKey, noMark, plain,
+		/* [36] */
+		"Ð3958 Internet Plug-ins", noIcon, noKey, noMark, plain,
+		/* [37] */
+		"Ð3957 Language Support", noIcon, noKey, noMark, plain,
+		/* [38] */
+		"Ð3956 Shared Libraries", noIcon, noKey, noMark, plain,
+		/* [39] */
+		"Ð3955 Text Encodings", noIcon, noKey, noMark, plain,
+		/* [40] */
+		"Ð3954 Printer Drivers", noIcon, noKey, noMark, plain,
+		/* [41] */
+		"Ð3953 Printer Descriptions", noIcon, noKey, noMark, plain,
+		/* [42] */
+		"Ð3952 Voices", noIcon, noKey, noMark, plain,
+		/* [43] */
+		"Ð3951 Control Panels (Disabled)", noIcon, noKey, noMark, plain,
+		/* [44] */
+		"Ð3950 Extensions (Disabled)", noIcon, noKey, noMark, plain,
+		/* [45] */
+		"Ð3949 Startup Items (Disabled)", noIcon, noKey, noMark, plain,
+		/* [46] */
+		"Ð3948 Shutdown Items (Disabled)", noIcon, noKey, noMark, plain,
+		/* [47] */
+		"Ð3947 System Extensions (Disabled)", noIcon, noKey, noMark, plain,
+		/* [48] */
+		"Ð3946 Assistants", noIcon, noKey, noMark, plain,
+		/* [49] */
+		"Ð3945 Utilities", noIcon, noKey, noMark, plain,
+		/* [50] */
+		"Ð3944 Application Support", noIcon, noKey, noMark, plain,
+		/* [51] */
+		"Ð3943 Apple Extras", noIcon, noKey, noMark, plain,
+		/* [52] */
+		"Ð3942 Contextual Menu Items", noIcon, noKey, noMark, plain,
+		/* [53] */
+		"Ð3812 Workgroup", noIcon, noKey, noMark, plain,
+		/* [54] */
+		"Ð3811 User", noIcon, noKey, noMark, plain,
+		/* [55] */
+		"Ð3774 System Folder (protected)", noIcon, noKey, noMark, plain,
+		/* [56] */
+		"Ð3773 Applications Folder (protected)", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (205) {
+	205,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Generic Icons",
+	{	/* array: 37 elements */
+		/* [1] */
+		"Ð20800 Disk Image", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Ð20799 Generic PC Card", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Ð20794 TrueType Multi Flat Font", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"Ð20752 Generic Font Scaler", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"Ð20743 LaserWriter", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"Ð20732 TrueType Flat Font", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"Ð16415 Generic Extension", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"Ð4000 Generic Document", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"Ð3998 Floppy", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"Ð3996 Generic App", noIcon, noKey, noMark, plain,
+		/* [11] */
+		"Ð3995 Apple HD", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"Ð3991 Generic DA", noIcon, noKey, noMark, plain,
+		/* [13] */
+		"Ð3989 Edition File", noIcon, noKey, noMark, plain,
+		/* [14] */
+		"Ð3988 RAM Disk", noIcon, noKey, noMark, plain,
+		/* [15] */
+		"Ð3987 CD", noIcon, noKey, noMark, plain,
+		/* [16] */
+		"Ð3985 Stationery", noIcon, noKey, noMark, plain,
+		/* [17] */
+		"Ð3971 Generic Preferences", noIcon, noKey, noMark, plain,
+		/* [18] */
+		"Ð3970 Generic Suitcase", noIcon, noKey, noMark, plain,
+		/* [19] */
+		"Ð3969 Generic DA Document", noIcon, noKey, noMark, plain,
+		/* [20] */
+		"Ð3967 Shared Library", noIcon, noKey, noMark, plain,
+		/* [21] */
+		"Ð3851 Generic Control Strip Module", noIcon, noKey, noMark, plain,
+		/* [22] */
+		"Ð3850 Generic Codec", noIcon, noKey, noMark, plain,
+		/* [23] */
+		"Ð3832 PC Disk", noIcon, noKey, noMark, plain,
+		/* [24] */
+		"Ð3831 Apple II Disk", noIcon, noKey, noMark, plain,
+		/* [25] */
+		"Ð3824 Generic Control Panel", noIcon, noKey, noMark, plain,
+		/* [26] */
+		"Ð3817 Removable Disk", noIcon, noKey, noMark, plain,
+		/* [27] */
+		"Ð3810 Sound", noIcon, noKey, noMark, plain,
+		/* [28] */
+		"Ð3809 International Script", noIcon, noKey, noMark, plain,
+		/* [29] */
+		"Ð3808 TrueType Font", noIcon, noKey, noMark, plain,
+		/* [30] */
+		"Ð3807 Bitmap Font", noIcon, noKey, noMark, plain,
+		/* [31] */
+		"Ð3806 Keyboard Layout", noIcon, noKey, noMark, plain,
+		/* [32] */
+		"Ð3805 DA Suitcase", noIcon, noKey, noMark, plain,
+		/* [33] */
+		"Ð3804 Font Suitcase", noIcon, noKey, noMark, plain,
+		/* [34] */
+		"Ð3803 Sound Clipping", noIcon, noKey, noMark, plain,
+		/* [35] */
+		"Ð3802 Text Clipping", noIcon, noKey, noMark, plain,
+		/* [36] */
+		"Ð3801 Picture Clipping", noIcon, noKey, noMark, plain,
+		/* [37] */
+		"Ð3800 Generic Clipping", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (206) {
+	206,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Internet Icons",
+	{	/* array: 12 elements */
+		/* [1] */
+		"Ð20796 AppleTalk Zone", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Ð20795 FTP Server", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Ð20793 AppleShare Server", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"Ð20739 Generic Location", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"Ð20738 Newsgroup Location", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"Ð20737 E-mail Location", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"Ð20736 File Location", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"Ð20735 AppleShare Location", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"Ð20734 FTP Location", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"Ð20733 HTTP Location", noIcon, noKey, noMark, plain,
+		/* [11] */
+		"Ð20731 IP File Server", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"Ð20726 AppleTalk", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (207) {
+	207,
+	textMenuProc,
+	0x7FFFFEFF,
+	enabled,
+	"Battery Status",
+	{	/* array: 19 elements */
+		/* [1] */
+		"Ð20290 Battery Charging Full", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Ð20289 Battery Charging 90%", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Ð20288 Battery Charging 75%", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"Ð20287 Battery Charging 60%", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"Ð20286 Battery Charging 45%", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"Ð20285 Battery Charging 30%", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"Ð20284 Battery Charging 15%", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"Ð20283 Battery Charging Empty", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"Ð20282 Battery In-use Full", noIcon, noKey, noMark, plain,
+		/* [11] */
+		"Ð20281 Battery In-Use 90%", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"Ð20280 Battery In-Use 75%", noIcon, noKey, noMark, plain,
+		/* [13] */
+		"Ð20279 Battery In-Use 60%", noIcon, noKey, noMark, plain,
+		/* [14] */
+		"Ð20278 Battery In-Use 45%", noIcon, noKey, noMark, plain,
+		/* [15] */
+		"Ð20277 Battery In-Use 30%", noIcon, noKey, noMark, plain,
+		/* [16] */
+		"Ð20276 Battery In-Use 15%", noIcon, noKey, noMark, plain,
+		/* [17] */
+		"Ð20275 Battery In-Use Empty", noIcon, noKey, noMark, plain,
+		/* [18] */
+		"Ð20274 No Battery", noIcon, noKey, noMark, plain,
+		/* [19] */
+		"Ð4001 Plugged in (?)", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (208) {
+	208,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Badges",
+	{	/* array: 5 elements */
+		/* [1] */
+		"Ð20789 Alias Badge", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Ð20788 Mounted Badge", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Ð20787 Shared Badge", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"Ð20786 Locked Badge", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"Ð20740 Script Badge", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (209) {
+	209,
+	textMenuProc,
+	0x75F6FF6D,
+	enabled,
+	"Others",
+	{	/* array: 43 elements */
+		/* [1] */
+		"Ð16386 Apple Menu Icon", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Ð20798 Unlocked", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"Ð3823 Locked", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"Ð20791 Descending Sort Order", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"Ð20790 Ascending Sort Order", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"Ð20751 Privileges: Writable", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"Ð20750 Privileges: Uknown", noIcon, noKey, noMark, plain,
+		/* [11] */
+		"Ð20749 Privileges: N/A", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"Ð20748 Privileges: Read", noIcon, noKey, noMark, plain,
+		/* [13] */
+		"Ð20747 Privileges: Read/Write", noIcon, noKey, noMark, plain,
+		/* [14] */
+		"Ð3784 Privileges: No Folders", noIcon, noKey, noMark, plain,
+		/* [15] */
+		"Ð3783 Privileges: No Write", noIcon, noKey, noMark, plain,
+		/* [16] */
+		"Ð3782 Privileges: No Files", noIcon, noKey, noMark, plain,
+		/* [17] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [18] */
+		"Ð20746 Snap to Grid", noIcon, noKey, noMark, plain,
+		/* [19] */
+		"Ð20745 Keep Arranged", noIcon, noKey, noMark, plain,
+		/* [20] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [21] */
+		"Ð20741 Backwards Arrow", noIcon, noKey, noMark, plain,
+		/* [22] */
+		"Ð20742 Forward Arrow Icon", noIcon, noKey, noMark, plain,
+		/* [23] */
+		"Ð20730 Recent Items Icon", noIcon, noKey, noMark, plain,
+		/* [24] */
+		"Ð20729 Favorite Items", noIcon, noKey, noMark, plain,
+		/* [25] */
+		"Ð20728 Shortcut Icon", noIcon, noKey, noMark, plain,
+		/* [26] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [27] */
+		"Ð20271 Help Icon", noIcon, noKey, noMark, plain,
+		/* [28] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [29] */
+		"Ð16509 Clipboard", noIcon, noKey, noMark, plain,
+		/* [30] */
+		"Ð16494 System Suitcase", noIcon, noKey, noMark, plain,
+		/* [31] */
+		"Ð16482 Finder", noIcon, noKey, noMark, plain,
+		/* [32] */
+		"Ð3828 MacOS Logo", noIcon, noKey, noMark, plain,
+		/* [33] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [34] */
+		"Ð3822 Stop Icon", noIcon, noKey, noMark, plain,
+		/* [35] */
+		"Ð3821 Caution Icon", noIcon, noKey, noMark, plain,
+		/* [36] */
+		"Ð3820 Note Icon", noIcon, noKey, noMark, plain,
+		/* [37] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [38] */
+		"Ð3816 Group", noIcon, noKey, noMark, plain,
+		/* [39] */
+		"Ð3815 Owner", noIcon, noKey, noMark, plain,
+		/* [40] */
+		"Ð3813 Guest User", noIcon, noKey, noMark, plain,
+		/* [41] */
+		"Ð3814 User", noIcon, noKey, noMark, plain,
+		/* [42] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [43] */
+		"Custom ID", noIcon, noKey, noMark, 2
+	}
+};
+
+resource 'MENU' (202) {
+	202,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"IDs",
+	{	/* array: 7 elements */
+		/* [1] */
+		"Item Icon", noIcon, hierarchicalMenu, "Ë", plain,
+		/* [2] */
+		"System Folders", noIcon, hierarchicalMenu, "Ì", plain,
+		/* [3] */
+		"Generic Icons", noIcon, hierarchicalMenu, "Í", plain,
+		/* [4] */
+		"Internet Icons", noIcon, hierarchicalMenu, "Î", plain,
+		/* [5] */
+		"Battery Status", noIcon, hierarchicalMenu, "Ï", plain,
+		/* [6] */
+		"Badges", noIcon, hierarchicalMenu, "Ð", plain,
+		/* [7] */
+		"Others", noIcon, hierarchicalMenu, "Ñ", plain
+	}
+};
+
+resource 'DITL' (1410, "Text Tool", purgeable) {
 	{	/* array DITLarray: 9 elements */
 		/* [1] */
 		{204, 123, 224, 191},
@@ -2016,177 +2935,16 @@ resource 'DITL' (1410, purgeable) {
 	}
 };
 
-resource 'DITL' (9999) {
-	{	/* array DITLarray: 26 elements */
+resource 'DITL' (1000, "Preferences", purgeable) {
+	{	/* array DITLarray: 13 elements */
 		/* [1] */
-		{0, 0, 22, 26},
-		Control {
-			enabled,
-			132
-		},
-		/* [2] */
-		{0, 26, 22, 52},
-		Control {
-			enabled,
-			133
-		},
-		/* [3] */
-		{22, 0, 44, 26},
-		Control {
-			enabled,
-			134
-		},
-		/* [4] */
-		{22, 26, 44, 52},
-		Control {
-			enabled,
-			135
-		},
-		/* [5] */
-		{9, 61, 203, 255},
-		Control {
-			enabled,
-			200
-		},
-		/* [6] */
-		{210, 4294967295, 226, 63},
-		Control {
-			enabled,
-			201
-		},
-		/* [7] */
-		{210, 62, 226, 384},
-		Control {
-			enabled,
-			202
-		},
-		/* [8] */
-		{159, 5, 201, 47},
-		Control {
-			enabled,
-			203
-		},
-		/* [9] */
-		{25, 261, 115, 315},
-		Control {
-			enabled,
-			204
-		},
-		/* [10] */
-		{25, 322, 115, 376},
-		Control {
-			enabled,
-			205
-		},
-		/* [11] */
-		{8, 259, 22, 317},
-		Control {
-			enabled,
-			206
-		},
-		/* [12] */
-		{8, 320, 22, 378},
-		Control {
-			enabled,
-			207
-		},
-		/* [13] */
-		{118, 260, 130, 314},
-		Control {
-			enabled,
-			208
-		},
-		/* [14] */
-		{118, 323, 130, 377},
-		Control {
-			enabled,
-			209
-		},
-		/* [15] */
-		{44, 0, 66, 26},
-		Control {
-			enabled,
-			128
-		},
-		/* [16] */
-		{44, 26, 66, 52},
-		Control {
-			enabled,
-			129
-		},
-		/* [17] */
-		{132, 26, 154, 52},
-		Control {
-			enabled,
-			141
-		},
-		/* [18] */
-		{66, 26, 88, 52},
-		Control {
-			enabled,
-			131
-		},
-		/* [19] */
-		{66, 0, 88, 26},
-		Control {
-			enabled,
-			130
-		},
-		/* [20] */
-		{88, 26, 110, 52},
-		Control {
-			enabled,
-			138
-		},
-		/* [21] */
-		{132, 261, 186, 376},
-		Control {
-			enabled,
-			210
-		},
-		/* [22] */
-		{190, 261, 202, 376},
-		Control {
-			enabled,
-			211
-		},
-		/* [23] */
-		{88, 0, 110, 26},
-		Control {
-			enabled,
-			137
-		},
-		/* [24] */
-		{132, 0, 154, 26},
-		Control {
-			enabled,
-			140
-		},
-		/* [25] */
-		{110, 26, 132, 52},
-		Control {
-			enabled,
-			139
-		},
-		/* [26] */
-		{110, 0, 132, 26},
-		Control {
-			enabled,
-			136
-		}
-	}
-};
-
-resource 'DITL' (1000, purgeable) {
-	{	/* array DITLarray: 8 elements */
-		/* [1] */
-		{222, 270, 242, 338},
+		{193, 238, 213, 306},
 		Button {
 			enabled,
 			"OK"
 		},
 		/* [2] */
-		{222, 190, 242, 254},
+		{193, 158, 213, 222},
 		Button {
 			enabled,
 			"Cancel"
@@ -2198,13 +2956,13 @@ resource 'DITL' (1000, purgeable) {
 			"Default zoom level:"
 		},
 		/* [4] */
-		{19, 147, 30, 182},
+		{19, 252, 30, 287},
 		EditText {
 			disabled,
 			"1000%"
 		},
 		/* [5] */
-		{13, 188, 37, 201},
+		{13, 293, 37, 306},
 		Control {
 			enabled,
 			1000
@@ -2216,45 +2974,359 @@ resource 'DITL' (1000, purgeable) {
 			"Show pixel grid"
 		},
 		/* [7] */
-		{55, 8, 71, 308},
+		{55, 8, 71, 313},
 		CheckBox {
 			enabled,
 			"Check sync between 8-bit and 1-bit masks"
 		},
 		/* [8] */
-		{72, 8, 88, 308},
+		{72, 8, 88, 313},
 		CheckBox {
 			enabled,
 			"Dither when copying down to lower depths"
+		},
+		/* [9] */
+		{128, 13, 144, 235},
+		RadioButton {
+			enabled,
+			"Create a new icon"
+		},
+		/* [10] */
+		{144, 13, 160, 232},
+		RadioButton {
+			enabled,
+			"Open an existing icon"
+		},
+		/* [11] */
+		{160, 13, 176, 233},
+		RadioButton {
+			enabled,
+			"Do nothing"
+		},
+		/* [12] */
+		{111, 8, 187, 309},
+		Control {
+			enabled,
+			1003
+		},
+		/* [13] */
+		{89, 8, 105, 313},
+		CheckBox {
+			enabled,
+			"Generate old style icons"
 		}
 	}
 };
 
-resource 'DITL' (1001, purgeable) {
-	{	/* array DITLarray: 14 elements */
+resource 'DITL' (1011, "Adjust: Hue & Saturation Pane", purgeable) {
+	{	/* array DITLarray: 7 elements */
 		/* [1] */
-		{160, 187, 180, 255},
+		{47, 83, 78, 303},
+		Control {
+			enabled,
+			1011
+		},
+		/* [2] */
+		{85, 83, 116, 303},
+		Control {
+			enabled,
+			1012
+		},
+		/* [3] */
+		{50, 316, 66, 352},
+		EditText {
+			enabled,
+			"0"
+		},
+		/* [4] */
+		{87, 316, 103, 352},
+		EditText {
+			enabled,
+			"0"
+		},
+		/* [5] */
+		{126, 6, 142, 166},
+		CheckBox {
+			enabled,
+			"Colorize"
+		},
+		/* [6] */
+		{47, 5, 68, 80},
+		StaticText {
+			disabled,
+			"Hue:"
+		},
+		/* [7] */
+		{85, 5, 106, 80},
+		StaticText {
+			disabled,
+			"Saturation:"
+		}
+	}
+};
+
+resource 'DITL' (1012, "Adjust: Brightness & Saturation Pane", purgeable) {
+	{	/* array DITLarray: 6 elements */
+		/* [1] */
+		{47, 90, 78, 310},
+		Control {
+			enabled,
+			1014
+		},
+		/* [2] */
+		{85, 90, 116, 310},
+		Control {
+			enabled,
+			1015
+		},
+		/* [3] */
+		{50, 318, 66, 354},
+		EditText {
+			enabled,
+			"0"
+		},
+		/* [4] */
+		{87, 318, 103, 354},
+		EditText {
+			enabled,
+			"0"
+		},
+		/* [5] */
+		{47, 5, 67, 84},
+		StaticText {
+			disabled,
+			"Brightness:"
+		},
+		/* [6] */
+		{85, 5, 105, 84},
+		StaticText {
+			disabled,
+			"Contrast:"
+		}
+	}
+};
+
+resource 'DITL' (1010, "Adjust", purgeable) {
+	{	/* array DITLarray: 4 elements */
+		/* [1] */
+		{163, 285, 183, 353},
 		Button {
 			enabled,
 			"OK"
 		},
 		/* [2] */
-		{160, 109, 180, 173},
+		{163, 205, 183, 269},
 		Button {
 			enabled,
 			"Cancel"
 		},
 		/* [3] */
-		{13, 10, 29, 40},
+		{159, 5, 179, 165},
+		CheckBox {
+			enabled,
+			"Real-time preview"
+		},
+		/* [4] */
+		{8, 4294967295, 151, 368},
+		Control {
+			enabled,
+			1010
+		}
+	}
+};
+
+resource 'DITL' (9999) {
+	{	/* array DITLarray: 27 elements */
+		/* [1] */
+		{7, 5, 29, 31},
+		Control {
+			enabled,
+			132
+		},
+		/* [2] */
+		{7, 31, 29, 57},
+		Control {
+			enabled,
+			133
+		},
+		/* [3] */
+		{29, 5, 51, 31},
+		Control {
+			enabled,
+			134
+		},
+		/* [4] */
+		{29, 31, 51, 57},
+		Control {
+			enabled,
+			135
+		},
+		/* [5] */
+		{8, 64, 202, 258},
+		Control {
+			enabled,
+			200
+		},
+		/* [6] */
+		{241, 4294967295, 257, 62},
+		Control {
+			enabled,
+			201
+		},
+		/* [7] */
+		{241, 62, 257, 418},
+		Control {
+			enabled,
+			202
+		},
+		/* [8] */
+		{187, 11, 227, 51},
+		Control {
+			enabled,
+			203
+		},
+		/* [9] */
+		{24, 296, 124, 356},
+		Control {
+			enabled,
+			204
+		},
+		/* [10] */
+		{24, 360, 124, 420},
+		Control {
+			enabled,
+			205
+		},
+		/* [11] */
+		{7, 296, 21, 356},
+		Control {
+			enabled,
+			206
+		},
+		/* [12] */
+		{7, 360, 21, 420},
+		Control {
+			enabled,
+			207
+		},
+		/* [13] */
+		{126, 298, 138, 352},
+		Control {
+			enabled,
+			208
+		},
+		/* [14] */
+		{126, 366, 138, 420},
+		Control {
+			enabled,
+			209
+		},
+		/* [15] */
+		{51, 5, 73, 31},
+		Control {
+			enabled,
+			128
+		},
+		/* [16] */
+		{51, 31, 73, 57},
+		Control {
+			enabled,
+			129
+		},
+		/* [17] */
+		{139, 31, 161, 57},
+		Control {
+			enabled,
+			141
+		},
+		/* [18] */
+		{73, 31, 95, 57},
+		Control {
+			enabled,
+			131
+		},
+		/* [19] */
+		{73, 5, 95, 31},
+		Control {
+			enabled,
+			130
+		},
+		/* [20] */
+		{95, 31, 117, 57},
+		Control {
+			enabled,
+			138
+		},
+		/* [21] */
+		{141, 296, 195, 420},
+		Control {
+			enabled,
+			210
+		},
+		/* [22] */
+		{196, 296, 208, 420},
+		Control {
+			enabled,
+			211
+		},
+		/* [23] */
+		{95, 5, 117, 31},
+		Control {
+			enabled,
+			137
+		},
+		/* [24] */
+		{139, 5, 161, 31},
+		Control {
+			enabled,
+			140
+		},
+		/* [25] */
+		{117, 31, 139, 57},
+		Control {
+			enabled,
+			139
+		},
+		/* [26] */
+		{117, 5, 139, 31},
+		Control {
+			enabled,
+			136
+		},
+		/* [27] */
+		{167, 7, 181, 55},
+		Control {
+			enabled,
+			212
+		}
+	}
+};
+
+resource 'DITL' (1001, "Icon Info", purgeable) {
+	{	/* array DITLarray: 15 elements */
+		/* [1] */
+		{160, 198, 180, 266},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{160, 120, 180, 184},
+		Button {
+			enabled,
+			"Cancel"
+		},
+		/* [3] */
+		{13, 7, 29, 58},
 		StaticText {
-			disabled,
+			enabled,
 			"ID:"
 		},
 		/* [4] */
-		{13, 64, 29, 124},
+		{13, 64, 29, 116},
 		EditText {
 			enabled,
-			""
+			"-16455"
 		},
 		/* [5] */
 		{42, 10, 58, 60},
@@ -2263,19 +3335,19 @@ resource 'DITL' (1001, purgeable) {
 			"Name:"
 		},
 		/* [6] */
-		{42, 64, 58, 254},
+		{42, 64, 58, 267},
 		EditText {
 			enabled,
 			""
 		},
 		/* [7] */
-		{13, 139, 29, 174},
+		{13, 153, 29, 188},
 		StaticText {
 			disabled,
 			"Size:"
 		},
 		/* [8] */
-		{13, 173, 29, 263},
+		{13, 186, 29, 276},
 		StaticText {
 			disabled,
 			""
@@ -2299,22 +3371,28 @@ resource 'DITL' (1001, purgeable) {
 			"Locked"
 		},
 		/* [12] */
-		{90, 133, 106, 243},
+		{90, 146, 106, 256},
 		CheckBox {
 			enabled,
 			"Protected"
 		},
 		/* [13] */
-		{108, 133, 124, 243},
+		{108, 146, 124, 256},
 		CheckBox {
 			enabled,
 			"System Heap"
 		},
 		/* [14] */
-		{70, 10, 150, 258},
+		{70, 10, 150, 271},
 		Control {
 			enabled,
 			1001
+		},
+		/* [15] */
+		{11, 124, 31, 146},
+		Control {
+			enabled,
+			1002
 		}
 	}
 };
@@ -2334,13 +3412,70 @@ data 'DLGX' (1410) {
 	$"0000 0005 0000 0000 0000 0000 0000"                 /* .............. */
 };
 
+data 'DLGX' (1000) {
+	$"0654 6563 686E 6F00 0000 0000 0000 0000"            /* .Techno......... */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
+	$"000C 0000 0000 0000 0000 0000 0000 0001"            /* ................ */
+	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
+	$"0000 0000 0000 0007 0000 0000 0000 0000"            /* ................ */
+	$"0000 0005 0000 0000 0000 0000 0000 0003"            /* ................ */
+	$"0000 0000 0000 0000 0000 0003 0000 0000"            /* ................ */
+	$"0000 0000 0000 0003 0000 0000 0000 0000"            /* ................ */
+	$"0000 0004 0000 0001 0000 0000 0000 0004"            /* ................ */
+	$"0000 0001 0000 0000 0000 0004 0000 0001"            /* ................ */
+	$"0000 0000 0000 0005 0000 0000 0000 0000"            /* ................ */
+	$"0000"                                               /* .. */
+};
+
+data 'DLGX' (1011) {
+	$"0743 6869 6361 676F 0000 0000 0000 0000"            /* .Chicago........ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
+	$"0007 0005 0000 0000 0000 0000 0000 0005"            /* ................ */
+	$"0000 0000 0000 0000 0000 0007 0000 0000"            /* ................ */
+	$"0000 0000 0000 0007 0000 0000 0000 0000"            /* ................ */
+	$"0000 0003 0000 0000 0000 0000 0000 0006"            /* ................ */
+	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
+	$"0000 0000 0000"                                     /* ...... */
+};
+
+data 'DLGX' (1012) {
+	$"0743 6869 6361 676F 0000 0000 0000 0000"            /* .Chicago........ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
+	$"0006 0005 0000 0000 0000 0000 0000 0005"            /* ................ */
+	$"0000 0000 0000 0000 0000 0007 0000 0000"            /* ................ */
+	$"0000 0000 0000 0007 0000 0000 0000 0000"            /* ................ */
+	$"0000 0006 0000 0000 0000 0000 0000 0006"            /* ................ */
+	$"0000 0000 0000 0000 0000"                           /* .......... */
+};
+
+data 'DLGX' (1010) {
+	$"0743 6869 6361 676F 0000 0000 0000 0000"            /* .Chicago........ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
+	$"0004 0000 0000 0000 0000 0000 0000 0001"            /* ................ */
+	$"0000 0000 0000 0000 0000 0003 0000 0000"            /* ................ */
+	$"0000 0000 0000 0005 0000 0000 0000 0000"            /* ................ */
+	$"0000"                                               /* .. */
+};
+
 data 'DLGX' (9999) {
 	$"0654 6563 686E 6F00 0000 0000 0000 0000"            /* .Techno......... */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
-	$"001A 0005 0000 0000 0000 0000 0000 0005"            /* ................ */
+	$"001B 0005 0000 0000 0000 0000 0000 0005"            /* ................ */
 	$"0000 0000 0000 0000 0000 0005 0000 0000"            /* ................ */
 	$"0000 0000 0000 0005 0000 0000 0000 0000"            /* ................ */
 	$"0000 0005 0000 0000 0000 0000 0000 0005"            /* ................ */
@@ -2359,31 +3494,17 @@ data 'DLGX' (9999) {
 	$"0000 0000 0000 0000 0000 0005 0000 0000"            /* ................ */
 	$"0000 0000 0000 0005 0000 0000 0000 0000"            /* ................ */
 	$"0000 0005 0000 0000 0000 0000 0000 0005"            /* ................ */
-	$"0000 0000 0000 0000 0000"                           /* .......... */
-};
-
-data 'DLGX' (1000) {
-	$"0654 6563 686E 6F00 0000 0000 0000 0000"            /* .Techno......... */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
-	$"0008 0000 0000 0000 0000 0000 0000 0001"            /* ................ */
-	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
-	$"0000 0000 0000 0007 0000 0000 0000 0000"            /* ................ */
-	$"0000 0005 0000 0000 0000 0000 0000 0003"            /* ................ */
-	$"0000 0000 0000 0000 0000 0003 0000 0000"            /* ................ */
-	$"0000 0000 0000 0003 0000 0000 0000 0000"            /* ................ */
-	$"0000"                                               /* .. */
+	$"0000 0000 0000 0000 0000 0005 0000 0000"            /* ................ */
+	$"0000 0000 0000"                                     /* ...... */
 };
 
 data 'DLGX' (1001) {
-	$"0654 6563 686E 6F00 0000 0000 0000 0000"            /* .Techno......... */
+	$"0743 6869 6361 676F 0000 0000 0000 0000"            /* .Chicago........ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
-	$"000E 0000 0000 0000 0000 0000 0000 0001"            /* ................ */
+	$"000F 0000 0000 0000 0000 0000 0000 0001"            /* ................ */
 	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
 	$"0000 0000 0000 0007 0000 0000 0000 0000"            /* ................ */
 	$"0000 0006 0000 0000 0000 0000 0000 0007"            /* ................ */
@@ -2393,10 +3514,11 @@ data 'DLGX' (1001) {
 	$"0000 0000 0000 0000 0000 0003 0000 0000"            /* ................ */
 	$"0000 0000 0000 0003 0000 0000 0000 0000"            /* ................ */
 	$"0000 0003 0000 0000 0000 0000 0000 0005"            /* ................ */
-	$"8000 0000 0000 0000 0000"                           /* €......... */
+	$"8000 0000 0000 0000 0000 0005 0000 0000"            /* €............... */
+	$"0000 0000 0000"                                     /* ...... */
 };
 
-resource 'DLOG' (1410, purgeable) {
+resource 'DLOG' (1410, "Text Tool", purgeable) {
 	{389, 44, 622, 250},
 	1043,
 	invisible,
@@ -2407,19 +3529,8 @@ resource 'DLOG' (1410, purgeable) {
 	centerParentWindow
 };
 
-resource 'DLOG' (9999, purgeable) {
-	{259, 337, 484, 720},
-	documentProc,
-	visible,
-	goAway,
-	0x0,
-	9999,
-	"Untitled Icon",
-	noAutoCenter
-};
-
-resource 'DLOG' (1000, purgeable) {
-	{255, 255, 511, 619},
+resource 'DLOG' (1000, "Preferences", purgeable) {
+	{255, 255, 480, 568},
 	1043,
 	invisible,
 	goAway,
@@ -2429,8 +3540,53 @@ resource 'DLOG' (1000, purgeable) {
 	centerMainScreen
 };
 
-resource 'DLOG' (1001, purgeable) {
-	{192, 540, 385, 806},
+resource 'DLOG' (1011, purgeable) {
+	{341, 144, 561, 519},
+	1024,
+	visible,
+	goAway,
+	0x0,
+	1011,
+	"DITL 1011 ÒAdjust: Pane 1Ó from icnsEdit"
+	"orClass.rsrc",
+	noAutoCenter
+};
+
+resource 'DLOG' (1012, purgeable) {
+	{337, 600, 549, 1015},
+	1024,
+	visible,
+	goAway,
+	0x0,
+	1012,
+	"",
+	noAutoCenter
+};
+
+resource 'DLOG' (1010, "Adjust", purgeable) {
+	{259, 337, 453, 704},
+	1043,
+	invisible,
+	noGoAway,
+	0x0,
+	1010,
+	"AdjustÉ",
+	centerParentWindowScreen
+};
+
+resource 'DLOG' (9999, purgeable) {
+	{200, 219, 456, 645},
+	documentProc,
+	visible,
+	goAway,
+	0x0,
+	9999,
+	"Untitled Icon",
+	noAutoCenter
+};
+
+resource 'DLOG' (1001, "Icon Info", purgeable) {
+	{195, 291, 387, 569},
 	1043,
 	invisible,
 	goAway,
@@ -2446,6 +3602,37 @@ data 'ictb' (1410) {
 	$"0000 0000"                                          /* .... */
 };
 
+data 'ictb' (1001) {
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000"                      /* ............ */
+};
+
+data 'ictb' (1000) {
+	$"0000 0000 0000 0000 0007 0030 0007 0044"            /* ...........0...D */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 000C 0000 0000 0000 FFFF FFFF"            /* ............ÿÿÿÿ */
+	$"FFFF 0000 0001 0000 0009 0000 0000 0000"            /* ÿÿ.............. */
+	$"FFFF FFFF FFFF 0000"                                /* ÿÿÿÿÿÿ.. */
+};
+
+data 'ictb' (1011) {
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000"                      /* ............ */
+};
+
+data 'ictb' (1012) {
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000"                      /* ............ */
+};
+
+data 'ictb' (1010) {
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+};
+
 data 'ictb' (9999) {
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
@@ -2453,21 +3640,7 @@ data 'ictb' (9999) {
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000"                                /* ........ */
-};
-
-data 'ictb' (1001) {
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000"                                /* ........ */
-};
-
-data 'ictb' (1000) {
-	$"0000 0000 0000 0000 0000 0000 0007 0020"            /* ...............  */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0001 0000 0009 0000 0000 0000 FFFF FFFF"            /* ............ÿÿÿÿ */
-	$"FFFF 0000"                                          /* ÿÿ.. */
+	$"0000 0000 0000 0000 0000 0000"                      /* ............ */
 };
 
 data 'Mcmd' (1410) {
@@ -2482,6 +3655,14 @@ data 'Mcmd' (1411) {
 	$"000B 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000 0000"                 /* .............. */
+};
+
+data 'Mcmd' (202) {
+	$"0000"                                               /* .. */
+};
+
+data 'Mcmd' (203) {
+	$"0000"                                               /* .. */
 };
 
 resource 'PICT' (2051, "Graycale Picker") {
@@ -5496,8 +6677,120 @@ resource 'PICT' (2050, "System Palette Picker") {
 	$"D300 FE00 00FF"
 };
 
+resource 'PICT' (2054, "Windows 4-bit Picker") {
+	1242,
+	{0, 0, 49, 49},
+	$"0011 02FF 0C00 FFFE 0000 0048 0000 0048"
+	$"0000 0000 0000 0031 0031 0000 0000 00A1"
+	$"01F2 0016 3842 494D 0000 0000 0000 0031"
+	$"0031 4772 8970 68AF 626A 0001 000A 0000"
+	$"0000 0031 0031 0098 8034 0000 0000 0031"
+	$"0031 0000 0000 0000 0000 0048 0000 0048"
+	$"0000 0000 0008 0001 0008 0000 0000 0000"
+	$"0000 0000 0000 0046 A411 0000 0010 0000"
+	$"FFFF FFFF FFFF 0001 FFFF 0000 FFFF 0002"
+	$"7B7B 0000 7B7B 0003 0000 0000 FFFF 0004"
+	$"0000 0000 7B7B 0005 0000 FFFF FFFF 0006"
+	$"0000 7B7B 7B7B 0007 0000 FFFF 0000 0008"
+	$"0000 7B7B 0000 0009 FFFF FFFF 0000 000A"
+	$"7B7B 7B7B 0000 000B FFFF 0000 0000 000C"
+	$"7B7B 0000 0000 000D 0101 0000 0000 000E"
+	$"BDBD BDBD BDBD 000F 7B7B 7B7B 7B7B 0010"
+	$"0000 0000 0000 0000 0000 0031 0031 0000"
+	$"0000 0031 0031 0000 04D0 0DFE 0014 000D"
+	$"F609 000D F607 000D F60A 000D F608 000D"
+	$"FE00 1400 0DF6 0900 0DF6 0700 0DF6 0A00"
+	$"0DF6 0800 0DFE 0014 000D F609 000D F607"
+	$"000D F60A 000D F608 000D FE00 1400 0DF6"
+	$"0900 0DF6 0700 0DF6 0A00 0DF6 0800 0DFE"
+	$"0014 000D F609 000D F607 000D F60A 000D"
+	$"F608 000D FE00 1400 0DF6 0900 0DF6 0700"
+	$"0DF6 0A00 0DF6 0800 0DFE 0014 000D F609"
+	$"000D F607 000D F60A 000D F608 000D FE00"
+	$"1400 0DF6 0900 0DF6 0700 0DF6 0A00 0DF6"
+	$"0800 0DFE 0014 000D F609 000D F607 000D"
+	$"F60A 000D F608 000D FE00 1400 0DF6 0900"
+	$"0DF6 0700 0DF6 0A00 0DF6 0800 0DFE 0014"
+	$"000D F609 000D F607 000D F60A 000D F608"
+	$"000D FE00 04D0 0DFE 0014 000D F601 000D"
+	$"F602 000D F60C 000D F60B 000D FE00 1400"
+	$"0DF6 0100 0DF6 0200 0DF6 0C00 0DF6 0B00"
+	$"0DFE 0014 000D F601 000D F602 000D F60C"
+	$"000D F60B 000D FE00 1400 0DF6 0100 0DF6"
+	$"0200 0DF6 0C00 0DF6 0B00 0DFE 0014 000D"
+	$"F601 000D F602 000D F60C 000D F60B 000D"
+	$"FE00 1400 0DF6 0100 0DF6 0200 0DF6 0C00"
+	$"0DF6 0B00 0DFE 0014 000D F601 000D F602"
+	$"000D F60C 000D F60B 000D FE00 1400 0DF6"
+	$"0100 0DF6 0200 0DF6 0C00 0DF6 0B00 0DFE"
+	$"0014 000D F601 000D F602 000D F60C 000D"
+	$"F60B 000D FE00 1400 0DF6 0100 0DF6 0200"
+	$"0DF6 0C00 0DF6 0B00 0DFE 0014 000D F601"
+	$"000D F602 000D F60C 000D F60B 000D FE00"
+	$"04D0 0DFE 0014 000D F605 000D F606 000D"
+	$"F603 000D F604 000D FE00 1400 0DF6 0500"
+	$"0DF6 0600 0DF6 0300 0DF6 0400 0DFE 0014"
+	$"000D F605 000D F606 000D F603 000D F604"
+	$"000D FE00 1400 0DF6 0500 0DF6 0600 0DF6"
+	$"0300 0DF6 0400 0DFE 0014 000D F605 000D"
+	$"F606 000D F603 000D F604 000D FE00 1400"
+	$"0DF6 0500 0DF6 0600 0DF6 0300 0DF6 0400"
+	$"0DFE 0014 000D F605 000D F606 000D F603"
+	$"000D F604 000D FE00 1400 0DF6 0500 0DF6"
+	$"0600 0DF6 0300 0DF6 0400 0DFE 0014 000D"
+	$"F605 000D F606 000D F603 000D F604 000D"
+	$"FE00 1400 0DF6 0500 0DF6 0600 0DF6 0300"
+	$"0DF6 0400 0DFE 0014 000D F605 000D F606"
+	$"000D F603 000D F604 000D FE00 04D0 0DFE"
+	$"0014 000D F600 000D F60E 000D F60F 000D"
+	$"F610 000D FE00 1400 0DF6 0000 0DF6 0E00"
+	$"0DF6 0F00 0DF6 1000 0DFE 0014 000D F600"
+	$"000D F60E 000D F60F 000D F610 000D FE00"
+	$"1400 0DF6 0000 0DF6 0E00 0DF6 0F00 0DF6"
+	$"1000 0DFE 0014 000D F600 000D F60E 000D"
+	$"F60F 000D F610 000D FE00 1400 0DF6 0000"
+	$"0DF6 0E00 0DF6 0F00 0DF6 1000 0DFE 0014"
+	$"000D F600 000D F60E 000D F60F 000D F610"
+	$"000D FE00 1400 0DF6 0000 0DF6 0E00 0DF6"
+	$"0F00 0DF6 1000 0DFE 0014 000D F600 000D"
+	$"F60E 000D F60F 000D F610 000D FE00 1400"
+	$"0DF6 0000 0DF6 0E00 0DF6 0F00 0DF6 1000"
+	$"0DFE 0014 000D F600 000D F60E 000D F60F"
+	$"000D F610 000D FE00 04D0 0DFE 0000 00FF"
+};
+
+data 'hwin' (1001, "Icon Info", purgeable) {
+	$"0002 0000 0000 0001 03E9 6872 6374 0009"            /* .........éhrct.. */
+	$"0949 636F 6E20 496E 666F"                           /* .Icon Info */
+};
+
+resource 'tab#' (1010) {
+	versionZero {
+		{	/* array TabInfo: 2 elements */
+			/* [1] */
+			0,
+			"Hue & Saturation",
+			/* [2] */
+			0,
+			"Brightness & Contrast"
+		}
+	}
+};
+
+data 'clut' (2054, "Windows 4-bit Colors") {
+	$"0000 0000 0000 000F 0000 0000 0000 0000"            /* ................ */
+	$"0001 0000 0000 7B7B 0002 0000 7B7B 0000"            /* ......{{....{{.. */
+	$"0003 0000 7B7B 7B7B 0004 7B7B 0000 0000"            /* ....{{{{..{{.... */
+	$"0005 7B7B 0000 7B7B 0006 7B7B 7B7B 0000"            /* ..{{..{{..{{{{.. */
+	$"0007 BDBD BDBD BDBD 0008 7B7B 7B7B 7B7B"            /* ..½½½½½½..{{{{{{ */
+	$"0009 0000 0000 FFFF 000A 0000 FFFF 0000"            /* ......ÿÿ....ÿÿ.. */
+	$"000B 0000 FFFF FFFF 000C FFFF 0000 0000"            /* ....ÿÿÿÿ..ÿÿ.... */
+	$"000D FFFF 0000 FFFF 000E FFFF FFFF 0000"            /* ..ÿÿ..ÿÿ..ÿÿÿÿ.. */
+	$"000F FFFF FFFF FFFF"                                /* ..ÿÿÿÿÿÿ */
+};
+
 resource 'WIND' (200, purgeable) {
-	{41, 6, 265, 384},
+	{42, 6, 298, 432},
 	1025,
 	invisible,
 	goAway,
@@ -5507,7 +6800,7 @@ resource 'WIND' (200, purgeable) {
 };
 
 data 'hrct' (1001, "Icon Info", purgeable) {
-	$"0002 0000 0000 0000 0000 000A 0014 0003"            /* ................ */
+	$"0002 0000 0000 0000 0000 000B 0014 0003"            /* ................ */
 	$"0000 0000 00A0 00BB 00B4 00FF 00CC 0001"            /* ..... .».´.ÿ.Ì.. */
 	$"0014 0003 0000 0000 00A0 006D 00B4 00AD"            /* ......... .m.´.­ */
 	$"00CC 0002 0014 0003 0000 0000 000D 0040"            /* .Ì.............@ */
@@ -5520,11 +6813,7 @@ data 'hrct' (1001, "Icon Info", purgeable) {
 	$"007F 000E 008F 007C 00CC 0008 0014 0003"            /* ......|.Ì...... */
 	$"0000 0000 005A 0085 006A 00F3 00CC 0009"            /* .....Z.….j.ó.Ì.. */
 	$"0014 0003 0000 0000 006C 0085 007C 00F3"            /* .........l.….|.ó */
-	$"00CC 000A"                                          /* .Ì.. */
-};
-
-data 'hwin' (1001, "Icon Info", purgeable) {
-	$"0002 0000 0000 0001 03E9 6872 6374 0009"            /* .........éhrct.. */
-	$"0949 636F 6E20 496E 666F"                           /* .Icon Info */
+	$"00CC 000A 0014 0003 0000 0000 000B 007C"            /* .Ì.............| */
+	$"001F 0092 00CC 000B"                                /* ...’.Ì.. */
 };
 

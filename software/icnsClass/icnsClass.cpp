@@ -517,67 +517,15 @@ void icnsClass::RefreshIconMembers(void)
 	if (!IsEmptyPixMap(icsmPix)) members |= icsm;
 }
 
-
-// __________________________________________________________________________________________
-// Name			: icnsClass::Save
-// Input		: flags: options for saving. Possible values are includeOldStyle which
-//				  incorporates old style resources into the icns, and generateOldStyle which
-//				  makes old style resources out of the icns.
-// Output		: None
-// Description	: Saves the current class contents to the srcFileSpec, in the standard 'icns'
-//				   resource format. Has options for dealing with old style icons.
-
-void icnsClass::Save(long flags)
+IconFamilyHandle icnsClass::Geticns(void)
 {
 	long				icnsSize; // the size of the final icns resource
 						// the sizes of the compressed 32 bit data for each size
 	IconFamilyHandle	icnsHandle; // handle which will be saved as the 'icns' resource
 	IconFamilyElement*	elementPtr; // pointer to element within the icns
-	short				targetFile,	// file reference numbers, one for the target file
-						oldFile; 	// and the other for the previous curent file
-	Handle				oldicns; // handle used to check if an icns existed before
-	unsigned char 		isFolder, ignored;
-	FSSpec				savedSpec;
 	int 				lastElementOffset;
 	
 	RefreshIconMembers();
-	
-	ResolveAliasFile(&srcFileSpec,true,&isFolder, &ignored);
-	if (isFolder)
-	{	
-		Str255 targetName = "\p:";
-		
-		FSpSetFinderFlags(&srcFileSpec, kHasCustomIcon, true);
-		
-		AppendString(targetName, srcFileSpec.name);
-		AppendString(targetName, "\p:Icon\r");
-		
-		savedSpec = srcFileSpec;
-		FSMakeFSSpec(srcFileSpec.vRefNum, srcFileSpec.parID, targetName, &srcFileSpec);
-		FSpDelete(&srcFileSpec);
-		FSpCreate(&srcFileSpec, 'icon', 'MACS', 0);
-		FSpCreateResFile(&srcFileSpec, 'icon', 'MACS', 0);
-	}
-	
-	
-	oldFile = CurResFile(); // we save the old file that was in use
-	targetFile = FSpOpenResFile(&srcFileSpec, fsRdWrPerm); // we open the target file
-	
-	if (targetFile == -1)
-		switch(ResError())
-		{
-			case eofErr:
-				FInfo fileInfo;
-				FSpGetFInfo(&srcFileSpec, &fileInfo);
-				FSpCreateResFile(&srcFileSpec, fileInfo.fdCreator, fileInfo.fdType, 0);
-				targetFile = FSpOpenResFile(&srcFileSpec, fsRdWrPerm); // we open the target file
-				break;
-			default:
-				return;
-				break;
-		}
-	
-	UseResFile(targetFile); // and set it as the current resoure file
 	
 	icnsSize = sizeof(IconFamilyResource) - sizeof(IconFamilyElement);
 	
@@ -656,6 +604,68 @@ void icnsClass::Save(long flags)
 		AddIconMember(&icnsHandle, 'is32', is32Pix);
 	if (members & s8mk)
 		AddIconMember(&icnsHandle, 's8mk', s8mkPix);
+		
+	return icnsHandle;
+}
+
+// __________________________________________________________________________________________
+// Name			: icnsClass::Save
+// Input		: flags: options for saving. Possible values are includeOldStyle which
+//				  incorporates old style resources into the icns, and generateOldStyle which
+//				  makes old style resources out of the icns.
+// Output		: None
+// Description	: Saves the current class contents to the srcFileSpec, in the standard 'icns'
+//				   resource format. Has options for dealing with old style icons.
+
+void icnsClass::Save(long flags)
+{
+	IconFamilyHandle	icnsHandle;
+	Handle				oldicns;
+	short				targetFile,	// file reference numbers, one for the target file
+						oldFile; 	// and the other for the previous curent file
+	unsigned char 		isFolder, ignored;
+	FSSpec				savedSpec;
+	
+						
+	
+	ResolveAliasFile(&srcFileSpec,true,&isFolder, &ignored);
+	if (isFolder)
+	{	
+		Str255 targetName = "\p:";
+		
+		FSpSetFinderFlags(&srcFileSpec, kHasCustomIcon, true);
+		
+		AppendString(targetName, srcFileSpec.name);
+		AppendString(targetName, "\p:Icon\r");
+		
+		savedSpec = srcFileSpec;
+		FSMakeFSSpec(srcFileSpec.vRefNum, srcFileSpec.parID, targetName, &srcFileSpec);
+		FSpDelete(&srcFileSpec);
+		FSpCreate(&srcFileSpec, 'icon', 'MACS', 0);
+		FSpCreateResFile(&srcFileSpec, 'icon', 'MACS', 0);
+	}
+	
+	
+	oldFile = CurResFile(); // we save the old file that was in use
+	targetFile = FSpOpenResFile(&srcFileSpec, fsRdWrPerm); // we open the target file
+	
+	if (targetFile == -1)
+		switch(ResError())
+		{
+			case eofErr:
+				FInfo fileInfo;
+				FSpGetFInfo(&srcFileSpec, &fileInfo);
+				FSpCreateResFile(&srcFileSpec, fileInfo.fdCreator, fileInfo.fdType, 0);
+				targetFile = FSpOpenResFile(&srcFileSpec, fsRdWrPerm); // we open the target file
+				break;
+			default:
+				return;
+				break;
+		}
+	
+	UseResFile(targetFile); // and set it as the current resoure file
+	
+	icnsHandle = Geticns();
 	
 	
 	//HUnlock((Handle)icnsHandle); // we're done with direct access to the handle

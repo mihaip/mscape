@@ -52,11 +52,7 @@ pascal void PlacardDraw(ControlHandle theControl,SInt16 thePart)
 	}
 	
 	MoveTo(h, v);
-	if ((placardText[1] < '0' ||
-		placardText[1] > '9') &&
-		placardText[1] != 'N' &&
-		placardText[1] != 'I')
-		SysBeep(6);
+
 	DrawString(placardText);
 	
 	RESTORECOLORS;
@@ -160,7 +156,6 @@ pascal void DisplayDraw(ControlHandle theControl,SInt16 thePart)
 	thePart; // unused parameter
 	
 	icnsEditorPtr	parentEditor; // the editor which this control belongs
-	Rect			hugeDisplayRect; // location where we'll be drawing the huge icon size
 	Rect			controlRect;
 	GWorldPtr		tempGW;
 	PixMapHandle	tempPix;
@@ -194,10 +189,6 @@ pascal void DisplayDraw(ControlHandle theControl,SInt16 thePart)
 		// than the 48 x 48 icon (it's 52 x 52) and thus we need to center the drawing
 		// inside it (which is what MakeTargetRectDoes)
 		
-		hugeDisplayRect = hugeIconRect;
-		MakeTargetRect(parentEditor->controls.display.iconHugeRect, &hugeDisplayRect);
-		EraseRect(&parentEditor->controls.display.iconHugeRect);
-		
 		// now we can draw the image wells
 		DrawImageWell(theControl, parentEditor->controls.display.iconHugeRect);
 		DrawImageWell(theControl, parentEditor->controls.display.iconLargeRect);
@@ -207,22 +198,22 @@ pascal void DisplayDraw(ControlHandle theControl,SInt16 thePart)
 		switch (GetControlValue(parentEditor->controls.display.iconPopup))
 		{
 			case k32BitIcon:
-				DrawDisplayItem(parentEditor, hugeDisplayRect, ih32);
+				DrawDisplayItem(parentEditor, parentEditor->controls.display.iconHugeRect, ih32);
 				DrawDisplayItem(parentEditor, parentEditor->controls.display.iconLargeRect, il32);
 				DrawDisplayItem(parentEditor, parentEditor->controls.display.iconSmallRect, is32);
 				break;
 			case k8BitIcon:
-				DrawDisplayItem(parentEditor, hugeDisplayRect, ich8);
+				DrawDisplayItem(parentEditor, parentEditor->controls.display.iconHugeRect, ich8);
 				DrawDisplayItem(parentEditor, parentEditor->controls.display.iconLargeRect, icl8);
 				DrawDisplayItem(parentEditor, parentEditor->controls.display.iconSmallRect, ics8);
 				break;
 			case k4BitIcon:
-				DrawDisplayItem(parentEditor, hugeDisplayRect, ich4);
+				DrawDisplayItem(parentEditor, parentEditor->controls.display.iconHugeRect, ich4);
 				DrawDisplayItem(parentEditor, parentEditor->controls.display.iconLargeRect, icl4);
 				DrawDisplayItem(parentEditor, parentEditor->controls.display.iconSmallRect, ics4);
 				break;
 			case k1BitIcon:
-				DrawDisplayItem(parentEditor, hugeDisplayRect, ichi);
+				DrawDisplayItem(parentEditor, parentEditor->controls.display.iconHugeRect, ichi);
 				DrawDisplayItem(parentEditor, parentEditor->controls.display.iconLargeRect, icni);
 				DrawDisplayItem(parentEditor, parentEditor->controls.display.iconSmallRect, icsi);
 				break;
@@ -232,14 +223,6 @@ pascal void DisplayDraw(ControlHandle theControl,SInt16 thePart)
 	{
 		// same thing as above, except we're dealing with the mask depths
 		
-		
-		
-		hugeDisplayRect = hugeIconRect;
-		MakeTargetRect(parentEditor->controls.display.maskHugeRect, &hugeDisplayRect);
-		SAVECOLORS;
-		EraseRect(&parentEditor->controls.display.maskHugeRect);
-		RESTORECOLORS;
-		
 		DrawImageWell(theControl, parentEditor->controls.display.maskHugeRect);
 		DrawImageWell(theControl, parentEditor->controls.display.maskLargeRect);
 		DrawImageWell(theControl, parentEditor->controls.display.maskSmallRect);
@@ -247,12 +230,12 @@ pascal void DisplayDraw(ControlHandle theControl,SInt16 thePart)
 		switch (GetControlValue(parentEditor->controls.display.maskPopup))
 		{
 			case k8BitMask:
-				DrawDisplayItem(parentEditor, hugeDisplayRect, h8mk);
+				DrawDisplayItem(parentEditor, parentEditor->controls.display.maskHugeRect, h8mk);
 				DrawDisplayItem(parentEditor, parentEditor->controls.display.maskLargeRect, l8mk);
 				DrawDisplayItem(parentEditor, parentEditor->controls.display.maskSmallRect, s8mk);
 				break;
 			case k1BitMask:
-				DrawDisplayItem(parentEditor, hugeDisplayRect, ichm);
+				DrawDisplayItem(parentEditor, parentEditor->controls.display.maskHugeRect, ichm);
 				DrawDisplayItem(parentEditor, parentEditor->controls.display.maskLargeRect, icnm);
 				DrawDisplayItem(parentEditor, parentEditor->controls.display.maskSmallRect, icsm);
 				break;
@@ -284,29 +267,32 @@ pascal void DisplayDraw(ControlHandle theControl,SInt16 thePart)
 //				  and adds a focus rect if this is the current editor
 
 void DrawDisplayItem(icnsEditorPtr parentEditor, Rect targetRect, long targetName)
-{
+{		
+	Rect drawRect;
+	
+	SAVECOLORS;
+	EraseRect(&targetRect);
+	RESTORECOLORS;
+	
+	drawRect = targetRect;
+	
+	switch (drawRect.right - drawRect.left)
+	{
+		case 58:
+			 InsetRect(&drawRect, 5, 5);
+			 break;
+		default:
+			InsetRect(&drawRect, 1, 1);
+			break;
+	}
+		
 	if (targetName == parentEditor->currentPixName)
 	{
-		Rect focusRect;
-	
-		switch (parentEditor->currentPixName)
-		{
-			case ih32: case ich8: case ich4: case ichi:
-				focusRect = parentEditor->controls.display.iconHugeRect;
-				break;
-			case h8mk: case ichm:
-				 focusRect = parentEditor->controls.display.maskHugeRect;
-				 break;
-			default:
-				focusRect = targetRect;
-				break;
-		}
-		
 		if ((**parentEditor->controls.display.iconDisplay).contrlHilite == kActiveHilite)
-			DrawThemeFocusRect(&focusRect, true);
+			DrawThemeFocusRect(&targetRect, true);
 	}
 	
-	parentEditor->Display(targetRect, targetName);
+	parentEditor->Display(drawRect, targetName);
 }
 
 // __________________________________________________________________________________________
@@ -367,16 +353,16 @@ void MakeDisplayRects(Rect controlRect,
 	*hugeRect = controlRect;
 	hugeRect->bottom = hugeRect->top + (hugeRect->right - hugeRect->left);
 	
-	// the large rectangle is a 34 x 34 square, on the bottom left side
+	// the large rectangle is a 36 x 36 square, on the bottom left side
 	*largeRect = controlRect;
-	largeRect->top = largeRect->bottom - 34;
-	largeRect->right = largeRect->left + 34;
+	largeRect->top = largeRect->bottom - 36;
+	largeRect->right = largeRect->left + 36;
 	
-	// the small rectangle is a 18 by 18 square across from the large one
+	// the small rectangle is a 20 by 20 square across from the large one
 	*smallRect = controlRect;
-	smallRect->top = smallRect->bottom - 34;
-	smallRect->bottom = smallRect->top + 18;
-	smallRect->left = smallRect->right - 18;
+	smallRect->top = smallRect->bottom - 36;
+	smallRect->bottom = smallRect->top + 20;
+	smallRect->left = smallRect->right - 20;
 
 	// we now inset the rectangles by 1 on each side to get them to their proper size (and
 	// make sure that there is a 2 pixel space between them)	
@@ -466,6 +452,20 @@ pascal void PreviewDraw(ControlHandle theControl,SInt16 thePart)
 		parentEditor->Display(leftDisplayRect, iconSrc + maskSrc + selected);
 		parentEditor->Display(rightDisplayRect, iconSrc + maskSrc + selected);
 	}
+	RGBColor borderColor;
+	Point samplePoint;
+	
+	samplePoint.h = controlRect.left + (controlRect.right - controlRect.left)/2;
+	samplePoint.v = controlRect.top - 1;
+	
+	GetCPixel(samplePoint.h, samplePoint.v, &borderColor);
+	
+	RGBForeColor(&borderColor);
+	MoveTo(samplePoint.h, samplePoint.v);
+	samplePoint.v += controlRect.bottom - controlRect.top;
+	LineTo(samplePoint.h, samplePoint.v);
+	ForeColor(blackColor);
+	
 	CopyBits((BitMap*)*tempPix,
 			  &(**theControl).contrlOwner->portBits,
 			  &(**tempPix).bounds,
@@ -525,10 +525,12 @@ pascal void	ColorSwatchDraw(ControlHandle theControl,SInt16 thePart)
 	icnsEditorPtr	parentEditor; // the editor which owns this control
 	RGBColor		actualForeColor, actualBackColor; // the colors cast to the nearst ones
 													  // for the current pix
-	
+	Rect			tempRect;
 	SAVECOLORS; // we'll be changing the foreground/background colors
 	
 	parentEditor = GetEditor((**theControl).contrlOwner);
+	
+	//if (Button()) return;
 	
 	if ((**parentEditor->currentPix).pixelSize == 32)
 	{
@@ -543,13 +545,21 @@ pascal void	ColorSwatchDraw(ControlHandle theControl,SInt16 thePart)
 	
 	// first we draw the background color swatch (since it must appear underneath)
 	DrawImageWell(theControl, parentEditor->controls.colorSwatch.backColorRect);
-	RGBForeColor(&actualBackColor);
+	ForeColor(whiteColor);
 	PaintRect(&parentEditor->controls.colorSwatch.backColorRect);
+	RGBForeColor(&actualBackColor);
+	tempRect = parentEditor->controls.colorSwatch.backColorRect;
+	InsetRect(&tempRect, 1, 1);
+	PaintRect(&tempRect);
 	
 	// then (partially on top of it) we draw the foreground color swatch
 	DrawImageWell(theControl, parentEditor->controls.colorSwatch.foreColorRect);
-	RGBForeColor(&actualForeColor);
+	ForeColor(whiteColor);
 	PaintRect(&parentEditor->controls.colorSwatch.foreColorRect);
+	RGBForeColor(&actualForeColor);
+	tempRect = parentEditor->controls.colorSwatch.foreColorRect;
+	InsetRect(&tempRect, 1, 1);
+	PaintRect(&tempRect);
 	
 	RESTORECOLORS; // we're done with the color changing
 	
@@ -625,8 +635,8 @@ void MakeColorSwatchRects(Rect controlRect,
 			iconHeight;
 	
 	// first we must set up these variables
-	thirdOfHeight = (controlRect.bottom - controlRect.top)/3;
-	thirdOfWidth = (controlRect.right - controlRect.left)/3;
+	thirdOfHeight = (controlRect.bottom - controlRect.top)/3 + 1;
+	thirdOfWidth = (controlRect.right - controlRect.left)/3 + 1;
 	
 	// the background color swatch goes into the bottom right corner
 	*backColorRect = controlRect;
@@ -656,3 +666,119 @@ void MakeColorSwatchRects(Rect controlRect,
 	resetColorsRect->right = resetColorsRect->left + iconWidth;
 	resetColorsRect->top = resetColorsRect->bottom - iconHeight;
 }
+
+pascal void	PatternsDraw(ControlHandle theControl,SInt16 thePart)
+{
+	thePart; // unused parameter
+
+	icnsEditorPtr	parentEditor; // the editor which owns this control
+	RGBColor		actualForeColor, actualBackColor; // the colors cast to the nearst ones
+													  // for the current pix
+	Pattern			pattern;
+	Rect			tempRect;
+	SAVECOLORS; // we'll be changing the foreground/background colors
+	
+	parentEditor = GetEditor((**theControl).contrlOwner);
+	
+	if ((**parentEditor->currentPix).pixelSize == 32)
+	{
+		actualForeColor = parentEditor->foreColor;
+		actualBackColor = parentEditor->backColor;
+	}
+	else
+	{
+		actualForeColor = GetNearestColor(parentEditor->foreColor, (**parentEditor->currentPix).pmTable);
+		actualBackColor = GetNearestColor(parentEditor->backColor, (**parentEditor->currentPix).pmTable);
+	}
+	
+	
+	tempRect = (**theControl).contrlRect;
+	
+	ForeColor(whiteColor);
+	
+	PaintRect(&tempRect);
+	
+	DrawImageWell(theControl, tempRect);
+	
+	InsetRect(&tempRect, 1, 1);
+	
+	RGBForeColor(&actualForeColor);
+	RGBBackColor(&actualBackColor);
+	
+	GetIndPattern(&pattern, rDrawingPatterns, parentEditor->pattern + 1);
+	FillRect(&tempRect, &pattern);
+	
+	
+	
+	RESTORECOLORS;
+}
+
+pascal ControlPartCode PatternsHitTest(ControlHandle theControl, Point where)
+{
+		icnsEditorPtr	parentEditor; // editor which owns the control
+	
+	parentEditor = GetEditor((**theControl).contrlOwner);
+	if (parentEditor == NULL) // no editor, no use hit testing
+		return kControlNoPart;
+	
+	// going through all of the rectangles which make up the control..
+	if (PtInRect(where, &(**parentEditor->controls.patterns).contrlRect))
+		return kPatternsPart;
+	
+	// if we managed to get here, then nothing was hit
+	return kControlNoPart;
+}
+
+pascal void SwatchUpdate(RGBColor* color, void *clientData)
+{
+#pragma unused (color)
+	icnsEditorPtr	parentEditor;
+	
+	parentEditor = (icnsEditorPtr)clientData;
+	
+	Draw1Control(parentEditor->controls.colorSwatch.control);
+	Draw1Control(parentEditor->controls.patterns);
+}
+
+pascal void PatternMenuDraw(int number, int x, int y, int width, int height, void* clientData)
+{
+	Pattern 		pattern;
+	Rect			patternRect;
+	icnsEditorPtr	parentEditor;
+	RGBColor		actualForeColor, actualBackColor;
+	
+	SAVECOLORS;
+	parentEditor = (icnsEditorPtr)clientData;
+	
+	GetIndPattern(&pattern, rDrawingPatterns, number + 1);
+	
+	if ((**parentEditor->currentPix).pixelSize == 32)
+	{
+		actualForeColor = parentEditor->foreColor;
+		actualBackColor = parentEditor->backColor;
+	}
+	else
+	{
+		actualForeColor = GetNearestColor(parentEditor->foreColor, (**parentEditor->currentPix).pmTable);
+		actualBackColor = GetNearestColor(parentEditor->backColor, (**parentEditor->currentPix).pmTable);
+	}
+	
+	RGBForeColor(&actualForeColor);
+	RGBBackColor(&actualBackColor);
+	
+	SetRect(&patternRect, x, y, x + width, y + height);
+	FillRect(&patternRect, &pattern);
+	
+	RESTORECOLORS;
+}
+
+pascal void PatternMenuUpdate(int selection, void* clientData)
+{
+	icnsEditorPtr parentEditor;
+	
+	parentEditor = (icnsEditorPtr)clientData;
+	parentEditor->pattern = selection - 1;
+	
+	Draw1Control(parentEditor->controls.patterns);
+}
+

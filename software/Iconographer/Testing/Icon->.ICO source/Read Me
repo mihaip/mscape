@@ -1,0 +1,42 @@
+Icon->.ICO Source
+
+This source was written and compiled with Metrowerks CodeWarrior and
+uses Metrowerks' PowerPlant application framework. If you want to build
+the program as it stands, you'll need the PowerPlant source and assorted
+resources and libraries. Pretty much all the requisite files are included
+in the PowerPlant Appearance project stationery, so start from there and
+then add anything that's missing.
+
+If you want to use the icon handling classes in a non-PP project, you'll
+need to provide alternative File & Stream implementations. I *think*
+the classes should otherwise be fairly PP-independent, but it's a long time
+since I examined the code in detail, so I could be wrong.
+
+The code structure is not exactly elegant: the translation stuff is
+a batch-processing hack, with a feeble excuse for a UI clumsily bolted on
+as an afterthought. But there should be enough comments to just about work
+out what's going on.
+
+Conversion from Windows .ICO files to Mac icon resources has been left
+unaddressed for two main reasons. First, parsing an .ICO file is a bit
+tedious. Second, while Mac icons all use the same Mac system palettes,
+Windows icons all have their own palettes, so the colour indices would
+have to be remapped to their closest approximations, or perhaps even
+dithered. Neither of these considerations is prohibitive, but they're
+enough to deter a lazy person who doesn't have any real use for such a
+converter anyway.
+
+Needless to say, all the source code is copyright (c)1997-1999
+Matthew Caldwell (except for any bits which are copyright
+MetroWerks). You are free to use any of it in any of your own
+projects, provided you include a credit and send me a copy of the
+resulting program (or tell me where I can download one if it's a
+large file). If you find and/or fix any bugs in the code, please
+send me the details so that I can incorporate them into the codebase.
+
+Enjoy.
+
+Matthew Caldwell
+<sexkittn@burn.demon.co.uk>
+
+

@@ -1,58 +1,45 @@
-Iconographer 1.0d6
-this development release expires on July 1
+Iconographer 1.0d7
+this development release expires on September 1
 
-Please send all feedback to mihai@mscape.com. The main focus of this release is stability, followed by performance (I can get only intermittent access to a 6100 otherwise I'm on a G3) and lastly feature requests. The best thing you can do is try to use Iconographer for all your icon editing needs, so that 1) you can discover any bugs and 2) see if anything doesn't "feel" right. Thanks!
+Please send all feedback to mihai@mscape.com. The main focus of this release is stability, since it'll be the final development release, and hopefully beyond this point no more features will be added, and instead the whole product will be polished. If you're getting sick of the registration reminders, here is the beta tester serial code:
 
-I'll be leaving for Stanford on June 19, and it'll probably take me a few days to settle in. So if I don't respond immediately to e-mail during that period, now you know why.
-
-The next release will include a beta tester registration code...
+Name: Beta Tester
+Registration code: PP271678
 
 I'd like to have a little Goodies/Showcase folder with some icons showing off the new features of the format. If you have anything which you feel would be appropriate, please send it in.
 
-Issues pre Mac OS 8.5 systems:
-- when opening files that have a custom icon but its 8.5+ only, the old style icon shouldn't be opened
-
-Kaleidoscope Bugs:
-- does not disable properly when color picker is opened
-
-Things which should be in the final 1.0 release:
-- dragging files in side display/editing area loads their icons instead of rejecting them
-- fix background disabling problems when switching among windows
-- performance checks
-- clean up prefs dialog (any suggestions for other things which should go in?)
-- better out of memory checking
+Known Bugs:
+- background disabling problems when switching among windows
+- garbage on right side when dragging diagonal gradient to huge size
+- when using click there it is, dragging save dialog doesn't work (snaps back to original position)
 
 Release notes:
-1.0d6
-- balloon help everywhere
-- paste into selection command, scales clipboard contents to current selection size  
-- HTML based help (drag Iconographer Help folder to Help folder in System Folder, and then open up the Help Center if you want searching and help menu to work), feedback wanted (if your name isn't listed in the testers paragram in the Program Info section, well, that's because you weren't much of a tester, so now's your change to remedy that :p)
-- now works with system 7.5.3 and above (with the appearance manager installed)
-- dithering option in preferences
-- lasso now tightens through the background color, not just white
-- the eraser's brush size is now 2 x 2
-- checking to make sure the 8 bit and 1 bit masks are synced (option in prefs to turn off)
-- pixel grid (option in the preferences)
-- the preview now displays the current icon/mask on two backgrounds, clicking on them toggles the selected state 
-- double clicks on tools for shortcuts:
-	marquee: select all
-	lasso: lasso all
-	eraser: erase all/erase selection
-	rectangle/oval/polygon: toggle between framed and filled modes
-	gradient: toggle between linear and radial modes
-- undo/redo restores the popup selection too
-- tab toggles between the current icon and mask
-- much better handling (both saving and loading) of icons which do not contain some depths or sizes
-- improved previewing in icon browser for icons with no huge size, etc.
-- icon browser now updates properly when put in the background and brought back
-- removed flickering in side display and preview
-- navigation services now works with pre Mac OS 8.5 systems
-- the saved states are now compressed, they take up between 6 and 2 times less memory (depending on the complexity of the drawing).
-- each open editor takes up 4K less of memory
-- the extra space that surrounded the 32 x 32 size has been eliminated (instead, the window is enlarged when switching to the 48 x 48 size)
-- if the icon only contains certain sizes (eg. no huge), then the preview area does not reserve space for the sizes which do not exist
-- the flash of garbage characters in the status bar when making a new editor has been removed
-- dragging from drawing area now works even if the editor isn't in the top left corner
-- filling with same color in 8 bits does not crash anymore
-- eye dropper now works across editors
-- copying down the 8 bit mask into the 1 bit one doesn't attempt to dither, it generates a new 1-bt mask
+1.0d7
+- mac os x server icon (.TIFF) import support
+- windows icon (.ICO) import/export support
+- new icons have names by default
+- save into file command
+- polygon lasso tool (double click on lasso tool, or hold down option when using it)
+- hue/saturation and brightness/contrast tweaking
+- pattern support (this caused the minimum window size to changed to 7x magnification)
+- interface alignment tweaks
+- preference to turn off generation of old style icons
+- got rid of the flash that would sometimes occur when created a new editor
+- even more photoshop-like selection tools:
+	holding command down toggles to move tool
+	moving of selection outline (both by using marquee/lasso/wand tools and by using arrows).
+	cursors showing that selection will be floated, etc.
+- copying of icon and mask
+- copy and paste icon family commands
+- added icon info command to view menu (since clicking on the info placard wasn't immediately obvious)
+- ID pop-up menu in info box
+- improved 8-bit mask to 1-bit mask generation
+- the overlay (displayed while dragging a rectangle, line, etc.) now uses the nearest color in the current pallete
+- cleaned up fill tool (improved algorithm and fixed some errors when filling around the right edge)
+- it's now possible to undo the transfer between depths
+- balloon help points in the right direction when the balloon wouldn't fit in the default position
+- when dithering was on and irregulary shaped items were dragged, the shape was not extracted properly
+- flip horizontal now works in 4 bits
+- select similar now works in 8-bit or less when the screen is in thousands or less
+- copying up from 8-bits to 32-bits now works when the screen is in thousands or less
+- changed country code to US because Japan was causing interference with the Japanese Language Kit

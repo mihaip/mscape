@@ -29,6 +29,7 @@ enum staticsResources
 	r8BitGrayPicker = 2051,
 	r4BitSysPicker = 2052,
 	r1BitSysPicker = 2053,
+	r4BitWinPicker = 2054,
 	
 	// dialogs
 	rPreferencesDialog = 1000,
@@ -41,7 +42,11 @@ enum preferencesDialogItems
 	iDefaultZoomLevelArrows = 5,
 	iDrawGrid = 6,
 	iCheckSync = 7,
-	iDither = 8
+	iDither = 8,
+	iStartupCreateNewEditor = 9,
+	iStartupOpenIcon = 10,
+	iStartupDoNothing = 11,
+	iGenerateOldStyle = 13
 };
 
 typedef struct preferencesStruct
@@ -76,7 +81,11 @@ enum preferencesFlags
 {
 	prefsDrawGrid = 1,
 	prefsDontCheckSync = 2,
-	prefsDither = 4
+	prefsDither = 4,
+	prefsDontMakeNewEditor = 8,
+	prefsOpenIcon = 16,
+	prefsGenerateOldStyle = 32,
+	prefsRealTimePreviews = 64
 };
 
 typedef struct textSettings
@@ -109,6 +118,7 @@ class editorStaticsClass
 		PicHandle		sys4PickerPic;
 		PicHandle		sys1PickerPic;
 		PicHandle		gray8PickerPic;
+		PicHandle		win4PickerPic;
 		
 		Rect			canvasRect;
 		GWorldPtr		canvasGW;

@@ -3,36 +3,37 @@
 	<META HTTP-EQUIV="content-type" CONTENT="text/html;charset=iso-8859-1">
 	<TITLE>Icon Basics</TITLE>
 	<META NAME="DP" CONTENT="1.9.1/3.1.1">
-</HEAD>
-	
-<BODY BGCOLOR="#ffffff" link="#993300" alink="#660000" vlink="#330000">
-<FONT FACE="Helvetica,Arial" SIZE="4" COLOR="#660000"><B>Icon Sizes</B></FONT>
+</HEAD>	
+<BODY BGCOLOR="#ffffff" link="#CC6600" alink="#AA33A00" vlink="#AA3300">
+<TABLE WIDTH=350><TR><TD valign=top>
+<FONT FACE="Helvetica,Arial" SIZE="4" COLOR="#993300"><B>Icon Sizes</B></FONT>
 <UL>
 	<FONT FACE="Geneva,Arial" SIZE="2">
 	<P>As it is visible in the Finder, icons can be displayed at more than one size. The most common ones are the large view (32 by 32 pixels) and the small view (16 by 16 pixels). Although you can just create one size, and let it be scaled automatically, better results are yielded if you draw each size by hand.</P>
 	<P>In addition to the above mentioned sizes, there are two additional ones which are not normally used. The huge size (48 by 48 pixels) isn't used at all by the current Mac OS Finder, but it does show up in Mac OS X Server (and presumably will be used in the consumer release of Mac OS X). The mini size (16 by 12 pixels) is used very rarely, and thus no support for it is provided in the current version of Iconographer.</P>
 	</FONT>
 </UL>
-<FONT FACE="Helvetica,Arial" SIZE="4" COLOR="#660000"><B>Icon Depths</B></FONT>
+<FONT FACE="Helvetica,Arial" SIZE="4" COLOR="#993300"><B>Icon Depths</B></FONT>
 <UL>
 	<FONT FACE="Geneva,Arial" SIZE="2">
 	Within each icon size, there can be various bit depths. This means that you can have a separate icon for black and white, 16 colors, 256 colors and millions of colors. The Finder automatically chooses the depth based on the number of colors available on the screen. Again, although you can simply draw one depth and leave it to the OS to extrapolate the others, you will usually get better results by drawing all the depths by hand.
 	</FONT>
 </UL>
-<FONT FACE="Helvetica,Arial" SIZE="4" COLOR="#660000"><B>Icon Masks</B></FONT>
+<FONT FACE="Helvetica,Arial" SIZE="4" COLOR="#993300"><B>Icon Masks</B></FONT>
 <UL>
 	<FONT FACE="Geneva,Arial" SIZE="2">
 	<P>It may not be immediately apparent that each icon is actually composed of two parts, the icon picture itself, and a mask. This mask acts as a cutout, determining which pixels of the icon show through, and which ones are left alone. The picture below shows an icon mask in action:<BR>
-	<CENTER><IMG SRC="images/1bitmask.gif" HEIGHT="111" WIDTH="248" ALT="1 Bit Mask Example"></CENTER>
+<CENTER><IMG SRC="images/1bitmask.gif" HEIGHT="111" WIDTH="248" ALT="1 Bit Mask Example"></CENTER>
 	<BR>
 	As you can see, the desktop is visible though the parts of the mask which have been left out. This simple mask only has two possible values, black, where the icon shows through, and white where the background is visible. Mac OS 8.5 introduces an additional mask, an 8-bit one. This new mask allows 256 possible values, ranging from white to black. As before, white means that the background is completely visible while black means that the icon shows through. The gray values in-between are used to blend the background and the icon. For example, a dark gray would yield a blend of the background and icon which would be weighed towards the icon. The picture below shows an example of an 8-bit mask:<BR>
-	<CENTER><IMG SRC="images/8bitmask.gif" HEIGHT="111" WIDTH="248" ALT="8 Bit Mask Example"></CENTER>
+<CENTER><IMG SRC="images/8bitmask.gif" HEIGHT="111" WIDTH="248" ALT="8 Bit Mask Example"></CENTER>
 	<BR>
 	It is clearly visible that the edge of the circle blends in with the desktop. If the icon were to be moved onto a different background, then it would blend in with that. The 8 bit mask can be used to create visual effects such as semi-transparency/translucency, anti-aliasing and drop shadows.
 </FONT>
 </UL>
 
 <CENTER><FONT FACE="Geneva,Arial" SIZE="2"><B><A HREF="toc.html">Table of Contents</A></B><FONT></CENTER>
+</TD></TR></TABLE>
 </BODY>
 </HTML>
 
