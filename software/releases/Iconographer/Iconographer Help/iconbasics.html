@@ -32,6 +32,17 @@
 </FONT>
 </UL>
 
+<FONT FACE="Helvetica,Arial" SIZE="4" COLOR="#993300"><B>Icon Formats</B></FONT>
+<UL>
+	<FONT FACE="Geneva,Arial" SIZE="2">
+	<P><FONT COLOR="#330000"><B>Old:</B></FONT> This is the format used by systems previous to Mac OS 8.5. They support only 1-bit through 8-bit icons, at the sizes of 32 x 32 and 16 x 16 pixels. This format is still required for document icons and for maximum compatibility (Mac OS 8.5 and above can still display this format) at a minimum size.</P>
+	
+	<P><FONT COLOR="#330000"><B>New:</B></FONT> This is the format introduced by Mac OS 8.5. It supports 32-bit icons with 8-bit masks, as well as the additional 48 x 48 size (which, although it is not used by the Finder directly, does appear in other places, like Sherlock 2's search button). These icons use a completely different method of storage, and thus they are not visible on older systems.</P>
+	
+	<P><FONT COLOR="#330000"><B>Universal:</B></FONT> This is a pseudo-format which combines both the Old and the New resources into the same file with the same ID. The result is that the icon is visible on both systems, although usually things will look better when viewed in Mac OS 8.5 and above. This results in a slight increase in file size.</P>
+	</FONT>
+</UL>
+
 <CENTER><FONT FACE="Geneva,Arial" SIZE="2"><B><A HREF="toc.html">Table of Contents</A></B><FONT></CENTER>
 </TD></TR></TABLE>
 </BODY>

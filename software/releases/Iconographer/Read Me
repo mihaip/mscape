@@ -39,6 +39,25 @@ Registrations for Iconographer are handled by the Kagi Shareware service run by 
 To register please use the enclosed Register application or register online at http://order.kagi.com/?QEJ. You will receive a registration code from Kagi, and when you enter that and your name in the registration dialog (available from the Apple menu) the reminder will be disabled.
 
 Version History
+1.1.1: February 15, 2000
+ - Icon browser usability and integration improvements.
+ - Fixed problem with window activation. 
 
-1.0 August 26, 1999
+1.1: February 9, 2000
+  -Added floating colors palette.
+ - Revamped icon browser.
+ - Anti-aliasing support.
+ - Windows menu.
+ - Improved Windows icon support (standard 8-bit palette, 48 x 48 import and export).
+ - All three open commands have been combined into one.
+ - Many bug fixes and usability tweaks.
+
+1.0.2: September 17, 1999
+ - Fixed a crash with the move tool.
+ - Fixed cosmetic issues with pre-Mac OS 8.5 systems.
+
+1.0.1: September 15, 1999
+ - Fixed a crash with the text tool.
+
+1.0: September 14, 1999
 - Initial release
