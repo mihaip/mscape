@@ -1,4 +1,4 @@
-/* Resource fork of software/Badger/badger 1.0d3 */
+/* Resource fork of software/Badger/badger 1.0d4 */
 resource 'DITL' (3000, "Basic Alert") {
 	{	/* array DITLarray: 2 elements */
 		/* [1] */
@@ -3076,7 +3076,7 @@ resource 'cfrg' (0) {
 		kDataForkCFragLocator,
 		kZeroOffset,
 		kSegIDZero,
-		"badger 1.0d3"
+		"badger 1.0d4"
 	}
 };
 

@@ -119,7 +119,7 @@ void		EditBadges(void);
 void		PositionBadges(void);
 bool 		CheckClipboard(void);
 void		MakeNewSet(void);
-void 		MergeIcon(int ID);
+void 		MergeIcon(int ID, Str255 iconName);
 void		DrawImageWell(Rect bounds);
 OSStatus	GetBadgesNav(void);
 OSStatus	GetBadgesOld(void);

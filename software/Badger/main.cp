@@ -698,7 +698,7 @@ void GetBaseFolder(void)
 	return;\
 }
 
-void MergeIcon(int ID)
+void MergeIcon(int ID, Str255 iconName)
 {
 	GWorldPtr			badgeLargeIconGWorld, badgeLargeMaskGWorld, badgeLarge1BitMaskGWorld, tempGWorld;
 	GWorldPtr			badgeSmallIconGWorld, badgeSmallMaskGWorld, badgeSmall1BitMaskGWorld;
@@ -939,7 +939,7 @@ void MergeIcon(int ID)
 	PlotIconRef(&smallBadgeRect,atNone,ttNone,kIconServicesNormalUsageFlag,iconRef);
 	ReleaseIconRef(iconRef);
 	
-	CropPixMap(target8BitIconPix, 16);
+	CropPixMap(targetSmall8BitIconPix, 16);
 	
 	NewGWorld(&targetSmallMaskGWorld, 8, &smallIconRect, grayscaleTable, NULL, 0);
 	targetSmallMaskPix = GetGWorldPixMap(targetSmallMaskGWorld);
@@ -1103,7 +1103,7 @@ void MergeIcon(int ID)
 	set = FSpOpenResFile(&setSpec, fsRdWrPerm);
 	UseResFile(set);
 	DetachResource((Handle)targeticnsHandle);
-	AddResource((Handle)targeticnsHandle, 'icns', ID, "\p");
+	AddResource((Handle)targeticnsHandle, 'icns', ID, iconName);
 	SetResAttrs((Handle)targeticnsHandle, resSysHeap + resPurgeable);
 	ChangedResource((Handle)targeticnsHandle);
 	WriteResource((Handle)targeticnsHandle);
@@ -1158,12 +1158,14 @@ void MakeNewSet()
 	Rect				itemRect;
 	Handle				item;
 	short				itemType;
-	short				badges;
-	IconFamilyHandle	badgeicnsHandle;
+	short				badges, set;
+	IconFamilyHandle	badgeicnsHandle, baseHandle;
 	Str255				string;
 	int					resourceCount;
 	short				ID;
 	unsigned long		type;
+	long				handleSize;
+	
 	
 	FSpDelete(&setSpec);
 
@@ -1199,10 +1201,38 @@ void MakeNewSet()
 		UseResFile(appFile);
 		if (ID != -3999)
 		{
+			MergeIcon(ID, string);
 			NumToString(ID, string);
 			GetDialogItem(newSet, kStatusField, &itemType, &item, &itemRect);
 			SetDialogItemText(item, string);
-			MergeIcon(ID);
+		}
+		else
+		{
+			badges = FSpOpenResFile(&badgesSpec, fsRdPerm);
+			UseResFile(badges);
+			badgeicnsHandle = (IconFamilyHandle)Get1Resource('icns', -3999);
+			HLock((Handle)badgeicnsHandle);
+			handleSize = (**badgeicnsHandle).resourceSize;
+			baseHandle = (IconFamilyHandle)NewHandleClear(handleSize);
+			HLock((Handle)baseHandle);
+			BlockMove(*badgeicnsHandle, *baseHandle, handleSize);
+			HUnlock((Handle)badgeicnsHandle);
+			ReleaseResource((Handle)badgeicnsHandle);
+			CloseResFile(badges);
+			UseResFile(appFile);
+			
+			set = FSpOpenResFile(&setSpec, fsRdWrPerm);
+			UseResFile(set);
+			DetachResource((Handle)baseHandle);
+			AddResource((Handle)baseHandle, 'icns', -3999, "\pBase Folder");
+			SetResAttrs((Handle)baseHandle, resSysHeap + resPurgeable);
+			ChangedResource((Handle)baseHandle);
+			WriteResource((Handle)baseHandle);
+			UpdateResFile(set);
+			CloseResFile(set);
+			UseResFile(appFile);
+			HUnlock((Handle)baseHandle);
+			DisposeHandle((Handle)baseHandle);
 		}
 	}	
 	
@@ -1293,6 +1323,12 @@ bool CheckClipboard()
 
 #define Refresh()\
 {\
+	NewGWorld(&iconGWorld, 32, &largeIconRect, NULL, NULL, 0);\
+	iconPix = GetGWorldPixMap(iconGWorld);\
+	LockPixels(iconPix);\
+	NewGWorld(&smallIconGWorld, 32, &smallIconRect, NULL, NULL, 0);\
+	smallIconPix = GetGWorldPixMap(smallIconGWorld);\
+	LockPixels(smallIconPix);\
 	SetGWorld(iconGWorld, NULL);\
 	ForeColor(blackColor);\
 	BackColor(whiteColor);\
@@ -1321,6 +1357,10 @@ bool CheckClipboard()
 	ReleaseIconRef(currentIconRef);\
 	CopyBits((BitMap *) (*smallIconPix),&positionBadges->portBits,&smallIconRect, &smallTargetRect,srcCopy, NULL);\
 	\
+	UnlockPixels(iconPix);\
+	DisposeGWorld(iconGWorld);\
+	UnlockPixels(smallIconPix);\
+	DisposeGWorld(smallIconGWorld);\
 	SetPort(positionBadges);\
 	FillCRect(&desktopPreview, desktopPattern);\
 	RGBForeColor(&currentForeColor);\
@@ -1357,7 +1397,7 @@ void PositionBadges(void)
 	short			smallHOffset=0, smallVOffset = 0, smallDefaultHOffset = 0, smallDefaultVOffset = 0;
 	IconRef			currentIconRef;
 	long			selectedIcns;
-	Str255			IDAsString, menuItemText, string;
+	Str255			IDAsString, menuItemText, string, icnsName="\pInternet Search Sites";
 	tOffset**		offsetHandle;
 	PixPatHandle	desktopPattern;
 	
@@ -1428,13 +1468,6 @@ void PositionBadges(void)
 	
 	ShowWindow( positionBadges );
 	
-	NewGWorld(&iconGWorld, 32, &largeIconRect, NULL, NULL, 0);
-	iconPix = GetGWorldPixMap(iconGWorld);
-	LockPixels(iconPix);
-	
-	NewGWorld(&smallIconGWorld, 32, &smallIconRect, NULL, NULL, 0);
-	smallIconPix = GetGWorldPixMap(smallIconGWorld);
-	LockPixels(smallIconPix);
 	Refresh();
 	
 	SetPort(positionBadges);
@@ -1447,7 +1480,7 @@ void PositionBadges(void)
 		switch (itemHit)
 		{
 			case kOK: WriteToDisk(); dialogDone = true; break;
-			case kInsertClipboard: clip2icns(ID, "\p", 0); SetPort(positionBadges); Refresh(); break;
+			case kInsertClipboard: clip2icns(ID, icnsName, 0); SetPort(positionBadges); Refresh(); break;
 			case kShiftUp: vOffset--; Refresh(); break;
 			case kShiftDown: vOffset++; Refresh(); break;
 			case kShiftLeft: hOffset--; Refresh(); break;
@@ -1462,7 +1495,10 @@ void PositionBadges(void)
 				selectedIcns = GetControlValue((ControlHandle)item);
 				GetMenuItemText(GetMenu(200), selectedIcns, menuItemText);
 				CopyString(IDAsString, menuItemText);
+				CopyString(icnsName, menuItemText);
 				for (i=1; IDAsString[i] != ' '; i++){;}
+				icnsName[i] = icnsName[0] - i;\
+				CopyString(icnsName, &icnsName[i]);\
 				if (IDAsString[1] == 208) IDAsString[1] = '-';
 				IDAsString[0] = i-1;
 				StringToNum(IDAsString, &ID);
@@ -1501,10 +1537,6 @@ void PositionBadges(void)
 	}
 	DisposePixPat(desktopPattern);
 	SetGWorld(startupPort, startupDevice);
-	UnlockPixels(iconPix);
-	DisposeGWorld(iconGWorld);
-	UnlockPixels(smallIconPix);
-	DisposeGWorld(smallIconGWorld);
 	DisposeDialog(positionBadges);
 	
 }
