@@ -152,14 +152,19 @@ class editorPreferencesClass
 		void				GenerateRegCode(Str255 name, Str255 regCode);
 		PreferencesHandle	data;
 		
-		static pascal bool	PreferencesDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit);
+		static pascal Boolean	PreferencesDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit);
 		
 		static pascal void 	ZoomArrowsAction(ControlHandle controlHdl,SInt16 partCode);
 		static pascal void	PreviewSizeSliderAction(ControlHandle theControl, SInt16 partCode);
 		
 	public:
-	
+							editorPreferencesClass();
+							
+		void				Setup();
 		void				Load(int ID);
+		
+		void				SetupPalettes();
+		
 		void				Edit(int pane);
 		void				Save(int ID);
 		
@@ -284,6 +289,8 @@ class editorStaticsClass
 	public:
 						editorStaticsClass(void);
 						~editorStaticsClass(void);
+						
+		void			Load();
 		
 		CGrafPtr		startupPort;
 		GDHandle		startupDevice;
@@ -312,8 +319,6 @@ class editorStaticsClass
 		
 		void			ReclaimEmergencyMemory(void);
 		void			AllocateEmergencyMemory(void);
-		
-		short			DisplayAlert(Str255 message, Str255 button1, Str255 button2, Str255 button3, int type);
 		
 		void	 		GetPickerPix(long iconName, long colors, PixMapHandle* pix, GWorldPtr* gW, RgnHandle* shapeRgn);
 		

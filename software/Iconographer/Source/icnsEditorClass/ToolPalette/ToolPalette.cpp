@@ -39,7 +39,7 @@ ToolPalette::ToolPalette()
 }
 
 ToolPalette::~ToolPalette()
-{
+{	
 	ReleaseResource(Handle(lineThicknessMenu));
 	ReleaseResource(Handle(antiAliasingMenu));
 	ReleaseResource(Handle(fillMenu));
@@ -48,6 +48,10 @@ ToolPalette::~ToolPalette()
 	DisposeCIcon(swapColorsIcon);
 	HUnlock((Handle)resetColorsIcon);
 	DisposeCIcon(resetColorsIcon);
+	
+	DisposeEnhancedPlacard(controls.lineThickness);
+	DisposeEnhancedPlacard(controls.antiAliasing);
+	DisposeEnhancedPlacard(controls.fill);
 }
 
 void ToolPalette::Activate()
@@ -70,12 +74,15 @@ void ToolPalette::Deactivate()
 
 void ToolPalette::DoIdle()
 {
-	icnsEditorPtr frontEditor;
+	icnsEditorPtr	frontEditor;
+	int			 	previousTool;
 	
 	frontEditor = GetFrontEditor();
 	
 	if (frontEditor != NULL)
 	{
+		previousTool = currentTool;
+		
 		if (oldTool == toolNone)
 		{
 			if (ISOPTIONDOWN && currentTool != toolMarquee && // selection and 
@@ -108,6 +115,17 @@ void ToolPalette::DoIdle()
 		{
 			currentTool = oldTool;
 			oldTool = toolNone;
+		}
+		
+		if (previousTool != currentTool)
+		{
+			Point theMouse;
+			
+			SAVEGWORLD;
+			frontEditor->SetPort();
+			GetMouse(&theMouse);
+			RESTOREGWORLD;
+			frontEditor->UpdateCursor(theMouse);
 		}
 		
 		/*
@@ -257,7 +275,7 @@ void ToolPalette::HandleContentClick(EventRecord* eventPtr)
 						toolClick = true;
 						if (lastToolClick == -1 || i != currentTool)
 							lastToolClick = TickCount();
-						else if (TickCount() - lastToolClick <= LMGetDoubleTime())
+						else if (TickCount() - lastToolClick <= GetDblTime())
 						{
 							if (i == toolRectangle ||
 								i == toolOval ||

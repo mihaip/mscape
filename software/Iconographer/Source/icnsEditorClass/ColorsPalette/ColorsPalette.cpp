@@ -2,8 +2,8 @@
 #include "icnsEditorClass.h"
 #include "graphicalFunctions.h"
 
-ControlActionUPP RGBColorPicker::sliderActionUPP = NewControlActionProc(RGBColorPicker::SliderAction);
-ControlActionUPP HSVColorPicker::sliderActionUPP = NewControlActionProc(HSVColorPicker::SliderAction);
+ControlActionUPP RGBColorPicker::sliderActionUPP = NewControlActionUPP(RGBColorPicker::SliderAction);
+ControlActionUPP HSVColorPicker::sliderActionUPP = NewControlActionUPP(HSVColorPicker::SliderAction);
 
 
 ColorsPalette::ColorsPalette()
@@ -15,6 +15,9 @@ ColorsPalette::ColorsPalette()
 	
 	fore.red = fore.green = fore.blue = 0;
 	back.red = back.green = back.blue = 0xFFFF;
+	
+	currentX = currentY = -1;
+	currentReadoutColor = kNeverUsedColorAsRGB;
 	
 	CreateControls();
 
@@ -40,7 +43,8 @@ ColorsPalette::ColorsPalette()
 
 ColorsPalette::~ColorsPalette()
 {
-	
+	DisposeRgn(foreColorRgn);
+	DisposeRgn(backColorRgn);
 }
 
 void ColorsPalette::Close()
@@ -75,50 +79,39 @@ void ColorsPalette::Show()
 
 void ColorsPalette::DoIdle()
 {
-	Point		theMouse, globalMouse;
-	WindowPtr	windowUnderMouse;
+	;
+}
+
+void ColorsPalette::UpdateCursor(Point theMouse)
+{
+	Rect		colorPickerRect;
 	
-	SAVEGWORLD;
-	
-	SetPort();
-	
-	GetMouse(&theMouse);
-	
-	globalMouse = theMouse;
-	LocalToGlobal(&globalMouse);
-	FindWindow(globalMouse, &windowUnderMouse);
-	
-	if (windowUnderMouse == window)
+	GetControlBounds(controls.colorPickerArea, &colorPickerRect);
+		
+	if (PtInRect(theMouse, &colorPickerRect))
+		currentColorPicker->UpdateCursor(theMouse);
+	else
 	{
-		Rect		colorPickerRect;
-		
-		GetControlBounds(controls.colorPickerArea, &colorPickerRect);
-		
-		if (PtInRect(theMouse, &colorPickerRect))
-			currentColorPicker->DoIdle();
-		else
+#if !TARGET_API_MAC_CARBON
+		if (HMGetBalloons())
 		{
-			if (HMGetBalloons())
-			{
-				Rect			controlBounds;
-				
-				GetControlBounds(controls.tabs, &controlBounds);
-				
-				controlBounds.bottom = controlBounds.top + kSmallTabTabsHeight;
-				
-				if (PtInRect(theMouse, &controlBounds))
-					HandleBalloon(rCPBalloonHelp, hCPTabs, controlBounds, theMouse);
-				else
-					HandleBalloons(theMouse, window, rCPBalloonHelp);
-			}
-			if (PtInRgn(theMouse, foreColorRgn))
-				UpdateReadout(-1, -1, fore);
-			else if (PtInRgn(theMouse, backColorRgn))
-				UpdateReadout(-1, -1, back);
+			Rect			controlBounds;
+			
+			GetControlBounds(controls.tabs, &controlBounds);
+			
+			controlBounds.bottom = controlBounds.top + kSmallTabTabsHeight;
+			
+			if (PtInRect(theMouse, &controlBounds))
+				HandleBalloon(rCPBalloonHelp, hCPTabs, controlBounds, theMouse);
+			else
+				HandleBalloons(theMouse, window, rCPBalloonHelp);
 		}
+#endif
+		if (PtInRgn(theMouse, foreColorRgn))
+			UpdateReadout(-1, -1, fore);
+		else if (PtInRgn(theMouse, backColorRgn))
+			UpdateReadout(-1, -1, back);
 	}
-	
-	RESTOREGWORLD;
 }
 
 void ColorsPalette::HandleContentClick(EventRecord* eventPtr)
@@ -206,12 +199,18 @@ int ColorsPalette::GetCurrentPicker()
 
 void ColorsPalette::SetColors(RGBColor foreColor, RGBColor backColor)
 {
+	if (AreEqualRGB(foreColor, fore) &&
+		AreEqualRGB(backColor, back))
+		return;
+		
 	fore = foreColor;
 	back = backColor;
+	
 	if (currentColor == kCPFore)
 		currentColorPicker->SetColor(fore);
 	else
 		currentColorPicker->SetColor(back);
+	
 	Draw1Control(controls.swatch);
 }
 
@@ -262,8 +261,13 @@ void ColorsPalette::Update()
 void ColorsPalette::UpdateReadout(int x, int y, RGBColor color)
 {
 	Str255 numberAsString, finalString;
-
+	
 	readoutChanged = true;
+	
+	if (x == currentX &&
+		y == currentY &&
+		AreEqualRGB(color, currentReadoutColor))
+		return;
 	
 	CopyString(finalString, "\p");
 	if (x != -1)
@@ -292,6 +296,10 @@ void ColorsPalette::UpdateReadout(int x, int y, RGBColor color)
 	SetControlText(controls.colorReadoutData, finalString);
 	
 	Draw1Control(controls.colorReadoutData);
+	
+	currentX = x;
+	currentY = y;
+	currentReadoutColor = color;
 }
 
 void ColorsPalette::CreateControls()
@@ -370,12 +378,18 @@ ColorPicker::ColorPicker()
 
 ColorPicker::~ColorPicker()
 {
-
+	;
 }
 
 void ColorPicker::DoIdle()
 {
 
+}
+
+void ColorPicker::UpdateCursor(Point theMouse)
+{
+#pragma unused (theMouse)
+	;
 }
 
 void ColorPicker::SetDisplayArea(ColorsPalettePtr window, ControlHandle area)
@@ -475,12 +489,9 @@ void RGBColorPicker::Show()
 	ShowControl(parentControl);
 }
 
-void RGBColorPicker::DoIdle()
+void RGBColorPicker::UpdateCursor(Point theMouse)
 {
-	Point theMouse;
-	
-	GetMouse(&theMouse);
-	
+#if !TARGET_API_MAC_CARBON
 	if (HMGetBalloons())
 		if (HandleBalloon(rRGBCPBalloonHelp, redSlider, theMouse) ||
 			HandleBalloon(rRGBCPBalloonHelp, greenSlider, theMouse) ||
@@ -490,6 +501,7 @@ void RGBColorPicker::DoIdle()
 		}
 		else
 			HandleBalloons(theMouse, parentWindow->GetWindow(), rRGBCPBalloonHelp);
+#endif
 }
 
 void RGBColorPicker::HandleContentClick(EventRecord* eventPtr)
@@ -746,12 +758,9 @@ void HSVColorPicker::Show()
 	ShowControl(parentControl);
 }
 
-void HSVColorPicker::DoIdle()
+void HSVColorPicker::UpdateCursor(Point theMouse)
 {
-	Point theMouse;
-	
-	GetMouse(&theMouse);
-	
+#if !TARGET_API_MAC_CARBON
 	if (HMGetBalloons())
 		if (HandleBalloon(rHSVCPBalloonHelp, hueSlider, theMouse) ||
 			HandleBalloon(rHSVCPBalloonHelp, saturationSlider, theMouse) ||
@@ -761,6 +770,7 @@ void HSVColorPicker::DoIdle()
 		}
 		else
 			HandleBalloons(theMouse, parentWindow->GetWindow(), rHSVCPBalloonHelp);
+#endif
 }
 
 void HSVColorPicker::HandleContentClick(EventRecord* eventPtr)
@@ -971,16 +981,14 @@ void SystemColorPicker::Show()
 	ShowControl(paletteControl);
 }
 
-void SystemColorPicker::DoIdle()
+void SystemColorPicker::UpdateCursor(Point theMouse)
 {
-	Point theMouse;
 	Rect	controlRect;
-	
-	GetMouse(&theMouse);
-	
+#if !TARGET_API_MAC_CARBON
 	if (HMGetBalloons())
 		HandleBalloons(theMouse, parentWindow->GetWindow(), rSystemCPBalloonHelp);
-	
+#endif
+
 	GetControlBounds(paletteControl, &controlRect);
 	
 	theMouse.h -= controlRect.left;
@@ -1040,6 +1048,7 @@ void SystemColorPicker::HandleContentClick(EventRecord* eventPtr)
 			currentPoint.v -= controlRect.top;
 			temp = color;
 			color = previousColor;
+			Draw1Control(clickedControl);
 			parentWindow->UpdateColors();
 			color = temp;
 		} while (Button());
@@ -1236,17 +1245,16 @@ void FavoritesColorPicker::Show()
 	ShowControl(paletteControl);
 }
 
-void FavoritesColorPicker::DoIdle()
+void FavoritesColorPicker::UpdateCursor(Point theMouse)
 {
-	Point	theMouse;
 	Rect	paletteRect;
 	int		colorIndex;
-	
-	GetMouse(&theMouse);
-	
+
+#if !TARGET_API_MAC_CARBON
 	if (HMGetBalloons())
 		HandleBalloons(theMouse, parentWindow->GetWindow(), rFavoritesCPBalloonHelp);
-	
+#endif
+
 	GetControlBounds(paletteControl, &paletteRect);
 	
 	theMouse.h -= paletteRect.left;
@@ -1475,11 +1483,28 @@ pascal void	CPSwatchDraw(ControlHandle theControl,SInt16 thePart)
 	OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top);
 	
 	SetGWorld(icnsEditorClass::statics.canvasGW, NULL);
+
+#if TARGET_API_MAC_CARBON
+	Point patternOrigin;
 	
+	patternOrigin.h = -controlRect.left;
+	patternOrigin.v = -controlRect.top;
+	
+	//MyQDSetPatternOrigin(patternOrigin);
+	
+	InsetRect(&canvasRect, -1, -1);
+	
+	if (IsControlActive(theControl))
+		DrawThemePlacard(&canvasRect, kThemeStateActive);
+	else
+		DrawThemePlacard(&canvasRect, kThemeStateInactive);
+		
+	InsetRect(&canvasRect, 1, 1);
+#else
 	RESTORECOLORS;
 	
 	EraseRect(&canvasRect);
-	
+#endif
 	ForeColor(blackColor);
 	BackColor(whiteColor);
 	

@@ -105,7 +105,7 @@ void icnsEditorClass::HandlePan(Point startMouse)
 	
 	while (Button())
 	{
-		GetMouse(&currentMouse);
+		MUtilities::GetMouseLocation(GetWindowPort(window), &currentMouse);
 		
 		SetControlValue(controls.hScrollbar,
 						previousH + startMouse.h - currentMouse.h);
@@ -183,7 +183,7 @@ void icnsEditorClass::HandleGradient(Point startMouse)
 	do // while the button is down
 	{
 		// we get the new position
-		GetMouse(&currentMouse);
+		MUtilities::GetMouseLocation(GetWindowPort(window), &currentMouse);
 		GetDrawingMousePosition(&x, &y, &currentMouse, magnified);
 		if (ISSHIFTDOWN) // if shift is down, we must restrict the line to specific angles
 		{
@@ -414,28 +414,27 @@ void icnsEditorClass::HandleRectangle(Point startMouse)
 	err = MakeThreeColorTable(&overlayCTab, foreColor, backColor, kNeverUsedColorAsRGB);
 	// we must create the color table which is used for the overlay
 	if (err != noErr) {status |= outOfMemory; return; }
+	HLock(Handle(overlayCTab));
 	
-	err = NewGWorld(&overlayGW, 2, &currentBounds, overlayCTab, NULL, 0);
-	// and allocate the space for the overlay
+	err = NewGWorldUnpadded(&overlayGW, 4, &currentBounds, overlayCTab); // and allocate the space for the overlay
 	if (err != noErr) {status |= outOfMemory; return; }
-	SetGWorld(overlayGW, NULL);
 	overlayPix = GetGWorldPixMap(overlayGW);
 	LockPixels(overlayPix);
-	RGBBackColor(&kNeverUsedColorAsRGB); // we fill it with the transparent color
-	EraseRect(&currentBounds);
+	SetGWorld(overlayGW, NULL);
+	//RGBBackColor(&kNeverUsedColorAsRGB); // we fill it with the transparent color
+	//EraseRect(&currentBounds);
+	PenSize(statics.preferences.GetLineThickness(), statics.preferences.GetLineThickness());
+	RESTOREGWORLD;
+	RESTORECOLORS;
+	
 	GetDrawingMousePosition(&x1, &y1, &startMouse, 0);
 	x2 = x1;
 	y2 = y1;
-	
 	SetRect(&oldRect, x1, y1, x2, y2);
-	
-	PenSize(statics.preferences.GetLineThickness(), statics.preferences.GetLineThickness());
-	
-	RESTOREGWORLD;
 	
 	while (Button()) // while the button is down...
 	{
-		GetMouse(&currentMouse); // we see if the user moved the mouse
+		MUtilities::GetMouseLocation(GetWindowPort(window), &currentMouse); // we see if the user moved the mouse
 		if (currentMouse.h != startMouse.h || currentMouse.v != startMouse.v)
 		{
 			// if he did, then we move into action...
@@ -600,13 +599,15 @@ void icnsEditorClass::HandleRectangle(Point startMouse)
 				FrameOval(&drawRect);
 			}
 			RESTOREGWORLD;
+			RESTORECOLORS;
 		} // endof: the user moved the mouse
 		
+		// we display the drawing area (this adds on the overlay autmatically)
 		UpdateEditArea(drawRect, oldRect, 0);
 		
 		if (statics.colorsPalette->IsVisible())
 			statics.colorsPalette->UpdateReadout(x2, y2, kPickerNeverUsedColor);
-		// we display the current icon (this adds on the overlay autmatically)
+
 		
 		oldRect = drawRect;
 	}
@@ -661,6 +662,7 @@ void icnsEditorClass::HandleRectangle(Point startMouse)
 	UnlockPixels(overlayPix);
 	DisposeGWorld(overlayGW);
 	overlayPix = NULL;
+	HUnlock(Handle(overlayCTab));
 	DisposeCTable(overlayCTab);
 	
 	if (savedClip != NULL)
@@ -705,7 +707,7 @@ void icnsEditorClass::HandlePolygon(Point startMouse)
 	statics.toolPalette->GetColors(&foreColor, &backColor);
 	fillPattern = statics.toolPalette->GetPattern();
 	
-	clickDelay = LMGetDoubleTime();
+	clickDelay = GetDblTime();
 	
 	// making the color table for the overlay
 	err = MakeTwoColorTable(&overlayCTab, foreColor, kNeverUsedColorAsRGB);
@@ -740,7 +742,7 @@ void icnsEditorClass::HandlePolygon(Point startMouse)
 		   (vertices[0].v != vertices[noOfVertices].v) ||
 		   firstTime)
 	{
-		GetMouse(&currentMouse);
+		MUtilities::GetMouseLocation(GetWindowPort(window), &currentMouse);
 		GetDrawingMousePosition(&x, &y, &currentMouse, 0);
 		x += xOffset;
 		y += yOffset;
@@ -911,7 +913,7 @@ void icnsEditorClass::HandleLine(Point startMouse)
 	
 	while (Button()) // while the button is down
 	{
-		GetMouse(&currentMouse);
+		MUtilities::GetMouseLocation(GetWindowPort(window), &currentMouse);
 		// we get the new position
 		GetDrawingMousePosition(&x, &y, &currentMouse, 0);
 		x += xOffset;
@@ -1036,7 +1038,7 @@ void icnsEditorClass::HandleLasso(Point startMouse)
 			if (status & selectionFloated)
 				HandleMove(trueStartMouse);
 			else
-				DragSelection(tempX, tempY);
+				DragSelection(trueStartMouse, tempX, tempY);
 			return;
 		}
 	}
@@ -1124,11 +1126,11 @@ void icnsEditorClass::HandleFreehandLasso(void)
 	
 	SAVEGWORLD;
 	
-	GetMouse(&oldMouse);
+	MUtilities::GetMouseLocation(GetWindowPort(window), &oldMouse);
 	
 	while (Button())
 	{
-		GetMouse(&currentMouse);
+		MUtilities::GetMouseLocation(GetWindowPort(window), &currentMouse);
 		GetDrawingMousePosition(&x, &y, &currentMouse, magnified);
 		SetGWorld(overlayGW, NULL);
 		// and we just trace the position
@@ -1155,14 +1157,14 @@ void icnsEditorClass::HandlePolygonalLasso(void)
 	bool 		firstTime;
 	long		lastClick, clickDelay;
 	
-	clickDelay = LMGetDoubleTime()/2;
+	clickDelay = GetDblTime()/2;
 	
 	SAVEGWORLD; // we'll be changing the gworld and colors
 	SAVECOLORS;
 	
 	currentBounds = (**overlayPix).bounds;
 	
-	GetMouse(&startMouse);
+	MUtilities::GetMouseLocation(GetWindowPort(window), &startMouse);
 	currentMouse = startMouse;
 	oldMouse = currentMouse;
 	
@@ -1182,7 +1184,7 @@ void icnsEditorClass::HandlePolygonalLasso(void)
 		   (vertices[0].v < vertices[noOfVertices].v - 3) ||
 		   firstTime)
 	{
-		GetMouse(&currentMouse);
+		MUtilities::GetMouseLocation(GetWindowPort(window), &currentMouse);
 		GetDrawingMousePosition(&x, &y, &currentMouse, magnified);
 		
 		if (ISSHIFTDOWN)
@@ -1233,7 +1235,7 @@ void icnsEditorClass::HandlePolygonalLasso(void)
 				lastClick = TickCount();
 			}
 			
-			GetMouse(&startMouse);
+			MUtilities::GetMouseLocation(GetWindowPort(window), &startMouse);
 		}
 		
 		oldMouse = currentMouse;
@@ -1250,7 +1252,12 @@ RgnHandle icnsEditorClass::TightenLasso(RgnHandle lassoSelectionRgn)
 {
 	RgnHandle 		tightenedRgn;
 	ColorSearchUPP	maskColorSearchUPP;
+#if TARGET_API_MAC_CARBON
+	GWorldPtr		tempGW;
+	PixMapHandle	tempPix;
+#else
 	GrafPtr			temp;
+#endif
 	Rect			lassoBounds, tempRect;
 	RGBColor		transparentColor;
 	PixMapHandle	targetPix;
@@ -1260,9 +1267,15 @@ RgnHandle icnsEditorClass::TightenLasso(RgnHandle lassoSelectionRgn)
 	GetRegionBounds(lassoSelectionRgn, &lassoBounds);
 	tempRect = lassoBounds;
 	OffsetRect(&tempRect, -tempRect.left, -tempRect.top);
+#if TARGET_API_MAC_CARBON
+	NewGWorld(&tempGW, 1, &tempRect, NULL, NULL, 0);
+	tempPix = GetGWorldPixMap(tempGW);
+	LockPixels(tempPix);
+#else
 	temp = CreateGrafPort(&tempRect);
+#endif
 
-	maskColorSearchUPP = NewColorSearchProc(MaskColorSearch);
+	maskColorSearchUPP = NewColorSearchUPP(MaskColorSearch);
 	
 	statics.toolPalette->GetColors(NULL, &transparentColor);
 	
@@ -1270,7 +1283,20 @@ RgnHandle icnsEditorClass::TightenLasso(RgnHandle lassoSelectionRgn)
 		targetPix = selectionPix;
 	else
 		targetPix = currentPix;
+
+#if TARGET_API_MAC_CARBON
+	CalcCMask((BitMap*)*targetPix,
+			  (BitMap*)*tempPix,
+			  &lassoBounds,
+			  &tempRect,
+			  &transparentColor,
+			  maskColorSearchUPP,
+			  0);
 	
+	BitMapToRegion(tightenedRgn, (BitMap*)*tempPix);
+	UnlockPixels(tempPix);
+	DisposeGWorld(tempGW);
+#else
 	CalcCMask((BitMap*)*targetPix,
 			  GetPortBitMapForCopyBits(temp),
 			  &lassoBounds,
@@ -1280,12 +1306,15 @@ RgnHandle icnsEditorClass::TightenLasso(RgnHandle lassoSelectionRgn)
 			  0);
 	
 	BitMapToRegion(tightenedRgn, GetPortBitMapForCopyBits(temp));
+	DisposeGrafPort(temp);
+#endif
+	
 	OffsetRgn(tightenedRgn, lassoBounds.left, lassoBounds.top);
 	SectRgn(tightenedRgn, lassoSelectionRgn, tightenedRgn);
 	
-	DisposeRoutineDescriptor(maskColorSearchUPP);
+	DisposeColorSearchUPP(maskColorSearchUPP);
 	
-	DisposeGrafPort(temp);
+	
 	
 	return tightenedRgn;
 }
@@ -1299,7 +1328,13 @@ RgnHandle icnsEditorClass::TightenLasso(RgnHandle lassoSelectionRgn)
 
 void icnsEditorClass::HandleMagicWand(Point theMouse)
 {
-	GrafPtr		selectionShape; // the selection shape (to be converted into a region)
+	BitMap*		selectionShape; // the selection shape (to be converted into a region)
+#if TARGET_API_MAC_CARBON
+	GWorldPtr	tempGW;
+	PixMapHandle tempPix;
+#else
+	GrafPtr		temp;
+#endif
 	Rect		currentBounds; // dimensions of the current drawing
 	int			x, y; // click location
 	int			mode; // the selection mode
@@ -1334,7 +1369,7 @@ void icnsEditorClass::HandleMagicWand(Point theMouse)
 			if (status & selectionFloated)
 				HandleMove(trueStartMouse);
 			else
-				DragSelection(x, y);
+				DragSelection(trueStartMouse, x, y);
 			return;
 		}
 	}
@@ -1348,14 +1383,21 @@ void icnsEditorClass::HandleMagicWand(Point theMouse)
 	tempRgn = NewRgn();
 
 	// we make the temporary gworld
-	selectionShape = CreateGrafPort(&currentBounds);
-	
+#if TARGET_API_MAC_CARBON
+	NewGWorld(&tempGW, 1, &currentBounds, NULL, NULL, 0);
+	tempPix = GetGWorldPixMap(tempGW);
+	LockPixels(tempPix);
+	selectionShape = (BitMap*)*tempPix;
+#else
+	temp = CreateGrafPort(&currentBounds);
+	selectionShape = GetPortBitMapForCopyBits(temp);
+#endif	
 	if (!(status & selectionFloated)) // if there isn't a floated selection
 	{
 		// we must get the new selection from the current GWorld
 		SetGWorld(currentGW, NULL);
 		SeedCFill((BitMap*)*currentPix,
-			  GetPortBitMapForCopyBits(selectionShape),
+			  selectionShape,
 			  &currentBounds,
 			  &currentBounds,
 			  x, y,
@@ -1367,7 +1409,7 @@ void icnsEditorClass::HandleMagicWand(Point theMouse)
 		// otherwise we get it from the selection GWorld
 		SetGWorld(selectionGW, NULL);
 		SeedCFill((BitMap*)*selectionPix,
-			  GetPortBitMapForCopyBits(selectionShape),
+			  selectionShape,
 			  &currentBounds,
 			  &currentBounds,
 			  x, y,
@@ -1376,7 +1418,7 @@ void icnsEditorClass::HandleMagicWand(Point theMouse)
 	}
 	
 	// we convert the pixmap into a region to get the selection shape
-	BitMapToRegion(tempRgn, GetPortBitMapForCopyBits(selectionShape)); 
+	BitMapToRegion(tempRgn, selectionShape); 
 			  
 	RESTOREGWORLD;
 	RESTORECOLORS;
@@ -1397,7 +1439,12 @@ void icnsEditorClass::HandleMagicWand(Point theMouse)
 	DisposeRgn(tempRgn);
 	
 	// and this too
-	DisposeGrafPort(selectionShape);
+#if TARGET_API_MAC_CARBON
+	UnlockPixels(tempPix);
+	DisposeGWorld(tempGW);
+#else
+	DisposeGrafPort(temp);
+#endif
 }
 
 // __________________________________________________________________________________________
@@ -1481,7 +1528,7 @@ bool icnsEditorClass::HandleMove(Point startMouse)
 			
 			windowRect = GetPortRect();
 			
-			GetMouse(&localMouse);
+			MUtilities::GetMouseLocation(GetWindowPort(window), &localMouse);
 			localMouse.h = constrain(localMouse.h, windowRect.left, windowRect.right);
 			localMouse.v = constrain(localMouse.v, windowRect.top, windowRect.bottom);
 			
@@ -1729,7 +1776,7 @@ void icnsEditorClass::HandleMarquee(Point startMouse)
 			if (status & selectionFloated)
 				HandleMove(trueStartMouse);
 			else
-				DragSelection(x1, y1);
+				DragSelection(trueStartMouse, x1, y1);
 			return;
 		}
 	}
@@ -1747,9 +1794,9 @@ void icnsEditorClass::HandleMarquee(Point startMouse)
 	
 	while (Button())
 	{
-		GetMouse(&currentMouse);
+		MUtilities::GetMouseLocation(GetWindowPort(window), &currentMouse);
 		
-		if (currentMouse.h != startMouse.h || currentMouse.v != startMouse.v)
+		if (currentMouse.h != trueStartMouse.h || currentMouse.v != trueStartMouse.v)
 		{
 			GetDrawingMousePosition(&x2, &y2, &currentMouse, 0);
 			
@@ -1907,50 +1954,62 @@ void icnsEditorClass::HandleMarquee(Point startMouse)
 	}
 }
 
-void icnsEditorClass::DragSelection(int anchorX, int anchorY)
+void icnsEditorClass::DragSelection(Point startMouse, int anchorX, int anchorY)
 {
 	int		x, y, // current location
 			startX, startY; // original location
 	Rect	oldBounds, newBounds;
+	Point	currentMouse;
+	bool	moved = false;
 	
 	startX = anchorX;
 	startY = anchorY;
 	
+	
 	while (Button()) // we move while the button is down
 	{
-		GetDrawingMousePosition(&x, &y, NULL, 0);
+		MUtilities::GetMouseLocation(GetWindowPort(window), &currentMouse);
+		if (currentMouse.h != startMouse.h || currentMouse.v != startMouse.v || moved)
+		{
+			moved = true;
+		
+			GetDrawingMousePosition(&x, &y, &currentMouse, 0);
 
-		// and get the new position
-		if (ISSHIFTDOWN) // angle based constraints, very similar to the line constraints
-			ConstrainLine45(startX, startY, &x, &y);
-		
-		// we must move both the normal and the magnified selection shape
-		GetRegionBounds(selectionRgn, &oldBounds);
-		OffsetRgn(selectionRgn, x - anchorX, y - anchorY);
-		GetRegionBounds(selectionRgn, &newBounds);
-		OffsetRgn(selectionContentsMagnifiedRgn,
-				 (x - anchorX) * magnification,
-				 (y - anchorY) * magnification);
-		OffsetRgn(selectionOutlineMagnifiedRgn,
-				 (x - anchorX) * magnification,
-				 (y - anchorY) * magnification);
-				 
-		
-		UnionRect(&oldBounds, &newBounds, &newBounds);
-		MagnifyRect(&newBounds, magnification);
-		OffsetRect(&newBounds,
-				   editAreaRect.left - hScrollbarValue,
-				   editAreaRect.top - vScrollbarValue);
-		SectRect(&newBounds, &editAreaRect, &newBounds);
-		
-		UpdateEditArea(newBounds);
-		if (statics.colorsPalette->IsVisible())
-			statics.colorsPalette->UpdateReadout(x, y, kPickerNeverUsedColor);
-		
-		// and set the current coordinates as the old ones
-		anchorX = x;
-		anchorY = y;
+			// and get the new position
+			if (ISSHIFTDOWN) // angle based constraints, very similar to the line constraints
+				ConstrainLine45(startX, startY, &x, &y);
+			
+			// we must move both the normal and the magnified selection shape
+			GetRegionBounds(selectionRgn, &oldBounds);
+			OffsetRgn(selectionRgn, x - anchorX, y - anchorY);
+			GetRegionBounds(selectionRgn, &newBounds);
+			OffsetRgn(selectionContentsMagnifiedRgn,
+					 (x - anchorX) * magnification,
+					 (y - anchorY) * magnification);
+			OffsetRgn(selectionOutlineMagnifiedRgn,
+					 (x - anchorX) * magnification,
+					 (y - anchorY) * magnification);
+					 
+			
+			UnionRect(&oldBounds, &newBounds, &newBounds);
+			MagnifyRect(&newBounds, magnification);
+			OffsetRect(&newBounds,
+					   editAreaRect.left - hScrollbarValue,
+					   editAreaRect.top - vScrollbarValue);
+			SectRect(&newBounds, &editAreaRect, &newBounds);
+			
+			UpdateEditArea(newBounds);
+			if (statics.colorsPalette->IsVisible())
+				statics.colorsPalette->UpdateReadout(x, y, kPickerNeverUsedColor);
+			
+			// and set the current coordinates as the old ones
+			anchorX = x;
+			anchorY = y;
+		}
 	}
+	
+	if (!moved)
+		MakeSelection(none);
 	
 	return;
 }
@@ -2028,7 +2087,12 @@ void icnsEditorClass::HandleFilling(Point theMouse)
 	PixMapHandle	targetPix; // pixmap where the filling will take place
 	OSStatus		err = noErr; // used for error checking
 	RgnHandle		clipRgn = NULL, tempRgn;
+#if TARGET_API_MAC_CARBON
+	GWorldPtr		fillShapeGW;
+	PixMapHandle	fillShapePix;
+#else
 	GrafPtr			fillShape;
+#endif
 	Pattern			fillPattern;
 	RGBColor		foreColor, backColor;
 	
@@ -2067,6 +2131,30 @@ void icnsEditorClass::HandleFilling(Point theMouse)
 		targetPix = currentPix;
 	}
 	
+	tempRgn = NewRgn();
+	
+#if TARGET_API_MAC_CARBON
+	// we make the temporary gworld
+	NewGWorld(&fillShapeGW, 1, &(**targetPix).bounds, NULL, NULL, 0);
+	fillShapePix = GetGWorldPixMap(fillShapeGW);
+	LockPixels(fillShapePix);
+	
+	SetGWorld(targetGW, NULL);
+	SeedCFill((BitMap*)*targetPix,
+		  (BitMap*)*fillShapePix,
+		  &(**targetPix).bounds,
+		  &(**targetPix).bounds,
+		  x, y,
+		  0,
+		  0);
+	
+	
+	// we convert the pixmap into a region to get the selection shape
+	BitMapToRegion(tempRgn, (BitMap*)*fillShapePix);
+	
+	UnlockPixels(fillShapePix);
+	DisposeGWorld(fillShapeGW);
+#else
 	// we make the temporary gworld
 	fillShape = CreateGrafPort(&(**targetPix).bounds);
 	
@@ -2079,11 +2167,12 @@ void icnsEditorClass::HandleFilling(Point theMouse)
 		  0,
 		  0);
 	
-	tempRgn = NewRgn();
+	
 	// we convert the pixmap into a region to get the selection shape
 	BitMapToRegion(tempRgn, GetPortBitMapForCopyBits(fillShape));
 	
 	DisposeGrafPort(fillShape);
+#endif
 	
 	if (clipRgn != NULL)
 		SectRgn(tempRgn, clipRgn, tempRgn);
@@ -2256,7 +2345,7 @@ void icnsEditorClass::HandlePen(Point initialMouse)
 	
 	while (Button()) // while the button is down
 	{
-		GetMouse(&mousePosition);
+		MUtilities::GetMouseLocation(GetWindowPort(window), &mousePosition);
 		if (mousePosition.h != oldMouse.h || mousePosition.v != oldMouse.v)
 		// if the user moves the mouse
 		{
@@ -2320,19 +2409,9 @@ inline void icnsEditorClass::GetDrawingMousePosition(int *x, int *y, Point* theM
 						   // lower half is y coordinate
 	
 	if (theMouse == NULL)
-	{
-		SAVEGWORLD; // we'll be changing the port
-		
-		SetPort();
-		
-		GetMouse(&originalMouse); // in terms of the window
-		
-		RESTOREGWORLD;
-	}
+		MUtilities::GetMouseLocation(GetWindowPort(window), &originalMouse);
 	else
-	{
 		originalMouse = *theMouse;
-	}
 	
 	boundsRect = (**currentPix).bounds;
 	

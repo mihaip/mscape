@@ -14,4 +14,4 @@ pascal OSErr	AEOpenApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long 
 pascal OSErr	AEOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon);
 pascal OSErr	AEPrintDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon);
 pascal OSErr	AEQuitApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon);
-
+pascal OSErr	AEPreferences(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon);

@@ -524,11 +524,11 @@ void AddICOMember(short file, int width,int height, int colorCount, long* dataOf
 	unsigned char *buff, *srcCursor;
 	long			imageSize, maskSize, colorsSize, structSize, oldPos, size;
 	OSErr			err;
-	
 	GWorldPtr		tempGW;
 	PixMapHandle	tempPix;
 	SAVEGWORLD;
-	SAVECOLORS;	
+	SAVECOLORS;
+	
 	NewGWorldUnpadded(&tempGW, 32, &(**maskPix).bounds, NULL);
 	tempPix = GetGWorldPixMap(tempGW);
 	LockPixels(tempPix);

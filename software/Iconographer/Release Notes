@@ -25,9 +25,17 @@ Future stuff (planned version in parantheses):
 
 todo for 2.1:
 - carbon compliance
+- option while closing should close all windows
+- open menu item should have ellipsis
+- naming of new windows should be "untitled", "untitled 2", "untitled 3", etc.
+- pasting should be centered in current view/on curent selection
+- mac os x style about box
+- alerts should use application icon
+- turn alerts into sheets?
+- small slider in preview palette
+- live window dragging (switch to native floaters?)
 - anti-aliased text
 - palette position snapping
-- clicking once with the marquee (and lasso) should deselect
 - snap colors in color floater to current palette, system, web, grays, etc.
 - better handle converting to windows icon and saving immediately (check datafork, name, etc.)
 - redo colors and pattern pop-up (common base, use dialog instead)
@@ -37,15 +45,28 @@ todo for 2.1:
 - refactor icnseditorclass so that we can support the multiple views
 - .rsrc files
 - preferences and adjust balloon help
-- pop-ups should emulate menu behavior (click and release should leave the display open)
 - deal with icon and mask not being the same size in icon browser preview
 - scale icon up if previewing at a size that isn't available
 - when hitting the editor key shortcut, the icon menu should be hilighted
 - preference for not hiding floaters when in background
-- magnification pop-up slightly off
-- handle empty icons better (i.e. don't crash)
+- double click on member in palette should select all
+- name clippings
 
 Changes:
+2.0.2
+- fixed sporadic crash at startup
+- improved mini icon saving
+- clicking once with the marquee (and lasso) deselects
+- magnification pop-up was slightly off
+- fixed bug under Mac OS 9.1 with the rectangle and oval tools
+- icon browser handles empty icons better
+- save as dialog pop-up stats off with the current icon format
+- windows colors palette doesn't get reset to mac os one after saving
+- fixed windows saving issues
+- UI tweak for open dialog
+- fixed crash when deleting icons in icon browser
+- can now get info in icon browser
+
 2.0.1
 - proxy icons
 - open recent files command

@@ -26,7 +26,7 @@ OSErr GetTextAttributes(textSettings* lastTextSettings)
 	
 	textDialog = GetNewDialog(rTextDialog, NULL, (WindowPtr)-1L);
 	textDialogWindow = new MWindow(GetDialogWindow(textDialog), kDialogType);
-	eventFilterUPP = NewModalFilterProc(TextDialogFilter);
+	eventFilterUPP = NewModalFilterUPP(TextDialogFilter);
 	
 	SetDialogDefaultItem(textDialog, iOK);
 	SetDialogCancelItem(textDialog, iCancel);
@@ -147,62 +147,62 @@ void UpdateStyleMenu(MenuHandle styleMenu, ControlHandle stylePopup, int style)
 {
 	if (style == normal)
 	{
-		CheckItem(styleMenu, iPlain, true);
+		CheckMenuItem(styleMenu, iPlain, true);
 		SetControlValue(stylePopup, iPlain);
 	}
 	else
-		CheckItem(styleMenu, iPlain, false);
+		CheckMenuItem(styleMenu, iPlain, false);
 	
 	if (style & bold)
 	{
-		CheckItem(styleMenu, iBold, true);
+		CheckMenuItem(styleMenu, iBold, true);
 		SetControlValue(stylePopup, iBold);
 	}
 	else
-		CheckItem(styleMenu, iBold, false); 
+		CheckMenuItem(styleMenu, iBold, false); 
 	
 	if (style & italic)
 	{
-		CheckItem(styleMenu, iItalic, true);
+		CheckMenuItem(styleMenu, iItalic, true);
 		SetControlValue(stylePopup, iItalic);
 	}
 	else
-		CheckItem(styleMenu, iItalic, false);
+		CheckMenuItem(styleMenu, iItalic, false);
 	
 	if (style & underline)
 	{
-		CheckItem(styleMenu, iUnderline, true);
+		CheckMenuItem(styleMenu, iUnderline, true);
 		SetControlValue(stylePopup, iUnderline);
 	}
 	else
-		CheckItem(styleMenu, iUnderline, false); 
+		CheckMenuItem(styleMenu, iUnderline, false); 
 	
 	if (style & shadow)
 	{
-		CheckItem(styleMenu, iShadow, true);
+		CheckMenuItem(styleMenu, iShadow, true);
 		SetControlValue(stylePopup, iShadow);
 	}
 	else
-		CheckItem(styleMenu, iShadow, false); 
+		CheckMenuItem(styleMenu, iShadow, false); 
 	
 	if (style & condense)
 	{
-		CheckItem(styleMenu, iCondensed, true);
+		CheckMenuItem(styleMenu, iCondensed, true);
 		SetControlValue(stylePopup, iCondensed);
 	}
 	else
-		CheckItem(styleMenu, iCondensed, false);
+		CheckMenuItem(styleMenu, iCondensed, false);
 		
 	if (style & extend)
 	{
-		CheckItem(styleMenu, iExtended, true);
+		CheckMenuItem(styleMenu, iExtended, true);
 		SetControlValue(stylePopup, iExtended);
 	}
 	else
-		CheckItem(styleMenu, iExtended, false);
+		CheckMenuItem(styleMenu, iExtended, false);
 }
 
-pascal bool TextDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit)
+pascal Boolean TextDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit)
 {
 	char 	key;
 	bool	handledEvent = false;
@@ -226,7 +226,7 @@ pascal bool TextDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* ite
 					AppendString(text, "\p\r");
 				}
 				else
-					handledEvent = StandardEditorDialogFilter(dialog, eventPtr, itemHit);
+					handledEvent = MWindow::StandardDialogFilter(dialog, eventPtr, itemHit);
 			}
 			else if ((key == kReturnCharCode) || (key == kEnterCharCode) ||
 			    (key == kTabCharCode) || (key == kBackspaceCharCode) ||
@@ -236,7 +236,7 @@ pascal bool TextDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* ite
 			    ((key >= '0') && (key <= '9')) ||
 			    ((key == '.') && (eventPtr->modifiers & cmdKey) != 0))
 			{
-			   handledEvent = StandardEditorDialogFilter(dialog, eventPtr, itemHit);
+			   handledEvent = MWindow::StandardDialogFilter(dialog, eventPtr, itemHit);
 			}
 			else
 			{
@@ -245,7 +245,7 @@ pascal bool TextDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* ite
 			}
 			break;
 		default:
-			handledEvent = StandardEditorDialogFilter(dialog,eventPtr,itemHit);
+			handledEvent = MWindow::StandardDialogFilter(dialog,eventPtr,itemHit);
 		break;
 	}
 	return handledEvent;

@@ -1264,8 +1264,6 @@ resource 'STR#' (201, "Labels") {
 		"‘OŒiF‚ğ‘I‘ğF",
 		/* [5] */
 		"”wŒiF‚ğ‘I‘ğF",
-		/* [6] */
-		" ƒoƒCƒg",
 		/* [7] */
 		"–¼‘OFg<name>h IDF<ID>",
 		/* [8] */
@@ -1283,7 +1281,7 @@ resource 'STR#' (203, "Editor Balloon Help") {
 	}
 };
 
-resource 'STR#' (204, "- Icon Info Balloon Help") {
+resource 'STR#' (4003, "- Icon Info Balloon Help") {
 	{	/* array StringArray: 13 elements */
 		/* [1] */
 		"•ÏX‚ğ•Û‘¶‚µ‚Ä‚±‚Ìƒ_ƒCƒAƒƒO‚ğ•Â‚¶‚éB",
@@ -1316,48 +1314,57 @@ resource 'STR#' (204, "- Icon Info Balloon Help") {
 	}
 };
 
+resource 'STR#' (4004, "Icon Info Strings") {
+	{
+		/* array StringArray: 5 elements */
+		/* [1] */
+		"ƒAƒCƒRƒ“‘}“ü...",
+		/* [2] */
+		" ƒoƒCƒg",
+		/* [3] */
+		"ƒAƒCƒRƒ“‚Ì ID <ID> ‚Í‚·‚Å‚Éƒtƒ@ƒCƒ‹‚Åİ’è‚³‚ê‚Ä‚¢‚Ü‚·Bˆ—‚ğŒp‘±‚·‚é‚ÆAŒÃ‚¢ƒAƒCƒRƒ“‚ğŒ»İ‚ÌƒAƒCƒRƒ“‚Åã‘‚«•Û‘¶‚µ‚Ü‚·"
+		"B",
+		/* [4] */
+		"ã‘‚«",
+		/* [5] */
+		"ƒLƒƒƒ“ƒZƒ‹"
+	}
+};
+		
+
 resource 'STR#' (200, "- Basic Strings") {
-	{	/* array StringArray: 19 elements */
+	{	/* array StringArray: 15 elements */
 		/* [1] */
 		"–¼Ì–¢İ’è",
 		/* [2] */
-		"ƒAƒCƒRƒ“‚Ì ID <ID> ‚Í‚·‚Å‚Éƒtƒ@ƒCƒ‹‚Åİ’è‚³‚ê‚Ä‚¢‚Ü‚·Bˆ—‚ğŒp‘±‚·‚é‚ÆAŒÃ‚¢ƒAƒCƒRƒ“‚ğŒ»İ‚ÌƒAƒCƒRƒ“‚Åã‘‚«•Û‘¶‚µ‚Ü‚·"
-		"B",
-		/* [3] */
-		"ã‘‚«",
-		/* [4] */
-		"ƒLƒƒƒ“ƒZƒ‹",
-		/* [5] */
 		"ƒTƒCƒY <size> ‚Ì 8ƒrƒbƒg‚Æ 1ƒrƒbƒg‚Ìƒ}ƒXƒN‚ªˆÙ‚È‚Á‚Ä‚¢‚é‚Ì‚Å Finder ‚Å‚ÌƒAƒCƒRƒ“‚Ì•¦‚É–â‘è‚ª”­¶‚·‚é‚©‚à‚µ‚ê‚Ü‚¹‚ñBƒT"
 		"ƒCƒY <size> ‚Ì1ƒrƒbƒg‚Ìƒ}ƒXƒN‚ğ 8ƒrƒbƒg‚Ìƒ}ƒXƒN‚©‚çÄ¶¬‚µ‚Ä‚à‚æ‚ë‚µ‚¢‚Å‚·‚©H",
-		/* [6] */
+		/* [3] */
 		"ƒ}ƒXƒN‚ğÄ¶¬",
-		/* [7] */
+		/* [4] */
 		"‚Í‚¢",
-		/* [8] */
+		/* [5] */
 		"‚¢‚¢‚¦",
-		/* [9] */
+		/* [6] */
 		"ƒTƒCƒY <size> ‚Íƒ}ƒXƒN‚ğŠÜ‚ñ‚Å‚¢‚È‚¢‚Ì‚ÅƒAƒCƒRƒ“‚Ì•\¦‚ª‚Å‚«‚È‚¢‚©‚à‚µ‚ê‚Ü‚¹‚ñBƒ}ƒXƒN‚ğ©“®“I‚É¶¬‚µ‚Ü‚·‚©H",
-		/* [10] */
+		/* [7] */
 		"ƒ}ƒXƒN‚ğ¶¬",
-		/* [11] */
-		"ƒAƒCƒRƒ“‘}“ü...",
-		/* [12] */
+		/* [8] */
 		"ƒtƒ@ƒCƒ‹ <file name> ‚ÍAƒf[ƒ^ƒtƒH[ƒN‚Éî•ñ‚ğ‚·‚Å‚É‚Á‚Ä‚¢‚é‚Ì‚ÅAƒAƒCƒRƒ“‚ğ•Û‘¶‚·‚é‚Æ“à—e‚ğã‘‚«‚µ‚Ü‚·Bˆ—‚ğŒp‘±"
 		"‚·‚é‚©A‘¼‚Ìƒtƒ@ƒCƒ‹‚É•Û‘¶‚µ‚Ü‚·‚©H",
-		/* [13] */
+		/* [9] */
 		"‘¼‚Ìƒtƒ@ƒCƒ‹‚ğ‘I‘ğ",
-		/* [14] */
+		/* [10] */
 		"ƒVƒ‡[ƒgƒJƒbƒg‚ğ‘I‘ğ",
-		/* [15] */
+		/* [11] */
 		"ŠO•”ƒGƒfƒBƒ^‚ğ‘I‘ğ",
-		/* [16] */
+		/* [12] */
 		"Iconographer ƒTƒ|[ƒg",
-		/* [17] */
+		/* [13] */
 		"ƒtƒHƒ‹ƒ_gIconographer ƒTƒ|[ƒgh‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñBIconographer ‚ğÄƒCƒ“ƒXƒg[ƒ‹‚·‚é‚Ü‚Åƒwƒ‹ƒv‚Í—˜—p‚Å‚«‚Ü‚¹‚ñB",
-		/* [18] */
+		/* [14] */
 		"ŠO•”ƒGƒfƒBƒ^‚ª‘I‘ğ‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB‰Šúİ’èƒ_ƒCƒAƒƒO‚É‚Äİ’è‚ğs‚Á‚Ä‰º‚³‚¢B",
-		/* [19] */
+		/* [15] */
 		"‰Šúİ’è‚ğŠJ‚­"
 	}
 };
@@ -1388,6 +1395,8 @@ resource 'STR#' (300, "Icon Browser: Strings") {
 		"ƒtƒ@ƒCƒ‹–¼g<file name>h‚ÌƒAƒCƒRƒ“ IDF<icon ID> ‚ğ–{“–‚Éíœ‚µ‚Ä‚à‚æ‚ë‚µ‚¢‚Å‚·‚©H",
 		/* [12] */
 		"<name> (ƒAƒCƒRƒ“ƒuƒ‰ƒEƒU)"
+		/* [13] */
+		"<I>‚È‚µ</I>"
 	}
 };
 
@@ -1487,7 +1496,7 @@ resource 'STR#' (3000, "Key Names") {
 		/* [42] */
 		";",
 		/* [43] */
-		"\\",
+		"Y",
 		/* [44] */
 		",",
 		/* [45] */
@@ -2757,9 +2766,9 @@ resource 'MENU' (129) {
 		/* [1] */
 		"V‹KƒAƒCƒRƒ“", noIcon, "N", noMark, plain,
 		/* [2] */
-		"ƒAƒCƒRƒ“‚ğŠJ‚­", noIcon, "O", noMark, plain,
+		"ƒAƒCƒRƒ“‚ğŠJ‚­...", noIcon, "O", noMark, plain,
 		/* [3] */
-		"Å‹ßg—p‚µ‚½ƒtƒ@ƒCƒ‹...", noIcon, hierarchicalMenu, "‚", plain,
+		"Å‹ßg—p‚µ‚½ƒtƒ@ƒCƒ‹", noIcon, hierarchicalMenu, "‚", plain,
 		/* [4] */
 		"•Â‚¶‚é", noIcon, "W", noMark, plain,
 		/* [5] */
@@ -3389,52 +3398,6 @@ resource 'DITL' (1011, "Adjust: Hue & Saturation Pane") {
 	}
 };
 
-resource 'DITL' (9999) {
-	{	/* array DITLarray: 4 elements */
-		/* [1] */
-		{0, 0, 194, 194},
-		Control {
-			enabled,
-			200
-		},
-		/* [2] */
-		{193, -1, 209, 63},
-		Control {
-			enabled,
-			201
-		},
-		/* [3] */
-		{193, 62, 209, 194},
-		Control {
-			enabled,
-			203
-		},
-		/* [4] */
-		{-1, 193, 194, 209},
-		Control {
-			enabled,
-			202
-		}
-	}
-};
-
-resource 'DITL' (1002) {
-	{	/* array DITLarray: 2 elements */
-		/* [1] */
-		{2, 2, 34, 346},
-		StaticText {
-			disabled,
-			"ƒVƒ‡[ƒgƒJƒbƒg‚Æ‚µ‚Äg—p‚·‚éƒL[‚ğ‰Ÿ‚µ‚Ä‰º‚³‚¢B"
-		},
-		/* [2] */
-		{38, 2, 55, 346},
-		StaticText {
-			disabled,
-			""
-		}
-	}
-};
-
 resource 'DITL' (1003) {
 	{	/* array DITLarray: 5 elements */
 		/* [1] */
@@ -3847,7 +3810,7 @@ resource 'DITL' (270) {
 	}
 };
 
-resource 'DITL' (4000) {
+resource 'DITL' (5000) {
 	{	/* array DITLarray: 8 elements */
 		/* [1] */
 		{58, 288, 78, 356},
@@ -3900,7 +3863,7 @@ resource 'DITL' (4000) {
 	}
 };
 
-resource 'DITL' (1001, "Icon Info") {
+resource 'DITL' (4000, "Icon Info") {
 	{	/* array DITLarray: 54 elements */
 		/* [1] */
 		{318, 306, 338, 374},
@@ -4899,17 +4862,6 @@ resource 'DLOG' (1011, purgeable) {
 	noAutoCenter
 };
 
-resource 'DLOG' (9999, purgeable) {
-	{200, 219, 407, 426},
-	1025,
-	visible,
-	goAway,
-	0x0,
-	9999,
-	"–¼Ì–¢İ’èƒAƒCƒRƒ“",
-	noAutoCenter
-};
-
 resource 'DLOG' (1002, "Set External Editor Shortcut", purgeable) {
 	{259, 337, 318, 687},
 	dBoxProc,
@@ -5024,35 +4976,35 @@ resource 'DLOG' (270, "Colors Palette: HSV Picker", purgeable) {
 	noAutoCenter
 };
 
-resource 'DLOG' (4000, "MAlert: Movable", purgeable) {
+resource 'DLOG' (5000, "MAlert: Movable", purgeable) {
 	{566, 19, 656, 387},
 	1045,
 	invisible,
 	goAway,
 	0x0,
-	4000,
+	5000,
 	"",
 	noAutoCenter
 };
 
-resource 'DLOG' (4001, "MAlert: Non Movable", purgeable) {
+resource 'DLOG' (5001, "MAlert: Non Movable", purgeable) {
 	{566, 19, 656, 387},
 	1044,
 	invisible,
 	goAway,
 	0x0,
-	4000,
+	5000,
 	"",
 	noAutoCenter
 };
 
-resource 'DLOG' (1001, "Icon Info", purgeable) {
+resource 'DLOG' (4000, "Icon Info", purgeable) {
 	{228, 594, 575, 978},
 	1043,
 	invisible,
 	goAway,
 	0x0,
-	1001,
+	4000,
 	"ƒAƒCƒRƒ“î•ñ",
 	centerMainScreen
 };
@@ -5171,24 +5123,24 @@ resource 'hwin' (600, purgeable) {
 	}
 };
 
-resource 'hwin' (1001, "Icon Info", purgeable) {
+resource 'hwin' (4000, "Icon Info", purgeable) {
 	2,
 	0,
 	{	/* array HWinArray: 1 elements */
 		/* [1] */
-		1001,
+		4000,
 		'hrct',
 		12,
 		"ƒAƒCƒRƒ“î•ñ"
 	}
 };
 
-resource 'hwin' (1002, "Insert Icon", purgeable) {
+resource 'hwin' (4001, "Insert Icon", purgeable) {
 	2,
 	0,
 	{	/* array HWinArray: 1 elements */
 		/* [1] */
-		1001,
+		4000,
 		'hrct',
 		15,
 		"ƒAƒCƒRƒ“‘}“ü..."
@@ -5334,21 +5286,21 @@ resource 'ALRT' (3000) {
 
 resource 'vers' (1) {
 	0x2,
-	0x1,
+	0x2,
 	release,
 	0x0,
 	14,
-	"2.0.1J",
-	"2.0.1 “ú–{Œê”Å <–|–óFYoshi SAKUMA>\nı1998-2000 Mihai Parparita"
+	"2.0.2J",
+	"2.0.2 “ú–{Œê”Å <–|–óFYoshi SAKUMA>\nı1998-2001 Mihai Parparita"
 };
 
 resource 'vers' (2) {
 	0x2,
-	0x1,
+	0x2,
 	release,
 	0x0,
 	14,
-	"2.0.1J",
+	"2.0.2J",
 	"http://www.mscape.com/"
 };
 

@@ -84,6 +84,7 @@ class ColorPicker
 		virtual void		Show() = 0;
 		
 		virtual void		DoIdle();
+		virtual void		UpdateCursor(Point theMouse);
 			
 	protected:
 	
@@ -132,7 +133,7 @@ class RGBColorPicker : public ColorPicker
 		void			Hide();
 		void			Show();
 		
-		void			DoIdle();
+		void			UpdateCursor(Point theMouse);
 		
 		void			CreateControls();
 		void			HandleContentClick(EventRecord* eventPtr);
@@ -196,7 +197,7 @@ class HSVColorPicker : public ColorPicker
 		void			Hide();
 		void			Show();
 		
-		void			DoIdle();
+		void			UpdateCursor(Point theMouse);
 		
 		void			CreateControls();
 		void			HandleContentClick(EventRecord* eventPtr);
@@ -249,7 +250,7 @@ class SystemColorPicker : public ColorPicker
 		void			Hide();
 		void			Show();
 		
-		void			DoIdle();
+		void			UpdateCursor(Point theMouse);
 		
 		void			CreateControls();
 		void			HandleContentClick(EventRecord* eventPtr);
@@ -311,7 +312,7 @@ class FavoritesColorPicker : public ColorPicker
 		void			Hide();
 		void			Show();
 		
-		void			DoIdle();
+		void			UpdateCursor(Point theMouse);
 		
 		void			CreateControls();
 		void			HandleContentClick(EventRecord* eventPtr);
@@ -337,6 +338,7 @@ class ColorsPalette : public MFloater
 		void			Activate();
 		void			Deactivate();
 		void			DoIdle();
+		void			UpdateCursor(Point theMouse);
 		
 		void			Show();
 		
@@ -356,8 +358,9 @@ class ColorsPalette : public MFloater
 	
 	private:
 	
-		RGBColor				fore, back;
+		RGBColor				fore, back, currentReadoutColor;
 		int						currentColor;
+		int						currentX, currentY;
 		
 		RgnHandle				foreColorRgn, backColorRgn;
 	

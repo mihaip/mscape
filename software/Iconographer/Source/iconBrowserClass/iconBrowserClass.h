@@ -54,7 +54,8 @@ enum IBStrings
 	eIBIconTypes = 9,
 	eIBIconCountLabel = 10,
 	eIBDeleteWarning = 11,
-	eIBWindowTitle = 12
+	eIBWindowTitle = 12,
+	eIBNoMembers = 13
 };
 
 enum IBTypesMenu
@@ -93,7 +94,7 @@ enum IBStatus
 class iconBrowserClass : public MDocumentWindow
 {
 	public:
-				iconBrowserClass(FSSpec file, OpenFuncPtr OpenFunc, int format);
+				iconBrowserClass(FSSpec file, OpenFuncPtr OpenFunc);
 				~iconBrowserClass();
 			
 		void	Close();
@@ -112,6 +113,11 @@ class iconBrowserClass : public MDocumentWindow
 		void	HandleGrow(Point where);
 		void	HandleKeyDown(EventRecord* eventPtr);
 		
+		bool	HasSelection();
+		void	EditIconInfo();
+		
+		icnsClassPtr		GetBrowserTempIcon();
+		
 		long	status;
 		
 		FSSpec				srcFileSpec;
@@ -124,9 +130,10 @@ class iconBrowserClass : public MDocumentWindow
 		
 		bool				SizeSupported(int width, int height);
 		
-		OSErr				BuildIconList();
+		int					BuildIconList();
 		void				LoadFamily(OSType type, bool newType, short oldFile, short file, ControlHandle progressBar, ControlHandle progressText);
 		void 				AddIcon(int ID, Str255 name, long members, bool newType);
+		void				RemoveIcon(int ID, bool newType);
 		void				RefreshIconTypes();
 		void				OpenCurrentIcon();
 		

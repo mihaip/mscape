@@ -12,8 +12,6 @@ enum textToolResources
 
 enum textToolDialogItems
 {
-	iOK = 1,
-	iCancel = 2,
 	iTextLabel = 3,
 	iTextField = 4,
 	iFontPopup = 5,
@@ -36,5 +34,5 @@ enum styleMenuItems
 
 extern OSErr					GetTextAttributes(textSettings* lastTextSettings);
 extern void UpdateStyleMenu(MenuHandle styleMenu, ControlHandle stylePopup, int style);
-extern pascal bool TextDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit);
+extern pascal Boolean TextDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit);
 

@@ -3,7 +3,7 @@
 // Filename		: iconmangler.h (C++)
 // Author		: Mihai Parparita (St. Mary's International School)
 // Last modified: April 1, 1999
-// Description	: The main header file, it brings together al the files and has function
+// Descriptfion	: The main header file, it brings together al the files and has function
 //				  prototypes, resource IDs (as constants)
 
 #pragma once
@@ -265,7 +265,6 @@ enum aboutBoxItems
 enum registerItems
 {
 	iRegisterButton = 1,
-	// iCancel = 2,
 	iOrderRegistrationCode = 3,
 	iNameField = 4,
 	iCompanyField = 5,
@@ -308,7 +307,7 @@ void		HandleActivate(EventRecord *eventStrucPtr);
 void		HandleOSEvent(EventRecord *eventPtr);
 void		DoMenuCommand(long menuResult);
 void		AboutBox(void);
-pascal 		bool AboutBoxEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *itemHit);
+pascal Boolean AboutBoxEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *itemHit);
 void		Register(void);
 void		ChooseRegistrationMethod();
 OSErr		NewIcon(bool showWindow);
@@ -320,7 +319,7 @@ void		PostOpen();
 bool		Close(int flags);
 int			WantToSave(FSSpec fileSpec, int flags);
 void		Nag(bool startup);
-pascal bool	AlertEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *itemHit);
+pascal Boolean	AlertEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *itemHit);
 OSErr		SaveIcon(int flags);
 void		Revert();
 void 		RefreshIconBrowser(bool newIcon, int deletedIcon, int deletedIconFormat);
@@ -338,7 +337,7 @@ void 		SetupPalette(MFloaterPtr palette, int flag, int menuItem, int showStringI
 void 		TogglePixelGrid();
 void		SetupPixelGrid();
 
-void		InsertIcon();
+void		InsertIcon(icnsClassPtr tempIcon);
 
 // file stuff
 
@@ -349,14 +348,14 @@ pascal void NavSaveEventFilter(NavEventCallbackMessage callBackSelector,
 							   NavCBRecPtr callBackParms, 
 							   NavCallBackUserData callBackUD);
 void		SetFileName(ControlHandle formatPopup, Str255 fileName);
-pascal bool NavOpenFileFilter(AEDesc *theItem, void *info, void *callBackUD, NavFilterModes filterMode);
+pascal Boolean NavOpenFileFilter(AEDesc *theItem, void *info, void *callBackUD, NavFilterModes filterMode);
 OSErr		SaveFile(FSSpec* fileSpec, long* format);
-pascal bool SaveEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short *item, Ptr dataPtr);
+pascal Boolean SaveEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short *item, void* dataPtr);
 void		SyncPopupToName(Str255 name, ControlHandle formatPopup);
-pascal short OpenDialogHook(short item, DialogPtr theDlgPtr, Ptr dataPtr);
-pascal bool OpenEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short *item, Ptr dataPtr);
+pascal short OpenDialogHook(short item, DialogPtr theDlgPtr, void* dataPtr);
+pascal Boolean OpenEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short *item, void* dataPtr);
 OSErr		GetIconFile(FSSpec* fileSpec, long* format, bool save);
-pascal bool OpenFileFilter(CInfoPBPtr myCInfoPBPtr, Ptr dataPtr);
+pascal Boolean OpenFileFilter(CInfoPBPtr myCInfoPBPtr, void* dataPtr);
 
 
 // --- Globals --- //

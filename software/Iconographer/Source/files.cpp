@@ -1,10 +1,21 @@
 #include "iconmangler.h"
 
+enum
+{
+	kNavOpen = 1,
+	kNavSelect = 7,
+	
+	kReturnKeyCode = 0x24,
+	kEnterKeyCode = 0x4C
+};
+
 typedef struct
 {
-	long format;
-	ControlHandle formatPopup;
-	bool save;
+	long			format;
+	ControlHandle	formatPopup;
+	bool			save;
+	FSSpec			file;
+	bool			accepted;
 } SaveDataStruct;
 
 OSErr GetIconFile(FSSpec* fileSpec, long* format, bool save)
@@ -15,15 +26,16 @@ OSErr GetIconFile(FSSpec* fileSpec, long* format, bool save)
 	saveData.formatPopup = NULL;
 	saveData.format = *format;
 	saveData.save = save;
+	saveData.accepted = false;
 	
 	MWindow::DeactivateAll();
 	
 	if (NavServicesAvailable())
 	{
-		NavReplyRecord		theReply;
+		NavReplyRecord		reply;
 		NavDialogOptions	dialogOptions;
-		NavEventUPP			eventUPP = NewNavEventProc(NavOpenEventFilter);
-		NavObjectFilterUPP	filterUPP = NewNavObjectFilterProc(NavOpenFileFilter);
+		NavEventUPP			eventUPP = NewNavEventUPP(NavOpenEventFilter);
+		NavObjectFilterUPP	filterUPP = NewNavObjectFilterUPP(NavOpenFileFilter);
 		Str255				openPromptText;
 		Str255				windowTitle;
 		
@@ -40,6 +52,7 @@ OSErr GetIconFile(FSSpec* fileSpec, long* format, bool save)
 		else
 			GetIndString(windowTitle, rPrompts, eOpenTitle); // we get the prompt string
 		CopyString(dialogOptions.windowTitle, windowTitle);
+		
 		if (save)
 			GetIndString(openPromptText, rPrompts, eSaveIntoFile); // we get the prompt string
 		else
@@ -47,30 +60,39 @@ OSErr GetIconFile(FSSpec* fileSpec, long* format, bool save)
 		CopyString(dialogOptions.message, openPromptText);
 		
 		returnErr = NavChooseObject(NULL,
-									&theReply,
+									&reply,
 									&dialogOptions,
 									eventUPP,
 									filterUPP,
 									&saveData);
 		
-		*format = saveData.format;
-		
-		DisposeRoutineDescriptor(eventUPP);
-		DisposeRoutineDescriptor(filterUPP);
+		DisposeNavEventUPP(eventUPP);
+		DisposeNavObjectFilterUPP(filterUPP);
 
-		if ((theReply.validRecord) && (returnErr == noErr))
+		if (returnErr == noErr && saveData.accepted)
 		{
-			// grab the target FSSpec from the AEDesc:	
-			AEDesc 	resultDesc;
-
-			if ((returnErr = AECoerceDesc(&(theReply.selection),typeFSS,&resultDesc)) == noErr)
+			*format = saveData.format;
+			if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x09, 0x00))	
+				*fileSpec = saveData.file;
+			else if (reply.validRecord)
 			{
+				AEDesc resultDesc;
+				AEGetNthDesc( &(reply.selection), 1, typeFSS, NULL, &resultDesc );
+
 				GetFSSpecFromAEDesc(resultDesc, *fileSpec);
-				FSMakeFSSpec(fileSpec->vRefNum, fileSpec->parID, fileSpec->name, fileSpec);
+				
+				AEDisposeDesc(&resultDesc);
 			}
-			AEDisposeDesc(&resultDesc);
+			else
+				returnErr = paramErr;
+				
 		}
+		else
+			returnErr = paramErr;
+			
+		NavDisposeReply(&reply);
 	}
+#if !TARGET_API_MAC_CARBON
 	else
 	{
 		Point				thePt = {-1, -1};
@@ -107,13 +129,14 @@ OSErr GetIconFile(FSSpec* fileSpec, long* format, bool save)
 		else
 			returnErr =  userCanceledErr;
 	}
+#endif
 	
 	MWindow::ActivateAll();
 
 	return returnErr;
 }
 
-pascal bool OpenFileFilter(CInfoPBPtr myCInfoPBPtr, Ptr dataPtr)
+pascal Boolean OpenFileFilter(CInfoPBPtr myCInfoPBPtr, void* dataPtr)
 {
 	bool			visibleFlag = true;		
 	SaveDataStruct*	saveData;
@@ -149,7 +172,7 @@ pascal bool OpenFileFilter(CInfoPBPtr myCInfoPBPtr, Ptr dataPtr)
 // MyDlgHook is a hook routine that maps the select button to Open
 // and sets the Select button name
 
-pascal short OpenDialogHook(short item, DialogPtr theDlgPtr, Ptr dataPtr)
+pascal short OpenDialogHook(short item, DialogPtr theDlgPtr, void* dataPtr)
 {
 #pragma unused (dataPtr)
 	// be sure Std File is really showing us the intended dialog,
@@ -174,7 +197,7 @@ pascal short OpenDialogHook(short item, DialogPtr theDlgPtr, Ptr dataPtr)
 	return item;
 }
 
-pascal bool OpenEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short *item, Ptr dataPtr)
+pascal Boolean OpenEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short *item, void* dataPtr)
 {
 #pragma unused (item)
 	SaveDataStruct* saveData;
@@ -198,8 +221,8 @@ pascal bool OpenEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short *i
 		{
 			if (typesMenu != NULL)
 			{
-				DisableItem(typesMenu, formatWindows);
-				DisableItem(typesMenu, formatMacOSXServer);
+				DisableMenuItem(typesMenu, formatWindows);
+				DisableMenuItem(typesMenu, formatMacOSXServer);
 			}
 			
 			SetControlValue(saveData->formatPopup, saveData->format);
@@ -262,7 +285,7 @@ OSErr SaveFile(FSSpec* fileSpec, long* format)
 		NavDialogOptions	dialogOptions;
 		NavReplyRecord		reply;
 		AEDesc				resultDesc;
-		NavEventUPP			eventUPP = NewNavEventProc(NavSaveEventFilter);
+		NavEventUPP			eventUPP = NewNavEventUPP(NavSaveEventFilter);
 		long				fileType;
 		
 		NavGetDefaultDialogOptions ( &dialogOptions );
@@ -282,7 +305,7 @@ OSErr SaveFile(FSSpec* fileSpec, long* format)
 					   		   creatorCode,
 					   		   &saveData);
 		
-		DisposeRoutineDescriptor(eventUPP);
+		DisposeNavEventUPP(eventUPP);
 		
 		if (returnErr == noErr)
 		{
@@ -304,6 +327,7 @@ OSErr SaveFile(FSSpec* fileSpec, long* format)
 			}
 		}
 	}
+#if !TARGET_API_MAC_CARBON
 	else
 	{
 		Str255	prompt;
@@ -337,6 +361,7 @@ OSErr SaveFile(FSSpec* fileSpec, long* format)
 		else
 			returnErr = userCanceledErr;
 	}
+#endif
 	
 	MWindow::ActivateAll();
 	
@@ -348,16 +373,17 @@ pascal void NavOpenEventFilter(NavEventCallbackMessage callBackSelector,
 						   NavCallBackUserData callBackUD)
 {
 	OSErr			theErr = noErr;
-	ControlHandle	formatPopup;
-	Str255			fileName;
+	ControlHandle	formatPopup, button;
 	UInt16			firstItem = 0;
 	Handle			customItems;
 	MenuHandle		typesMenu;
 	char			quickTimeVersion[4];
 	AEDesc			location;
 	SaveDataStruct*	saveData;
+	DialogPtr		navDialog;
 	
 	saveData = (SaveDataStruct*)callBackUD;		
+	navDialog = GetDialogFromWindow(callBackParms->window);
 
 	switch (callBackSelector)
 	{
@@ -371,7 +397,7 @@ pascal void NavOpenEventFilter(NavEventCallbackMessage callBackSelector,
 					where = callBackParms->eventData.eventDataParms.event->where;
 					
 					GlobalToLocal(&where);
-					theItem = FindDialogItem(GetDialogFromWindow(callBackParms->window), where);	// get the item number of the control
+					theItem = FindDialogItem(navDialog, where);	// get the item number of the control
 					partCode = FindControl(where,callBackParms->window,&formatPopup);	// get the control itself
 					
 					if (formatPopup != NULL)
@@ -380,23 +406,41 @@ pascal void NavOpenEventFilter(NavEventCallbackMessage callBackSelector,
 						NavCustomControl(callBackParms->context, kNavCtlSetLocation, &location);
 					}
 					break;
-				case keyDown:
-					NavCustomControl(callBackParms->context,kNavCtlGetFirstControlID,&firstItem);	// ask NavServices for our first control ID
-					GetDialogItemAsControl(GetDialogFromWindow(callBackParms->window), firstItem + 1, &formatPopup);
-					
-					NavCustomControl(callBackParms->context,kNavCtlGetEditFileName,&fileName);
-					
-					SyncPopupToName(fileName, formatPopup);
-					break;
+				/*case keyDown:
+					switch (callBackParms->eventData.eventDataParms.event->message & charCodeMask)
+					{
+						case kReturnCharCode:
+						case kEnterCharCode:
+							NavCustomControl(callBackParms->context, kNavCtlAccept, NULL);
+							break;
+					}
+					break;*/
 				case activateEvt:
 				case updateEvt:
 					HandleUpdate(callBackParms->eventData.eventDataParms.event);
 					break;
+				case keyDown:
+				case autoKey:
 				default:
+					if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x09, 0x00) &&
+						GetDialogDefaultItem(navDialog) == kNavSelect &&
+						(MUtilities::IsKeyPressed(kReturnKeyCode) ||
+						MUtilities::IsKeyPressed(kEnterKeyCode)))
+					{
+						/*AEDescList selectionList;
+						
+						NavCustomControl(callBackParms->context, kNavCtlGetSelection, &selectionList);
+						AEGetNthDesc(&selectionList, 1, typeFSS, NULL, &selectedFile);
+						GetFSSpecFromAEDesc(selectedFile, saveData->file);
+						AEDisposeDesc(&selectedFile);*/
+						
+						saveData->accepted = true;
+						NavCustomControl(callBackParms->context, kNavCtlAccept, NULL);
+					}
 					break;
 			}
 			break;
-		case kNavCBCustomize:							
+		case kNavCBCustomize:						
 			// here are the desired dimensions for our custom area:
 			short neededWidth = callBackParms->customRect.left + 260;
 			short neededHeight = callBackParms->customRect.top + 5;
@@ -425,11 +469,9 @@ pascal void NavOpenEventFilter(NavEventCallbackMessage callBackSelector,
 				if (NavCustomControl(callBackParms->context, kNavCtlAddControlList, customItems) == noErr)
 				{
 					theErr = NavCustomControl(callBackParms->context, kNavCtlGetFirstControlID, &firstItem);
-					GetDialogItemAsControl(GetDialogFromWindow(callBackParms->window), firstItem + 1, &formatPopup);
+					GetDialogItemAsControl(navDialog, firstItem + 1, &formatPopup);
 					
 					SetControlReference(formatPopup, (SInt32)customItems);
-					
-					
 					
 					saveData->formatPopup = formatPopup;
 					
@@ -438,7 +480,7 @@ pascal void NavOpenEventFilter(NavEventCallbackMessage callBackSelector,
 					{
 						typesMenu = GetControlPopupMenuHandle(formatPopup);
 						if (typesMenu != NULL)
-							DisableItem(typesMenu, formatMacOSXServer);
+							DisableMenuItem(typesMenu, formatMacOSXServer);
 					}
 					
 					typesMenu = GetControlPopupMenuHandle(formatPopup);
@@ -447,8 +489,8 @@ pascal void NavOpenEventFilter(NavEventCallbackMessage callBackSelector,
 					{
 						if (typesMenu != NULL)
 						{
-							DisableItem(typesMenu, formatWindows);
-							DisableItem(typesMenu, formatMacOSXServer);
+							DisableMenuItem(typesMenu, formatWindows);
+							DisableMenuItem(typesMenu, formatMacOSXServer);
 						}
 						SetControlValue(formatPopup, saveData->format);
 					}
@@ -466,15 +508,60 @@ pascal void NavOpenEventFilter(NavEventCallbackMessage callBackSelector,
 					}
 				}			
 			break;
-			
+		case kNavCBCancel:
+			saveData->accepted = false;
+			break;
+		case kNavCBAccept:
+			saveData->accepted = true;
+			break;
 		case kNavCBTerminate:
+			AEDescList selectionList;
+			AEDesc		selectedFile;
+			
 			theErr = NavCustomControl(callBackParms->context,kNavCtlGetFirstControlID,&firstItem);	// ask NavServices for our first control ID
-			GetDialogItemAsControl(GetDialogFromWindow(callBackParms->window), firstItem + 1, &formatPopup);
+			GetDialogItemAsControl(navDialog, firstItem + 1, &formatPopup);
 			
 			saveData->format = GetControlValue(formatPopup);
 			
+			if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x09, 0x00))
+			{
+				NavCustomControl(callBackParms->context, kNavCtlGetSelection, &selectionList);
+				AEGetNthDesc(&selectionList, 1, typeFSS, NULL, &selectedFile);
+				GetFSSpecFromAEDesc(selectedFile, saveData->file);
+				AEDisposeDesc(&selectedFile);
+			}
+			else
+				saveData->accepted = true;
+							
 			customItems = (Handle)GetControlReference(formatPopup);
 			ReleaseResource(customItems);
+			break;
+		case kNavCBSelectEntry:
+			if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x09, 0x00))
+			{
+				FSSpec	currentFile;
+				int		defaultItem;
+				
+				if (AEGetNthDesc((AEDesc*)callBackParms->eventData.eventDataParms.param, 1, typeFSS, NULL, &selectedFile) == noErr)
+				{
+					GetFSSpecFromAEDesc(selectedFile, currentFile);
+					AEDisposeDesc(&selectedFile);
+					
+					if (MUtilities::IsFileFolder(currentFile))
+						defaultItem = kNavOpen;
+					else
+						defaultItem = kNavSelect;
+						
+					if (GetDialogDefaultItem(navDialog) != defaultItem)
+					{
+						SetDialogDefaultItem(navDialog, defaultItem);
+						GetDialogItemAsControl(navDialog, kNavOpen, &button);
+						Draw1Control(button);
+						GetDialogItemAsControl(navDialog, kNavSelect, &button);
+						Draw1Control(button);
+					}
+				}
+			}
 			break;
 	}
 }
@@ -550,7 +637,7 @@ void SetFileName(ControlHandle formatPopup, Str255 fileName)
 	}
 }
 
-pascal bool NavOpenFileFilter(AEDesc *theItem, void *info, void *callBackUD, NavFilterModes filterMode)
+pascal Boolean NavOpenFileFilter(AEDesc *theItem, void *info, void *callBackUD, NavFilterModes filterMode)
 {
 #pragma unused (filterMode)
 
@@ -585,8 +672,10 @@ pascal void NavSaveEventFilter(NavEventCallbackMessage callBackSelector,
 	Handle			customItems;
 	MenuHandle		typesMenu;
 	SaveDataStruct*	saveData;
+	DialogPtr		navDialog;
 	
 	saveData = (SaveDataStruct*)callBackUD;
+	navDialog = GetDialogFromWindow(callBackParms->window);
 
 	switch (callBackSelector)
 	{
@@ -600,7 +689,7 @@ pascal void NavSaveEventFilter(NavEventCallbackMessage callBackSelector,
 					where = callBackParms->eventData.eventDataParms.event->where;
 					
 					GlobalToLocal(&where);
-					theItem = FindDialogItem(GetDialogFromWindow(callBackParms->window), where);	// get the item number of the control
+					theItem = FindDialogItem(navDialog, where);	// get the item number of the control
 					partCode = FindControl(where,callBackParms->window,&formatPopup);	// get the control itself
 					
 					if ((formatPopup != NULL))
@@ -614,7 +703,7 @@ pascal void NavSaveEventFilter(NavEventCallbackMessage callBackSelector,
 					break;
 				case keyDown:
 					NavCustomControl(callBackParms->context,kNavCtlGetFirstControlID,&firstItem);	// ask NavServices for our first control ID
-					GetDialogItemAsControl(GetDialogFromWindow(callBackParms->window), firstItem + 1, &formatPopup);
+					GetDialogItemAsControl(navDialog, firstItem + 1, &formatPopup);
 					
 					NavCustomControl(callBackParms->context,kNavCtlGetEditFileName,&fileName);
 					
@@ -658,13 +747,13 @@ pascal void NavSaveEventFilter(NavEventCallbackMessage callBackSelector,
 				if (NavCustomControl(callBackParms->context, kNavCtlAddControlList, customItems) == noErr)
 				{
 					theErr = NavCustomControl(callBackParms->context, kNavCtlGetFirstControlID, &firstItem);
-					GetDialogItemAsControl(GetDialogFromWindow(callBackParms->window), firstItem + 1, &formatPopup);
+					GetDialogItemAsControl(navDialog, firstItem + 1, &formatPopup);
 					
 					SetControlReference(formatPopup, (SInt32)customItems);
 					
 					typesMenu = GetControlPopupMenuHandle(formatPopup);
 					if (typesMenu != NULL)
-						DisableItem(typesMenu, formatMacOSXServer);
+						DisableMenuItem(typesMenu, formatMacOSXServer);
 					
 					NavCustomControl(callBackParms->context,kNavCtlGetEditFileName,&fileName);
 					
@@ -680,7 +769,7 @@ pascal void NavSaveEventFilter(NavEventCallbackMessage callBackSelector,
 			
 		case kNavCBTerminate:
 			theErr = NavCustomControl(callBackParms->context,kNavCtlGetFirstControlID,&firstItem);	// ask NavServices for our first control ID
-			GetDialogItemAsControl(GetDialogFromWindow(callBackParms->window), firstItem + 1, &formatPopup);
+			GetDialogItemAsControl(navDialog, firstItem + 1, &formatPopup);
 			
 			saveData->format = GetControlValue(formatPopup);
 			
@@ -690,7 +779,7 @@ pascal void NavSaveEventFilter(NavEventCallbackMessage callBackSelector,
 	}
 }
 
-pascal bool SaveEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short *item, Ptr dataPtr)
+pascal Boolean SaveEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short *item, void* dataPtr)
 {
 #pragma unused (item)
 

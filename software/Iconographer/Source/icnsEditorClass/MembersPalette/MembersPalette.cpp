@@ -20,9 +20,10 @@ MembersPalette::MembersPalette()
 }
 
 MembersPalette::~MembersPalette()
-{
-	KillPicture(infoButtonPicture);
-	KillPicture(addMemberButtonPicture);
+{	
+	DisposeEnhancedPlacard(controls.fillerPlacard);
+	DisposeEnhancedPlacard(controls.infoButton);
+	DisposeEnhancedPlacard(controls.addMemberButton);
 }
 
 void MembersPalette::Activate()
@@ -64,6 +65,7 @@ void MembersPalette::DoIdle()
 		
 		windowRect = GetPortRect();
 		
+#if !TARGET_API_MAC_CARBON
 		if (PtInRect(theMouse, &windowRect) && HMGetBalloons())
 		{
 			Rect				infoButtonRect, addMemberButtonRect;
@@ -81,6 +83,7 @@ void MembersPalette::DoIdle()
 				icnsEditorClass::statics.currentBalloon = 0;
 			}
 		}
+#endif
 	}
 	
 	RESTOREGWORLD; // we can now restore the gworld
@@ -259,7 +262,7 @@ void MembersPalette::CreateControls()
 	SetControlUserPaneHitTest(controls.backgroundPane, GenericHitTest);
 	
 	controls.scrollbar = GetNewControl(rMPScrollbar, window);
-	scrollBarActionUPP = NewControlActionProc(MembersPalette::ScrollbarAction);
+	scrollBarActionUPP = NewControlActionUPP(MembersPalette::ScrollbarAction);
 	SetControlAction(controls.scrollbar, scrollBarActionUPP);
 	
 	for (int i=0; i < kMembersCount; i++)
@@ -303,7 +306,7 @@ void MembersPalette::InfoButtonUpdate(struct EnhancedPlacardData* data, int flag
 	if (flags & enhancedPlacardStateChanged)
 	{
 		if (parent->parentEditor)
-			parent->parentEditor->EditIconInfo(kIconInfo);
+			parent->parentEditor->EditIconInfo();
 	}
 }
 
@@ -386,12 +389,12 @@ void MembersPalette::HandleGrow(Point where)
 		
 		updateRgn = NewRgn(); // we must invalidate the old window region...
 		GetPortVisibleRegion(GetWindowPort(window), updateRgn);
-		InvalRgn(updateRgn);
+		InvalWindowRgn(window, updateRgn);
 		
 		SizeWindow(window, h, v, true); //...do the resizing
 		
 		GetPortVisibleRegion(GetWindowPort(window), updateRgn); // and invalidate the new one as well
-		InvalRgn(updateRgn);
+		InvalWindowRgn(window, updateRgn);
 		
 		DisposeRgn(updateRgn); // and now we're done with the region
 		
@@ -656,8 +659,8 @@ void MembersPalette::InstallDraggingHandlers()
 	DragTrackingHandlerUPP	dragTrackingHandlerUPP; // handler functions
 	
 	// we set these to what we need
-	dragTrackingHandlerUPP = NewDragTrackingHandlerProc(MembersPalette::DragTrackingHandler);
-	dragReceiveHandlerUPP = NewDragReceiveHandlerProc(MembersPalette::DragReceiveHandler);
+	dragTrackingHandlerUPP = NewDragTrackingHandlerUPP(MembersPalette::DragTrackingHandler);
+	dragReceiveHandlerUPP = NewDragReceiveHandlerUPP(MembersPalette::DragReceiveHandler);
 	
 	// and then install them
 	InstallTrackingHandler(dragTrackingHandlerUPP, window, NULL);
@@ -866,7 +869,7 @@ void MembersPalette::HiliteRegion(RgnHandle inHiliteRgn)
 	}
 	else if (!EqualRgn(hiliteRgn, dragHiliteRgn))
 	{
-		InvalRgn(dragHiliteRgn);
+		InvalWindowRgn(window, dragHiliteRgn);
 		if (!EmptyRgn(dragHiliteRgn))
 			ThemeSoundPlay(kThemeSoundDragTargetUnhilite);
 		Refresh();
@@ -963,11 +966,14 @@ pascal void MembersPalette::MemberPaneDraw(ControlHandle theControl, short thePa
 	RgnHandle		clipRegion = NewRgn();
 	
 	parent = icnsEditorClass::statics.membersPalette;
-	
+	if (parent == NULL)
+		return;
+		
 	memberIndex = GetControlReference(theControl);
 	
 	SAVECOLORS;
 	SAVEGWORLD;
+	
 	
 	GetControlBounds(theControl, &controlRect);
 	canvasRect = controlRect;

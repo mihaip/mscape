@@ -29,7 +29,7 @@ void icnsEditorClass::ZoomPlacardUpdate(struct EnhancedPlacardData* data, int fl
 		
 		for (int i=1; i <= CountMenuItems(data->menu); i++)
 		{
-			CheckItem(data->menu, i, false);
+			CheckMenuItem(data->menu, i, false);
 			GetMenuItemText(data->menu, i, currentMenuItem);
 			if (EqualString(data->title, currentMenuItem, true, true))
 				data->menuValue = i;
@@ -44,7 +44,7 @@ void icnsEditorClass::ZoomPlacardUpdate(struct EnhancedPlacardData* data, int fl
 			data->menuValue = kZoomMenuItemCount + 2;
 		}
 		
-		CheckItem(data->menu, data->menuValue, true);
+		CheckMenuItem(data->menu, data->menuValue, true);
 	}
 	else
 	{

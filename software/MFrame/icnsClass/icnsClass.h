@@ -142,17 +142,85 @@ enum iconElementNames
 
 enum icnsClassResources
 {
+	// dialogs
+	rIconInfo = 4000,
+	
 	// color tables
 	rWindows4BitColors = 4000,
 	rWindows8BitColors = 4001,
 	
 	// menus
 	rFormatMenu = 4000,
+	mBaseIDMenu = 203,
+	mIDMenuCount = 7,
 	
 	// strings
 	rFormatStrings = 4000,
 	rIconNames = 4001,
-	rMiscIconStrings = 4002
+	rMiscIconStrings = 4002,
+	rIconInfoBalloonHelp = 4003,
+	rIconInfoStrings = 4004
+};
+
+enum iconInfoItems
+{
+	iIconIDLabel = 3,
+	iIconIDField = 4,
+	iIconNameLabel = 5,
+	iIconNameField = 6,
+	iFlagsGroupBox = 7,
+	iIconSizeField = 8,
+	iPurgeable = 9,
+	iPreload = 10,
+	iLocked = 11,
+	iProtected = 12,
+	iSystemHeap = 13,
+	iIDMenu = 15,
+	iFormatPopup = 16,
+	
+	iThumbnailBox = 19,
+	
+	iHugeBox = 20,
+	iih32Box = 33,
+	iich8Box = 36,
+	iich4Box = 40,
+	iichiBox = 44,
+	ih8mkBox = 48,
+	iichmBox = 51,
+	
+	iLargeBox = 21,
+	iil32Box = 34,
+	iicl8Box = 37,
+	iicl4Box = 41,
+	iicniBox = 45,
+	il8mkBox = 49,
+	iicnmBox = 52,
+	
+	iSmallBox = 22,
+	iis32Box = 35,
+	iics8Box = 38,
+	iics4Box = 42,
+	iicsiBox = 46,
+	is8mkBox = 50,
+	iicsmBox = 53,
+	
+	iMiniBox = 18,
+	iicm8Box = 39,
+	iicm4Box = 43,
+	iicmiBox = 47,
+	iicmmBox = 54,
+	
+	iMembersGroupBox = 17,
+	iMembersDivider = 23,
+	iHintsLabel = 24,
+	iIconLabel = 25,
+	i32BitIconLabel = 26,
+	i8BitIconLabel = 27,
+	i4BitIconLabel = 28,
+	i1BitIconLabel = 29,
+	iMaskLabel = 30,
+	i8BitMaskLabel = 31,
+	i1BitMaskLabel = 32
 };
 
 enum formatStrings
@@ -160,10 +228,19 @@ enum formatStrings
 	sAllFormats = 1
 };
 
-enum misIconStrings
+enum miscIconStrings
 {
 	eNone = 1,
 	eFinderIcon = 2
+};
+
+enum iconInfoStrings
+{
+	eInsertIconTitle = 1,
+	eSizeSuffix = 2,
+	eIDAlreadyExists = 3,
+	eOverwriteButton = 4,
+	eInfoCancelButton = 5
 };
 
 typedef struct
@@ -218,6 +295,13 @@ const static long kDefaultMembers[kFormatCount + 1] =
 	(icon8 | icon4 | icon1 | mask1) &~ (thumbnailSize | hugeSize), // mac os old
 	(icon32 | icon8 | icon4 | icon1 | mask1) &~ (thumbnailSize | miniSize), // windows
 	hugeSize + largeSize + smallSize // mac os server
+};
+
+enum iconInfoModes
+{
+	kIconInfo,
+	kInsertIcon,
+	kIconInfoBrowser
 };
 
 class icnsClass
@@ -335,6 +419,7 @@ class icnsClass
 		long			status;
 		
 		long			format;
+		long			loadedFormat;
 		
 						icnsClass(void);
 						~icnsClass(void);
@@ -380,12 +465,24 @@ class icnsClass
 		
 		static void		SetCanvas(GWorldPtr inCanvasGW, PixMapHandle inCanvasPix);
 		
+		int				EditIconInfo(int mode);
+		static void		SetMembersCheckboxes(DialogPtr dialog, long usedMembers, long format);
+		static void		GetMembersCheckboxes(DialogPtr dialog, long* usedMembers);
+		static void 	HandleMembersCheckbox(DialogPtr dialog, int itemHit, long *usedMembers, int format);
+		static pascal Boolean IconInfoDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit);
+		static void		ToggleNonMacOSItems(DialogPtr infoDialog);
+		static void		SplitMenuItem(Str255 text, long* ID, Str255 iconName);
+		static void		GetIDMenu(int ID, MenuHandle* menu, int* item, Str255 name);
+		
 		IconFamilyHandle Geticns();
 		
 	friend void MergeIcon(int ID, Str255 name, icnsClass* baseicns);
 	// external function used in another program (Glypher) which uses the icnsClass
 	friend pascal OSErr IconExtractor(ResType iconType, Handle *theIcon, void *dataPtr);
 };
+
+typedef icnsClass* icnsClassPtr;
+
 pascal OSErr IconExtractor(ResType iconType, Handle *theIcon, void *dataPtr);
 
 void GeticnsInfo(IconFamilyHandle icnsHandle, long* members, int* maxHeight);

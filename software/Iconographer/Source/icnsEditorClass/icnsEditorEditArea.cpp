@@ -13,6 +13,11 @@ void icnsEditorClass::AddPanUpdateRect(Rect updateRect)
 
 void icnsEditorClass::StartPan()
 {
+#if TARGET_API_MAC_CARBON
+	if (QDIsPortBuffered(GetWindowPort(window)))
+		return;
+#endif
+
 	panUpdateRectsCount = 0;
 	
 	if (statics.toolPalette->IsVisible())
@@ -34,6 +39,30 @@ void icnsEditorClass::PanEditArea(int dH, int dV)
 	
 	ScrollRect(&editAreaRect, -dH, -dV, NULL);
 	
+#if TARGET_API_MAC_CARBON
+	if (QDIsPortBuffered(GetWindowPort(window)))
+	{
+		RgnHandle	updateRgn = NewRgn();
+		
+		updateRect = editAreaRect;
+		if (dV > 0)
+			updateRect.bottom -= dV;
+		else
+			updateRect.top -= dV;
+			
+		if (dH > 0)
+			updateRect.right -= dH;
+		else
+			updateRect.left -= dH;
+		
+		RectRgn(updateRgn, &updateRect);
+		
+		QDFlushPortBuffer(GetWindowPort(window), updateRgn);
+		
+		DisposeRgn(updateRgn);
+	}
+#endif
+	
 	if (dV)
 	{
 		updateRect = editAreaRect;
@@ -43,29 +72,32 @@ void icnsEditorClass::PanEditArea(int dH, int dV)
 			updateRect.bottom = updateRect.top - dV;
 			
 		UpdateEditArea(updateRect);
-		
-		for (int i=0; i < panUpdateRectsCount; i++)
-		{
-			updateRect = panUpdateRects[i];
-			
-			if (dV > 0)
+
+#if TARGET_API_MAC_CARBON
+		if (!QDIsPortBuffered(GetWindowPort(window)))
+#endif
+			for (int i=0; i < panUpdateRectsCount; i++)
 			{
-				updateRect.bottom = updateRect.top;
-				updateRect.top -= dV;
+				updateRect = panUpdateRects[i];
+				
+				if (dV > 0)
+				{
+					updateRect.bottom = updateRect.top;
+					updateRect.top -= dV;
+				}
+				else
+				{
+					updateRect.top = updateRect.bottom;
+					updateRect.bottom -= dV;
+				}
+				
+				if (dH > 0)
+					updateRect.left -= dH;
+				else
+					updateRect.right -= dH;
+				
+				UpdateEditArea(updateRect);
 			}
-			else
-			{
-				updateRect.top = updateRect.bottom;
-				updateRect.bottom -= dV;
-			}
-			
-			if (dH > 0)
-				updateRect.left -= dH;
-			else
-				updateRect.right -= dH;
-			
-			UpdateEditArea(updateRect);
-		}
 	}
 	
 	if (dH)
@@ -77,30 +109,36 @@ void icnsEditorClass::PanEditArea(int dH, int dV)
 			updateRect.right = updateRect.left - dH;
 			
 		UpdateEditArea(updateRect);
-		
-		for (int i=0; i < panUpdateRectsCount; i++)
-		{
-			updateRect = panUpdateRects[i];
-			
-			if (dH > 0)
+
+#if TARGET_API_MAC_CARBON
+		if (!QDIsPortBuffered(GetWindowPort(window)))
+#endif
+			for (int i=0; i < panUpdateRectsCount; i++)
 			{
-				updateRect.right = updateRect.left;
-				updateRect.left -= dH;
+				updateRect = panUpdateRects[i];
+				
+				if (dH > 0)
+				{
+					updateRect.right = updateRect.left;
+					updateRect.left -= dH;
+				}
+				else
+				{
+					updateRect.left = updateRect.right;
+					updateRect.right -= dH;
+				}
+				
+				UpdateEditArea(updateRect);
 			}
-			else
-			{
-				updateRect.left = updateRect.right;
-				updateRect.right -= dH;
-			}
-			
-			UpdateEditArea(updateRect);
-		}
 	}
 }
 
 void icnsEditorClass::FinishPan()
 {
-	panUpdateRectsCount = 0; 
+#if TARGET_API_MAC_CARBON
+		if (!QDIsPortBuffered(GetWindowPort(window)))
+#endif
+			panUpdateRectsCount = 0;
 }
 
 // __________________________________________________________________________________________
@@ -124,14 +162,12 @@ void icnsEditorClass::InvalidateDrawingArea(void)
 	windowRect = GetPortRect();
 	
 	// we set the boundaries
-	rectToInvalidate.left = editAreaRect.left - 2;
-	rectToInvalidate.right = windowRect.right;
-	rectToInvalidate.top = 0;
+	rectToInvalidate = windowRect;
 	GetControlBounds(controls.zoomPlacard, &controlRect);
 	rectToInvalidate.bottom = controlRect.top;
 	
 	// and then invalidate it
-	InvalRect(&rectToInvalidate);
+	InvalWindowRect(window, &rectToInvalidate);
 	
 	RESTOREGWORLD;
 }
@@ -283,6 +319,23 @@ void icnsEditorClass::PreviewDisplay(int height, int depth, int maskDepth, Rect 
 
 void icnsEditorClass::UpdateEditArea(Rect updateRect)
 {
+
+#if TARGET_API_MAC_CARBON
+	if (QDIsPortBuffered(GetWindowPort(window)))
+	{
+		RgnHandle temp = NewRgn();
+		
+		PaintEditAreaRect(updateRect);
+	
+		RectRgn(temp, &updateRect);
+		
+		QDFlushPortBuffer(GetWindowPort(window), temp);
+		
+		DisposeRgn(temp);
+		return;
+	}
+#endif
+
 	int	maxWidth, maxHeight;
 	int xSquares, ySquares;
 	Rect	currentRect;
@@ -401,27 +454,14 @@ inline void icnsEditorClass::DrawingPointToWindowPoint(Point* point, int flags)
 }
 
 
-// __________________________________________________________________________________________
-// Name			: icnsEditorClass::Display
-// Input		: targetRect: location where the icon data should be displayed (scaling is done
-//				  automatically)
-//				  source: from which pixmap the pixel data should be taken from
-// Output		: None
-// Description	: takes the requested icon data, merges it with the selection (if any), and 
-//				  copies it to the screen.
-
 void icnsEditorClass::PaintEditAreaRect(Rect targetRect)
 {
-	Rect			canvasRect, sourceRect, canvasSourceRect; // the target rect moved so that it's top/left corner is at 0, 0
+	RgnHandle		canvasClippingRegion, clippingRegion;
+	GrafPtr			canvas;
+	const BitMap*	target;
+	Rect			canvasRect, sourceRect, canvasSourceRect;
 	OSStatus		err = noErr; // used for error checking
-	const BitMap *	target = GetPortBitMapForCopyBits(GetQDGlobalsThePort());
 	int				dX, dY;
-	RgnHandle		visibleRegion = NewRgn();
-	
-	SAVEGWORLD;
-	
-	SetGWorld(statics.canvasGW, NULL);
-	SAVECOLORS;
 	
 	sourceRect = targetRect;
 	OffsetRect(&sourceRect,
@@ -435,23 +475,55 @@ void icnsEditorClass::PaintEditAreaRect(Rect targetRect)
 	
 	canvasRect = sourceRect;
 	MagnifyRect(&canvasRect, magnification);
-		
-	canvasSourceRect = targetRect;
-	OffsetRect(&canvasSourceRect,
-			   -editAreaRect.left + hScrollbarValue - canvasRect.left,
-			   -editAreaRect.top + vScrollbarValue - canvasRect.top);
-			   
-	OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top);
 	
-	dX = targetRect.left - editAreaRect.left + hScrollbarValue;
-	dY = targetRect.top - editAreaRect.top + vScrollbarValue;
+#if TARGET_API_MAC_CARBON
+	if (QDIsPortBuffered(GetWindowPort(window)))
+	{
+		clippingRegion = NULL;
+		canvasClippingRegion = NewRgn();
+		RectRgn(canvasClippingRegion, &targetRect);
+		LockPortBits(GetWindowPort(window));
+		canvas = GetWindowPort(window);
+		target = NULL;
+		
+		canvasSourceRect = targetRect;
+		//OffsetRect(&canvasSourceRect, hScrollbarValue, vScrollbarValue);
+		OffsetRect(&canvasRect, editAreaRect.left - hScrollbarValue, editAreaRect.top - vScrollbarValue);		   
+		
+		dX = targetRect.left + hScrollbarValue;
+		dY = targetRect.top + vScrollbarValue;
 
-	CopyPixMap(currentPix,
-			   statics.canvasPix,
+	}
+	else
+#endif
+	{
+		canvasClippingRegion = NULL;
+		clippingRegion = NewRgn();
+		GetPortVisibleRegion(GetWindowPort(window), clippingRegion);
+		canvas = (GrafPtr)statics.canvasGW;
+		target = GetPortBitMapForCopyBits(GetQDGlobalsThePort());
+		canvasSourceRect = targetRect;
+		OffsetRect(&canvasSourceRect,
+				   -editAreaRect.left + hScrollbarValue - canvasRect.left,
+				   -editAreaRect.top + vScrollbarValue - canvasRect.top);
+				   
+		OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top);
+		
+		dX = targetRect.left - editAreaRect.left + hScrollbarValue;
+		dY = targetRect.top - editAreaRect.top + vScrollbarValue;
+	}
+	
+	SAVEGWORLD;
+	
+	::SetPort(canvas);
+	SAVECOLORS;
+
+	CopyBits((BitMap*)*currentPix,
+			   GetPortBitMapForCopyBits(canvas),
 			   &sourceRect,
 			   &canvasRect,
 			   srcCopy,
-			   NULL);
+			   canvasClippingRegion);
 			 
 	if (overlayPix != NULL) // and if there is an overlay we copy that too
 	{
@@ -462,18 +534,21 @@ void icnsEditorClass::PaintEditAreaRect(Rect targetRect)
 		// clip when drawing the overlay
 		
 		if (!EmptyRgn(selectionRgn))
-			DrawSelection(sourceRect, canvasRect, dX, dY);
-		else if (statics.preferences.FeatureEnabled(prefsDrawGrid))
-			DrawGrid(canvasRect);
-			
+			DrawSelection(canvas, sourceRect, canvasRect, dX, dY);
+		
 		if (((**overlayPix).bounds.right == magnification * (**currentPix).bounds.right))
-			DrawOverlay(sourceRect, canvasSourceRect, dX, dY);
+			DrawOverlay(canvas, sourceRect, canvasSourceRect, dX, dY);
 		else
-			DrawOverlay(sourceRect, canvasRect, dX, dY);
+		{
+			DrawOverlay(canvas, sourceRect, canvasRect, dX, dY);
+				
+			if (statics.preferences.FeatureEnabled(prefsDrawGrid))
+				DrawGrid(canvasRect);
+		}
 		
 	}
 	else if (!EmptyRgn(selectionRgn)) // if there is a selection and it hasn't been drawn already
-		DrawSelection(sourceRect, canvasRect, dX, dY);
+		DrawSelection(canvas, sourceRect, canvasRect, dX, dY);
 	else if (statics.preferences.FeatureEnabled(prefsDrawGrid))
 		DrawGrid(canvasRect);
 		
@@ -485,20 +560,31 @@ void icnsEditorClass::PaintEditAreaRect(Rect targetRect)
 #endif
 #endif
 
-	CopyBits((BitMap *)*statics.canvasPix, // now we're done, we can copy the result
-			 target,					   // to the target
-			 &canvasSourceRect,
-			 &targetRect,
-			 srcCopy,
-			 GetPortVisibleRegion(GetWindowPort(window), visibleRegion));
-			  
-	DisposeRgn(visibleRegion);		  
+	if (target)
+		CopyBits(GetPortBitMapForCopyBits(canvas), // now we're done, we can copy the result
+				 target,					   // to the target
+				 &canvasSourceRect,
+				 &targetRect,
+				 srcCopy,
+				 clippingRegion);
+	
+	
+	if (clippingRegion)
+		DisposeRgn(clippingRegion);
+	
+	if (canvasClippingRegion)
+		DisposeRgn(canvasClippingRegion);
+		
+#if TARGET_API_MAC_CARBON
+	if (QDIsPortBuffered(GetWindowPort(window)))
+		UnlockPortBits(GetWindowPort(window));
+#endif
 	
 	RESTORECOLORS;
 	RESTOREGWORLD;
 }
 
-void icnsEditorClass::DrawOverlay(Rect sourceRect, Rect targetRect, int dX, int dY)
+void icnsEditorClass::DrawOverlay(GrafPtr canvas, Rect sourceRect, Rect targetRect, int dX, int dY)
 {
 	if (((**overlayPix).bounds.right == magnification * (**currentPix).bounds.right))
 	{
@@ -508,8 +594,8 @@ void icnsEditorClass::DrawOverlay(Rect sourceRect, Rect targetRect, int dX, int 
 		
 		OffsetRect(&overlaySourceRect, -overlaySourceRect.left + dX, -overlaySourceRect.top + dY);
 		
-		CopyPixMap(overlayPix,
-				   statics.canvasPix,
+		CopyBits((BitMap*)*overlayPix,
+				   GetPortBitMapForCopyBits(canvas),
 				   &overlaySourceRect,
 				   &targetRect,
 				   srcXor,
@@ -521,22 +607,21 @@ void icnsEditorClass::DrawOverlay(Rect sourceRect, Rect targetRect, int dX, int 
 		
 		GetBackColor(&oldBackColor);
 		RGBBackColor(&kNeverUsedColorAsRGB);
-		
 		if (EmptyRgn(selectionRgn))
-			CopyPixMap(overlayPix,
-				   statics.canvasPix,
-				   &sourceRect,
-				   &targetRect,
-				   transparent,
-				   NULL);
+			CopyBits((BitMap*)*overlayPix,
+					   GetPortBitMapForCopyBits(canvas),
+					   &sourceRect,
+					   &targetRect,
+					   transparent,
+					   NULL);
 		else
 		{
 			dX -= dX % magnification;
 			dY -= dY % magnification;
 			
 			OffsetRgn(selectionContentsMagnifiedRgn, -dX, -dY);		
-			CopyPixMap(overlayPix,
-				   statics.canvasPix,
+			CopyBits((BitMap*)*overlayPix,
+				   GetPortBitMapForCopyBits(canvas),
 				   &sourceRect,
 				   &targetRect,
 				   transparent,
@@ -563,7 +648,7 @@ void icnsEditorClass::DrawOverlay(Rect sourceRect, Rect targetRect, int dX, int 
 // Description	: This function draws the selection contents and the selection outline
 //				  (if the target is the current GWorld) into the target GWorld
 
-void icnsEditorClass::DrawSelection(Rect sourceRect, Rect targetRect, int dX, int dY)
+void icnsEditorClass::DrawSelection(GrafPtr canvas, Rect sourceRect, Rect targetRect, int dX, int dY)
 {
 	SAVEGWORLD;
 	SAVECOLORS;
@@ -590,8 +675,8 @@ void icnsEditorClass::DrawSelection(Rect sourceRect, Rect targetRect, int dX, in
 								   // draw its contents as well
 	{
 		OffsetRgn(selectionContentsMagnifiedRgn, -dX, -dY);
-		CopyPixMap(selectionPix,
-				  statics.canvasPix,
+		CopyBits((BitMap*)*selectionPix,
+				  GetPortBitMapForCopyBits(canvas),
 				  &sourceRect,
 				  &targetRect,
 				  srcCopy,

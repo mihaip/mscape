@@ -2,10 +2,11 @@
 #include "icnsEditorClass.h"
 #include "MAlert.h"
 
-iconBrowserClass::iconBrowserClass(FSSpec file, OpenFuncPtr OpenFunc, int format) :
+iconBrowserClass::iconBrowserClass(FSSpec file, OpenFuncPtr OpenFunc) :
 				  MDocumentWindow(rBrowserWind, kBrowserType),
 				  theList(BrowserStringCompare, IconDraw, NULL, IconFilter, IconUpdate)
 {
+	int format;
 	status = 0;
 	
 	if (window == NULL)
@@ -28,7 +29,7 @@ iconBrowserClass::iconBrowserClass(FSSpec file, OpenFuncPtr OpenFunc, int format
 	
 	drawIcon.srcFileSpec = file;
 	
-	BuildIconList();
+	format = BuildIconList();
 	
 	switch (format)
 	{
@@ -78,12 +79,12 @@ OSErr iconBrowserClass::CreateControls()
 	
 	controls.scrollBar = GetNewControl(rIBScrollBar, window);
 	if (controls.scrollBar == NULL) return mFulErr;
-	scrollBarActionUPP = NewControlActionProc(ScrollBarAction);
+	scrollBarActionUPP = NewControlActionUPP(ScrollBarAction);
 	SetControlAction(controls.scrollBar, scrollBarActionUPP);
 	
 	controls.infoPlacard = GetNewControl(rIBInfoPlacard, window);
 	if (controls.infoPlacard == NULL) return mFulErr;
-	placardDrawUPP = NewControlUserPaneDrawProc(InfoPlacardDraw);
+	placardDrawUPP = NewControlUserPaneDrawUPP(InfoPlacardDraw);
 	SetControlData(controls.infoPlacard,
 				   kControlNoPart,
 				   kControlUserPaneDrawProcTag, 
@@ -101,8 +102,8 @@ OSErr iconBrowserClass::CreateControls()
 	controls.list = GetNewControl(rIBList, window);
 	if (controls.list == NULL) return mFulErr;
 	
-	listDrawUPP = NewControlUserPaneDrawProc(ListDraw); 
-	listHitTestUPP = NewControlUserPaneHitTestProc(ListHitTest);
+	listDrawUPP = NewControlUserPaneDrawUPP(ListDraw); 
+	listHitTestUPP = NewControlUserPaneHitTestUPP(ListHitTest);
 	
 	SetControlData(controls.list, // we set the drawing function
 				   kControlNoPart,
@@ -119,12 +120,13 @@ OSErr iconBrowserClass::CreateControls()
 	return noErr;
 }
 
-OSErr iconBrowserClass::BuildIconList()
+int iconBrowserClass::BuildIconList()
 {
 	short		oldFile, file, iconCount;
 	DialogPtr	progressDialog;
 	ControlHandle	progressBar, progressText;
 	Str255		dialogTitle;
+	int			format, oldIcons, newIcons;
 	
 	theList.SetDisplayFont(applFont, 9);
 	theList.SetCustomAreaWidth(kIBPreviewHeight + kIBExtraHeight);
@@ -137,7 +139,10 @@ OSErr iconBrowserClass::BuildIconList()
 	file = FSpOpenResFile(&srcFileSpec, fsRdPerm);
 	UseResFile(file);
 	
-	iconCount = Count1Resources('icns') + Count1Resources('ICN#') + Count1Resources('ics#');
+	newIcons = Count1Resources('icns');
+	oldIcons = Count1Resources('ICN#') + Count1Resources('ics#');
+		
+	iconCount = newIcons + oldIcons;
 	
 	CloseResFile(file);
 	UseResFile(oldFile);
@@ -160,14 +165,28 @@ OSErr iconBrowserClass::BuildIconList()
 	CloseResFile(file);
 	UseResFile(oldFile);
 	
-	drawIcon.LoadFileIcon();
-	AddIcon(kIDUseFileIcon, "\p", drawIcon.members, drawIcon.members & il32);
-	
 	DisposeDialog(progressDialog);
+	
+	drawIcon.LoadFileIcon();
+	AddIcon(kIDUseFileIcon, "\p", drawIcon.members, drawIcon.members & (icon32 | mask8));
+	
+	if (drawIcon.members & (icon32 | mask8))
+		newIcons++;
+	else
+		oldIcons++;
+	
+	if (newIcons && oldIcons)
+		format = formatMacOSUniversal;
+	else if (newIcons)
+		format = formatMacOSNew;
+	else
+		format = formatMacOSOld;
+	
+	
 	
 	scrollingIncrement = 16;
 	
-	return noErr;
+	return format;
 }
 
 void iconBrowserClass::LoadFamily(OSType type, bool newType, short oldFile, short file, ControlHandle progressBar, ControlHandle progressText)
@@ -238,9 +257,20 @@ void iconBrowserClass::AddIcon(int ID, Str255 name, long members, bool newType)
 						 cellDrawingData);
 }
 
+void iconBrowserClass::RemoveIcon(int ID, bool newType)
+{
+	ListDrawingData	cellData;
+	int				row, col;
+	
+	cellData.ID = ID;
+	cellData.newType = newType;
+	if (theList.FindValue(NULL, &cellData, &row, &col) == noErr)
+		theList.Remove(row, col);
+}
+
 iconBrowserClass::~iconBrowserClass()
 {
-	;
+	DisposeEnhancedPlacard(controls.typeMenu);
 }
 
 void iconBrowserClass::Close()
@@ -439,7 +469,7 @@ void iconBrowserClass::HandleContentClick(EventRecord* eventPtr)
 					Draw1Control(controls.list);
 				}
 			} while(Button());
-			if (((TickCount() - lastSelectionTime) < LMGetDoubleTime())
+			if (((TickCount() - lastSelectionTime) < GetDblTime())
 				&& (currentSelection == lastSelection))
 				OpenCurrentIcon();
 			
@@ -576,12 +606,12 @@ void iconBrowserClass::HandleGrow(Point where)
 		
 		updateRgn = NewRgn(); // we must invalidate the old window region...
 		GetPortVisibleRegion(GetWindowPort(window), updateRgn);
-		InvalRgn(updateRgn);
+		InvalWindowRgn(window, updateRgn);
 		
 		SizeWindow(window, h, v, true); //...do the resizing
 		
 		GetPortVisibleRegion(GetWindowPort(window), updateRgn); // and invalidate the new one as well
-		InvalRgn(updateRgn);
+		InvalWindowRgn(window, updateRgn);
 		
 		DisposeRgn(updateRgn); // and now we're done with the region
 		
@@ -627,12 +657,15 @@ void iconBrowserClass::Clear()
 	if (theList.GetSelection() == -1)
 		return;
 	
-	GetIndString(message, rIBStrings, eIBDeleteWarning);
 	
 	theList.GetCellClientData(theList.GetSelection(), 0, (void**)&drawingData);
 	ID = drawingData->ID;
-	NumToString(ID, IDAsString);
 	
+	if (ID == kIDUseFileIcon)
+		return;
+	
+	GetIndString(message, rIBStrings, eIBDeleteWarning);
+	NumToString(ID, IDAsString);
 	SubstituteString(message, "\p<icon ID>", IDAsString);
 	SubstituteString(message, "\p<file name>", srcFileSpec.name);
 	
@@ -714,7 +747,7 @@ void iconBrowserClass::GetIconString(int ID, Str255 name, long members, bool new
 		CopyString(localName, name);
 	else
 	{
-		GetIDMenu(ID, NULL, NULL, localName);
+		icnsClass::GetIDMenu(ID, NULL, NULL, localName);
 		if (localName[0]) defaultName = true;
 	}
 	
@@ -750,9 +783,73 @@ void iconBrowserClass::GetIconString(int ID, Str255 name, long members, bool new
 	part.LoadFromResource(rIBStrings, eIBListMembers);
 	(**iconString) += part;
 	part = icnsClass::GetMembersListNames(members);
+	if (part.Length() == 0)
+		part.LoadFromResource(rIBStrings, eIBNoMembers);
 	(**iconString) += part;
 }
+
+
+icnsClassPtr iconBrowserClass::GetBrowserTempIcon()
+{
+	return &drawIcon;
+}		
+
+void iconBrowserClass::EditIconInfo()
+{
+	long 				currentSelection, oldID;
+	ListDrawingData*	cellData;
+	bool				oldNewType;
+	
+	currentSelection = theList.GetSelection();
+	
+	if (currentSelection == -1) return;
+	
+	theList.GetCellClientData(currentSelection, 0, (void**)&cellData);
+	drawIcon.ID = oldID = cellData->ID;
+	drawIcon.srcFileSpec = srcFileSpec;
+	oldNewType = cellData->newType;
+	if (cellData->newType)
+		drawIcon.format = formatMacOSNew;
+	else
+		drawIcon.format = formatMacOSOld;
+	
+	drawIcon.Load();
+	
+	if (drawIcon.EditIconInfo(kIconInfoBrowser) == iOK)
+	{
+		drawIcon.Save();
 		
+		RemoveIcon(oldID, oldNewType);
+
+		if (drawIcon.format == formatMacOSNew ||
+			drawIcon.format == formatMacOSUniversal)
+			AddIcon(drawIcon.ID, drawIcon.name, drawIcon.members & kDefaultMembers[formatMacOSNew], true);
+		
+		if (drawIcon.format == formatMacOSOld ||
+			drawIcon.format == formatMacOSUniversal)
+			AddIcon(drawIcon.ID, drawIcon.name, drawIcon.members & kDefaultMembers[formatMacOSOld], false);
+			
+		RefreshList();
+	}
+}
+
+bool iconBrowserClass::HasSelection()
+{
+	int selection;
+	
+	selection = theList.GetSelection();
+	
+	if (selection == -1)
+		return false;
+	
+	ListDrawingData*	cellData;
+	
+	theList.GetCellClientData(selection, 0, (void**)&cellData);
+	if (cellData->ID == kIDUseFileIcon)
+		return false;
+		
+	return true;
+}
 
 bool IconFilter(MStringPtr cellString, void *clientData)
 {
@@ -835,6 +932,8 @@ long BrowserStringCompare(MStringPtr string1, MStringPtr string2, void* clientDa
 	{	
 		if (drawingData1->newType == drawingData2->newType)
 			return 0;
+		else if (drawingData1->newType)
+			return 1;
 		else
 			return -1;
 	}

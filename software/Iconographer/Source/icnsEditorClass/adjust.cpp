@@ -21,9 +21,9 @@ void icnsEditorClass::Adjust(void)
 	
 	adjustDialogWindow = new MWindow(GetDialogWindow(adjustDialog), kDialogType);
 	
-	eventFilterUPP = NewModalFilterProc(AdjustDialogFilter);
+	eventFilterUPP = NewModalFilterUPP(AdjustDialogFilter);
 	
-	dialogData.sliderActionFunctionUPP = NewControlActionProc(SliderActionFunction);
+	dialogData.sliderActionFunctionUPP = NewControlActionUPP(SliderActionFunction);
 					
 	SetDialogDefaultItem(adjustDialog, iOK);
 	SetDialogCancelItem(adjustDialog, iCancel);
@@ -212,9 +212,13 @@ void icnsEditorClass::Adjust(void)
 	
 	ReleaseResource(brightnessControls);
 	ReleaseResource(hueControls);
-	DisposeRoutineDescriptor(dialogData.sliderActionFunctionUPP);
+	DisposeControlActionUPP(dialogData.sliderActionFunctionUPP);
+	
 	UnlockPixels(dialogData.tempPix);
 	DisposeGWorld(dialogData.tempGW);
+	
+	UnlockPixels(dialogData.tempPix2);
+	DisposeGWorld(dialogData.tempGW2);
 	
 	DisposeDialog(adjustDialog);
 	
@@ -249,7 +253,7 @@ void FieldToSlider(ControlHandle field, ControlHandle slider)
 	SetControlValue(slider, sliderValue);
 }
 
-pascal bool AdjustDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit)
+pascal Boolean AdjustDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit)
 {
 	bool				handledEvent = false;
 	char 				key;
@@ -301,7 +305,7 @@ pascal bool AdjustDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* i
 			    ((key >= '0') && (key <= '9')) || (key == '-') || (key == '+') ||
 			    ((key == '.') && (eventPtr->modifiers & cmdKey) != 0))
 			{
-			   handledEvent = StandardEditorDialogFilter(dialog, eventPtr, itemHit);
+			   handledEvent = MWindow::StandardDialogFilter(dialog, eventPtr, itemHit);
 			}
 			else
 			{
@@ -310,7 +314,7 @@ pascal bool AdjustDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* i
 			}
 			break;
 		default:
-			handledEvent = StandardEditorDialogFilter(dialog,eventPtr,itemHit);
+			handledEvent = MWindow::StandardDialogFilter(dialog,eventPtr,itemHit);
 		break;
 	}
 	return handledEvent;

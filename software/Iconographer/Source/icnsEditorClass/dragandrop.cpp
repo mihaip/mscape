@@ -98,7 +98,7 @@ pascal OSErr DrawDragHilite(DragReference theDragRef, icnsEditorPtr parentEditor
 		}
 		else if (!EqualRgn(hiliteRgn, parentEditor->statics.dragHiliteRgn))
 		{
-			InvalRgn(parentEditor->statics.dragHiliteRgn);
+			InvalWindowRgn(parentEditor->window, parentEditor->statics.dragHiliteRgn);
 			parentEditor->Refresh();
 			
 			DisposeRgn(parentEditor->statics.dragHiliteRgn);
@@ -267,7 +267,7 @@ pascal OSErr DragReceiveHandler (WindowPtr theWindow, void *, DragReference theD
 			parentEditor->currentState = new drawingStateClass(parentEditor->currentState, parentEditor);	
 				
 			
-			InvalRgn(updateRgn);
+			InvalWindowRgn(parentEditor->window, updateRgn);
 			parentEditor->Refresh();
 			parentEditor->status |= (needToSave | needsUpdate);
 			

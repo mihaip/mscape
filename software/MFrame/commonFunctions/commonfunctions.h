@@ -148,7 +148,6 @@ typedef pascal void (*XYMenuUpdateFn)(int selection, void* clientData);
 #endif
 
 // function prototypes
-extern void InitToolbox(void);
 
 extern void DisplayAlert(const char* error, const char* reason);
 extern void DisplayPAlert(Str255 error, Str255 reason);
@@ -156,6 +155,7 @@ extern void DisplayValue(int value);
 extern void DisplayFloat(float value);
 extern void DisplayColor(RGBColor color);
 extern void DisplayRect(Rect rectToDisplay);
+extern void DisplayPoint(Point pointToDisplay);
 
 
 extern char* C2Pas(char* cStr, Str255 pStr);
@@ -180,13 +180,15 @@ extern void DrawTranslucentRect(Rect* targetRect);
 extern void CopyString(Str255 dst, const Str255 src);
 extern void BlockFill(unsigned char *block, int fill, int size);
 extern void FillPixMap32(PixMapHandle src, unsigned long fill);
+#if !TARGET_API_MAC_CARBON
 extern GrafPtr CreateGrafPort(Rect* bounds);
 extern void DisposeGrafPort(GrafPtr doomedPort );
+#endif
 extern void MakeTargetRect(Rect src, Rect* target);
 extern FSSpec GetApplicationFileSpec();
 extern OSType GetApplSignature ( );
 extern NavTypeListHandle MakeTypeList ( OSType applSignature, int numTypes, ... );
-extern void DummyFunction();
+extern pascal void DummyFunction(NavEventCallbackMessage callBackSelector, NavCBRecPtr callBackParms, void *callBackUD);
 extern void CropPixMap(PixMapHandle pixMap, int targetRowBytes);
 extern int GetDepth(int noOfColors);
 extern void GetFSSpecFromAEDesc (AEDesc &inDesc, FSSpec &outValue );
@@ -223,18 +225,18 @@ extern void AppendString(Str255 string1, Str255 string2);
 extern void SubstituteString(Str255 string, Str255 pattern, Str255 replace);
 extern int FindSubstring(Str255 string, Str255 pattern);
 extern bool IsMenuItemEnabled(int menuID, int item);
-extern void EnableMenuItem(int menuID, int item);
-extern void DisableMenuItem(int menuID, int item);
+extern void MyEnableMenuItem(int menuID, int item);
+extern void MyDisableMenuItem(int menuID, int item);
 extern void SetCursor(int ID);
 extern bool IsFrontProcess();
 extern OSStatus MakeTwoColorTable(CTabHandle *colorTable, RGBColor color1, RGBColor color2);
 extern OSStatus MakeThreeColorTable(CTabHandle *colorTable, RGBColor color1, RGBColor color2, RGBColor color3);
-extern bool pascal MaskColorSearch(RGBColor *color, int *result);
+extern pascal Boolean MaskColorSearch(RGBColor *color, long *result);
 extern OSStatus Make1BitMask(PixMapHandle srcPix, PixMapHandle targetPix, Rect bounds);
 extern void SetControlText(ControlHandle control, Str255 text);
 extern void GetControlText(ControlHandle control, Str255 text);
 extern void ResetStaticTextTitle(ControlHandle theControl);
-extern pascal bool StandardEventFilter(DialogPtr dialogPtr,EventRecord *eventStrucPtr,SInt16 *itemHit);
+extern pascal Boolean StandardEventFilter(DialogPtr dialogPtr,EventRecord *eventStrucPtr,SInt16 *itemHit);
 extern short StringHeight(Str255 string);
 extern short CharacterHeight();
 extern void DrawLinedString(Str255 string);
@@ -291,11 +293,15 @@ extern OSErr FSWrite2(short file, short data);
 extern ControlHandle NewEnhancedPlacard(short controlID, WindowPtr parentWindow, int flags, short font, short size,
 								 		Str255 title, PicHandle picture, MenuHandle menu, GWorldPtr canvasGW, PixMapHandle canvasPix,
 								 		EnhancedPlacardUpdateFuncPtr updateFunc, void* clientData);
+extern void DisposeEnhancedPlacard(ControlHandle placard);
 extern pascal void EnhancedPlacardDraw(ControlHandle placard, short partCode);
 extern pascal short EnhancedPlacardHitTest(ControlHandle placard, Point where);
 extern pascal short EnhancedPlacardTracking(ControlHandle placard, Point startPt, ControlActionUPP actionProc);
 extern void EnhancedPlacardHandleClick(ControlHandle placard);
 extern void SetEnhancedPlacardMenuValue(ControlHandle placard, int menuValue);
+#if TARGET_API_MAC_CARBON
+void MyQDSetPatternOrigin(Point origin);
+#endif
 
 // inline functions
 inline void CopyPixMap(PixMapHandle srcPix, PixMapHandle targetPix, const Rect* srcRect, const Rect* targetRect, long flags, RgnHandle clipRgn)

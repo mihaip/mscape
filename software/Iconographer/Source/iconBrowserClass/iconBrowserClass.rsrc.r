@@ -1,41 +1,4 @@
 /* Resource fork of software/Iconographer/Source/iconBrowserClass/iconBrowserClass.rsrc */
-resource 'wctb' (300) {
-	{	/* array ColorSpec: 5 elements */
-		/* [1] */
-		wContentColor, 65535, 65535, 65535,
-		/* [2] */
-		wFrameColor, 0, 0, 0,
-		/* [3] */
-		wTextColor, 0, 0, 0,
-		/* [4] */
-		wHiliteColor, 0, 0, 0,
-		/* [5] */
-		wTitleBarColor, 65535, 65535, 65535
-	}
-};
-
-resource 'CNTL' (310, "Icon Browser: Progress Bar", purgeable) {
-	{28, 8, 41, 342},
-	0,
-	visible,
-	100,
-	0,
-	80,
-	0,
-	""
-};
-
-resource 'CNTL' (302, "Icon Browser: List", purgeable) {
-	{0, 0, 344, 320},
-	0,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
 resource 'CNTL' (300, "Icon Browser: Scroll Bar", purgeable) {
 	{4294967295, 319, 343, 335},
 	0,
@@ -58,6 +21,17 @@ resource 'CNTL' (301, "Icon Browser: Info Pane", purgeable) {
 	"27 icons"
 };
 
+resource 'CNTL' (302, "Icon Browser: List", purgeable) {
+	{0, 0, 344, 320},
+	0,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
 resource 'CNTL' (303, "Icon Browser: Type Menu", purgeable) {
 	{343, 4294967295, 359, 101},
 	32,
@@ -69,60 +43,15 @@ resource 'CNTL' (303, "Icon Browser: Type Menu", purgeable) {
 	"Icon Types:"
 };
 
-resource 'cctb' (301) {
-	{	/* array ColorSpec: 4 elements */
-		/* [1] */
-		cFrameColor, 0, 0, 0,
-		/* [2] */
-		cBodyColor, 65535, 65535, 65535,
-		/* [3] */
-		cTextColor, 0, 0, 0,
-		/* [4] */
-		cElevatorColor, 65535, 65535, 65535
-	}
-};
-
-resource 'cctb' (300) {
-	{	/* array ColorSpec: 4 elements */
-		/* [1] */
-		cFrameColor, 0, 0, 0,
-		/* [2] */
-		cBodyColor, 65535, 65535, 65535,
-		/* [3] */
-		cTextColor, 0, 0, 0,
-		/* [4] */
-		cElevatorColor, 65535, 65535, 65535
-	}
-};
-
-resource 'dctb' (300) {
-	{	/* array ColorSpec: 5 elements */
-		/* [1] */
-		wContentColor, 65535, 65535, 65535,
-		/* [2] */
-		wFrameColor, 0, 0, 0,
-		/* [3] */
-		wTextColor, 0, 0, 0,
-		/* [4] */
-		wHiliteColor, 0, 0, 0,
-		/* [5] */
-		wTitleBarColor, 65535, 65535, 65535
-	}
-};
-
-resource 'dctb' (301) {
-	{	/* array ColorSpec: 5 elements */
-		/* [1] */
-		wContentColor, 65535, 65535, 65535,
-		/* [2] */
-		wFrameColor, 0, 0, 0,
-		/* [3] */
-		wTextColor, 0, 0, 0,
-		/* [4] */
-		wHiliteColor, 0, 0, 0,
-		/* [5] */
-		wTitleBarColor, 65535, 65535, 65535
-	}
+resource 'CNTL' (310, "Icon Browser: Progress Bar", purgeable) {
+	{28, 8, 41, 342},
+	0,
+	visible,
+	100,
+	0,
+	80,
+	0,
+	""
 };
 
 resource 'DITL' (300, purgeable) {
@@ -215,31 +144,6 @@ resource 'DLOG' (301, "Icon Browser Mockup", purgeable) {
 	noAutoCenter
 };
 
-data 'ictb' (300) {
-	$"0000 0000 0000 0000"                                /* ........ */
-};
-
-data 'ictb' (301) {
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000"                      /* ............ */
-};
-
-resource 'dlgx' (300) {
-	versionZero {
-		15
-	}
-};
-
-resource 'WIND' (300, purgeable) {
-	{229, 200, 485, 540},
-	1025,
-	invisible,
-	goAway,
-	0x0,
-	"<name> (Icon Browser)",
-	staggerMainScreen
-};
-
 resource 'MENU' (303, "Icon Browser: Icon Types") {
 	303,
 	textMenuProc,
@@ -257,7 +161,7 @@ resource 'MENU' (303, "Icon Browser: Icon Types") {
 };
 
 resource 'STR#' (300, "Icon Browser: Strings", purgeable) {
-	{	/* array StringArray: 12 elements */
+	{	/* array StringArray: 13 elements */
 		/* [1] */
 		"Loading Icon: <ID>",
 		/* [2] */
@@ -283,7 +187,105 @@ resource 'STR#' (300, "Icon Browser: Strings", purgeable) {
 		" ID: <icon ID> from the file Ò<file name"
 		">Ó?",
 		/* [12] */
-		"<name> (Icon Browser)"
+		"<name> (Icon Browser)",
+		/* [13] */
+		"<I>None</I>"
+	}
+};
+
+resource 'WIND' (300, purgeable) {
+	{229, 200, 485, 540},
+	1025,
+	invisible,
+	goAway,
+	0x0,
+	"<name> (Icon Browser)",
+	staggerMainScreen
+};
+
+resource 'cctb' (300) {
+	{	/* array ColorSpec: 4 elements */
+		/* [1] */
+		cFrameColor, 0, 0, 0,
+		/* [2] */
+		cBodyColor, 65535, 65535, 65535,
+		/* [3] */
+		cTextColor, 0, 0, 0,
+		/* [4] */
+		cElevatorColor, 65535, 65535, 65535
+	}
+};
+
+resource 'cctb' (301) {
+	{	/* array ColorSpec: 4 elements */
+		/* [1] */
+		cFrameColor, 0, 0, 0,
+		/* [2] */
+		cBodyColor, 65535, 65535, 65535,
+		/* [3] */
+		cTextColor, 0, 0, 0,
+		/* [4] */
+		cElevatorColor, 65535, 65535, 65535
+	}
+};
+
+resource 'dctb' (300) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
+	}
+};
+
+resource 'dctb' (301) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
+	}
+};
+
+resource 'dlgx' (300) {
+	versionZero {
+		15
+	}
+};
+
+data 'ictb' (300) {
+	$"0000 0000 0000 0000"                                /* ........ */
+};
+
+data 'ictb' (301) {
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000"                      /* ............ */
+};
+
+resource 'wctb' (300) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
 	}
 };
 

@@ -15,13 +15,14 @@ const static int kPrefsDefaultsPaneItems[] = {
 	iDefaultZoomLevelLabel, iDefaultZoomLevelField, iDefaultZoomLevelArrows,
 	iDefaultIconFormat,
 	
+	iMembersGroupBox,
 	iThumbnailBox,
 	iHugeBox, iih32Box, iich8Box, iich4Box, iichiBox, ih8mkBox, iichmBox,	
 	iLargeBox, iil32Box, iicl8Box, iicl4Box, iicniBox, il8mkBox, iicnmBox,
 	iSmallBox, iis32Box, iics8Box, iics4Box, iicsiBox, is8mkBox, iicsmBox,
 	iMiniBox, iicm8Box, iicm4Box, iicmiBox, iicmmBox,
 	
-	iMembersGroupBox, iMembersDivider,
+	 iMembersDivider,
 	iHintsLabel,
 	iIconLabel, i32BitIconLabel, i8BitIconLabel, i4BitIconLabel, i1BitIconLabel,
 	iMaskLabel, i8BitMaskLabel, i1BitMaskLabel};
@@ -45,9 +46,11 @@ const static int kPrefsExternalEditorPaneItemsCount = sizeof(kPrefsExternalEdito
 
 editorStaticsClass::editorStaticsClass(void)
 {
-	InitToolbox(); // since this function is called before anything else, we must initialize
-				   // the toolbox before doing anything else
-	
+	;
+}
+
+void editorStaticsClass::Load()
+{	
 	GetGWorld(&startupPort, &startupDevice); // these are the GWorld & GDevice for the
 											 // screen we start up with
 
@@ -102,6 +105,8 @@ editorStaticsClass::editorStaticsClass(void)
 	browserTypeMenu = GetMenu(rIBTypeMenu);
 	
 	firstTime = false;
+	
+	preferences.SetupPalettes();
 }
 
 void editorStaticsClass::LoadPicker(int ID,
@@ -167,6 +172,11 @@ editorStaticsClass::~editorStaticsClass(void)
 	
 	SetGWorld(startupPort, startupDevice); // and restore the startup port and device
 	// (altho there shouldn't have been any reason to change them in the first place)
+	
+	delete colorsPalette;
+	delete membersPalette;
+	delete previewPalette;
+	delete toolPalette;
 }
 
 // __________________________________________________________________________________________
@@ -191,35 +201,6 @@ void editorStaticsClass::ReclaimEmergencyMemory(void)
 void editorStaticsClass::AllocateEmergencyMemory(void)
 {
 	tempMemoryChunk = NewPtr(kEmergencyMemorySize);
-}
-
-short editorStaticsClass::DisplayAlert(Str255 message, Str255 button1, Str255 button2, Str255 button3, int type)
-{
-	MAlert		alert;
-	MString		temp;
-	
-	alert.SetMovable(true);
-	
-	temp = button1;
-	alert.SetButtonName(kMAOK, temp);
-	
-	temp = button2;
-	alert.SetButtonName(kMACancel, temp);
-	
-	temp = button3;
-	alert.SetButtonName(kMAOther, temp);
-	
-	temp = message;
-	alert.SetError(temp);
-	
-	alert.SetType(kAlertStopAlert);
-	
-	if (type == kAlertStopAlert)
-		alert.SetBeep(true);
-	
-	alert.SetType(type);
-	
-	return alert.Display();
 }
 
 void editorStaticsClass::GetPickerPix(long iconName, long colors, PixMapHandle* pix, GWorldPtr* gW, RgnHandle* shapeRgn)
@@ -269,12 +250,12 @@ Point editorStaticsClass::GetDefaultPalettePosition(MFloaterPtr palette)
 	
 	if (palette == previewPalette)
 	{
-		position.v = LMGetMBarHeight() + previewPalette->GetBorderThickness(borderTop) + kDefaultWindowSeparation;
+		position.v = GetMBarHeight() + previewPalette->GetBorderThickness(borderTop) + kDefaultWindowSeparation;
 		position.h = screenRect.right - dimensions.h + previewPalette->GetBorderThickness(borderLeft) - kDefaultWindowSeparation;
 	}
 	else if (palette == toolPalette)
 	{
-		position.v = LMGetMBarHeight() + toolPalette->GetBorderThickness(borderTop) + kDefaultWindowSeparation;
+		position.v = GetMBarHeight() + toolPalette->GetBorderThickness(borderTop) + kDefaultWindowSeparation;
 		position.h = toolPalette->GetBorderThickness(borderLeft) + kDefaultWindowSeparation;
 	}
 	else if (palette == membersPalette)
@@ -283,7 +264,7 @@ Point editorStaticsClass::GetDefaultPalettePosition(MFloaterPtr palette)
 		
 		previewDimensions = previewPalette->GetPhysicalDimensions();
 		
-		position.v = LMGetMBarHeight() + previewDimensions.v + membersPalette->GetBorderThickness(borderTop) + 2 * kDefaultWindowSeparation;
+		position.v = GetMBarHeight() + previewDimensions.v + membersPalette->GetBorderThickness(borderTop) + 2 * kDefaultWindowSeparation;
 		position.h = screenRect.right - dimensions.h + membersPalette->GetBorderThickness(borderLeft) - kDefaultWindowSeparation;
 	}
 	else if (palette == colorsPalette)
@@ -312,7 +293,7 @@ Point editorStaticsClass::GetDefaultMembersPaletteDimensions()
 	
 	dimensions.h = kMPDefaultWidth;
 	dimensions.v = (screenRect.bottom - screenRect.top) - 
-				   (LMGetMBarHeight() +
+				   (GetMBarHeight() +
 				    membersPalette->GetBorderThickness(borderTop) +
 				    membersPalette->GetBorderThickness(borderBottom) +
 				    previewDimensions.v +
@@ -341,7 +322,7 @@ Point editorStaticsClass::GetDefaultWindowPosition()
 	else
 	{
 		returnPosition.h = 0;
-		returnPosition.v = LMGetMBarHeight();
+		returnPosition.v = GetMBarHeight();
 	}
 	
 	return returnPosition;
@@ -429,7 +410,7 @@ bool editorStaticsClass::GetSupportFolder(FSSpec* supportFolder)
 		
 		GetIndString(error, rBasicStrings, eIconographerSupportFolderError);
 		
-		DisplayAlert(error, "\pOK", "\p", "\p", kAlertStopAlert);
+		MUtilities::DisplayAlert(error, "\pOK", "\p", "\p", kAlertStopAlert);
 		
 		appSpec = GetApplicationFileSpec();
 		
@@ -443,6 +424,16 @@ bool editorStaticsClass::GetSupportFolder(FSSpec* supportFolder)
 }
 
 #pragma mark -
+
+editorPreferencesClass::editorPreferencesClass()
+{
+	data = NULL;
+}
+
+void editorPreferencesClass::Setup()
+{
+	Load(rDefaultPrefID);
+}
 
 void editorPreferencesClass::Load(int ID)
 {
@@ -556,7 +547,10 @@ void editorPreferencesClass::Load(int ID)
 		CopyString((**data).company, "\p");
 		CopyString((**data).regCode, "\p");
 	}
-	
+}
+
+void editorPreferencesClass::SetupPalettes()
+{
 	SetupPaletteLocations();
 	
 	icnsEditorClass::statics.toolPalette->SetColors(&(**data).foreColor, &(**data).backColor);
@@ -678,7 +672,7 @@ pascal void editorPreferencesClass::PreviewSizeSliderAction(ControlHandle theCon
 	Draw1Control(previewSizeField);
 }
 
-pascal bool editorPreferencesClass::PreferencesDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit)
+pascal Boolean editorPreferencesClass::PreferencesDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit)
 {
 	bool handledEvent = false;
 	
@@ -704,9 +698,9 @@ pascal bool editorPreferencesClass::PreferencesDialogFilter(DialogPtr dialog, Ev
 				{
 					ControlActionUPP	arrowsActionFunctionUPP;
 			
-					arrowsActionFunctionUPP = NewControlActionProc((ProcPtr) editorPreferencesClass::ZoomArrowsAction);
+					arrowsActionFunctionUPP = NewControlActionUPP(editorPreferencesClass::ZoomArrowsAction);
 					TrackControl(control, theMouse, arrowsActionFunctionUPP);
-					DisposeRoutineDescriptor(arrowsActionFunctionUPP);
+					DisposeControlActionUPP(arrowsActionFunctionUPP);
 					handledEvent = true;
 				}
 				else if (control == fieldControl)
@@ -718,7 +712,7 @@ pascal bool editorPreferencesClass::PreferencesDialogFilter(DialogPtr dialog, Ev
 				{
 					ControlActionUPP previewSizeSliderUPP;
 					
-					previewSizeSliderUPP = NewControlActionProc((ProcPtr) editorPreferencesClass::PreviewSizeSliderAction);
+					previewSizeSliderUPP = NewControlActionUPP(editorPreferencesClass::PreviewSizeSliderAction);
 					
 					if (part == kControlPageUpPart || part == kControlPageDownPart)
 						ThemeSoundStart(kThemeDragSoundSliderThumb);
@@ -728,7 +722,7 @@ pascal bool editorPreferencesClass::PreferencesDialogFilter(DialogPtr dialog, Ev
 					if (part == kControlPageUpPart || part == kControlPageDownPart)
 						ThemeSoundEnd();
 					
-					DisposeRoutineDescriptor(previewSizeSliderUPP);
+					DisposeControlActionUPP(previewSizeSliderUPP);
 					handledEvent = true;
 				}
 				else if (control == previewSizeField)
@@ -770,7 +764,7 @@ pascal bool editorPreferencesClass::PreferencesDialogFilter(DialogPtr dialog, Ev
 			}
 			break;
 		default:
-			handledEvent = StandardEditorDialogFilter(dialog,eventPtr,itemHit);
+			handledEvent = MWindow::StandardDialogFilter(dialog,eventPtr,itemHit);
 			break;
 	}
 	
@@ -828,7 +822,7 @@ void editorPreferencesClass::Edit(int pane)
 	
 	MWindow::DeactivateAll();
 	
-	eventFilterUPP = NewModalFilterProc(editorPreferencesClass::PreferencesDialogFilter);
+	eventFilterUPP = NewModalFilterUPP(editorPreferencesClass::PreferencesDialogFilter);
 	
 	SetDialogDefaultItem(preferencesDialog, iOK);
 	SetDialogCancelItem(preferencesDialog, iCancel);
@@ -857,7 +851,7 @@ void editorPreferencesClass::Edit(int pane)
 	GetDialogItemAsControl(preferencesDialog, iDefaultIconFormat, &defaultFormat);
 	SetControlValue(defaultFormat, (**data).defaultFormat);
 	typesMenu = GetControlPopupMenuHandle(defaultFormat);
-	DisableItem(typesMenu, formatMacOSXServer);
+	DisableMenuItem(typesMenu, formatMacOSXServer);
 	
 	GetDialogItemAsControl(preferencesDialog, iStartupCreateNewEditor, &newEditor);
 	SetControlValue(newEditor, bool(!((**data).flags & prefsDontMakeNewEditor)));
@@ -1211,7 +1205,7 @@ void editorPreferencesClass::Edit(int pane)
 		}
 	}
 	
-	DisposeRoutineDescriptor(eventFilterUPP);
+	DisposeModalFilterUPP(eventFilterUPP);
 	DisposeDialog(preferencesDialog);
 	
 	MWindow::ActivateAll();

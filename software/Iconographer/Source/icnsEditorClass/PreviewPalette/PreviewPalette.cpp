@@ -21,7 +21,8 @@ PreviewPalette::PreviewPalette()
 
 PreviewPalette::~PreviewPalette()
 {
-	;
+	DisposeEnhancedPlacard(controls.background);
+	DisposeEnhancedPlacard(controls.settings);
 }
 
 void PreviewPalette::Activate()
@@ -195,7 +196,7 @@ void PreviewPalette::CreateControls()
 	SetControlUserPaneHitTest(controls.preview, GenericHitTest);
 	
 	controls.slider = GetNewControl(rPPSlider, window);
-	sliderActionUPP = NewControlActionProc(PreviewPalette::SliderAction);
+	sliderActionUPP = NewControlActionUPP(PreviewPalette::SliderAction);
 	SetControlAction(controls.slider, sliderActionUPP);
 	
 	controls.text = GetNewControl(rPPText, window);
@@ -235,15 +236,18 @@ void PreviewPalette::SetPreviewSize(int size)
 	
 	SetControlText(controls.text, sliderText);
 	
-	SAVEGWORLD;
-	
-	SetPort();
-	
-	Draw1Control(controls.slider);
-	Draw1Control(controls.text);
-	Draw1Control(controls.preview);
-	
-	RESTOREGWORLD;
+	if (IsVisible())
+	{
+		SAVEGWORLD;
+		
+		SetPort();
+		
+		Draw1Control(controls.slider);
+		Draw1Control(controls.text);
+		Draw1Control(controls.preview);
+		
+		RESTOREGWORLD;
+	}
 }
 
 #pragma mark -
@@ -264,15 +268,15 @@ void PreviewPalette::SettingsUpdate(struct EnhancedPlacardData* data, int flags)
 		{
 			GetMenuItemText(data->menu, iPPSelected, menuItemText);
 			
-			CheckItem(data->menu, iPPNormal, false);
-			CheckItem(data->menu, iPPSelected, true);
+			CheckMenuItem(data->menu, iPPNormal, false);
+			CheckMenuItem(data->menu, iPPSelected, true);
 		}
 		else
 		{
 			GetMenuItemText(data->menu, iPPNormal, menuItemText);
 			
-			CheckItem(data->menu, iPPNormal, true);
-			CheckItem(data->menu, iPPSelected, false);
+			CheckMenuItem(data->menu, iPPNormal, true);
+			CheckMenuItem(data->menu, iPPSelected, false);
 		}
 		
 		AppendString(data->title, menuItemText);
@@ -282,31 +286,31 @@ void PreviewPalette::SettingsUpdate(struct EnhancedPlacardData* data, int flags)
 		{
 			case iPPWhite:
 				GetMenuItemText(data->menu, iPPWhite, menuItemText);
-				CheckItem(data->menu, iPPWhite, true);
-				CheckItem(data->menu, iPPBlack, false);
-				CheckItem(data->menu, iPPListView, false);
-				CheckItem(data->menu, iPPDesktop, false);
+				CheckMenuItem(data->menu, iPPWhite, true);
+				CheckMenuItem(data->menu, iPPBlack, false);
+				CheckMenuItem(data->menu, iPPListView, false);
+				CheckMenuItem(data->menu, iPPDesktop, false);
 				break;
 			case iPPBlack:
 				GetMenuItemText(data->menu, iPPBlack, menuItemText);
-				CheckItem(data->menu, iPPWhite, false);
-				CheckItem(data->menu, iPPBlack, true);
-				CheckItem(data->menu, iPPListView, false);
-				CheckItem(data->menu, iPPDesktop, false);
+				CheckMenuItem(data->menu, iPPWhite, false);
+				CheckMenuItem(data->menu, iPPBlack, true);
+				CheckMenuItem(data->menu, iPPListView, false);
+				CheckMenuItem(data->menu, iPPDesktop, false);
 				break;
 			case iPPListView:
 				GetMenuItemText(data->menu, iPPListView, menuItemText);
-				CheckItem(data->menu, iPPWhite, false);
-				CheckItem(data->menu, iPPBlack, false);
-				CheckItem(data->menu, iPPListView, true);
-				CheckItem(data->menu, iPPDesktop, false);
+				CheckMenuItem(data->menu, iPPWhite, false);
+				CheckMenuItem(data->menu, iPPBlack, false);
+				CheckMenuItem(data->menu, iPPListView, true);
+				CheckMenuItem(data->menu, iPPDesktop, false);
 				break;
 			default:
 				GetMenuItemText(data->menu, iPPDesktop, menuItemText);
-				CheckItem(data->menu, iPPWhite, false);
-				CheckItem(data->menu, iPPBlack, false);
-				CheckItem(data->menu, iPPListView, false);
-				CheckItem(data->menu, iPPDesktop, true);
+				CheckMenuItem(data->menu, iPPWhite, false);
+				CheckMenuItem(data->menu, iPPBlack, false);
+				CheckMenuItem(data->menu, iPPListView, false);
+				CheckMenuItem(data->menu, iPPDesktop, true);
 				break;
 		}
 		
@@ -418,6 +422,8 @@ pascal void PreviewPalette::PreviewDraw(ControlHandle theControl, short thePart)
 	Rect				controlRect, canvasRect, tempRect;
 	
 	parent = icnsEditorClass::statics.previewPalette;
+	if (parent == NULL)
+		return;
 	
 	GetControlBounds(theControl, &controlRect);
 	
@@ -435,8 +441,11 @@ pascal void PreviewPalette::PreviewDraw(ControlHandle theControl, short thePart)
 	tempRect = canvasRect;
 	InsetRect(&tempRect, 2, 2);
 	DrawImageWell(theControl, tempRect);
+	DEBUG("\pdrew image well");
 	
 	FillRectWithPreviewBackground(tempRect);
+	
+	DEBUG("\pfilled with background");
 	
 	SetRect(&tempRect, 0, 0,
 			GetControlValue(parent->controls.slider),
@@ -447,6 +456,8 @@ pascal void PreviewPalette::PreviewDraw(ControlHandle theControl, short thePart)
 	OffsetRect(&tempRect,
 			   canvasRect.left + ((canvasRect.right - canvasRect.left) - (tempRect.right - tempRect.left))/2,
 			   canvasRect.top + ((canvasRect.bottom - canvasRect.top) - (tempRect.bottom - tempRect.top))/2);
+	
+	DEBUG("\pall set up");
 	
 	if (parent->parentEditor)
 	{
@@ -514,6 +525,15 @@ pascal void PreviewPalette::PreviewDraw(ControlHandle theControl, short thePart)
 				if (maskDepth == 8) maskDepth = 1;
 			}
 		}
+		
+		Str255 temp;
+		DEBUG("\ppreview depth");
+		NumToString(previewSize,temp);
+		DEBUG(temp);
+		DEBUG("\pmask depth");
+		NumToString(maskDepth, temp);
+		DEBUG(temp);
+		
 		parent->parentEditor->PreviewDisplay(previewSize, previewDepth, maskDepth, tempRect, icnsEditorClass::statics.preferences.FeatureEnabled(prefsPreviewSelected));  
 	}
 	RESTOREGWORLD;
@@ -549,10 +569,14 @@ void PreviewPalette::FillRectWithPreviewBackground(Rect targetRect)
 		default:
 			PixPatHandle		desktopPattern;
 
-			desktopPattern = LMGetDeskCPat();
+			desktopPattern = MUtilities::GetDesktopPattern();
+			DEBUG("\pabout to lock");
 			HLock((Handle)desktopPattern);
+			DEBUG("\pabout to draw");
 			FillCRect(&targetRect, desktopPattern);
 			HUnlock((Handle)desktopPattern);
+			DEBUG("\pabout to dispose");
+			MUtilities::DoneWithDesktopPattern(desktopPattern);
 			break;
 	}
 	

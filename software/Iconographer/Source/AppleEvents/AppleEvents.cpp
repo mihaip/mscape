@@ -10,15 +10,13 @@
 OSErr AEInit()
 {
 	OSErr err = noErr;
-	AEEventHandlerUPP openAppUPP;
-	AEEventHandlerUPP openDocUPP;
-	AEEventHandlerUPP printDocUPP;
-	AEEventHandlerUPP quitAppUPP;
+	AEEventHandlerUPP openAppUPP, openDocUPP, printDocUPP, quitAppUPP, preferencesUPP;
 	
-	openAppUPP = NewAEEventHandlerProc(AEOpenApp);
-	openDocUPP = NewAEEventHandlerProc(AEOpenDoc);
-	printDocUPP = NewAEEventHandlerProc(AEPrintDoc);
-	quitAppUPP = NewAEEventHandlerProc(AEQuitApp);
+	openAppUPP = NewAEEventHandlerUPP(AEOpenApp);
+	openDocUPP = NewAEEventHandlerUPP(AEOpenDoc);
+	printDocUPP = NewAEEventHandlerUPP(AEPrintDoc);
+	quitAppUPP = NewAEEventHandlerUPP(AEQuitApp);
+	preferencesUPP = NewAEEventHandlerUPP(AEPreferences);
 	
 	err = AEInstallEventHandler(kCoreEventClass, kAEOpenApplication, openAppUPP, 0L, false);
 	if (err == noErr)
@@ -27,6 +25,10 @@ OSErr AEInit()
 		err = AEInstallEventHandler(kCoreEventClass, kAEPrintDocuments, printDocUPP, 0L, false);
 	if (err == noErr)
 		err = AEInstallEventHandler(kCoreEventClass, kAEQuitApplication, quitAppUPP, 0L, false);
+#if TARGET_API_MAC_CARBON
+	if (err == noErr && MUtilities::GestaltTest(gestaltMenuMgrAttr, gestaltMenuMgrAquaLayoutMask))
+		err = AEInstallEventHandler(kCoreEventClass, kAEShowPreferences, preferencesUPP, 0L, false);
+#endif
 		
 	return err;
 }
@@ -47,8 +49,8 @@ OSErr AEGotRequiredParams(const AppleEvent *theAppleEvent)
 		return noErr;
 	else
 		return errAEParamMissed;
-}			  
-
+}
+	  
 pascal OSErr AEOpenApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
 {
 #pragma unused(reply,refCon)
@@ -107,5 +109,14 @@ pascal OSErr AEQuitApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long 
 	reply;
 	refCon;
 	gIsDone = true;
+	return AEGotRequiredParams(theAppleEvent);
+}
+
+pascal OSErr AEPreferences(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
+{
+#pragma unused(reply, refCon)
+
+	icnsEditorClass::statics.preferences.Edit(kPrefsSettingsPane);
+	
 	return AEGotRequiredParams(theAppleEvent);
 }

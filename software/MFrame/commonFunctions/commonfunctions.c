@@ -1,4 +1,5 @@
 #include "commonfunctions.h"
+#include <CFBundle.h>
 
 const WindowPtr kFrontmost = (WindowPtr)-1L;
 const int kMessageDialogID = 3000;
@@ -53,32 +54,6 @@ char* C2Pas(char* cStr, Str255 pStr)
 	return((char*)pStr);
 }/* C2Pas() */
 
-/*----------------------------------------------------------------------*/
-
-void InitToolbox(void)
-{
-	InitGraf (&qd.thePort);
-	InitFonts();
-	FlushEvents(everyEvent, 0);
-	InitWindows();
-	InitMenus();
-	TEInit();
-	InitDialogs( nil );
-	InitCursor();
-	
-	ForeColor (blackColor);
-	BackColor (whiteColor);
-
-	MaxApplZone();				// Grab application memory.
-	
-	MoreMasters();
-	MoreMasters();
-	MoreMasters();
-	MoreMasters();
-	MoreMasters();
-	
-	GetDateTime((unsigned long *)&qd.randSeed);		// Randomize random seed.
-}
 
 /*----------------------------------------------------------------------*/
 
@@ -176,7 +151,7 @@ void DrawResPicture(int pictureID)
 	
 	window = FrontWindow();
 	
-	GetPortBounds(qd.thePort, &pictureRect);
+	GetPortBounds(GetQDGlobalsThePort(), &pictureRect);
 	
 	picture = GetPicture(pictureID);
 	
@@ -298,8 +273,12 @@ bool IsKeyPressed(short keyCode)
 	unsigned char	ourKeyMap[16];
 	long			keyMapIndex;
 	short			bitToCheck;
-	
+
+#if TARGET_API_MAC_CARBON
+	GetKeys((long*)ourKeyMap);
+#else
 	GetKeys((unsigned long*)ourKeyMap);
+#endif
 	keyMapIndex = ourKeyMap[keyCode/8];
 	bitToCheck = keyCode % 8;
 	return (keyMapIndex >> bitToCheck) & 0x01;
@@ -329,7 +308,11 @@ int GetNextKeyPressed(int startingPoint)
 	long			keyMapIndex;
 	short			bitToCheck;
 	
+#if TARGET_API_MAC_CARBON
+	GetKeys((long*)ourKeyMap);
+#else
 	GetKeys((unsigned long*)ourKeyMap);
+#endif
 	
 	for (int currentKeyCode = startingPoint; currentKeyCode < 128; currentKeyCode++)
 	{
@@ -352,6 +335,13 @@ void DisplayRect(Rect rectToShow)
 {
 	char	buff[256];
 	sprintf(buff, "top: %d, left: %d -- bottom: %d, right: %d", rectToShow.top, rectToShow.left, rectToShow.bottom, rectToShow.right);
+	DisplayAlert(buff, "");
+}
+
+void DisplayPoint(Point point)
+{
+	char	buff[256];
+	sprintf(buff, "x: %d y: %d", point.h, point.v);
 	DisplayAlert(buff, "");
 }
 
@@ -403,18 +393,19 @@ void DrawTranslucentRect(Rect* targetRect)
 {
 	int				oldMode;
 	PixPatHandle	oldPattern;
+	Pattern			gray;
 	
-	oldMode = GetPortPenMode(qd.thePort);
+	oldMode = GetPortPenMode(GetQDGlobalsThePort());
 	oldPattern = PixPatHandle(NewHandle(sizeof(PixPat)));
-	GetPortPenPixPat(qd.thePort, oldPattern);
+	GetPortPenPixPat(GetQDGlobalsThePort(), oldPattern);
 	
 
 	PenMode(srcOr);
-	PenPat(&qd.gray);
+	PenPat(GetQDGlobalsGray(&gray));
 	PaintRect(targetRect);
 	
-	SetPortPenMode(qd.thePort, oldMode);
-	SetPortPenPixPat(qd.thePort, oldPattern);
+	SetPortPenMode(GetQDGlobalsThePort(), oldMode);
+	SetPortPenPixPat(GetQDGlobalsThePort(), oldPattern);
 	
 	DisposeHandle(Handle(oldPattern));
 }
@@ -506,13 +497,10 @@ void FillPixMap32(PixMapHandle src, unsigned long fill)
 			rowBaseAddress[i] = fill;
 }
 
+#if !TARGET_API_MAC_CARBON
 GrafPtr CreateGrafPort(Rect* bounds)	/* Originally written by Forrest Tanaka. */
 {
 	GrafPtr	newPort;		/* New GrafPort. */
-	
-#if COMPILING_FOR_CARBON
-#error "this needs to be redone"
-#else
 	GrafPtr	savedPort;		/* Saved GrafPtr for later restore. */
 	
 	Rect	localBounds;	/* Local copy of bounds. */
@@ -555,21 +543,16 @@ GrafPtr CreateGrafPort(Rect* bounds)	/* Originally written by Forrest Tanaka. */
 	}
 	
 	SetPort( savedPort );
-#endif
 	return newPort;
 }
 
 void DisposeGrafPort(GrafPtr doomedPort )		/* Originally written by Forrest Tanaka. */
 {
-#if COMPILING_FOR_CARBON
-#error "this needs to be redone"
-#else
 	ClosePort( doomedPort );
 	DisposePtr( doomedPort->portBits.baseAddr );
 	DisposePtr( (Ptr)doomedPort );
-#endif
 }
-
+#endif
 
 void MakeTargetRect(Rect src, Rect* target)
 {
@@ -660,7 +643,10 @@ NavTypeListHandle MakeTypeList ( OSType applSignature, int numTypes, ... )
 	return h;
 }
 
-void DummyFunction(void){}
+pascal void DummyFunction(NavEventCallbackMessage callBackSelector, NavCBRecPtr callBackParms, void *callBackUD)
+{
+#pragma unused (callBackSelector, callBackParms, callBackUD)
+}
 
 int GetDepth(int noOfColors)
 {
@@ -800,7 +786,9 @@ OSStatus LaunchURL(ConstStr255Param urlStr)
 	
 	err = ICStart(&inst, '????');			// Use your creator code if you have one!
 	if (err == noErr) {
+#if !TARGET_API_MAC_CARBON
 		err = ICFindConfigFile(inst, 0, nil);
+#endif
 			if (err == noErr) {
 				startSel = 0;
 				endSel = urlStr[0];
@@ -827,9 +815,9 @@ void ToggleMenuItem(int menuID, int itemNo)
 	MenuHandle		menu;
 	menu = GetMenuHandle(menuID);
 	if (IsMenuItemEnabled(menu, itemNo))
-		DisableItem(menu, itemNo);
+		DisableMenuItem(menu, itemNo);
 	else
-		EnableItem(menu, itemNo);
+		EnableMenuItem(menu, itemNo);
 }
 
 #pragma mark -
@@ -1135,27 +1123,27 @@ bool IsMenuItemEnabled(int menuID, int itemNo)
 {
 	MenuHandle		menu;
 	menu = GetMenuHandle(menuID);
-#if COMPILING_FOR_CARBON
+#if TARGET_API_MAC_CARBON
 	return IsMenuItemEnabled(menu, itemNo);
 #else
 	return ((**menu).enableFlags & (1 << itemNo));
 #endif
 }
 
-void EnableMenuItem(int menuID, int item)
+void MyEnableMenuItem(int menuID, int item)
 {
 	MenuHandle menu;
 	
 	menu = GetMenuHandle(menuID);
-	EnableItem(menu, item);
+	EnableMenuItem(menu, item);
 }
 
-void DisableMenuItem(int menuID, int item)
+void MyDisableMenuItem(int menuID, int item)
 {
 	MenuHandle menu;
 	
 	menu = GetMenuHandle(menuID);
-	DisableItem(menu, item);
+	DisableMenuItem(menu, item);
 }
 
 void SetCursor(int ID)
@@ -1213,6 +1201,30 @@ OSStatus MakeTwoColorTable(CTabHandle *colorTable, RGBColor color1, RGBColor col
 
 OSStatus MakeThreeColorTable(CTabHandle *colorTable, RGBColor color1, RGBColor color2, RGBColor color3)
 {
+	*colorTable = (CTabHandle)NewHandle(sizeof(ColorTable) + 4 * sizeof(ColorSpec));
+	
+	if (*colorTable == NULL)
+		return memFullErr;
+	
+	(***colorTable).ctSeed = 231654213;
+	(***colorTable).ctFlags = 0;
+	(***colorTable).ctSize = 4;
+	(***colorTable).ctTable[0].value = 0;
+	(***colorTable).ctTable[0].rgb = kWhiteAsRGB;
+	(***colorTable).ctTable[1].value = 1;
+	(***colorTable).ctTable[1].rgb = color1;
+	(***colorTable).ctTable[2].value = 2;
+	(***colorTable).ctTable[2].rgb = color2;
+	(***colorTable).ctTable[3].value = 3;
+	(***colorTable).ctTable[3].rgb = color3;
+	(***colorTable).ctTable[4].value = 4;
+	(***colorTable).ctTable[4].rgb = kBlackAsRGB;
+	
+	return noErr;
+}
+/*
+OSStatus MakeThreeColorTable(CTabHandle *colorTable, RGBColor color1, RGBColor color2, RGBColor color3)
+{
 	*colorTable = (CTabHandle)NewHandle(sizeof(ColorTable) + 2 * sizeof(ColorSpec));
 	
 	if (*colorTable == NULL)
@@ -1229,9 +1241,9 @@ OSStatus MakeThreeColorTable(CTabHandle *colorTable, RGBColor color1, RGBColor c
 	(***colorTable).ctTable[2].rgb = color3;
 	
 	return noErr;
-}
+}*/
 
-bool pascal MaskColorSearch(RGBColor *color, int *result)
+pascal Boolean MaskColorSearch(RGBColor *color, long *result)
 {
 	RGBColor	matchColor;
 	CGrafPtr	oldPort;
@@ -1260,7 +1272,12 @@ bool pascal MaskColorSearch(RGBColor *color, int *result)
 
 OSStatus Make1BitMask(PixMapHandle srcPix, PixMapHandle targetPix, Rect bounds)
 {
+#if TARGET_API_MAC_CARBON
+	GWorldPtr		maskGW;
+	PixMapHandle	maskPix;
+#else
 	GrafPtr			mask;
+#endif
 	RGBColor		white = {0xFFFF, 0xFFFF, 0xFFFF};
 	ColorSearchUPP	maskColorSearchUPP;
 	OSStatus		err = noErr;
@@ -1274,9 +1291,32 @@ OSStatus Make1BitMask(PixMapHandle srcPix, PixMapHandle targetPix, Rect bounds)
 	localBounds = bounds;
 	OffsetRect(&localBounds, -localBounds.left, -localBounds.top);
 	
-	mask = CreateGrafPort(&localBounds);
+	maskColorSearchUPP = NewColorSearchUPP(MaskColorSearch);
+
+#if TARGET_API_MAC_CARBON
+	NewGWorld(&maskGW, 1, &localBounds, NULL, NULL, 0);
+	maskPix = GetGWorldPixMap(maskGW);
+	LockPixels(maskPix);
 	
-	maskColorSearchUPP = NewColorSearchProc(MaskColorSearch);
+	CalcCMask((BitMap*)*srcPix,
+			  (BitMap*)*maskPix,
+			  &bounds,
+			  &localBounds,
+			  &white,
+			  maskColorSearchUPP,
+			  0);
+	
+	CopyBits((BitMap*)*maskPix,
+			 (BitMap*)*targetPix,
+			 &localBounds,
+			 &(**targetPix).bounds,
+			 srcCopy,
+			 NULL);
+			 
+	UnlockPixels(maskPix);
+	DisposeGWorld(maskGW);
+#else
+	mask = CreateGrafPort(&localBounds);
 	
 	CalcCMask((BitMap*)*srcPix,
 			  GetPortBitMapForCopyBits(mask),
@@ -1292,13 +1332,14 @@ OSStatus Make1BitMask(PixMapHandle srcPix, PixMapHandle targetPix, Rect bounds)
 			 &(**targetPix).bounds,
 			 srcCopy,
 			 NULL);
+			 
+	DisposeGrafPort(mask);
+#endif	
 	
 	RESTORECOLORS;
 	
-	DisposeRoutineDescriptor(maskColorSearchUPP);
-	
-	DisposeGrafPort(mask);
-	
+	DisposeColorSearchUPP(maskColorSearchUPP);
+
 	return err;
 }
 
@@ -1346,7 +1387,7 @@ void ResetStaticTextTitle(ControlHandle theControl)
 //				  takes care of updates, key downs, etc. In most cases it passes on the
 //				  processing to the standard system function (StdFilterProc).
 
-pascal bool	StandardEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *itemHit)
+pascal Boolean StandardEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *itemHit)
 {
 	bool	handledEvent; // if true then our function tool care of the event
 
@@ -1660,7 +1701,7 @@ static Boolean SameFSSpec(FSSpecPtr spec1, FSSpecPtr spec2)
 // flashing of the button when the key is hit
 
 static pascal Boolean SFGetObjectModalDialogFilter(DialogPtr theDlgPtr, EventRecord* eventPtr,
-											short *item, Ptr dataPtr)
+											short *item, void* dataPtr)
 {
 	UserDataRecPtr	theUserDataRecPtr;
 	bool			handledEvent = false;
@@ -1704,7 +1745,7 @@ static pascal Boolean SFGetObjectModalDialogFilter(DialogPtr theDlgPtr, EventRec
 // MyDlgHook is a hook routine that maps the select button to Open
 // and sets the Select button name
 
-static pascal short SFGetObjectDialogHook(short item, DialogPtr theDlgPtr, Ptr dataPtr)
+static pascal short SFGetObjectDialogHook(short item, DialogPtr theDlgPtr, void* dataPtr)
 {
 	UserDataRecPtr	theUserDataRecPtr;
 	long			desktopDirID;
@@ -1804,7 +1845,7 @@ static pascal short SFGetObjectDialogHook(short item, DialogPtr theDlgPtr, Ptr d
 	return item;
 }
 
-
+#if !TARGET_API_MAC_CARBON
 void StandardGetObject(FileFilterYDUPP fileFilter, UpdateFunctionPtr updateFunction, StandardFileReply *theSFR)
 {
 	Point 				thePt;
@@ -1905,6 +1946,7 @@ void StandardGetObject(FileFilterYDUPP fileFilter, UpdateFunctionPtr updateFunct
 		}
 	}
 }
+#endif
 
 pascal Boolean OnlyVisibleObjectsCustomFileFilter(CInfoPBPtr myCInfoPBPtr, Ptr dataPtr)
 {
@@ -1933,7 +1975,7 @@ OSStatus GetFile(Str255 client, long creator, long fileType, Str255 message, FSS
 		NavTypeListHandle	typeList;
 		OSErr				err;
 		
-		eventUPP = NewNavEventProc(DummyFunction);
+		eventUPP = NewNavEventUPP(DummyFunction);
 		
 		NavGetDefaultDialogOptions ( &dialogOptions );
 		dialogOptions.dialogOptionFlags -= kNavAllowMultipleFiles;
@@ -1966,16 +2008,17 @@ OSStatus GetFile(Str255 client, long creator, long fileType, Str255 message, FSS
 		
 			NavDisposeReply(&reply);
 			AEDisposeDesc(&resultDesc);
-			DisposeRoutineDescriptor(eventUPP);
+			DisposeNavEventUPP(eventUPP);
 			return noErr;
 		}
 		else
 		{
-			DisposeRoutineDescriptor(eventUPP);
+			DisposeNavEventUPP(eventUPP);
 			NavDisposeReply(&reply);
 			return paramErr;
 		}
 	}
+#if !TARGET_API_MAC_CARBON
 	else
 	{
 		StandardFileReply	reply;
@@ -1995,6 +2038,8 @@ OSStatus GetFile(Str255 client, long creator, long fileType, Str255 message, FSS
 		}
 		return paramErr;
 	}
+#endif
+	return paramErr;
 }
 
 OSStatus NewFile(Str255 client,
@@ -2046,6 +2091,7 @@ OSStatus NewFile(Str255 client,
 			return paramErr;
 		}
 	}
+#if !TARGET_API_MAC_CARBON
 	else
 	{
 		StandardFileReply reply;
@@ -2059,6 +2105,8 @@ OSStatus NewFile(Str255 client,
 		}
 		return paramErr;
 	}
+#endif
+	return paramErr;
 }
 
 #pragma mark -
@@ -2478,6 +2526,17 @@ ControlHandle NewEnhancedPlacard(short controlID, WindowPtr parentWindow, int fl
 	return placard;
 }
 
+void DisposeEnhancedPlacard(ControlHandle placard)
+{
+	EnhancedPlacardDataPtr placardData;
+	
+	placardData = EnhancedPlacardDataPtr(GetControlReference(placard));
+	if (placardData->picture != NULL)
+		KillPicture(placardData->picture);
+		
+	DisposePtr(Ptr(placardData));
+}
+
 pascal void EnhancedPlacardDraw(ControlHandle placard, short partCode)
 {
 #pragma unused (partCode)
@@ -2726,11 +2785,14 @@ pascal short EnhancedPlacardTracking(ControlHandle placard, Point startPt, Contr
 				LMSetLastSPExtra(-1);
 			}
 			
+			
 			if (data->flags & enhancedPlacardMenuAtBottom)
 			{
 				startPt.v = controlBounds.bottom;
 				startingValue = 0;
 			}
+			else
+				startPt.v = controlBounds.top;
 			
 			if (data->flags & enhancedPlacardMenuAtRight)
 			{
@@ -2777,9 +2839,9 @@ pascal short EnhancedPlacardTracking(ControlHandle placard, Point startPt, Contr
 				return kControlNoPart;
 			else
 			{
-				CheckItem(data->menu, data->menuValue, false);
+				CheckMenuItem(data->menu, data->menuValue, false);
 				data->menuValue = newValue & 0x0000FFFF;
-				CheckItem(data->menu, data->menuValue, true);
+				CheckMenuItem(data->menu, data->menuValue, true);
 
 				return kControlIndicatorPart;
 			}
@@ -2806,11 +2868,11 @@ void SetEnhancedPlacardMenuValue(ControlHandle placard, int menuValue)
 	EnhancedPlacardDataPtr data;
 	data = EnhancedPlacardDataPtr(GetControlReference(placard));
 	
-	CheckItem(data->menu, data->menuValue, false);
+	CheckMenuItem(data->menu, data->menuValue, false);
 	
 	data->menuValue = menuValue;
 	
-	CheckItem(data->menu, data->menuValue, true);
+	CheckMenuItem(data->menu, data->menuValue, true);
 }
 
 #pragma mark -
@@ -2910,6 +2972,7 @@ void GetImageWellColors(RGBColor* border,
 		GWorldPtr 		tempGW;
 		PixMapHandle	tempPix;
 		Rect			tempRect = {0, 0, 5, 5};
+		
 		SAVEGWORLD;
 		SAVECOLORS;
 		
@@ -2917,24 +2980,31 @@ void GetImageWellColors(RGBColor* border,
 		tempPix = GetGWorldPixMap(tempGW);
 		LockPixels(tempPix);
 		
-		
-		
 		SetGWorld(tempGW, NULL);
-		ForeColor(redColor);
-		PaintRect(&tempRect);
-		
-		InsetRect(&tempRect, 2, 2);
-		DrawThemeGenericWell(&tempRect, state, false);
+		RESTORECOLORS;
+		EraseRect(&tempRect);
+	
+		if (GestaltVersion(gestaltSystemVersion, 0x10, 0x00))
+		{
+			InsetRect(&tempRect, 2, 2);
+			DrawThemeEditTextFrame(&tempRect, state);
+		}
+		else
+		{
+			InsetRect(&tempRect, 2, 2);
+			DrawThemeGenericWell(&tempRect, state, false);
+		}
 		
 		GetCPixel(0, 0, shadow);
 		GetCPixel(1, 1, border);
 		GetCPixel(4, 4, hilite);
 		
-		RESTORECOLORS;
 		RESTOREGWORLD;
+		RESTORECOLORS;
 		
 		UnlockPixels(tempPix);
 		DisposeGWorld(tempGW);
+		
 	}
 	else
 	{
@@ -2955,7 +3025,14 @@ void GetImageWellColors(RGBColor* border,
 
 void DrawImageWell(ControlHandle theControl, Rect targetRect)
 {
-	if (GestaltVersion(gestaltAppearanceVersion, 0x01, 0x01))
+	if (GestaltVersion(gestaltSystemVersion, 0x10, 0x00))
+	{
+		if (IsControlActive(theControl))
+			DrawThemeEditTextFrame(&targetRect, kThemeStateActive);
+		else
+			DrawThemeEditTextFrame(&targetRect, kThemeStateInactive);
+	}
+	else if (GestaltVersion(gestaltAppearanceVersion, 0x01, 0x01))
 	{
 		if (IsControlActive(theControl))
 			DrawThemeGenericWell(&targetRect, kThemeStateActive, false);
@@ -3130,7 +3207,7 @@ void SetControlKeyFilter(ControlHandle control, ControlKeyFilterProcPtr function
 {
 	ControlKeyFilterUPP functionUPP;
 	
-	functionUPP = NewControlKeyFilterProc(function);
+	functionUPP = NewControlKeyFilterUPP(function);
 	SetControlData(control,
 				   kControlNoPart,
 				   kControlKeyFilterTag,
@@ -3142,7 +3219,7 @@ void SetControlUserPaneDraw(ControlHandle control, ControlUserPaneDrawProcPtr fu
 {
 	ControlUserPaneDrawUPP functionUPP;
 	
-	functionUPP = NewControlUserPaneDrawProc(function);
+	functionUPP = NewControlUserPaneDrawUPP(function);
 	
 	SetControlData(control,
 				   kControlNoPart,
@@ -3155,7 +3232,7 @@ void SetControlUserPaneHitTest(ControlHandle control, ControlUserPaneHitTestProc
 {
 	ControlUserPaneHitTestUPP functionUPP;
 
-	functionUPP = NewControlUserPaneHitTestProc(function);
+	functionUPP = NewControlUserPaneHitTestUPP(function);
 	
 	SetControlData(control,
 				   kControlNoPart,
@@ -3168,7 +3245,7 @@ void SetControlUserPaneTracking(ControlHandle control, ControlUserPaneTrackingPr
 {
 	ControlUserPaneTrackingUPP functionUPP;
 	
-	functionUPP = NewControlUserPaneTrackingProc(function);
+	functionUPP = NewControlUserPaneTrackingUPP(function);
 	
 	SetControlData(control,
 				   kControlNoPart,
@@ -3217,6 +3294,25 @@ void PointsToRect(Point point1, Point point2, Point point3, Rect* targetRect)
 	targetRect->top = min(point1.v, point2.v, point3.v);
 	targetRect->bottom = max(point1.v, point2.v, point3.v);
 }
+
+#if TARGET_API_MAC_CARBON
+typedef void (*QDSetPatternOriginProcPtr)( Point origin );
+
+void MyQDSetPatternOrigin(Point origin)
+{
+	static QDSetPatternOriginProcPtr sQDSetPatternOriginProc;
+
+	if (sQDSetPatternOriginProc == NULL)
+	{
+		CFBundleRef qdBundle = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.QD"));
+		if (qdBundle != NULL)
+			sQDSetPatternOriginProc = (QDSetPatternOriginProcPtr)CFBundleGetFunctionPointerForName(qdBundle, CFSTR("QDSetPatternOrigin"));
+	}
+
+	if (sQDSetPatternOriginProc)
+		(*sQDSetPatternOriginProc)(origin);
+}
+#endif
 
 #pragma mark -
 
