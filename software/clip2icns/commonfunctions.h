@@ -43,4 +43,5 @@ extern void DummyFunction();
 extern void CropPixMap(PixMapHandle pixMap, int targetRowBytes);
 extern int GetDepth(int noOfColors);
 void GetFSSpecFromAEDesc ( AEDesc &inDesc, FSSpec &outValue );
+OSErr SendFinderAEOpen(FSSpec &inFile);
 #endif

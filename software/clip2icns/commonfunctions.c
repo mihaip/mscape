@@ -553,3 +553,39 @@ void GetFSSpecFromAEDesc ( AEDesc &inDesc, FSSpec &outValue )
 		AEDisposeDesc(&coerceDesc);
 	}
 }
+
+OSErr SendFinderAEOpen(FSSpec &inFile)
+{
+	OSErr    err = noErr;
+	AEDesc      processDesc;
+	AppleEvent     ae, aeReply;
+	
+	ae.descriptorType = aeReply.descriptorType = processDesc.descriptorType = typeNull;
+	ae.dataHandle = aeReply.dataHandle = processDesc.dataHandle = nil;
+            
+//	Try_ 
+//	{
+		DescType finderType = 'MACS';
+		err = ::AECreateDesc(typeApplSignature,&finderType,sizeof(DescType),&processDesc);
+		
+//		FailOSErr_(err);
+		err   = ::AECreateAppleEvent(kCoreEventClass, kAEOpen,&processDesc,
+                                                
+		kAutoGenerateReturnID,kAnyTransactionID,&ae);
+//		FailOSErr_(err);
+               
+		err = ::AEPutParamPtr(&ae,keyDirectObject,typeFSS,&inFile,sizeof(inFile));
+//		FailOSErr_(err);
+
+		err  = ::AESend(&ae,&aeReply, kAENoReply | kAENeverInteract,
+		kAENormalPriority,
+		kAEDefaultTimeout,nil,nil);
+//		ailOSErr_(err);
+//	}
+	//Catch_(catchErr) {err = catchErr;} EndCatch_
+            
+	if (processDesc.descriptorType != typeNull) AEDisposeDesc(&processDesc);
+	if (ae.descriptorType != typeNull) AEDisposeDesc(&ae);
+	if (aeReply.descriptorType != typeNull) AEDisposeDesc(&aeReply);
+	return err;
+}

@@ -20,6 +20,7 @@
 // app resource IDs
 const static int aboutBoxID = 128;
 const static int insertCicnID = 129;
+const static int registrationID = 130;
 
 const static int aboutPicID = 128;
 const static int aboutPicMaskID = 129;
@@ -29,6 +30,7 @@ const static int kMenuBarID = 128;
 
 const static int mApple = 128;
 const static int iAbout = 1;
+const static int iRegister = 2;
 
 const static int mFile = 129;
 const static int iNewIcon = 1;
@@ -57,6 +59,12 @@ const static int kIncludeOldStyle = 6;
 const static int kClipboardPreview = 8;
 const static int kCurrentIconPreview = 9;
 
+const static int kRegister = 1;
+const static int kLaunchRegister = 3;
+const static int kNameField = 4;
+const static int kCompanyField = 5;
+const static int kRegNoField = 6;
+
 // --- Type Definitions -- //
 typedef enum tCicnCreateFlags
 {
@@ -64,11 +72,22 @@ typedef enum tCicnCreateFlags
 	createFile=2
 } tCicnCreateFlags;
 
+typedef struct tPreferences
+{
+	short timesUsed;
+	Str255 name;
+	Str255 company;
+	Str255 regNo;
+} tPreferences;
+
+typedef tPreferences** PreferencesHandle;
+
 // --- Prototypes --- //
 
 // MacOS stuff
 void		Initialize(void);
 void		InitMenuBar(void);
+void		LoadPreferences(void);
 void		AppleEventInit(void);
 void		GetCurrentScheme(void);
 #if TARGET_CPU_PPC
@@ -86,6 +105,8 @@ void		HandleUpdate(EventRecord *eventPtr);
 void		DoMenuCommand(long menuResult);
 void		HandleAppleChoice(int item);
 void		ShowAboutBox(void);
+void 		GenerateRegNo(Str255 name, Str255 regNo);
+void		Register(void);
 void		HandleFileChoice(int item);
 void		NewIcon(void);
 OSStatus	NewIconNav(void);
@@ -99,6 +120,7 @@ void		GeticnsID(bool createFile);
 void		clip2icns(short icnsID, Str255 icnsName, int flags);
 void 		CloseScheme(void);
 void		HandleEditChoice(int item);
+void		CleanUp(void);
 
 // --- Globals --- //
 
@@ -109,6 +131,6 @@ extern GDHandle		startupDevice;
 extern FSSpec		schemeSpec;
 extern FSSpec		currentScheme;
 extern short		appFile;
-
+extern PreferencesHandle preferences;
 
 

@@ -1,10 +1,11 @@
-#include <Navigation.h>
+#include "clip2icns.h"
 
 // ui stuff
 bool		isDone;
 CGrafPtr	startupPort;
 GDHandle	startupDevice;
 bool		navServicesAvailable;
+PreferencesHandle preferences;
 
 // k stuff
 FSSpec		schemeSpec;

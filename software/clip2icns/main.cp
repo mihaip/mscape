@@ -7,8 +7,7 @@ void main(void)
 	
 	EventLoop();
 	
-	ExitApplication();
-	
+	CleanUp();
 }
 
 void Initialize()
@@ -37,6 +36,8 @@ void Initialize()
 	isDone = false;
 	navServicesAvailable = NavServicesAvailable();
 	appFile = CurResFile();
+	
+	LoadPreferences();
 }
 
 void InitMenuBar()
@@ -51,6 +52,83 @@ void InitMenuBar()
 	AppendResMenu (menu, 'DRVR' );
 	
 	DrawMenuBar();
+}
+
+void LoadPreferences(void)
+{
+	OSStatus			err;
+	FSSpec				preferencesFile;
+	short				preferencesRefNum;
+	short				myVRef;
+	long				myDirID;
+	PreferencesHandle	preferencesRes;
+	Str255				testRegNo;
+	MenuHandle			menu;
+	
+	preferences = (PreferencesHandle)NewHandleClear(sizeof(tPreferences));
+	HLock((Handle)preferences);
+	(**preferences).timesUsed = 0;
+	CopyString((**preferences).name, "\pNot Registered");
+	CopyString((**preferences).company, "\p");
+	CopyString((**preferences).regNo, "\p");
+		err = FindFolder(kOnSystemDisk, kPreferencesFolderType, kDontCreateFolder, &myVRef, &myDirID);
+	if (err == noErr)
+		err = FSMakeFSSpec(myVRef, myDirID, "\pclip2icns Preferences", &preferencesFile);
+	
+	if (err == noErr)
+		preferencesRefNum = FSpOpenResFile(&preferencesFile, fsRdWrPerm);
+	
+	if ((preferencesRefNum != -1) && (err == noErr))
+	{
+		UseResFile(preferencesRefNum);
+		preferencesRes = (PreferencesHandle)Get1Resource('Pref', 128);
+		(**preferences).timesUsed = (**preferencesRes).timesUsed;
+		CopyString((**preferences).name, (**preferencesRes).name);
+		CopyString((**preferences).company, (**preferencesRes).company);
+		CopyString((**preferences).regNo, (**preferencesRes).regNo);
+		if (!(EqualString((**preferences).name, "\pNot Registered", true, true)))
+		{
+			GenerateRegNo((**preferences).name, testRegNo);
+			if (!(EqualString((**preferences).regNo, testRegNo, true, true)))
+			{
+				DisplayAlert("", "The registration code does not match the name in the preferences file");
+				CopyString((**preferences).name, "\pNot Registered");
+				CopyString((**preferences).company, "\p");
+				CopyString((**preferences).regNo, "\p");
+			}
+			else
+			{
+				menu = GetMenuHandle(mApple);
+				DisableItem(menu, iRegister);
+			}
+		}
+		CloseResFile(preferencesRefNum);
+		UseResFile(appFile);
+	}
+	else
+	{
+		FSpCreate(&preferencesFile, 'c2ic', 'Pref', 0); /*smRoman = 0*/
+		FSpCreateResFile(&preferencesFile, 'c2ic', 'Pref', 0); /*smRoman = 0*/
+		preferencesRefNum = FSpOpenResFile(&preferencesFile, fsCurPerm);
+		
+		UseResFile(preferencesRefNum);
+		AddResource((Handle)preferences, 'Pref', 128, "\p");
+		ChangedResource((Handle)preferences);
+		WriteResource((Handle)preferences);
+		UpdateResFile(preferencesRefNum);
+		
+		
+		
+		CloseResFile(preferencesRefNum);
+		UseResFile(appFile);
+		HUnlock((Handle)preferences);
+		preferences = (PreferencesHandle)NewHandleClear(sizeof(tPreferences));
+		HLock((Handle)preferences);
+		(**preferences).timesUsed = 0;
+		CopyString((**preferences).name, "\pNot Registered");
+		CopyString((**preferences).company, "\p");
+		CopyString((**preferences).regNo, "\p");
+	}
 }
 
 static OSErr MyGotRequiredParams(const AppleEvent *theAppleEvent)
@@ -277,6 +355,7 @@ void HandleAppleChoice(int item)
 	switch (item)
 	{
 		case iAbout : ShowAboutBox(); break;
+		case iRegister : Register(); break;
 		default :
 			appleMenu = GetMenuHandle (mApple);
 			GetMenuItemText(appleMenu, item, accName);
@@ -296,14 +375,17 @@ void ShowAboutBox()
 	Handle			item;
 	short			itemType;
 	
-	
-	
-	
 	aboutBox = GetNewDialog (aboutBoxID, nil, (WindowPtr)-1L);
 	SetPort( aboutBox);
 	SetDialogDefaultItem(aboutBox, kOk);
 	
 	ShowWindow( aboutBox );
+	GetDialogItem(aboutBox, kNameField, &itemType, &item, &picRect);
+	SetDialogItemText(item, (**preferences).name);
+	GetDialogItem(aboutBox, kCompanyField, &itemType, &item, &picRect);
+	SetDialogItemText(item, (**preferences).company);
+	
+	
 	GetDialogItem(aboutBox, kAboutPic, &itemType, &item, &picRect);
 	targetRect = picRect;
 	OffsetRect(&picRect, -picRect.left, -picRect.top);
@@ -371,6 +453,99 @@ void ShowAboutBox()
 		
 	}
 	DisposeDialog(aboutBox);
+	SetGWorld(startupPort, startupDevice);
+}
+
+void GenerateRegNo(Str255 name, Str255 regNo)
+{
+	long i;
+	
+	regNo[0] = 6;
+	
+	for (i=1; i <= 6; i++)
+		regNo[i] = (name[i] % 10);
+	for (i=1; i <= 6; i++)
+		regNo[i] = ((regNo[i] + name[i+6]) % 10);
+	for (i=1; i <=6; i++)
+		regNo[i] = ((regNo[i] + name[i+12]) % 10);
+	for (i=1; i <=6; i++)
+		regNo[i] = ((regNo[i] + name[i+18]) % 10);
+	
+	regNo[1] = ((regNo[1] + 2) % 10) + '0';
+	regNo[2] = ((regNo[2] + 5) % 10) + '0';
+	regNo[3] = ((regNo[3] + 7) % 10) + '0';
+	regNo[4] = ((regNo[4] + 4) % 10) + '0';
+	regNo[5] = ((regNo[5] + 5) % 10) + '0';
+	regNo[6] = ((regNo[6] + 8) % 10) + '0';	
+}
+
+void Register()
+{
+	DialogPtr		registration;
+	bool			dialogDone;
+	short			itemHit;
+	Handle			item;
+	short			itemType;
+	Rect			itemRect;
+	Str255			name, regNo, enteredRegNo, company;
+	FSSpec			registerSpec;
+	
+	registration = GetNewDialog (registrationID, nil, (WindowPtr)-1L);
+	SetPort( registration);
+	SetDialogDefaultItem(registration, kRegister);
+	SetDialogCancelItem(registration, kCancel);
+	
+	ShowWindow( registration );
+	
+	dialogDone = false;
+	while (!dialogDone)
+	{
+		ModalDialog(nil, &itemHit);
+		
+		switch (itemHit)
+		{
+			case kRegister:
+				GetDialogItem(registration, kNameField, &itemType, &item, &itemRect);
+				GetDialogItemText(item, name);
+				for (int i= name[0] + 1; i <= 24; i++)
+					name[i] = ' ';
+				name[0] = 24;
+				GenerateRegNo(name, regNo);
+				GetDialogItem(registration, kRegNoField, &itemType, &item, &itemRect);
+				GetDialogItemText(item, enteredRegNo);
+				if (EqualString(regNo, enteredRegNo, true, true))
+				{
+					GetDialogItem(registration, kCompanyField, &itemType, &item, &itemRect);
+					GetDialogItemText(item, company);
+					CopyString((**preferences).name, name);
+					CopyString((**preferences).company, company);
+					CopyString((**preferences).regNo, regNo);
+					DisposeDialog(registration);
+					SetGWorld(startupPort, startupDevice);
+					DisplayAlert("","Thank you for registering clip2icns");
+					return;
+				}
+				else
+					DisplayAlert("The registration code that you have typed is incorrect.", "Please enter it EXACTLY as it is shown in the email that you have received");
+				break;	
+			case kCancel: dialogDone = true; break;
+			case kLaunchRegister:
+				if (FSMakeFSSpec(0, 0, "\p:Register", &registerSpec) != noErr)
+				{
+					DisplayAlert("Couldn't find the \"Register\" application", "Please reinstall clip2icns");
+				}
+				else
+				{
+					DisposeDialog(registration);
+					SetGWorld(startupPort, startupDevice);
+					SendFinderAEOpen(registerSpec);
+					return;
+				}
+				break;
+		}
+		
+	}
+	DisposeDialog(registration);
 	SetGWorld(startupPort, startupDevice);
 }
 
@@ -621,8 +796,11 @@ void DrawImageWell(Rect bounds)
 #define Refresh()\
 {\
 	GetMenuItemText(GetMenu(currentMenuID), selectedIcns, menuItemText);\
+	CopyString(icnsName, menuItemText);\
 	CopyString(IDAsString, menuItemText);\
 	for (i=1; IDAsString[i] != ' '; i++){;}\
+	icnsName[i] = icnsName[0] - i;\
+	CopyString(icnsName, &icnsName[i]);\
 	if (IDAsString[1] == 208) IDAsString[1] = '-';\
 	IDAsString[0] = i-1;\
 	GetDialogItem(insertIcns, kIDField, &itemType, &item, &itemRect);\
@@ -677,11 +855,10 @@ void GeticnsID(bool createFile)
 	Handle				pic;
 	long				ignored;
 	short				scheme;
-	Str255				icnsName = "\pcreated with clip2icns";
 	Str255				errorNumber;
 	Rect				popupRect;
 	int					selectedIcns, i, selectedType=1, currentMenuID = 201;
-	Str255				IDAsString, menuItemText;
+	Str255				IDAsString, menuItemText, icnsName = "\p Item Icon";
 	int					includeOldStyle = 1;
 	GWorldPtr			clipboardGWorld, tempGWorld;
 	PixMapHandle		clipboardPix, tempPix;
@@ -843,10 +1020,7 @@ void GeticnsID(bool createFile)
 	MakeTargetRect(sourceRect, &currentSmallIconRect);
 	
 	RegisterIconRefFromResource('c2ic', 'test', &schemeSpec, -16455, &currentIconRef); 
-	PlotIconRef(&currentLargeIconRect,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);
-	ReleaseIconRef(currentIconRef);
-	
-	RegisterIconRefFromResource('c2ic', 'test', &schemeSpec, -16455, &currentIconRef); 
+	PlotIconRef(&currentLargeIconRect,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef); 
 	PlotIconRef(&currentSmallIconRect,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);
 	ReleaseIconRef(currentIconRef);
 	
@@ -864,6 +1038,7 @@ void GeticnsID(bool createFile)
 				GetDialogItemText(item, IDAsString);
 				StringToNum(IDAsString, &ID);
 				dialogDone = true;
+				DisposePixPat(desktopPattern);
 				DisposeDialog( insertIcns );
 				//CloseResFile(scheme);
 				//FSClose(scheme);
@@ -929,6 +1104,7 @@ void GeticnsID(bool createFile)
 		CloseResFile(scheme);
 		UseResFile(appFile);
 	}
+	DisposePixPat(desktopPattern);
 	DisposeDialog(insertIcns);
 	SetGWorld(startupPort, startupDevice);
 }
@@ -1253,8 +1429,8 @@ void clip2icns(short icnsID, Str255 icnsName, int flags)
 	{
 		FSpDelete(&schemeSpec);
 
-		FSpCreate(&schemeSpec, 'c2ci', 'Icon', 0); /*smRoman = 0*/
-		FSpCreateResFile(&schemeSpec, 'c2ci', 'Icon', 0); /*smRoman = 0*/
+		FSpCreate(&schemeSpec, 'c2ic', 'Icon', 0); /*smRoman = 0*/
+		FSpCreateResFile(&schemeSpec, 'c2ic', 'Icon', 0); /*smRoman = 0*/
 	}
 	if (flags & includeOldStyle)
 	{
@@ -1441,6 +1617,14 @@ void clip2icns(short icnsID, Str255 icnsName, int flags)
 	DisposeHandle((Handle)grayscaleTable);
 	
 	DisposeHandle((Handle)icnsHandle);
+	
+	(**preferences).timesUsed++;
+	if (((**preferences).timesUsed % 10 == 0) && (EqualString((**preferences).name, "\pNot Registered", true, true)))
+	{
+		char	buff[255];
+		sprintf(buff, "You've used clip2icns %d times.", (**preferences).timesUsed);
+		DisplayAlert(buff, "Please consider registering it");
+	}
 }
 
 void HandleEditChoice(int item)
@@ -1449,4 +1633,51 @@ void HandleEditChoice(int item)
 	SysBeep(6);
 }
 
+void CleanUp(void)
+{
+	OSStatus	err;
+	FSSpec		preferencesFile;
+	short		preferencesRefNum;
+	short		myVRef;
+	long		myDirID;
+	Handle		oldPrefs;
 
+	err = FindFolder(kOnSystemDisk, kPreferencesFolderType, kDontCreateFolder, &myVRef, &myDirID);
+	if (err == noErr)
+		err = FSMakeFSSpec(myVRef, myDirID, "\pclip2icns Preferences", &preferencesFile);
+	
+	if (err == noErr)
+		preferencesRefNum = FSpOpenResFile(&preferencesFile, fsRdWrPerm);
+	
+	
+	
+	if ((preferencesRefNum != -1) && (err == noErr))
+	{
+		UseResFile(preferencesRefNum);
+		oldPrefs = Get1Resource('Pref', 128);
+		if (oldPrefs != NULL)
+		{
+			RemoveResource(oldPrefs);
+			UpdateResFile(preferencesRefNum);
+			CloseResFile(preferencesRefNum);
+			UseResFile(appFile);
+			preferencesRefNum = FSpOpenResFile(&preferencesFile, fsRdWrPerm);
+			UseResFile(preferencesRefNum);
+		}
+		if (preferences == NULL)
+			DisplayAlert("NULL", "");
+		AddResource((Handle)preferences, 'Pref', 128, "\p");
+		ChangedResource((Handle)preferences);
+		WriteResource((Handle)preferences);
+		UpdateResFile(preferencesRefNum);
+		CloseResFile(preferencesRefNum);
+		UseResFile(appFile);
+	}
+	else
+	{
+		DisplayAlert("Problem saving preferences", "");
+	}
+	HUnlock((Handle)preferences);
+	DisposeHandle((Handle)preferences);
+	ExitApplication();
+}

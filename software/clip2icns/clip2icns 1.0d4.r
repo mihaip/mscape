@@ -16,29 +16,6 @@ resource 'DITL' (3000, "Basic Alert") {
 	}
 };
 
-resource 'DITL' (128) {
-	{	/* array DITLarray: 3 elements */
-		/* [1] */
-		{180, 210, 200, 268},
-		Button {
-			enabled,
-			"OK"
-		},
-		/* [2] */
-		{10, 10, 125, 270},
-		UserItem {
-			disabled
-		},
-		/* [3] */
-		{125, 10, 175, 289},
-		StaticText {
-			disabled,
-			"by Mihai Parparita\nmihai@mscape.com\nhttp"
-			"://cafe.ambrosiasw.com/gui-central/"
-		}
-	}
-};
-
 resource 'DITL' (129) {
 	{	/* array DITLarray: 11 elements */
 		/* [1] */
@@ -108,6 +85,106 @@ resource 'DITL' (129) {
 	}
 };
 
+resource 'DITL' (130) {
+	{	/* array DITLarray: 9 elements */
+		/* [1] */
+		{102, 270, 122, 338},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{102, 190, 121, 254},
+		Button {
+			enabled,
+			"Cancel"
+		},
+		/* [3] */
+		{102, 7, 122, 158},
+		Button {
+			enabled,
+			"Launch Register App"
+		},
+		/* [4] */
+		{12, 136, 28, 336},
+		EditText {
+			enabled,
+			""
+		},
+		/* [5] */
+		{40, 136, 56, 336},
+		EditText {
+			enabled,
+			""
+		},
+		/* [6] */
+		{68, 136, 84, 336},
+		EditText {
+			enabled,
+			""
+		},
+		/* [7] */
+		{12, 8, 28, 51},
+		StaticText {
+			disabled,
+			"Name:"
+		},
+		/* [8] */
+		{40, 8, 56, 98},
+		StaticText {
+			disabled,
+			"Organization:"
+		},
+		/* [9] */
+		{68, 8, 84, 131},
+		StaticText {
+			disabled,
+			"Registration Code:"
+		}
+	}
+};
+
+resource 'DITL' (128) {
+	{	/* array DITLarray: 6 elements */
+		/* [1] */
+		{180, 210, 200, 268},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{10, 10, 125, 270},
+		UserItem {
+			disabled
+		},
+		/* [3] */
+		{76, 144, 89, 226},
+		StaticText {
+			disabled,
+			"Registered to:"
+		},
+		/* [4] */
+		{90, 152, 104, 269},
+		StaticText {
+			disabled,
+			"Not registered"
+		},
+		/* [5] */
+		{104, 152, 118, 269},
+		StaticText {
+			disabled,
+			""
+		},
+		/* [6] */
+		{125, 10, 175, 289},
+		StaticText {
+			disabled,
+			"by Mihai Parparita\nmihai@mscape.com\nhttp"
+			"://cafe.ambrosiasw.com/gui-central/"
+		}
+	}
+};
+
 resource 'ALRT' (3000) {
 	{40, 40, 138, 421},
 	3000,
@@ -122,20 +199,6 @@ resource 'ALRT' (3000) {
 		OK, visible, sound1
 	},
 	alertPositionMainScreen
-};
-
-resource 'MENU' (128) {
-	128,
-	textMenuProc,
-	0x7FFFFFFD,
-	enabled,
-	apple,
-	{	/* array: 2 elements */
-		/* [1] */
-		"About clip2icnsÉ", noIcon, noKey, noMark, plain,
-		/* [2] */
-		"-", noIcon, noKey, noMark, plain
-	}
 };
 
 resource 'MENU' (130) {
@@ -180,6 +243,34 @@ resource 'MENU' (129) {
 	}
 };
 
+resource 'MENU' (201) {
+	201,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Item Icon",
+	{	/* array: 1 elements */
+		/* [1] */
+		"Ð16455 Item Icon", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (128) {
+	128,
+	textMenuProc,
+	0x7FFFFFFB,
+	enabled,
+	apple,
+	{	/* array: 3 elements */
+		/* [1] */
+		"About clip2icnsÉ", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"RegisterÉ", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"-", noIcon, noKey, noMark, plain
+	}
+};
+
 resource 'MENU' (200) {
 	200,
 	textMenuProc,
@@ -198,21 +289,149 @@ resource 'MENU' (200) {
 		/* [5] */
 		"Battery Status", noIcon, noKey, noMark, plain,
 		/* [6] */
-		"Icon Symbols", noIcon, noKey, noMark, plain,
+		"Badges", noIcon, noKey, noMark, plain,
 		/* [7] */
 		"Others", noIcon, noKey, noMark, plain
 	}
 };
 
-resource 'MENU' (201) {
-	201,
+resource 'MENU' (206) {
+	206,
 	textMenuProc,
 	allEnabled,
 	enabled,
-	"Item Icon",
-	{	/* array: 1 elements */
+	"Badges",
+	{	/* array: 5 elements */
 		/* [1] */
-		"Ð16455 Item Icon", noIcon, noKey, noMark, plain
+		"Ð20789 Alias Badge", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Ð20788 Mounted Badge", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Ð20787 Shared Badge", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"Ð20786 Locked Badge", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"Ð20740 Script Badge", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (202) {
+	202,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"System Folders",
+	{	/* array: 55 elements */
+		/* [1] */
+		"Ð20801 Internet Search Sites", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Ð20797 Scripts", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Ð20792 ColorSync Profiles", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"Ð20744 Internet", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"Ð20724 Speakable Items", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"Ð20729 Favorites", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"Ð20723 Appearance", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"Ð3999 Generic Folder", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"Ð3997 Open Folder", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"Ð3994 Private Folder", noIcon, noKey, noMark, plain,
+		/* [11] */
+		"Ð3993 Trash Empty", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"Ð3992 Desktop", noIcon, noKey, noMark, plain,
+		/* [13] */
+		"Ð3984 Trash Full", noIcon, noKey, noMark, plain,
+		/* [14] */
+		"Ð3983 System Folder", noIcon, noKey, noMark, plain,
+		/* [15] */
+		"Ð3982 Apple Menu Items", noIcon, noKey, noMark, plain,
+		/* [16] */
+		"Ð3981 Startup Items", noIcon, noKey, noMark, plain,
+		/* [17] */
+		"Ð3980 Shared Folder", noIcon, noKey, noMark, plain,
+		/* [18] */
+		"Ð3979 Drop Folder", noIcon, noKey, noMark, plain,
+		/* [19] */
+		"Ð3978 Share Point", noIcon, noKey, noMark, plain,
+		/* [20] */
+		"Ð3977 Mounted Folder", noIcon, noKey, noMark, plain,
+		/* [21] */
+		"Ð3976 Control Panels", noIcon, noKey, noMark, plain,
+		/* [22] */
+		"Ð3975 Print Spool", noIcon, noKey, noMark, plain,
+		/* [23] */
+		"Ð3974 Preferences", noIcon, noKey, noMark, plain,
+		/* [24] */
+		"Ð3973 Extensions", noIcon, noKey, noMark, plain,
+		/* [25] */
+		"Ð3972 File Server", noIcon, noKey, noMark, plain,
+		/* [26] */
+		"Ð3968 Fonts", noIcon, noKey, noMark, plain,
+		/* [27] */
+		"Ð3966 Recent Documents", noIcon, noKey, noMark, plain,
+		/* [28] */
+		"Ð3965 Recent Applications", noIcon, noKey, noMark, plain,
+		/* [29] */
+		"Ð3964 Recent Servers", noIcon, noKey, noMark, plain,
+		/* [30] */
+		"Ð3963 MacOS Read Me Files", noIcon, noKey, noMark, plain,
+		/* [31] */
+		"Ð3962 Control Strip Modules", noIcon, noKey, noMark, plain,
+		/* [32] */
+		"Ð3961 Sounds", noIcon, noKey, noMark, plain,
+		/* [33] */
+		"Ð3960 Help", noIcon, noKey, noMark, plain,
+		/* [34] */
+		"Ð3959 Scripting Additions", noIcon, noKey, noMark, plain,
+		/* [35] */
+		"Ð3958 Internet Plug-ins", noIcon, noKey, noMark, plain,
+		/* [36] */
+		"Ð3957 Language Support", noIcon, noKey, noMark, plain,
+		/* [37] */
+		"Ð3956 Shared Libraries", noIcon, noKey, noMark, plain,
+		/* [38] */
+		"Ð3955 Text Encodings", noIcon, noKey, noMark, plain,
+		/* [39] */
+		"Ð3954 Printer Drivers", noIcon, noKey, noMark, plain,
+		/* [40] */
+		"Ð3953 Printer Descriptions", noIcon, noKey, noMark, plain,
+		/* [41] */
+		"Ð3952 Voices", noIcon, noKey, noMark, plain,
+		/* [42] */
+		"Ð3951 Control Panels (Disabled)", noIcon, noKey, noMark, plain,
+		/* [43] */
+		"Ð3950 Extensions (Disabled)", noIcon, noKey, noMark, plain,
+		/* [44] */
+		"Ð3949 Startup Items (Disabled)", noIcon, noKey, noMark, plain,
+		/* [45] */
+		"Ð3948 Shutdown Items (Disabled)", noIcon, noKey, noMark, plain,
+		/* [46] */
+		"Ð3947 System Extensions (Disabled)", noIcon, noKey, noMark, plain,
+		/* [47] */
+		"Ð3946 Assistants", noIcon, noKey, noMark, plain,
+		/* [48] */
+		"Ð3945 Utilities", noIcon, noKey, noMark, plain,
+		/* [49] */
+		"Ð3944 Application Support", noIcon, noKey, noMark, plain,
+		/* [50] */
+		"Ð3943 Apple Extras", noIcon, noKey, noMark, plain,
+		/* [51] */
+		"Ð3942 Contextual Menu Items", noIcon, noKey, noMark, plain,
+		/* [52] */
+		"Ð3812 Workgroup", noIcon, noKey, noMark, plain,
+		/* [53] */
+		"Ð3811 User", noIcon, noKey, noMark, plain,
+		/* [54] */
+		"Ð3774 System Folder (protected)", noIcon, noKey, noMark, plain,
+		/* [55] */
+		"Ð3773 Applications Folder (protected)", noIcon, noKey, noMark, plain
 	}
 };
 
@@ -222,99 +441,81 @@ resource 'MENU' (203) {
 	allEnabled,
 	enabled,
 	"Generic Icons",
-	{	/* array: 32 elements */
+	{	/* array: 37 elements */
 		/* [1] */
-		"Ð28000 Disk Image", noIcon, noKey, noMark, plain,
+		"Ð20800 Disk Image", noIcon, noKey, noMark, plain,
 		/* [2] */
 		"Ð20799 Generic PC Card", noIcon, noKey, noMark, plain,
 		/* [3] */
+		"Ð20794 TrueType Multi Flat Font", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"Ð20752 Generic Font Scaler", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"Ð20743 LaserWriter", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"Ð20732 TrueType Flat Font", noIcon, noKey, noMark, plain,
+		/* [7] */
 		"Ð16415 Generic Extension", noIcon, noKey, noMark, plain,
-		/* [4] */
+		/* [8] */
 		"Ð4000 Generic Document", noIcon, noKey, noMark, plain,
-		/* [5] */
+		/* [9] */
 		"Ð3998 Floppy", noIcon, noKey, noMark, plain,
-		/* [6] */
-		"Ð3996 Generic App", noIcon, noKey, noMark, plain,
-		/* [7] */
-		"Ð3995 Apple HD", noIcon, noKey, noMark, plain,
-		/* [8] */
-		"Ð3989 Edition File", noIcon, noKey, noMark, plain,
-		/* [9] */
-		"Ð3988 RAM Disk", noIcon, noKey, noMark, plain,
 		/* [10] */
-		"Ð3987 CD", noIcon, noKey, noMark, plain,
+		"Ð3996 Generic App", noIcon, noKey, noMark, plain,
 		/* [11] */
-		"Ð3985 Stationery", noIcon, noKey, noMark, plain,
+		"Ð3995 Apple HD", noIcon, noKey, noMark, plain,
 		/* [12] */
-		"Ð3971 Generic Preferences", noIcon, noKey, noMark, plain,
+		"Ð3991 Generic DA", noIcon, noKey, noMark, plain,
 		/* [13] */
-		"Ð3970 Generic Suitcase", noIcon, noKey, noMark, plain,
+		"Ð3989 Edition File", noIcon, noKey, noMark, plain,
 		/* [14] */
-		"Ð3969 Generic DA Document", noIcon, noKey, noMark, plain,
+		"Ð3988 RAM Disk", noIcon, noKey, noMark, plain,
 		/* [15] */
-		"Ð3967 Shared Library", noIcon, noKey, noMark, plain,
+		"Ð3987 CD", noIcon, noKey, noMark, plain,
 		/* [16] */
-		"Ð3851 Generic Control Strip Module", noIcon, noKey, noMark, plain,
+		"Ð3985 Stationery", noIcon, noKey, noMark, plain,
 		/* [17] */
-		"Ð3850 Generic Codec", noIcon, noKey, noMark, plain,
+		"Ð3971 Generic Preferences", noIcon, noKey, noMark, plain,
 		/* [18] */
-		"Ð3832 PC Disk", noIcon, noKey, noMark, plain,
+		"Ð3970 Generic Suitcase", noIcon, noKey, noMark, plain,
 		/* [19] */
-		"Ð3831 Apple II Disk", noIcon, noKey, noMark, plain,
+		"Ð3969 Generic DA Document", noIcon, noKey, noMark, plain,
 		/* [20] */
-		"Ð3824 Generic Control Panel", noIcon, noKey, noMark, plain,
+		"Ð3967 Shared Library", noIcon, noKey, noMark, plain,
 		/* [21] */
-		"Ð3817 Removable Disk", noIcon, noKey, noMark, plain,
+		"Ð3851 Generic Control Strip Module", noIcon, noKey, noMark, plain,
 		/* [22] */
-		"Ð3810 Sound", noIcon, noKey, noMark, plain,
+		"Ð3850 Generic Codec", noIcon, noKey, noMark, plain,
 		/* [23] */
-		"Ð3809 International Script", noIcon, noKey, noMark, plain,
+		"Ð3832 PC Disk", noIcon, noKey, noMark, plain,
 		/* [24] */
-		"Ð3808 TrueType Font", noIcon, noKey, noMark, plain,
+		"Ð3831 Apple II Disk", noIcon, noKey, noMark, plain,
 		/* [25] */
-		"Ð3807 Bitmap Font", noIcon, noKey, noMark, plain,
+		"Ð3824 Generic Control Panel", noIcon, noKey, noMark, plain,
 		/* [26] */
-		"Ð3806 Keyboard Layout", noIcon, noKey, noMark, plain,
+		"Ð3817 Removable Disk", noIcon, noKey, noMark, plain,
 		/* [27] */
-		"Ð3805 DA Suitcase", noIcon, noKey, noMark, plain,
+		"Ð3810 Sound", noIcon, noKey, noMark, plain,
 		/* [28] */
-		"Ð3804 Font Suitcase", noIcon, noKey, noMark, plain,
+		"Ð3809 International Script", noIcon, noKey, noMark, plain,
 		/* [29] */
-		"Ð3803 Sound Clipping", noIcon, noKey, noMark, plain,
+		"Ð3808 TrueType Font", noIcon, noKey, noMark, plain,
 		/* [30] */
-		"Ð3802 Text Clipping", noIcon, noKey, noMark, plain,
+		"Ð3807 Bitmap Font", noIcon, noKey, noMark, plain,
 		/* [31] */
-		"Ð3801 Picture Clipping", noIcon, noKey, noMark, plain,
+		"Ð3806 Keyboard Layout", noIcon, noKey, noMark, plain,
 		/* [32] */
+		"Ð3805 DA Suitcase", noIcon, noKey, noMark, plain,
+		/* [33] */
+		"Ð3804 Font Suitcase", noIcon, noKey, noMark, plain,
+		/* [34] */
+		"Ð3803 Sound Clipping", noIcon, noKey, noMark, plain,
+		/* [35] */
+		"Ð3802 Text Clipping", noIcon, noKey, noMark, plain,
+		/* [36] */
+		"Ð3801 Picture Clipping", noIcon, noKey, noMark, plain,
+		/* [37] */
 		"Ð3800 Generic Clipping", noIcon, noKey, noMark, plain
-	}
-};
-
-resource 'MENU' (204) {
-	204,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"Internet Icons",
-	{	/* array: 9 elements */
-		/* [1] */
-		"Ð20796 (some internet thing)", noIcon, noKey, noMark, plain,
-		/* [2] */
-		"Ð20795 (another internet thing)", noIcon, noKey, noMark, plain,
-		/* [3] */
-		"Ð20793 (yet another internet thing)", noIcon, noKey, noMark, plain,
-		/* [4] */
-		"Ð20738 Internet Read Me", noIcon, noKey, noMark, plain,
-		/* [5] */
-		"Ð20737 E-mail", noIcon, noKey, noMark, plain,
-		/* [6] */
-		"Ð20736 Homepage", noIcon, noKey, noMark, plain,
-		/* [7] */
-		"Ð20735 Apple Server File", noIcon, noKey, noMark, plain,
-		/* [8] */
-		"Ð20734 Server File", noIcon, noKey, noMark, plain,
-		/* [9] */
-		"Ð20733 Homepage", noIcon, noKey, noMark, plain
 	}
 };
 
@@ -324,7 +525,7 @@ resource 'MENU' (205) {
 	0x7FFFFEFF,
 	enabled,
 	"Battery Status",
-	{	/* array: 18 elements */
+	{	/* array: 19 elements */
 		/* [1] */
 		"Ð20290 Battery Charging Full", noIcon, noKey, noMark, plain,
 		/* [2] */
@@ -360,483 +561,134 @@ resource 'MENU' (205) {
 		/* [17] */
 		"Ð20275 Battery In-Use Empty", noIcon, noKey, noMark, plain,
 		/* [18] */
-		"Ð20274 No Battery", noIcon, noKey, noMark, plain
+		"Ð20274 No Battery", noIcon, noKey, noMark, plain,
+		/* [19] */
+		"Ð4001 Plugged in (?)", noIcon, noKey, noMark, plain
 	}
 };
 
-resource 'MENU' (206) {
-	206,
+resource 'MENU' (204) {
+	204,
 	textMenuProc,
 	allEnabled,
 	enabled,
-	"Icon Symbols",
-	{	/* array: 5 elements */
+	"Internet Icons",
+	{	/* array: 12 elements */
 		/* [1] */
-		"Ð20789 Alias Icon Symbol", noIcon, noKey, noMark, plain,
+		"Ð20795 FTP Server", noIcon, noKey, noMark, plain,
 		/* [2] */
-		"Ð20788 Shared Icon Symbol", noIcon, noKey, noMark, plain,
+		"Ð20793 AppleShare Server", noIcon, noKey, noMark, plain,
 		/* [3] */
-		"Ð20787 Shared + Users Icon Symbol", noIcon, noKey, noMark, plain,
+		"Ð20726 AppleTalk", noIcon, noKey, noMark, plain,
 		/* [4] */
-		"Ð20786 Locked Icon Symbol", noIcon, noKey, noMark, plain,
+		"Ð20796 AppleTalk Zone", noIcon, noKey, noMark, plain,
 		/* [5] */
-		"Ð20740 Folder Action Symbol", noIcon, noKey, noMark, plain
+		"Ð20739 Location", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"Ð20738 Newsgroup", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"Ð20737 E-mail", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"Ð20736 File", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"Ð20735 AppleShare Server", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"Ð20734 FTP Server", noIcon, noKey, noMark, plain,
+		/* [11] */
+		"Ð20733 Homepage", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"Ð20731 IP File Server", noIcon, noKey, noMark, plain
 	}
 };
 
 resource 'MENU' (207) {
 	207,
 	textMenuProc,
-	allEnabled,
+	0x7AFB7FB7,
 	enabled,
 	"Others",
-	{	/* array: 1 elements */
+	{	/* array: 40 elements */
 		/* [1] */
-		"Ð16386 Apple Menu Icon", noIcon, noKey, noMark, plain
-	}
-};
-
-resource 'MENU' (208) {
-	208,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"icns list",
-	{	/* array: 152 elements */
-		/* [1] */
-		"Ð20801 Internet Search Sites", noIcon, noKey, noMark, plain,
+		"Ð16386 Apple Menu Icon", noIcon, noKey, noMark, plain,
 		/* [2] */
-		"Ð28000 Disk Image", noIcon, noKey, noMark, plain,
+		"Ð20798 Unlocked", noIcon, noKey, noMark, plain,
 		/* [3] */
-		"Ð20799 Generic PC Card", noIcon, noKey, noMark, plain,
+		"Ð3823 Locked", noIcon, noKey, noMark, plain,
 		/* [4] */
-		"Ð20798 Open Lock (small only)", noIcon, noKey, noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [5] */
-		"Ð20797 Scripts", noIcon, noKey, noMark, plain,
+		"Ð20791 Descending Sort Order", noIcon, noKey, noMark, plain,
 		/* [6] */
-		"Ð20796 (some internet thing)", noIcon, noKey, noMark, plain,
+		"Ð20790 Ascending Sort Order", noIcon, noKey, noMark, plain,
 		/* [7] */
-		"Ð20795 (another internet thing)", noIcon, noKey, noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [8] */
-		"Ð20794 Font File", noIcon, noKey, noMark, plain,
+		"Ð20751 Privileges: Writable", noIcon, noKey, noMark, plain,
 		/* [9] */
-		"Ð20793 (yet another internet thing)", noIcon, noKey, noMark, plain,
+		"Ð20750 Privileges: Uknown", noIcon, noKey, noMark, plain,
 		/* [10] */
-		"Ð20792 ColorSync Profiles", noIcon, noKey, noMark, plain,
+		"Ð20749 Privileges: N/A", noIcon, noKey, noMark, plain,
 		/* [11] */
-		"Ð20791 Reverse Sorting (small only)", noIcon, noKey, noMark, plain,
+		"Ð20748 Privileges: Read", noIcon, noKey, noMark, plain,
 		/* [12] */
-		"Ð20790 Normal Sorting (small only)", noIcon, noKey, noMark, plain,
+		"Ð20747 Privileges: Read/Write", noIcon, noKey, noMark, plain,
 		/* [13] */
-		"Ð20789 Alias Icon Symbol", noIcon, noKey, noMark, plain,
+		"Ð3784 Privileges: No Folders", noIcon, noKey, noMark, plain,
 		/* [14] */
-		"Ð20788 Shared Icon Symbol", noIcon, noKey, noMark, plain,
+		"Ð3783 Privileges: No Write", noIcon, noKey, noMark, plain,
 		/* [15] */
-		"Ð20787 Shared + Users Icon Symbol", noIcon, noKey, noMark, plain,
+		"Ð3782 Privileges: No Files", noIcon, noKey, noMark, plain,
 		/* [16] */
-		"Ð20786 Locked Icon Symbol", noIcon, noKey, noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [17] */
-		"Ð20752 Font Extension", noIcon, noKey, noMark, plain,
+		"Ð20746 Snap to Grid", noIcon, noKey, noMark, plain,
 		/* [18] */
-		"Ð20751 Write Only (small only)", noIcon, noKey, noMark, plain,
+		"Ð20745 Keep Arranged", noIcon, noKey, noMark, plain,
 		/* [19] */
-		"Ð20750 Unknown Attributes (small only)", noIcon, noKey, noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [20] */
-		"Ð20749 Òdash dashÓ (small only)", noIcon, noKey, noMark, plain,
+		"Ð20741 Backwards Arrow", noIcon, noKey, noMark, plain,
 		/* [21] */
-		"Ð20748 Read Only (small only)", noIcon, noKey, noMark, plain,
+		"Ð20742 Forward Arrow Icon", noIcon, noKey, noMark, plain,
 		/* [22] */
-		"Ð20747 Write & Read (small only)", noIcon, noKey, noMark, plain,
+		"Ð20730 Recent Items Icon", noIcon, noKey, noMark, plain,
 		/* [23] */
-		"Ð20746 Snap to Grid (small only)", noIcon, noKey, noMark, plain,
+		"Ð20729 Favorite Items", noIcon, noKey, noMark, plain,
 		/* [24] */
-		"Ð20745 Keep Aranged (small only)", noIcon, noKey, noMark, plain,
+		"Ð20728 Shortcut Icon", noIcon, noKey, noMark, plain,
 		/* [25] */
-		"Ð20744 Internet Plug-ins", noIcon, noKey, noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [26] */
-		"Ð20743 LaserWriter", noIcon, noKey, noMark, plain,
-		/* [27] */
-		"Ð20742 Next Arrow (small only)", noIcon, noKey, noMark, plain,
-		/* [28] */
-		"Ð20741 Previous Arrow (small only)", noIcon, noKey, noMark, plain,
-		/* [29] */
-		"Ð20740 Folder Action Symbol", noIcon, noKey, noMark, plain,
-		/* [30] */
-		"Ð20739 (another internet thing)", noIcon, noKey, noMark, plain,
-		/* [31] */
-		"Ð20738 Internet Read Me", noIcon, noKey, noMark, plain,
-		/* [32] */
-		"Ð20737 E-mail", noIcon, noKey, noMark, plain,
-		/* [33] */
-		"Ð20736 Homepage", noIcon, noKey, noMark, plain,
-		/* [34] */
-		"Ð20735 Apple Server File", noIcon, noKey, noMark, plain,
-		/* [35] */
-		"Ð20734 Server File", noIcon, noKey, noMark, plain,
-		/* [36] */
-		"Ð20733 Homepage", noIcon, noKey, noMark, plain,
-		/* [37] */
-		"Ð20732 TrueType Font", noIcon, noKey, noMark, plain,
-		/* [38] */
-		"Ð20731 Shared Hard Drive", noIcon, noKey, noMark, plain,
-		/* [39] */
-		"Ð20730 Recent Items (Nav)", noIcon, noKey, noMark, plain,
-		/* [40] */
-		"Ð20729 Favorites (nav)", noIcon, noKey, noMark, plain,
-		/* [41] */
-		"Ð20728 Disks & Servers (nav)", noIcon, noKey, noMark, plain,
-		/* [42] */
-		"Ð20727 Network Browser", noIcon, noKey, noMark, plain,
-		/* [43] */
-		"Ð20726 Network", noIcon, noKey, noMark, plain,
-		/* [44] */
-		"Ð20724 Speakable Items", noIcon, noKey, noMark, plain,
-		/* [45] */
-		"Ð20723 Appearance", noIcon, noKey, noMark, plain,
-		/* [46] */
-		"Ð20290 Battery Charging Full", noIcon, noKey, noMark, plain,
-		/* [47] */
-		"Ð20289 Battery Charging 90%", noIcon, noKey, noMark, plain,
-		/* [48] */
-		"Ð20288 Battery Charging 75%", noIcon, noKey, noMark, plain,
-		/* [49] */
-		"Ð20287 Battery Charging 60%", noIcon, noKey, noMark, plain,
-		/* [50] */
-		"Ð20286 Battery Charging 45%", noIcon, noKey, noMark, plain,
-		/* [51] */
-		"Ð20285 Battery Charging 30%", noIcon, noKey, noMark, plain,
-		/* [52] */
-		"Ð20284 Battery Charging 15%", noIcon, noKey, noMark, plain,
-		/* [53] */
-		"Ð20283 Battery Charging Empty", noIcon, noKey, noMark, plain,
-		/* [54] */
-		"Ð20282 Battery In-use Full", noIcon, noKey, noMark, plain,
-		/* [55] */
-		"Ð20281 Battery In-Use 90%", noIcon, noKey, noMark, plain,
-		/* [56] */
-		"Ð20280 Battery In-Use 75%", noIcon, noKey, noMark, plain,
-		/* [57] */
-		"Ð20279 Battery In-Use 60%", noIcon, noKey, noMark, plain,
-		/* [58] */
-		"Ð20278 Battery In-Use 45%", noIcon, noKey, noMark, plain,
-		/* [59] */
-		"Ð20277 Battery In-Use 30%", noIcon, noKey, noMark, plain,
-		/* [60] */
-		"Ð20276 Battery In-Use 15%", noIcon, noKey, noMark, plain,
-		/* [61] */
-		"Ð20275 Battery In-Use Empty", noIcon, noKey, noMark, plain,
-		/* [62] */
-		"Ð20274 No Battery", noIcon, noKey, noMark, plain,
-		/* [63] */
 		"Ð20271 Help Icon", noIcon, noKey, noMark, plain,
-		/* [64] */
-		"Ð20270 B&W Apple Icon (small)", noIcon, noKey, noMark, plain,
-		/* [65] */
-		"Ð16509 Clipboard", noIcon, noKey, noMark, plain,
-		/* [66] */
-		"Ð16494 System Suitcase", noIcon, noKey, noMark, plain,
-		/* [67] */
-		"Ð16482 Finder", noIcon, noKey, noMark, plain,
-		/* [68] */
-		"Ð16415 Generic Extension", noIcon, noKey, noMark, plain,
-		/* [69] */
-		"Ð16396 Machine Icon", noIcon, noKey, noMark, plain,
-		/* [70] */
-		"Ð16386 Color Apple Icon (small)", noIcon, noKey, noMark, plain,
-		/* [71] */
-		"Ð4000 Generic Document", noIcon, noKey, noMark, plain,
-		/* [72] */
-		"Ð3999 Generic Folder", noIcon, noKey, noMark, plain,
-		/* [73] */
-		"Ð3998 Floppy", noIcon, noKey, noMark, plain,
-		/* [74] */
-		"Ð3997 Open Folder", noIcon, noKey, noMark, plain,
-		/* [75] */
-		"Ð3996 Generic App", noIcon, noKey, noMark, plain,
-		/* [76] */
-		"Ð3995 Apple HD", noIcon, noKey, noMark, plain,
-		/* [77] */
-		"Ð3994 Locked Folder", noIcon, noKey, noMark, plain,
-		/* [78] */
-		"Ð3993 Trash Empty", noIcon, noKey, noMark, plain,
-		/* [79] */
-		"Ð3992 Desktop", noIcon, noKey, noMark, plain,
-		/* [80] */
-		"Ð3991 Generic DA", noIcon, noKey, noMark, plain,
-		/* [81] */
-		"Ð3989 Edition File", noIcon, noKey, noMark, plain,
-		/* [82] */
-		"Ð3988 RAM Disk", noIcon, noKey, noMark, plain,
-		/* [83] */
-		"Ð3987 CD", noIcon, noKey, noMark, plain,
-		/* [84] */
-		"Ð3985 Stationery", noIcon, noKey, noMark, plain,
-		/* [85] */
-		"Ð3984 Trash Full", noIcon, noKey, noMark, plain,
-		/* [86] */
-		"Ð3983 System Folder", noIcon, noKey, noMark, plain,
-		/* [87] */
-		"Ð3982 Apple Menu Items", noIcon, noKey, noMark, plain,
-		/* [88] */
-		"Ð3981 Startup Items", noIcon, noKey, noMark, plain,
-		/* [89] */
-		"Ð3980 Shared Folder", noIcon, noKey, noMark, plain,
-		/* [90] */
-		"Ð3979 Drop Folder", noIcon, noKey, noMark, plain,
-		/* [91] */
-		"Ð3878 Share Point", noIcon, noKey, noMark, plain,
-		/* [92] */
-		"Ð3877 Connected Share Point", noIcon, noKey, noMark, plain,
-		/* [93] */
-		"Ð3876 Control Panels", noIcon, noKey, noMark, plain,
-		/* [94] */
-		"Ð3875 Print Spool", noIcon, noKey, noMark, plain,
-		/* [95] */
-		"Ð3874 Preferences", noIcon, noKey, noMark, plain,
-		/* [96] */
-		"Ð3873 Extensions", noIcon, noKey, noMark, plain,
-		/* [97] */
-		"Ð3872 File Server", noIcon, noKey, noMark, plain,
-		/* [98] */
-		"Ð3971 Generic Preferences", noIcon, noKey, noMark, plain,
-		/* [99] */
-		"Ð3970 Generic Suitcase", noIcon, noKey, noMark, plain,
-		/* [100] */
-		"Ð3969 Generic DA Document", noIcon, noKey, noMark, plain,
-		/* [101] */
-		"Ð3968 Fonts", noIcon, noKey, noMark, plain,
-		/* [102] */
-		"Ð3967 Shared Library", noIcon, noKey, noMark, plain,
-		/* [103] */
-		"Ð3966 Documents", noIcon, noKey, noMark, plain,
-		/* [104] */
-		"Ð3965 Applications", noIcon, noKey, noMark, plain,
-		/* [105] */
-		"Ð3964 Recent Servers", noIcon, noKey, noMark, plain,
-		/* [106] */
-		"Ð3963 MacOS Read Me Files", noIcon, noKey, noMark, plain,
-		/* [107] */
-		"Ð3962 Control Strip Modules", noIcon, noKey, noMark, plain,
-		/* [108] */
-		"Ð3961 Sounds", noIcon, noKey, noMark, plain,
-		/* [109] */
-		"Ð3960 Help", noIcon, noKey, noMark, plain,
-		/* [110] */
-		"Ð3959 Scripting Additions", noIcon, noKey, noMark, plain,
-		/* [111] */
-		"Ð3958 Internet Plug-ins", noIcon, noKey, noMark, plain,
-		/* [112] */
-		"Ð3957 Language Support", noIcon, noKey, noMark, plain,
-		/* [113] */
-		"Ð3956 Shared Libraries", noIcon, noKey, noMark, plain,
-		/* [114] */
-		"Ð3955 Text Encodings", noIcon, noKey, noMark, plain,
-		/* [115] */
-		"Ð3954 Printer Drivers", noIcon, noKey, noMark, plain,
-		/* [116] */
-		"Ð3953 Printer Descriptions", noIcon, noKey, noMark, plain,
-		/* [117] */
-		"Ð3952 Voices", noIcon, noKey, noMark, plain,
-		/* [118] */
-		"Ð3951 Control Panels (Disabled)", noIcon, noKey, noMark, plain,
-		/* [119] */
-		"Ð3950 Extensions (Disabled)", noIcon, noKey, noMark, plain,
-		/* [120] */
-		"Ð3949 Startup Items (Disabled)", noIcon, noKey, noMark, plain,
-		/* [121] */
-		"Ð3948 Shutdown Items (Disabled)", noIcon, noKey, noMark, plain,
-		/* [122] */
-		"Ð3947 System Extensions (Disabled)", noIcon, noKey, noMark, plain,
-		/* [123] */
-		"Ð3946 Assistants", noIcon, noKey, noMark, plain,
-		/* [124] */
-		"Ð3945 Utilities", noIcon, noKey, noMark, plain,
-		/* [125] */
-		"Ð3944 Application Support", noIcon, noKey, noMark, plain,
-		/* [126] */
-		"Ð3943 Apple Extras", noIcon, noKey, noMark, plain,
-		/* [127] */
-		"Ð3942 Contextual Menu Items", noIcon, noKey, noMark, plain,
-		/* [128] */
-		"Ð3851 Generic Control Strip Module", noIcon, noKey, noMark, plain,
-		/* [129] */
-		"Ð3850 Generic Codec", noIcon, noKey, noMark, plain,
-		/* [130] */
-		"Ð3832 PC Disk", noIcon, noKey, noMark, plain,
-		/* [131] */
-		"Ð3831 Apple II Disk", noIcon, noKey, noMark, plain,
-		/* [132] */
-		"Ð3828 MacOS Logo", noIcon, noKey, noMark, plain,
-		/* [133] */
-		"Ð3824 Generic Control Panel", noIcon, noKey, noMark, plain,
-		/* [134] */
-		"Ð3822 Stop Alert", noIcon, noKey, noMark, plain,
-		/* [135] */
-		"Ð3821 Caution Alert", noIcon, noKey, noMark, plain,
-		/* [136] */
-		"Ð3820 Note Alert", noIcon, noKey, noMark, plain,
-		/* [137] */
-		"Ð3817 Removable Disk", noIcon, noKey, noMark, plain,
-		/* [138] */
-		"Ð3812 Workspaces", noIcon, noKey, noMark, plain,
-		/* [139] */
-		"Ð3811 User", noIcon, noKey, noMark, plain,
-		/* [140] */
-		"Ð3810 Sound", noIcon, noKey, noMark, plain,
-		/* [141] */
-		"Ð3809 International Script", noIcon, noKey, noMark, plain,
-		/* [142] */
-		"Ð3808 TrueType Font", noIcon, noKey, noMark, plain,
-		/* [143] */
-		"Ð3807 Bitmap Font", noIcon, noKey, noMark, plain,
-		/* [144] */
-		"Ð3806 Keyboard Layout", noIcon, noKey, noMark, plain,
-		/* [145] */
-		"Ð3805 DA Suitcase", noIcon, noKey, noMark, plain,
-		/* [146] */
-		"Ð3804 Font Suitcase", noIcon, noKey, noMark, plain,
-		/* [147] */
-		"Ð3803 Sound Clipping", noIcon, noKey, noMark, plain,
-		/* [148] */
-		"Ð3802 Text Clipping", noIcon, noKey, noMark, plain,
-		/* [149] */
-		"Ð3801 Picture Clipping", noIcon, noKey, noMark, plain,
-		/* [150] */
-		"Ð3800 Generic Clipping", noIcon, noKey, noMark, plain,
-		/* [151] */
-		"Ð3774 System Folder (protected)", noIcon, noKey, noMark, plain,
-		/* [152] */
-		"Ð3773 Applications Folder (protected)", noIcon, noKey, noMark, plain
-	}
-};
-
-resource 'MENU' (202) {
-	202,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"System Folders",
-	{	/* array: 54 elements */
-		/* [1] */
-		"Ð20801 Internet Search Sites", noIcon, noKey, noMark, plain,
-		/* [2] */
-		"Ð20797 Scripts", noIcon, noKey, noMark, plain,
-		/* [3] */
-		"Ð20792 ColorSync Profiles", noIcon, noKey, noMark, plain,
-		/* [4] */
-		"Ð20744 Internet", noIcon, noKey, noMark, plain,
-		/* [5] */
-		"Ð20724 Speakable Items", noIcon, noKey, noMark, plain,
-		/* [6] */
-		"Ð20723 Appearance", noIcon, noKey, noMark, plain,
-		/* [7] */
-		"Ð3999 Generic Folder", noIcon, noKey, noMark, plain,
-		/* [8] */
-		"Ð3997 Open Folder", noIcon, noKey, noMark, plain,
-		/* [9] */
-		"Ð3994 Locked Folder", noIcon, noKey, noMark, plain,
-		/* [10] */
-		"Ð3993 Trash Empty", noIcon, noKey, noMark, plain,
-		/* [11] */
-		"Ð3992 Desktop", noIcon, noKey, noMark, plain,
-		/* [12] */
-		"Ð3984 Trash Full", noIcon, noKey, noMark, plain,
-		/* [13] */
-		"Ð3983 System Folder", noIcon, noKey, noMark, plain,
-		/* [14] */
-		"Ð3982 Apple Menu Items", noIcon, noKey, noMark, plain,
-		/* [15] */
-		"Ð3981 Startup Items", noIcon, noKey, noMark, plain,
-		/* [16] */
-		"Ð3980 Shared Folder", noIcon, noKey, noMark, plain,
-		/* [17] */
-		"Ð3979 Drop Folder", noIcon, noKey, noMark, plain,
-		/* [18] */
-		"Ð3878 Share Point", noIcon, noKey, noMark, plain,
-		/* [19] */
-		"Ð3877 Connected Share Point", noIcon, noKey, noMark, plain,
-		/* [20] */
-		"Ð3876 Control Panels", noIcon, noKey, noMark, plain,
-		/* [21] */
-		"Ð3875 Print Spool", noIcon, noKey, noMark, plain,
-		/* [22] */
-		"Ð3874 Preferences", noIcon, noKey, noMark, plain,
-		/* [23] */
-		"Ð3873 Extensions", noIcon, noKey, noMark, plain,
-		/* [24] */
-		"Ð3872 File Server", noIcon, noKey, noMark, plain,
-		/* [25] */
-		"Ð3968 Fonts", noIcon, noKey, noMark, plain,
-		/* [26] */
-		"Ð3966 Documents", noIcon, noKey, noMark, plain,
 		/* [27] */
-		"Ð3965 Applications", noIcon, noKey, noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [28] */
-		"Ð3964 Recent Servers", noIcon, noKey, noMark, plain,
+		"Ð16509 Clipboard", noIcon, noKey, noMark, plain,
 		/* [29] */
-		"Ð3963 MacOS Read Me Files", noIcon, noKey, noMark, plain,
+		"Ð16494 System Suitcase", noIcon, noKey, noMark, plain,
 		/* [30] */
-		"Ð3962 Control Strip Modules", noIcon, noKey, noMark, plain,
+		"Ð16482 Finder", noIcon, noKey, noMark, plain,
 		/* [31] */
-		"Ð3961 Sounds", noIcon, noKey, noMark, plain,
+		"Ð3828 MacOS Logo", noIcon, noKey, noMark, plain,
 		/* [32] */
-		"Ð3960 Help", noIcon, noKey, noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [33] */
-		"Ð3959 Scripting Additions", noIcon, noKey, noMark, plain,
+		"Ð3822 Stop Icon", noIcon, noKey, noMark, plain,
 		/* [34] */
-		"Ð3958 Internet Plug-ins", noIcon, noKey, noMark, plain,
+		"Ð3821 Caution Icon", noIcon, noKey, noMark, plain,
 		/* [35] */
-		"Ð3957 Language Support", noIcon, noKey, noMark, plain,
+		"Ð3820 Note Icon", noIcon, noKey, noMark, plain,
 		/* [36] */
-		"Ð3956 Shared Libraries", noIcon, noKey, noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [37] */
-		"Ð3955 Text Encodings", noIcon, noKey, noMark, plain,
+		"Ð3816 Group", noIcon, noKey, noMark, plain,
 		/* [38] */
-		"Ð3954 Printer Drivers", noIcon, noKey, noMark, plain,
+		"Ð3815 Owner", noIcon, noKey, noMark, plain,
 		/* [39] */
-		"Ð3953 Printer Descriptions", noIcon, noKey, noMark, plain,
+		"Ð3814 User", noIcon, noKey, noMark, plain,
 		/* [40] */
-		"Ð3952 Voices", noIcon, noKey, noMark, plain,
-		/* [41] */
-		"Ð3951 Control Panels (Disabled)", noIcon, noKey, noMark, plain,
-		/* [42] */
-		"Ð3950 Extensions (Disabled)", noIcon, noKey, noMark, plain,
-		/* [43] */
-		"Ð3949 Startup Items (Disabled)", noIcon, noKey, noMark, plain,
-		/* [44] */
-		"Ð3948 Shutdown Items (Disabled)", noIcon, noKey, noMark, plain,
-		/* [45] */
-		"Ð3947 System Extensions (Disabled)", noIcon, noKey, noMark, plain,
-		/* [46] */
-		"Ð3946 Assistants", noIcon, noKey, noMark, plain,
-		/* [47] */
-		"Ð3945 Utilities", noIcon, noKey, noMark, plain,
-		/* [48] */
-		"Ð3944 Application Support", noIcon, noKey, noMark, plain,
-		/* [49] */
-		"Ð3943 Apple Extras", noIcon, noKey, noMark, plain,
-		/* [50] */
-		"Ð3942 Contextual Menu Items", noIcon, noKey, noMark, plain,
-		/* [51] */
-		"Ð3812 Workspaces", noIcon, noKey, noMark, plain,
-		/* [52] */
-		"Ð3811 User", noIcon, noKey, noMark, plain,
-		/* [53] */
-		"Ð3774 System Folder (protected)", noIcon, noKey, noMark, plain,
-		/* [54] */
-		"Ð3773 Applications Folder (protected)", noIcon, noKey, noMark, plain
+		"Ð3814 Guest User", noIcon, noKey, noMark, plain
 	}
-};
-
-resource 'DLOG' (128) {
-	{88, 131, 298, 420},
-	dBoxProc,
-	invisible,
-	noGoAway,
-	0x0,
-	128,
-	"",
-	centerMainScreen
 };
 
 resource 'DLOG' (129) {
@@ -848,6 +700,28 @@ resource 'DLOG' (129) {
 	129,
 	"",
 	alertPositionMainScreen
+};
+
+resource 'DLOG' (130, purgeable) {
+	{259, 337, 395, 687},
+	dBoxProc,
+	visible,
+	goAway,
+	0x0,
+	130,
+	"",
+	alertPositionParentWindowScreen
+};
+
+resource 'DLOG' (128) {
+	{88, 131, 298, 420},
+	dBoxProc,
+	invisible,
+	noGoAway,
+	0x0,
+	128,
+	"",
+	centerMainScreen
 };
 
 resource 'FREF' (128) {
@@ -1215,9 +1089,9 @@ resource 'vers' (1) {
 	0x1,
 	0x0,
 	development,
-	0x3,
+	0x4,
 	14,
-	"1.0d3",
+	"1.0d4",
 	"©1998 Mihai Parparita"
 };
 
@@ -1225,10 +1099,10 @@ resource 'vers' (2) {
 	0x1,
 	0x0,
 	development,
-	0x3,
+	0x4,
 	14,
-	"1.0d3",
-	"clip2icns 1.0d3"
+	"1.0d4",
+	"clip2icns 1.0d4"
 };
 
 resource 'dlgx' (-6043) {
@@ -1250,6 +1124,12 @@ resource 'dlgx' (129) {
 };
 
 resource 'dlgx' (128) {
+	versionZero {
+		9
+	}
+};
+
+resource 'dlgx' (130) {
 	versionZero {
 		9
 	}
@@ -1658,7 +1538,7 @@ resource 'PICT' (128) {
 };
 
 resource 'PICT' (129) {
-	11296,
+	11224,
 	{0, 0, 115, 260},
 	$"0011 02FF 0C00 FFFE 0000 0048 0000 0048"
 	$"0000 0000 0000 0073 0104 0000 0000 00A1"
@@ -1667,7 +1547,7 @@ resource 'PICT' (129) {
 	$"0000 0073 0104 0098 8104 0000 0000 0073"
 	$"0104 0000 0000 0000 0000 0048 0000 0048"
 	$"0000 0000 0008 0001 0008 0000 0000 0000"
-	$"0000 0000 0000 0048 190E 0000 00FF 0000"
+	$"0000 0000 0000 0047 DC17 0000 00FF 0000"
 	$"FFFF FFFF FFFF 0001 FEFE FEFE FEFE 0002"
 	$"FDFD FDFD FDFD 0003 FCFC FCFC FCFC 0004"
 	$"FBFB FBFB FBFB 0005 FAFA FAFA FAFA 0006"
@@ -1852,520 +1732,515 @@ resource 'PICT' (129) {
 	$"271E 1610 0B04 0705 0302 0186 00FD 0000"
 	$"2CBF 00FF 010B 0203 0405 0709 0B0E 1216"
 	$"1AD3 DEFF 0CD1 9B8B 7968 5848 3A2E 231A"
-	$"130D 0509 0604 0201 0187 00FD 0000 2BC0"
+	$"130D 0509 0604 0201 0187 00FD 0000 37C0"
 	$"00FF 010A 0203 0406 070A 0D10 1418 9EDC"
 	$"FF0C FDAD 9584 7261 5142 3529 1F17 1005"
-	$"0B08 0503 0201 8700 FD00 0029 C000 0A01"
-	$"0203 0406 080A 0E11 1665 D9FF 0BE6 9F8E"
-	$"7C6B 5A4B 3C30 251B 1406 0E0A 0604 0201"
-	$"0188 00FD 0000 28C1 00FF 0108 0204 0608"
-	$"0B0E 1230 F3D7 FF0A B698 8675 6454 4437"
-	$"2B20 1806 110C 0805 0302 0188 00FD 0000"
-	$"28C2 00FF 0107 0203 0507 0A0E 12C3 D5FF"
-	$"0AF5 A190 7F6E 5D4D 3E31 261D 0715 0F0A"
-	$"0704 0201 0189 00FD 0000 26C2 0007 0102"
-	$"0304 070A 0D89 D2FF 09CA 9A89 7867 5647"
-	$"392C 2208 1912 0D09 0603 0201 018A 00FD"
-	$"0000 25C3 00FF 0104 0204 0608 4BD0 FF09"
-	$"FAA5 9382 705F 4F41 3328 081E 1610 0B07"
-	$"0503 0201 8A00 FD00 0024 C300 FF01 0303"
-	$"0407 39CE FF08 D49D 8C7A 6959 493B 2E09"
-	$"241B 130E 0906 0402 0101 8B00 FD00 0024"
-	$"C300 0601 0203 0508 0CD5 CEFF 07AE 9684"
-	$"7362 5243 3509 2A20 1711 0B08 0503 0201"
-	$"8B00 FD00 0025 C300 0601 0204 0609 0D43"
-	$"CEFF 07E9 9F8E 7D6C 5B4B 3D0A 3025 1C14"
-	$"0E0A 0604 0201 018C 00FD 0000 26C4 00FF"
-	$"0106 0204 060A 0E15 B9CE FF06 B898 8776"
-	$"6554 450A 372B 2118 110C 0805 0302 018C"
-	$"00FD 0000 28C4 00FF 0107 0204 070A 0F16"
-	$"1FFC CFFF 06FA A291 806F 5E4E 0B3F 3227"
-	$"1D15 0F0A 0704 0301 018D 00FD 0000 28C4"
-	$"00FF 0107 0204 070B 1017 1F97 CEFF 05CC"
-	$"9B8A 7867 570C 4739 2D22 1912 0D09 0604"
-	$"0201 018E 00FD 0000 29C4 00FF 0108 0204"
-	$"070B 1017 1F2E F0CF FF05 F9A7 9482 7160"
-	$"0C50 4134 281E 1610 0B07 0503 0201 8E00"
-	$"FD00 0029 C400 FF01 0802 0407 0A10 161F"
-	$"2A65 CEFF 04E3 9D8C 7B6A 0D59 4A3B 2F24"
-	$"1B13 0E09 0604 0201 018F 00FD 0000 29C4"
-	$"00FF 0109 0204 060A 0F15 1E28 34DB CEFF"
-	$"03B2 9685 740D 6352 4336 2A20 1711 0B08"
-	$"0503 0201 8F00 FD00 0029 C300 0A01 0204"
-	$"0609 0E14 1C26 3266 CEFF 03E9 A08F 7E0E"
-	$"6C5B 4C3D 3025 1C14 0E0A 0604 0201 0190"
-	$"00FD 0000 2AC4 00FF 010A 0203 0609 0D13"
-	$"1A24 2F3C ACCE FF02 C598 870E 7664 5445"
-	$"372B 2018 110C 0805 0302 0190 00FD 0000"
-	$"2CC4 00FF 010B 0203 0508 0C11 1821 2B38"
-	$"4DFA CFFF 02FA A390 0F7F 6D5C 4C3E 3125"
-	$"1C14 0E09 0604 0201 0191 00FD 0000 2BC4"
-	$"00FF 010B 0204 0508 0B10 161E 2833 40A9"
-	$"CEFF 01CA 990F 8876 6454 4436 2A20 1710"
-	$"0B07 0403 0101 9100 FD00 002D C500 FF01"
-	$"0D02 0304 0608 0B0F 151C 252F 3B49 E6CF"
-	$"FF01 FCA8 0F8F 7E6C 5B4B 3C2F 241A 130D"
-	$"0805 0302 0191 00FD 0000 2DC7 00FE 010E"
-	$"0203 0405 0709 0C10 151B 232C 3744 78CE"
-	$"FF00 E30F 9684 7261 5041 3327 1D15 0E0A"
-	$"0604 0201 9100 FD00 003B C800 FF01 FF02"
-	$"0F03 0405 0709 0B0E 1116 1B22 2A34 404D"
-	$"DFCE FF10 A68A 7866 5545 372A 2017 100B"
-	$"0704 0201 01F0 0002 6575 20D9 0002 6575"
-	$"20D1 00FD 0000 52C9 00FF 01FF 0210 031A"
-	$"0607 090B 0E11 1418 1D23 2A33 3E49 6ACE"
-	$"FF10 F08D 7B6A 5848 3A2D 2218 110C 0705"
-	$"0301 01F9 00FD BA00 30FE 0004 89FF FFEE"
-	$"20EA 0002 4499 CEFE FF02 BA75 10FB 0004"
-	$"89FF FFEE 20D2 00FD 0000 50CA 00FF 0114"
-	$"0203 0405 688C 130D 0F12 1518 1C20 262C"
-	$"343D 4854 B4D0 FF00 D810 A08F 7D6B 5A4A"
-	$"3B2E 2319 120C 0805 0301 01F9 00FD FF00"
-	$"44FE 00FD FF00 75EC 0001 10BA F9FF 01DE"
-	$"30FC 00FD FF00 75D2 00FD 0000 57CB 00FF"
-	$"0116 0203 0405 0723 D3B9 4115 181B 1E22"
-	$"262B 3037 3F48 5365 FED3 FF02 F1BC AE10"
-	$"9E8E 7C6B 5A4A 3B2E 231A 120C 0805 0301"
-	$"01F9 00FD FF00 44FE 0000 DEFE FF00 65EC"
-	$"0000 CEF7 FF01 DE10 FD00 00DE FEFF 0065"
-	$"D200 FD00 005F CC00 FF01 1702 0304 0608"
+	$"0B08 0503 0201 E500 0265 7520 D900 0265"
+	$"7520 D100 FD00 004B C000 0A01 0203 0406"
+	$"080A 0E11 1665 D9FF 0BE6 9F8E 7C6B 5A4B"
+	$"3C30 251B 1406 0E0A 0604 0201 01EF 00FD"
+	$"BA00 30FE 0004 89FF FFEE 20EA 0002 4499"
+	$"CEFE FF02 BA75 10FB 0004 89FF FFEE 20D2"
+	$"00FD 0000 44C1 00FF 0108 0204 0608 0B0E"
+	$"1230 F3D7 FF0A B698 8675 6454 4437 2B20"
+	$"1806 110C 0805 0302 01EF 00FD FF00 44FE"
+	$"00FD FF00 75EC 0001 10BA F9FF 01DE 30FC"
+	$"00FD FF00 75D2 00FD 0000 47C2 00FF 0107"
+	$"0203 0507 0A0E 12C3 D5FF 0AF5 A190 7F6E"
+	$"5D4D 3E31 261D 0715 0F0A 0704 0201 01F0"
+	$"00FD FF00 44FE 0000 DEFE FF00 65EC 0000"
+	$"CEF7 FF01 DE10 FD00 00DE FEFF 0065 D200"
+	$"FD00 004A C200 0701 0203 0407 0A0D 89D2"
+	$"FF09 CA9A 8978 6756 4739 2C22 0819 120D"
+	$"0906 0302 0101 F100 FDFF 0044 FE00 0330"
+	$"DEFF 89EC 0000 65FE FF04 EE65 4455 CEFD"
+	$"FF00 75FD 0003 30DE FF89 D100 FD00 005C"
+	$"C300 FF01 0402 0406 084B D0FF 09FA A593"
+	$"8270 5F4F 4133 2808 1E16 100B 0705 0302"
+	$"01FC 0000 20FE 44FA 00FD FF00 44EF 0002"
+	$"1044 44FA 0000 CEFE FF00 65FE 0001 10EE"
+	$"FEFF 00CE EF00 0020 FE44 F300 FF44 0020"
+	$"F700 0020 FE44 0210 0000 FD00 0076 C300"
+	$"FF01 0303 0407 39CE FF08 D49D 8C7A 6959"
+	$"493B 2E0D 241B 130E 0906 0402 0101 0020"
+	$"99EE FCFF 01AA 30FD 00FD FF00 44FE 00FD"
+	$"BA00 30FE 00FD BA02 0030 BAFD FF01 8910"
+	$"FD00 FD44 FC00 0099 FDFF FD00 FDBA 0030"
+	$"FB00 0220 99EE FCFF 01AA 30FE 00FD BA02"
+	$"0020 99FD FF01 BA10 FB00 0175 DEFC FF01"
+	$"DE55 FD00 0067 C300 0601 0203 0508 0CD5"
+	$"CEFF 07AE 9684 7362 5243 350B 2A20 1711"
+	$"0B08 0503 0201 65EE F9FF 0075 FD00 FDFF"
+	$"0044 FE00 FDFF 0044 FE00 FDFF 0165 EEFB"
+	$"FF00 CEF4 0000 75FD FFFD 00FD FF00 44FC"
+	$"0001 65EE F9FF 0075 FE00 FDFF 0165 EEFB"
+	$"FF00 BAFC 0000 99F9 FF00 75FD 0000 79C3"
+	$"0006 0102 0406 090D 43CE FF07 E99F 8E7D"
+	$"6C5B 4B3D 0930 251C 140E 0A06 0402 56FD"
+	$"FF06 DE65 4444 75BA 75FD 00FD FF00 44FE"
+	$"00FD FF00 44FE 00FD FF03 EEFF CEBA FCFF"
+	$"0075 F500 0099 FEFF 00CE FD00 FDFF 0044"
+	$"FD00 0055 FDFF 06DE 6544 4475 BA75 FE00"
+	$"FDFF 00EE F9FF 0030 FE00 0065 FEFF 0699"
+	$"5544 4475 9975 FD00 007B C400 FF01 0602"
+	$"0406 0A0E 15B9 CEFF 06B8 9887 7665 5445"
+	$"0937 2B21 1811 0C08 0513 EEFE FF01 BA10"
+	$"FC00 0010 FD00 FDFF 0044 FE00 FDFF 0044"
+	$"FE00 FDFF 05EE 5500 0030 EEFE FF00 DEF6"
+	$"0001 10EE FEFF 0075 FD00 FDFF 0044 FE00"
+	$"0110 EEFE FF01 BA10 FC00 0010 FE00 FDFF"
+	$"04EE 7510 0075 FDFF 0075 FE00 03AA FFFF"
+	$"89FA 00FD 0000 6FC4 00FF 0107 0204 070A"
+	$"0F16 1FFC CFFF 06FA A291 806F 5E4E 083F"
+	$"3227 1D15 0F0A 0777 FDFF 0020 F600 FDFF"
+	$"0044 FE00 FDFF 0044 FE00 FDFF 0065 FD00"
+	$"0089 FDFF 0010 F700 0089 FEFF 01EE 10FD"
+	$"00FD FF00 44FE 0000 75FD FF00 20F7 00FD"
+	$"FF00 55FD 0000 CEFE FF00 75FE 0003 BAFF"
+	$"FFAA FA00 FD00 0070 C400 FF01 0702 0407"
+	$"0B10 171F 97CE FF05 CC9B 8A78 6757 0847"
+	$"392D 2219 120D 09BC FEFF 00BA F500 FDFF"
+	$"0044 FE00 FDFF 0044 FE00 FDFF 0044 FD00"
+	$"0055 FDFF 0044 F800 0065 FDFF 0065 FC00"
+	$"FDFF 0044 FE00 00BA FEFF 00BA F600 FDFF"
+	$"0044 FD00 00BA FEFF 0075 FE00 00AA FEFF"
+	$"02CE 7530 FD00 FD00 006D C400 FF01 0802"
+	$"0407 0B10 171F 2EF0 CFFF 05F9 A794 8271"
+	$"6007 5041 3428 1E16 100B FDFF 0089 F500"
+	$"FDFF 0044 FE00 FDFF 0044 FE00 FDFF 0044"
+	$"FD00 0044 FDFF 0044 F900 0030 FDFF 0099"
+	$"FB00 FDFF 0044 FE00 FDFF 0089 F600 FDFF"
+	$"0044 FD00 00BA FEFF 0075 FE00 0065 FBFF"
+	$"03DE 7510 00FD 0000 6CC4 00FF 0108 0204"
+	$"070A 1016 1F2A 65CE FF04 E39D 8C7B 6A07"
+	$"594A 3B2F 241B 130E FDFF 0176 01F6 00FD"
+	$"FF00 44FE 00FD FF00 44FE 00FD FF00 44FD"
+	$"0000 44FD FF00 44FA 0001 30EE FEFF 0099"
+	$"FA00 FDFF 0044 FE00 FDFF 0075 F600 FDFF"
+	$"0044 FD00 00BA FEFF 0075 FD00 00CE FAFF"
+	$"01DE 30FD 0000 6BC4 00FF 0109 0204 060A"
+	$"0F15 1E28 34DB CEFF 03B2 9685 7407 6352"
+	$"4336 2A20 1711 FDFF 0176 01F6 00FD FF00"
+	$"44FE 00FD FF00 44FE 00FD FF00 44FD 0000"
+	$"44FD FF00 44FB 0000 65FD FF00 99F9 00FD"
+	$"FF00 44FE 00FD FF00 75F6 00FD FF00 44FD"
+	$"0000 BAFE FF00 75FD 0001 1099 FAFF 00DE"
+	$"FD00 006C C300 0A01 0204 0609 0E14 1C26"
+	$"3266 CEFF 03E9 A08F 7E07 6C5B 4C3D 3025"
+	$"1C14 FDFF 0276 0101 F700 FDFF 0044 FE00"
+	$"FDFF 0044 FE00 FDFF 0044 FD00 0044 FDFF"
+	$"0044 FC00 0065 FDFF 0089 F800 FDFF 0044"
+	$"FE00 FDFF 0075 F600 FDFF 0044 FD00 00BA"
+	$"FEFF 0075 FB00 0210 65AA FCFF 0055 FE00"
+	$"0070 C400 FF01 0A02 0306 090D 131A 242F"
+	$"3CAC CEFF 02C5 9887 0876 6454 4537 2B20"
+	$"18BF FEFF 02BB 0201 F700 FDFF 0044 FE00"
+	$"FDFF 0044 FE00 FDFF 0044 FD00 0065 FDFF"
+	$"0020 FD00 0075 FEFF 01EE 65F7 00FD FF00"
+	$"44FE 0000 BAFE FF00 BAF6 00FD FF00 44FD"
+	$"0000 BAFE FF00 75F8 0001 30EE FEFF 0075"
+	$"FE00 0070 C400 FF01 0B02 0305 080C 1118"
+	$"212B 384D FACF FF02 FAA3 9008 7F6D 5C4C"
+	$"3E31 251C 92FD FF02 1201 01F8 00FD FF00"
+	$"44FE 00FD FF00 44FE 00FD FF00 44FD 0000"
+	$"89FE FF00 EEFD 0000 99FE FF01 CE30 F600"
+	$"FDFF 0044 FE00 0089 FDFF 0010 F700 FDFF"
+	$"0044 FD00 00BA FEFF 0075 F700 0075 FEFF"
+	$"0075 FE00 007D C400 FF01 0B02 0405 080B"
+	$"1016 1E28 3340 A9CE FF01 CA99 0888 7664"
+	$"5444 362A 2034 FDFF 02CF 2101 FE00 FF55"
+	$"FD00 FDFF 0044 FE00 FDFF 0044 FE00 FDFF"
+	$"0065 FE00 0110 EEFE FF00 99FE 0000 89FE"
+	$"FF01 8910 F500 FDFF 0044 FE00 0020 FDFF"
+	$"01CE 20FD 00FF 55FE 00FD FF00 44FD 0000"
+	$"BAFE FF00 75FE 0000 10FB 0000 BAFE FF00"
+	$"55FE 0000 80C5 00FF 010D 0203 0406 080B"
+	$"0F15 1C25 2F3B 49E6 CFFF 01FC A809 8F7E"
+	$"6C5B 4B3C 2F24 1A7F FCFF FFBA 03CE FFFF"
+	$"75FD 00FD FF00 44FE 00FD FF00 44FE 00FD"
+	$"FF04 EE89 4465 DEFE FF01 EE20 FE00 00BA"
+	$"F4FF 0044 FE00 FDFF 0044 FD00 0075 FCFF"
+	$"FFBA 03CE FFFF 75FE 00FD FF00 44FD 0000"
+	$"BAFE FF00 75FE 0006 FFAA 7544 4465 BAFE"
+	$"FF00 DEFD 0000 67C7 00FE 010E 0203 0405"
+	$"0709 0C10 151B 232C 3744 78CE FF00 E30A"
+	$"9684 7261 5041 3327 1D15 7DF8 FF00 75FD"
+	$"00FD FF00 44FE 00FD FF00 44FE 00F5 FF00"
+	$"65FD 0000 BAF4 FF00 44FE 00FD FF00 44FC"
+	$"0000 75F8 FF00 75FE 00FD FF00 44FD 0000"
+	$"BAFE FF00 75FE 00F8 FF01 EE30 FD00 007B"
+	$"C800 FF01 FF02 0F03 0405 0709 0B0E 1116"
+	$"1B22 2A34 404D DFCE FF0D A68A 7866 5545"
+	$"372A 2017 102A 9CEE FDFF 02EE 9930 FD00"
+	$"FDFF 0044 FE00 FDFF 0044 FE00 FDFF 0199"
+	$"DEFD FF01 AA30 FC00 00BA F4FF 0044 FE00"
+	$"FDFF 0044 FB00 0220 99EE FDFF 02EE 9930"
+	$"FE00 FDFF 0044 FD00 00BA FEFF 0075 FE00"
+	$"00AA FBFF 03EE 9920 00FD 0000 4BC9 00FF"
+	$"01FF 0210 031A 0607 090B 0E11 1418 1D23"
+	$"2A33 3E49 6ACE FF11 F08D 7B6A 5848 3A2D"
+	$"2218 110C 0705 2345 4530 EA00 FDFF 0544"
+	$"0030 4444 10DA 0003 2044 4430 E800 0020"
+	$"FE44 0020 FD00 FD00 003A CA00 FF01 1402"
+	$"0304 0568 8C13 0D0F 1215 181C 2026 2C34"
+	$"3D48 54B4 D0FF 00D8 10A0 8F7D 6B5A 4A3B"
+	$"2E23 1912 0C08 0503 0101 E900 FDFF 0044"
+	$"AF00 FD00 003E CB00 FF01 1602 0304 0507"
+	$"23D3 B941 1518 1B1E 2226 2B30 373F 4853"
+	$"65FE D3FF 02F1 BCAE 109E 8E7C 6B5A 4A3B"
+	$"2E23 1A12 0C08 0503 0101 E900 FDFF 0044"
+	$"AF00 FD00 0041 CC00 FF01 1702 0304 0608"
 	$"0A0D 5FFF E69C 4F23 272A 2E32 373C 434A"
 	$"535E 9FD5 FF04 FDD4 C5B8 AA10 9B8A 7A69"
-	$"5849 3A2E 2319 120C 0805 0301 01F9 00FD"
-	$"FF00 44FE 0003 30DE FF89 EC00 0065 FEFF"
-	$"04EE 6544 55CE FDFF 0075 FD00 0330 DEFF"
-	$"89D1 00FD 0000 70CE 00FE 0119 0203 0406"
-	$"080B 0E12 16AA FFFF F6C0 9261 4C43 4044"
-	$"494F 5962 69E6 D7FF 05E5 D2C9 BEB1 A311"
-	$"9485 7564 5546 382C 2119 110C 0805 2345"
-	$"4544 FA00 FDFF 0044 EF00 0210 4444 FA00"
-	$"00CE FEFF 0065 FE00 0110 EEFE FF00 CEEF"
-	$"0000 20FE 44F3 00FF 4400 20F7 0000 20FE"
-	$"4402 1000 00FD 0000 8FEC 00F0 01F5 00FF"
-	$"01FF 0209 0305 0609 0C0F 1318 3BB8 FCFF"
-	$"0AF8 E1D1 C3BA B7C3 B569 6A91 D9FF 07F1"
-	$"D9D2 C9BF B4A8 9A0D 8C7D 6E5E 4F41 3529"
-	$"1F17 102A 9CEE FCFF 01AA 30FD 00FD FF00"
-	$"44FE 00FD BA00 30FE 00FD BA02 0030 BAFD"
-	$"FF01 8910 FD00 FD44 FC00 0099 FDFF FD00"
-	$"FDBA 0030 FB00 0220 99EE FCFF 01AA 30FE"
-	$"00FD BA02 0020 99FD FF01 BA10 FB00 0175"
-	$"DEFC FF01 DE55 FD00 0080 F100 F401 FA02"
-	$"FC01 FA00 FE01 0B02 0304 0507 090C 1014"
-	$"2787 E7F4 FF04 A167 6C74 E6DC FF09 F9DD"
-	$"D6CF C7BE B4A9 9C8F 0B81 7365 5649 3C30"
-	$"261D 156E EFF9 FF00 75FD 00FD FF00 44FE"
-	$"00FD FF00 44FE 00FD FF01 65EE FBFF 00CE"
-	$"F400 0075 FDFF FD00 FDFF 0044 FC00 0165"
-	$"EEF9 FF00 75FE 00FD FF01 65EE FBFF 00BA"
-	$"FC00 0099 F9FF 0075 FD00 0098 F400 FC01"
-	$"FC02 F303 FE02 FD01 FE00 FE01 0A02 0304"
-	$"0607 0A0D 1016 63D0 F3FF 06CE 6C6D 7075"
-	$"86FC DEFF 0AE3 D9D2 CBC3 BAB1 A69B 8F82"
-	$"0975 685B 4D41 352B 2119 62FD FF06 DE66"
-	$"4444 75BA 75FD 00FD FF00 44FE 00FD FF00"
-	$"44FE 00FD FF03 EEFF CEBA FCFF 0075 F500"
-	$"0099 FEFF 00CE FD00 FDFF 0044 FD00 0055"
-	$"FDFF 06DE 6544 4475 BA75 FE00 FDFF 00EE"
-	$"F9FF 0030 FE00 0065 FEFF 0699 5544 4475"
-	$"9975 FD00 00A6 F600 FD01 FF02 FE03 FE04"
+	$"5849 3A2E 2319 120C 0805 0301 01E9 00FD"
+	$"FF00 44AF 00FD 0000 44CE 00FE 0119 0203"
+	$"0406 080B 0E12 16AA FFFF F6C0 9261 4C43"
+	$"4044 494F 5962 69E6 D7FF 05E5 D2C9 BEB1"
+	$"A310 9485 7564 5546 382C 2119 110C 0805"
+	$"0301 01E9 00FD BA00 30AF 00FD 0000 44EC"
+	$"00F0 01F5 00FF 01FF 0209 0305 0609 0C0F"
+	$"1318 3BB8 FCFF 0AF8 E1D1 C3BA B7C3 B569"
+	$"6A91 D9FF 07F1 D9D2 C9BF B4A8 9A10 8C7D"
+	$"6E5E 4F41 3529 1F17 100B 0704 0301 0192"
+	$"00FD 0000 44F1 00F4 01FA 02FC 01FA 00FE"
+	$"010B 0203 0405 0709 0C10 1427 87E7 F4FF"
+	$"04A1 676C 74E6 DCFF 09F9 DDD6 CFC7 BEB4"
+	$"A99C 8F10 8173 6556 493C 3026 1D15 0F0A"
+	$"0704 0201 0192 00FD 0000 49F4 00FC 01FC"
+	$"02F3 03FE 02FD 01FE 00FE 010A 0203 0406"
+	$"070A 0D10 1663 D0F3 FF06 CE6C 6D70 7586"
+	$"FCDE FF0A E3D9 D2CB C3BA B1A6 9B8F 820F"
+	$"7568 5B4D 4135 2B21 1913 0D09 0604 0201"
+	$"9100 FD00 0059 F600 FD01 FF02 FE03 FE04"
 	$"FA05 FD06 FE05 FF04 0203 0202 FB01 FF02"
 	$"0903 0406 080A 0D13 4BB3 FDF3 FF07 FA8F"
 	$"7473 7477 7BC3 E0FF 0CEB DBD4 CEC6 BEB5"
-	$"ACA2 978C 8174 0968 5C50 4439 2E25 1D25"
-	$"EFFE FF02 BB12 01FD 0000 10FD 00FD FF00"
-	$"44FE 00FD FF00 44FE 00FD FF05 EE55 0000"
-	$"30EE FEFF 00DE F600 0110 EEFE FF00 75FD"
-	$"00FD FF00 44FE 0001 10EE FEFF 01BA 10FC"
-	$"0000 10FE 00FD FF04 EE75 1000 75FD FF00"
-	$"75FE 0003 AAFF FF89 FA00 FD00 00A1 F700"
-	$"FE01 0702 0303 0404 0506 06FE 07FD 08FA"
-	$"0907 0807 0706 0504 0303 FC02 0903 0405"
-	$"0608 0B0E 1F33 E9F1 FF08 D480 7D7A 7979"
-	$"7A80 FEE3 FF0E F4DC D6D0 C9C1 B9B0 A69C"
-	$"9287 7C71 6608 5A4F 443A 3027 1F18 7FFD"
-	$"FF02 2301 01F8 00FD FF00 44FE 00FD FF00"
-	$"44FE 00FD FF00 65FD 0000 89FD FF00 10F7"
-	$"0000 89FE FF01 EE10 FD00 FDFF 0044 FE00"
-	$"0075 FDFF 0020 F700 FDFF 0055 FD00 00CE"
-	$"FEFF 0075 FE00 03BA FFFF AAFA 00FD 0000"
-	$"ACF8 00FF 01FF 020B 0304 0506 0708 090A"
-	$"0B0B 0C0C FE0D FB0E 080D 0C0B 0A09 0806"
-	$"0504 FC03 0904 0507 090C 1B76 D459 9EF2"
-	$"FF09 FEAD 8A86 817D 7B7A 7BA5 E5FF 10FB"
-	$"DED8 D2CB C3BB B2A9 A096 8C81 776C 6257"
-	$"084D 4239 3028 2019 14BE FEFF 03BB 0201"
-	$"01F8 00FD FF00 44FE 00FD FF00 44FE 00FD"
-	$"FF00 44FD 0000 55FD FF00 44F8 0000 65FD"
-	$"FF00 65FC 00FD FF00 44FE 0000 BAFE FF00"
-	$"BAF6 00FD FF00 44FD 0000 BAFE FF00 75FE"
-	$"0000 AAFE FF02 CE75 30FD 00FD 0000 B0F9"
-	$"00FF 0112 0203 0405 0608 090B 0C0E 0F10"
-	$"1112 1213 1314 14FD 15FF 1408 1211 0F0D"
-	$"0B09 0806 05FE 040B 0506 0709 0C1A BAFF"
-	$"FFC1 48E5 F3FF 0AEE 9E94 8D86 807C 7978"
-	$"7AE7 E7FF 11E5 DAD3 CDC5 BDB5 ACA3 998F"
-	$"857B 7066 5C52 4907 3F37 2E27 2019 140F"
-	$"FDFF 028A 0101 F700 FDFF 0044 FE00 FDFF"
-	$"0044 FE00 FDFF 0044 FD00 0044 FDFF 0044"
-	$"F900 0030 FDFF 0099 FB00 FDFF 0044 FE00"
-	$"FDFF 0089 F600 FDFF 0044 FD00 00BA FEFF"
-	$"0075 FE00 0065 FBFF 03DE 7510 00FD 0000"
-	$"B3FA 00FF 0122 0203 0405 0709 0B0E 1012"
-	$"1415 1718 191A 1B1B 203E 3A21 1E1D 1D1B"
-	$"1A18 1513 100D 0B09 07FE 060B 0708 0A3F"
-	$"6619 A7FF FFFE 7687 F3FF 0ADD A29B 938B"
-	$"837C 7774 7493 E9FF 13EE DBD5 CFC7 BFB7"
-	$"AEA5 9C92 887E 746A 6056 4D44 3B07 332C"
-	$"251E 1914 0F0C FDFF 0276 0101 F700 FDFF"
-	$"0044 FE00 FDFF 0044 FE00 FDFF 0044 FD00"
-	$"0044 FDFF 0044 FA00 0130 EEFE FF00 99FA"
-	$"00FD FF00 44FE 00FD FF00 75F6 00FD FF00"
-	$"44FD 0000 BAFE FF00 75FD 0000 CEFA FF01"
-	$"DE30 FD00 00B5 FA00 FF01 3202 0405 070A"
-	$"1148 573E 201B 1E20 2123 2425 5EBA EAE6"
-	$"B55D 2827 2523 201D 1916 120F 0D0B 0908"
-	$"0909 0B52 F4F4 4438 E4FF FFDB 5CD9 F4FF"
-	$"0BCD A9A1 978D 837B 7470 6E70 CCEC FF15"
-	$"F6DD D7D0 C9C2 B9B1 A89E 948B 8177 6D63"
-	$"5950 473E 362F 0728 221C 1713 0F0B 08FD"
-	$"FF01 7601 F600 FDFF 0044 FE00 FDFF 0044"
-	$"FE00 FDFF 0044 FD00 0044 FDFF 0044 FB00"
-	$"0065 FDFF 0099 F900 FDFF 0044 FE00 FDFF"
-	$"0075 F600 FDFF 0044 FD00 00BA FEFF 0075"
-	$"FD00 0110 99FA FF00 DEFD 0000 BAFB 00FF"
-	$"0112 0203 0507 0A4A C3F5 FCEC BA4F 282A"
-	$"2D2F 4FA9 F5FD FF17 E957 3331 2E2A 2622"
-	$"1D19 1511 0E0C 0B15 110E 42EA FFB4 2488"
-	$"FEFF 02A1 87FE F6FF 0DFE C2AD A398 8D82"
-	$"7870 6A67 6872 FCEF FF17 FCE0 D8D2 CBC4"
-	$"BCB3 AAA1 978D 8379 6F65 5C52 4A41 3932"
-	$"2B24 071F 1915 110D 0A08 06FD FF00 76F5"
-	$"00FD FF00 44FE 00FD FF00 44FE 00FD FF00"
-	$"44FD 0000 44FD FF00 44FC 0000 65FD FF00"
-	$"89F8 00FD FF00 44FE 00FD FF00 75F6 00FD"
-	$"FF00 44FD 0000 BAFE FF00 75FB 0002 1065"
-	$"AAFC FF00 55FE 0000 BAFC 00FF 0106 0203"
-	$"0507 0A55 F5FC FF05 D74D 3748 93E5 FAFF"
-	$"1CBE 423F 3B36 312B 2620 1B16 1311 1DBC"
-	$"8012 158A FFFA 6A39 D5FF FFF0 7CCC F6FF"
-	$"0DF9 BFAE A397 8B7F 746B 6460 5F62 B4F0"
-	$"FF18 E7DA D4CD C6BE B5AD A39A 9086 7C72"
-	$"685E 554C 433B 342D 2621 1B08 1713 0F0C"
-	$"0907 0504 BBFE FF00 BAF5 00FD FF00 44FE"
-	$"00FD FF00 44FE 00FD FF00 44FD 0000 65FD"
-	$"FF00 20FD 0000 75FE FF01 EE65 F700 FDFF"
-	$"0044 FE00 00BA FEFF 00BA F600 FDFF 0044"
-	$"FD00 00BA FEFF 0075 F800 0130 EEFE FF00"
-	$"75FE 0000 BBFC 00FF 0105 0304 0609 16D4"
-	$"FAFF 02BC 83D2 F8FF 1DFA 814E 4943 3D36"
-	$"2F28 221D 1915 21C5 F033 1A35 D4FF CC3E"
-	$"80FB FFFF C291 F9F9 FF10 FEFF F4B9 ABA0"
-	$"9487 7A6E 645D 5857 5960 ECF3 FF1A EFDA"
-	$"D5CE C8C0 B8AF A69C 9389 7F75 6B61 574E"
-	$"463D 362F 2822 1D18 1408 100D 0B08 0605"
-	$"0403 8AFD FF00 10F6 00FD FF00 44FE 00FD"
-	$"FF00 44FE 00FD FF00 44FD 0000 89FE FF00"
-	$"EEFD 0000 99FE FF01 CE30 F600 FDFF 0044"
-	$"FE00 0089 FDFF 0010 F700 FDFF 0044 FD00"
-	$"00BA FEFF 0075 F700 0075 FEFF 0075 FE00"
-	$"00CC FD00 FF01 0602 0305 080C 48FA F9FF"
-	$"00FD F6FF 1CD9 6458 524A 423A 322B 7E52"
-	$"1B19 51F9 A61E 2376 FDFE 9049 C8FF FFFB"
-	$"9CC6 FBFF 12FC E0D8 FFF3 B3A6 9B8E 8174"
-	$"685D 5550 4E50 5582 F5FF 1CF5 D7D4 CFC9"
-	$"C2BA B1A8 9F95 8B81 776D 635A 5148 4038"
-	$"302A 241E 1915 110E 080B 0907 0504 0302"
-	$"0221 FDFF 01CE 20FD 00FF 55FD 00FD FF00"
-	$"44FE 00FD FF00 44FE 00FD FF00 65FE 0001"
-	$"10EE FEFF 0099 FE00 0089 FEFF 0189 10F5"
-	$"00FD FF00 44FE 0000 20FD FF01 CE20 FD00"
-	$"FF55 FE00 FDFF 0044 FD00 00BA FEFF 0075"
-	$"FE00 0010 FB00 00BA FEFF 0055 FE00 00CE"
+	$"ACA2 978C 8174 0F68 5C50 4439 2E25 1D16"
+	$"100B 0805 0302 01ED 00FF 20A7 00FD 0000"
+	$"6DF7 00FE 0107 0203 0304 0405 0606 FE07"
+	$"FD08 FA09 0708 0707 0605 0403 03FC 0209"
+	$"0304 0506 080B 0E1F 33E9 F1FF 08D4 807D"
+	$"7A79 797A 80FE E3FF 0EF4 DCD6 D0C9 C1B9"
+	$"B0A6 9C92 877C 7166 0F5A 4F44 3A30 271F"
+	$"1812 C2A2 0604 0371 BFED 00FF EFEB 0001"
+	$"60BF FA00 048F EFFF AF10 CB00 FD00 0077"
+	$"F800 FF01 FF02 0B03 0405 0607 0809 0A0B"
+	$"0B0C 0CFE 0DFB 0E08 0D0C 0B0A 0908 0605"
+	$"04FC 0309 0405 0709 0C1B 76D4 599E F2FF"
+	$"09FE AD8A 8681 7D7B 7A7B A5E5 FF10 FBDE"
+	$"D8D2 CBC3 BBB2 A9A0 968C 8177 6C62 570F"
+	$"4D42 3930 2820 1914 0FD1 FF15 0302 DFAF"
+	$"ED00 FF8F EC00 02CF FFFF FB00 0560 FF9F"
+	$"70FF 9FCB 00FD 0000 A2F9 00FF 0112 0203"
+	$"0405 0608 090B 0C0E 0F10 1112 1213 1314"
+	$"14FD 15FF 1408 1211 0F0D 0B09 0806 05FE"
+	$"040B 0506 0709 0C1A BAFF FFC1 48E5 F3FF"
+	$"0AEE 9E94 8D86 807C 7978 7AE7 E7FF 11E5"
+	$"DAD3 CDC5 BDB5 ACA3 998F 857B 7066 5C52"
+	$"4934 3F37 2E27 2019 140F 0B74 FF62 0231"
+	$"FF60 0030 BFFF FFAF 1000 30BF 80DF EF60"
+	$"30CF FFFF 6000 BF8F 0000 50DF FFEF 8000"
+	$"0030 BF70 BFFF 9FFB 0002 40CF FFFB 0006"
+	$"CFFF 2000 DFFF 10CC 00FD 0000 A6FA 00FF"
+	$"0122 0203 0405 0709 0B0E 1012 1415 1718"
+	$"191A 1B1B 203E 3A21 1E1D 1D1B 1A18 1513"
+	$"100D 0B09 07FE 060B 0708 0A3F 6619 A7FF"
+	$"FFFE 7687 F3FF 0ADD A29B 938B 837C 7774"
+	$"7493 E9FF 13EE DBD5 CFC7 BFB7 AEA5 9C92"
+	$"887E 746A 6056 4D44 3B35 332C 251E 1914"
+	$"0F0C 0925 FFB0 0280 FF10 10EF DF10 30FF"
+	$"CF00 40FF DF8F FFBF AFDF 1000 2000 FFBF"
+	$"0040 FFAF 0070 FF80 0040 FFEF 80CF FF30"
+	$"FB00 01BF FFFB 00FF FFFF 0002 BFFF 40CC"
+	$"00FD 0000 AAFA 00FF 0132 0204 0507 0A11"
+	$"4857 3E20 1B1E 2021 2324 255E BAEA E6B5"
+	$"5D28 2725 2320 1D19 1612 0F0D 0B09 0809"
+	$"090B 52F4 F444 38E4 FFFF DB5C D9F4 FF0B"
+	$"CDA9 A197 8D83 7B74 706E 70CC ECFF 15F6"
+	$"DDD7 D0C9 C2B9 B1A8 9E94 8B81 776D 6359"
+	$"5047 3E36 2F35 2822 1C17 130F 0B08 0604"
+	$"D0FF 11CF CF00 60FF 8F00 00BF FF30 40FF"
+	$"8000 4030 BFEF 8020 0000 FFBF 00AF FF50"
+	$"0010 FFEF 0040 FF80 0080 FF40 FB00 01BF"
+	$"FFFB 00FF FFFF 0002 BFFF 40CC 00FD 0000"
+	$"ACFB 00FF 0112 0203 0507 0A4A C3F5 FCEC"
+	$"BA4F 282A 2D2F 4FA9 F5FD FF17 E957 3331"
+	$"2E2A 2622 1D19 1511 0E0C 0B15 110E 42EA"
+	$"FFB4 2488 FEFF 02A1 87FE F6FF 0DFE C2AD"
+	$"A398 8D82 7870 6A67 6872 FCEF FF17 FCE0"
+	$"D8D2 CBC4 BCB3 AAA1 978D 8379 6F65 5C52"
+	$"4A41 3932 2B24 101F 1915 110D 0A08 0604"
+	$"0371 FF80 FF70 0080 FBFF FF40 01FF 80FE"
+	$"0017 50EF FFFF 7000 FFBF 00BF FF40 0000"
+	$"FFFF 0040 FF80 0080 FF40 FB00 01BF FFFB"
+	$"00FF FFFF 0002 BFFF 40CC 00FD 0000 A9FC"
+	$"00FF 0106 0203 0507 0A55 F5FC FF05 D74D"
+	$"3748 93E5 FAFF 1CBE 423F 3B36 312B 2620"
+	$"1B16 1311 1DBC 8012 158A FFFA 6A39 D5FF"
+	$"FFF0 7CCC F6FF 0DF9 BFAE A397 8B7F 746B"
+	$"6460 5F62 B4F0 FF18 E7DA D4CD C6BE B5AD"
+	$"A39A 9086 7C72 685E 554C 433B 342D 2621"
+	$"1B12 1713 0F0C 0907 0504 0302 21FF EFFF"
+	$"2000 80FF 80FC 0002 40FF 80FD 0016 1060"
+	$"EFEF 00FF BF00 BFFF 4000 00FF FF00 40FF"
+	$"8000 80FF 40FB 0001 BFFF FB00 06DF FF00"
+	$"00BF FF20 CC00 FD00 00B0 FC00 FF01 0503"
+	$"0406 0916 D4FA FF02 BC83 D2F8 FF1D FA81"
+	$"4E49 433D 362F 2822 1D19 1521 C5F0 331A"
+	$"35D4 FFCC 3E80 FBFF FFC2 91F9 F9FF 10FE"
+	$"FFF4 B9AB A094 877A 6E64 5D58 5759 60EC"
+	$"F3FF 1AEF DAD5 CEC8 C0B8 AFA6 9C93 897F"
+	$"756B 6157 4E46 3D36 2F28 221D 1814 1A10"
+	$"0D0B 0806 0504 0302 0101 CFFF DF00 0030"
+	$"FFDF 1000 0010 0040 FF80 FE00 1710 0000"
+	$"CFEF 00FF BF00 60FF 8F00 50FF 9F00 40FF"
+	$"8000 80FF 40FB 0001 BFFF FE00 FFFF 0600"
+	$"9FFF 6020 FFDF CB00 FD00 00B2 FD00 FF01"
+	$"0602 0305 080C 48FA F9FF 00FD F6FF 1CD9"
+	$"6458 524A 423A 322B 7E52 1B19 51F9 A61E"
+	$"2376 FDFE 9049 C8FF FFFB 9CC6 FBFF 12FC"
+	$"E0D8 FFF3 B3A6 9B8E 8174 685D 5550 4E50"
+	$"5582 F5FF 1CF5 D7D4 CFC9 C2BA B1A8 9F95"
+	$"8B81 776D 635A 5148 4038 302A 241E 1915"
+	$"110E 0D0B 0907 0504 0302 0201 0100 8FFF"
+	$"8FFE 0009 60EF EFBF DFAF 0040 FF80 FE00"
+	$"17FF BFDF FF60 00FF BF00 008F FFBF EFCF"
+	$"1000 40FF 8000 80FF 40FB 0001 BFFF FE00"
+	$"FFFF 0600 10CF FFFF EF30 CB00 FD00 008B"
 	$"FE00 FF01 0602 0305 070A 0F61 EBFF 1CA9"
 	$"6961 594F 463C 33B8 CF25 1E1E 9FFD 5528"
 	$"35C2 FFE5 617A F5FF FFDD 9BF2 FDFF 14E9"
 	$"C9BA B9E8 F4AD 9E92 8679 6C60 554D 4745"
 	$"464B 53E0 F8FF 1EFC D4CE CCC7 C2BB B3AA"
 	$"A198 8E84 7A70 665C 534A 423A 322C 2520"
-	$"1B16 120F 0C0A 0508 0605 0302 02FE 0100"
-	$"75FC FFFF BA03 CEFF FF75 FD00 FDFF 0044"
-	$"FE00 FDFF 0044 FE00 FDFF 04EE 8944 65DE"
-	$"FEFF 01EE 20FE 0000 BAF4 FF00 44FE 00FD"
-	$"FF00 44FD 0000 75FC FFFF BA03 CEFF FF75"
-	$"FE00 FDFF 0044 FD00 00BA FEFF 0075 FE00"
-	$"06FF AA75 4444 65BA FEFF 00DE FD00 00B8"
-	$"FE00 FF01 0703 0406 090D 124D FBEC FF17"
-	$"ED85 7167 5D52 473D 51F1 7624 2243 ECC6"
-	$"2F33 6EF7 FFB0 5DBF FEFF 1BB3 BFFF FFF0"
-	$"CBB2 B3B2 B0C1 F0A9 9488 7C6F 6357 4D44"
-	$"3F3D 3D42 4973 FDFA FF1F D3C1 C2C1 BEB9"
-	$"B3AB A39A 9087 7D73 695F 564D 443C 342D"
-	$"2721 1C17 1310 0D0A 0806 0305 0403 02FE"
-	$"01FE 0000 75F8 FF00 75FD 00FD FF00 44FE"
-	$"00FD FF00 44FE 00F5 FF00 65FD 0000 BAF4"
-	$"FF00 44FE 00FD FF00 44FC 0000 75F8 FF00"
-	$"75FE 00FD FF00 44FD 0000 BAFE FF00 75FE"
-	$"00F8 FF01 EE30 FD00 00CB FF00 FF01 0802"
-	$"0305 080C 1016 21BD EBFF 35C7 8076 6A5E"
-	$"5347 3E9C E437 2828 8BFF 7637 40B6 FFF2"
-	$"7F7C EDFF FFEC A6DF D1AB A7A9 A9A8 A5A1"
-	$"CDA7 877C 7165 594E 443C 3734 3539 4049"
-	$"B0FC FF21 D7AA B0B3 B4B2 AFAA A39B 9289"
-	$"7F75 6B62 584F 463E 362F 2923 1D18 1411"
-	$"0E0B 0907 0504 0403 0202 0101 FB00 0220"
-	$"99EE FDFF 02EE 9930 FD00 FDFF 0044 FE00"
-	$"FDFF 0044 FE00 FDFF 0199 DEFD FF01 AA30"
-	$"FC00 00BA F4FF 0044 FE00 FDFF 0044 FB00"
-	$"0220 99EE FDFF 02EE 9930 FE00 FDFF 0044"
-	$"FD00 00BA FEFF 0075 FE00 00AA FBFF 03EE"
-	$"9920 00FD 0000 970C 0001 0102 0305 070A"
-	$"0E14 1B23 8FEB FF17 F8A3 8478 6B5E 5247"
-	$"4BE7 9C2E 2D3E D6E1 4742 69EC FFCB 6AAF"
-	$"FEFF 1AB1 9998 9B9D 9E9D 9B97 9293 877A"
-	$"6F64 594E 443B 342F 2D2D 3137 3F4F FEFF"
-	$"23E6 8993 9BA1 A4A4 A29E 9992 8981 776E"
-	$"645B 5149 4038 312A 241F 1A15 120E 0C09"
-	$"0706 0403 0200 02FE 01F7 0003 2044 4430"
-	$"EA00 FDFF 0544 0030 4444 10DA 0003 2044"
-	$"4430 E800 0020 FE44 0020 FD00 FD00 0079"
-	$"0C00 0101 0304 0609 0D12 1830 87E4 EAFF"
-	$"5BDC 9285 776A 5D51 4787 F351 3233 79FF"
-	$"9A44 4BA6 FFFA 9677 E1E4 A789 8C8F 9192"
-	$"918F 8C88 837C 746B 6258 4E44 3A32 2C27"
-	$"2526 292E 3640 9FFF 7E70 7B84 8C91 9393"
-	$"918D 8780 786F 665D 544B 423A 332C 2620"
-	$"1B16 130F 0C0A 0806 0504 0302 01FF 01DA"
-	$"00FD FF00 44AF 00FD 0000 74FF 0108 0203"
-	$"0508 0C10 1963 CBE8 FF58 FDB9 9184 7568"
-	$"5B50 4AD2 B937 373E C7F3 5C4C 63E0 FFE0"
-	$"7788 827C 8083 8485 8483 807D 7873 6C65"
-	$"5D54 4B42 3931 2A25 211F 1F22 272E 3742"
-	$"4C57 626C 757B 8082 827F 7B75 6E66 5E55"
-	$"4D44 3C35 2E28 221C 1814 100D 0A08 0605"
-	$"0403 02FE 01D8 00FD FF00 44AF 00FD 0000"
-	$"7309 0102 0305 070A 0E44 AFF9 E6FF 5AEB"
-	$"A28F 8172 6559 4E72 F76D 3B3B 6BF8 B94B"
-	$"5196 F0BB 706C 7073 7677 7878 7674 716D"
-	$"6862 5C55 4E47 3F37 2F29 231E 1B19 191C"
-	$"2026 2E37 414B 555E 656B 6F70 706D 6964"
-	$"5D56 4E46 3E37 3029 231E 1915 110E 0B09"
-	$"0705 0403 0202 0101 0000 D800 FDFF 0044"
-	$"AF00 FD00 006E 0701 0204 0609 148A EBE3"
-	$"FF17 CC9A 8C7D 6F62 574D BED5 423E 3FAD"
-	$"FE77 4E5C 755D 6164 6769 FE6B 386A 6865"
-	$"615D 5853 4D47 403A 332D 2621 1C18 1514"
-	$"1416 1A1F 262E 363F 484F 565B 5E5F 5E5C"
-	$"5853 4D46 3F38 312B 251F 1A16 120F 0C09"
-	$"0706 0403 0202 FE01 FE00 D800 FDBA 0030"
-	$"AF00 FD00 0064 0502 0305 070B 8AE1 FF16"
-	$"F5AE 9687 796B 5F54 66F1 8B40 405A EAB4"
-	$"4B4F 5356 595C 5EFE 5F37 5E5C 5956 524E"
-	$"4944 3F39 342E 2923 1E1A 1613 1110 1012"
-	$"1519 1F25 2D34 3B42 474B 4E4F 4E4B 4843"
-	$"3E38 322C 2620 1C17 1310 0D0A 0806 0504"
-	$"0302 FE01 FC00 8100 FD00 0062 0502 0306"
-	$"0921 E4E0 FF51 DAA0 9182 7467 5C52 A4E9"
-	$"5241 416C 5B47 494C 4F51 5253 5453 5250"
-	$"4E4B 4743 3F3B 3632 2D28 241F 1B17 1411"
-	$"0E0D 0C0C 0E10 1418 1E24 2A30 353A 3D3F"
-	$"3F3E 3C39 3530 2B26 211C 1814 100D 0B09"
-	$"0705 0403 0202 0101 FA00 8100 FD00 0060"
-	$"0502 0407 0A45 F9E0 FF2A FBB9 9B8C 7D6F"
-	$"6358 58E7 A741 4040 4142 4445 4748 4949"
-	$"4847 4643 413D 3A36 322E 2A26 231F 1B18"
-	$"1411 0F0C 0AFE 091F 0A0C 0F13 171C 2126"
-	$"2A2D 3031 3231 2F2C 2925 211D 1815 110E"
-	$"0B09 0706 0403 0202 FE01 F900 8100 FD00"
-	$"0060 0503 0507 0B3D F4DF FF0B E4A5 9586"
-	$"786A 5F55 7F7F 423F FD3D 003E FE3F 363E"
-	$"3D3C 3A37 3531 2E2B 2724 201D 1A17 1411"
-	$"0F0C 0A09 0707 0607 0709 0B0E 1215 191D"
-	$"2023 2526 2625 2421 1E1B 1815 110F 0C0A"
-	$"0806 0503 0202 FE01 F700 DD00 FF20 A700"
-	$"FD00 0076 0503 0508 0C16 BBDF FF0E FEC5"
-	$"9E8F 8072 655A 5049 423E 3B39 38FE 37FF"
-	$"3634 3533 312F 2D2A 2724 211E 1B18 1512"
-	$"100E 0C0A 0907 0605 0404 0505 0608 0A0D"
-	$"1013 1518 1A1B 1C1C 1B1A 1816 1411 0E0C"
-	$"0A08 0605 0403 02FE 01F5 00F8 0001 BF9F"
-	$"FE00 0170 BFED 00FF EFEB 0001 60BF FA00"
-	$"048F EFFF AF10 CB00 FD00 0075 0603 0509"
-	$"0D13 49F6 DFFF 27EE AB98 897A 6C60 554B"
-	$"443E 3936 3332 302F 2E2D 2B2A 2825 2320"
-	$"1E1B 1816 1311 0F0D 0B0A 0807 0605 04FD"
-	$"03FF 0407 0607 090B 0D0F 1113 FD14 0E12"
-	$"110F 0E0C 0A08 0605 0403 0202 0101 F300"
-	$"F800 06CF FF10 0000 DFAF ED00 FF8F EC00"
-	$"02CF FFFF FB00 0560 FF9F 70FF 9FCB 00FD"
-	$"0000 9306 0306 090E 141D A4DE FF25 D0A0"
+	$"1B16 120F 0C0A 0508 0605 0302 02FE 01F7"
+	$"00FF 4000 20F9 0003 2040 4010 FA00 0220"
+	$"4030 E700 0130 40C9 00FD 0000 75FE 00FF"
+	$"0107 0304 0609 0D12 4DFB ECFF 17ED 8571"
+	$"675D 5247 3D51 F176 2422 43EC C62F 336E"
+	$"F7FF B05D BFFE FF1B B3BF FFFF F0CB B2B3"
+	$"B2B0 C1F0 A994 887C 6F63 574D 443F 3D3D"
+	$"4249 73FD FAFF 1FD3 C1C2 C1BE B9B3 ABA3"
+	$"9A90 877D 7369 5F56 4D44 3C34 2D27 211C"
+	$"1713 100D 0A08 0603 0504 0302 FE01 8800"
+	$"FD00 0076 FF00 FF01 0802 0305 080C 1016"
+	$"21BD EBFF 35C7 8076 6A5E 5347 3E9C E437"
+	$"2828 8BFF 7637 40B6 FFF2 7F7C EDFF FFEC"
+	$"A6DF D1AB A7A9 A9A8 A5A1 CDA7 877C 7165"
+	$"594E 443C 3734 3539 4049 B0FC FF21 D7AA"
+	$"B0B3 B4B2 AFAA A39B 9289 7F75 6B62 584F"
+	$"463E 362F 2923 1D18 1411 0E0B 0907 0504"
+	$"0403 0202 0101 8600 FD00 0076 0C00 0101"
+	$"0203 0507 0A0E 141B 238F EBFF 17F8 A384"
+	$"786B 5E52 474B E79C 2E2D 3ED6 E147 4269"
+	$"ECFF CB6A AFFE FF1A B199 989B 9D9E 9D9B"
+	$"9792 9387 7A6F 6459 4E44 3B34 2F2D 2D31"
+	$"373F 4FFE FF23 E689 939B A1A4 A4A2 9E99"
+	$"9289 8177 6E64 5B51 4940 3831 2A24 1F1A"
+	$"1512 0E0C 0907 0604 0302 0002 FE01 8500"
+	$"FD00 0073 0C00 0101 0304 0609 0D12 1830"
+	$"87E4 EAFF 5BDC 9285 776A 5D51 4787 F351"
+	$"3233 79FF 9A44 4BA6 FFFA 9677 E1E4 A789"
+	$"8C8F 9192 918F 8C88 837C 746B 6258 4E44"
+	$"3A32 2C27 2526 292E 3640 9FFF 7E70 7B84"
+	$"8C91 9393 918D 8780 786F 665D 544B 423A"
+	$"332C 2620 1B16 130F 0C0A 0806 0504 0302"
+	$"01FF 0183 00FD 0000 6EFF 0108 0203 0508"
+	$"0C10 1963 CBE8 FF58 FDB9 9184 7568 5B50"
+	$"4AD2 B937 373E C7F3 5C4C 63E0 FFE0 7788"
+	$"827C 8083 8485 8483 807D 7873 6C65 5D54"
+	$"4B42 3931 2A25 211F 1F22 272E 3742 4C57"
+	$"626C 757B 8082 827F 7B75 6E66 5E55 4D44"
+	$"3C35 2E28 221C 1814 100D 0A08 0605 0403"
+	$"02FE 0181 00FD 0000 6D09 0102 0305 070A"
+	$"0E44 AFF9 E6FF 5AEB A28F 8172 6559 4E72"
+	$"F76D 3B3B 6BF8 B94B 5196 F0BB 706C 7073"
+	$"7677 7878 7674 716D 6862 5C55 4E47 3F37"
+	$"2F29 231E 1B19 191C 2026 2E37 414B 555E"
+	$"656B 6F70 706D 6964 5D56 4E46 3E37 3029"
+	$"231E 1915 110E 0B09 0705 0403 0202 0101"
+	$"0000 8100 FD00 0068 0701 0204 0609 148A"
+	$"EBE3 FF17 CC9A 8C7D 6F62 574D BED5 423E"
+	$"3FAD FE77 4E5C 755D 6164 6769 FE6B 386A"
+	$"6865 615D 5853 4D47 403A 332D 2621 1C18"
+	$"1514 1416 1A1F 262E 363F 484F 565B 5E5F"
+	$"5E5C 5853 4D46 3F38 312B 251F 1A16 120F"
+	$"0C09 0706 0403 0202 FE01 FE00 8100 FD00"
+	$"0064 0502 0305 070B 8AE1 FF16 F5AE 9687"
+	$"796B 5F54 66F1 8B40 405A EAB4 4B4F 5356"
+	$"595C 5EFE 5F37 5E5C 5956 524E 4944 3F39"
+	$"342E 2923 1E1A 1613 1110 1012 1519 1F25"
+	$"2D34 3B42 474B 4E4F 4E4B 4843 3E38 322C"
+	$"2620 1C17 1310 0D0A 0806 0504 0302 FE01"
+	$"FC00 8100 FD00 0062 0502 0306 0921 E4E0"
+	$"FF51 DAA0 9182 7467 5C52 A4E9 5241 416C"
+	$"5B47 494C 4F51 5253 5453 5250 4E4B 4743"
+	$"3F3B 3632 2D28 241F 1B17 1411 0E0D 0C0C"
+	$"0E10 1418 1E24 2A30 353A 3D3F 3F3E 3C39"
+	$"3530 2B26 211C 1814 100D 0B09 0705 0403"
+	$"0202 0101 FA00 8100 FD00 0060 0502 0407"
+	$"0A45 F9E0 FF2A FBB9 9B8C 7D6F 6358 58E7"
+	$"A741 4040 4142 4445 4748 4949 4847 4643"
+	$"413D 3A36 322E 2A26 231F 1B18 1411 0F0C"
+	$"0AFE 091F 0A0C 0F13 171C 2126 2A2D 3031"
+	$"3231 2F2C 2925 211D 1815 110E 0B09 0706"
+	$"0403 0202 FE01 F900 8100 FD00 005C 0503"
+	$"0507 0B3D F4DF FF0B E4A5 9586 786A 5F55"
+	$"7F7F 423F FD3D 003E FE3F 363E 3D3C 3A37"
+	$"3531 2E2B 2724 201D 1A17 1411 0F0C 0A09"
+	$"0707 0607 0709 0B0E 1215 191D 2023 2526"
+	$"2625 2421 1E1B 1815 110F 0C0A 0806 0503"
+	$"0202 FE01 F700 8100 FD00 005B 0503 0508"
+	$"0C16 BBDF FF0E FEC5 9E8F 8072 655A 5049"
+	$"423E 3B39 38FE 37FF 3634 3533 312F 2D2A"
+	$"2724 211E 1B18 1512 100E 0C0A 0907 0605"
+	$"0404 0505 0608 0A0D 1013 1518 1A1B 1C1C"
+	$"1B1A 1816 1411 0E0C 0A08 0605 0403 02FE"
+	$"01F5 0081 00FD 0000 5806 0305 090D 1349"
+	$"F6DF FF27 EEAB 9889 7A6C 6055 4B44 3E39"
+	$"3633 3230 2F2E 2D2B 2A28 2523 201E 1B18"
+	$"1613 110F 0D0B 0A08 0706 0504 FD03 FF04"
+	$"0706 0709 0B0D 0F11 13FD 140E 1211 0F0E"
+	$"0C0A 0806 0504 0302 0201 01F3 0081 00FD"
+	$"0000 5406 0306 090E 141D A4DE FF25 D0A0"
 	$"9182 7466 5A4F 463E 3833 2F2D 2A28 2725"
 	$"2321 1F1D 1B18 1614 120F 0D0C 0A09 0706"
 	$"0504 0403 FB02 0803 0405 0608 090B 0C0D"
 	$"FE0E FF0D 090C 0A09 0806 0504 0302 02FE"
-	$"01F2 00F8 002B 70FF 6000 30FF 6000 30BF"
-	$"FFFF AF10 0030 BF80 DFEF 6030 CFFF FF60"
-	$"00BF 8F00 0050 DFFF EF80 0000 30BF 70BF"
-	$"FF9F FB00 0240 CFFF FB00 06CF FF20 00DF"
-	$"FF10 CC00 FD00 0090 0704 0609 0E15 1D3D"
-	$"ECDF FF25 F5B1 9A8A 7B6D 5F53 483F 3731"
-	$"2C28 2522 201E 1C1A 1816 1412 100E 0C0B"
-	$"0908 0706 0504 0303 0202 FB01 0702 0303"
-	$"0405 0607 08FC 0908 0807 0706 0504 0302"
-	$"02FE 01F0 00F8 002C 20FF AF00 80FF 1010"
-	$"EFDF 1030 FFCF 0040 FFDF 8FFF BFAF DF10"
-	$"0020 00FF BF00 40FF AF00 70FF 8000 40FF"
-	$"EF80 CFFF 30FB 0001 BFFF FB00 FFFF FF00"
-	$"02BF FF40 CC00 FD00 008C 0703 0609 0E14"
-	$"1D27 8DDE FF21 DBA2 9383 7465 584C 4138"
-	$"302A 2521 1D1B 1816 1412 100E 0D0B 0A08"
-	$"0706 0504 0303 0202 FC01 FF00 FE01 FF02"
-	$"FF03 FF04 FF05 FE06 FE05 0404 0303 0202"
-	$"FE01 EE00 F700 2BCF FF10 CFCF 0060 FF8F"
-	$"0000 BFFF 3040 FF80 0040 30BF EF80 2000"
-	$"00FF BF00 AFFF 5000 10FF EF00 40FF 8000"
-	$"80FF 40FB 0001 BFFF FB00 FFFF FF00 02BF"
-	$"FF40 CC00 FD00 007F 0803 0509 0D14 1C26"
-	$"3CDD DFFF 1CFB B99B 8B7C 6C5E 5044 3A31"
-	$"2923 1E1A 1614 110F 0D0C 0A09 0706 0504"
-	$"0403 FE02 FD01 FA00 FD01 FF02 FD03 0004"
-	$"FD03 FE02 FE01 EC00 F700 0670 FF80 FF70"
-	$"0080 FBFF FF40 01FF 80FE 0017 50EF FFFF"
-	$"7000 FFBF 00BF FF40 0000 FFFF 0040 FF80"
-	$"0080 FF40 FB00 01BF FFFB 00FF FFFF 0002"
-	$"BFFF 40CC 00FD 0000 7509 0305 080D 131B"
-	$"2430 7CFE DFFF 1BE4 A594 8474 6456 483C"
-	$"3229 221C 1713 100D 0B0A 0807 0605 0403"
-	$"0302 02FD 01F5 00FC 01FA 02FC 01EA 00F7"
-	$"0008 20FF EFFF 2000 80FF 80FC 0002 40FF"
-	$"80FD 0016 1060 EFEF 00FF BF00 BFFF 4000"
-	$"00FF FF00 40FF 8000 80FF 40FB 0001 BFFF"
-	$"FB00 06DF FF00 00BF FF20 CC00 FD00 0072"
-	$"0903 0507 0C11 1922 2D3C C9DF FF18 FEC5"
-	$"9C8C 7B6B 5C4D 4035 2B22 1B15 110E 0B09"
-	$"0706 0504 0302 02FD 01EF 00F6 01E7 00F6"
-	$"000F CFFF DF00 0030 FFDF 1000 0010 0040"
-	$"FF80 FE00 1710 0000 CFEF 00FF BF00 60FF"
-	$"8F00 50FF 9F00 40FF 8000 80FF 40FB 0001"
-	$"BFFF FE00 FFFF 0600 9FFF 6020 FFDF CB00"
-	$"FD00 006C 0A02 0407 0A0F 161F 2936 6BFA"
-	$"DFFF 15EE A794 8473 6353 4538 2D23 1C15"
-	$"100C 0907 0504 0302 02FD 01C8 00F6 0002"
-	$"8FFF 8FFE 0009 60EF EFBF DFAF 0040 FF80"
-	$"FE00 17FF BFDF FF60 00FF BF00 008F FFBF"
-	$"EFCF 1000 40FF 8000 80FF 40FB 0001 BFFF"
-	$"FE00 FFFF 0600 10CF FFFF EF30 CB00 FD00"
-	$"0042 0A02 0306 090E 141C 2531 3FB5 DEFF"
+	$"01F2 0081 00FD 0000 5107 0406 090E 151D"
+	$"3DEC DFFF 25F5 B19A 8A7B 6D5F 5348 3F37"
+	$"312C 2825 2220 1E1C 1A18 1614 1210 0E0C"
+	$"0B09 0807 0605 0403 0302 02FB 0107 0203"
+	$"0304 0506 0708 FC09 0808 0707 0605 0403"
+	$"0202 FE01 F000 8100 FD00 004E 0703 0609"
+	$"0E14 1D27 8DDE FF21 DBA2 9383 7465 584C"
+	$"4138 302A 2521 1D1B 1816 1412 100E 0D0B"
+	$"0A08 0706 0504 0303 0202 FC01 FF00 FE01"
+	$"FF02 FF03 FF04 FF05 FE06 FE05 0404 0303"
+	$"0202 FE01 EE00 8100 FD00 0044 0803 0509"
+	$"0D14 1C26 3CDD DFFF 1CFB B99B 8B7C 6C5E"
+	$"5044 3A31 2923 1E1A 1614 110F 0D0C 0A09"
+	$"0706 0504 0403 FE02 FD01 FA00 FD01 FF02"
+	$"FD03 0004 FD03 FE02 FE01 EC00 8100 FD00"
+	$"003A 0903 0508 0D13 1B24 307C FEDF FF1B"
+	$"E4A5 9484 7464 5648 3C32 2922 1C17 1310"
+	$"0D0B 0A08 0706 0504 0303 0202 FD01 F500"
+	$"FC01 FA02 FC01 EA00 8100 FD00 0033 0903"
+	$"0507 0C11 1922 2D3C C9DF FF18 FEC5 9C8C"
+	$"7B6B 5C4D 4035 2B22 1B15 110E 0B09 0706"
+	$"0504 0302 02FD 01EF 00F6 01E7 0081 00FD"
+	$"0000 2D0A 0204 070A 0F16 1F29 366B FADF"
+	$"FF15 EEA7 9484 7363 5345 382D 231C 1510"
+	$"0C09 0705 0403 0202 FD01 C800 8100 FD00"
+	$"002A 0A02 0306 090E 141C 2531 3FB5 DEFF"
 	$"12CE 9D8C 7B6A 5A4B 3D31 261D 1610 0C08"
-	$"0604 0302 FE01 C500 EE00 FF40 0020 F900"
-	$"0320 4040 10FA 0002 2040 30E7 0001 3040"
-	$"C900 FD00 002B 0B02 0305 080C 1118 212C"
-	$"395B ECDF FF14 F5AE 9483 7261 5142 3529"
-	$"1F17 110C 0806 0402 0201 01C4 0081 00FD"
-	$"0000 290B 0102 0406 0A0F 151D 2732 4098"
-	$"DEFF 12D9 9C8B 7968 5747 392D 2219 120D"
-	$"0906 0402 0101 C300 8100 FD00 002A 0C01"
-	$"0203 0508 0C12 1922 2C39 4FE1 DFFF 12FA"
-	$"B492 806F 5D4D 3E31 251B 140E 0906 0402"
-	$"0101 C300 8100 FD00 002A FF01 0B02 0407"
-	$"0A0F 151D 2732 3F85 FEDF FF11 E099 8775"
-	$"6352 4334 281E 150F 0A06 0402 0101 C300"
-	$"8100 FD00 002A 0D00 0102 0305 080C 1219"
-	$"212B 3848 CADF FF11 F0A3 8C7A 6857 4738"
-	$"2B20 1710 0B07 0402 0101 C300 8100 FD00"
-	$"002B 0E00 0101 0204 060A 0E14 1C25 313E"
-	$"6EFA E0FF 11EA A290 7E6C 5A4A 3A2D 2218"
-	$"110C 0705 0301 01C3 0081 00FD 0000 2BFF"
-	$"000C 0102 0305 080C 1118 202A 3644 B5E0"
-	$"FF11 D5A3 9280 6E5C 4C3C 2F23 1912 0C08"
-	$"0503 0101 C300 8100 FD00 002D FF00 FF01"
-	$"0B02 0406 090E 141B 242F 3C5C ECE2 FF12"
-	$"EAB7 A392 806E 5D4C 3D2F 241A 120C 0805"
-	$"0301 01C3 0081 00FD 0000 2EFE 000C 0102"
-	$"0305 070B 1017 1F29 3442 9AE4 FF14 F9E0"
-	$"C1AF A08F 7E6C 5B4B 3C2F 231A 120C 0805"
-	$"0301 01C3 0081 00FD 0000 31FE 00FF 010B"
-	$"0204 0609 0D13 1A23 2D3A 50E0 E7FF 16FD"
-	$"EDD6 C4B8 AA9B 8A7A 6958 493A 2D22 1912"
-	$"0C08 0503 0101 C300 8100 FD00 0031 FD00"
-	$"0C01 0203 0407 0A0F 151D 2732 4086 E8FF"
-	$"17F5 E2D1 C7BC B0A2 9384 7363 5445 372B"
-	$"2018 110B 0704 0301 01C3 0081 00FD 0000"
-	$"34FD 00FF 010B 0203 0508 0C12 1921 2C38"
-	$"47CC EBFF 19F9 EAD8 D0C7 BDB2 A698 8A7B"
-	$"6B5C 4D3F 3327 1E16 0F0A 0704 0201 01C3"
-	$"0081 00FD 0000 35FC 00FF 010B 0204 070A"
-	$"0E14 1C25 313E 70F8 EEFF 1AFC EFDF D4CD"
-	$"C5BB B1A6 998C 7E70 6254 4639 2E23 1B13"
-	$"0E09 0604 0201 C200 8100 FD00 0036 FB00"
-	$"0C01 0203 0508 0C11 1720 2A36 44B3 F0FF"
-	$"1CFE F3E3 D7D0 C9C1 B8AE A398 8C7F 7264"
-	$"574A 3E32 281F 1711 0C08 0503 0201 C200"
-	$"8100 FD00 0038 FB00 FF01 0B02 0406 090E"
-	$"131B 242F 3B5B EEF2 FF1D F7E7 D8D2 CBC4"
-	$"BBB3 A99F 9489 7D71 6458 4C40 352B 221A"
-	$"140E 0A07 0403 0101 C200 8100 FD00 0039"
-	$"FA00 0C01 0203 0507 0B10 161E 2834 419B"
-	$"F4FF 1FFA EADA D3CD C6BE B6AD A399 8F84"
-	$"796D 6256 4B40 362D 241C 1610 0C08 0604"
-	$"0201 01C2 0081 00FD 0000 3BFA 00FF 010B"
-	$"0204 0609 0D12 1A22 2D39 4EDD F7FF 20FC"
-	$"ECD9 D1CC C6BF B8AF A69D 9388 7E73 695E"
-	$"5349 3F35 2D24 1D17 110D 0906 0403 0201"
-	$"C100 8100 FD00 003D F900 0D01 0203 0407"
-	$"0A0F 151D 2732 3F81 FEFA FF22 FEEC D6CA"
-	$"C8C4 BFB8 B1A8 9F96 8C81 776D 6359 4F45"
-	$"3C33 2B24 1D17 120D 0A07 0503 0201 01C1"
-	$"0081 00FD 0000 3DF9 00FF 010B 0203 0508"
-	$"0C11 1821 2B36 44C9 FBFF 01EF D0FE BC1D"
-	$"BAB5 B0A8 A098 8E84 7A70 665C 534A 4138"
-	$"3029 221C 1612 0E0A 0705 0402 0101 C000"
-	$"8100 FD00 003E F800 FF01 3202 0406 0A0E"
-	$"141B 242F 3B61 D3FD FFFF F0C8 A9A7 ACAD"
-	$"ADAA A59F 988F 867D 7369 5F56 4D44 3C34"
-	$"2C26 1F1A 1511 0D0A 0705 0402 0201 BF00"
-	$"8100 FD00 003D F700 3301 0203 0508 0B10"
-	$"171F 2833 3F5A 90B6 B492 8991 989B 9D9C"
-	$"9994 8E86 7E75 6B62 594F 473E 362F 2822"
-	$"1D18 130F 0C09 0705 0402 0201 01BF 0081"
-	$"00FD 0000 3CF7 00FF 0130 0204 0609 0D13"
-	$"1922 2B36 414D 5965 707A 8187 8A8B 8A87"
-	$"827C 746C 635B 5249 4139 312B 241F 1A15"
-	$"110E 0B08 0605 0302 0201 01BE 0081 00FD"
-	$"0000 39F6 002D 0102 0305 070A 0F15 1C24"
-	$"2D37 424D 5761 6A71 7679 7978 7570 6A63"
-	$"5B53 4B43 3B33 2D26 201B 1713 0F0C 0A07"
-	$"0604 0302 FE01 BD00 8100 FD00 0038 F600"
-	$"FF01 2C02 0305 080C 1117 1D25 2E37 414A"
-	$"535A 6065 6768 6663 5E59 524B 443C 352E"
-	$"2822 1D18 1410 0D0A 0806 0504 0302 0101"
-	$"BB00 8100 FD00 0036 F500 FF01 2A03 0406"
-	$"090D 1218 1E26 2D35 3D45 4B50 5456 5655"
-	$"524E 4843 3C36 2F29 231E 1915 110E 0B09"
-	$"0705 0403 0202 0101 BA00 8100 FD00 0033"
-	$"F400 2701 0203 0507 0A0E 1318 1E25 2B32"
-	$"383D 4245 4646 4542 3E3A 352F 2A24 1F1A"
-	$"1612 0F0C 0A08 0604 0302 02FE 01B9 0081"
-	$"00FD 0000 31F4 00FF 0123 0203 0508 0B0E"
-	$"1317 1D22 272C 3134 3638 3836 3431 2D28"
-	$"241F 1B17 1310 0D0A 0806 0504 0302 FE01"
-	$"B700 8100 FD00 002F F300 FF01 2302 0406"
-	$"080B 0E12 161A 1E22 2528 2A2B 2B2A 2825"
-	$"221E 1B17 1410 0D0B 0907 0504 0302 0201"
-	$"01B5 0081 00FD 0000 2CF2 0020 0102 0304"
-	$"0608 0A0D 1013 1619 1C1E 1F20 201F 1D1B"
-	$"1916 1310 0E0B 0907 0604 0302 02FE 01B4"
-	$"0081 00FD 0000 2AF2 00FF 010B 0203 0406"
-	$"0709 0C0E 1012 1416 FE17 0D16 1513 110F"
-	$"0D0B 0908 0605 0302 02FE 01B2 0081 00FD"
-	$"0000 27F1 00FF 010A 0203 0405 0608 0A0B"
-	$"0D0E 0FFE 100B 0F0E 0D0C 0A09 0706 0504"
-	$"0302 FE01 B000 8100 FD00 0025 F000 FF01"
-	$"FF02 0703 0405 0608 0909 0AFE 0B0C 0A09"
-	$"0908 0706 0504 0302 0201 01AE 0081 00FD"
-	$"0000 20EF 00FE 0106 0203 0304 0506 06FD"
-	$"07FF 06FF 0504 0403 0302 02FE 01AD 0081"
-	$"00FD 0000 00FF"
+	$"0604 0302 FE01 C500 8100 FD00 002B 0B02"
+	$"0305 080C 1118 212C 395B ECDF FF14 F5AE"
+	$"9483 7261 5142 3529 1F17 110C 0806 0402"
+	$"0201 01C4 0081 00FD 0000 290B 0102 0406"
+	$"0A0F 151D 2732 4098 DEFF 12D9 9C8B 7968"
+	$"5747 392D 2219 120D 0906 0402 0101 C300"
+	$"8100 FD00 002A 0C01 0203 0508 0C12 1922"
+	$"2C39 4FE1 DFFF 12FA B492 806F 5D4D 3E31"
+	$"251B 140E 0906 0402 0101 C300 8100 FD00"
+	$"002A FF01 0B02 0407 0A0F 151D 2732 3F85"
+	$"FEDF FF11 E099 8775 6352 4334 281E 150F"
+	$"0A06 0402 0101 C300 8100 FD00 002A 0D00"
+	$"0102 0305 080C 1219 212B 3848 CADF FF11"
+	$"F0A3 8C7A 6857 4738 2B20 1710 0B07 0402"
+	$"0101 C300 8100 FD00 002B 0E00 0101 0204"
+	$"060A 0E14 1C25 313E 6EFA E0FF 11EA A290"
+	$"7E6C 5A4A 3A2D 2218 110C 0705 0301 01C3"
+	$"0081 00FD 0000 2BFF 000C 0102 0305 080C"
+	$"1118 202A 3644 B5E0 FF11 D5A3 9280 6E5C"
+	$"4C3C 2F23 1912 0C08 0503 0101 C300 8100"
+	$"FD00 002D FF00 FF01 0B02 0406 090E 141B"
+	$"242F 3C5C ECE2 FF12 EAB7 A392 806E 5D4C"
+	$"3D2F 241A 120C 0805 0301 01C3 0081 00FD"
+	$"0000 2EFE 000C 0102 0305 070B 1017 1F29"
+	$"3442 9AE4 FF14 F9E0 C1AF A08F 7E6C 5B4B"
+	$"3C2F 231A 120C 0805 0301 01C3 0081 00FD"
+	$"0000 31FE 00FF 010B 0204 0609 0D13 1A23"
+	$"2D3A 50E0 E7FF 16FD EDD6 C4B8 AA9B 8A7A"
+	$"6958 493A 2D22 1912 0C08 0503 0101 C300"
+	$"8100 FD00 0031 FD00 0C01 0203 0407 0A0F"
+	$"151D 2732 4086 E8FF 17F5 E2D1 C7BC B0A2"
+	$"9384 7363 5445 372B 2018 110B 0704 0301"
+	$"01C3 0081 00FD 0000 34FD 00FF 010B 0203"
+	$"0508 0C12 1921 2C38 47CC EBFF 19F9 EAD8"
+	$"D0C7 BDB2 A698 8A7B 6B5C 4D3F 3327 1E16"
+	$"0F0A 0704 0201 01C3 0081 00FD 0000 35FC"
+	$"00FF 010B 0204 070A 0E14 1C25 313E 70F8"
+	$"EEFF 1AFC EFDF D4CD C5BB B1A6 998C 7E70"
+	$"6254 4639 2E23 1B13 0E09 0604 0201 C200"
+	$"8100 FD00 0036 FB00 0C01 0203 0508 0C11"
+	$"1720 2A36 44B3 F0FF 1CFE F3E3 D7D0 C9C1"
+	$"B8AE A398 8C7F 7264 574A 3E32 281F 1711"
+	$"0C08 0503 0201 C200 8100 FD00 0038 FB00"
+	$"FF01 0B02 0406 090E 131B 242F 3B5B EEF2"
+	$"FF1D F7E7 D8D2 CBC4 BBB3 A99F 9489 7D71"
+	$"6458 4C40 352B 221A 140E 0A07 0403 0101"
+	$"C200 8100 FD00 0039 FA00 0C01 0203 0507"
+	$"0B10 161E 2834 419B F4FF 1FFA EADA D3CD"
+	$"C6BE B6AD A399 8F84 796D 6256 4B40 362D"
+	$"241C 1610 0C08 0604 0201 01C2 0081 00FD"
+	$"0000 3BFA 00FF 010B 0204 0609 0D12 1A22"
+	$"2D39 4EDD F7FF 20FC ECD9 D1CC C6BF B8AF"
+	$"A69D 9388 7E73 695E 5349 3F35 2D24 1D17"
+	$"110D 0906 0403 0201 C100 8100 FD00 003D"
+	$"F900 0D01 0203 0407 0A0F 151D 2732 3F81"
+	$"FEFA FF22 FEEC D6CA C8C4 BFB8 B1A8 9F96"
+	$"8C81 776D 6359 4F45 3C33 2B24 1D17 120D"
+	$"0A07 0503 0201 01C1 0081 00FD 0000 3DF9"
+	$"00FF 010B 0203 0508 0C11 1821 2B36 44C9"
+	$"FBFF 01EF D0FE BC1D BAB5 B0A8 A098 8E84"
+	$"7A70 665C 534A 4138 3029 221C 1612 0E0A"
+	$"0705 0402 0101 C000 8100 FD00 003E F800"
+	$"FF01 3202 0406 0A0E 141B 242F 3B61 D3FD"
+	$"FFFF F0C8 A9A7 ACAD ADAA A59F 988F 867D"
+	$"7369 5F56 4D44 3C34 2C26 1F1A 1511 0D0A"
+	$"0705 0402 0201 BF00 8100 FD00 003D F700"
+	$"3301 0203 0508 0B10 171F 2833 3F5A 90B6"
+	$"B492 8991 989B 9D9C 9994 8E86 7E75 6B62"
+	$"594F 473E 362F 2822 1D18 130F 0C09 0705"
+	$"0402 0201 01BF 0081 00FD 0000 3CF7 00FF"
+	$"0130 0204 0609 0D13 1922 2B36 414D 5965"
+	$"707A 8187 8A8B 8A87 827C 746C 635B 5249"
+	$"4139 312B 241F 1A15 110E 0B08 0605 0302"
+	$"0201 01BE 0081 00FD 0000 39F6 002D 0102"
+	$"0305 070A 0F15 1C24 2D37 424D 5761 6A71"
+	$"7679 7978 7570 6A63 5B53 4B43 3B33 2D26"
+	$"201B 1713 0F0C 0A07 0604 0302 FE01 BD00"
+	$"8100 FD00 0038 F600 FF01 2C02 0305 080C"
+	$"1117 1D25 2E37 414A 535A 6065 6768 6663"
+	$"5E59 524B 443C 352E 2822 1D18 1410 0D0A"
+	$"0806 0504 0302 0101 BB00 8100 FD00 0036"
+	$"F500 FF01 2A03 0406 090D 1218 1E26 2D35"
+	$"3D45 4B50 5456 5655 524E 4843 3C36 2F29"
+	$"231E 1915 110E 0B09 0705 0403 0202 0101"
+	$"BA00 8100 FD00 0033 F400 2701 0203 0507"
+	$"0A0E 1318 1E25 2B32 383D 4245 4646 4542"
+	$"3E3A 352F 2A24 1F1A 1612 0F0C 0A08 0604"
+	$"0302 02FE 01B9 0081 00FD 0000 31F4 00FF"
+	$"0123 0203 0508 0B0E 1317 1D22 272C 3134"
+	$"3638 3836 3431 2D28 241F 1B17 1310 0D0A"
+	$"0806 0504 0302 FE01 B700 8100 FD00 002F"
+	$"F300 FF01 2302 0406 080B 0E12 161A 1E22"
+	$"2528 2A2B 2B2A 2825 221E 1B17 1410 0D0B"
+	$"0907 0504 0302 0201 01B5 0081 00FD 0000"
+	$"2CF2 0020 0102 0304 0608 0A0D 1013 1619"
+	$"1C1E 1F20 201F 1D1B 1916 1310 0E0B 0907"
+	$"0604 0302 02FE 01B4 0081 00FD 0000 2AF2"
+	$"00FF 010B 0203 0406 0709 0C0E 1012 1416"
+	$"FE17 0D16 1513 110F 0D0B 0908 0605 0302"
+	$"02FE 01B2 0081 00FD 0000 27F1 00FF 010A"
+	$"0203 0405 0608 0A0B 0D0E 0FFE 100B 0F0E"
+	$"0D0C 0A09 0706 0504 0302 FE01 B000 8100"
+	$"FD00 0025 F000 FF01 FF02 0703 0405 0608"
+	$"0909 0AFE 0B0C 0A09 0908 0706 0504 0302"
+	$"0201 01AE 0081 00FD 0000 20EF 00FE 0106"
+	$"0203 0304 0506 06FD 07FF 06FF 0504 0403"
+	$"0302 02FE 01AD 0081 00FD 0000 00FF"
 };
 
 resource 'STR ' (128) {
@@ -3225,17 +3100,6 @@ resource 'CNTL' (201) {
 	"Icon:"
 };
 
-data 'DLGX' (128) {
-	$"0743 6869 6361 676F 0000 0000 0000 0000"            /* .Chicago........ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
-	$"0003 0000 0000 0000 0000 0000 0000 000A"            /* ................ */
-	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
-	$"0000 0000 0000"                                     /* ...... */
-};
-
 data 'DLGX' (129) {
 	$"0654 6563 686E 6F00 0000 0000 0000 0000"            /* .Techno......... */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
@@ -3251,6 +3115,28 @@ data 'DLGX' (129) {
 	$"0000 000A 0000 0000 0000 0000 0000 0006"            /* ................ */
 	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
 	$"0000 0000 0000"                                     /* ...... */
+};
+
+data 'DLGX' (130) {
+	$"0654 6563 686E 6F00 0000 0000 0000 0000"            /* .Techno......... */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
+	$"0000"                                               /* .. */
+};
+
+data 'DLGX' (128) {
+	$"0743 6869 6361 676F 0000 0000 0000 0000"            /* .Chicago........ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
+	$"0006 0000 0000 0000 0000 0000 0000 000A"            /* ................ */
+	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
+	$"0000 0000 0000 0006 0000 0000 0000 0000"            /* ................ */
+	$"0000 0006 0000 0000 0000 0000 0000 0006"            /* ................ */
+	$"0000 0000 0000 0000 0000"                           /* .......... */
 };
 
 resource 'BNDL' (128) {
@@ -3280,7 +3166,26 @@ resource 'BNDL' (128) {
 	}
 };
 
-resource 'mctb' (200) {
+data 'ictb' (129) {
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0007 002C 8007 0040 0001 0000"            /* .......,€..@.... */
+	$"0009 0000 0000 0000 FFFF FFFF FFFF 0000"            /* ........ÿÿÿÿÿÿ.. */
+	$"0054 0000 0009 0000 0000 0000 FFFF FFFF"            /* .T..........ÿÿÿÿ */
+	$"FFFF 0000 0647 656E 6576 61"                        /* ÿÿ...Geneva */
+};
+
+data 'ictb' (128) {
+	$"0000 0000 0000 0000 0007 0018 0007 002C"            /* ..............., */
+	$"0007 0040 0007 0054 0001 0100 000A 0000"            /* ...@...T........ */
+	$"0000 0000 FFFF FFFF FFFF 0000 0001 0000"            /* ....ÿÿÿÿÿÿ...... */
+	$"000A 0000 0000 0000 FFFF FFFF FFFF 0000"            /* ........ÿÿÿÿÿÿ.. */
+	$"0001 0000 000A 0000 0000 0000 FFFF FFFF"            /* ............ÿÿÿÿ */
+	$"FFFF 0000 0000 0000 0000 0000 0000 0000"            /* ÿÿ.............. */
+	$"FFFF FFFF FFFF 0000"                                /* ÿÿÿÿÿÿ.. */
+};
+
+resource 'mctb' (204) {
 	{	/* array MCTBArray: 1 elements */
 		/* [1] */
 		mctbLast, 0,
@@ -3314,7 +3219,58 @@ resource 'mctb' (207) {
 	}
 };
 
-resource 'dctb' (129) {
+resource 'mctb' (203) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (202) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (205) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'dctb' (128) {
 	{	/* array ColorSpec: 5 elements */
 		/* [1] */
 		wContentColor, 65535, 65535, 65535,
@@ -3327,15 +3283,6 @@ resource 'dctb' (129) {
 		/* [5] */
 		wTitleBarColor, 65535, 65535, 65535
 	}
-};
-
-data 'ictb' (129) {
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0007 002C 8007 0040 0001 0000"            /* .......,€..@.... */
-	$"0009 0000 0000 0000 FFFF FFFF FFFF 0000"            /* ........ÿÿÿÿÿÿ.. */
-	$"0054 0000 0009 0000 0000 0000 FFFF FFFF"            /* .T..........ÿÿÿÿ */
-	$"FFFF 0000 0647 656E 6576 61"                        /* ÿÿ...Geneva */
 };
 
 resource 'cfrg' (0) {
