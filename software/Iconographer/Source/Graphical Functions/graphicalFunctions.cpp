@@ -83,14 +83,14 @@ OSErr PictureToRegion(PicHandle srcPic, Rect bounds, RgnHandle targetRgn)
 	// now we can get the region
 	BitMapToRegion(targetRgn, (BitMap*)*maskPix);
 	
+	RESTOREGWORLD;
+	RESTORECOLORS;
+	
 	// we're done, so we can dispose
 	UnlockPixels(tempPix);
 	DisposeGWorld(tempGW);
 	UnlockPixels(maskPix);
 	DisposeGWorld(maskGW);
-	
-	RESTOREGWORLD;
-	RESTORECOLORS;
 	
 	return noErr;
 }
@@ -484,7 +484,7 @@ void DrawGradient32(int x1, int y1, RGBColor startColor,
 		{
 			Point temp = {y, x};
 			if (PtInRgn(temp, clipRgn) || clipRgn == NULL)
-				SetPixel32(x, y, RGBToLong(&GetGradientColor(x, y, &params)), targetPix);
+				SetPixel32(x, y, RGBToLong(GetGradientColor(x, y, &params)), targetPix);
 		}
 }
 
@@ -533,7 +533,7 @@ void DrawRadialGradient32(int x1, int y1, RGBColor startColor,
 		{
 			Point temp = {y, x};
 			if (PtInRgn(temp, clipRgn) || clipRgn == NULL)
-				SetPixel32(x, y, RGBToLong(&GetRadialGradientColor(x, y, &params)), targetPix);
+				SetPixel32(x, y, RGBToLong(GetRadialGradientColor(x, y, &params)), targetPix);
 		}
 }
 
@@ -580,7 +580,6 @@ void ColorPicker(RGBColor* color,
 	BitMapPtr		currentPortBits;
 	Point			theMouse;
 	RGBColor		savedColor, nearestColor, newColor, tempColor, previousColor;
-	short			paddingH, paddingV;
 	
 	SAVEGWORLD;
 	SAVECOLORS;
@@ -624,7 +623,7 @@ void ColorPicker(RGBColor* color,
 	menuRect = pickerRect;
 	InsetRect(&menuRect, -2, -2);
 	saveRect = menuRect,
-	GetThemeMenuItemExtra(kThemeMenuTypePopUp, &paddingV, &paddingH);
+	//GetThemeMenuItemExtra(kThemeMenuTypePopUp, &paddingV, &paddingH);
 	saveRect.top--;
 	saveRect.left--;
 	saveRect.bottom += 2;
@@ -765,7 +764,7 @@ void GetSimilarColors(RGBColor* colorList, int noOfColors, PixMapHandle pix, Rgn
 	
 	colorLongList = new long[noOfColors];
 	for (int i = 0; i < noOfColors; i++)
-		colorLongList[i] = RGBToLong(&colorList[i]);
+		colorLongList[i] = RGBToLong(colorList[i]);
 	
 	NewGWorld(&tempGW, 1, &(**pix).bounds, NULL, NULL, 0);
 	tempPix = GetGWorldPixMap(tempGW);
@@ -1040,17 +1039,20 @@ void MergePix(PixMapHandle basePicPix,
 OSErr NewGWorldUnpadded(GWorldPtr* gWorld, short depth, const Rect* bounds, CTabHandle colorTable)
 {
 	PixMapHandle tempPix;
-	int realRowBytes, currentRowBytes;
+	long realRowBytes, currentRowBytes;
 	Rect	tempBounds;
 	OSErr	err;
 	
 	tempBounds = *bounds;
 	
 	realRowBytes = (((bounds->right - bounds->left) * depth + 31) & -31) >> 3;
-	if (realRowBytes > 32)
-		tempBounds.right -= 16*8/depth;
+	
+	if ((realRowBytes > 32) && (realRowBytes % 16 == 0))
+		tempBounds.right -= 16 * 8 / depth;
+	else if (realRowBytes == 32)
+		tempBounds.right -= (tempBounds.right - tempBounds.left)/2;
 	else if (realRowBytes == 16)
-		tempBounds.right /= 2;
+		tempBounds.right -= (tempBounds.right - tempBounds.left)/2;
 	
 	err = NewGWorld(gWorld, depth, &tempBounds,  colorTable, NULL, 0);
 	if (err != noErr) return err;
@@ -1166,14 +1168,14 @@ bool SamePixMap(PixMapHandle pix1, PixMapHandle pix2)
 
 void DrawPictureDithered(PicHandle srcPic, Rect* targetRect)
 {
-	GWorldPtr tempGW;
-	PixMapHandle tempPix;
-	RgnHandle	tempRgn;
+	GWorldPtr		tempGW;
+	PixMapHandle	tempPix;
+	RgnHandle		tempRgn;
 	
 	SAVEGWORLD;
 	SAVECOLORS;
 	
-	NewGWorld(&tempGW, 32, targetRect, NULL, NULL, 0);
+	NewGWorldUnpadded(&tempGW, 32, targetRect, NULL);
 	tempPix = GetGWorldPixMap(tempGW);
 	LockPixels(tempPix);
 	
@@ -1328,7 +1330,6 @@ int GetAverageLuminance(PixMapHandle pix)
 	unsigned char* pixelData;
 	int	rowWidth;
 	Rect bounds;
-	int r, g, b;
 	
 	bounds = (**pix).bounds;
 	

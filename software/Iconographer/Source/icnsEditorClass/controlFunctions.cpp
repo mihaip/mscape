@@ -521,16 +521,37 @@ pascal ControlPartCode PreviewTracking(ControlHandle theControl, Point startPt, 
 pascal void	ColorSwatchDraw(ControlHandle theControl,SInt16 thePart)
 {
 	thePart; // unused parameter
-
+	
 	icnsEditorPtr	parentEditor; // the editor which owns this control
 	RGBColor		actualForeColor, actualBackColor; // the colors cast to the nearst ones
 													  // for the current pix
 	Rect			tempRect;
+	RgnHandle		tempRgn, tempRgn2;
 	SAVECOLORS; // we'll be changing the foreground/background colors
 	
 	parentEditor = GetEditor((**theControl).contrlOwner);
 	
 	//if (Button()) return;
+	
+	tempRgn = NewRgn();
+	tempRgn2 = NewRgn();
+	
+	RectRgn(tempRgn, &(**theControl).contrlRect);
+	InsetRgn(tempRgn, -1, -1);
+	
+	RectRgn(tempRgn2, &parentEditor->controls.colorSwatch.backColorRect);
+	DiffRgn(tempRgn, tempRgn2, tempRgn);
+	RectRgn(tempRgn2, &parentEditor->controls.colorSwatch.foreColorRect);
+	DiffRgn(tempRgn, tempRgn2, tempRgn);
+	RectRgn(tempRgn2, &parentEditor->controls.colorSwatch.swapColorsRect);
+	DiffRgn(tempRgn, tempRgn2, tempRgn);
+	RectRgn(tempRgn2, &parentEditor->controls.colorSwatch.resetColorsRect);
+	DiffRgn(tempRgn, tempRgn2, tempRgn);
+
+	DrawDialogBackground(theControl, tempRgn);
+	
+	DisposeRgn(tempRgn);
+	DisposeRgn(tempRgn2);
 	
 	if ((**parentEditor->currentPix).pixelSize == 32)
 	{
@@ -780,5 +801,66 @@ pascal void PatternMenuUpdate(int selection, void* clientData)
 	parentEditor->pattern = selection - 1;
 	
 	Draw1Control(parentEditor->controls.patterns);
+}
+
+pascal void	BackgroundPaneDraw(ControlHandle theControl,SInt16 thePart)
+{
+#pragma unused (thePart)
+	Rect	controlRect;
+	RgnHandle	tempRgn, tempRgn2;
+	icnsEditorPtr	parentEditor;
+	
+	controlRect = (**theControl).contrlRect;
+	parentEditor = GetEditor((**theControl).contrlOwner);
+	
+	//EraseRect(&controlRect);
+
+	tempRgn = parentEditor->GetControlsRegion();
+	tempRgn2 = NewRgn();
+	RectRgn(tempRgn2, &controlRect);
+	//CopyRgn(tempRgn2, tempRgn);
+	DiffRgn(tempRgn2, tempRgn, tempRgn);
+	DisposeRgn(tempRgn2);
+	DrawDialogBackground(theControl, tempRgn);
+	
+	if ((**theControl).contrlHilite == kActiveHilite)
+	{
+		//SetThemeWindowBackground((**theControl).contrlOwner, kThemeBrushDialogBackgroundActive,true);
+		
+		DrawThemeModelessDialogFrame(&controlRect,true);
+	}
+	else if ((**theControl).contrlHilite == kInactiveHilite)
+	{
+		//SetThemeWindowBackground((**theControl).contrlOwner,kThemeBrushDialogBackgroundInactive,true);
+		DrawThemeModelessDialogFrame(&controlRect,false);
+	}
+	
+	DisposeRgn(tempRgn);
+}
+
+pascal ControlPartCode BackgroundPaneHitTest(ControlHandle theControl, Point where)
+{
+#pragma unused (theControl, where)
+	
+	return kControlNoPart;
+}
+
+pascal void	ToolbarWellDraw(ControlHandle theControl,SInt16 thePart)
+{
+#pragma unused (thePart)
+	Rect	controlRect;
+	
+	controlRect = (**theControl).contrlRect;
+	
+	InsetRect(&controlRect, 1, 1);
+	
+	DrawImageWell(theControl, controlRect);
+}
+
+pascal ControlPartCode ToolbarWellHitTest(ControlHandle theControl, Point where)
+{
+#pragma unused (theControl, where)
+	
+	return kControlNoPart;
 }
 

@@ -65,7 +65,10 @@ void icnsEditorClass::Adjust(void)
 	GetDialogItemAsControl(adjustDialog, iBrightnessField, &dialogData.brightnessField);
 	GetDialogItemAsControl(adjustDialog, iContrastField, &dialogData.contrastField);
 	
-	SetControlValue(dialogData.preview, (**statics.preferences.data).flags & prefsRealTimePreviews);
+	if ((**statics.preferences.data).flags & prefsRealTimePreviews)
+		SetControlValue(dialogData.preview, 1);
+	else
+		SetControlValue(dialogData.preview, 0);
 	
 	FieldToSlider(dialogData.hueField, dialogData.hueSlider);
 	FieldToSlider(dialogData.saturationField, dialogData.saturationSlider);

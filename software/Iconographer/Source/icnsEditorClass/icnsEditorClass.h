@@ -175,7 +175,9 @@ enum controlIDs
 	rMaskLabel = 209,
 	rPreview = 210,
 	rPreviewLabel = 211,
-	rPatterns = 212
+	rPatterns = 212,
+	rBackgroundPane = 213,
+	rToolbarWell = 214
 };
 
 // control parts
@@ -361,6 +363,8 @@ typedef struct controlList
 	PlacardControl	infoPlacard;
 	colorSwatch		colorSwatch;
 	ControlHandle	patterns;
+	ControlHandle	backgroundPane;
+	ControlHandle	toolbarWell;
 } controlList;
 
 // classes
@@ -412,7 +416,6 @@ class icnsEditorClass : public icnsClass
 		void			ToggleIconMask(void);
 		void			CheckMaskSync(PixMapHandle basePix, PixMapHandle maskPix, int errorString);
 
-		
 		void 			HandleDrawing(void);
 		void			HandleMarquee(void);
 		bool			HandleMove(void);
@@ -535,6 +538,8 @@ class icnsEditorClass : public icnsClass
 		void			RefreshWindowTitle();
 		void			DisposeStates(void);
 		
+		RgnHandle		GetControlsRegion(void);
+		
 		static editorStaticsClass	statics;
 		
 	friend pascal void				ColorSwatchDraw(ControlHandle theControl,SInt16 thePart);
@@ -552,14 +557,14 @@ class icnsEditorClass : public icnsClass
 	friend pascal void				PlacardDraw(ControlHandle theControl,SInt16 thePart);
 	friend pascal ControlPartCode	PlacardHitTest (ControlHandle control, Point where);
 
-	friend extern void UpdateEffects(AdjustDialogDataPtr dialogData);
+	friend void UpdateEffects(AdjustDialogDataPtr dialogData);
 	
 	friend pascal OSErr 	DragTrackingHandler(DragTrackingMessage message, WindowPtr theWindow, void *, DragReference theDragRef);
 	friend pascal OSErr 	DragReceiveHandler (WindowPtr theWindow, void *, DragReference theDragRef);
 	friend pascal OSErr 	ApproveDragReference (DragReference theDragRef, bool *approved, icnsEditorPtr parentEditor);
 	friend pascal OSErr		DrawDragHilite(DragReference dragRef, icnsEditorPtr parentEditor);
 	friend void 			InsertPicIntoIcon(icnsEditorPtr parentEditor, PicHandle pic);
-	friend drawingStateClass;
+	friend class drawingStateClass;
 };
 
 
@@ -592,7 +597,6 @@ extern pascal void				PreviewDraw(ControlHandle theControl,SInt16 thePart);
 extern pascal ControlPartCode	PreviewHitTest(ControlHandle control, Point where);
 extern pascal ControlPartCode	PreviewTracking(ControlHandle theControl, Point startPt, ControlActionUPP actionProc);
 
-
 extern void						DrawDisplayItem(icnsEditorPtr parentEditor, Rect targetRect, long targetName);
 extern void						MakeDisplayRects(Rect controlRect, Rect *hugeRect,Rect *largeRect, Rect *smallRect);
 extern pascal void				DisplayDraw(ControlHandle theControl,SInt16 thePart);
@@ -603,11 +607,17 @@ extern pascal ControlPartCode 	ColorSwatchHitTest(ControlHandle control, Point w
 extern void						MakeColorSwatchRects(Rect controlRect, Rect *foreColorRect, Rect *backColorRect, Rect *swapColorsRect, Rect *resetColorsRect);
 extern pascal void				SwatchUpdate(RGBColor* color, void *clientData);
 
-
 extern pascal void				PatternsDraw(ControlHandle theControl,SInt16 thePart);
 extern pascal ControlPartCode	PatternsHitTest (ControlHandle control, Point where);
 extern pascal void 				PatternMenuDraw(int number, int x, int y, int width, int height, void* clientData);
 extern pascal void 				PatternMenuUpdate(int selection, void* clientData);
+
+extern pascal void				BackgroundPaneDraw(ControlHandle theControl,SInt16 thePart);
+extern pascal ControlPartCode	BackgroundPaneHitTest (ControlHandle control, Point where);
+
+extern pascal void				ToolbarWellDraw(ControlHandle theControl,SInt16 thePart);
+extern pascal ControlPartCode	ToolbarWellHitTest (ControlHandle control, Point where);
+
 
 // utility functions
 

@@ -1,31 +1,37 @@
 Remaining to be implemented (for 1.0):
-- fix background disabling problems when switching among windows (only happening to the first one created?)
 - garbage on right side when dragging diagonal gradient to huge size
 - when using click there it is, dragging save dialog causes it to dissapear
 
 Future stuff (planned version in parantheses):
-- split up picture into icons command (1.1/1.5)
-- anti-aliasing for line, oval tools (1.5/2.0)
-- possible simultaneous editing of icon and mask (goes with anti-aliasing) (1.5/2.0)
-- considering spinning off tools and previews into floating palettes (so there'll be one for all the open editors). (2.0+)
-- floater for color palette/picker and tool options (2.0+)
-- Effects menu with: Glow, Blur, Shadow, Make Folder Icon (1.1/1.5)
-- transformations (at least scaling, possibly others too). (1.5)
+- loading of file icons when dragged into side display/preview (1.1)
+- popup menu with magnifications
+- glypher integration (1.1)
 - improved icon browser, with finder-style list, options for icon sizes, etc. (1.1)
 - 8 bit selections (so that text can be anti-aliased, and dragged data can be placed into a proper selection). (1.1)
 - appearance sound support (1.1)
-- contextual menus (1.5)
 - proxy icons (1.1)
 - windows menu (with icons?) (1.1)
-- alternative view to icon display (eliminate 48x48 size, and display all the rest at the same time, can switch among layouts in preferences) (1.1)
 - screen grab command (1.1)
+- .tiff saving (1.1/1.5)
+- Effects menu with: Glow, Blur, Shadow, Make Folder Icon (1.1/1.5)
+- split up picture into icons command (1.1/1.5)
+- transformations (at least scaling, possibly others too). (1.5)
+- contextual menus (1.5)
 - insertion/saving into .ICL/.DLL files (1.5)
 - integration with glypher (1.5)
-- better icon browser (opened permanently, double click in list for new editor) (1.5)
-- loading of file icons when dragged into side display/preview (1.1)
+- anti-aliasing for line, oval tools (1.5/2.0)
+- simultaneous editing of icon and mask (goes with anti-aliasing) (1.5/2.0)
+- floaters everywhere (2.0)
 
 Changes:
-1.0d7
+1.0a1
+- miscellaneous bevels added
+- fixed crash that occured when app was put into background while adjustment dialog was in the front
+- UI tweaks in the adjustment dialog
+- windows now disable properly when placed in the background
+- fixed drawing glitch in the color swatch when it was pressed
+
+1.0d7 August 22, 1999
 - new icons have names by default
 - save into file command
 - polygon lasso tool (double click on lasso tool, or hold down option when using it)

@@ -55,7 +55,7 @@ icnsEditorClass::icnsEditorClass(icnsEditorClass* previousLastEditor)
 	// GetWRefCon function, and cast the result to a icnsEditorPtr. Note that we don't do
 	// this directly, rather we have the GetEditor and GetFrontEditor functions (see below)
 	
-	SetThemeWindowBackground(window,kThemeActiveDialogBackgroundBrush,true);
+	SetThemeWindowBackground(window,kThemeActiveDialogBackgroundBrush, true);
 	// we set the window background color to the standard background color
 	
 	err = CreateControls(); // we create the new control from the CNTL resources
@@ -84,7 +84,7 @@ icnsEditorClass::icnsEditorClass(icnsEditorClass* previousLastEditor)
 	// we step through the animations every few ticks (controlled by a constant), and this
 	// variable is used to see when the last update was, and when we need a new one
 	
-	err = NewGWorld(&selectionGW, 32, &largeIconRect, NULL, NULL, 0);
+	err = NewGWorldUnpadded(&selectionGW, 32, &largeIconRect, NULL);
 	if (err != noErr)
 	{
 		status |= outOfMemory;
@@ -168,13 +168,17 @@ OSStatus icnsEditorClass::CreateControls()
 								displayDrawUPP, // the display on the right side
 								previewDrawUPP, // the preview in the bottom right corner
 								placardDrawUPP,
-								patternsDrawUPP;
+								patternsDrawUPP,
+								backgroundPaneDrawUPP,
+								toolbarWellDrawUPP;
 	ControlUserPaneHitTestUPP	iconWellHitTestUPP, // hit testing counterparts for the controls
 								colorsHitTestUPP, // mentioned above
 								displayHitTestUPP,
 								previewHitTestUPP,
 								placardHitTestUPP,
-								patternsHitTestUPP;
+								patternsHitTestUPP,
+								backgroundPaneHitTestUPP,
+								toolbarWellHitTestUPP;
 	ControlUserPaneTrackingUPP	placardTrackingUPP,
 								previewTrackingUPP;
 	Str255						iconLabel, // text used for loading and setting of various
@@ -189,6 +193,23 @@ OSStatus icnsEditorClass::CreateControls()
 	
 	// creating the root control, all the other controls are children of this one.
 	err = CreateRootControl(window,&(controls.rootControl));
+	
+	controls.toolbarWell = GetNewControl(rToolbarWell, window);
+	if (controls.toolbarWell == NULL) return mFulErr;
+	toolbarWellDrawUPP = NewControlUserPaneDrawProc(ToolbarWellDraw); 
+	toolbarWellHitTestUPP = NewControlUserPaneHitTestProc(ToolbarWellHitTest);
+	
+	SetControlData(controls.toolbarWell, // we set the drawing function
+				   kControlNoPart,
+				   kControlUserPaneDrawProcTag,
+				   sizeof(toolbarWellDrawUPP),
+				   (Ptr) &toolbarWellDrawUPP);
+				  
+	SetControlData(controls.toolbarWell, // and hit test function
+				   kControlNoPart,
+				   kControlUserPaneHitTestProcTag, 
+				   sizeof(toolbarWellHitTestUPP),
+				   (Ptr) &toolbarWellHitTestUPP);
 	
 	// now we load the toolbar controls. we check if the loading was successful, and if it
 	// wasn't we return
@@ -470,6 +491,22 @@ OSStatus icnsEditorClass::CreateControls()
 				   kControlUserPaneHitTestProcTag, 
 				   sizeof(patternsHitTestUPP),
 				   (Ptr) &patternsHitTestUPP);
+				   
+	// the background pane
+	controls.backgroundPane = GetNewControl(rBackgroundPane, window);
+	if (controls.backgroundPane == NULL) return mFulErr;
+	backgroundPaneDrawUPP = NewControlUserPaneDrawProc(BackgroundPaneDraw);
+	backgroundPaneHitTestUPP = NewControlUserPaneHitTestProc(BackgroundPaneHitTest);
+	SetControlData(controls.backgroundPane,
+				   kControlNoPart,
+				   kControlUserPaneDrawProcTag, 
+				   sizeof(backgroundPaneDrawUPP),
+				   (Ptr) &backgroundPaneDrawUPP);
+	SetControlData(controls.backgroundPane,
+				   kControlNoPart,
+				   kControlUserPaneHitTestProcTag, 
+				   sizeof(backgroundPaneHitTestUPP),
+				   (Ptr) &backgroundPaneHitTestUPP);
 	
 	return err;
 }
@@ -940,6 +977,7 @@ void icnsEditorClass::Refresh(void)
 	
 	SAVEGWORLD; // saving the current gworld for restoring later
 	
+	
 	if ((FrontWindow() == window) &&				// if we're the front window
 		IsFrontProcess() &&							// and we're in the foreground
 		!IsControlActive(controls.rootControl))		// and we're deactivated
@@ -951,6 +989,7 @@ void icnsEditorClass::Refresh(void)
 	
 	BeginUpdate(window); // BeginUpdate means that the drawing is clipped to the regions which
 						 // has been marked as needed updates (by InvalRect, etc.)
+	
 	SetPort(window); // we're drawing in the window
 	
 	if (status & resized) // if we were resized
@@ -1347,9 +1386,10 @@ void icnsEditorClass::HandleDisplayClick(EventRecord* eventPtr)
 	OSErr			err; // used for checking for errors
 	
 	SAVEGWORLD;
-	SAVECOLORS;
+	
 	
 	SetPort(window); // we set the port to the window
+	SAVECOLORS;
 	
 	if (WaitMouseMoved(eventPtr->where)) // if the user moved the mouse while it as down,
 										 // we're dragging
@@ -1950,7 +1990,7 @@ void icnsEditorClass::EditIconInfo()
 	bool			dialogDone;
 	short			itemHit;
 	ControlHandle	IDField, IDMenu, nameField, sizeField,
-					sysHeapBox, purgeableBox, lockedBox, protectedBox, preloadBox; 
+					sysHeapBox, purgeableBox, lockedBox, protectedBox, preloadBox;
 	Str255			tempString, sizeSuffix;
 	long			temp, menuSelection;
 	MenuHandle		menu, popupMenu;
@@ -1967,7 +2007,11 @@ void icnsEditorClass::EditIconInfo()
 	GetDialogItemAsControl(infoDialog, iIDMenu, &IDMenu);
 	GetDialogItemAsControl(infoDialog, iIconNameField, &nameField);
 	GetDialogItemAsControl(infoDialog, iIconSizeField, &sizeField);
+	
+	//GetDialogItemAsControl(infoDialog, iFlagsContainer, &flagsContainer);
+	
 	GetDialogItemAsControl(infoDialog, iPurgeable, &purgeableBox);
+	//EmbedControl(purgeableBox, flagsContainer);
 	GetDialogItemAsControl(infoDialog, iPreload, &preloadBox);
 	GetDialogItemAsControl(infoDialog, iLocked, &lockedBox);
 	GetDialogItemAsControl(infoDialog, iProtected, &protectedBox);
@@ -2208,32 +2252,36 @@ pascal bool IconInfoDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short*
 void icnsEditorClass::Activate()
 {
 	//RgnHandle	oldClip, newClip;
-	SAVEGWORLD; // we must save the current port since we're going to be dealing with the window
+	//SAVEGWORLD; // we must save the current port since we're going to be dealing with the window
 	
 	//oldClip = NewRgn();
 	//newClip = NewRgn();
 	
-	SetPort(window); // set the window as the current port
+	//SetPort(window); // set the window as the current port
 	
 	//GetClip(oldClip);
+	//CopyRgn(oldClip, newClip);
 	//SetEmptyRgn(newClip);
+	//SubtractControlRegions(newClip);
 	//SetClip(newClip);
 	
-	//SetThemeWindowBackground(window,kThemeActiveDialogBackgroundBrush,true);
+	
+	
+	SetThemeWindowBackground(window,kThemeBrushDialogBackgroundActive,false);
 	
 	ActivateControl(controls.rootControl); // activate the control
 	
 	//SetClip(oldClip);
-	//DisposRgn(oldClip);
+	//DisposeRgn(oldClip);
 	//DisposeRgn(newClip);
 	
-	InvalRect(&window->portRect); // and invalidate the whole window so that it can redrawn
+	//InvalRect(&window->portRect); // and invalidate the whole window so that it can redrawn
 	
 	//Draw1Control(controls.rootControl);
 	
 	//Refresh();
 	
-	RESTOREGWORLD; // and now we can restore the current gworld
+	//RESTOREGWORLD; // and now we can restore the current gworld
 }
 
 // __________________________________________________________________________________________
@@ -2246,32 +2294,120 @@ void icnsEditorClass::Deactivate()
 {
 	//RgnHandle	oldClip, newClip;
 	// exactly the same as the function above
-	SAVEGWORLD;
+	//SAVEGWORLD;
 	
 	//oldClip = NewRgn();
 	//newClip = NewRgn();
 	
-	SetPort(window); // set the window as the current port
+	//SetPort(window); // set the window as the current port
 	
 	//GetClip(oldClip);
+	//CopyRgn(oldClip, newClip);
 	//SetEmptyRgn(newClip);
+	//SubtractControlRegions(newClip);
 	//SetClip(newClip);
 	
-	//SetThemeWindowBackground(window,kThemeInactiveDialogBackgroundBrush,true);
+	SetThemeWindowBackground(window,kThemeBrushDialogBackgroundInactive,false);
 	
 	DeactivateControl(controls.rootControl);
 	
 	//SetClip(oldClip);
-	//DisposRgn(oldClip);
+	//DisposeRgn(oldClip);
 	//DisposeRgn(newClip);
 	
-	InvalRect(&window->portRect);
+	//InvalRect(&window->portRect);
 	
 	//Draw1Control(controls.rootControl);
 	
 	//Refresh();
 	
-	RESTOREGWORLD;
+	//RESTOREGWORLD;
+}
+
+RgnHandle icnsEditorClass::GetControlsRegion(void)
+{
+	RgnHandle rgn, temp, temp2;
+	
+	rgn = NewRgn();
+	temp = NewRgn();
+	
+	SetEmptyRgn(rgn);
+
+	SetRectRgn(temp,
+			   (**controls.toolbar.marquee).contrlRect.left,
+			   (**controls.toolbar.marquee).contrlRect.top,
+			   (**controls.toolbar.text).contrlRect.right,
+			   (**controls.toolbar.text).contrlRect.bottom);
+	InsetRgn(temp, -1, -1);
+	temp2 = NewRgn();
+	SetRectRgn(temp2,
+			   (**temp).rgnBBox.left,
+			   (**temp).rgnBBox.bottom - 1,
+			   (**temp).rgnBBox.left + 1,
+			   (**temp).rgnBBox.bottom);
+	DiffRgn(temp, temp2, temp);
+	SetRectRgn(temp2,
+			   (**temp).rgnBBox.right - 1,
+			   (**temp).rgnBBox.top,
+			   (**temp).rgnBBox.right,
+			   (**temp).rgnBBox.top + 1);
+	DiffRgn(temp, temp2, temp);
+	DisposeRgn(temp2);
+	UnionRgn(temp, rgn, rgn);
+	
+	RectRgn(temp, &(**controls.iconEditWell).contrlRect);
+	InsetRgn(temp, -2, -2);
+	temp2 = NewRgn();
+	SetRectRgn(temp2,
+			   (**temp).rgnBBox.left,
+			   (**temp).rgnBBox.bottom - 1,
+			   (**temp).rgnBBox.left + 1,
+			   (**temp).rgnBBox.bottom);
+	DiffRgn(temp, temp2, temp);
+	SetRectRgn(temp2,
+			   (**temp).rgnBBox.right - 1,
+			   (**temp).rgnBBox.top,
+			   (**temp).rgnBBox.right,
+			   (**temp).rgnBBox.top + 1);
+	DiffRgn(temp, temp2, temp);
+	DisposeRgn(temp2);
+	UnionRgn(temp, rgn, rgn);
+	
+	RectRgn(temp, &(**controls.display.iconDisplay).contrlRect); InsetRgn(temp, -2, -2); UnionRgn(temp, rgn, rgn);
+	RectRgn(temp, &(**controls.display.iconPopup).contrlRect); UnionRgn(temp, rgn, rgn);
+	RectRgn(temp, &(**controls.display.iconLabel).contrlRect); UnionRgn(temp, rgn, rgn);
+	RectRgn(temp, &(**controls.display.maskDisplay).contrlRect); InsetRgn(temp, -2, -2); UnionRgn(temp, rgn, rgn);
+	RectRgn(temp, &(**controls.display.maskPopup).contrlRect); UnionRgn(temp, rgn, rgn);
+	RectRgn(temp, &(**controls.display.maskLabel).contrlRect); UnionRgn(temp, rgn, rgn);
+	RectRgn(temp, &(**controls.display.preview).contrlRect); InsetRgn(temp, -1, -1); UnionRgn(temp, rgn, rgn);
+	RectRgn(temp, &(**controls.display.previewLabel).contrlRect); UnionRgn(temp, rgn, rgn);
+	
+	RectRgn(temp, &(**controls.zoomPlacard.control).contrlRect); UnionRgn(temp, rgn, rgn);
+	RectRgn(temp, &(**controls.infoPlacard.control).contrlRect); UnionRgn(temp, rgn, rgn);
+	
+	RectRgn(temp, &(**controls.colorSwatch.control).contrlRect); InsetRgn(temp, -1, -1); UnionRgn(temp, rgn, rgn);
+	RectRgn(temp, &(**controls.patterns).contrlRect);
+	InsetRgn(temp, -2, -2);
+	temp2 = NewRgn();
+	SetRectRgn(temp2,
+			   (**temp).rgnBBox.left,
+			   (**temp).rgnBBox.bottom - 1,
+			   (**temp).rgnBBox.left + 1,
+			   (**temp).rgnBBox.bottom);
+	DiffRgn(temp, temp2, temp);
+	SetRectRgn(temp2,
+			   (**temp).rgnBBox.right - 1,
+			   (**temp).rgnBBox.top,
+			   (**temp).rgnBBox.right,
+			   (**temp).rgnBBox.top + 1);
+	DiffRgn(temp, temp2, temp);
+	DisposeRgn(temp2);
+	
+	UnionRgn(temp, rgn, rgn);
+	
+	DisposeRgn(temp);
+	
+	return rgn;
 }
 
 // __________________________________________________________________________________________
@@ -2384,6 +2520,11 @@ void icnsEditorClass::RepositionControls()
 	HideControl(controls.rootControl);
 	// hiding the root control hides all of them, so that they can be repositioned without
 	// flashes or leaving trails behind
+	
+	// background pane is most of the window, except for the bottom
+	h = windowRect.right + 2;
+	v = windowRect.bottom - 13;
+	SizeControl(controls.backgroundPane, h, v);
 	
 	// the zoom display placard goes in the bottom left corner
 	controlRect = ((**(controls.zoomPlacard.control)).contrlRect);
@@ -2841,7 +2982,8 @@ void icnsEditorClass::HandleText(void)
 	MagnifySelectionRgn();
 	
 	UnlockPixels(selectionPix);
-	UpdateGWorld(&selectionGW, (**currentPix).pixelSize, &tempRect, (**currentPix).pmTable, NULL, 0);
+	DisposeGWorld(selectionGW);
+	NewGWorldUnpadded(&selectionGW, (**currentPix).pixelSize, &tempRect, (**currentPix).pmTable);
 	selectionPix = GetGWorldPixMap(selectionGW);
 	LockPixels(selectionPix);
 	SetGWorld(selectionGW, NULL);
@@ -3790,6 +3932,9 @@ bool icnsEditorClass::HandleMove(void)
 			x, y, // current location
 			startX, startY; // original location
 	
+	if (EmptyRgn(selectionRgn))
+		return false;
+	
 	if (!(status & selectionFloated)) 
 		FloatSelection(); // we must float the selection in order to be able to move it
 		
@@ -3904,12 +4049,11 @@ void icnsEditorClass::FloatSelection(void)
 	
 	// we need to update the selection contents with the new dimensions
 	UnlockPixels(selectionPix);
-	UpdateGWorld(&selectionGW,
+	DisposeGWorld(selectionGW);
+	NewGWorldUnpadded(&selectionGW,
 				(**currentPix).pixelSize,
 				&(**selectionRgn).rgnBBox,
-				(**currentPix).pmTable,
-				NULL,
-				0);
+				(**currentPix).pmTable);
 	selectionPix = GetGWorldPixMap(selectionGW);
 	LockPixels(selectionPix);
 	
@@ -5761,6 +5905,8 @@ void icnsEditorClass::InsertFromPicture(PicHandle srcPic, GWorldPtr targetGW, in
 		picRect = targetGW->portRect;
 	else // otherwise the size is left alone
 		picRect = (**srcPic).picFrame;
+		
+	OffsetRect(&picRect, -picRect.left, -picRect.top);
 	
 	if (options & insertCentered)
 		OffsetRect(&picRect,
@@ -5782,12 +5928,10 @@ void icnsEditorClass::InsertFromPicture(PicHandle srcPic, GWorldPtr targetGW, in
 		// picture we are inserting
 		UnlockPixels(selectionPix);
 		DisposeGWorld(selectionGW);
-		NewGWorld(&selectionGW,
+		NewGWorldUnpadded(&selectionGW,
 				 (**currentPix).pixelSize,
 				 &picRect,
-				 (**currentPix).pmTable,
-				 NULL,
-				 0);
+				 (**currentPix).pmTable);
 		selectionPix = GetGWorldPixMap(selectionGW);
 		LockPixels(selectionPix);
 		
@@ -5810,6 +5954,8 @@ void icnsEditorClass::InsertFromPicture(PicHandle srcPic, GWorldPtr targetGW, in
 	else // otherwise we just draw it in
 	{
 		SetGWorld(targetGW, NULL);
+		ForeColor(blackColor);
+		BackColor(whiteColor);
 		if ((**statics.preferences.data).flags & prefsDither)
 			DrawPictureDithered(srcPic, &picRect);
 		else
@@ -6284,7 +6430,7 @@ pascal bool StandardEditorDialogFilter(DialogPtr dialog, EventRecord* eventPtr, 
 	
 	switch (eventPtr->what)
 	{
-		case osEvt:
+		//case osEvt:
 		case activateEvt:
 			GetPort(&oldPort);
 			SetPort(dialog);

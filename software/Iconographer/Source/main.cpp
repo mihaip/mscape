@@ -43,7 +43,9 @@ void main(void)
 
 void Initialize()
 {
+#ifdef EXPIRES
 	DateTimeRec		theDate; // will be used to store the current date
+#endif
 	OSErr			err; // used to check if functions returned errors or not
 	
 	gIsDone = false; // we're not ready to quit...
@@ -58,12 +60,14 @@ void Initialize()
 		CleanUp();
 	}
 	
+#ifdef EXPIRES	
 	GetTime(&theDate); // and if we haven't expired
 	if (theDate.month >= 9 && theDate.day >= 1 && theDate.year >= 1999)
 	{
 		DoError(rStdErrors, eExpired);
 		gIsDone = true;
 	}
+#endif
 
 	err = RegisterAppearanceClient(); // and if we can intialize the appearance manager
 	if (err != noErr)
@@ -1504,7 +1508,7 @@ void OpenICO(FSSpec *fileToOpen)
 
 void OpenTIFF(FSSpec *fileToOpen)
 {
-	long			ID;
+	long			ID = -16455;
 	OSStatus		err1 = noErr, err2 = noErr;
 	bool			needToDispose = false;
 	
@@ -1626,8 +1630,8 @@ bool CloseIcon(int flags)
 
 OSErr SaveFile(FSSpec* fileSpec)
 {
-	//if (NavServicesAvailable())
-	if (0)
+	if (NavServicesAvailable())
+	//if (0)
 	{
 		NavDialogOptions	dialogOptions;
 		NavReplyRecord		reply;
@@ -1682,7 +1686,7 @@ OSErr SaveFile(FSSpec* fileSpec)
 	else
 	{
 		Str255	prompt;
-		Point	thePt;
+		Point	thePt = {-1, -1};
 		StandardFileReply reply;
 		ModalFilterYDUPP	modalFilterUPP;
 		
