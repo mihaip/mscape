@@ -49,8 +49,14 @@ const static int kAboutPic = 2;
 
 const static int kInsert = 1;
 const static int kCancel = 2;
-const static int kIDField = 3;
-const static int kClipboardPreview = 4;
+const static int kSmallIconPreview = 3;
+const static int kSmallMaskPreview = 4;
+const static int kLargeIconPreview = 5;
+const static int kLargeMaskPreview = 6;
+const static int kTypesPopup = 7;
+const static int kIconPopup = 8;
+const static int kIDField = 9;
+const static int kIncludeOldStyle = 10;
 
 // --- Type Definitions -- //
 
@@ -83,7 +89,7 @@ void		DrawImageWell(Rect bounds);
 OSStatus	GetSchemeNav(void);
 OSStatus	GetSchemeOld(void);
 void		GeticnsID(void);
-void		clip2icns(short icnsID, Str255 icnsName);
+void		clip2icns(short icnsID, Str255 icnsName, bool includeOldStyle);
 void 		CloseScheme(void);
 void		HandleEditChoice(int item);
 

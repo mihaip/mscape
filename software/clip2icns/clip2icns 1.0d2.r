@@ -1,4 +1,151 @@
-/* Resource fork of software/clip2icns/clip2icns.Âµ.rsrc */
+/* Resource fork of software/clip2icns/clip2icns 1.0d2 */
+resource 'DITL' (3000, "Basic Alert") {
+	{	/* array DITLarray: 2 elements */
+		/* [1] */
+		{66, 318, 86, 376},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{8, 58, 60, 376},
+		StaticText {
+			disabled,
+			"^0 ^1."
+		}
+	}
+};
+
+resource 'DITL' (129) {
+	{	/* array DITLarray: 15 elements */
+		/* [1] */
+		{185, 206, 205, 264},
+		Button {
+			enabled,
+			"Insert"
+		},
+		/* [2] */
+		{185, 136, 205, 194},
+		Button {
+			enabled,
+			"Cancel"
+		},
+		/* [3] */
+		{28, 32, 44, 48},
+		UserItem {
+			disabled
+		},
+		/* [4] */
+		{28, 97, 44, 113},
+		UserItem {
+			disabled
+		},
+		/* [5] */
+		{20, 154, 52, 186},
+		UserItem {
+			disabled
+		},
+		/* [6] */
+		{20, 222, 52, 254},
+		UserItem {
+			disabled
+		},
+		/* [7] */
+		{79, 10, 99, 260},
+		Control {
+			enabled,
+			200
+		},
+		/* [8] */
+		{105, 10, 125, 260},
+		Control {
+			enabled,
+			201
+		},
+		/* [9] */
+		{136, 210, 152, 260},
+		EditText {
+			enabled,
+			"-20801"
+		},
+		/* [10] */
+		{157, 10, 178, 261},
+		CheckBox {
+			enabled,
+			"Include old-style resources (if any)"
+		},
+		/* [11] */
+		{53, 16, 65, 64},
+		StaticText {
+			disabled,
+			"Small Icon"
+		},
+		/* [12] */
+		{53, 79, 65, 132},
+		StaticText {
+			disabled,
+			"Small Mask"
+		},
+		/* [13] */
+		{54, 146, 66, 194},
+		StaticText {
+			disabled,
+			"Large Icon"
+		},
+		/* [14] */
+		{54, 212, 66, 265},
+		StaticText {
+			disabled,
+			"Large Mask"
+		},
+		/* [15] */
+		{135, 30, 150, 48},
+		StaticText {
+			disabled,
+			"ID:"
+		}
+	}
+};
+
+resource 'DITL' (128) {
+	{	/* array DITLarray: 3 elements */
+		/* [1] */
+		{180, 210, 200, 268},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{10, 10, 125, 270},
+		UserItem {
+			disabled
+		},
+		/* [3] */
+		{125, 10, 175, 289},
+		StaticText {
+			disabled,
+			"by Mihai Parparita\nmihai@mscape.com\nhttp"
+			"://cafe.ambrosiasw.com/gui-central/"
+		}
+	}
+};
+
+resource 'ALRT' (3000) {
+	{40, 40, 138, 421},
+	3000,
+	{	/* array: 4 elements */
+		/* [1] */
+		OK, visible, sound1,
+		/* [2] */
+		OK, visible, sound1,
+		/* [3] */
+		OK, visible, sound1,
+		/* [4] */
+		OK, visible, sound1
+	},
+	alertPositionMainScreen
+};
+
 resource 'MENU' (128) {
 	128,
 	textMenuProc,
@@ -2253,120 +2400,6 @@ data 'c2ic' (0) {
 	$"7270 6172 6974 61"                                  /* rparita */
 };
 
-resource 'DITL' (129) {
-	{	/* array DITLarray: 15 elements */
-		/* [1] */
-		{185, 206, 205, 264},
-		Button {
-			enabled,
-			"Insert"
-		},
-		/* [2] */
-		{185, 136, 205, 194},
-		Button {
-			enabled,
-			"Cancel"
-		},
-		/* [3] */
-		{28, 32, 44, 48},
-		UserItem {
-			disabled
-		},
-		/* [4] */
-		{28, 97, 44, 113},
-		UserItem {
-			disabled
-		},
-		/* [5] */
-		{20, 154, 52, 186},
-		UserItem {
-			disabled
-		},
-		/* [6] */
-		{20, 222, 52, 254},
-		UserItem {
-			disabled
-		},
-		/* [7] */
-		{79, 10, 99, 260},
-		Control {
-			enabled,
-			200
-		},
-		/* [8] */
-		{105, 10, 125, 260},
-		Control {
-			enabled,
-			201
-		},
-		/* [9] */
-		{136, 210, 152, 260},
-		EditText {
-			enabled,
-			"-20801"
-		},
-		/* [10] */
-		{157, 10, 178, 261},
-		CheckBox {
-			enabled,
-			"Include old-style resources (if any)"
-		},
-		/* [11] */
-		{53, 16, 65, 64},
-		StaticText {
-			disabled,
-			"Small Icon"
-		},
-		/* [12] */
-		{53, 79, 65, 132},
-		StaticText {
-			disabled,
-			"Small Mask"
-		},
-		/* [13] */
-		{54, 146, 66, 194},
-		StaticText {
-			disabled,
-			"Large Icon"
-		},
-		/* [14] */
-		{54, 212, 66, 265},
-		StaticText {
-			disabled,
-			"Large Mask"
-		},
-		/* [15] */
-		{135, 30, 150, 48},
-		StaticText {
-			disabled,
-			"ID:"
-		}
-	}
-};
-
-resource 'DITL' (128) {
-	{	/* array DITLarray: 3 elements */
-		/* [1] */
-		{180, 210, 200, 268},
-		Button {
-			enabled,
-			"OK"
-		},
-		/* [2] */
-		{10, 10, 125, 270},
-		UserItem {
-			disabled
-		},
-		/* [3] */
-		{125, 10, 175, 289},
-		StaticText {
-			disabled,
-			"by Mihai Parparita\nmihai@mscape.com\nhttp"
-			"://cafe.ambrosiasw.com/gui-central/"
-		}
-	}
-};
-
 data 'clut' (128) {
 	$"0000 0008 8000 00FF 0000 FF00 FF00 FF00"            /* ....€..ÿ..ÿ.ÿ.ÿ. */
 	$"0000 FE00 FE00 FE00 0000 FD00 FD00 FD00"            /* ..þ.þ.þ...ý.ý.ý. */
@@ -3500,5 +3533,43 @@ data 'ictb' (129) {
 	$"0000 0000 FFFF FFFF FFFF 0000 0647 656E"            /* ....ÿÿÿÿÿÿ...Gen */
 	$"6576 6106 4765 6E65 7661 0647 656E 6576"            /* eva.Geneva.Genev */
 	$"6106 4765 6E65 7661"                                /* a.Geneva */
+};
+
+resource 'cfrg' (0) {
+	{	/* array memberArray: 1 elements */
+		/* [1] */
+		kPowerPCCFragArch,
+		kIsCompleteCFrag,
+		kNoVersionNum,
+		kNoVersionNum,
+		131072,
+		kNoAppSubFolder,
+		kApplicationCFrag,
+		kDataForkCFragLocator,
+		kZeroOffset,
+		kSegIDZero,
+		"clip2icns 1.0d2"
+	}
+};
+
+resource 'SIZE' (-1) {
+	reserved,
+	acceptSuspendResumeEvents,
+	reserved,
+	canBackground,
+	multiFinderAware,
+	backgroundAndForeground,
+	dontGetFrontClicks,
+	ignoreChildDiedEvents,
+	is32BitCompatible,
+	isHighLevelEventAware,
+	onlyLocalHLEvents,
+	notStationeryAware,
+	dontUseTextEditServices,
+	notDisplayManagerAware,
+	reserved,
+	reserved,
+	1048576,
+	10485760
 };
 
