@@ -51,6 +51,8 @@ const static int kCancel = 2;
 const static int kTypesPopup = 3;
 const static int kcicnPopup = 4;
 const static int kIDField = 5;
+const static int kClipboardPreview = 7;
+const static int kCicnPreview = 8;
 
 // --- Type Definitions -- //
 typedef struct tResults
@@ -91,6 +93,7 @@ void		DoMenuCommand(long menuResult);
 void		HandleAppleChoice(int item);
 void		ShowAboutBox(void);
 void		HandleFileChoice(int item);
+void		DrawImageWell(Rect bounds);
 void		InsertCicn(void);
 void		GetcicnID(void);
 void		clip2cicn(short cicnID);

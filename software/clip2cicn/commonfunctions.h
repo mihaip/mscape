@@ -32,4 +32,5 @@ extern void CopyString(Str255 dst, const Str255 src);
 extern void BlockFill(unsigned char *block, int fill, int size);
 extern GrafPtr CreateGrafPort(Rect* bounds);
 extern void DisposeGrafPort(GrafPtr doomedPort );
+extern void MakeTargetRect(Rect src, Rect* target);
 #endif

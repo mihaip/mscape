@@ -409,3 +409,39 @@ void DisposeGrafPort(GrafPtr doomedPort )		/* Originally written by Forrest Tana
 	DisposePtr( (Ptr)doomedPort );
 }
 
+void MakeTargetRect(Rect src, Rect* target)
+{
+	float scalingFactor;
+
+	
+	if ((target->bottom - target->top) < (src.bottom - src.top) &&
+		(target->right - target->left) < (src.right - src.left))
+	{
+		OffsetRect(target, src.left, src.top);
+		OffsetRect(target, ((src.right - src.left) - (target->right - target->left))/2, ((src.bottom - src.top) - (target->bottom - target->top))/2);
+		return;
+	}
+	if ((target->bottom - target->top) > (target->right - target->left))
+	{
+		scalingFactor = (float)(src.bottom - src.top)/(float)(target->bottom - target->top);
+		target->top *= scalingFactor;
+		target->left *= scalingFactor;
+		target->bottom *= scalingFactor;
+		target->right *= scalingFactor;
+		OffsetRect(target, src.left, src.top);
+		OffsetRect(target, ((src.right - src.left) - (target->right - target->left))/2, 0);
+		return;
+	}
+	else
+	{
+		scalingFactor = (float)(src.right - src.left)/(float)(target->right - target->left);
+		target->top *= scalingFactor;
+		target->left *= scalingFactor;
+		target->bottom *= scalingFactor;
+		target->right *= scalingFactor;
+		OffsetRect(target, src.left, src.top);
+		OffsetRect(target, 0, ((src.bottom - src.top) - (target->bottom - target->top))/2);
+		return;
+	}
+}
+

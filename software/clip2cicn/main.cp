@@ -13,16 +13,20 @@ void main(void)
 void Initialize()
 {
 	DateTimeRec		theDate;
+	StringHandle	doesExpire;
+	
 	InitToolBox();
 	
 	GetTime(&theDate);
-	
-	if (theDate.month >= 7 && theDate.day >= 7 && theDate.year >= 1998)
+	doesExpire = GetString( 128 );
+	if (EqualString(*doesExpire, "\p1", true, true))
 	{
-		DisplayAlert("This beta of clip2cicn expired on July 1, 1998.", "Please go to http://cafe.ambrosiasw.com/gui-central/ to get a new version");
-		ExitApplication();
+		if (theDate.month >= 7 && theDate.day >= 14 && theDate.year >= 1998)
+		{
+			DisplayAlert("This beta of clip2cicn expired on July 14, 1998.", "Please go to http://cafe.ambrosiasw.com/gui-central/ to get a new version");
+			ExitApplication();
+		}
 	}
-	
 	InitMenuBar();
 
 	
@@ -463,6 +467,68 @@ void InsertCicn()
 	
 }
 
+void DrawImageWell(Rect bounds)
+{
+	RGBColor		currentForeColor;
+	CTabHandle		schemeColors;
+	
+	
+	GetForeColor(&currentForeColor);
+	schemeColors = GetCTable(-14336);
+	
+	ForeColor(whiteColor);
+	PaintRect(&bounds);
+	
+	RGBForeColor(&(**schemeColors).ctTable[0].rgb);
+	MoveTo(bounds.left - 1, bounds.bottom);
+	LineTo(bounds.left - 1, bounds.top - 1);
+	LineTo(bounds.right, bounds.top - 1);
+	
+	RGBForeColor(&(**schemeColors).ctTable[2].rgb);
+	LineTo(bounds.right, bounds.bottom);
+	LineTo(bounds.left - 1, bounds.bottom);
+
+	RGBForeColor(&(**schemeColors).ctTable[3].rgb);
+	MoveTo(bounds.left - 2, bounds.bottom + 1);
+	LineTo(bounds.right + 1, bounds.bottom + 1);
+	LineTo(bounds.right + 1, bounds.top);
+	
+	RGBForeColor(&(**schemeColors).ctTable[4].rgb);
+	MoveTo(bounds.left-2, bounds.bottom);
+	LineTo(bounds.left-2, bounds.top-2);
+	LineTo(bounds.right, bounds.top-2);
+	
+	RGBForeColor(&currentForeColor);
+}
+
+#define PreviewCicn();\
+	GetDialogItem(insertCicn, kIDField, &itemType, &item, &itemRect);\
+	GetDialogItemText(item, IDasString);\
+	StringToNum(IDasString, &ID);\
+	scheme = FSpOpenResFile(&schemeSpec, fsRdWrPerm);\
+	UseResFile(scheme);\
+	currentCicn = GetCIcon(ID);\
+	GetForeColor(&currentForeColor);\
+	ForeColor(whiteColor);\
+	PaintRect(&cicnRect);\
+	RGBForeColor(&currentForeColor);\
+	if (currentCicn != NULL)\
+	{\
+		targetRect = (**currentCicn).iconPMap.bounds;\
+		OffsetRect(&targetRect, -targetRect.left, -targetRect.top);\
+		MakeTargetRect(cicnRect, &targetRect);\
+		PlotCIcon(&targetRect, currentCicn);\
+		DisposeCIcon(currentCicn);\
+	}\
+	else\
+	{\
+		MoveTo(cicnRect.left + ((cicnRect.right - cicnRect.left) - StringWidth("\pNot aavailable"))/2, cicnRect.bottom/2 + 16);\
+		DrawString("\pNot available");\
+	}\
+	CloseResFile(scheme);\
+	//FSClose(scheme);\
+	UseResFile(app);\
+
 void GetcicnID()
 {
 	DialogPtr			insertCicn;
@@ -475,10 +541,18 @@ void GetcicnID()
 	short				itemType;
 	int					selectedCicn, i, selectedType;
 	Str255				menuItemText;
-	Rect				popupRect = {40, 10, 60, 205};
+	Rect				popupRect;
 	int					currentMenuID = 132;
+	Rect				clipboardRect;
+	Rect				cicnRect;
+	Handle				pic;
+	long				ignored;
+	Rect				targetRect;
+	short				app, scheme;
+	CIconHandle			currentCicn;
+	RGBColor			currentForeColor;
 	
-	
+	app = CurResFile();
 		
 	insertCicn = GetNewDialog (insertCicnID, nil, (WindowPtr)-1L);
 	SetPort( insertCicn);
@@ -486,7 +560,25 @@ void GetcicnID()
 	SetDialogCancelItem( insertCicn, kCancel );
 	SelectDialogItemText( insertCicn, kIDField, 0, 32767);
 	
+	GetDialogItem(insertCicn, kcicnPopup, &itemType, &item, &popupRect);
+	
+	GetDialogItem(insertCicn, kClipboardPreview, &itemType, &item, &clipboardRect);
+	GetDialogItem(insertCicn, kCicnPreview, &itemType, &item, &cicnRect);
+	DrawImageWell(clipboardRect);
+	DrawImageWell(cicnRect);
+	
+	pic = NewHandle (0);
+	GetScrap( pic, 'PICT', &ignored );
+	targetRect = (*(PicHandle)pic)->picFrame;
+	OffsetRect(&targetRect, -targetRect.left, -targetRect.top);
+	MakeTargetRect(clipboardRect, &targetRect);
+	DrawPicture((PicHandle)pic, &targetRect);
+	
+	PreviewCicn();
+	
+	
 	ShowWindow( insertCicn );
+
 	dialogDone = false;
 	while (!dialogDone)
 	{
@@ -539,6 +631,8 @@ void GetcicnID()
 				SetDialogItemText(item, &IDasString[i]);
 				SelectDialogItemText( insertCicn, kIDField, 0, 32767);
 				
+				PreviewCicn();
+				
 				break;
 			case kcicnPopup:
 				GetDialogItem(insertCicn, kcicnPopup, &itemType, &item, &itemRect);
@@ -552,6 +646,9 @@ void GetcicnID()
 				GetDialogItem(insertCicn, kIDField, &itemType, &item, &itemRect);
 				SetDialogItemText(item, &IDasString[i]);
 				SelectDialogItemText( insertCicn, kIDField, 0, 32767);
+				
+				PreviewCicn();
+
 				break;
 				
 				
@@ -559,6 +656,8 @@ void GetcicnID()
 		
 		
 	}
+	CloseResFile(scheme);
+	//FSClose(scheme);
 	DisposeDialog(insertCicn);
 	SetGWorld(startupPort, startupDevice);
 }
@@ -573,10 +672,8 @@ void clip2cicn(short cicnID)
 	PictInfo		picInfo, pixMapInfo;
 	long			colorTableSize;
 	CTabHandle		colorTable;
-	GWorldPtr		picGWorld, bwGWorld, maskGWorld;
-	PixMapHandle	picPixMap, bwPixMap, maskPixMap;
-	GrafPtr		mask;
-	RGBColor	seedColor;
+	GWorldPtr		picGWorld, bwGWorld, maskGWorld, tempGWorld;
+	PixMapHandle	picPixMap, bwPixMap, maskPixMap, tempPixMap;
 	long			picSize;
 	long			offset;
 	Handle			oldCicn;
@@ -611,45 +708,75 @@ void clip2cicn(short cicnID)
 	picPixMap = GetGWorldPixMap(picGWorld);
 	LockPixels(picPixMap);
 	
+
+	/* first we set all the colors in the cicn except for white to black (to get a sillouete of the item)
+	   then we do a CalcMask on the item in order to get the proper mask */
+	
+	NewGWorld(&maskGWorld, 1, &picInfo.sourceRect, NULL, NULL, 0);
+	SetGWorld(maskGWorld, NULL);
+	EraseRect(&qd.thePort->portRect);
+	maskPixMap = GetGWorldPixMap(maskGWorld);
+	LockPixels(maskPixMap);
+	
+	NewGWorld(&tempGWorld, 8, &picInfo.sourceRect, colorTable, NULL, 0);
+	SetGWorld(tempGWorld, NULL);
+	EraseRect(&qd.thePort->portRect);
+	DrawPicture((PicHandle)pic, &picInfo.sourceRect);
+	tempPixMap = GetGWorldPixMap(tempGWorld);
+	LockPixels(tempPixMap);
+	
+	NewGWorld(&bwGWorld, 1, &picInfo.sourceRect, NULL, NULL, 0);
+	SetGWorld(bwGWorld, NULL);
+	EraseRect(&qd.thePort->portRect);
+	bwPixMap = GetGWorldPixMap(bwGWorld);
+	LockPixels(bwPixMap);   
+	
+	for (int i= 0; i < (**(**tempPixMap).pmTable).ctSize + 1; i++)
+	{
+		if ((**(**tempPixMap).pmTable).ctTable[i].rgb.red != 0xFFFF &&
+		    (**(**tempPixMap).pmTable).ctTable[i].rgb.green != 0xFFFF &&
+		    (**(**tempPixMap).pmTable).ctTable[i].rgb.blue != 0xFFFF)
+		{
+			(**(**tempPixMap).pmTable).ctTable[i].rgb.red = (**(**tempPixMap).pmTable).ctTable[i].rgb.green = (**(**tempPixMap).pmTable).ctTable[i].rgb.blue = 0;
+		}    
+	}
+	
+	CopyBits( (BitMap *)*tempPixMap,
+					 (BitMap *)*bwPixMap,
+					 &picInfo.sourceRect,
+					 &picInfo.sourceRect,
+					 srcCopy,
+					 NULL);
+	
+	CalcMask((**bwPixMap).baseAddr,
+	         (**maskPixMap).baseAddr,
+	         (**bwPixMap).rowBytes & 0x7FFF,
+	         (**maskPixMap).rowBytes & 0x7FFF,
+	         ((**maskPixMap).bounds.bottom - (**maskPixMap).bounds.top),
+	         ((**maskPixMap).rowBytes & 0x7FFF)/2);
+			 
+	UnlockPixels(bwPixMap);
+	DisposeGWorld(bwGWorld);
+	UnlockPixels(tempPixMap);
+	DisposeGWorld(tempGWorld);
+	
+
 	// draw the pict in a 1-bit GWorld, to be used for the black and white version of the cicn
 	NewGWorld(&bwGWorld, 1, &picInfo.sourceRect, NULL, NULL, 0);
 	SetGWorld(bwGWorld, NULL);
 	EraseRect(&qd.thePort->portRect);
 	DrawPicture((PicHandle)pic, &picInfo.sourceRect);
 	bwPixMap = GetGWorldPixMap(bwGWorld);
-	LockPixels(bwPixMap);
-	
-	// use CalcCMask to get the mask of the cicn
-	NewGWorld(&maskGWorld, 1, &picInfo.sourceRect, NULL, NULL, 0);
-	SetGWorld(maskGWorld, NULL);
-	EraseRect(&qd.thePort->portRect);
-	maskPixMap = GetGWorldPixMap(maskGWorld);
-	LockPixels(maskPixMap);
-
-	mask = CreateGrafPort(&picInfo.sourceRect);
-	
-	seedColor.red = seedColor.green = seedColor.blue = 0xFFFF;
-
-	CalcCMask((BitMap *)*picPixMap,
-			  &mask->portBits,
-			  &picInfo.sourceRect,
-			  &picInfo.sourceRect,
-			  &seedColor,
-			  0,
-			  0L);
-	
-	CopyBits(&mask->portBits,
-			 (BitMap *)*maskPixMap,
-			 &picInfo.sourceRect,
-			 &picInfo.sourceRect,
-			 notSrcCopy, // invert
-			 NULL);
-	
-	DisposeGrafPort(mask);  
+	LockPixels(bwPixMap);  
 
 	SetGWorld(startupPort, startupDevice);
 
-
+	CopyBits((BitMap *)*bwPixMap,
+			 &qd.thePort->portBits,
+			 &picInfo.sourceRect,
+			 &picInfo.sourceRect,
+			 srcCopy,
+			 NULL);
 			 
 	picSize =  ((**picPixMap).rowBytes & 0x7FFF) * ((**picPixMap).bounds.bottom - (**picPixMap).bounds.top) - 2;
 	GetPixMapInfo(picPixMap, &pixMapInfo, returnColorTable, 256, popularMethod, 0);
@@ -689,13 +816,14 @@ void clip2cicn(short cicnID)
 	(**cicn).iconPMap.pixelType				= 0;
 	(**cicn).iconPMap.cmpCount				= 1;
 	(**cicn).iconPMap.cmpSize				= pixMapInfo.depth;
-	(**cicn).iconPMap.pmTable				= colorTable;
+	(**cicn).iconPMap.pmTable 				= colorTable;
 
 	/* Set the picture pixmap to the iconData field. */
 	
 	(**cicn).iconData = (Handle)picPixMap;
 	
 	/* Resize the 'cicn' for the bitmap image, mask, color table and color image */
+	
 	colorTableSize = sizeof(ColorTable) + ((**((**cicn).iconPMap.pmTable)).ctSize) * sizeof(ColorSpec);
 	
 	SetHandleSize( (Handle)cicn, sizeof( CIcon ) + (bitmapSize * 2) + colorTableSize + picSize);
@@ -710,6 +838,9 @@ void clip2cicn(short cicnID)
 	BlockMove( (*picPixMap)->baseAddr, &(**cicn).iconMaskData[bitmapSize + colorTableSize/2], picSize);
 	//PlotCIcon( &pixMapInfo.sourceRect, cicn );
 	
+//	(**cicn).iconPMap.pmTable = (CTabHandle) ((unsigned long)(&(**cicn).iconMaskData[bitmapSize]) - (unsigned long)(*cicn));
+//	(**cicn).iconData = (Handle) ((unsigned long)(&(**cicn).iconMaskData[bitmapSize + colorTableSize/2]) - (unsigned long)(*cicn));
+
 	oldFile = CurResFile();
 	scheme = FSpOpenResFile(&schemeSpec, fsRdWrPerm);
 	UseResFile(scheme);
@@ -719,6 +850,7 @@ void clip2cicn(short cicnID)
 		RemoveResource(oldCicn);
 		UpdateResFile(scheme);
 		CloseResFile(scheme);
+		FSClose(scheme);
 		scheme = FSpOpenResFile(&schemeSpec, fsRdWrPerm);
 		UseResFile(scheme);
 	}
@@ -729,10 +861,15 @@ void clip2cicn(short cicnID)
 	WriteResource((Handle)cicn);
 	UpdateResFile(scheme);
 	CloseResFile(scheme);
+	FSClose(scheme);
 	UseResFile(oldFile);
 	
 	UnlockPixels(picPixMap);
 	DisposeGWorld(picGWorld);
+	UnlockPixels(bwPixMap);
+	DisposeGWorld(bwGWorld);
+	UnlockPixels(maskPixMap);
+	DisposeGWorld(maskGWorld);
 	HUnlock(pic);
 	HUnlock((Handle)colorTable);
 }
