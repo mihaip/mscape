@@ -311,16 +311,6 @@ data 'Ofst' (128) {
 	$"FFFB 0005 FFFE 0002"                                /* ÿû..ÿþ.. */
 };
 
-data 'TMPL' (128, "Ofst", purgeable) {
-	$"184C 6172 6765 2048 6F72 697A 6F6E 7461"            /* .Large Horizonta */
-	$"6C20 4F66 6673 6574 3A44 5752 4416 4C61"            /* l Offset:DWRD.La */
-	$"7267 6520 5665 7274 6963 616C 204F 6666"            /* rge Vertical Off */
-	$"7365 743A 4457 5244 1853 6D61 6C6C 2048"            /* set:DWRD.Small H */
-	$"6F72 697A 6F6E 7461 6C20 4F66 6673 6574"            /* orizontal Offset */
-	$"3A44 5752 4416 536D 616C 6C20 5665 7274"            /* :DWRD.Small Vert */
-	$"6963 616C 204F 6666 7365 743A 4457 5244"            /* ical Offset:DWRD */
-};
-
 resource 'icl4' (-3999) {
 	$"00FF A000 0000 0000 0000 0000 0000 0000"
 	$"00FC EFA0 0000 0000 0000 0000 0000 0000"
@@ -13167,5 +13157,15 @@ resource 'ics8' (-3955, "Text Encodings ") {
 	$"0000 0000 FCFF FC00 FFFF FFFF 0000 0000"
 	$"0000 0000 00FC FA00 00FF FF00 0000 0000"
 	$"0000 0000 0000 0000 00FF"
+};
+
+data 'TMPL' (128, "Ofst", purgeable) {
+	$"184C 6172 6765 2048 6F72 697A 6F6E 7461"            /* .Large Horizonta */
+	$"6C20 4F66 6673 6574 3A44 5752 4416 4C61"            /* l Offset:DWRD.La */
+	$"7267 6520 5665 7274 6963 616C 204F 6666"            /* rge Vertical Off */
+	$"7365 743A 4457 5244 1853 6D61 6C6C 2048"            /* set:DWRD.Small H */
+	$"6F72 697A 6F6E 7461 6C20 4F66 6673 6574"            /* orizontal Offset */
+	$"3A44 5752 4416 536D 616C 6C20 5665 7274"            /* :DWRD.Small Vert */
+	$"6963 616C 204F 6666 7365 743A 4457 5244"            /* ical Offset:DWRD */
 };
 
