@@ -1,4 +1,140 @@
-/* Resource fork of software/clip2cicn/clip2cicn.µ.rsrc */
+/* Resource fork of software/clip2cicn/clip2cicn (PPC) */
+resource 'DITL' (3000, "Basic Alert") {
+	{	/* array DITLarray: 2 elements */
+		/* [1] */
+		{66, 318, 86, 376},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{8, 58, 60, 376},
+		StaticText {
+			disabled,
+			"^0 ^1."
+		}
+	}
+};
+
+resource 'DITL' (128) {
+	{	/* array DITLarray: 5 elements */
+		/* [1] */
+		{181, 212, 201, 270},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{10, 10, 120, 270},
+		UserItem {
+			enabled
+		},
+		/* [3] */
+		{125, 10, 143, 270},
+		StaticText {
+			disabled,
+			"by Mihai Parparita"
+		},
+		/* [4] */
+		{159, 10, 177, 270},
+		StaticText {
+			enabled,
+			"http://www.mscape.com/"
+		},
+		/* [5] */
+		{142, 10, 160, 270},
+		StaticText {
+			enabled,
+			"mihai@mscape.com"
+		}
+	}
+};
+
+resource 'DITL' (129, "Insert Cicn") {
+	{	/* array DITLarray: 11 elements */
+		/* [1] */
+		{240, 182, 260, 240},
+		Button {
+			enabled,
+			"Insert"
+		},
+		/* [2] */
+		{240, 10, 260, 68},
+		Button {
+			enabled,
+			"Close"
+		},
+		/* [3] */
+		{149, 10, 169, 240},
+		Control {
+			enabled,
+			128
+		},
+		/* [4] */
+		{179, 10, 199, 240},
+		Control {
+			enabled,
+			132
+		},
+		/* [5] */
+		{211, 186, 227, 236},
+		EditText {
+			enabled,
+			"-14336"
+		},
+		/* [6] */
+		{213, 11, 229, 30},
+		StaticText {
+			disabled,
+			"ID:"
+		},
+		/* [7] */
+		{30, 10, 140, 120},
+		UserItem {
+			disabled
+		},
+		/* [8] */
+		{30, 130, 140, 240},
+		UserItem {
+			disabled
+		},
+		/* [9] */
+		{10, 10, 26, 122},
+		StaticText {
+			disabled,
+			"Clipboard:"
+		},
+		/* [10] */
+		{10, 130, 27, 243},
+		StaticText {
+			disabled,
+			"current cicn:"
+		},
+		/* [11] */
+		{240, 113, 260, 171},
+		Button {
+			enabled,
+			"Extract"
+		}
+	}
+};
+
+resource 'ALRT' (3000) {
+	{40, 40, 138, 421},
+	3000,
+	{	/* array: 4 elements */
+		/* [1] */
+		OK, visible, sound1,
+		/* [2] */
+		OK, visible, sound1,
+		/* [3] */
+		OK, visible, sound1,
+		/* [4] */
+		OK, visible, sound1
+	},
+	alertPositionMainScreen
+};
+
 resource 'MENU' (128) {
 	128,
 	textMenuProc,
@@ -1120,109 +1256,6 @@ resource 'CNTL' (132, "Document Window") {
 	1008,
 	0,
 	"cicn:"
-};
-
-resource 'DITL' (128) {
-	{	/* array DITLarray: 5 elements */
-		/* [1] */
-		{181, 212, 201, 270},
-		Button {
-			enabled,
-			"OK"
-		},
-		/* [2] */
-		{10, 10, 120, 270},
-		UserItem {
-			enabled
-		},
-		/* [3] */
-		{125, 10, 143, 270},
-		StaticText {
-			disabled,
-			"by Mihai Parparita"
-		},
-		/* [4] */
-		{159, 10, 177, 270},
-		StaticText {
-			enabled,
-			"http://www.mscape.com/"
-		},
-		/* [5] */
-		{142, 10, 160, 270},
-		StaticText {
-			enabled,
-			"mihai@mscape.com"
-		}
-	}
-};
-
-resource 'DITL' (129, "Insert Cicn") {
-	{	/* array DITLarray: 11 elements */
-		/* [1] */
-		{240, 182, 260, 240},
-		Button {
-			enabled,
-			"Insert"
-		},
-		/* [2] */
-		{240, 10, 260, 68},
-		Button {
-			enabled,
-			"Close"
-		},
-		/* [3] */
-		{149, 10, 169, 240},
-		Control {
-			enabled,
-			128
-		},
-		/* [4] */
-		{179, 10, 199, 240},
-		Control {
-			enabled,
-			132
-		},
-		/* [5] */
-		{211, 186, 227, 236},
-		EditText {
-			enabled,
-			"-14336"
-		},
-		/* [6] */
-		{213, 11, 229, 30},
-		StaticText {
-			disabled,
-			"ID:"
-		},
-		/* [7] */
-		{30, 10, 140, 120},
-		UserItem {
-			disabled
-		},
-		/* [8] */
-		{30, 130, 140, 240},
-		UserItem {
-			disabled
-		},
-		/* [9] */
-		{10, 10, 26, 122},
-		StaticText {
-			disabled,
-			"Clipboard:"
-		},
-		/* [10] */
-		{10, 130, 27, 243},
-		StaticText {
-			disabled,
-			"current cicn:"
-		},
-		/* [11] */
-		{240, 113, 260, 171},
-		Button {
-			enabled,
-			"Extract"
-		}
-	}
 };
 
 resource 'DLOG' (128) {
@@ -3050,5 +3083,43 @@ data 'Mcmd' (149) {
 
 data 'Mcmd' (140) {
 	$"0000"                                               /* .. */
+};
+
+resource 'cfrg' (0) {
+	{	/* array memberArray: 1 elements */
+		/* [1] */
+		kPowerPCCFragArch,
+		kIsCompleteCFrag,
+		kNoVersionNum,
+		kNoVersionNum,
+		131072,
+		kNoAppSubFolder,
+		kApplicationCFrag,
+		kDataForkCFragLocator,
+		kZeroOffset,
+		kSegIDZero,
+		"clip2cicn (PPC)"
+	}
+};
+
+resource 'SIZE' (-1) {
+	reserved,
+	acceptSuspendResumeEvents,
+	reserved,
+	canBackground,
+	multiFinderAware,
+	backgroundAndForeground,
+	dontGetFrontClicks,
+	ignoreChildDiedEvents,
+	is32BitCompatible,
+	isHighLevelEventAware,
+	onlyLocalHLEvents,
+	notStationeryAware,
+	dontUseTextEditServices,
+	notDisplayManagerAware,
+	reserved,
+	reserved,
+	1048576,
+	1048576
 };
 

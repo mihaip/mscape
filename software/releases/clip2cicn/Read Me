@@ -1,1 +1,47 @@
-clip2cicn 1.2by Mihai ParparitaMscape SoftwareFreewaremihai@mscape.comhttp://www.mscape.com/IntroductionThis little utility is designed to help those of you working on Kaleidoscope 2.0 schemes that don't use the system palette. It inserts a picture from the clipboard, including any custom color information, into a cicn. It doesn't let you edit the cicns directly, you need to do the actual drawing before you insert them (in a program like Photoshop) or after using ResEdit (however, read the note below if ResEdit cannot open the resulting cicns).UsageAfter you have copied the image you want to insert (make sure it is in indexed color otherwise it'll get dithered and the proper color table won't be used), you can use insert the clipboard into a cicn in one of two ways:• Double-click on the application. Select the "Insert Clipboard into cicn…" from the File menu, choose a file, choose an ID and click Insert.• Drag a scheme onto the clip2cicn application. The ID selection dialog will pop up and you can choose where to insert the cicn.Note that you can switch to other applications while the insertion dialog is displayed, thus it is very easy to insert several icons into the same file.Important note regarding ResEditThere seems to be a bug in ResEdit that causes it to think that cicns whose size is above 32K are corrupted. This isn't clip2cicn's fault, and there's nothing I can do about it. Over the past 4 years Apple has shown no sign of updating ResEdit to fix this, so it is safe to assume that they never will. The cicns aren't in fact corrupted, and you can view them in Pink Elephants and other tools, and Kaleidoscope can use them too.Version History1.2 August 24, 1999 - updated cicn ID list - typing in IDs will now automatically select the right cicn from the pop-up menu - you can now switch to other applications while editing a file - new 32 bit icon - now under the Mscape Software label1.1 August 31, 1998 - Image well should draw correctly even if Kaleidoscope isn't installed - fixed bug which caused some cicns to be much larger than necessary - added modal dialog grow boxes, sliders, new progress bars,  to cicn list - used divider lines in some of the longer categories to enhance readability - added Navigation Services support1.0 June 26, 1998 - Initial release
+clip2cicn 1.3
+by Mihai Parparita
+Mscape Software
+Freeware
+mihai@mscape.com
+http://www.mscape.com/
+
+Introduction
+
+This little utility is designed to help those of you working on Kaleidoscope 2.0 schemes that don't use the system palette. It inserts a picture from the clipboard, including any custom color information, into a cicn. It doesn't let you edit the cicns directly, you need to do the actual drawing before you insert them (in a program like Photoshop) or after using ResEdit (however, read the note below if ResEdit cannot open the resulting cicns).
+
+Usage
+
+After you have copied the image you want to insert (make sure it is in indexed color otherwise it'll get dithered and the proper color table won't be used), you can use insert the clipboard into a cicn in one of two ways:
+
+• Double-click on the application. Select the "Open Scheme…" from the File menu, choose a file, choose an ID and click Insert.
+• Drag a scheme onto the clip2cicn application. The ID selection dialog will pop up and you can choose where to insert the cicn.
+
+Note that you can switch to other applications while the insertion dialog is displayed, thus it is very easy to insert several icons into the same file.
+
+It is also possible to extract icon from the currently open scheme, so that you can bring them back into image-editing program for adjustment. Simply select the cicn you wish to get by using the pop-up menus and/or the ID field, and then click the Extract button. You can now use the Paste command in another graphical program to obtain the icon. 
+
+Important note regarding ResEdit
+
+There seems to be a bug in ResEdit that causes it to think that cicns whose size is above 32K are corrupted. This isn't clip2cicn's fault, and there's nothing I can do about it. Over the past 4 years Apple has shown no sign of updating ResEdit to fix this, so it is safe to assume that they never will. The cicns aren't in fact corrupted, and you can view them in Pink Elephants and other tools, and Kaleidoscope can use them too.
+
+Version History
+1.3 December 9, 1999
+ - new Extract command
+ - reorganized user interface
+
+1.2 August 24, 1999
+ - updated cicn ID list
+ - typing in IDs will now automatically select the right cicn from the pop-up menu
+ - you can now switch to other applications while editing a file
+ - new 32 bit icon
+ - now under the Mscape Software label
+
+1.1 August 31, 1998
+ - Image well should draw correctly even if Kaleidoscope isn't installed
+ - fixed bug which caused some cicns to be much larger than necessary
+ - added modal dialog grow boxes, sliders, new progress bars,  to cicn list
+ - used divider lines in some of the longer categories to enhance readability
+ - added Navigation Services support
+
+1.0 June 26, 1998
+ - Initial release

@@ -54,6 +54,7 @@ const static int kcicnPopup = 4;
 const static int kIDField = 5;
 const static int kClipboardPreview = 7;
 const static int kcicnPreview = 8;
+const static int kExtract = 11;
 
 // --- Type Definitions -- //
 typedef struct tResults
@@ -97,9 +98,11 @@ OSStatus	GetSchemeNav(void);
 OSStatus	GetSchemeOld(void);
 void		Editcicn();
 void		clip2cicn(short cicnID, Str255 cicnName);
+void		cicn2clip(short cicnID);
 void 		CloseScheme(void);
 void		HandleEditChoice(int item);
 
+OSErr NewGWorldUnpadded(GWorldPtr* gWorld, short depth, const Rect* bounds, CTabHandle colorTable);
 pascal bool StandardDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit);
 void GetcicnMenu(Str255 IDAsString, int* group, int* item, Str255 name);
 void GetIDFromMenu(Str255 menuItemText);
