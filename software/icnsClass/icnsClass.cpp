@@ -125,29 +125,9 @@ icnsClass::~icnsClass()
 	if (ich4GW != NULL)  DisposeGWorld(ich4GW);
 }
 
-// __________________________________________________________________________________________
-// Name			: icnsClass::Load
-// Input		: None
-// Output		: None
-// Description	: Loads data from icon resources, based on the ID field of the parent
-//				  icnsClass. If it can't find a new style resource ('icns' type) it calls the
-//				  LoadOldStyle class function, which loads the icon from old-type resources
-
-
-void icnsClass::Load()
+void icnsClass::LoadFromIconFamily(IconFamilyHandle icnsHandle)
 {
-	IconFamilyHandle	icnsHandle; // handle to the icns resource that we are attempting
-									// to load
 	IconFamilyElement*	elementPtr; // pointer to the element within the icns resource
-	ResType				ignoredType;// resource type, this is one of the parameters to
-									// to the GetResInfoFunction, but we don't care about it
-									// since we already know the resource type ('icns')
-	short srcFile, oldFile;
-	
-	oldFile = CurResFile();						// we save the old file that was in use
-	srcFile = FSpOpenResFile(&srcFileSpec, fsRdPerm);	// open the old one
-	UseResFile(srcFile); 							// set it as the file to load resources from
-	
 	SAVEGWORLD; // saves the current port for restoring later
 	SAVECOLORS; // ditto for colors
 	
@@ -173,12 +153,8 @@ void icnsClass::Load()
 	
 	SetGWorld(il32GW, NULL);
 	
-	icnsHandle = (IconFamilyHandle)Get1Resource('icns', ID);
-	// we load the resource...
-	
 	if (icnsHandle != NULL) // and process if it exists
 	{
-		GetResInfo((Handle)icnsHandle, &ID, &ignoredType, name); // getting the icon name
 		HLock((Handle)icnsHandle); // locking the handle so that we can access it directly
 		
 		if (GeticnsMember('ich8', icnsHandle) == NULL &&
@@ -217,14 +193,14 @@ void icnsClass::Load()
 			elementPtr = GeticnsMember('ich8', icnsHandle);
 			if (elementPtr != NULL)
 				BlockMove(elementPtr->elementData,
-						 (*ich8Pix)->baseAddr, ich8Size - ichSize/2);
+						 (*ich8Pix)->baseAddr, ich8Size);
 						 // for some reason the huge 8 bit icon includes a mask too, but we
 						 // don't want to copy that
 				
 			elementPtr = GeticnsMember('ich4', icnsHandle);
 			if (elementPtr != NULL)
 				BlockMove(elementPtr->elementData,
-						 (*ich4Pix)->baseAddr, ich4Size - ichSize/2);
+						 (*ich4Pix)->baseAddr, ich4Size);
 						 // same for the huge 4 bit icon
 			
 			elementPtr = GeticnsMember('ich#', icnsHandle);
@@ -361,143 +337,199 @@ void icnsClass::Load()
 						 NULL);
 		}
 		HUnlock((Handle)icnsHandle); // we are done with the handle so we can unlock it...
-		
-		ReleaseResource((Handle)icnsHandle); // ...and dispose of it
 	}
-	else // if there was no 'icns' resource (new way to store icons) then we must attempt to
-		 // load the data from the old styles resources.
-		LoadOldStyle(true); // true: copy lower depths (8 bit) into higher ones (32 bit)
 	
 	RESTOREGWORLD; // we can now restore the state
 	RESTORECOLORS;
+}
+
+void icnsClass::LoadFromIconSuite(IconSuiteRef theIconSuite)
+{
+	IconActionUPP extractionAction;
 	
-	CloseResFile(srcFile);	// close it
-	UseResFile(oldFile); // and restore  the old one
+	extractionAction = NewIconActionProc(IconExtractor);
+	
+	sizes = 0;
+	
+	ForEachIconDo(theIconSuite, kSelectorAllAvailableData, extractionAction, this);
+}
+
+pascal OSErr IconExtractor(ResType iconType, Handle *theIcon, void *dataPtr)
+{
+	icnsClass* targetIcon;
+	Ptr		   iconData;
+	
+	if (theIcon == NULL || *theIcon == NULL)
+		return noErr;
+	
+	SAVECOLORS;
+	
+	targetIcon = (icnsClass*)dataPtr;
+	
+	iconData = **theIcon;
+	
+	switch (iconType)
+	{
+		// large size
+		case 'ICN#':
+			targetIcon->sizes |= large;
+			BlockMove(iconData, (**targetIcon->icniPix).baseAddr, icnSize/2); 
+			CopyPixMap(targetIcon->icniPix, targetIcon->icl4Pix, &largeIconRect, &largeIconRect, srcCopy, NULL);
+			CopyPixMap(targetIcon->icniPix, targetIcon->icl8Pix, &largeIconRect, &largeIconRect, srcCopy, NULL);
+			CopyPixMap(targetIcon->icniPix, targetIcon->il32Pix, &largeIconRect, &largeIconRect, srcCopy, NULL);
+			BlockMove(&iconData[icnSize/2], (**targetIcon->icnmPix).baseAddr, icnSize/2); 
+			CopyPixMap(targetIcon->icnmPix, targetIcon->l8mkPix, &largeIconRect, &largeIconRect, srcCopy, NULL);
+			break;
+		case 'icl4':
+			BlockMove(iconData, (**targetIcon->icl4Pix).baseAddr, icl4Size); 
+			CopyPixMap(targetIcon->icl4Pix, targetIcon->icl8Pix, &largeIconRect, &largeIconRect, srcCopy, NULL);
+			CopyPixMap(targetIcon->icl4Pix, targetIcon->il32Pix, &largeIconRect, &largeIconRect, srcCopy, NULL);
+			break;
+		case 'icl8':
+			BlockMove(iconData, (**targetIcon->icl8Pix).baseAddr, icl8Size); 
+			CopyPixMap(targetIcon->icl8Pix, targetIcon->il32Pix, &largeIconRect, &largeIconRect, srcCopy, NULL);
+			break;
+		case 'il32':
+			BlockMove(iconData, (**targetIcon->il32Pix).baseAddr, il32Size); 
+			break;
+		case 'l8mk':
+			BlockMove(iconData, (**targetIcon->l8mkPix).baseAddr, l8mkSize);
+			break;
+			
+		// small size
+		case 'ics#':
+			targetIcon->sizes |= small;
+			BlockMove(iconData, (**targetIcon->icsiPix).baseAddr, icsSize/2); 
+			CopyPixMap(targetIcon->icsiPix, targetIcon->ics4Pix, &smallIconRect, &smallIconRect, srcCopy, NULL);
+			CopyPixMap(targetIcon->icsiPix, targetIcon->ics8Pix, &smallIconRect, &smallIconRect, srcCopy, NULL);
+			CopyPixMap(targetIcon->icsiPix, targetIcon->is32Pix, &smallIconRect, &smallIconRect, srcCopy, NULL);
+			BlockMove(&iconData[icsSize/2], (**targetIcon->icsmPix).baseAddr, icsSize/2); 
+			CopyPixMap(targetIcon->icsmPix, targetIcon->s8mkPix, &smallIconRect, &smallIconRect, srcCopy, NULL);
+			break;
+		case 'ics4':
+			BlockMove(iconData, (**targetIcon->ics4Pix).baseAddr, ics4Size); 
+			CopyPixMap(targetIcon->ics4Pix, targetIcon->ics8Pix, &smallIconRect, &smallIconRect, srcCopy, NULL);
+			CopyPixMap(targetIcon->ics4Pix, targetIcon->is32Pix, &smallIconRect, &smallIconRect, srcCopy, NULL);
+			break;
+		case 'ics8':
+			BlockMove(iconData, (**targetIcon->ics8Pix).baseAddr, ics8Size); 
+			CopyPixMap(targetIcon->ics8Pix, targetIcon->is32Pix, &smallIconRect, &smallIconRect, srcCopy, NULL);
+			break;
+		case 'is32':
+			BlockMove(iconData, (**targetIcon->is32Pix).baseAddr, is32Size); 
+			break;
+		case 's8mk':
+			BlockMove(iconData, (**targetIcon->s8mkPix).baseAddr, s8mkSize);
+			break;
+			
+		// huge size
+		case 'ich#':
+			targetIcon->sizes |= huge;
+			BlockMove(iconData, (**targetIcon->ichiPix).baseAddr, ichSize/2); 
+			CopyPixMap(targetIcon->ichiPix, targetIcon->ich4Pix, &hugeIconRect, &hugeIconRect, srcCopy, NULL);
+			CopyPixMap(targetIcon->ichiPix, targetIcon->ich8Pix, &hugeIconRect, &hugeIconRect, srcCopy, NULL);
+			CopyPixMap(targetIcon->ichiPix, targetIcon->ih32Pix, &hugeIconRect, &hugeIconRect, srcCopy, NULL);
+			BlockMove(&iconData[ichSize/2], (**targetIcon->ichmPix).baseAddr, ichSize/2); 
+			CopyPixMap(targetIcon->ichmPix, targetIcon->h8mkPix, &hugeIconRect, &hugeIconRect, srcCopy, NULL);
+			break;
+		case 'ich4':
+			BlockMove(iconData, (**targetIcon->ich4Pix).baseAddr, ich4Size); 
+			CopyPixMap(targetIcon->ich4Pix, targetIcon->ich8Pix, &hugeIconRect, &hugeIconRect, srcCopy, NULL);
+			CopyPixMap(targetIcon->ich4Pix, targetIcon->ih32Pix, &hugeIconRect, &hugeIconRect, srcCopy, NULL);
+			break;
+		case 'ich8':
+			BlockMove(iconData, (**targetIcon->ics8Pix).baseAddr, ics8Size); 
+			CopyPixMap(targetIcon->ich8Pix, targetIcon->ih32Pix, &hugeIconRect, &hugeIconRect, srcCopy, NULL);
+			break;
+		case 'ih32':
+			BlockMove(iconData, (**targetIcon->ih32Pix).baseAddr, ih32Size); 
+			break;
+		case 'h8mk':
+			BlockMove(iconData, (**targetIcon->h8mkPix).baseAddr, h8mkSize);
+			break;
+	}
+	
+	RESTORECOLORS;
+	
+	return noErr;
 }
 
 // __________________________________________________________________________________________
-// Name			: icnsClass::LoadOldStyle
-// Input		: bool determining if the 8 bit icon/1 bit mask should be transferred over to
-//				  the 32 bit icon/8 bit mask respectively
+// Name			: icnsClass::Load
+// Input		: None
 // Output		: None
-// Description	: Loads old style icon resources ('icl8', 'ics4, 'ICN#', etc.) into the pixmaps
-//				  This function is very similar to the one above, except that instead of dealing
-//				  with only one resource, it deals with more (each size/depth is a separate
-//				  resource, although the huge size is not supported).
+// Description	: Loads data from icon resources, based on the ID field of the parent
+//				  icnsClass. If it can't find a new style resource ('icns' type) it calls the
+//				  LoadOldStyle class function, which loads the icon from old-type resources
 
-void icnsClass::LoadOldStyle(bool copyToHigherRez)
+void icnsClass::Load()
 {
-	Handle	oldStyleHandle; // handle used to get old style resources
+	IconFamilyHandle	icnsHandle;
+	IconSuiteRef		oldStyleSuite;
+	ResType				ignoredType;// resource type, this is one of the parameters to
+									// to the GetResInfoFunction, but we don't care about it
+									// since we already know the resource type ('icns')
 	
-	if (copyToHigherRez) // if we're copying, then we couldn't get the available sizes before
-	{					 // so we must determine them now
-		if (Get1Resource('icl8', ID) == NULL && // all the large resource types
-			Get1Resource('icl4', ID) == NULL &&
-			Get1Resource('ICN#', ID) == NULL)
-			sizes &= ~large;
-		else
-			sizes |= large;
-		
-		if (Get1Resource('ics8', ID) == NULL && // small ones
-			Get1Resource('ics4', ID) == NULL &&
-			Get1Resource('ics#', ID) == NULL)
-			sizes &= ~small;
-		else
-			sizes |= small;
-	}
+	short srcFile, oldFile;
 	
-	// getting the large old style icons
-	if (sizes & large)
+	oldFile = CurResFile();						// we save the old file that was in use
+	srcFile = FSpOpenResFile(&srcFileSpec, fsRdPerm);	// open the old one
+	UseResFile(srcFile); 							// set it as the file to load resources from
+	
+	icnsHandle = (IconFamilyHandle)Get1Resource('icns', ID);
+	
+	if (icnsHandle != NULL)
 	{
-		oldStyleHandle = Get1Resource('icl8', ID); // we attempt to get the resource...
-		if (oldStyleHandle != NULL) // if it's there
+		GetResInfo((Handle)icnsHandle, &ID, &ignoredType, name); // getting the icon name
+		flags = GetResAttrs((Handle)icnsHandle);
+		LoadFromIconFamily(icnsHandle);
+		ReleaseResource((Handle)icnsHandle);
+	}
+	else // if there was no 'icns' resource (new way to store icons) then we must attempt to
+		 // load the data from the old styles resources.
+	{
+		Handle temp;
+		
+		temp = Get1Resource('icl8', ID);
+		if (temp != NULL)
 		{
-			HLock(oldStyleHandle); // we lock it
-			BlockMove(*oldStyleHandle, (*icl8Pix)->baseAddr, icl8Size);
-			// copy its contents to the appropriate pixmap
-			if (copyToHigherRez)
-				CopyBits((BitMap*)*icl8Pix, // and optionally copy it to the 32 bit too
-						 (BitMap*)*il32Pix,
-						 &largeIconRect,
-						 &largeIconRect,
-						 srcCopy,
-						 NULL);
-			HUnlock(oldStyleHandle); // unlock the resource, since we're done with it
-			ReleaseResource(oldStyleHandle); // and dispose of it
+			flags = GetResAttrs(temp);
+			GetResInfo(temp, &ID, &ignoredType, name);
+			ReleaseResource(temp);
 		}
 		
-		oldStyleHandle = Get1Resource('icl4', ID); // ditto for icl4
-		if (oldStyleHandle != NULL)
-		{
-			HLock(oldStyleHandle);
-			BlockMove(*oldStyleHandle, (*icl4Pix)->baseAddr, icl4Size);
-			HUnlock(oldStyleHandle);
-			ReleaseResource(oldStyleHandle);
-		}
-		
-		
-		oldStyleHandle = Get1Resource('ICN#', ID); // ditto for ICN#
-		if (oldStyleHandle != NULL)
-		{
-			HLock(oldStyleHandle);
-			BlockMove(*oldStyleHandle, (*icniPix)->baseAddr, icnSize/2);
-			BlockMove(&((*oldStyleHandle)[icnSize/2]), (*icnmPix)->baseAddr, icnSize/2);
-			if (copyToHigherRez)
-				CopyBits((BitMap*)*icnmPix,
-						 (BitMap*)*l8mkPix,
-						 &largeIconRect,
-						 &largeIconRect,
-						 srcCopy,
-						 NULL);
-			HUnlock(oldStyleHandle);
-			ReleaseResource(oldStyleHandle);
-		}
+		Get1IconSuite(&oldStyleSuite, ID, kSelectorAllAvailableData);
+		LoadFromIconSuite(oldStyleSuite);
+		DisposeIconSuite(oldStyleSuite, true);
 	}
 	
-	// getting the small ones, very similar to above
-	if (sizes & small)
-	{
-		oldStyleHandle = Get1Resource('ics8', ID); 
-		if (oldStyleHandle != NULL)
-		{
-			HLock(oldStyleHandle);
-			BlockMove(*oldStyleHandle, (*ics8Pix)->baseAddr, ics8Size);
-			if (copyToHigherRez)
-				CopyBits((BitMap*)*ics8Pix,
-				(BitMap*)*is32Pix,
-				&smallIconRect,
-				&smallIconRect,
-				srcCopy,
-				NULL);
-			HUnlock(oldStyleHandle);
-			ReleaseResource(oldStyleHandle);
-		}	
-		oldStyleHandle = Get1Resource('ics4', ID);
-		if (oldStyleHandle != NULL)
-		{
-			HLock(oldStyleHandle);
-			BlockMove(*oldStyleHandle, (*ics4Pix)->baseAddr, ics4Size);
-			HUnlock(oldStyleHandle);
-			ReleaseResource(oldStyleHandle);
-		}
-		
-			oldStyleHandle = Get1Resource('ics#', ID);
-			if (oldStyleHandle != NULL)
-			{
-				HLock(oldStyleHandle);
-				BlockMove(*oldStyleHandle, (*icsiPix)->baseAddr, icsSize/2);
-				BlockMove(&((*oldStyleHandle)[icsSize/2]), (*icsmPix)->baseAddr, icsSize/2);
-				if (copyToHigherRez)	
-					CopyBits((BitMap*)*icsmPix,
-							 (BitMap*)*s8mkPix,
-							 &smallIconRect,
-							 &smallIconRect,
-							 srcCopy,
-							 NULL);
-				HUnlock(oldStyleHandle);
-				ReleaseResource(oldStyleHandle);
-			}
-	}
+	CloseResFile(srcFile);	// close it
+	UseResFile(oldFile); // and restore the old one
+	
+}
+
+void icnsClass::LoadFileIcon()
+{	
+	IconSuiteRef	theIconSuite;
+	OSErr			err;
+	Handle			findIconProcRsrc;
+	Find_icon_UPP	findIconProc = NULL;
+	
+	findIconProcRsrc = GetResource( 'PROC', 128 );
+	if (findIconProcRsrc == NULL)
+		return;
+
+	HLock(findIconProcRsrc);
+	findIconProc = (Find_icon_UPP) *findIconProcRsrc;
+
+	err = CallFindIcon(findIconProc, &srcFileSpec, NULL, kSelectorAllAvailableData, (Handle*)&theIconSuite);
+	
+	HUnlock(findIconProcRsrc);
+	ReleaseResource(findIconProcRsrc);
+	
+	LoadFromIconSuite(theIconSuite);
+	
+	DisposeIconSuite(theIconSuite, true);
 }
 
 // __________________________________________________________________________________________
@@ -729,7 +761,7 @@ void icnsClass::ImportFromClipboard(bool dither)
 				 NULL);
 		
 		// making the 1 bit mask
-		Make1BitMask(l8mkPix, icnmPix);
+		Make1BitMask(l8mkPix, icnmPix, (**l8mkPix).bounds);
 
 		// creating the bw version
 		CopyBits((BitMap *)*icl8Pix,
@@ -783,7 +815,7 @@ void icnsClass::ImportFromClipboard(bool dither)
 				 NULL);
 		
 		// making the 1 bit mask		 
-		Make1BitMask(s8mkPix, icsmPix);
+		Make1BitMask(s8mkPix, icsmPix, (**s8mkPix).bounds);
 		
 		// creating the bw version
 		CopyBits((BitMap *)*ics8Pix,
@@ -822,14 +854,51 @@ void icnsClass::Save(long flags)
 	short				targetFile,	// file reference numbers, one for the target file
 						oldFile; 	// and the other for the previous curent file
 	Handle				oldicns; // handle used to check if an icns existed before
-	Ptr					ih32Src, il32Src, is32Src, // the source for the 
+	Ptr					ih32Src, il32Src, is32Src, // the source for the icons
 						h8mkSrc, l8mkSrc, s8mkSrc,
 						ich8Src, icl8Src, ics8Src,
 						ich4Src, icl4Src, ics4Src,
 						ichiSrc, icniSrc, icsiSrc,
 						ichmSrc, icnmSrc, icsmSrc;
+	unsigned char 		isFolder, ignored;
+	FSSpec				savedSpec;
+	
+	ResolveAliasFile(&srcFileSpec,true,&isFolder, &ignored);
+	if (isFolder)
+	{	
+		Str255 targetName = "\p:";
+		
+		FSpSetFinderFlags(&srcFileSpec, kHasCustomIcon, true);
+		
+		AppendString(targetName, srcFileSpec.name);
+		AppendString(targetName, "\p:Icon\r");
+		
+		savedSpec = srcFileSpec;
+		FSMakeFSSpec(srcFileSpec.vRefNum, srcFileSpec.parID, targetName, &srcFileSpec);
+		FSpDelete(&srcFileSpec);
+		FSpCreate(&srcFileSpec, 'icon', 'MACS', 0);
+		FSpCreateResFile(&srcFileSpec, 'icon', 'MACS', 0);
+	}
+	
 	
 	oldFile = CurResFile(); // we save the old file that was in use
+	targetFile = FSpOpenResFile(&srcFileSpec, fsRdWrPerm); // we open the target file
+	
+	if (targetFile == -1)
+		switch(ResError())
+		{
+			case eofErr:
+				FInfo fileInfo;
+				FSpGetFInfo(&srcFileSpec, &fileInfo);
+				FSpCreateResFile(&srcFileSpec, fileInfo.fdCreator, fileInfo.fdType, 0);
+				targetFile = FSpOpenResFile(&srcFileSpec, fsRdWrPerm); // we open the target file
+				break;
+			default:
+				return;
+				break;
+		}
+	
+	UseResFile(targetFile); // and set it as the current resoure file
 	
 	if (sizes & huge) // we compress the icon data as necessary
 		CompressPixMap(ih32Pix, &ih32Src, &ih32CompressedSize);
@@ -891,9 +960,6 @@ void icnsClass::Save(long flags)
 	ics4Src = (**ics4Pix).baseAddr;
 	s8mkSrc = (**s8mkPix).baseAddr;
 	
-	
-	targetFile = FSpOpenResFile(&srcFileSpec, fsRdWrPerm); // we open the target file
-	UseResFile(targetFile); // and set it as the current resoure file
 	if (flags & includeOldStyle)
 	{
 		Handle				currentIcon; // handle to the old style icon,
@@ -993,14 +1059,12 @@ void icnsClass::Save(long flags)
 		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
 		elementPtr->elementType = 'ich8';
 		elementPtr->elementSize = ich8Size + sizeof(IconFamilyElement) - icnsSizePadding;
-		BlockMove(ich8Src, elementPtr->elementData, ich8Size - ichSize/2);
-		BlockMove(ichmSrc, &elementPtr->elementData[ich8Size - ichSize/2], ichSize/2);
+		BlockMove(ich8Src, elementPtr->elementData, ich8Size);
 		
 		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
 		elementPtr->elementType = 'ich4';
 		elementPtr->elementSize = ich4Size + sizeof(IconFamilyElement) - icnsSizePadding;
-		BlockMove(ich4Src, elementPtr->elementData, ich4Size - ichSize/2);
-		BlockMove(ichmSrc, &elementPtr->elementData[ich4Size - ichSize/2], ichSize/2);
+		BlockMove(ich4Src, elementPtr->elementData, ich4Size);
 		
 		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
 		WriteicnsMember(elementPtr, 'ih32', ih32CompressedSize, ih32Src);
@@ -1018,6 +1082,9 @@ void icnsClass::Save(long flags)
 		FSpGetFInfo(&srcFileSpec, &fileInfo); // we get the current info
 		fileInfo.fdFlags |= kHasCustomIcon;
 		// .. we set the "has custom icon" bit (so that the finder uses that icon)
+		
+		if (isFolder)
+			fileInfo.fdFlags |= kIsInvisible;
 		FSpSetFInfo(&srcFileSpec, &fileInfo);  // and set it
 	}
 	
@@ -1045,6 +1112,13 @@ void icnsClass::Save(long flags)
 	if (sizes & huge) DisposePtr(ih32Src); // and the temporary memory used to to store the
 	if (sizes & large) DisposePtr(il32Src); // compressed sizes
 	if (sizes & small) DisposePtr(is32Src);
+	
+	FSpBumpDate(&srcFileSpec);
+	
+	if (isFolder)
+		srcFileSpec = savedSpec;
+	
+	FSpBumpDate(&srcFileSpec);
 }
 
 // __________________________________________________________________________________________
@@ -1143,6 +1217,46 @@ void icnsClass::SaveOldStyle()
 	DisposeHandle(iconHandle);
 }
 
+long icnsClass::GetSize()
+{
+	long returnSize;
+	
+	returnSize = sizeof(IconFamilyResource) - sizeof(IconFamilyElement);
+	
+	if (sizes & huge)
+	{
+		Ptr temp;
+		long ih32CompressedSize;
+		
+		CompressPixMap(ih32Pix, &temp, &ih32CompressedSize);
+		DisposePtr(temp);
+		
+		returnSize += (sizeof(IconFamilyElement) - icnsSizePadding) * 5 + ichSize + ich4Size + ich8Size + ih32CompressedSize + h8mkSize;
+	}
+	if (sizes & large)
+	{
+		Ptr temp;
+		long il32CompressedSize;
+		
+		CompressPixMap(il32Pix, &temp, &il32CompressedSize);
+		DisposePtr(temp);
+		
+		returnSize += (sizeof(IconFamilyElement) - icnsSizePadding) * 5 + icnSize + icl4Size + icl8Size + il32CompressedSize + l8mkSize;
+	}
+	if (sizes & small)
+	{
+		Ptr temp;
+		long is32CompressedSize;
+		
+		CompressPixMap(is32Pix, &temp, &is32CompressedSize);
+		DisposePtr(temp);
+		
+		returnSize += (sizeof(IconFamilyElement) - icnsSizePadding) * 5 + icsSize + ics4Size + ics8Size + is32CompressedSize + s8mkSize ;
+	}
+	
+	return returnSize;
+}
+
 OSStatus NewIconSet(GWorldPtr *gWorld, PixMapHandle *pixMap, Rect bounds, int depth, CTabHandle cTable)
 {
 	SAVEGWORLD;
@@ -1233,6 +1347,7 @@ bool CheckClipboard(bool verbose)
 	PictInfo			picInfo;
 	
 	pic = NewHandle (0);
+	
 	if (GetScrap( pic, 'PICT', &offset ) < 0)
 	{
 		if (verbose)

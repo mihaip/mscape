@@ -1,4 +1,4 @@
-/* Resource fork of software/Icon Mangler/art/48 x 48 folder icon */
+/* Resource fork of software/Iconographer/art/48 x 48 folder icon */
 resource 'STR ' (-16396) {
 	"Adobe¨ Photoshop¨ 5.0.2"
 };

@@ -11,6 +11,7 @@
 #include "icnsClass.h"
 #include "commonfunctions.h"
 #include "icnsEditorClass.h"
+#include "editorStaticsClass.h"
 #include "iconBrowser.h"
 #include "AppleEvents.h"
 
@@ -18,6 +19,7 @@
 
 const static long creatorCode = 'Mngl';
 const static long iconFileType = 'Icon';
+const static long prefFileType = 'pref';
 
 // --- Constants --- //
 
@@ -35,12 +37,21 @@ enum errorResources
 // substrings
 enum defaultNames
 {
-	eAppName = 1
+	eAppName = 1,
+	ePrefsName = 2,
+	eOKButton = 3,
+	eSaveButton = 4,
+	eCancelButton = 5,
+	eDontSaveButton = 6,
+	eRegisterButton = 7,
+	eNotYetButton = 8,
+	eRegisterAppName = 9,
+	eNotRegistered = 10
 };
 
 enum stdErrors
 {
-	eNoIcons = 1,
+	eFileOpen = 1,
 	eExpired = 2,
 	eResourceMissing = 3,
 	eRequirementsNotFulfilled = 4,
@@ -50,14 +61,19 @@ enum stdErrors
 	eNeedInternetConfig = 8,
 	eCantMakeEditor = 9,
 	eLowOnMemory = 10,
-	eOutOfMemory = 11
+	eOutOfMemory = 11,
+	eCouldntFindRegister = 12,
+	eBadRegCode = 13,
+	eThanksForRegistering = 14
 };
 
 enum prompts
 {
 	eWantToSave = 1,
 	eSelectFile = 2,
-	eSaveFile = 3
+	eSaveFile = 3,
+	eOpenTitle = 4,
+	eRegistrationReminder
 };
 
 enum saveOptions
@@ -65,8 +81,20 @@ enum saveOptions
 	noCancel = 1
 };
 
-// resource ID
-const static int rAboutBox = 128;
+// resource IDs
+enum manglerResources
+{
+	// dialogs
+	rAboutBox = 128,
+	rRegister = 129,
+	
+	// pictures
+	rAboutPic = 128,
+	rAboutMask = 129,
+	
+	// others
+	rPrefs = 128
+};
 
 // menubar stuff
 const static int rMenuBarID = 128;
@@ -78,7 +106,8 @@ enum menus
 	mEdit = 130,
 	mSelect = 131,
 	mTransform = 132,
-	mView = 133
+	mPaste = 133,
+	mView = 134
 };
 
 enum appleMenu
@@ -107,14 +136,16 @@ enum editMenu
 	iPaste = 6,
 	iClear = 7,
 	iSelect = 8,
-	iTransform = 9
+	iTransform = 9,
+	iPreferences = 11
 };
 
 enum selectMenu
 {
 	iAll = 1,
-	iNone = 2,
-	iInverse = 3
+	iSimilar = 2,
+	iNone = 3,
+	iInverse = 4
 };
 
 enum transformMenu
@@ -126,6 +157,12 @@ enum transformMenu
 	iInvert = 7
 };
 
+enum pasteMenu
+{
+	iPasteNormally = 1,
+	iPasteAsIconAndMask = 2
+};
+
 enum viewMenu
 {
 	iZoomIn = 1,
@@ -135,9 +172,23 @@ enum viewMenu
 // dialog items
 enum aboutBoxItems
 {
-	iOK = 1,
+	//iOK = 1,
+	iAboutPic = 2,
 	iHomepageAddress = 4,
-	iEmailAddress = 5
+	iEmailAddress = 5,
+	iNameDisplayField = 7,
+	iCompanyDisplayField = 8,
+	iRegCodeDisplayField = 9
+};
+
+enum registerItems
+{
+	iRegisterButton = 1,
+	// iCancel = 2,
+	iLaunchRegister = 3,
+	iNameField = 4,
+	iCompanyField = 5,
+	iRegCodeField = 6
 };
 
 
@@ -146,7 +197,7 @@ enum aboutBoxItems
 void		Initialize(void);
 bool		ConfigurationSupported(void);
 OSErr		InitMenuBar(void);
-void		ToggleMenus(void);
+void		LoadPreferences(void);
 void		EventLoop(void);
 void		DoEvent(EventRecord *eventPtr);
 void		DoIdle(void);
@@ -156,12 +207,19 @@ void		HandleUpdate(EventRecord *eventPtr);
 void		HandleActivate(EventRecord *eventStrucPtr);
 void		HandleOSEvent(EventRecord *eventPtr);
 void		DoMenuCommand(long menuResult);
-void		ShowAboutBox(void);
-OSErr		NewIcon(void);
+void		AboutBox(void);
+pascal 		bool AboutBoxEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *itemHit);
+void		Register(void);
+OSErr		NewIcon(bool showWindow);
+OSErr		GetIconFile(FSSpec* fileToOpen);
 void		OpenIcon(FSSpec *fileToOpen);
 bool		CloseIcon(int flags);
 int			WantToSave(FSSpec fileSpec, int flags);
+void		Nag(void);
 pascal bool	AlertEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *itemHit);
+pascal void NavEventFilter(NavEventCallbackMessage callBackSelector,
+						   NavCBRecPtr callBackParms, 
+						   NavCallBackUserData callBackUD);
 void		SaveIcon(bool saveAs);
 void		CleanUp(void);
 extern void DoError(int resourceID, int stringNo);

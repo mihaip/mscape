@@ -52,7 +52,11 @@ OSErr AEGotRequiredParams(const AppleEvent *theAppleEvent)
 pascal OSErr AEOpenApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
 {
 	reply;
-	refCon; 
+	refCon;
+	
+	if (gLastEditor == NULL)
+		NewIcon(true);
+	
 	return AEGotRequiredParams(theAppleEvent);
 }
 
@@ -77,10 +81,7 @@ pascal OSErr AEOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long 
 	{
 		err = AEGetNthPtr(&fileSpecList, i, typeFSS, &keyword, &type, (Ptr)&desc, sizeof(FSSpec), &actual);
 		if (err == noErr)
-		{
 			OpenIcon(&desc);	
-			return AEGotRequiredParams(theAppleEvent);
-		}
 	}
 	return AEGotRequiredParams(theAppleEvent);
 }

@@ -1,4 +1,4 @@
-/* Resource fork of software/Icon Mangler/Journal */
+/* Resource fork of software/Iconographer/Journal */
 data 'MPSR' (1007) {
 	$"0008 0000 001F 0000 0028 0953 6570 7465"            /* .........(.Septe */
 	$"6D62 6572 0000 106A 0000 1071 074F 6374"            /* mber...j...q.Oct */

@@ -1,4 +1,4 @@
-/* Resource fork of software/Icon Mangler/function header */
+/* Resource fork of software/Iconographer/function header */
 data 'TEXT' (256) {
 	$"2F2F 205F 5F5F 5F5F 5F5F 5F5F 5F5F 5F5F"            /* // _____________ */
 	$"5F5F 5F5F 5F5F 5F5F 5F5F 5F5F 5F5F 5F5F"            /* ________________ */
@@ -18,8 +18,8 @@ data 'drag' (128) {
 };
 
 data 'kwst' (-16564) {
-	$"0000 0005 0001 0407 0032 018C 00D8 03DD"            /* .........2.Œ.Ø.Ý */
-	$"0000 0000 0000 01C0 8C00 0000 115F CDA0"            /* .......ÀŒ...._Í  */
+	$"0000 0005 0001 0407 0051 017F 00F7 03D0"            /* .........Q...÷.Ð */
+	$"0000 0000 0000 01C0 8C00 0000 1164 05D0"            /* .......ÀŒ....d.Ð */
 	$"0000 0000"                                          /* .... */
 };
 

@@ -1,4 +1,4 @@
-/* Resource fork of software/Icon Mangler/Source/Icon Browser/iconBrowser.rsrc */
+/* Resource fork of software/Iconographer/Source/Icon Browser/iconBrowser.rsrc */
 resource 'CNTL' (300, "Icon Browser: Icon List", purgeable) {
 	{40, 68, 190, 345},
 	300,
@@ -157,6 +157,13 @@ resource 'ldes' (300) {
 		noHorizScroll,
 		0,
 		noGrowSpace
+	}
+};
+
+resource 'STR#' (300, purgeable) {
+	{	/* array StringArray: 1 elements */
+		/* [1] */
+		"\t\t\t\t\t\t\t\t\tItem’s Finder Icon"
 	}
 };
 

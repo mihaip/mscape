@@ -1,10 +1,10 @@
-/* Resource fork of software/Icon Mangler/Source/Icon Browser/iconBrowser.cpp */
+/* Resource fork of software/Iconographer/Source/Icon Browser/iconBrowser.cpp */
 data 'MPSR' (1005) {
 	$"0009 4D6F 6E61 636F 0000 0000 0000 0000"            /* ..Monaco........ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0002 0004 0037 0195 02E4 03EB 0037"            /* .......7.•.ä.ë.7 */
-	$"0195 02E4 03EB B33A C253 0000 0E27 0000"            /* .•.ä.ë³:ÂS...'.. */
-	$"0E27 0000 0A04 0100"                                /* .'...... */
+	$"0000 0002 0004 003A 010B 02E7 0361 003A"            /* .......:...ç.a.: */
+	$"010B 02E7 0361 B378 C5F8 0000 1131 0000"            /* ...ç.a³xÅø...1.. */
+	$"1131 0000 0000 0100"                                /* .1...... */
 };
 
 data 'MWBB' (1008) {

@@ -1,1 +1,1 @@
-/* Resource fork of software/Icon Mangler/iconmangler.µ Data/clip2cicn (FAT)/TargetDataMacOS.tdt */
+/* Resource fork of software/Iconographer/iconmangler.µ Data/clip2cicn (FAT)/TargetDataMacOS.tdt */

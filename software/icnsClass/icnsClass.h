@@ -8,7 +8,8 @@
 #pragma once
 #include "commonfunctions.h"
 #include "compression.h"
-
+#include "Find_icon.h"
+#include "MoreFilesExtras.h"
 
 const static int icnsSizePadding = 2; // this should yield 2 for 68K and 4 for PPC
 // this is done because on older, 68K systems the alignemnt was to every short, while
@@ -47,10 +48,8 @@ const static long ics4Size = icl4Size / 4;
 const static long ih32Size = 0x2400;
 const static long h8mkSize = 0x900;
 const static long ichSize = 0x240;
-const static long ich8Size = 0x900 + 0x120; // the 0x120 is shown separately since for some
-const static long ich4Size = 0x480 + 0x120; // reason Apple decided to include a copy of the
-											// large 1 bit mask in these depths too, but in
-											// my case I just insert a copy of the standard one
+const static long ich8Size = 0x900;
+const static long ich4Size = 0x480;
 
 enum iconSizes
 {
@@ -131,7 +130,8 @@ class icnsClass
 		PixMapHandle	ics4Pix;
 		
 		void 			SaveOldStyle();
-		void			LoadOldStyle(bool copyToHigherRez);
+		void			LoadFromIconSuite(IconSuiteRef theIconSuite);
+		void			LoadFromIconFamily(IconFamilyHandle icnsHandle);
 		
 	public:
 		short			ID;
@@ -146,17 +146,24 @@ class icnsClass
 						icnsClass(void);
 						~icnsClass(void);
 		void 			Load();
+		void			LoadFileIcon();
 		void 			Display(Rect targetRect);
 		void			ExportToPixMap(PixMapHandle targetPix);
 		void			ImportFromClipboard(bool dither);
 		void 			Save(long flags);
+		long			GetSize();
 		
 	friend void MergeIcon(int ID, Str255 name, icnsClass* baseicns);
 	// external function used in another program (Glypher) which uses the icnsClass
-};
+	friend pascal OSErr IconExtractor(ResType iconType, Handle *theIcon, void *dataPtr);
 
+};
+pascal OSErr IconExtractor(ResType iconType, Handle *theIcon, void *dataPtr);
 IconFamilyElement* GeticnsMember(long iconType, IconFamilyHandle icnsHandle);
 void WriteicnsMember(IconFamilyElement *elementPtr, long iconType, long iconSize, Ptr iconSrc);
-OSStatus NewIconSet(GWorldPtr *gWorld, PixMapHandle *pixMap, Rect bounds, int depth,
+OSStatus NewIconSet(GWorldPtr *gWorld,
+					PixMapHandle *pixMap,
+					Rect bounds,
+					int depth,
 					CTabHandle cTable);
 bool CheckClipboard(bool verbose);

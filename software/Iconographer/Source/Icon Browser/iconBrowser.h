@@ -11,11 +11,15 @@
 #include "icnsClass.h"
 #include "commonFunctions.h"
 
-const static int rIconBrowser = 300;
+enum browserResources
+{
+	rIconBrowser = 300,
+	rStrings = 300
+};
 
 enum iconBrowserItems
 {
-	iCancel = 2,
+	//iCancel = 2,
 	iIconPreview = 4,
 	iIconList = 5
 };
@@ -23,13 +27,18 @@ enum iconBrowserItems
 enum iconBrowserErrors
 {
 	canceledErr = 1,
-	noIconsErr = 2
+	fileIconSelected = 2
+};
+
+enum strings
+{
+	eItemIconText = 1
 };
 
 OSErr		IconBrowser(FSSpec fileSpec, long *ID, UpdateFunctionPtr updateFunction);
 long		GetIDFromList(Cell theCell, ListHandle theList);
 void		AddIconsToList(OSType resourceType, ListHandle theList);
 void		InsertIntoIconList(ListHandle theList, long ID, Str255 name);
-void		BuildIconList(ListHandle theList, FSSpec srcSpec);
+OSErr		BuildIconList(ListHandle theList, FSSpec srcSpec);
 int			FindIDInList(ListHandle theList, long ID, bool nearest);
 void 		DisplayIconPreview(ControlHandle displayControl, FSSpec srcSpec, long ID);

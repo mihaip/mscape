@@ -28,6 +28,7 @@ OSErr IconBrowser(FSSpec fileSpec, long *ID, UpdateFunctionPtr updateFunction)
 	OSStatus			returnErr; // for error checking
 	int					listSize; // the length of the list of icons
 	
+	
 	// we load the dialog
 	iconBrowser = GetNewDialog(rIconBrowser,NULL,(WindowPtr) -1);
 	
@@ -38,7 +39,7 @@ OSErr IconBrowser(FSSpec fileSpec, long *ID, UpdateFunctionPtr updateFunction)
 	SetDialogDefaultItem(iconBrowser,kStdOkItemIndex);
 	SetDialogCancelItem(iconBrowser,kStdCancelItemIndex);
 	SetDialogTracksCursor(iconBrowser,true);
-	SetKeyboardFocus(iconBrowser,iconListControl,1);
+	SetKeyboardFocus(iconBrowser,iconListControl,kControlListBoxPart);
 	
 	// set up the event processing function
 	eventFilterUPP = NewModalFilterProc((ProcPtr) StandardEventFilter);
@@ -51,12 +52,26 @@ OSErr IconBrowser(FSSpec fileSpec, long *ID, UpdateFunctionPtr updateFunction)
 								 sizeof(iconList),(Ptr) &iconList,NULL);
 	
 	// building the list
-	BuildIconList(iconList, fileSpec);
+	returnErr = BuildIconList(iconList, fileSpec);
 	listSize = (*iconList)->dataBounds.bottom - (*iconList)->dataBounds.top;
 	
 	// if we have one or zero icons we must don'tneed a list
 	switch (listSize)
 	{
+		case 2:
+			long ID2;
+			SetPt(&theCell, 0, 0);
+			*ID = GetIDFromList(theCell, iconList);
+			SetPt(&theCell, 0, 1);
+			ID2 = GetIDFromList(theCell, iconList);
+			
+			if (*ID == 820127 && ID2 == -16455)
+			{
+				*ID = -16455;
+				DisposeDialog(iconBrowser);
+				return noErr;
+			}
+			break;
 		case 1:
 			SetPt(&theCell, 0, 0);
 			*ID = GetIDFromList(theCell, iconList);
@@ -64,8 +79,13 @@ OSErr IconBrowser(FSSpec fileSpec, long *ID, UpdateFunctionPtr updateFunction)
 			return noErr;
 			break;
 		case 0:
-			DisposeDialog(iconBrowser);
-			return noIconsErr;
+			if (returnErr == eofErr || returnErr == noErr)
+			{
+				DisposeDialog(iconBrowser);
+				return fileIconSelected;
+			}
+			else
+				return returnErr;
 	}
 	
 	// we only allow a single selection
@@ -82,6 +102,7 @@ OSErr IconBrowser(FSSpec fileSpec, long *ID, UpdateFunctionPtr updateFunction)
 	// we can now draw in the icon
 	SAVEGWORLD;
 	SetPort(iconBrowser);
+	Draw1Control(iconListControl);
 	DisplayIconPreview(iconPreviewControl, fileSpec, *ID);
 	RESTOREGWORLD;
 	
@@ -111,8 +132,13 @@ OSErr IconBrowser(FSSpec fileSpec, long *ID, UpdateFunctionPtr updateFunction)
 		
 	} while((itemHit != kStdOkItemIndex) && (itemHit != kStdCancelItemIndex));
 	
+	if (*ID == 820127 && (FindIDInList(iconList, -16455, false) != -1))
+		*ID = -16455;
+	
 	// we're donw with the dialog
 	DisposeDialog(iconBrowser);
+	
+	
 	
 	return returnErr;
 }
@@ -132,6 +158,10 @@ long GetIDFromList(Cell theCell, ListHandle theList)
 			offset; // the location of the ID in memory (ignored)
 	Str255	listString; // the contents of the list celll
 	long	ID; // the ID we'll extract
+	
+	
+	if (theCell.h == 0 && theCell.v == 0)
+		return 820127;
 	
 	// we get the width of the string
 	LGetCellDataLocation(&offset,&stringLength,theCell,theList);
@@ -159,16 +189,29 @@ long GetIDFromList(Cell theCell, ListHandle theList)
 // Description	: The function creates a list of all the icons in the file by going through
 //				  all of the icon resource types and adding them to the list
 
-void BuildIconList(ListHandle theList, FSSpec srcSpec)
+OSErr BuildIconList(ListHandle theList, FSSpec srcSpec)
 {
 	short		oldFile, // the current opened file
 				srcFile; // the file we'll be opening
+	Cell		aCell;
+	Str255		itemIconLabel;
+	
+	GetIndString(itemIconLabel, rStrings, eItemIconText);
 	
 	// we open the file
 	oldFile = CurResFile();
 	srcFile = FSpOpenResFile(&srcSpec, fsRdPerm);
+	
+	if (srcFile == -1)
+		return ResError();
+	
 	UseResFile(srcFile);
 	
+	// we insert the "item icon" row
+	LAddRow(1,0,theList);
+	SetPt(&aCell,0,0);
+	LSetCell((Ptr) itemIconLabel + 1,(SInt16) StrLength(itemIconLabel),aCell,theList);
+
 	// add the icons to the list
 	AddIconsToList('icns', theList);
 	AddIconsToList('icl8', theList);
@@ -181,6 +224,8 @@ void BuildIconList(ListHandle theList, FSSpec srcSpec)
 	// and close the file and restore the previous opened file
 	CloseResFile(srcFile);
 	UseResFile(oldFile);
+	
+	return noErr;
 }
 
 // __________________________________________________________________________________________
@@ -236,7 +281,7 @@ int FindIDInList(ListHandle theList, long ID, bool nearest)
 	
 	// we set up these variables
 	totalRows = (*theList)->dataBounds.bottom - (*theList)->dataBounds.top;
-	currentRow = -1;
+	currentRow = 0;
 	
 	// and go through all of the rows
 	while (currentRow < totalRows)
@@ -289,7 +334,12 @@ void InsertIntoIconList(ListHandle theList, long ID, Str255 name)
 	
 	// we specify the insertion text
 	NumToString(ID, listText);
-	if (listText[0] < 6) AppendString(listText, "\p	"); // ID's to oshort, we need some padding
+	if (listText[0] < 6) // ID's to oshort, we need some padding
+	{
+		if (listText[0] < 4)
+			AppendString(listText, "\p	");
+		AppendString(listText, "\p	");
+	}
 	AppendString(listText, "\p		");
 	AppendString(listText, name);
 
@@ -320,9 +370,14 @@ void DisplayIconPreview(ControlHandle displayControl, FSSpec srcSpec, long ID)
 	SAVECOLORS;
 	
 	// we load the icon
-	icon.ID = ID;
 	icon.srcFileSpec = srcSpec;
-	icon.Load();
+	if (ID == 820127)
+		icon.LoadFileIcon();
+	else
+	{
+		icon.ID = ID;
+		icon.Load();
+	}
 	
 	// create the temporary GWorld
 	tempRect = (**displayControl).contrlRect;

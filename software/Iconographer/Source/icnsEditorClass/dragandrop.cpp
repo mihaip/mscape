@@ -1,5 +1,6 @@
 #include "icnsEditorClass.h"
 #include "drawingStateClass.h"
+#include "editorStaticsClass.h"
 
 pascal OSErr ApproveDragReference (DragReference theDragRef, bool *approved, icnsEditorPtr parentEditor)
 {
@@ -20,7 +21,8 @@ pascal OSErr ApproveDragReference (DragReference theDragRef, bool *approved, icn
 		PtInRect(theMouse, &parentEditor->controls.display.iconSmallRect)		||
 		PtInRect(theMouse, &parentEditor->controls.display.maskHugeRect)		||
 		PtInRect(theMouse, &parentEditor->controls.display.maskLargeRect)		||
-		PtInRect(theMouse, &parentEditor->controls.display.maskSmallRect))
+		PtInRect(theMouse, &parentEditor->controls.display.maskSmallRect)		||
+		PtInRect(theMouse, &(**parentEditor->controls.display. preview).contrlRect))
 	if (!(err = GetDragAttributes (theDragRef,&dragAttrs)))
 	if (!(PtInRect(theMouse, &parentEditor->dragSrcRect)))
 	//if (!(dragAttrs & kDragInsideSenderWindow))
@@ -76,20 +78,68 @@ pascal OSErr DrawDragHilite(DragReference theDragRef, icnsEditorPtr parentEditor
 			RectRgn(hiliteRgn, &parentEditor->controls.display.maskLargeRect);
 		else if (PtInRect(theMouse, &parentEditor->controls.display.maskSmallRect))
 			RectRgn(hiliteRgn, &parentEditor->controls.display.maskSmallRect);
+		else if (PtInRect(theMouse, &(**parentEditor->controls.display.preview).contrlRect))
+		{
+			RectRgn(hiliteRgn, &(**parentEditor->controls.display.preview).contrlRect);
+			InsetRgn(hiliteRgn, 1, 1);
+		}
 		else
 		{
 			Rect	tempRect = {-1, -1, 0, 0};
 			RectRgn(hiliteRgn, &tempRect);
 		}
-		SAVEGWORLD;
+		
+		RGBColor dragHiliteColor, windowForeColor;
+		RgnHandle	tempRgn;
+		Rect		targetRect;
+		
 		SAVECOLORS;
+		SAVEGWORLD;
 		SetPort(parentEditor->window);
-		err = ShowDragHilite (theDragRef,hiliteRgn,true);
+		
+		GetDragHiliteColor(parentEditor->window, &dragHiliteColor);
+		
+		tempRgn = NewRgn();
+		CopyRgn(hiliteRgn, tempRgn);
+		InsetRgn(tempRgn, 2, 2);
+		DiffRgn(hiliteRgn, tempRgn, hiliteRgn);
+		DisposeRgn(tempRgn);
+		
+		GetForeColor(&windowForeColor);
+		RGBForeColor(&dragHiliteColor);
+		
+		targetRect = parentEditor->window->portRect;
+		OffsetRect(&targetRect, -targetRect.left, -targetRect.top);
+		
+		if (parentEditor->statics.dragHiliteRgn == NULL)
+		{			 
+			parentEditor->statics.dragHiliteRgn = hiliteRgn;
+			
+			//PlayThemeSound(kThemeSoundDragTargetUnhilite);
+			 
+			PaintRgn(hiliteRgn);
+		}
+		else if (!EqualRgn(hiliteRgn, parentEditor->statics.dragHiliteRgn))
+		{
+			InvalRgn(parentEditor->statics.dragHiliteRgn);
+			parentEditor->Refresh();
+			
+			DisposeRgn(parentEditor->statics.dragHiliteRgn);
+			
+			//PlayThemeSound(kThemeSoundDragTargetHilite);
+			
+			parentEditor->statics.dragHiliteRgn = hiliteRgn;
+			
+			PaintRgn(hiliteRgn);
+		}
+		else
+			DisposeRgn(hiliteRgn);
+		
+		RGBForeColor(&windowForeColor);
 		RESTOREGWORLD;
 		RESTORECOLORS;
-		DisposeRgn (hiliteRgn);
 	}
-
+	
 	return err;
 }
 
@@ -126,7 +176,7 @@ pascal OSErr DragTrackingHandler(DragTrackingMessage message, WindowPtr theWindo
 pascal OSErr DragReceiveHandler (WindowPtr theWindow, void *, DragReference theDragRef)
 {
 	icnsEditorPtr	parentEditor;
-	OSErr			err;
+	OSErr			err = noErr;
 	FlavorType		flavorType;
 	ItemReference	theItem;
 	GWorldPtr		targetGW, tempGW;
@@ -134,7 +184,7 @@ pascal OSErr DragReceiveHandler (WindowPtr theWindow, void *, DragReference theD
 	Point			theMouse, localMouse;
 	long			targetName, tempName;
 	long			iconType, typeSize=sizeof(long);
-	bool			approved;
+	bool			approved, replaceIcon = false;
 	PicHandle		pic;
 	long			picSize;
 	Rect			targetRect = {0, 0, 0, 0};
@@ -146,6 +196,13 @@ pascal OSErr DragReceiveHandler (WindowPtr theWindow, void *, DragReference theD
 	
 	err = noErr;
 	parentEditor = GetEditor(theWindow);
+	
+	if (parentEditor->statics.dragHiliteRgn != NULL)
+	{
+		DisposeRgn(parentEditor->statics.dragHiliteRgn);
+		parentEditor->statics.dragHiliteRgn = NULL;
+	}
+	
 	if ((ApproveDragReference (theDragRef,&approved, parentEditor) == noErr) && approved)
 	{
 		SetRect(&parentEditor->dragSrcRect, 0, 0, 0, 0);
@@ -161,6 +218,13 @@ pascal OSErr DragReceiveHandler (WindowPtr theWindow, void *, DragReference theD
 				targetGW = parentEditor->currentGW;
 				targetPix = parentEditor->currentPix;
 				targetName = parentEditor->currentPixName;
+			}
+			else if (PtInRect(localMouse, &(**parentEditor->controls.display.preview).contrlRect))
+			{
+				replaceIcon = true;
+				targetGW = parentEditor->il32GW;
+				targetPix = parentEditor->il32Pix;
+				targetName = il32;
 			}
 			else parentEditor->GetDisplayPix(theMouse, &targetGW, &targetPix, &targetName, &targetRect);
 			updateRgn = NewRgn();
@@ -195,24 +259,34 @@ pascal OSErr DragReceiveHandler (WindowPtr theWindow, void *, DragReference theD
 			}
 			
 			GetFlavorType(theDragRef,theItem,2,&flavorType);
-			if (flavorType == 'Icon')
-				switch (targetName)
-				{
-					case h8mk: case l8mk: case s8mk: case ichm: case icnm: case icsm:
-						GetFlavorData (theDragRef,theItem,'Icon',&iconType,&typeSize,0);
-						switch (iconType)
-						{
-							case h8mk: case l8mk: case s8mk: case ichm: case icnm: case icsm:
-								parentEditor->InsertFromPicture(pic, targetGW, true);
-								break;
-							default:
-								parentEditor->PictureToMask(pic, targetGW);
-						}
-						break;
-					default:
-						parentEditor->InsertFromPicture(pic, targetGW, true);
-						break;
-				}
+			if (replaceIcon)
+			{
+				InsertPicIntoIcon(parentEditor, pic);
+			}
+			else if (flavorType == 'Icon')
+			{
+				GetFlavorData (theDragRef,theItem,'Icon',&iconType,&typeSize,0);
+				if (iconType == selection)
+					parentEditor->InsertFromPicture(pic, targetGW, false);
+				else
+					switch (targetName)
+					{
+						case h8mk: case l8mk: case s8mk: case ichm: case icnm: case icsm:
+							GetFlavorData (theDragRef,theItem,'Icon',&iconType,&typeSize,0);
+							switch (iconType)
+							{
+								case h8mk: case l8mk: case s8mk: case ichm: case icnm: case icsm:
+									parentEditor->InsertFromPicture(pic, targetGW, true);
+									break;
+								default:
+									parentEditor->PictureToMask(pic, targetGW);
+							}
+							break;
+						default:
+							parentEditor->InsertFromPicture(pic, targetGW, true);
+							break;
+					}
+			}
 			else
 				parentEditor->InsertFromPicture(pic, targetGW, false);
 			switch (targetName)
@@ -223,22 +297,219 @@ pascal OSErr DragReceiveHandler (WindowPtr theWindow, void *, DragReference theD
 			}
 			DisposeHandle((Handle)pic);
 			
-			parentEditor->currentState = new drawingStateClass(parentEditor->currentState, parentEditor);
+			
+			if (parentEditor->currentPix != targetPix)
+			{
+				parentEditor->status |= (dontRestoreCurrentPix | skipState);
+				tempPix = parentEditor->currentPix;
+				tempGW = parentEditor->currentGW;
+				tempName = parentEditor->currentPixName;
+				parentEditor->currentPix = targetPix;
+				parentEditor->currentGW = targetGW;
+				parentEditor->currentPixName = targetName;
+				parentEditor->currentState = new drawingStateClass(parentEditor->currentState, parentEditor);	
+				parentEditor->currentPix = tempPix;
+				parentEditor->currentGW = tempGW;
+				parentEditor->currentPixName = tempName;
+				parentEditor->status &= ~(dontRestoreCurrentPix | skipState);
+			}
+			
+			parentEditor->currentState = new drawingStateClass(parentEditor->currentState, parentEditor);	
+				
 			
 			InvalRgn(updateRgn);
 			parentEditor->Refresh();
-			parentEditor->status |= needToSave;
+			parentEditor->status |= (needToSave | needsUpdate);
 			
 			DisposeRgn(updateRgn);
 		}
 		else
 			err = badDragFlavorErr;
 	}
-	return err;
 	
+	return err;
 }
 
-void DragPixMap(EventRecord *eventPtr, PixMapHandle dragPix, long dragType)
+void InsertPicIntoIcon(icnsEditorPtr parentEditor, PicHandle pic)
+{
+	GWorldPtr		iconGW, maskGW, targetIconGW, targetMaskGW;
+	PixMapHandle	iconPix, maskPix, targetIconPix, targetMaskPix;
+	long			targetIconName, targetMaskName;
+	Rect			srcRect, targetRect;
+	CTabHandle		grayscaleTable;
+	
+	srcRect = (**pic).picFrame;
+	
+	NewGWorld(&iconGW, 32, &srcRect, NULL, NULL, 0);
+	iconPix = GetGWorldPixMap(iconGW);
+	LockPixels(iconPix);
+	
+	grayscaleTable = GetCTable(40);
+	NewGWorld(&maskGW, 8, &srcRect, grayscaleTable, NULL, 0);
+	maskPix = GetGWorldPixMap(maskGW);
+	LockPixels(maskPix);
+	
+	DisposeCTable(grayscaleTable);
+	
+	PictureToARGB(pic, iconPix, maskPix, true);
+	
+	switch (GetControlValue(parentEditor->controls.display.iconPopup))
+	{
+		case k32BitIcon:
+			switch ((**parentEditor->currentPix).bounds.right)
+			{
+				case 32: targetIconGW = parentEditor->il32GW; targetIconPix = parentEditor->il32Pix; targetIconName = il32; break;
+				case 16: targetIconGW = parentEditor->is32GW; targetIconPix = parentEditor->is32Pix; targetIconName = is32; break;
+				case 48: targetIconGW = parentEditor->ih32GW; targetIconPix = parentEditor->ih32Pix; targetIconName = ih32; break;
+			}
+			break;
+		case k8BitIcon:
+			switch ((**parentEditor->currentPix).bounds.right)
+			{
+				case 32: targetIconGW = parentEditor->icl8GW; targetIconPix = parentEditor->icl8Pix; targetIconName = icl8; break;
+				case 16: targetIconGW = parentEditor->ics8GW; targetIconPix = parentEditor->ics8Pix; targetIconName = ics8; break;
+				case 48: targetIconGW = parentEditor->ich8GW; targetIconPix = parentEditor->ich8Pix; targetIconName = ich8; break;
+			}
+			break;
+		case k4BitIcon:
+			switch ((**parentEditor->currentPix).bounds.right)
+			{
+				case 32: targetIconGW = parentEditor->icl4GW; targetIconPix = parentEditor->icl4Pix; targetIconName = icl4; break;
+				case 16: targetIconGW = parentEditor->ics4GW; targetIconPix = parentEditor->ics4Pix; targetIconName = ics4; break;
+				case 48: targetIconGW = parentEditor->ich4GW; targetIconPix = parentEditor->ich4Pix; targetIconName = ich4; break;
+			}
+			break;
+		case k1BitIcon:
+			switch ((**parentEditor->currentPix).bounds.right)
+			{
+				case 32: targetIconGW = parentEditor->icniGW; targetIconPix = parentEditor->icniPix; targetIconName = icni; break;
+				case 16: targetIconGW = parentEditor->icsiGW; targetIconPix = parentEditor->icsiPix; targetIconName = icsi; break;
+				case 48: targetIconGW = parentEditor->ichiGW; targetIconPix = parentEditor->ichiPix; targetIconName = ichi; break;
+			}
+			break;
+			
+	}
+	switch (GetControlValue(parentEditor->controls.display.maskPopup))
+	{
+		case k8BitMask:
+			switch ((**parentEditor->currentPix).bounds.right)
+			{
+				case 32: targetMaskGW = parentEditor->l8mkGW; targetMaskPix = parentEditor->l8mkPix; targetMaskName = l8mk; break;
+				case 16: targetMaskGW = parentEditor->s8mkGW; targetMaskPix = parentEditor->s8mkPix; targetMaskName = s8mk; break;
+				case 48: targetMaskGW = parentEditor->h8mkGW; targetMaskPix = parentEditor->h8mkPix; targetMaskName = h8mk; break;
+			}
+			break;
+		case k1BitMask:
+			switch ((**parentEditor->currentPix).bounds.right)
+			{
+				case 32: targetMaskGW = parentEditor->icnmGW; targetMaskPix = parentEditor->icnmPix; targetMaskName = icnm; break;
+				case 16: targetMaskGW = parentEditor->icsmGW; targetMaskPix = parentEditor->icsmPix; targetMaskName = icsm; break;
+				case 48: targetMaskGW = parentEditor->ichmGW; targetMaskPix = parentEditor->ichmPix; targetMaskName = ichm; break;
+			}
+			break;
+			
+	}
+	
+	if (targetIconName != parentEditor->currentPixName)
+	{
+		GWorldPtr tempGW;
+		PixMapHandle tempPix;
+		long	tempName;
+		
+		parentEditor->status |= (dontRestoreCurrentPix | skipState);
+		tempPix = parentEditor->currentPix;
+		tempGW = parentEditor->currentGW;
+		tempName = parentEditor->currentPixName;
+		parentEditor->currentPix = targetIconPix;
+		parentEditor->currentGW = targetIconGW;
+		parentEditor->currentPixName = targetIconName;
+		parentEditor->currentState = new drawingStateClass(parentEditor->currentState, parentEditor);
+		parentEditor->currentPix = tempPix;
+		parentEditor->currentGW = tempGW;
+		parentEditor->currentPixName = tempName;
+		parentEditor->status &= ~(dontRestoreCurrentPix | skipState);
+	
+	}
+	else
+	{
+		GWorldPtr tempGW;
+		PixMapHandle tempPix;
+		long	tempName;
+		
+		parentEditor->status |= (dontRestoreCurrentPix | skipState);
+		tempPix = parentEditor->currentPix;
+		tempGW = parentEditor->currentGW;
+		tempName = parentEditor->currentPixName;
+		parentEditor->currentPix = targetMaskPix;
+		parentEditor->currentGW = targetMaskGW;
+		parentEditor->currentPixName = targetMaskName;
+		parentEditor->currentState = new drawingStateClass(parentEditor->currentState, parentEditor);
+		parentEditor->currentPix = tempPix;
+		parentEditor->currentGW = tempGW;
+		parentEditor->currentPixName = tempName;
+		parentEditor->status &= ~(dontRestoreCurrentPix | skipState);
+	}
+	
+	
+	targetRect = srcRect;
+	MakeTargetRect((**parentEditor->currentPix).bounds, &targetRect);
+	
+	(**iconPix).bounds = targetRect;
+	(**maskPix).bounds = targetRect;
+			   
+	MergePix(targetIconPix, targetMaskPix, iconPix, maskPix, targetIconPix, targetMaskPix);
+
+	if (targetIconName != parentEditor->currentPixName)
+	{
+		GWorldPtr tempGW;
+		PixMapHandle tempPix;
+		long	tempName;
+		
+		parentEditor->status |= (dontRestoreCurrentPix | skipState);
+		tempPix = parentEditor->currentPix;
+		tempGW = parentEditor->currentGW;
+		tempName = parentEditor->currentPixName;
+		parentEditor->currentPix = targetIconPix;
+		parentEditor->currentGW = targetIconGW;
+		parentEditor->currentPixName = targetIconName;
+		parentEditor->currentState = new drawingStateClass(parentEditor->currentState, parentEditor);
+		parentEditor->currentPix = tempPix;
+		parentEditor->currentGW = tempGW;
+		parentEditor->currentPixName = tempName;
+		parentEditor->status &= ~(dontRestoreCurrentPix | skipState);
+	}
+	else
+	{
+		GWorldPtr tempGW;
+		PixMapHandle tempPix;
+		long	tempName;
+		
+		parentEditor->status |= (dontRestoreCurrentPix | skipState);
+		tempPix = parentEditor->currentPix;
+		tempGW = parentEditor->currentGW;
+		tempName = parentEditor->currentPixName;
+		parentEditor->currentPix = targetMaskPix;
+		parentEditor->currentGW = targetMaskGW;
+		parentEditor->currentPixName = targetMaskName;
+		parentEditor->currentState = new drawingStateClass(parentEditor->currentState, parentEditor);
+		parentEditor->currentPix = tempPix;
+		parentEditor->currentGW = tempGW;
+		parentEditor->currentPixName = tempName;
+		parentEditor->status &= ~(dontRestoreCurrentPix | skipState);
+	}
+	
+	UnlockPixels(iconPix);
+	DisposeGWorld(iconGW);
+	UnlockPixels(maskPix);
+	DisposeGWorld(maskGW);
+}
+
+void DragPixMap(EventRecord *eventPtr,
+				PixMapHandle dragPix,
+				RgnHandle dragShapeRgn,
+				PixMapHandle dragContentsPix,
+				RgnHandle dragContentsRgn,
+				long dragType)
 {
 	DragReference	dragRef;
 	RgnHandle		dragRgn, tempRgn, maskRgn;
@@ -247,11 +518,20 @@ void DragPixMap(EventRecord *eventPtr, PixMapHandle dragPix, long dragType)
 	
 	NewDrag(&dragRef);
 	
-	dragRgn = NewRgn();
 	maskRgn = NewRgn();
-	RectRgn(dragRgn, &(**dragPix).bounds);
-	CopyRgn(dragRgn, maskRgn);
-	PixMapToPicture(dragPix, maskRgn, &dragPic);
+	if (dragShapeRgn == NULL)
+		RectRgn(maskRgn, &(**dragPix).bounds);
+	else
+		CopyRgn(dragShapeRgn, maskRgn);
+		
+	dragRgn = NewRgn();
+	if (dragContentsRgn == NULL)
+		RectRgn(dragRgn,  &(**dragContentsPix).bounds);
+	else
+		CopyRgn(dragContentsRgn, dragRgn);
+
+	
+	PixMapToPicture(dragContentsPix, dragRgn, &dragPic);
 	
 	AddDragItemFlavor(dragRef, 0, 'PICT', *dragPic,  GetHandleSize((Handle)dragPic), 0);
 	AddDragItemFlavor(dragRef, 0, 'Icon', &dragType, sizeof(long), 0);
@@ -260,16 +540,17 @@ void DragPixMap(EventRecord *eventPtr, PixMapHandle dragPix, long dragType)
 	offsetPt.h -= (**dragPix).bounds.right/2;
 	offsetPt.v -= (**dragPix).bounds.bottom/2;
 	
-	SetDragImage(dragRef, dragPix, maskRgn, offsetPt, kDragStandardTranslucency);
+	if (RegionArea(maskRgn) < 9216)
+		SetDragImage(dragRef, dragPix, maskRgn, offsetPt, kDragStandardTranslucency);
 	
 	tempRgn = NewRgn();
-	CopyRgn(dragRgn, tempRgn);
+	CopyRgn(maskRgn, tempRgn);
 	InsetRgn(tempRgn, 1, 1);
-	DiffRgn(dragRgn, tempRgn, dragRgn);
+	DiffRgn(maskRgn, tempRgn, tempRgn);
 
-	OffsetRgn (dragRgn, offsetPt.h, offsetPt.v);
+	OffsetRgn(tempRgn, offsetPt.h, offsetPt.v);
 	
-	TrackDrag(dragRef,eventPtr,dragRgn);
+	TrackDrag(dragRef,eventPtr,tempRgn);
 	
 	DisposeRgn(maskRgn);
 	DisposeRgn(dragRgn);

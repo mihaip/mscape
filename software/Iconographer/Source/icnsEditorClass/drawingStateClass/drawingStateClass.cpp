@@ -27,6 +27,7 @@ drawingStateClass::drawingStateClass(drawingStatePtr previousLastState, icnsEdit
 					tempState2;
 					
 	SAVECOLORS; // we'll be doing some CopyBits so we need the colors to be rest
+	SAVEGWORLD;
 	
 	previousState = previousLastState; // linking the list
 	nextState = NULL; // we're insterting at the end
@@ -64,21 +65,36 @@ drawingStateClass::drawingStateClass(drawingStatePtr previousLastState, icnsEdit
 				 0);
 		selectionPix = GetGWorldPixMap(selectionGW);
 		LockPixels(selectionPix);
+		CropPixMap(selectionPix, (**editor->selectionPix).rowBytes & 0x3FFF);
 		CopyPixMap(editor->selectionPix,
 				   selectionPix,
 				   &selectionRect,
 				   &selectionRect,
 				   srcCopy,
 				   NULL);
-		}
+	}
 	
 	// and now we save the contents of the drawing itself
 	drawingRect = (**editor->currentPix).bounds;
 	
-	NewGWorld(&drawingGW, 32, &drawingRect, NULL, NULL, 0);
+	NewGWorld(&drawingGW,
+			  (**editor->currentPix).pixelSize,
+			  &drawingRect,
+			  (**editor->currentPix).pmTable,
+			  NULL,
+			  0);
+			  
 	drawingPix = GetGWorldPixMap(drawingGW);
 	LockPixels(drawingPix);
-	CopyBits((BitMap*)*editor->currentPix, (BitMap*)*drawingPix, &drawingRect, &drawingRect, srcCopy, NULL);
+	
+	SetGWorld(drawingGW, NULL);
+	
+	CopyPixMap(editor->currentPix,
+			   drawingPix,
+			   &drawingRect,
+			   &drawingRect,
+			   srcCopy,
+			   NULL);
 	
 	// we also need to remember from which pixmap/gworld it was taken
 	drawingSrcPix = editor->currentPix;
@@ -89,6 +105,7 @@ drawingStateClass::drawingStateClass(drawingStatePtr previousLastState, icnsEdit
 	status = editor->status;
 	sizes = editor->sizes;
 	
+	RESTOREGWORLD;
 	RESTORECOLORS; // we're done, so we can restore the colors
 }
 
@@ -136,8 +153,11 @@ void drawingStateClass::RestoreState(icnsEditorPtr editor)
 {
 	OSStatus err = noErr; // used for error checking
 	
+	SAVEGWORLD;
 	SAVECOLORS; // again, we'll be doing some copying
 	
+	SetGWorld(drawingGW, NULL);
+		
 	// first we restore the drawing
 	CopyPixMap(drawingPix,
 			   drawingSrcPix,
@@ -194,5 +214,7 @@ void drawingStateClass::RestoreState(icnsEditorPtr editor)
 	// and the drawing area needs to be updated
 	editor->InvalidateDrawingArea();
 	
+	RESTOREGWORLD;
 	RESTORECOLORS;
+	
 }

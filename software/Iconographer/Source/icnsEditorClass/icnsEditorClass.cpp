@@ -8,97 +8,9 @@
 
 #include "icnsEditorClass.h"
 #include "drawingStateClass.h"
+#include "editorStaticsClass.h"
 
-staticsClass icnsEditorClass::statics;
-
-// __________________________________________________________________________________________
-// Name			: staticsClass::staticsClass
-// Input		: None
-// Output		: None
-// Description	: Initializes all the static data, which is shared by all editors. This
-//				  includes resources used in drawing the interface, and the canvas GWorld used
-//				  as an intermediary step for compositing when drawing
-
-staticsClass::staticsClass(void)
-{
-	InitToolbox(); // since this function is called before anything else, we must initialize
-				   // the toolbox before doing anything else
-	
-	GetGWorld(&startupPort, &startupDevice); // these are the GWorld & GDevice for the
-											 // screen we start up with
-
-	for (int i=0; i < kNoOfSelectionPatterns; i++)
-		GetIndPattern(&selectionPatterns[i], rSelectionPatterns, i+1);
-	// we load the patterns used for the drawing of the selection marching ant animation
-
-	swapColorsIconEnabled = GetCIcon(rSwapColorsIconEnabled); // here we're loading the icons
-	HLock((Handle)swapColorsIconEnabled);				      // used for the disabled/
-	swapColorsIconDisabled = GetCIcon(rSwapColorsIconDisabled); // enabled view of the
-	HLock((Handle)swapColorsIconDisabled);					  // swap colors widget
-
-	resetColorsIconEnabled = GetCIcon(rResetColorsIconEnabled); // ditto here, but for the
-	HLock((Handle)resetColorsIconEnabled);						// reset colors widget
-	resetColorsIconDisabled = GetCIcon(rResetColorsIconDisabled);
-	HLock((Handle)resetColorsIconDisabled);
-
-	SetRect(&canvasRect, 0, 0, kMaxIconSize * kMaxMagnification, kMaxIconSize * kMaxMagnification);
-	NewGWorld(&canvasGW, 32, &canvasRect, NULL, NULL, 0);
-	canvasPix = GetGWorldPixMap(canvasGW);
-	LockPixels(canvasPix);
-	// we're making the canas GWorld/PixMap, which is used for compositing and as an
-	// intermediate step before copying the result to the main screen
-	
-	AllocateEmergencyMemory(); // we reserve some memory for use in emergency situations
-}
-
-// __________________________________________________________________________________________
-// Name			: staticsClass::~staticsClass
-// Input		: None
-// Output		: None
-// Description	: Deallocates the loaded resources and the canvas GWorld, this is only called
-//				  when the programs quits
-
-staticsClass::~staticsClass(void)
-{
-	UnlockPixels(canvasPix); // we're done with the canvas GWorld/PixMap
-	DisposeGWorld(canvasGW);
-	
-	HUnlock((Handle)swapColorsIconEnabled); // we can get rid of these resources too
-	DisposeCIcon(swapColorsIconEnabled);
-	HUnlock((Handle)swapColorsIconDisabled);
-	DisposeCIcon(swapColorsIconDisabled);
-	HUnlock((Handle)resetColorsIconEnabled);
-	DisposeCIcon(resetColorsIconEnabled);
-	HUnlock((Handle)resetColorsIconDisabled);
-	DisposeCIcon(resetColorsIconDisabled);
-	
-	SetGWorld(startupPort, startupDevice); // and restore the startup port and device
-	// (altho there shouldn't have been any reason to change them in the first place)
-}
-
-// __________________________________________________________________________________________
-// Name			: staticsClass::ReclaimEmergencyMemory
-// Input		: None
-// Output		: None
-// Description	: This function frees the emergency memory chunk, so that there is more
-//				  memory available, when it is required in emergency cases
-
-void staticsClass::ReclaimEmergencyMemory(void)
-{
-	DisposePtr(tempMemoryChunk); // we dispose of the memory, to make room
-}
-
-// __________________________________________________________________________________________
-// Name			: staticsClass::AllocateEmergencyMemory
-// Input		: None
-// Output		: None
-// Description	: This function reserves a chunk of memory (actual size specified by a
-//				  constant) for future use in emergency situations
-
-void staticsClass::AllocateEmergencyMemory(void)
-{
-	tempMemoryChunk = NewPtr(kEmergencyMemorySize);
-}
+editorStaticsClass icnsEditorClass::statics;
 
 // __________________________________________________________________________________________
 // Name			: icnsEditorClass::icnsEditorClass
@@ -112,7 +24,8 @@ void staticsClass::AllocateEmergencyMemory(void)
 
 icnsEditorClass::icnsEditorClass(icnsEditorClass* previousLastEditor)
 {
-	OSStatus  err = noErr; // used for checking if everything went OK
+	OSStatus	err = noErr; // used for checking if everything went OK
+	Str255		fileName;
 	
 	nextEditor = NULL; // we insert ourselves into the linked list by making the previous
 	previousEditor = previousLastEditor; // item point to us, and we point to them
@@ -187,8 +100,9 @@ icnsEditorClass::icnsEditorClass(icnsEditorClass* previousLastEditor)
 	
 	UpdateToolbar(); // we must get the toolbar to draw to reflect the tool we have set
 	
-	magnification = kMinMagnification; // we start up at the maximum zoomed out level.
+	magnification = (**statics.preferences.data).defaultZoomLevel;
 	
+	ResizeWindow();
 	status |= (resized | canZoomIn);
 	// we are "resized" since the controls need repositioning (to take into account the
 	// zoom level. We can also zoomIn since we're zoomed out at the max level right now
@@ -199,6 +113,11 @@ icnsEditorClass::icnsEditorClass(icnsEditorClass* previousLastEditor)
 	currentState = new drawingStateClass(NULL, this); // we store the current state
 	firstState = currentState; // and also make this the first one
 	
+	srcFileSpec.vRefNum = 0;
+	srcFileSpec.parID = 0;
+	GetIndString(fileName, rBasicStrings, sUntitledName);
+	CopyString(srcFileSpec.name, fileName);
+	
 	RefreshWindowTitle(); // the window title is updated to reflect the icon name
 	
 	foreColor.red = foreColor.green = foreColor.blue = 0; // default foreground color (black)
@@ -206,12 +125,8 @@ icnsEditorClass::icnsEditorClass(icnsEditorClass* previousLastEditor)
 	
 	ID = rCustomIcon; // the default ID is the standard finder custom icon ID
 	
-	ShowWindow(window); // we can now show the window
-	
 	InstallDraggingHandlers(); // the functions which handle drag and drop must be installed
-							   // after the window is visible	
-							   
-	Refresh(); // we're done with the creation, we can now draw everything
+							   // after the window is visible
 }
 
 // __________________________________________________________________________________________
@@ -229,11 +144,14 @@ OSStatus icnsEditorClass::CreateControls()
 												 // is for the drawing function of the icon well
 								colorsDrawUPP, // for the color swatch
 								displayDrawUPP, // the display on the right side
-								previewDrawUPP; // the preview in the bottom right corner
+								previewDrawUPP, // the preview in the bottom right corner
+								placardDrawUPP;
 	ControlUserPaneHitTestUPP	iconWellHitTestUPP, // hit testing counterparts for the controls
 								colorsHitTestUPP, // mentioned above
 								displayHitTestUPP,
-								previewHitTestUPP;
+								previewHitTestUPP,
+								placardHitTestUPP;
+	ControlUserPaneTrackingUPP	placardTrackingUPP;
 	Str255						iconLabel, // text used for loading and setting of various
 								maskLabel, // labels
 								previewLabel;
@@ -269,6 +187,14 @@ OSStatus icnsEditorClass::CreateControls()
 	if (controls.toolbar.line == NULL) return mFulErr;
 	controls.toolbar.rectangle = GetNewControl(rRectangle, window);
 	if (controls.toolbar.rectangle == NULL) return mFulErr;
+	controls.toolbar.oval = GetNewControl(rOval, window);
+	if (controls.toolbar.oval == NULL) return mFulErr;
+	controls.toolbar.polygon = GetNewControl(rPolygon, window);
+	if (controls.toolbar.polygon == NULL) return mFulErr;
+	controls.toolbar.gradient = GetNewControl(rGradient, window);
+	if (controls.toolbar.gradient == NULL) return mFulErr;
+	controls.toolbar.text = GetNewControl(rText, window);
+	if (controls.toolbar.text == NULL) return mFulErr;
 	
 	// now we do the edit well (where the currently selected size/depth is displayed, and where
 	// the actual editing takes place)
@@ -296,23 +222,48 @@ OSStatus icnsEditorClass::CreateControls()
 	// the placard (which provides the background bevel for the text) and a text field for
 	// each. we also set the text style for the text fields to what we want (geneva 9 centered)
 	
-	// the zoom display
-	controls.zoomDisplayPlacard = GetNewControl(rZoomDisplayPlacard, window);
-	if (controls.zoomDisplayPlacard == NULL) return mFulErr;
-	controls.zoomDisplayText = GetNewControl(rZoomDisplayText, window);
-	if (controls.zoomDisplayText == NULL) return mFulErr;
-	SetControlFontStyle(controls.zoomDisplayText, &smallTextStyle);
-	EmbedControl(controls.zoomDisplayText, controls.zoomDisplayPlacard);
-	// we're embedding the control so that it overlaps and displays properly (plus it makes
-	// logical sense)
+	controls.zoomPlacard.control = GetNewControl(rZoomPlacard, window);
+	if (controls.zoomPlacard.control == NULL) return mFulErr;
 	
-	// the info display
-	controls.infoDisplayPlacard = GetNewControl(rInfoDisplayPlacard, window);
-	if (controls.infoDisplayPlacard == NULL) return mFulErr;
-	controls.infoDisplayText = GetNewControl(rInfoDisplayText, window);
-	if (controls.infoDisplayText == NULL) return mFulErr;
-	SetControlFontStyle(controls.infoDisplayText, &smallTextStyle);
-	EmbedControl(controls.infoDisplayText, controls.infoDisplayPlacard);
+	// here too we must set the drawing and hit test handling functions.
+	placardDrawUPP = NewControlUserPaneDrawProc(PlacardDraw);
+	placardHitTestUPP = NewControlUserPaneHitTestProc(PlacardHitTest);
+	placardTrackingUPP = NewControlUserPaneTrackingProc(PlacardTracking);
+	SetControlData(controls.zoomPlacard.control,
+				   kControlNoPart,
+				   kControlUserPaneDrawProcTag, 
+				   sizeof(placardDrawUPP),
+				   (Ptr) &placardDrawUPP);
+	/*SetControlData(controls.zoomPlacard.control,
+				   kControlNoPart,
+				   kControlUserPaneHitTestProcTag, 
+				   sizeof(placardHitTestUPP),
+				   (Ptr) &placardHitTestUPP);
+	SetControlData(controls.zoomPlacard.control,
+				   kControlNoPart,
+				   kControlUserPaneTrackingProcTag, 
+				   sizeof(placardTrackingUPP),
+				   (Ptr) &placardTrackingUPP);*/
+				   
+	controls.infoPlacard.control = GetNewControl(rInfoPlacard, window);
+	if (controls.infoPlacard.control == NULL) return mFulErr;
+	
+	// here too we must set the drawing and hit test handling functions.
+	SetControlData(controls.infoPlacard.control,
+				   kControlNoPart,
+				   kControlUserPaneDrawProcTag, 
+				   sizeof(placardDrawUPP),
+				   (Ptr) &placardDrawUPP);
+	SetControlData(controls.infoPlacard.control,
+				   kControlNoPart,
+				   kControlUserPaneHitTestProcTag, 
+				   sizeof(placardHitTestUPP),
+				   (Ptr) &placardHitTestUPP);
+	SetControlData(controls.infoPlacard.control,
+				   kControlNoPart,
+				   kControlUserPaneTrackingProcTag, 
+				   sizeof(placardTrackingUPP),
+				   (Ptr) &placardTrackingUPP);
 	
 	// another custom control, this is the swatch of the foreground and background colors
 	// in adition to these two color samles it also contains two little widgets, one of the
@@ -469,6 +420,17 @@ void icnsEditorClass::InstallDraggingHandlers()
 	InstallReceiveHandler(dragReceiveHandlerUPP,window,NULL);
 }
 
+void icnsEditorClass::Show(void)
+{
+	ShowWindow(window);
+	Refresh();
+}
+
+void icnsEditorClass::Hide(void)
+{
+	HideWindow(window);
+}
+
 // __________________________________________________________________________________________
 // Name			: icnsEditorClass::~icnsEditorClass
 // Input		: None
@@ -554,6 +516,10 @@ void icnsEditorClass::DoIdle(void)
 					break;
 				case line: ChangeCursor(rMarquee); break;
 				case rectangle: ChangeCursor(rMarquee); break;
+				case oval: ChangeCursor(rMarquee); break;
+				case polygon: ChangeCursor(rMarquee); break;
+				case gradient: ChangeCursor(rMarquee); break;
+				case text: ChangeCursor(rIBeam); break;
 			}
 		}
 		else
@@ -625,11 +591,13 @@ void icnsEditorClass::ChangeCursor(int ID)
 {
 	if (currentCursor != ID) // if the cursor isn't already set to the new value
 	{
-		if (ID != rArrow) // if it's a plain cursor, we just set it...
-			SetCursor(ID);
-		else
-			SetCursor(&qd.arrow); // if it's the arrow we use this system global, since that is
-								  // where the official arrow is stored
+		switch (ID)
+		{
+			case rArrow: SetCursor(&qd.arrow); break;
+			case rIBeam: SetCursor(*GetCursor(iBeamCursor)); break;
+			default: SetCursor(ID); break;
+			
+		}
 		currentCursor = ID; // and we change the current cursor
 	}
 }
@@ -671,7 +639,7 @@ void icnsEditorClass::DisposeStates(void)
 void icnsEditorClass::Refresh(void)
 {
 	Str255		magnificationText;
-	Str255		IDAsString, infoText;
+	Str255		IDAsString, infoText = "\p";
 	
 	SAVEGWORLD; // saving the current gworld for restoring later
 	
@@ -697,7 +665,7 @@ void icnsEditorClass::Refresh(void)
 		// we must also update the zoom display text
 		NumToString(magnification * 100, magnificationText);
 		AppendString(magnificationText, "\p%");
-		SetControlText(controls.zoomDisplayText, magnificationText);
+		CopyString(controls.zoomPlacard.text, magnificationText);
 		
 		status &= ~resized; // and we're done with the resizing
 	}
@@ -706,9 +674,15 @@ void icnsEditorClass::Refresh(void)
 	
 	// setting the text for the info display field (currently just the icon ID)
 	NumToString(ID, IDAsString);
-	CopyString(infoText, "\pID: ");
+	if (name[0] != 0)
+	{
+		AppendString(infoText, "\pName: \"");
+		AppendString(infoText, name);
+		AppendString(infoText, "\p\" ");
+	}
+	AppendString(infoText, "\pID: ");
 	AppendString(infoText, IDAsString);
-	SetControlText(controls.infoDisplayText, infoText);
+	CopyString(controls.infoPlacard.text, infoText);
 	
 	UpdateControls(window, window->visRgn); // we're also refreshing the controls
 	
@@ -742,10 +716,8 @@ void icnsEditorClass::HandleContentClick(EventRecord *eventPtr)
 {
 	ControlHandle	clickedControl;
 	int				controlPart, oldDepth = -1;
-	Point			where;
-	Str255			messageString;
 	OSStatus		err = noErr;
-
+	Point			where;
 	
 	SAVEGWORLD;
 	SAVECOLORS;
@@ -788,46 +760,16 @@ void icnsEditorClass::HandleContentClick(EventRecord *eventPtr)
 					oldDepth = GetControlValue(controls.display.maskPopup);
 					ChangeCursor(rCopyCursor);
 				}
-				
+				else if (clickedControl == controls.colorSwatch.control)
+					// if it was the color swatch
+					HandleSwatchClick(controlPart, where);
+
 				if (TrackControl(clickedControl, where, NULL))
 				// TrackControl sees if when the user actually lets go of the button and the
 				// cursor is still over the control
 				{
 					if (HandleToolClick(clickedControl)) // if the user let go over the toolbar
 						UpdateToolbar(); // then we must update it
-					else if (clickedControl == controls.colorSwatch.control)
-					// if it was the color swatch
-					{
-						switch (controlPart)
-						// we do different things based on the control part where the user
-						// clicked
-						{
-							case kForeColorPart :
-								GetIndString(messageString, rLabelStrings, sForeColor);
-								// we get the message we must display for the user
-								
-								// and then we put up the color picker for the user
-								GetColor(where,
-										 messageString,
-										 &foreColor, // this is the "old color"
-										 &foreColor); // this is where the result will be stored
-								break;
-							case kBackColorPart :
-								// same as above, except for the background color
-								GetIndString(messageString, rLabelStrings, sBackColor);
-								
-								GetColor(where,
-										 messageString,
-										 &backColor,
-										 &backColor);
-								break;
-							case kSwapColorsPart : SwapForeBackColors(); break;
-							case kResetColorsPart: ResetForeBackColors(); break;
-						}
-							
-						Draw1Control(controls.colorSwatch.control);
-						// we must now redraw the control since the colors have changed
-					}
 					else if (clickedControl == controls.display.iconPopup)
 					{
 						// if the click was in the popup
@@ -848,10 +790,13 @@ void icnsEditorClass::HandleContentClick(EventRecord *eventPtr)
 								      mask);
 						status |= needsUpdate;
 					}
+					else if (clickedControl == controls.infoPlacard.control)
+						EditIconInfo();
 				} // if the user let go of the mouse over the control
 			} // if the user didn't click in the edit well or in the display
 		} // if the user clicked somewhere
-	} // if window was in foreground 
+	} // if window was in foreground
+	
 	RESTOREGWORLD;
 	RESTORECOLORS;
 }
@@ -890,6 +835,14 @@ bool icnsEditorClass::HandleToolClick(ControlHandle clickedControl)
 		currentTool = line;
 	else if (clickedControl == controls.toolbar.rectangle)
 		currentTool = rectangle;
+	else if (clickedControl == controls.toolbar.oval)
+		currentTool = oval;
+	else if (clickedControl == controls.toolbar.polygon)
+		currentTool = polygon;
+	else if (clickedControl == controls.toolbar.gradient)
+		currentTool = gradient;
+	else if (clickedControl == controls.toolbar.text)
+		currentTool = text;
 	else clickHandled = false;
 	
 	return clickHandled;
@@ -968,14 +921,15 @@ void icnsEditorClass::HandleDisplayClick(EventRecord* eventPtr)
 					 
 			dragType = srcPixName;
 		}
-		RESTOREGWORLD; // we must restore the port
-		RESTORECOLORS; // and the colors so that we can drag
-		DragPixMap(eventPtr, dragPix, dragType); // the actual dragging
+		
+		DragPixMap(eventPtr, dragPix, NULL, dragPix, NULL, dragType); // the actual dragging
 		if (needToDispose) // if we need to dipose...
 		{
 			UnlockPixels(dragPix);
 			DisposeGWorld(dragGW); // then we do
 		}
+		RESTOREGWORLD; // we must restore the port
+		RESTORECOLORS; // and the colors so that we can drag
 	}
 	else // just a normal click, we just set the currentPix/GW/Name to whatever the user
 		 // clicked on
@@ -1017,9 +971,17 @@ void icnsEditorClass::HandleDisplayClick(EventRecord* eventPtr)
 			currentState = new drawingStateClass(currentState, this);
 			// and save the state
 			
+			RefreshWindowTitle();
 			Refresh(); // we can now redraw so that the user can see
+			
+			Draw1Control(controls.colorSwatch.control);
+			Draw1Control(controls.display.iconDisplay);
+			Draw1Control(controls.display.maskDisplay);
 		}
 	}
+	
+	RESTOREGWORLD;
+	RESTORECOLORS;
 }
 
 // __________________________________________________________________________________________
@@ -1042,7 +1004,7 @@ void icnsEditorClass::InvalidateDrawingArea(void)
 	rectToInvalidate.left = (**(controls.toolbar.eyeDropper)).contrlRect.right;
 	rectToInvalidate.right = (**(controls.display.iconPopup)).contrlRect.left;
 	rectToInvalidate.top = 0;
-	rectToInvalidate.bottom = (**(controls.zoomDisplayPlacard)).contrlRect.top;
+	rectToInvalidate.bottom = (**(controls.zoomPlacard.control)).contrlRect.top;
 	
 	// and then invalidate it
 	InvalRect(&rectToInvalidate);
@@ -1166,6 +1128,93 @@ void icnsEditorClass::GetDisplayPix(Point theMouse,
 }
 
 // __________________________________________________________________________________________
+// Name			: icnsEditorClass::HandleSwatchClick 
+// Input		: controlPart: the part of the swatrch that was clicked
+//				  where: the location of the click
+// Output		: None
+// Description	: Performs the various functions handled by the swatch control
+
+void icnsEditorClass::HandleSwatchClick(int controlPart, Point where)
+{
+	Str255			messageString;
+	RgnHandle		swatchRgn;
+	
+	swatchRgn = NewRgn();
+	
+	switch (controlPart)
+	// we do different things based on the control part where the user
+	// clicked
+	{
+		case kForeColorPart :
+			GetIndString(messageString, rLabelStrings, sForeColor);
+			
+			RectRgn(swatchRgn, &controls.colorSwatch.foreColorRect);
+			
+			GetColor(&foreColor, swatchRgn, where, messageString);
+			break;
+		case kBackColorPart :
+			RgnHandle tempRgn;
+			// same as above, except for the background color
+			GetIndString(messageString, rLabelStrings, sBackColor);
+			
+			tempRgn = NewRgn();
+			RectRgn(tempRgn, &controls.colorSwatch.foreColorRect);
+			OffsetRgn(tempRgn, 2, 2);
+			RectRgn(swatchRgn, &controls.colorSwatch.backColorRect);
+			DiffRgn(swatchRgn, tempRgn, swatchRgn);
+			DisposeRgn(tempRgn);
+			
+			GetColor(&backColor, swatchRgn, where, messageString);
+			break;
+		case kSwapColorsPart : SwapForeBackColors(); break;
+		case kResetColorsPart: ResetForeBackColors(); break;
+	}
+		
+	Draw1Control(controls.colorSwatch.control);
+	// we must now redraw the control since the colors have changed
+	
+	DisposeRgn(swatchRgn);
+}
+// __________________________________________________________________________________________
+// Name			: icnsEditorClass::GetColor
+// Input		: where: the location of the click
+//				  messageString: the prompt string for the user
+// Output		: color: the color chosen
+// Description	: This function allows the user to choose the foreground and background colors
+//				  by displaying the appropriate color choice system
+void icnsEditorClass::GetColor(RGBColor* color, RgnHandle swatchRgn, Point where, Str255 messageString)
+{
+	switch (currentPixName)
+	{
+		case ich8: case icl8: case ics8:
+			ColorPicker(color, window, where, statics.sys8PickerPic, swatchRgn, (**currentPix).pmTable);
+			break;
+		case h8mk: case l8mk: case s8mk:
+			ColorPicker(color, window, where, statics.gray8PickerPic, swatchRgn, (**currentPix).pmTable);
+			break;
+		case ich4: case icl4: case ics4:
+			ColorPicker(color, window, where, statics.sys4PickerPic, swatchRgn, (**currentPix).pmTable);
+			break;
+		case ichi: case icni: case icsi: case ichm: case icnm: case icsm:
+			ColorPicker(color, window, where, statics.sys1PickerPic, swatchRgn, (**currentPix).pmTable);
+			break;
+		default:
+			if (TrackControl(controls.colorSwatch.control, where, NULL))
+			{
+				Point location = {0, 0};
+				Deactivate();
+				Draw1Control(controls.rootControl);
+				::GetColor(location,
+						   messageString,
+						   color,
+						    color);
+				Activate();
+			}					 
+			break;
+	}
+}
+
+// __________________________________________________________________________________________
 // Name			: icnsEditorClass::CopyDepth
 // Input		: oldDepth: source where the icon data should be copied from
 //				  newDepth: target of the copy
@@ -1252,6 +1301,156 @@ void icnsEditorClass::CopyDepth(int oldDepth, int newDepth, int iconOrMask)
 }
 
 // __________________________________________________________________________________________
+// Name			: icnsEditorClass::EditIconInfo
+// Input		: None
+// Output		: None
+// Description	: This function displays a dialog which allows the user to change the icon's
+//				  attributes (ID, name, bits)
+
+void icnsEditorClass::EditIconInfo()
+{
+	DialogPtr		infoDialog;
+	ModalFilterUPP	eventFilterUPP;
+	bool			dialogDone;
+	short			itemHit;
+	ControlHandle	IDField, nameField, sizeField,
+					sysHeapBox, purgeableBox, lockedBox, protectedBox, preloadBox; 
+	Str255			tempString, sizeSuffix;
+	long			temp;
+	
+	infoDialog = GetNewDialog(rIconInfo, NULL, (WindowPtr)-1L);
+	
+	eventFilterUPP = NewModalFilterProc(IconInfoDialogFilter);
+	
+	SetDialogDefaultItem(infoDialog, iOK);
+	SetDialogCancelItem(infoDialog, iCancel);
+	
+	GetDialogItemAsControl(infoDialog, iIconIDField, &IDField);
+	GetDialogItemAsControl(infoDialog, iIconNameField, &nameField);
+	GetDialogItemAsControl(infoDialog, iIconSizeField, &sizeField);
+	GetDialogItemAsControl(infoDialog, iPurgeable, &purgeableBox);
+	GetDialogItemAsControl(infoDialog, iPreload, &preloadBox);
+	GetDialogItemAsControl(infoDialog, iLocked, &lockedBox);
+	GetDialogItemAsControl(infoDialog, iProtected, &protectedBox);
+	GetDialogItemAsControl(infoDialog, iSystemHeap, &sysHeapBox);
+	
+	SetControlText(nameField, name);
+	NumToString(ID, tempString);
+	SetControlText(IDField, tempString);
+	NumToString(GetSize(), tempString);
+	GetIndString(sizeSuffix, rLabelStrings, sSizeSuffix);
+	AppendString(tempString, sizeSuffix);
+	SetControlText(sizeField, tempString);
+	
+	SetControlValue(purgeableBox, flags & resPurgeable);
+	SetControlValue(preloadBox, flags & resPreload);
+	SetControlValue(lockedBox, flags & resLocked);
+	SetControlValue(protectedBox, flags & resProtected);
+	SetControlValue(sysHeapBox, flags & resSysHeap);
+	
+	ShowWindow(infoDialog);
+	
+	dialogDone = false;
+	
+	while (!dialogDone)
+	{
+		ModalDialog(eventFilterUPP, &itemHit);
+		
+		switch (itemHit)
+		{
+			case iOK:
+				dialogDone = true;
+				GetControlText(IDField, tempString);
+				StringToNum(tempString, &temp);
+				if (temp != ID)
+				{
+					Handle otherIcon;
+					
+					otherIcon = Get1Resource('icns', temp);
+					if (otherIcon != NULL)
+					{
+						Str255 message, overwriteButtonName, cancelButtonName;
+						ReleaseResource(otherIcon);
+						GetIndString(message, rBasicStrings, eIDAlreadyExists);
+						SubstituteString(message, "\p<ID>", tempString);
+						GetIndString(overwriteButtonName, rBasicStrings, eOverwriteButton);
+						GetIndString(cancelButtonName, rBasicStrings, eInfoCancelButton);
+						itemHit = icnsEditorClass::statics.DisplayAlert(message, overwriteButtonName, cancelButtonName, NULL);
+						if (itemHit == 2)
+							dialogDone = false;
+					}
+				}
+				if (dialogDone)
+				{
+					GetControlText(nameField, name);
+					ID = temp;
+					flags = (GetControlValue(purgeableBox) << resPurgeableBit) +
+							(GetControlValue(preloadBox) << resPreloadBit) + 
+							(GetControlValue(lockedBox) << resLockedBit) +
+							(GetControlValue(protectedBox) << resProtectedBit) +
+							(GetControlValue(sysHeapBox) << resSysHeapBit);
+					status |= needToSave;
+				}
+				break;
+			case iCancel:
+				dialogDone = true;
+				break;
+			case iPurgeable: ToggleCheckbox(purgeableBox); break;
+			case iPreload: ToggleCheckbox(preloadBox); break;
+			case iLocked: ToggleCheckbox(lockedBox); break;
+			case iProtected: ToggleCheckbox(protectedBox); break;
+			case iSystemHeap: ToggleCheckbox(sysHeapBox); break;
+		}
+	}
+	
+	DisposeRoutineDescriptor(eventFilterUPP);
+	DisposeDialog(infoDialog);
+}
+
+pascal bool IconInfoDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit)
+{
+	bool	handledEvent = false;
+	
+	switch (eventPtr->what)
+	{
+		case keyDown:
+		case autoKey:
+			ControlHandle IDField, focusControl;
+			
+			GetDialogItemAsControl(dialog, iIconIDField, &IDField);
+			GetKeyboardFocus(dialog, &focusControl);
+			
+			if (focusControl == IDField)
+			{
+				char key;
+				key = eventPtr->message & charCodeMask;  
+				if ((key == kReturnCharCode) || (key == kEnterCharCode) ||
+				    (key == kTabCharCode) || (key == kBackspaceCharCode) ||
+				    (key == kEscapeCharCode) || (key == kDeleteCharCode) ||
+				    (key == kRightArrowCharCode) || (key == kLeftArrowCharCode) ||
+				    (key == kUpArrowCharCode) || (key == kDownArrowCharCode) ||
+				    (key == '-') || ((key >= '0') && (key <= '9')) ||
+				    ((key == '.') && (eventPtr->modifiers & cmdKey) != 0))
+				{
+				   handledEvent = StdFilterProc(dialog, eventPtr, itemHit);
+				}
+				else
+				{
+					SysBeep(6);
+					handledEvent = true;
+				}
+			}
+			else
+				handledEvent = StdFilterProc(dialog, eventPtr, itemHit);
+			break;
+		default:
+			handledEvent = StandardEditorDialogFilter(dialog, eventPtr, itemHit);
+			break;
+	}
+	return handledEvent;
+}
+
+// __________________________________________________________________________________________
 // Name			: icnsEditorClass::Activate
 // Input		: None
 // Output		: None
@@ -1260,13 +1459,31 @@ void icnsEditorClass::CopyDepth(int oldDepth, int newDepth, int iconOrMask)
 
 void icnsEditorClass::Activate()
 {
+	//RgnHandle	oldClip, newClip;
 	SAVEGWORLD; // we must save the current port since we're going to be dealing with the window
+	
+	//oldClip = NewRgn();
+	//newClip = NewRgn();
 	
 	SetPort(window); // set the window as the current port
 	
+	//GetClip(oldClip);
+	//SetEmptyRgn(newClip);
+	//SetClip(newClip);
+	
+	//SetThemeWindowBackground(window,kThemeActiveDialogBackgroundBrush,true);
+	
 	ActivateControl(controls.rootControl); // activate the control
 	
+	//SetClip(oldClip);
+	//DisposRgn(oldClip);
+	//DisposeRgn(newClip);
+	
 	InvalRect(&window->portRect); // and invalidate the whole window so that it can redrawn
+	
+	//Draw1Control(controls.rootControl);
+	
+	//Refresh();
 	
 	RESTOREGWORLD; // and now we can restore the current gworld
 }
@@ -1279,14 +1496,32 @@ void icnsEditorClass::Activate()
 
 void icnsEditorClass::Deactivate()
 {
+	//RgnHandle	oldClip, newClip;
 	// exactly the same as the function above
 	SAVEGWORLD;
 	
-	SetPort(window);
+	//oldClip = NewRgn();
+	//newClip = NewRgn();
+	
+	SetPort(window); // set the window as the current port
+	
+	//GetClip(oldClip);
+	//SetEmptyRgn(newClip);
+	//SetClip(newClip);
+	
+	//SetThemeWindowBackground(window,kThemeInactiveDialogBackgroundBrush,true);
 	
 	DeactivateControl(controls.rootControl);
 	
+	//SetClip(oldClip);
+	//DisposRgn(oldClip);
+	//DisposeRgn(newClip);
+	
 	InvalRect(&window->portRect);
+	
+	//Draw1Control(controls.rootControl);
+	
+	//Refresh();
 	
 	RESTOREGWORLD;
 }
@@ -1351,6 +1586,26 @@ void icnsEditorClass::UpdateToolbar()
 		SetControlValue(controls.toolbar.rectangle, 1);
 	else
 		SetControlValue(controls.toolbar.rectangle, 0);
+		
+	if (currentTool == oval)
+		SetControlValue(controls.toolbar.oval, 1);
+	else
+		SetControlValue(controls.toolbar.oval, 0);
+		
+	if (currentTool == polygon)
+		SetControlValue(controls.toolbar.polygon, 1);
+	else
+		SetControlValue(controls.toolbar.polygon, 0);
+		
+	if (currentTool == gradient)
+		SetControlValue(controls.toolbar.gradient, 1);
+	else
+		SetControlValue(controls.toolbar.gradient, 0);
+		
+	if (currentTool == text)
+		SetControlValue(controls.toolbar.text, 1);
+	else
+		SetControlValue(controls.toolbar.text, 0);
 }
 
 // __________________________________________________________________________________________
@@ -1383,21 +1638,17 @@ void icnsEditorClass::RepositionControls()
 	// flashes or leaving trails behind
 	
 	// the zoom display placard goes in the bottom left corner
-	controlRect = ((**(controls.zoomDisplayPlacard)).contrlRect);
+	controlRect = ((**(controls.zoomPlacard.control)).contrlRect);
 	h = windowRect.left - 1;
 	v = windowRect.bottom - (controlRect.bottom - controlRect.top) + 1;
-	MoveControl(controls.zoomDisplayPlacard, h, v);
-	// the text is right on top of it, slighthtly off
-	MoveControl(controls.zoomDisplayText, h + 4, v + 2);
+	MoveControl(controls.zoomPlacard.control, h, v);
 	
 	// the info display placard is right to the right of it
-	MoveControl(controls.infoDisplayPlacard, h + controlRect.right, v);
-	MoveControl(controls.infoDisplayText,h + controlRect.right + 4, v + 2);
+	MoveControl(controls.infoPlacard.control, h + controlRect.right, v);
 	// we must also resize it so that it goes all the way across the window
 	h = (windowRect.right - windowRect.left) - 64 - 16 + 4;
 	v = 16;
-	SizeControl(controls.infoDisplayPlacard, h, v);
-	SizeControl(controls.infoDisplayText, h - 8, v - 6);
+	SizeControl(controls.infoPlacard.control, h, v);
 	
 	// the edit well is enlaged according to the magnification level
 	controlRect = ((**(controls.iconEditWell)).contrlRect);
@@ -1600,20 +1851,26 @@ void icnsEditorClass::ZoomOut(void)
 //				  in the drawing area
 
 void icnsEditorClass::HandleDrawing(void)
-{	
+{
+	bool needToSaveState;
+	
 	switch (currentTool)
 	// based on the current tool we call on the appropriate function to handle the drawing
 	{
-		case move :			HandleMove(); break;
+		case move :			needToSaveState = HandleMove(); break;
 		case marquee :		HandleMarquee(); break;
 		case eraser :
 		case pen :			HandlePen(); break;
 		case fill :			HandleFilling(); break;
-		case eyeDropper :	HandleEyeDropper(); break;
+		case eyeDropper :	HandleEyeDropper();  needToSaveState = false; break;
 		case lasso : 		HandleLasso(); break;
 		case magicWand :	HandleMagicWand(); break;
 		case line : 		HandleLine(); break;
+		case oval:
 		case rectangle : 	HandleRectangle(); break;
+		case polygon :		HandlePolygon(); break;
+		case gradient : 	HandleGradient(); break;
+		case text : 		HandleText(); break;
 	}
 	
 	if (!EmptyRgn(selectionRgn)) // if there still is a selection, we must set that flag
@@ -1621,12 +1878,209 @@ void icnsEditorClass::HandleDrawing(void)
 	else
 		status &= ~hasSelection;
 	
-	if (currentTool != eyeDropper) // if there was painting performed...
+	if (needToSaveState) // if there was painting performed...
 	{
 		currentState = new drawingStateClass(currentState, this); // we must save the state
 		status |= needToSave; // the drawing was modified, and thus it needs to be saved...
 		status |= needsUpdate; // and be update as well
 	}
+}
+// __________________________________________________________________________________________
+// Name			: icnsEditorClass::HandleGradient
+// Input		: None
+// Output		: None
+// Description	: Draws a linear gradient between two user specified points by transitioning
+//				  from the foreground to the background color
+
+void icnsEditorClass::HandleGradient(void)
+{
+	int				startX, startY, // the starting (anchor) x and y coordinates
+					x, y; // the end (free-moving) x and y coordinates
+	Rect			currentBounds; // the dimensions of the current icon size
+	OSStatus		err = noErr; // used for error checking
+	RgnHandle		clipRgn;
+	PixMapHandle	targetPix;
+	GWorldPtr		targetGW;
+	
+	SAVEGWORLD; // we'll be changing the gworld and colors
+	SAVECOLORS;
+	
+	// setting up this variable
+	currentBounds = (**currentPix).bounds;
+	SetRect(&currentBounds,
+			currentBounds.left * magnification,
+			currentBounds.top * magnification,
+			currentBounds.right * magnification,
+			currentBounds.bottom * magnification);
+	
+	// and the overlay itself
+	err = NewGWorld(&overlayGW, 1, &currentBounds, NULL, NULL, 0);
+	if (err != noErr) {status |= outOfMemory; return; }
+	overlayPix = GetGWorldPixMap(overlayGW);
+	LockPixels(overlayPix);
+	SetGWorld(overlayGW, NULL);
+	EraseRect(&currentBounds);
+	
+	// we get the starting position
+	GetDrawingMousePosition(&startX, &startY, magnified);
+	
+	while (Button()) // while the button is down
+	{
+		// we get the new position
+		GetDrawingMousePosition(&x, &y, magnified);
+		if (ISSHIFTDOWN) // if shift is down, we must restrict the line to specific angles
+			ConstrainLine45(startX, startY, &x, &y);
+		
+		// now that we the coordinates
+		SetGWorld(overlayGW, NULL); // we go into the overlay
+		RGBForeColor(&foreColor);
+		RGBBackColor(&kWhiteAsRGB);
+		EraseRect(&currentBounds); // clear the previous contents
+		MoveTo(startX, startY);
+		DrawCross(6);
+		LineTo(x, y); // draw the line
+		RESTORECOLORS;
+		RESTOREGWORLD;
+		Display((**controls.iconEditWell).contrlRect, current); // and draw the whole thing
+	}
+	
+	startX /= magnification;
+	startY /= magnification;
+	x /= magnification;
+	y /= magnification;
+	
+	if (EmptyRgn(selectionRgn)) // if there isn't a selection
+	{
+		clipRgn = NULL;
+		targetPix = currentPix;
+		targetGW = currentGW;
+	}
+	else if (status & selectionFloated) // if there's a selection and its floated
+	{
+		clipRgn = NULL;
+		targetPix = selectionPix;
+		targetGW = selectionGW;
+	}
+	else // otherwise (there's a selection, but it isn't floated) we must restrict the drawing
+		 // to the selection contents
+	{
+		clipRgn = selectionRgn;
+		targetPix = currentPix;
+		targetGW = currentGW;
+	}
+	
+
+	DrawGradient32(startX, startY, foreColor,
+				 x, y, backColor,
+				 statics.canvasPix, (**targetPix).bounds, clipRgn);
+				 
+	CopyPixMap(statics.canvasPix, targetPix, &(**targetPix).bounds, &(**targetPix).bounds, srcCopy + ditherCopy, clipRgn);
+
+	RESTOREGWORLD; // we're done with changing the port
+	RESTORECOLORS;
+	
+	// we're done with the overlay
+	UnlockPixels(overlayPix);
+	DisposeGWorld(overlayGW);
+	overlayPix = NULL;
+	
+	Display((**controls.iconEditWell).contrlRect, current); // and draw the whole thing
+	
+}
+
+// __________________________________________________________________________________________
+// Name			: icnsEditorClass::HandleText
+// Input		: None
+// Output		: None
+// Description	: Draws a user specified text at the chosen location (the text will be placed
+//				  into a selection)
+
+void icnsEditorClass::HandleText(void)
+{
+	int x, y, width, height, oneLineHeight;
+	Rect	tempRect;
+	GWorldPtr	tempGW;
+	PixMapHandle tempPix;
+	
+	if (status & hasSelection)
+	{
+		if (status & selectionFloated)
+			DefloatSelection();
+		SetEmptyRgn(selectionRgn);
+	}
+	
+	GetDrawingMousePosition(&x, &y, 0);
+	
+	if (GetTextAttributes(&statics.lastTextSettings) == userCanceledErr)
+		return;
+	
+	SAVEGWORLD;
+	SAVECOLORS;
+	
+	TextFont(statics.lastTextSettings.fontNo);
+	TextFace(statics.lastTextSettings.style);
+	TextSize(statics.lastTextSettings.size);
+	
+	height = StringHeight(statics.lastTextSettings.text);
+	oneLineHeight = StringHeight("\pa");
+	width = StringWidth(statics.lastTextSettings.text);
+	SetRect(&tempRect,
+			x,
+			y - oneLineHeight,
+			x + width,
+			y + height - oneLineHeight);
+	
+	NewGWorld(&tempGW, 1, &tempRect, NULL, NULL, 0);
+	tempPix = GetGWorldPixMap(tempGW);
+	LockPixels(tempPix);
+	SetGWorld(tempGW, NULL);
+	//SetGWorld(currentGW, NULL);
+	
+	TextFont(statics.lastTextSettings.fontNo);
+	TextFace(statics.lastTextSettings.style);
+	TextSize(statics.lastTextSettings.size);
+	
+	FontInfo info;
+	
+	GetFontInfo(&info);
+	
+	EraseRect(&tempRect);
+	MoveTo(x, y - info.descent);
+
+	DrawLinedString(statics.lastTextSettings.text);
+
+	BitMapToRegion(selectionRgn, (BitMap*)*tempPix);
+	//RectRgn(selectionRgn, &tempRect);
+	MagnifySelectionRgn();
+	
+	UnlockPixels(selectionPix);
+	UpdateGWorld(&selectionGW, (**currentPix).pixelSize, &tempRect, (**currentPix).pmTable, NULL, 0);
+	selectionPix = GetGWorldPixMap(selectionGW);
+	LockPixels(selectionPix);
+	SetGWorld(selectionGW, NULL);
+	MoveTo(x, y);
+	DrawString("\ptext");
+	EraseRect(&tempRect);
+	RGBForeColor(&foreColor);
+	
+	CopyPixMap(tempPix, selectionPix, &tempRect, &tempRect, srcCopy, NULL);
+	
+	RESTOREGWORLD;
+	RESTORECOLORS;
+	
+	short temp;
+	GetFNum("\pGeneva",&temp);
+	TextFont(temp);
+	TextSize(10);
+	TextFace(normal);
+	
+	UnlockPixels(tempPix);
+	DisposeGWorld(tempGW);
+	
+	status |= selectionFloated;
+	
+	currentTool = move;
+	UpdateToolbar();
 }
 
 // __________________________________________________________________________________________
@@ -1647,6 +2101,7 @@ void icnsEditorClass::HandleRectangle(void)
 	OSStatus	err = noErr; // used for error checking
 	CTabHandle	overlayCTab; // the the color table for the overlay gworld (foreground color+
 							 // trasparent color)
+	RgnHandle	savedClip = NULL;
 	
 	// The way in which the user draws a rectangle is rather simple. When the user clicks in
 	// the drawing that is set as the anchor poin (startMouse). While the button is down, the
@@ -1675,7 +2130,7 @@ void icnsEditorClass::HandleRectangle(void)
 	LockPixels(overlayPix);
 	RGBBackColor(&kNeverUsedColorAsRGB); // we fill it with the transparent color
 	EraseRect(&currentBounds);
-	GetClickPosition(&x1, &y1, false);
+	GetDrawingMousePosition(&x1, &y1, 0);
 	GetMouse(&startMouse); // we're not really using the mouse for determinning the current
 	// coordinates, just for seeing if the user moved the mouse (if we need to update)
 	
@@ -1686,7 +2141,7 @@ void icnsEditorClass::HandleRectangle(void)
 		{
 			// if he did, then we move into action...
 			
-			GetClickPosition(&x2, &y2, false); // we get the location in terms of the drawing
+			GetDrawingMousePosition(&x2, &y2, 0); // we get the location in terms of the drawing
 			
 			SetRect(&drawRect, x1, y1, x2, y2);
 			// and we have the basic rectangle
@@ -1828,7 +2283,10 @@ void icnsEditorClass::HandleRectangle(void)
 			RGBBackColor(&kNeverUsedColorAsRGB); // we refill the gworld with the transparent color
 			EraseRect(&currentBounds);
 			RGBForeColor(&foreColor);
-			FrameRect(&drawRect); // we draw it
+			if (currentTool == rectangle)
+				FrameRect(&drawRect); // we draw it
+			else
+				FrameOval(&drawRect);
 			RESTORECOLORS;
 		} // endof: the user moved the mouse
 		RESTOREGWORLD;
@@ -1838,18 +2296,171 @@ void icnsEditorClass::HandleRectangle(void)
 	
 	// we finally have a rectangle...
 	
-	SetGWorld(currentGW, NULL);
-	RGBForeColor(&foreColor);
-	FrameRect(&drawRect); // so we draw it in
+	// first we must determine where to draw it...
+	if (status & hasSelection)
+		if (status & selectionFloated)
+			SetGWorld(selectionGW, NULL);
+		else
+		{
+			savedClip = NewRgn();
+			GetClip(savedClip);
+			SetGWorld(currentGW, NULL);
+			SetClip(selectionRgn);
+		}
+	else
+		SetGWorld(currentGW, NULL);
 	
-	UnlockPixels(overlayPix); // we don't need the overlay anymore...
+	RGBForeColor(&foreColor);
+	
+	if (currentTool == rectangle)
+		FrameRect(&drawRect); // so we draw it in
+	else
+		FrameOval(&drawRect);
+	
+	UnlockPixels(overlayPix);
 	DisposeGWorld(overlayGW);
 	overlayPix = NULL;
-	
 	DisposeCTable(overlayCTab);
+	
+	if (savedClip != NULL)
+	{
+		SetClip(savedClip);
+		DisposeRgn(savedClip);
+	}
 	
 	RESTOREGWORLD;
 	RESTORECOLORS;
+}
+
+// __________________________________________________________________________________________
+// Name			: icnsEditorClass::HandlePolygon
+// Input		: None
+// Output		: None
+// Description	: Draws an irregular polygon based on the vertices which the user selects.
+
+void icnsEditorClass::HandlePolygon(void)
+{
+	int 		x, y;
+	Rect		currentBounds;
+	CTabHandle	overlayCTab;
+	Point		vertices[255];
+	int			noOfVertices;
+	OSErr		err;
+	bool 		firstTime;
+	long		lastClick, clickDelay;
+	RgnHandle	savedClip = NULL;
+	
+	clickDelay = LMGetDoubleTime();
+	
+	SAVEGWORLD; // we'll be changing the gworld and colors
+	SAVECOLORS;
+	
+	currentBounds = (**currentPix).bounds;
+	
+	// making the color table for the overlay
+	err = MakeTwoColorTable(&overlayCTab, foreColor, kNeverUsedColorAsRGB);
+	if (err != noErr) {status |= outOfMemory; return; }
+	
+	// and the overlay itself
+	err = NewGWorld(&overlayGW, 1, &currentBounds, overlayCTab, NULL, 0);
+	if (err != noErr) {status |= outOfMemory; return; }
+	overlayPix = GetGWorldPixMap(overlayGW);
+	LockPixels(overlayPix);
+	SetGWorld(overlayGW, NULL);
+	EraseRect(&currentBounds);
+	
+	GetDrawingMousePosition(&x, &y, 0);
+	vertices[0].h = x; vertices[0].v = y;
+	noOfVertices = 0;
+	
+	firstTime = true;
+	
+	while (Button()){;}
+	
+	lastClick = LMGetTicks();
+	
+	while ((vertices[0].h != vertices[noOfVertices].h) ||
+		   (vertices[0].v != vertices[noOfVertices].v) ||
+		   firstTime)
+	{
+		GetDrawingMousePosition(&x, &y, 0);
+		
+		if (ISSHIFTDOWN)
+			ConstrainLine45(vertices[noOfVertices].h, vertices[noOfVertices].v, &x, &y);
+		
+		SetGWorld(overlayGW, NULL);
+		RGBBackColor(&kNeverUsedColorAsRGB); // we refill the gworld with the transparent color
+		EraseRect(&currentBounds);
+		RGBForeColor(&foreColor);
+		MoveTo(vertices[0].h, vertices[0].v);
+		
+		for (int i=1; i <= noOfVertices; i++)
+				LineTo(vertices[i].h, vertices[i].v);
+		
+		LineTo(x, y);
+		RESTOREGWORLD;
+		RESTORECOLORS;
+		Display((**controls.iconEditWell).contrlRect, current);
+		
+		if (Button())
+		{
+			noOfVertices++;
+			
+			if (firstTime) firstTime = false;
+			
+			while (Button()){;}
+			
+			if ((LMGetTicks() - lastClick) <= clickDelay)
+			{
+				vertices[noOfVertices].h = vertices[0].h;
+				vertices[noOfVertices].v = vertices[0].v;
+			}
+			else
+			{
+				vertices[noOfVertices].h = x;
+				vertices[noOfVertices].v = y;
+				lastClick = LMGetTicks();
+			}
+		}
+	}
+	
+	if (status & hasSelection)
+		if (status & selectionFloated)
+			SetGWorld(selectionGW, NULL);
+		else
+		{
+			savedClip = NewRgn();
+			GetClip(savedClip);
+			SetGWorld(currentGW, NULL);
+			SetClip(selectionRgn);
+		}
+	else
+		SetGWorld(currentGW, NULL);
+	
+	RGBForeColor(&foreColor);
+	
+	MoveTo(vertices[0].h, vertices[0].v);
+	
+	for (int i=1; i <= noOfVertices; i++)
+		LineTo(vertices[i].h, vertices[i].v);
+	
+	UnlockPixels(overlayPix);
+	DisposeGWorld(overlayGW);
+	overlayPix = NULL;
+	DisposeCTable(overlayCTab);
+	
+	if (savedClip != NULL)
+	{
+		SetClip(savedClip);
+		DisposeRgn(savedClip);
+	}
+	
+	RESTOREGWORLD;
+	RESTORECOLORS;
+
+	Display((**controls.iconEditWell).contrlRect, current);
+		
+	FlushEvents(mDownMask | mUpMask, 0);
 }
 
 // __________________________________________________________________________________________
@@ -1882,44 +2493,17 @@ void icnsEditorClass::HandleLine(void)
 	if (err != noErr) {status |= outOfMemory; return; }
 	overlayPix = GetGWorldPixMap(overlayGW);
 	LockPixels(overlayPix);
-	SetGWorld(overlayGW, NULL);
-	EraseRect(&currentBounds);
 	
 	// we get the starting position
-	GetClickPosition(&startX, &startY, false);
+	GetDrawingMousePosition(&startX, &startY, 0);
 	
 	while (Button()) // while the button is down
 	{
 		// we get the new position
-		GetClickPosition(&x, &y, false);
+		GetDrawingMousePosition(&x, &y, 0);
 		if (ISSHIFTDOWN) // if shift is down, we must restrict the line to specific angles
-		{
-			float	angle, // the angle the line makes
-					constrainedAngle; // the angle constrained to specific intervals 
-				
-				
-			angle = atan2((y - startY), (x - startX)); // we get the angle of the line
-			// and we get the nearest whole multiple of the constrained angle interval
-			constrainedAngle = ((int)(angle / kLineConstraintInterval)) *
-									kLineConstraintInterval;
-			// then we round up or down, based on whether we were over the half-way mark
-			if (abs(angle - constrainedAngle) > kLineConstraintInterval/2)
-				if (angle < 0)
-					constrainedAngle -= kLineConstraintInterval;
-				else
-					constrainedAngle += kLineConstraintInterval;
-			
-			// now that we have the constrained angle we must conver it back to x and y
-			// coordinates
-			if ((int)constrainedAngle == (int)(-pi/2) || // if it's -90
-				(int)constrainedAngle == (int)(pi/2))    // or 90 degress
-				x = startX; // then we keep the x coordinate constant for the line
-			else if (constrainedAngle == 0 ||			// if it's 0
-					(int)constrainedAngle == (int)(pi)) // or 180
-				y = startY; // we keep the y coordinate constant
-			else // otherwise we just calculate the constrained y coordinate
-				y = rint(startY + (x - startX) * tan(constrainedAngle));
-		}
+			ConstrainLine45(startX, startY, &x, &y);
+		
 		// now that we the coordinates
 		SetGWorld(overlayGW, NULL); // we go into the overlay
 		RGBForeColor(&foreColor);
@@ -1927,8 +2511,8 @@ void icnsEditorClass::HandleLine(void)
 		EraseRect(&currentBounds); // clear the previous contents
 		MoveTo(startX, startY);
 		LineTo(x, y); // draw the line
-		RESTORECOLORS;
 		RESTOREGWORLD;
+		RESTORECOLORS;
 		Display((**controls.iconEditWell).contrlRect, current); // and draw the whole thing
 		
 	}
@@ -1996,18 +2580,10 @@ void icnsEditorClass::HandleLasso(void)
 	PixMapHandle	tempPix; // pixmap for the gworld above
 	RgnHandle		lassoSelectionRgn, // the drawn selection shape
 					tightenedRgn; // the tightened region
-	OSStatus		err = noErr; // erroe checking
-	CTabHandle		overlayCTab; // color table for the overlay
-	RGBColor		blackAsRGB = {0, 0, 0};
-	ColorSearchUPP	lassoSearchUPP; // color search procedure for the tightening function
-	
+	OSStatus		err = noErr; // error checking
 	SAVEGWORLD;
 	SAVECOLORS;
-
-	// we make the overlay
-	err = MakeTwoColorTable(&overlayCTab, blackAsRGB, kNeverUsedColorAsRGB);
-	if (err != noErr) {status |= outOfMemory; return; }
-	
+		
 	// we determine the mode
 	if (ISSHIFTDOWN)
 		mode = additive;
@@ -2016,9 +2592,7 @@ void icnsEditorClass::HandleLasso(void)
 	else
 		mode = normal;
 	
-	// we create these regions
-	lassoSelectionRgn = NewRgn();
-	tightenedRgn = NewRgn();
+	
 		
 	// we defloat the selection if we need to
 	if ((status & selectionFloated) && (mode == normal || mode == additive))
@@ -2037,7 +2611,7 @@ void icnsEditorClass::HandleLasso(void)
 			currentBounds.bottom * magnification);
 	
 	// we create the overlay
-	err = NewGWorld(&overlayGW, 1, &currentBounds, overlayCTab, NULL, 0);
+	err = NewGWorld(&overlayGW, 1, &currentBounds, NULL, NULL, 0);
 	if (err != noErr) {status |= outOfMemory; return; }
 	SetGWorld(overlayGW, NULL);
 	EraseRect(&currentBounds);
@@ -2045,13 +2619,13 @@ void icnsEditorClass::HandleLasso(void)
 	LockPixels(overlayPix);
 	
 	// we get the starting position
-	GetClickPosition(&startX, &startY, true);
+	GetDrawingMousePosition(&startX, &startY, magnified);
 	MoveTo(startX, startY);
 	
 	while (Button())
 	{
 		// and we just trace the position
-		GetClickPosition(&x, &y, true);
+		GetDrawingMousePosition(&x, &y, magnified);
 		LineTo(x, y);
 		RESTOREGWORLD;
 		// and keep the display updated
@@ -2061,31 +2635,29 @@ void icnsEditorClass::HandleLasso(void)
 	// we connect it back to the starting point
 	LineTo(startX, startY);
 	
-	// needed for the masking algorithm
-	InvertRect(&currentBounds);
+	//SetGWorld(il32GW, NULL);
+	
+	// we create these regions
+	lassoSelectionRgn = NewRgn();
+	tightenedRgn = NewRgn();
 	
 	// we get the overall shape of the selection
-	Make1BitMask(overlayPix, overlayPix);
+	Make1BitMask(overlayPix, overlayPix, currentBounds);
+	
 	// and convert it to a region
-	BitMapToRegion(lassoSelectionRgn, (BitMap*)*overlayPix);
+	err = BitMapToRegion(lassoSelectionRgn, (BitMap*)*overlayPix);
 	
 	// and shrink it down to the size of the current pixmap
 	MapRgn(lassoSelectionRgn, &currentBounds, &(**currentPix).bounds);
+	
+	//RectRgn(lassoSelectionRgn, &(**currentPix).bounds);
 	
 	// then we calculate the tightened selection shape
 	NewGWorld(&tempGW, 1, &(**lassoSelectionRgn).rgnBBox, NULL, NULL, 0);
 	tempPix = GetGWorldPixMap(tempGW);
 	LockPixels(tempPix);
 
-	lassoSearchUPP = NewColorSearchProc(MaskColorSearch);
-	CalcCMask((BitMap*)*currentPix,
-			  (BitMap*)*tempPix,
-			  &(**lassoSelectionRgn).rgnBBox,
-			  &(**lassoSelectionRgn).rgnBBox,
-			  &backColor,
-			  lassoSearchUPP,
-			  0);
-	DisposeRoutineDescriptor(lassoSearchUPP);
+	Make1BitMask(currentPix, tempPix, (**lassoSelectionRgn).rgnBBox);
 	
 	BitMapToRegion(tightenedRgn, (BitMap*)*tempPix);
 	SectRgn(tightenedRgn, lassoSelectionRgn, lassoSelectionRgn);
@@ -2106,15 +2678,15 @@ void icnsEditorClass::HandleLasso(void)
 	// we're done with the temporary region
 	DisposeRgn(lassoSelectionRgn);
 	
+	// and with the temporary GWorld
+	UnlockPixels(tempPix);
+	DisposeGWorld(tempGW);
+	
+	
 	// and with the overlay
 	UnlockPixels(overlayPix);
 	DisposeGWorld(overlayGW);
 	overlayPix = NULL;
-	DisposeCTable(overlayCTab);
-	
-	// and with the temporary GWorld
-	UnlockPixels(tempPix);
-	DisposeGWorld(tempGW);
 	
 	RESTOREGWORLD;
 	RESTORECOLORS;
@@ -2129,13 +2701,12 @@ void icnsEditorClass::HandleLasso(void)
 
 void icnsEditorClass::HandleMagicWand()
 {
-	GWorldPtr		selectionShapeGW; // the selection shape (to be converted into a region)
-	PixMapHandle	selectionShapePix; // pixmap for the GWorld above
-	Rect			currentBounds; // dimensions of the current drawing
-	int				x, y; // click location
-	int				mode; // the selection mode
-	RgnHandle		tempRgn; // this is where the new selection will be temporarely stored 
-	OSStatus		err = noErr; // error checking
+	GrafPtr		selectionShape; // the selection shape (to be converted into a region)
+	Rect		currentBounds; // dimensions of the current drawing
+	int			x, y; // click location
+	int			mode; // the selection mode
+	RgnHandle	tempRgn; // this is where the new selection will be temporarely stored 
+	OSStatus	err = noErr; // error checking
 	
 	SAVEGWORLD;
 	SAVECOLORS;
@@ -2157,21 +2728,16 @@ void icnsEditorClass::HandleMagicWand()
 	tempRgn = NewRgn();
 
 	// we make the temporary gworld
-	err = NewGWorld(&selectionShapeGW, 1, &currentBounds, NULL, NULL, 0);
-	if (err != noErr) {status |= outOfMemory; return; }
-	SetGWorld(selectionShapeGW, NULL);
-	EraseRect(&currentBounds);
-	selectionShapePix = GetGWorldPixMap(selectionShapeGW);
-	LockPixels(selectionShapePix);
+	selectionShape = CreateGrafPort(&currentBounds);
 	
-	GetClickPosition(&x, &y, false); // we get the click position
+	GetDrawingMousePosition(&x, &y, 0); // we get the click position
 	
 	if (!(status & selectionFloated)) // if there isn't a floated selection
 	{
 		// we must get the new selection from the current GWorld
 		SetGWorld(currentGW, NULL);
 		SeedCFill((BitMap*)*currentPix,
-			  (BitMap*)*selectionShapePix,
+			  &selectionShape->portBits,
 			  &currentBounds,
 			  &currentBounds,
 			  x, y,
@@ -2183,7 +2749,7 @@ void icnsEditorClass::HandleMagicWand()
 		// otherwise we get it from the selection GWorld
 		SetGWorld(selectionGW, NULL);
 		SeedCFill((BitMap*)*selectionPix,
-			  (BitMap*)*selectionShapePix,
+			  &selectionShape->portBits,
 			  &currentBounds,
 			  &currentBounds,
 			  x, y,
@@ -2192,7 +2758,7 @@ void icnsEditorClass::HandleMagicWand()
 	}
 	
 	// we convert the pixmap into a region to get the selection shape
-	BitMapToRegion(tempRgn, (BitMap*)*selectionShapePix); 
+	BitMapToRegion(tempRgn, &selectionShape->portBits); 
 			  
 	RESTOREGWORLD;
 	RESTORECOLORS;
@@ -2213,8 +2779,7 @@ void icnsEditorClass::HandleMagicWand()
 	DisposeRgn(tempRgn);
 	
 	// and this too
-	UnlockPixels(selectionShapePix);
-	DisposeGWorld(selectionShapeGW);
+	DisposeGrafPort(selectionShape);
 }
 
 // __________________________________________________________________________________________
@@ -2224,7 +2789,7 @@ void icnsEditorClass::HandleMagicWand()
 // Description	: Moves the current selection (if any) by following the mouse cursor while
 //				  the mouse button is down.
 
-void icnsEditorClass::HandleMove(void)
+bool icnsEditorClass::HandleMove(void)
 {
 	int		anchorX, anchorY, // previous location
 			x, y, // current location
@@ -2246,55 +2811,86 @@ void icnsEditorClass::HandleMove(void)
 	}
 	
 	// this is the original position
-	GetClickPosition(&startX, &startY, false);
+	GetDrawingMousePosition(&startX, &startY, 0);
 	
 	// and for the moment the previous one too
-	GetClickPosition(&anchorX, &anchorY, false);
+	GetDrawingMousePosition(&anchorX, &anchorY, 0);
 	
 	while (Button()) // we move while the button is down
 	{
-		GetClickPosition(&x, &y, false);
-		// and get the new position
-		if (ISSHIFTDOWN) // angle based constraints, very similar to the line constraints
+		GetDrawingMousePosition(&x, &y, noLimit);
+		if ((x < 0) || (y < 0) || (x > (**currentPix).bounds.right) || (y > (**currentPix).bounds.bottom))
 		{
-			float	angle, constrainedAngle;
+			EventRecord event;
 			
-			angle = atan2((y - startY), (x - startX));
-			constrainedAngle = ((int)(angle / kLineConstraintInterval)) *
-									kLineConstraintInterval;
-			if (abs(angle - constrainedAngle) > kLineConstraintInterval/2)
-				if (angle < 0)
-					constrainedAngle -= kLineConstraintInterval;
-				else
-					constrainedAngle += kLineConstraintInterval;
-			if ((int)constrainedAngle == (int)(-pi/2) ||
-				(int)constrainedAngle == (int)(pi/2))
-				x = startX;
-			else if (constrainedAngle == 0 ||
-					 (int)constrainedAngle == (int)(pi))
-				y = startY;
-			else
-				y = rint(startY + (x - startX) * tan(constrainedAngle));
+			// reset the selection to its original location
+			OffsetRgn(selectionRgn, startX - anchorX, startY - anchorY);
+			OffsetRgn(selectionMagnifiedRgn,
+					  (startX - anchorX) * magnification,
+					  (startY - anchorY) * magnification);
+					  
+			OffsetRect(&(**selectionPix).bounds, startX - anchorX, startY - anchorY);
+			OffsetRgn(selectionGW->visRgn, startX - anchorX, startY - anchorY);
+			
+			Display((**controls.iconEditWell).contrlRect, current);
+			
+			GetMouse(&event.where);
+			dragSrcRect = (**controls.iconEditWell).contrlRect;
+			
+			GWorldPtr tempGW;
+			PixMapHandle tempPix;
+			Rect	bounds;
+			RgnHandle dragRgn;
+			
+			bounds = (**selectionPix).bounds;
+			bounds.top *= magnification;
+			bounds.left *= magnification;
+			bounds.bottom *= magnification;
+			bounds.right *= magnification;
+			
+			NewGWorld(&tempGW, (**selectionPix).pixelSize, &bounds, (**selectionPix).pmTable, NULL, 0);
+			tempPix = GetGWorldPixMap(tempGW);
+			LockPixels(tempPix);
+			SAVECOLORS;
+			CopyPixMap(selectionPix, tempPix, &(**selectionPix).bounds, &bounds, srcCopy, NULL);
+			RESTORECOLORS;
+			
+			dragRgn = NewRgn();
+			CopyRgn(selectionRgn, dragRgn);
+			MapRgn(dragRgn, &(**selectionPix).bounds, &bounds);
+			
+			DragPixMap(&event, tempPix, dragRgn, selectionPix, selectionRgn, selection);
+			
+			UnlockPixels(tempPix);
+			DisposeGWorld(tempGW);
+			return false;		  
 		}
-		
-		// we must move both the normal and the magnified selection shape
-		OffsetRgn(selectionRgn, x - anchorX, y - anchorY);
-		OffsetRgn(selectionMagnifiedRgn,
-				 (x - anchorX) * magnification,
-				 (y - anchorY) * magnification);
-		
-		// we must also shift the bounds of the selection contents, and the visible region
-		OffsetRect(&(**selectionPix).bounds, x - anchorX, y - anchorY);
-		OffsetRgn(selectionGW->visRgn, x - anchorX, y - anchorY);
-		
-		// now we must update the whole thing
-		Display((**controls.iconEditWell).contrlRect, current);
-		
-		// and set the current coordinates as the old ones
-		anchorX = x;
-		anchorY = y;
+		else
+		{
+			// and get the new position
+			if (ISSHIFTDOWN) // angle based constraints, very similar to the line constraints
+				ConstrainLine45(startX, startY, &x, &y);
+			
+			// we must move both the normal and the magnified selection shape
+			OffsetRgn(selectionRgn, x - anchorX, y - anchorY);
+			OffsetRgn(selectionMagnifiedRgn,
+					 (x - anchorX) * magnification,
+					 (y - anchorY) * magnification);
+			
+			// we must also shift the bounds of the selection contents, and the visible region
+			OffsetRect(&(**selectionPix).bounds, x - anchorX, y - anchorY);
+			OffsetRgn(selectionGW->visRgn, x - anchorX, y - anchorY);
+			
+			// now we must update the whole thing
+			Display((**controls.iconEditWell).contrlRect, current);
+			
+			// and set the current coordinates as the old ones
+			anchorX = x;
+			anchorY = y;
+		}
 	}
 	
+	return true;
 }
 
 // __________________________________________________________________________________________
@@ -2352,7 +2948,10 @@ void icnsEditorClass::DefloatSelection(void)
 	if (!(status & selectionFloated)) // nothing to defloat
 		return;
 		
+	SAVEGWORLD;
 	SAVECOLORS;
+	
+	SetGWorld(selectionGW, NULL);
 	
 	// we copy the contents back into the drawing
 	CopyPixMap(selectionPix,
@@ -2365,6 +2964,8 @@ void icnsEditorClass::DefloatSelection(void)
 	OffsetRect(&(**selectionPix).bounds,
 				-(**selectionPix).bounds.left,
 				-(**selectionPix).bounds.top);
+				
+	RESTOREGWORLD;
 	RESTORECOLORS;
 	
 	// not floated anymore
@@ -2423,12 +3024,12 @@ void icnsEditorClass::HandleMarquee(void)
 	
 	// we get the starting point, etc. (this is very similar to the rectangle function, only
 	// differences will be noted).
-	GetClickPosition(&x1, &y1, false);
+	GetDrawingMousePosition(&x1, &y1, 0);
 	GetMouse(&startMouse);
 	
 	while (Button())
 	{
-		GetClickPosition(&x2, &y2, false);
+		GetDrawingMousePosition(&x2, &y2, 0);
 		GetMouse(&currentMouse);
 		if (currentMouse.h != startMouse.h || currentMouse.v != startMouse.v)
 		{
@@ -2628,10 +3229,11 @@ void icnsEditorClass::HandleFilling()
 	int				x, y; // the click location
 	PixMapHandle	targetPix; // pixmap where the filling will take place
 	OSStatus		err = noErr; // used for error checking
+	RgnHandle		clipRgn = NULL;
 	
 	SAVEGWORLD;
 	
-	GetClickPosition(&x, &y, false); // we get the click location
+	GetDrawingMousePosition(&x, &y, 0); // we get the click location
 	
 	if (!(EmptyRgn(selectionRgn))) // if there is a selection
 	{
@@ -2649,12 +3251,15 @@ void icnsEditorClass::HandleFilling()
 		if (status & selectionFloated)
 			targetPix = selectionPix;
 		else // otherwise it'll be in the main drawing
+		{
 			targetPix = currentPix;
+			clipRgn = selectionRgn;
+		}
 	}
 	else // no selection...
 		targetPix = currentPix;
 	
-	FillPixMap(targetPix, x, y, foreColor); // the actual filling
+	FillPixMap(targetPix, x, y, foreColor, clipRgn); // the actual filling
 	
 	RESTOREGWORLD;
 }
@@ -2669,11 +3274,18 @@ void icnsEditorClass::HandleFilling()
 
 void icnsEditorClass::HandleEyeDropper(void)
 {
-	int x, y; // the click location
+	int x, y;
+	Point clickLocation;
 	SAVEGWORLD;
 	
-	GetClickPosition(&x, &y, false); // we find out where the user clicked
-	SetGWorld(currentGW, NULL); // go into the gworld
+	GetDrawingMousePosition(&x, &y, 0); // we find out where the user clicked
+	clickLocation.h = x;
+	clickLocation.v = y;
+	
+	if ((status & selectionFloated) && (PtInRgn(clickLocation, selectionRgn)))
+		SetGWorld(selectionGW, NULL);
+	else
+		SetGWorld(currentGW, NULL); // go into the gworld
 	
 	if (ISOPTIONDOWN && oldTool == noTool) // if option is down and we're not in toggle mode
 		GetCPixel(x, y, &backColor); // we pit the color we pick up into the background color
@@ -2699,13 +3311,17 @@ void icnsEditorClass::HandlePen(void)
 					oldMouse = {-1, -1}; // the previous mouse position
 	Rect			displayRect; // the place where the result should be displayed
 	int 			x, y, // the coordinates of the current position
-					oldX = -1, oldY = -1; // the previous coordinates
+					oldX = -1, oldY = -1, // the previous coordinates
+					startX, startY; // the starting coordinates (used when constraining)
 	GWorldPtr		targetGW; // the gworld where we'll be drawing
 	PixMapHandle	targetPix; // the pixmap for the gworld above
 	RgnHandle		savedClip = NULL; // used for limiting the drawing to the selection
 	
 	SAVEGWORLD;
 	SAVECOLORS;
+	
+	GetDrawingMousePosition(&oldX, &oldY, 0);
+	GetDrawingMousePosition(&startX, &startY, 0);
 	
 	if (status & selectionFloated) // if there's a floated selection
 	{
@@ -2729,10 +3345,33 @@ void icnsEditorClass::HandlePen(void)
 	// setting up this variable
 	displayRect = (**(controls.iconEditWell)).contrlRect;
 	
-	GetClickPosition(&oldX, &oldY, false);
 	SetGWorld(targetGW, NULL);
-	if (currentTool == pen) // pen mode: we draw in the foreground color
-		RGBForeColor(&foreColor);
+	if (currentTool == pen)
+	// pen mode: we draw in the foreground color (normally, toggle if curent color is foreground)
+	{
+		Point mouseLoc;
+		RGBColor temp, nearestToFore;
+		
+		mouseLoc.h = oldX;
+		mouseLoc.v = oldY;
+		
+		if (((status & selectionFloated) && PtInRgn(mouseLoc, selectionRgn)) ||
+			!(status & selectionFloated))
+		{
+			GetCPixel(oldX, oldY, &temp);
+			if ((**currentPix).pixelSize == 32)
+				nearestToFore = foreColor;
+			else
+				nearestToFore = GetNearestColor(foreColor, (**currentPix).pmTable);
+			
+			if (AreEqualRGB(temp, nearestToFore))
+				RGBForeColor(&backColor);
+			else
+				RGBForeColor(&foreColor);
+		}
+		else
+			RGBForeColor(&foreColor);
+	}
 	else if (currentTool == eraser) // eraser mode: we draw in the background color
 		RGBForeColor(&backColor);
 
@@ -2753,8 +3392,11 @@ void icnsEditorClass::HandlePen(void)
 		{
 			oldMouse = mousePosition; // we set the new position as the old one
 			RESTOREGWORLD;
-			GetClickPosition(&x, &y, false); // get the new position in terms of the drawing
+			GetDrawingMousePosition(&x, &y, 0); // get the new position in terms of the drawing
 			SetGWorld(targetGW, NULL);
+			
+			if (ISSHIFTDOWN)
+				ConstrainLine90(startX, startY, &x, &y);
 	
 			if (x != oldX || y != oldY) // if the position is different
 			{
@@ -2780,15 +3422,13 @@ void icnsEditorClass::HandlePen(void)
 }
 
 // __________________________________________________________________________________________
-// Name			: icnsEditorClass::GetClickPosition
-// Input		: magnified: if true then the coordinates returned will be in the resolution
-//				  of the magnified view, otherwise they will be scaled down to the size of the
-//				  current view
+// Name			: icnsEditorClass::GetDrawingMousePosition
+// Input		: flags: specify options for magnifying, restriction...
 // Output		: x, y: the coordinates of the mouse position
 // Description	: Gets the mouse coordinates in the terms of the position of the window, and
 //				  returns them in terms of the drawing area
 
-inline void icnsEditorClass::GetClickPosition(int *x, int *y, bool magnified)
+inline void icnsEditorClass::GetDrawingMousePosition(int *x, int *y, int flags)
 {
 	Point	mousePosition; // the mouse position in terms of the window
 	Rect	editWellRect, // the boundaries of the editing area (the actual control in the window)
@@ -2810,7 +3450,7 @@ inline void icnsEditorClass::GetClickPosition(int *x, int *y, bool magnified)
 	mousePosition.v = mousePosition.v - editWellRect.top;
 	 // if we want the magnified view (so the coordinate range is from 0 to currentSize *
 	 // * magnification)
-	if (magnified)
+	if (flags & magnified)
 	{
 		SetRect(&boundsRect,
 				boundsRect.left * magnification,
@@ -2818,15 +3458,22 @@ inline void icnsEditorClass::GetClickPosition(int *x, int *y, bool magnified)
 				boundsRect.right * magnification,
 				boundsRect.bottom * magnification);
 	}
-	else // otherwise we have to divide by the magnification
-	{
+	else {
 		mousePosition.h = mousePosition.h/magnification;
 		mousePosition.v = mousePosition.v/magnification;
 	}
-	returnedPoint = PinRect(&boundsRect, mousePosition); // PinRect restricts the point to the
-	// specified rectangle
-	*x = returnedPoint & 0x0000FFFF;
-	*y = (returnedPoint & 0xFFFF0000) >> 16;
+	if (!(flags & noLimit))
+	{
+		returnedPoint = PinRect(&boundsRect, mousePosition); // PinRect restricts the point to the
+		// specified rectangle
+		*x = returnedPoint & 0x0000FFFF;
+		*y = (returnedPoint & 0xFFFF0000) >> 16;
+	}
+	else
+	{
+		*x = mousePosition.h;
+		*y = mousePosition.v;
+	}
 	
 	RESTOREGWORLD;
 }
@@ -2858,11 +3505,8 @@ void icnsEditorClass::SwapForeBackColors(void)
 
 void icnsEditorClass::ResetForeBackColors(void)
 {
-	RGBColor	whiteColor = {0xFFFF, 0xFFFF, 0xFFFF}, // white is all components to the max
-				blackColor = {0, 0, 0}; // and black is all components to zero
-	
-	foreColor = blackColor;
-	backColor = whiteColor;
+	foreColor = kBlackAsRGB;
+	backColor = kWhiteAsRGB;
 	
 	Draw1Control(controls.colorSwatch.control); // again, we must redraw the control since
 	// the colors have changed
@@ -2888,11 +3532,13 @@ void icnsEditorClass::Display(Rect targetRect, long source)
 	long			iconName, maskName; // the names for the above pixmaps
 	OSStatus		err = noErr; // used for error checking
 	BitMap			*target; // the final target for CopyBits
+	bool			drawSelection = true;
 	
-	SAVECOLORS;
 	SAVEGWORLD;
-	
 	target = &qd.thePort->portBits; // the target is the BitMap associated with the current port
+	
+	SetGWorld(statics.canvasGW, NULL);
+	SAVECOLORS;
 	
 	tempRect = targetRect;  
 	OffsetRect(&tempRect, -tempRect.left, -tempRect.top);
@@ -2913,27 +3559,63 @@ void icnsEditorClass::Display(Rect targetRect, long source)
 					 
 			if (overlayPix != NULL) // and if there is an overlay we copy that too
 			{
-				RgnHandle	maskRgn;
-				
-				RGBBackColor(&kNeverUsedColorAsRGB);
 				// we set the background color to the transparent color since the transparent mode
 				// of CopyBits then knows not to copy that color
 				
 				// if there is no selection, or if the overlayPix is magnified, then we don't
 				// clip when drawing the overlay
-				if (EmptyRgn(selectionRgn) ||
-					((**overlayPix).bounds.right == magnification * (**currentPix).bounds.right))
-					maskRgn = NULL;
-				else
-					maskRgn = selectionMagnifiedRgn;
-					
-				CopyPixMap(overlayPix,
+				
+				drawSelection = false;
+				if (!EmptyRgn(selectionRgn))
+					DrawSelection(statics.canvasGW, tempRect, source);
+				
+				if (((**overlayPix).bounds.right == magnification * (**currentPix).bounds.right))
+				{
+					CopyPixMap(overlayPix,
 						   statics.canvasPix,
 						   &(**overlayPix).bounds,
 						   &tempRect,
-						   transparent,
-						   maskRgn);
-				BackColor(whiteColor); // we set the background color back to white
+						   srcXor,
+						   NULL);
+				}	
+				else
+				{
+					Rect magnificationRect;
+					RgnHandle	maskRgn;
+					
+					RGBBackColor(&kNeverUsedColorAsRGB);
+					
+					// we get the target dimensions (original * magnification)
+					magnificationRect = (**selectionRgn).rgnBBox;	
+					SetRect(&magnificationRect,
+							magnificationRect.left * magnification,
+							magnificationRect.top * magnification,
+							magnificationRect.right * magnification,
+							magnificationRect.bottom * magnification);
+					
+					maskRgn = NewRgn();
+					CopyRgn(selectionRgn, maskRgn); // we copy the normal selection shape
+					MapRgn(maskRgn, &(**selectionRgn).rgnBBox, &magnificationRect); // and enlarge it
+					InsetRgn(maskRgn, 1, 1);
+					if (EmptyRgn(selectionRgn))
+						CopyPixMap(overlayPix,
+							   statics.canvasPix,
+							   &(**overlayPix).bounds,
+							   &tempRect,
+							   transparent,
+							   NULL);
+					else
+						CopyPixMap(overlayPix,
+							   statics.canvasPix,
+							   &(**overlayPix).bounds,
+							   &tempRect,
+							   transparent,
+							   maskRgn);
+							  
+					BackColor(whiteColor); // we set the background color back to white
+					
+					DisposeRgn(maskRgn);
+				}
 			}
 			break;
 		// the rest are just normal conversions of various sources to the appropriate PixMap
@@ -2997,20 +3679,20 @@ void icnsEditorClass::Display(Rect targetRect, long source)
 			// that the source long is composed of an icon and mask source)
 			
 			// based on the bits set we determine the source icon and mask
-			if (source & ih32) iconSrcPix = ih32Pix, iconName = ih32;
+			if (source & ih32) 		iconSrcPix = ih32Pix, iconName = ih32;
 			else if (source & il32) iconSrcPix = il32Pix, iconName = il32;
 			else if (source & is32) iconSrcPix = is32Pix, iconName = is32;
 			else if (source & ich8) iconSrcPix = ich8Pix, iconName = ich8;
 			else if (source & icl8) iconSrcPix = icl8Pix, iconName = icl8;
 			else if (source & ics8) iconSrcPix = ics8Pix, iconName = ics8;
-			else if (source & ich4) iconSrcPix = ich4Pix, iconName = ics4;
-			else if (source & icl4) iconSrcPix = icl4Pix, iconName = ics4;
+			else if (source & ich4) iconSrcPix = ich4Pix, iconName = ich4;
+			else if (source & icl4) iconSrcPix = icl4Pix, iconName = icl4;
 			else if (source & ics4) iconSrcPix = ics4Pix, iconName = ics4;
 			else if (source & ichi) iconSrcPix = ichiPix, iconName = ichi;
 			else if (source & icni) iconSrcPix = icniPix, iconName = icni;
 			else if (source & icsi) iconSrcPix = icsiPix, iconName = icsi;
 			
-			if (source & h8mk) maskSrcPix = h8mkPix, maskName = h8mk;
+			if (source & h8mk) 		maskSrcPix = h8mkPix, maskName = h8mk;
 			else if (source & l8mk) maskSrcPix = l8mkPix, maskName = l8mk;
 			else if (source & s8mk) maskSrcPix = s8mkPix, maskName = s8mk;
 			else if (source & ichm) maskSrcPix = ichmPix, maskName = ichm;
@@ -3077,6 +3759,7 @@ void icnsEditorClass::Display(Rect targetRect, long source)
 					
 					maskSrcPix = mergePix;
 				}
+				drawSelection = false;
 			}
 
 			CopyDeepMask((BitMap*)*iconSrcPix, // here we do the actual copying, using
@@ -3097,7 +3780,7 @@ void icnsEditorClass::Display(Rect targetRect, long source)
 	}
 	
 	if (!EmptyRgn(selectionRgn) && // if there is a selection
-		(iconSrcPix == NULL || maskSrcPix == NULL)) // and it hasn't been drawn already
+		drawSelection) // and it hasn't been drawn already
 		DrawSelection(statics.canvasGW, tempRect, source); // draw it now
 	
 	CopyBits((BitMap *)*statics.canvasPix, // now we're done, we can copy the result
@@ -3106,7 +3789,7 @@ void icnsEditorClass::Display(Rect targetRect, long source)
 			 &targetRect,
 			 srcCopy,
 			 window->visRgn);
-	
+			  
 	RESTORECOLORS;
 	RESTOREGWORLD;
 }
@@ -3214,6 +3897,28 @@ void icnsEditorClass::Load()
 }
 
 // __________________________________________________________________________________________
+// Name			: icnsEditorClass::LoadFileIcon
+// Input		: None
+// Output		: None
+// Description	: loads the icon (by calling the Load function of the base class), erases the
+//				  previous states, and makes the current one the first one (since this is as
+//				  far back as we should go).
+
+void icnsEditorClass::LoadFileIcon()
+{
+	icnsClass::LoadFileIcon(); // we call the base function
+	
+	DisposeStates(); // the saved states don't apply anymore
+	delete currentState; // including the curren one
+	
+	currentState = new drawingStateClass(NULL, this); // we instead save the state of the 
+	firstState = currentState;						  // newly loaded icon
+	
+	RefreshWindowTitle(); // and refresh the window title since the source file and/or icon 
+						  // name have changed
+}
+
+// __________________________________________________________________________________________
 // Name			: icnsEditorClass::RefreshWindowTitle
 // Input		: None
 // Output		: None
@@ -3225,11 +3930,9 @@ void icnsEditorClass::RefreshWindowTitle()
 		
 	CopyString(windowTitle, "\p"); // we set back to nothing
 	AppendString(windowTitle, srcFileSpec.name); // put in the file name
-	if (name[0] != 0) // if the name isn't empty
-	{
-		AppendString(windowTitle, "\p: "); // then we add than on too
-		AppendString(windowTitle, name);
-	}
+	AppendString(windowTitle, "\p (");
+	AppendString(windowTitle, statics.iconPartNames[NearestPowerOf2(currentPixName)]);
+	AppendString(windowTitle, "\p)");
 	
 	SetWTitle(window, windowTitle); // and set the title
 }
@@ -3277,6 +3980,10 @@ void icnsEditorClass::HandleKeyDown(EventRecord *eventPtr)
 		case 'w': currentTool = magicWand; break;
 		case 'y': currentTool = line; break;
 		case 'r': currentTool = rectangle; break;
+		case 'o': currentTool = oval; break;
+		case 'p': currentTool = polygon; break;
+		case 'g': currentTool = gradient; break;
+		case 't': currentTool = text; break;
 		case 'x': SwapForeBackColors(); break;
 		case 'd': ResetForeBackColors(); break;
 		case kDeleteKey : // delete key either
@@ -3364,6 +4071,8 @@ void icnsEditorClass::Undo()
 		if (status & skipState)
 			Undo();
 	}
+	
+	RefreshWindowTitle();
 }
 
 // __________________________________________________________________________________________
@@ -3389,6 +4098,8 @@ void icnsEditorClass::Redo()
 		if (status & skipState)
 			Redo();
 	}
+	
+	RefreshWindowTitle();
 }
 
 // __________________________________________________________________________________________
@@ -3422,6 +4133,7 @@ void icnsEditorClass::Cut()
 			  -(**selectionPix).bounds.top);
 	SetEmptyRgn(selectionRgn); // no more selection
 	status &= ~hasSelection;
+	status &= ~selectionFloated;
 	
 	status |= needToSave; // we've made modifications
 	status |= needsUpdate;
@@ -3445,6 +4157,10 @@ void icnsEditorClass::Copy()
 	PicHandle		pic;
 	OSStatus		err;
 	
+	SAVEGWORLD;
+	
+	SetGWorld(currentGW, NULL);
+	
 	if (status & selectionFloated) // if there is a selection
 		PixMapToPicture(selectionPix, selectionRgn, &pic); // we copy from there
 	else
@@ -3458,6 +4174,8 @@ void icnsEditorClass::Copy()
 		DisplayValue(err); // if there was a problem (unlikely) we display the error code
 	
 	KillPicture(pic);
+	
+	RESTOREGWORLD;
 }
 
 // __________________________________________________________________________________________
@@ -3468,7 +4186,7 @@ void icnsEditorClass::Copy()
 //				  floating selection (using the InsertFromPicture command)
 
 
-void icnsEditorClass::Paste()
+void icnsEditorClass::Paste(int pasteType)
 {
 	PicHandle		clipPicture;
 	long			offset, picSize;
@@ -3483,8 +4201,16 @@ void icnsEditorClass::Paste()
 		
 		
 		picSize = GetScrap((Handle)clipPicture,'PICT',&offset); // we import it
-
-		InsertFromPicture(clipPicture, currentGW, false); // and we insert it into the drawing
+		
+		switch (pasteType)
+		{
+			case normally:
+				InsertFromPicture(clipPicture, currentGW, false); // and we insert it into the drawing
+				break;
+			case asIconAndMask:
+				InsertPicIntoIcon(this, clipPicture);
+				break;
+		}
 		
 		status |= needToSave; // we've modified the picture
 	
@@ -3520,8 +4246,10 @@ void icnsEditorClass::InsertFromPicture(PicHandle srcPic, GWorldPtr targetGW, bo
 		picRect = targetGW->portRect;
 	else // otherwise the size is left alone
 		picRect = (**srcPic).picFrame;
-		
-	OffsetRect(&picRect, -picRect.left, -picRect.top); // we want to start at 0, 0
+	
+	MakeTargetRect(targetGW->portRect, &picRect);
+	
+	//OffsetRect(&picRect, -picRect.left, -picRect.top);
 	if (targetGW == currentGW)
 	// if we're inserting into the current gworld we must put the picture into a floating selection
 	{
@@ -3532,10 +4260,7 @@ void icnsEditorClass::InsertFromPicture(PicHandle srcPic, GWorldPtr targetGW, bo
 		// we'll be creating a new selection so we must set these flags
 
 		currentBounds = (**currentPix).bounds; // we want the picture to be centered
-		OffsetRect(&picRect,
-				   (currentBounds.right - picRect.right)/2,
-				   (currentBounds.bottom - picRect.bottom)/2);
-		 
+		
 		// the selection shape should be the region which is the picture shape  
 		PictureToRegion(srcPic, picRect, selectionRgn);
 		MagnifySelectionRgn(); // we want the enlarged selection shape too
@@ -3543,11 +4268,13 @@ void icnsEditorClass::InsertFromPicture(PicHandle srcPic, GWorldPtr targetGW, bo
 		// we must now update the selection GWorld/PixMap so that it reflects the size of the
 		// picture we are inserting
 		UnlockPixels(selectionPix);
-		UpdateGWorld(&selectionGW,
-					 (**currentPix).pixelSize,
-					 &picRect,
-					 (**currentPix).pmTable,
-					 NULL, 0);
+		DisposeGWorld(selectionGW);
+		NewGWorld(&selectionGW,
+				 (**currentPix).pixelSize,
+				 &picRect,
+				 (**currentPix).pmTable,
+				 NULL,
+				 0);
 		selectionPix = GetGWorldPixMap(selectionGW);
 		LockPixels(selectionPix);
 		
@@ -3576,91 +4303,6 @@ void icnsEditorClass::InsertFromPicture(PicHandle srcPic, GWorldPtr targetGW, bo
 		status |= hasSelection;
 	else
 		status &= ~hasSelection;
-}
-
-// __________________________________________________________________________________________
-// Name			: icnsEditorClass::PictureToRegion
-// Input		: srcPic: picture from which the outline should be derived
-// Output		: targetRgn: region where the outline should be stored
-// Description	: pictures can have a mask built into them, which is used to determine the
-//				  clipping when they are drawn. This function extracts that mask by drawing
-//				  the picture on a background of a particular, rare color, and then looking
-//				  at which pixels have been left unchanged.
-
-void icnsEditorClass::PictureToRegion(PicHandle srcPic, Rect bounds, RgnHandle targetRgn)
-{
-	GWorldPtr		tempGW, // we'll be drawing the the picture here
-					maskGW; // this is where the final BitMap will be (for trasnferring to the
-							// targetRgn)
-	PixMapHandle	tempPix, // PixMaps corresponding to the GWorlds above
-					maskPix;
-	register long	*rowBaseAddress, // pointer to the baseAddress of a row in the tempGW
-					rowLongs, // the width of a row
-					noOfRows, // the number of rows (height)
-					noOfPixels; // the width in pixels
-	OSStatus		err = noErr;
-	
-	SAVEGWORLD;
-	SAVECOLORS;
-	
-	// first we create the temporary GWorld...
-	err = NewGWorld(&tempGW, 32, &bounds, NULL, NULL, 0);
-	if (err != noErr) {status |= outOfMemory; return; }
-	tempPix = GetGWorldPixMap(tempGW);
-	LockPixels(tempPix);
-	SetGWorld(tempGW, NULL);
-	EraseRect(&bounds);
-
-	// getting some info about the GWorld	
-	noOfRows = bounds.bottom - bounds.top;
-	noOfPixels = bounds.right - bounds.left;
-	rowBaseAddress = (long *)(**tempPix).baseAddr;
-	rowLongs = ((**tempPix).rowBytes & 0x3FFF)/4;
-	// the rowBytes has the upper two bits as flags
-	
-	// we now fill it with the never used color
-	for (int j = 0; j < noOfRows; j++, rowBaseAddress += rowLongs)
-		for (int i=0; i < noOfPixels; i++)
-			rowBaseAddress[i] = kNeverUsedColor;
-	
-	// we then draw the picture. the base assumption here is that pixels which are masked out
-	// won't be affected, so we can check later on if they're still equal to kNeverUsedColor		
-	DrawPicture(srcPic, &bounds);
-	
-	// we start at the base address
-	rowBaseAddress = (long*)(**tempPix).baseAddr;	
-	for (int j = 0; j < noOfRows; j++, rowBaseAddress += rowLongs)
-		for (int i=0; i < noOfPixels; i++) // and move through all the rows
-			if ((rowBaseAddress[i] & 0xFFFFFF) != (kNeverUsedColor & 0xFFFFFF))
-				rowBaseAddress[i] = 0; // turn changed pixels to black
-			else
-				rowBaseAddress[i] = 0xFFFFFF; // unchanged become white
-	
-	// what we have right now is an image which contains masked out areas as black and the
-	// rest as white. The only problem is that its in 32 bits, and BitMapToRegion wants a 1-bit
-	// deep bitmap. Therefore we make a new GWorld...
-	err = NewGWorld(&maskGW, 1, &bounds, NULL, NULL, 0);
-	if (err != noErr) // if we failed
-		{status |= outOfMemory; UnlockPixels(tempPix); DisposeGWorld(tempGW); return; }
-	maskPix = GetGWorldPixMap(maskGW);
-	LockPixels(maskPix);
-	SetGWorld(maskGW, NULL);
-	EraseRect(&bounds);
-	
-	// ...and just copy the tempPix into the here
-	CopyPixMap(tempPix,maskPix,&bounds,&bounds,srcCopy,NULL);	
-	
-	// now we can get the region
-	BitMapToRegion(targetRgn, (BitMap*)*maskPix);
-	
-	// we're done, so we can dispose
-	UnlockPixels(tempPix);
-	DisposeGWorld(tempGW);
-	UnlockPixels(maskPix);
-	DisposeGWorld(maskGW);
-	
-	RESTOREGWORLD;
-	RESTORECOLORS;
 }
 
 // __________________________________________________________________________________________
@@ -3698,7 +4340,7 @@ void icnsEditorClass::PictureToMask(PicHandle srcPic, GWorldPtr maskGW)
 	DrawPicture(srcPic, &bounds);
 	
 	// and then get the mask
-	Make1BitMask(tempPix, maskGW->portPixMap);
+	Make1BitMask(tempPix, maskGW->portPixMap, (**tempPix).bounds);
 	
 	RESTOREGWORLD;
 	RESTORECOLORS;
@@ -3722,7 +4364,11 @@ void icnsEditorClass::Clear(void)
 	SAVECOLORS;
 	
 	if (status & selectionFloated) // if we have a floating selection...
+	{
+		status &= ~selectionFloated;
+		status &= ~hasSelection;
 		SetEmptyRgn(selectionRgn); // we just empty it
+	}
 	else
 	{
 		SetGWorld(currentGW, NULL); // otherwise we clear out the selected region in the 
@@ -3787,6 +4433,23 @@ void icnsEditorClass::Select(int selectionType)
 			// simply convert the current dimensions into a rectangle
 			MagnifySelectionRgn();
 			break;
+		case similar:
+			RGBColor* colors;
+			int	noOfColors;
+			
+			if (status & selectionFloated)
+				DefloatSelection();
+			
+			status &= ~selectionFloated;
+			
+			GetSelectionColors(&colors, &noOfColors);
+			SetEmptyRgn(selectionRgn);
+			GetSimilarColors(colors, noOfColors, currentPix, NULL, selectionRgn);
+			MagnifySelectionRgn();
+			
+			delete colors;
+			
+			break;
 		case none:
 			SetEmptyRgn(selectionRgn); // set the selection to nothing
 			break;
@@ -3812,6 +4475,52 @@ void icnsEditorClass::Select(int selectionType)
 	status |= needsUpdate;
 	
 	currentState = new drawingStateClass(currentState, this);
+}
+
+void icnsEditorClass::GetSelectionColors(RGBColor** colors, int* noOfColors)
+{
+	Point temp;
+	RGBColor	*tempColorPtr, tempColor;
+	bool	exists = false;
+	
+	*noOfColors = 0;
+	
+	SAVEGWORLD;
+	SetGWorld(currentGW, NULL);
+	
+	*colors = new RGBColor;
+	
+	for (int y = (**selectionRgn).rgnBBox.top; y < (**selectionRgn).rgnBBox.bottom; y++)
+		for (int x = (**selectionRgn).rgnBBox.left; x < (**selectionRgn).rgnBBox.right; x++)
+		{
+			temp.h = x; temp.v = y;
+			if (PtInRgn(temp, selectionRgn))
+			{
+				GetCPixel(x, y, &tempColor);
+				for (int i = 0; i < (*noOfColors); i++)
+					if (!AreEqualRGB(tempColor, (*colors)[i]) && !exists)
+					exists = false;
+				else
+					exists = true; 
+				
+				if (!exists)
+				{
+					(*colors)[*noOfColors] = tempColor;
+					(*noOfColors)++;
+					tempColorPtr = new RGBColor[*noOfColors + 1];
+					for (int i = 0; i < (*noOfColors) +1 ; i++)
+						tempColorPtr[i] = (*colors)[i];
+						
+					delete *colors;
+					
+					*colors = tempColorPtr;
+				}
+				
+				exists = false;
+			}
+		}
+		
+	RESTOREGWORLD;
 }
 
 // __________________________________________________________________________________________
@@ -4031,6 +4740,49 @@ icnsEditorPtr GetEditor(WindowPtr window)
 icnsEditorPtr GetFrontEditor(void)
 {
 	return GetEditor(FrontWindow());
+}
+
+// __________________________________________________________________________________________
+// Name			: StandardEditDialogFilter
+// Input		: dialog: the dialog for which we must perform the event filtering
+//				  eventPtr: the event that just occured
+// Output		: itemHit: the item that was hit, based on the event
+// Description	: This function processed events when an editor opens up a dialog. it takes
+//				  care of refreshes, etc.
+
+pascal bool StandardEditorDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit)
+{
+	bool	handledEvent = false;
+	GrafPtr	oldPort;
+	icnsEditorPtr editor;
+	
+	switch (eventPtr->what)
+	{
+		case osEvt:
+		case activateEvt:
+			GetPort(&oldPort);
+			SetPort(dialog);
+			InvalRect(&dialog->portRect);
+			SetPort(oldPort);
+		case updateEvt:
+			if ((WindowPtr) eventPtr->message != dialog)
+			{
+				editor = GetEditor((WindowPtr)eventPtr->message);
+				if (editor != NULL)
+					editor->Refresh();
+			}
+			else
+				handledEvent = StdFilterProc(dialog, eventPtr, itemHit);
+			break;
+		default:
+			GetPort(&oldPort);
+			SetPort(dialog);
+			
+			handledEvent = StdFilterProc(dialog,eventPtr,itemHit);
+			SetPort(oldPort);
+		break;
+	}
+	return handledEvent;
 }
 
 

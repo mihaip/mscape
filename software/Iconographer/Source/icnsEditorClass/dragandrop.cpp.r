@@ -1,10 +1,10 @@
-/* Resource fork of software/Icon Mangler/Source/icnsEditorClass/dragandrop.cpp */
+/* Resource fork of software/Iconographer/Source/icnsEditorClass/dragandrop.cpp */
 data 'MPSR' (1005) {
 	$"0009 4D6F 6E61 636F 0000 0000 0000 0000"            /* ..Monaco........ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0002 0004 0043 0065 02DA 0348 0043"            /* .......C.e.⁄.H.C */
-	$"0065 02DA 0348 B332 C647 0000 21CA 0000"            /* .e.⁄.H≥2∆G..! .. */
-	$"21CA 0000 1C93 0100"                                /* ! ...ì.. */
+	$"0000 0002 0004 0031 00EF 02E9 03CC 0031"            /* .......1.Ô.È.Ã.1 */
+	$"00EF 02E9 03CC B381 A0FB 0000 2736 0000"            /* .Ô.È.Ã≥Å†˚..'6.. */
+	$"2736 0000 206A 0100"                                /* '6.. j.. */
 };
 
 data 'MWBB' (1008) {

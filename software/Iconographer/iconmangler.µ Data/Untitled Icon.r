@@ -1,4 +1,4 @@
-/* Resource fork of software/Icon Mangler/iconmangler.µ Data/Untitled Icon */
+/* Resource fork of software/Iconographer/iconmangler.µ Data/Untitled Icon */
 resource 'icl8' (-20801, "Internet Search Sites Folder") {
 	$"0000 00FF FFFF 0000 0000 0000 0000 0000"
 	$"0000 0000 0000 0000 0000 0000 0000 0000"

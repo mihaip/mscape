@@ -7,6 +7,96 @@
 //				  the color swatch, the display and the edit well).
 
 #include "icnsEditorClass.h"
+#include "editorStaticsClass.h"
+
+pascal void PlacardDraw(ControlHandle theControl,SInt16 thePart)
+{
+#pragma unused (thePart)
+
+	Rect placardRect;
+	icnsEditorPtr parentEditor;
+	Str255	placardText;
+	int h, v;
+	
+	parentEditor = GetEditor((**theControl).contrlOwner);
+	
+	placardRect = (**theControl).contrlRect;
+	
+	if (theControl == parentEditor->controls.zoomPlacard.control)
+		CopyString(placardText, parentEditor->controls.zoomPlacard.text);
+	else if (theControl == parentEditor->controls.infoPlacard.control)
+		CopyString(placardText, parentEditor->controls.infoPlacard.text);
+	
+	TextSize(9);
+	
+	h = placardRect.left + (placardRect.right - placardRect.left - StringWidth(placardText))/2;
+	v = placardRect.bottom - (placardRect.bottom - placardRect.top - StringHeight(placardText))/2 - 2;
+	
+	
+	SAVECOLORS;
+	
+	switch ((**theControl).contrlHilite)
+	{
+		case kControlNoPart:
+			DrawThemePlacard(&placardRect, kThemeStateActive); 
+			SetThemeTextColor(kThemeTextColorPlacardActive, 32, true);
+			break;
+		case kControlIndicatorPart:
+			DrawThemePlacard(&placardRect, kThemeStatePressed);
+			SetThemeTextColor(kThemeTextColorPlacardPressed, 32, true);
+			break;
+		case kControlInactivePart:
+			DrawThemePlacard(&placardRect, kThemeStateInactive);
+			SetThemeTextColor(kThemeTextColorPlacardInactive, 32, true);
+			break;
+	}
+	
+	MoveTo(h, v);
+	DrawString(placardText);
+	
+	RESTORECOLORS;
+	
+	TextSize(12);
+	
+	
+}
+
+pascal ControlPartCode PlacardHitTest(ControlHandle theControl, Point where)
+{
+	if (PtInRect(where, &(**theControl).contrlRect))
+		return kControlIndicatorPart;
+	else
+		return kControlNoPart;
+}
+
+pascal ControlPartCode	PlacardTracking(ControlHandle theControl, Point startPt, ControlActionUPP actionProc)
+{
+#pragma unused (startPt, actionProc)
+	Point theMouse;
+	while (Button())
+	{
+		GetMouse(&theMouse);
+		if (PtInRect(theMouse, &(**theControl).contrlRect) && ((**theControl).contrlHilite != kControlIndicatorPart))
+		{
+			(**theControl).contrlHilite = kControlIndicatorPart;
+			Draw1Control(theControl);
+		}
+		else if (!PtInRect(theMouse, &(**theControl).contrlRect) && (**theControl).contrlHilite != kControlNoPart)
+		{
+			(**theControl).contrlHilite = kControlNoPart;
+			Draw1Control(theControl);
+		}
+	}
+	
+	(**theControl).contrlHilite = kControlNoPart;
+	Draw1Control(theControl);
+	
+	if (PtInRect(theMouse, &(**theControl).contrlRect))
+		return kControlIndicatorPart;
+	else
+		return kControlNoPart;
+}
+
 
 // __________________________________________________________________________________________
 // Name			: EditWellDraw
@@ -66,7 +156,12 @@ pascal void DisplayDraw(ControlHandle theControl,SInt16 thePart)
 	
 	icnsEditorPtr	parentEditor; // the editor which this control belongs
 	Rect			hugeDisplayRect; // location where we'll be drawing the huge icon size
-	SAVECOLORS;
+	Rect			tempRect;
+	
+	
+	tempRect = (**theControl).contrlRect;
+	InsetRect(&tempRect, -2, -2);
+	EraseRect(&tempRect);
 	
 	parentEditor = GetEditor((**theControl).contrlOwner);
 	
@@ -79,9 +174,14 @@ pascal void DisplayDraw(ControlHandle theControl,SInt16 thePart)
 		// the reason why the "huge" slot needs a special rectangle is because it is bigger
 		// than the 48 x 48 icon (it's 52 x 52) and thus we need to center the drawing
 		// inside it (which is what MakeTargetRectDoes)
+		
+		SAVECOLORS;
+		
 		hugeDisplayRect = hugeIconRect;
 		MakeTargetRect(parentEditor->controls.display.iconHugeRect, &hugeDisplayRect);
 		EraseRect(&parentEditor->controls.display.iconHugeRect); // we fill it with white
+		
+		RESTORECOLORS;
 		
 		// now we can draw the image wells
 		DrawImageWell(theControl, parentEditor->controls.display.iconHugeRect);
@@ -92,24 +192,24 @@ pascal void DisplayDraw(ControlHandle theControl,SInt16 thePart)
 		switch (GetControlValue(parentEditor->controls.display.iconPopup))
 		{
 			case k32BitIcon:
-				parentEditor->Display(hugeDisplayRect, ih32);
-				parentEditor->Display(parentEditor->controls.display.iconLargeRect, il32);
-				parentEditor->Display(parentEditor->controls.display.iconSmallRect, is32);
+				DrawDisplayItem(parentEditor, hugeDisplayRect, ih32);
+				DrawDisplayItem(parentEditor, parentEditor->controls.display.iconLargeRect, il32);
+				DrawDisplayItem(parentEditor, parentEditor->controls.display.iconSmallRect, is32);
 				break;
 			case k8BitIcon:
-				parentEditor->Display(hugeDisplayRect, ich8);
-				parentEditor->Display(parentEditor->controls.display.iconLargeRect, icl8);
-				parentEditor->Display(parentEditor->controls.display.iconSmallRect, ics8);
+				DrawDisplayItem(parentEditor, hugeDisplayRect, ich8);
+				DrawDisplayItem(parentEditor, parentEditor->controls.display.iconLargeRect, icl8);
+				DrawDisplayItem(parentEditor, parentEditor->controls.display.iconSmallRect, ics8);
 				break;
 			case k4BitIcon:
-				parentEditor->Display(hugeDisplayRect, ich4);
-				parentEditor->Display(parentEditor->controls.display.iconLargeRect, icl4);
-				parentEditor->Display(parentEditor->controls.display.iconSmallRect, ics4);
+				DrawDisplayItem(parentEditor, hugeDisplayRect, ich4);
+				DrawDisplayItem(parentEditor, parentEditor->controls.display.iconLargeRect, icl4);
+				DrawDisplayItem(parentEditor, parentEditor->controls.display.iconSmallRect, ics4);
 				break;
 			case k1BitIcon:
-				parentEditor->Display(hugeDisplayRect, ichi);
-				parentEditor->Display(parentEditor->controls.display.iconLargeRect, icni);
-				parentEditor->Display(parentEditor->controls.display.iconSmallRect, icsi);
+				DrawDisplayItem(parentEditor, hugeDisplayRect, ichi);
+				DrawDisplayItem(parentEditor, parentEditor->controls.display.iconLargeRect, icni);
+				DrawDisplayItem(parentEditor, parentEditor->controls.display.iconSmallRect, icsi);
 				break;
 		}
 	}
@@ -117,9 +217,13 @@ pascal void DisplayDraw(ControlHandle theControl,SInt16 thePart)
 	{
 		// same thing as above, except we're dealing with the mask depths
 		
+		SAVECOLORS;
+		
 		hugeDisplayRect = hugeIconRect;
 		MakeTargetRect(parentEditor->controls.display.maskHugeRect, &hugeDisplayRect);
 		EraseRect(&parentEditor->controls.display.maskHugeRect);
+		
+		RESTORECOLORS;
 		
 		DrawImageWell(theControl, parentEditor->controls.display.maskHugeRect);
 		DrawImageWell(theControl, parentEditor->controls.display.maskLargeRect);
@@ -128,18 +232,53 @@ pascal void DisplayDraw(ControlHandle theControl,SInt16 thePart)
 		switch (GetControlValue(parentEditor->controls.display.maskPopup))
 		{
 			case k8BitMask:
-				parentEditor->Display(hugeDisplayRect, h8mk);
-				parentEditor->Display(parentEditor->controls.display.maskLargeRect, l8mk);
-				parentEditor->Display(parentEditor->controls.display.maskSmallRect, s8mk);
+				DrawDisplayItem(parentEditor, hugeDisplayRect, h8mk);
+				DrawDisplayItem(parentEditor, parentEditor->controls.display.maskLargeRect, l8mk);
+				DrawDisplayItem(parentEditor, parentEditor->controls.display.maskSmallRect, s8mk);
 				break;
 			case k1BitMask:
-				parentEditor->Display(hugeDisplayRect, ichm);
-				parentEditor->Display(parentEditor->controls.display.maskLargeRect, icnm);
-				parentEditor->Display(parentEditor->controls.display.maskSmallRect, icsm);
+				DrawDisplayItem(parentEditor, hugeDisplayRect, ichm);
+				DrawDisplayItem(parentEditor, parentEditor->controls.display.maskLargeRect, icnm);
+				DrawDisplayItem(parentEditor, parentEditor->controls.display.maskSmallRect, icsm);
 				break;
 		}
 	}
-	RESTORECOLORS;
+	
+}
+
+// __________________________________________________________________________________________
+// Name			: DrawDisplayItem
+// Input		: parentEditor: the editor for which we'll be drawing
+//				  targetRect: the rectangle into which we'll be drawing the contents
+//				  targetName: the contents of the rectangle
+// Output		: None
+// Description	: Draws the contents of the specified icon part into the specified rectangle,
+//				  and adds a focus rect if this is the current editor
+
+void DrawDisplayItem(icnsEditorPtr parentEditor, Rect targetRect, long targetName)
+{
+	if (targetName == parentEditor->currentPixName)
+	{
+		Rect focusRect;
+	
+		switch (parentEditor->currentPixName)
+		{
+			case ih32: case ich8: case ich4: case ichi:
+				focusRect = parentEditor->controls.display.iconHugeRect;
+				break;
+			case h8mk: case ichm:
+				 focusRect = parentEditor->controls.display.maskHugeRect;
+				 break;
+			default:
+				focusRect = targetRect;
+				break;
+		}
+		
+		if ((**parentEditor->controls.display.iconDisplay).contrlHilite == kActiveHilite)
+			DrawThemeFocusRect(&focusRect, true);
+	}
+	
+	parentEditor->Display(targetRect, targetName);
 }
 
 // __________________________________________________________________________________________
@@ -325,19 +464,32 @@ pascal void	ColorSwatchDraw(ControlHandle theControl,SInt16 thePart)
 	thePart; // unused parameter
 
 	icnsEditorPtr	parentEditor; // the editor which owns this control
+	RGBColor		actualForeColor, actualBackColor; // the colors cast to the nearst ones
+													  // for the current pix
 	
-	SAVECOLORS; // we'll be chan
+	SAVECOLORS; // we'll be changing the foreground/background colors
 	
 	parentEditor = GetEditor((**theControl).contrlOwner);
 	
+	if ((**parentEditor->currentPix).pixelSize == 32)
+	{
+		actualForeColor = parentEditor->foreColor;
+		actualBackColor = parentEditor->backColor;
+	}
+	else
+	{
+		actualForeColor = GetNearestColor(parentEditor->foreColor, (**parentEditor->currentPix).pmTable);
+		actualBackColor = GetNearestColor(parentEditor->backColor, (**parentEditor->currentPix).pmTable);
+	}
+	
 	// first we draw the background color swatch (since it must appear underneath)
 	DrawImageWell(theControl, parentEditor->controls.colorSwatch.backColorRect);
-	RGBForeColor(&(parentEditor->backColor));
+	RGBForeColor(&actualBackColor);
 	PaintRect(&parentEditor->controls.colorSwatch.backColorRect);
 	
 	// then (partially on top of it) we draw the foreground color swatch
 	DrawImageWell(theControl, parentEditor->controls.colorSwatch.foreColorRect);
-	RGBForeColor(&(parentEditor->foreColor));
+	RGBForeColor(&actualForeColor);
 	PaintRect(&parentEditor->controls.colorSwatch.foreColorRect);
 	
 	RESTORECOLORS; // we're done with the color changing

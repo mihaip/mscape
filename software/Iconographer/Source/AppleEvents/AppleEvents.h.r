@@ -1,10 +1,10 @@
-/* Resource fork of software/Icon Mangler/Source/AppleEvents/AppleEvents.h */
+/* Resource fork of software/Iconographer/Source/AppleEvents/AppleEvents.h */
 data 'MPSR' (1005) {
 	$"0009 4D6F 6E61 636F 0000 0000 0000 0000"            /* ..Monaco........ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0003 0004 0036 00EA 02F2 0340 0036"            /* .......6.Í.Ú.@.6 */
-	$"00EA 02F2 0340 B333 C9DC 0000 01AD 0000"            /* .Í.Ú.@≥3…‹...≠.. */
-	$"01AD 0000 0000 0100"                                /* .≠...... */
+	$"0000 0002 0004 0074 001C 02F4 0272 0074"            /* .......t...Ù.r.t */
+	$"001C 02F4 0272 B33A 8F62 0000 0376 0000"            /* ...Ù.r≥:èb...v.. */
+	$"0376 0000 0000 0100"                                /* .v...... */
 };
 
 data 'MWBB' (1008) {
