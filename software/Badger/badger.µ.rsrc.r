@@ -42,7 +42,7 @@ resource 'MENU' (128) {
 resource 'MENU' (129) {
 	129,
 	textMenuProc,
-	0x7FFFFFF9,
+	0x7FFFFFFB,
 	enabled,
 	"File",
 	{	/* array: 4 elements */
@@ -54,6 +54,114 @@ resource 'MENU' (129) {
 		"-", noIcon, noKey, noMark, plain,
 		/* [4] */
 		"Quit", noIcon, "Q", noMark, plain
+	}
+};
+
+resource 'MENU' (200) {
+	200,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"System Folders",
+	{	/* array: 49 elements */
+		/* [1] */
+		"Ð20801 Internet Search Sites", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Ð20797 Scripts", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Ð20792 ColorSync Profiles", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"Ð20744 Internet", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"Ð20724 Speakable Items", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"Ð20729 Favorites", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"Ð20723 Appearance", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"Ð3994 Private Folder", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"Ð3983 System Folder", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"Ð3982 Apple Menu Items", noIcon, noKey, noMark, plain,
+		/* [11] */
+		"Ð3981 Startup Items", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"Ð3980 Shared Folder", noIcon, noKey, noMark, plain,
+		/* [13] */
+		"Ð3979 Drop Folder", noIcon, noKey, noMark, plain,
+		/* [14] */
+		"Ð3978 Share Point", noIcon, noKey, noMark, plain,
+		/* [15] */
+		"Ð3977 Mounted Folder", noIcon, noKey, noMark, plain,
+		/* [16] */
+		"Ð3976 Control Panels", noIcon, noKey, noMark, plain,
+		/* [17] */
+		"Ð3975 Print Spool", noIcon, noKey, noMark, plain,
+		/* [18] */
+		"Ð3974 Preferences", noIcon, noKey, noMark, plain,
+		/* [19] */
+		"Ð3973 Extensions", noIcon, noKey, noMark, plain,
+		/* [20] */
+		"Ð3968 Fonts", noIcon, noKey, noMark, plain,
+		/* [21] */
+		"Ð3966 Recent Documents", noIcon, noKey, noMark, plain,
+		/* [22] */
+		"Ð3965 Recent Applications", noIcon, noKey, noMark, plain,
+		/* [23] */
+		"Ð3964 Recent Servers", noIcon, noKey, noMark, plain,
+		/* [24] */
+		"Ð3963 MacOS Read Me Files", noIcon, noKey, noMark, plain,
+		/* [25] */
+		"Ð3962 Control Strip Modules", noIcon, noKey, noMark, plain,
+		/* [26] */
+		"Ð3961 Sounds", noIcon, noKey, noMark, plain,
+		/* [27] */
+		"Ð3960 Help", noIcon, noKey, noMark, plain,
+		/* [28] */
+		"Ð3959 Scripting Additions", noIcon, noKey, noMark, plain,
+		/* [29] */
+		"Ð3958 Internet Plug-ins", noIcon, noKey, noMark, plain,
+		/* [30] */
+		"Ð3957 Language Support", noIcon, noKey, noMark, plain,
+		/* [31] */
+		"Ð3956 Shared Libraries", noIcon, noKey, noMark, plain,
+		/* [32] */
+		"Ð3955 Text Encodings", noIcon, noKey, noMark, plain,
+		/* [33] */
+		"Ð3954 Printer Drivers", noIcon, noKey, noMark, plain,
+		/* [34] */
+		"Ð3953 Printer Descriptions", noIcon, noKey, noMark, plain,
+		/* [35] */
+		"Ð3952 Voices", noIcon, noKey, noMark, plain,
+		/* [36] */
+		"Ð3951 Control Panels (Disabled)", noIcon, noKey, noMark, plain,
+		/* [37] */
+		"Ð3950 Extensions (Disabled)", noIcon, noKey, noMark, plain,
+		/* [38] */
+		"Ð3949 Startup Items (Disabled)", noIcon, noKey, noMark, plain,
+		/* [39] */
+		"Ð3948 Shutdown Items (Disabled)", noIcon, noKey, noMark, plain,
+		/* [40] */
+		"Ð3947 System Extensions (Disabled)", noIcon, noKey, noMark, plain,
+		/* [41] */
+		"Ð3946 Assistants", noIcon, noKey, noMark, plain,
+		/* [42] */
+		"Ð3945 Utilities", noIcon, noKey, noMark, plain,
+		/* [43] */
+		"Ð3944 Application Support", noIcon, noKey, noMark, plain,
+		/* [44] */
+		"Ð3943 Apple Extras", noIcon, noKey, noMark, plain,
+		/* [45] */
+		"Ð3942 Contextual Menu Items", noIcon, noKey, noMark, plain,
+		/* [46] */
+		"Ð3812 Workgroup", noIcon, noKey, noMark, plain,
+		/* [47] */
+		"Ð3811 User", noIcon, noKey, noMark, plain,
+		/* [48] */
+		"Ð3774 System Folder (protected)", noIcon, noKey, noMark, plain,
+		/* [49] */
+		"Ð3773 Applications Folder (protected)", noIcon, noKey, noMark, plain
 	}
 };
 
@@ -80,14 +188,14 @@ resource 'DLOG' (128) {
 };
 
 resource 'DLOG' (130, purgeable) {
-	{259, 337, 395, 687},
+	{54, 44, 295, 357},
 	dBoxProc,
 	visible,
 	goAway,
 	0x0,
 	130,
 	"",
-	alertPositionParentWindowScreen
+	centerParentWindowScreen
 };
 
 resource 'FREF' (128) {
@@ -455,9 +563,9 @@ resource 'vers' (1) {
 	0x1,
 	0x0,
 	development,
-	0x4,
+	0x2,
 	14,
-	"1.0d4",
+	"1.0d2",
 	"©1998 Mihai Parparita"
 };
 
@@ -465,10 +573,10 @@ resource 'vers' (2) {
 	0x1,
 	0x0,
 	development,
-	0x4,
+	0x2,
 	14,
-	"1.0d4",
-	"clip2icns 1.0d4"
+	"1.0d2",
+	"badger 1.0d2"
 };
 
 resource 'dlgx' (-6043) {
@@ -1676,6 +1784,92 @@ resource 'DITL' (128) {
 	}
 };
 
+resource 'DITL' (130) {
+	{	/* array DITLarray: 14 elements */
+		/* [1] */
+		{214, 228, 234, 296},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{214, 83, 234, 218},
+		Button {
+			enabled,
+			"Insert From Clipboard"
+		},
+		/* [3] */
+		{50, 29, 178, 157},
+		UserItem {
+			enabled
+		},
+		/* [4] */
+		{35, 57, 47, 129},
+		Control {
+			enabled,
+			128
+		},
+		/* [5] */
+		{78, 163, 150, 175},
+		Control {
+			enabled,
+			129
+		},
+		/* [6] */
+		{183, 57, 195, 129},
+		Control {
+			enabled,
+			130
+		},
+		/* [7] */
+		{78, 11, 150, 23},
+		Control {
+			enabled,
+			131
+		},
+		/* [8] */
+		{1, 6, 23, 308},
+		Control {
+			enabled,
+			200
+		},
+		/* [9] */
+		{44, 216, 108, 280},
+		UserItem {
+			enabled
+		},
+		/* [10] */
+		{29, 229, 41, 265},
+		Control {
+			enabled,
+			132
+		},
+		/* [11] */
+		{58, 286, 94, 298},
+		Control {
+			enabled,
+			133
+		},
+		/* [12] */
+		{111, 230, 123, 266},
+		Control {
+			enabled,
+			134
+		},
+		/* [13] */
+		{58, 198, 94, 210},
+		Control {
+			enabled,
+			135
+		},
+		/* [14] */
+		{139, 200, 187, 296},
+		UserItem {
+			enabled
+		}
+	}
+};
+
 resource 'icns' (128, "created with clip2icns") {
 	{	/* array elementArray: 4 elements */
 		/* [1] */
@@ -2502,26 +2696,103 @@ resource 'icns' (-16455, "created with clip2icns") {
 	}
 };
 
-resource 'CNTL' (200) {
-	{0, 0, 20, 250},
+resource 'CNTL' (129, purgeable) {
+	{52, 164, 124, 176},
 	0,
 	visible,
-	50,
+	129,
+	2,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (130, purgeable) {
+	{160, 60, 172, 132},
+	0,
+	visible,
+	130,
+	2,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (131, purgeable) {
+	{48, 12, 120, 24},
+	0,
+	visible,
+	131,
+	2,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (128, purgeable) {
+	{8, 8, 20, 80},
+	0,
+	visible,
+	128,
+	2,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (132, purgeable) {
+	{29, 229, 41, 265},
+	0,
+	visible,
+	128,
+	2,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (133, purgeable) {
+	{58, 286, 94, 298},
+	0,
+	visible,
+	129,
+	2,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (134, purgeable) {
+	{111, 230, 123, 266},
+	0,
+	visible,
+	130,
+	2,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (135, purgeable) {
+	{58, 198, 94, 210},
+	0,
+	visible,
+	131,
+	2,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (200, purgeable) {
+	{1, 32, 23, 334},
+	0,
+	visible,
+	70,
 	200,
 	401,
 	0,
-	"Type:"
-};
-
-resource 'CNTL' (201) {
-	{0, 0, 20, 250},
-	0,
-	visible,
-	50,
-	201,
-	401,
-	0,
-	"Icon:"
+	"Folder:"
 };
 
 data 'DLGX' (129) {
@@ -2560,7 +2831,17 @@ data 'DLGX' (130) {
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
-	$"0000"                                               /* .. */
+	$"000E 0000 0000 0000 0000 0000 0000 0002"            /* ................ */
+	$"0000 0000 0000 0000 0000 000A 0000 0000"            /* ................ */
+	$"0000 0000 0000 0005 0000 0000 0000 0000"            /* ................ */
+	$"0000 0005 0000 0000 0000 0000 0000 0005"            /* ................ */
+	$"0000 0000 0000 0000 0000 0005 0000 0000"            /* ................ */
+	$"0000 0000 0000 0005 0000 0000 0000 0000"            /* ................ */
+	$"0000 000A 0000 0000 0000 0000 0000 0005"            /* ................ */
+	$"0000 0000 0000 0000 0000 0005 0000 0000"            /* ................ */
+	$"0000 0000 0000 0005 0000 0000 0000 0000"            /* ................ */
+	$"0000 0005 0000 0000 0000 0000 0000 000A"            /* ................ */
+	$"0000 0000 0000 0000 0000"                           /* .......... */
 };
 
 resource 'BNDL' (128) {
@@ -2608,6 +2889,20 @@ data 'ictb' (128) {
 	$"FFFF 0000"                                          /* ÿÿ.. */
 };
 
+data 'ictb' (131) {
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000"                                          /* .... */
+};
+
+data 'ictb' (130) {
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000"                                /* ........ */
+};
+
 resource 'dctb' (128) {
 	{	/* array ColorSpec: 5 elements */
 		/* [1] */
@@ -2620,6 +2915,118 @@ resource 'dctb' (128) {
 		wHiliteColor, 0, 0, 0,
 		/* [5] */
 		wTitleBarColor, 65535, 65535, 65535
+	}
+};
+
+resource 'dctb' (131) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
+	}
+};
+
+resource 'dctb' (130) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
+	}
+};
+
+resource 'cctb' (128) {
+	{	/* array ColorSpec: 4 elements */
+		/* [1] */
+		cFrameColor, 0, 0, 0,
+		/* [2] */
+		cBodyColor, 65535, 65535, 65535,
+		/* [3] */
+		cTextColor, 0, 0, 0,
+		/* [4] */
+		cElevatorColor, 65535, 65535, 65535
+	}
+};
+
+data 'cicn' (128) {
+	$"0000 0000 8002 0000 0000 0008 0008 0000"            /* ....€........... */
+	$"0000 0000 0000 0048 0000 0048 0000 0000"            /* .......H...H.... */
+	$"0001 0001 0001 0000 0000 0000 0082 0000"            /* .............‚.. */
+	$"0000 0000 0000 0002 0000 0000 0008 0008"            /* ................ */
+	$"0000 0000 0002 0000 0000 0008 0008 0000"            /* ................ */
+	$"0000 0000 0000 1800 3C00 7E00 FF00 0000"            /* ........<.~.ÿ... */
+	$"0000 0000 0000 1800 3C00 7E00 FF00 0000"            /* ........<.~.ÿ... */
+	$"0000 0001 10DB 0000 0001 0000 FFFF FFFF"            /* .....Û......ÿÿÿÿ */
+	$"FFFF 0001 0000 0000 0000 0000 0000 1800"            /* ÿÿ.............. */
+	$"3C00 7E00 FF00 0000 0000"                           /* <.~.ÿ..... */
+};
+
+data 'cicn' (129) {
+	$"0000 0000 8002 0000 0000 0008 0008 0000"            /* ....€........... */
+	$"0000 0000 0000 0048 0000 0048 0000 0000"            /* .......H...H.... */
+	$"0001 0001 0001 0000 0000 0000 0082 0000"            /* .............‚.. */
+	$"0000 0000 0000 0002 0000 0000 0008 0008"            /* ................ */
+	$"0000 0000 0002 0000 0000 0008 0008 0000"            /* ................ */
+	$"0000 2000 3000 3800 3C00 3C00 3800 3000"            /* .. .0.8.<.<.8.0. */
+	$"2000 2000 3000 3800 3C00 3C00 3800 3000"            /*  . .0.8.<.<.8.0. */
+	$"2000 0001 11BD 0000 0001 0000 FFFF FFFF"            /*  ....½......ÿÿÿÿ */
+	$"FFFF 0001 0000 0000 0000 2000 3000 3800"            /* ÿÿ........ .0.8. */
+	$"3C00 3C00 3800 3000 2000"                           /* <.<.8.0. . */
+};
+
+data 'cicn' (130) {
+	$"0000 0000 8002 0000 0000 0008 0008 0000"            /* ....€........... */
+	$"0000 0000 0000 0048 0000 0048 0000 0000"            /* .......H...H.... */
+	$"0001 0001 0001 0000 0000 0000 0082 0000"            /* .............‚.. */
+	$"0000 0000 0000 0002 0000 0000 0008 0008"            /* ................ */
+	$"0000 0000 0002 0000 0000 0008 0008 0000"            /* ................ */
+	$"0000 0000 0000 FF00 7E00 3C00 1800 0000"            /* ......ÿ.~.<..... */
+	$"0000 0000 0000 FF00 7E00 3C00 1800 0000"            /* ......ÿ.~.<..... */
+	$"0000 0001 120F 0000 0001 0000 FFFF FFFF"            /* ............ÿÿÿÿ */
+	$"FFFF 0001 0000 0000 0000 0000 0000 FF00"            /* ÿÿ............ÿ. */
+	$"7E00 3C00 1800 0000 0000"                           /* ~.<....... */
+};
+
+data 'cicn' (131) {
+	$"0000 0000 8002 0000 0000 0008 0008 0000"            /* ....€........... */
+	$"0000 0000 0000 0048 0000 0048 0000 0000"            /* .......H...H.... */
+	$"0001 0001 0001 0000 0000 0000 0082 0000"            /* .............‚.. */
+	$"0000 0000 0000 0002 0000 0000 0008 0008"            /* ................ */
+	$"0000 0000 0002 0000 0000 0008 0008 0000"            /* ................ */
+	$"0000 0400 0C00 1C00 3C00 3C00 1C00 0C00"            /* ........<.<..... */
+	$"0400 0400 0C00 1C00 3C00 3C00 1C00 0C00"            /* ........<.<..... */
+	$"0400 0001 125E 0000 0001 0000 FFFF FFFF"            /* .....^......ÿÿÿÿ */
+	$"FFFF 0001 0000 0000 0000 0400 0C00 1C00"            /* ÿÿ.............. */
+	$"3C00 3C00 1C00 0C00 0400"                           /* <.<....... */
+};
+
+resource 'mctb' (200) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
 	}
 };
 

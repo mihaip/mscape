@@ -27,6 +27,7 @@ const static long				small8BitSize = 0x400 / 4;
 // app resource IDs
 const static int aboutBoxID = 128;
 const static int insertCicnID = 129;
+const static int positionBadgesID = 130;
 
 const static int aboutPicID = 128;
 const static int aboutPicMaskID = 129;
@@ -57,12 +58,35 @@ const static int kAboutPic = 2;
 
 const static int kStatusField = 2;
 
+const static int kOK = 1;
+const static int kInsertClipboard = 2;
+const static int kIconPreview = 3;
+const static int kShiftUp = 4;
+const static int kShiftRight = 5;
+const static int kShiftDown = 6;
+const static int kShiftLeft = 7;
+const static int kPopup = 8;
+const static int kSmallIconPreview = 9;
+const static int kSmallShiftUp = 10;
+const static int kSmallShiftRight = 11;
+const static int kSmallShiftDown = 12;
+const static int kSmallShiftLeft = 13;
+const static int kDesktopPreview = 14;
+
 // --- Type Definitions -- //
 typedef enum tCicnCreateFlags
 {
 	includeOldStyle=1,
 	createFile=2
 } tCicnCreateFlags;
+
+typedef struct tOffset
+{
+	short hOffset;
+	short vOffset;
+	short smallHOffset;
+	short smallVOffset;
+} tOffset;
 
 // --- Prototypes --- //
 
@@ -112,8 +136,8 @@ extern FSSpec		badgesSpec;
 extern FSSpec		setSpec;
 extern FSSpec		currentScheme;
 extern short		appFile;
-extern GWorldPtr	baseLargeIconGWorld, baseLargeMaskGWorld, baseSmallIconGWorld, baseSmallMaskGWorld, baseLarge1BitMaskGWorld;
-extern PixMapHandle	baseLargeIconPix, baseLargeMaskPix, baseSmallIconPix, baseSmallMaskPix, baseLarge1BitMaskPix;	
+extern GWorldPtr	baseLarge8BitIconGWorld, baseLargeIconGWorld, baseLargeMaskGWorld, baseSmallIconGWorld, baseSmallMaskGWorld, baseLarge1BitMaskGWorld;
+extern PixMapHandle	baseLarge8BitIconPix, baseLargeIconPix, baseLargeMaskPix, baseSmallIconPix, baseSmallMaskPix, baseLarge1BitMaskPix;	
 
 
 

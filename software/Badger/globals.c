@@ -10,8 +10,8 @@ bool		navServicesAvailable;
 FSSpec			badgesSpec;
 FSSpec			setSpec;
 short			appFile;
-GWorldPtr	baseLargeIconGWorld, baseLargeMaskGWorld, baseSmallIconGWorld, baseSmallMaskGWorld, baseLarge1BitMaskGWorld;
-PixMapHandle	baseLargeIconPix, baseLargeMaskPix, baseSmallIconPix, baseSmallMaskPix, baseLarge1BitMaskPix;	
+GWorldPtr		baseLarge8BitIconGWorld, baseLargeIconGWorld, baseLargeMaskGWorld, baseSmallIconGWorld, baseSmallMaskGWorld, baseLarge1BitMaskGWorld;
+PixMapHandle	baseLarge8BitIconPix, baseLargeIconPix, baseLargeMaskPix, baseSmallIconPix, baseSmallMaskPix, baseLarge1BitMaskPix;	
 
 
 // commonfunctions.h variables
