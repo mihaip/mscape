@@ -17,6 +17,29 @@
 
 OSStatus CompressPixMap(PixMapHandle srcPix, char** target, long *targetSize)
 {
+	OSErr err;
+	switch ((**srcPix).pixelSize)
+	{
+		case 32: err = CompressPixMap32(srcPix, target, targetSize); break;
+		default:
+			int sourceSize;
+			
+			sourceSize = ((**srcPix).rowBytes & 0x3FFF) * ((**srcPix).bounds.bottom - (**srcPix).bounds.top);
+			
+			*target = NewPtr(sourceSize + 1 + sourceSize/64);
+			
+			PackData((unsigned char*)(**srcPix).baseAddr, sourceSize, (unsigned char*)*target, targetSize);
+			
+			SetPtrSize(*target, *targetSize);
+			
+			break;
+	}
+	
+	return err;
+}
+
+OSStatus CompressPixMap32(PixMapHandle srcPix, char** target, long *targetSize)
+{			
 	unsigned char	*red, *green , *blue, // arrays for the uncompressed RGB data
 					*redC, *greenC, *blueC; // the compressed RGB data
 	unsigned long   sourceSize; // the size of the source
@@ -36,10 +59,10 @@ OSStatus CompressPixMap(PixMapHandle srcPix, char** target, long *targetSize)
 	green = (unsigned char*)NewPtr(sourceSize/4); if (green == NULL) return memFullErr;
 	blue = (unsigned char*)NewPtr(sourceSize/4); if (blue == NULL) return memFullErr;
 	
-	// the maximum size of the compressed data is as big as the source 
-	redC = (unsigned char*)NewPtr(sourceSize/4); if (redC == NULL) return memFullErr;
-	greenC = (unsigned char*)NewPtr(sourceSize/4); if (greenC == NULL) return memFullErr;
-	blueC = (unsigned char*)NewPtr(sourceSize/4); if (blueC == NULL) return memFullErr;
+	// the maximum size of the compressed data is as big as the source and then some
+	redC = (unsigned char*)NewPtr((sourceSize/4) + (sourceSize/256)); if (redC == NULL) return memFullErr;
+	greenC = (unsigned char*)NewPtr(sourceSize/4 + (sourceSize/256)); if (greenC == NULL) return memFullErr;
+	blueC = (unsigned char*)NewPtr(sourceSize/4 + (sourceSize/256)); if (blueC == NULL) return memFullErr;
 	
 	// we start at the base address
 	sourceData = (unsigned long *)(*srcPix)->baseAddr;
@@ -198,6 +221,27 @@ void PackData(unsigned char* source, long sourceSize, unsigned char* output, lon
 //				  decompressed data
 
 OSStatus DecompressToPixMap(unsigned char *source, PixMapHandle targetPix)
+{
+	OSErr err;
+	switch ((**targetPix).pixelSize)
+	{
+		case 32: err = DecompressToPixMap32(source, targetPix); break;
+		default:
+			int targetSize;
+			unsigned char* temp;
+			
+			targetSize = ((**targetPix).rowBytes & 0x3FFF) * ((**targetPix).bounds.bottom - (**targetPix).bounds.top);
+			
+			temp = source;
+			
+			UnpackData(&temp, (unsigned char*)(**targetPix).baseAddr, targetSize);
+			break;
+	}
+	
+	return err;
+}
+
+OSStatus DecompressToPixMap32(unsigned char *source, PixMapHandle targetPix)
 {
 	unsigned char*	data; // the compressed data
 	unsigned long   targetSize; // the size of the expanded data

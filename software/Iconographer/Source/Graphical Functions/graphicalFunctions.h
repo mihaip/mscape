@@ -38,6 +38,10 @@ extern void DrawGradient32(int x1, int y1, RGBColor startColor,
 				 		   int x2, int y2, RGBColor endColor,
 				 		   PixMapHandle targetPix, Rect targetRect, RgnHandle clipRgn);
 extern RGBColor GetGradientColor(int x, int y, gradientParams* params);
+extern void DrawRadialGradient32(int x1, int y1, RGBColor startColor,
+				 		   		 int x2, int y2, RGBColor endColor,
+				 		 	     PixMapHandle targetPix, Rect targetRect, RgnHandle clipRgn);
+RGBColor GetRadialGradientColor(int x, int y, gradientParams* params);
 extern void ColorPicker(RGBColor* color,
 						WindowPtr window,
 						Point where,
@@ -62,6 +66,10 @@ extern void MergePix(PixMapHandle basePicPix,
 			  		 PixMapHandle overlayMaskPix,
 			  		 PixMapHandle targetPicPix,
 			  		 PixMapHandle targetMaskPix);
+extern OSErr NewGWorldUnpadded(GWorldPtr* gWorld, short depth, Rect* rect, CTabHandle colorTable);
+extern bool IsEmptyPixMap(PixMapHandle srcPix);
+extern bool SamePixMap(PixMapHandle pix1, PixMapHandle pix2);
+extern void DrawPictureDithered(PicHandle srcPic, Rect* targetRect);
 
 inline float Distance(int x1, int y1, int x2, int y2)
 {

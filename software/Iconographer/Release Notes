@@ -1,24 +1,15 @@
 Remaining to be implemented (for 1.0):
-- optimize lasso...
-- dragging files loads their icons instead of rejecting them
+- dragging files in side display/editing area loads their icons instead of rejecting them
 - fix background disabling problems when switching among windows
-- help (both balloon and html based)
-- reduce flickering in side display (GWorld buffering?)
-- preview for labels, etc (need UI for this...)
-- use tab to cycle through icon size/depths
-- eye dropper should work across editors
+- performance checks
+- clean up prefs dialog (any suggestions for other things which should go in?)
+- better out of memory checking
 
 Bugs in pre 8.5 systems:
-- crash when displaying Nav Services dialog
 - when opening files that have a custom icon but its 8.5+ only, the old style icon shouldn't be opened
-- does not disable properly when color picker is opened
 
-Name suggestions (currently going with Iconographer, but comments, suggestions, etc. are welcome):
-- Iconographer
-- Iconolator
-- Icon Studio
-- Graphicon
-- Pixelator/Pixelizer
+Kaleidoscope bugs:
+- does not disable properly when color picker is opened
 
 Future stuff (planned version in parantheses):
 - filled rectangle/oval/polygon (photoshop style menu when clicking & hold on tool button?) (1.1)
@@ -36,19 +27,52 @@ Future stuff (planned version in parantheses):
 - contextual menus (1.5)
 - proxy icons (1.1)
 - windows menu (with icons?) (1.1)
-- alternative view to icon display (eliminate 48x48 size, and display all the rest at the same, can switch among layouts in preferences) (1.1)
-- compressed saved states with run length encoding (1.1)
+- alternative view to icon display (eliminate 48x48 size, and display all the rest at the same time, can switch among layouts in preferences) (1.1)
 - screen grab command (1.1)
 
 Changes:
-1.0d5
+1.0d6
+- balloon help everywhere
+- paste into selection command, scales clipboard contents to current selection size  
+- HTML based help (drag Iconographer Help folder to Help folder in System Folder, and then open up the Help Center if you want searching and help menu to work), feedback wanted (if your name isn't listed in the testers paragram in the Program Info section, well, that's because you weren't much of a tester, so now's your change to remedy that :p)
+- now works with system 7.5.3 and above (with the appearance manager installed)
+- dithering option in preferences
+- lasso now tightens through the background color, not just white
+- the eraser's brush size is now 2 x 2
+- checking to make sure the 8 bit and 1 bit masks are synced (option in prefs to turn off)
+- pixel grid (option in the preferences)
+- the preview now displays the current icon/mask on two backgrounds, clicking on them toggles the selected state 
+- double clicks on tools for shortcuts:
+	marquee: select all
+	lasso: lasso all
+	eraser: erase all/erase selection
+	rectangle/oval/polygon: toggle between framed and filled modes
+	gradient: toggle between linear and radial modes
+- undo/redo restores the popup selection too
+- tab toggles between the current icon and mask
+- much better handling (both saving and loading) of icons which do not contain some depths or sizes
+- improved previewing in icon browser for icons with no huge size, etc.
+- icon browser now updates properly when put in the background and brought back
+- removed flickering in side display and preview
+- navigation services now works with pre Mac OS 8.5 systems
+- the saved states are now compressed, they take up between 6 and 2 times less memory (depending on the complexity of the drawing).
+- each open editor takes up 4K less of memory
+- the extra space that surrounded the 32 x 32 size has been eliminated (instead, the window is enlarged when switching to the 48 x 48 size)
+- if the icon only contains certain sizes (eg. no huge), then the preview area does not reserve space for the sizes which do not exist
+- the flash of garbage characters in the status bar when making a new editor has been removed
+- dragging from drawing area now works even if the editor isn't in the top left corner
+- filling with same color in 8 bits does not crash anymore
+- eye dropper now works across editors
+- copying down the 8 bit mask into the 1 bit one doesn't attempt to dither, it generates a new 1-bt mask
+
+1.0d5 June 7 1999
 - eye dropper now works in floated selections
 - filling over with the same color does not crash anymore
 - dragging can now be redone
 - it is now possible to drag from the drawing area
 - click on info placard results in ID/name/bits dialog
 - if a file is already open (to the same icon ID), then opening it again simply brings the window to the front instead of making a new one
-- registration stuff (nags appear every 10 saves for the first 50, every up to 100, every 3 up to 150, every 2 up to 200, and every time beyond that)
+- registration stuff (nags appear every 10 saves for the first 50, every 5 up to 100, every 3 up to 150, every 2 up to 200, and every time beyond that)
 - preferences (currently only includes default zoom level, suggestions for other options wanted).
 - improved drag hilighting (works on non-white backgrounds)
 - improved menu command enabling/disabling

@@ -50,7 +50,7 @@ void Initialize()
 	GetIndString(gAppName, rDefaultNames, eAppName);
 	// this is used in lots of places, but for easy localization we get it from a resource
 	
-	InitToolbox(); // initializing all the default managers
+	//InitToolbox(); // initializing all the default managers
 	
 	if (!ConfigurationSupported()) // we check if we can run on this setup
 	{
@@ -59,7 +59,7 @@ void Initialize()
 	}
 	
 	GetTime(&theDate); // and if we haven't expired
-	if (theDate.month >= 6 && theDate.day >= 15 && theDate.year >= 1999)
+	if (theDate.month >= 7 && theDate.day >= 1 && theDate.year >= 1999)
 	{
 		DoError(rStdErrors, eExpired);
 		gIsDone = true;
@@ -86,8 +86,8 @@ void Initialize()
 		gIsDone = true;
 	}
 	
-	//if (NavServicesAvailable())
-	//	NavLoad();
+	if (NavServicesAvailable())
+		NavLoad();
 	
 	LoadPreferences();
 	
@@ -116,8 +116,9 @@ bool ConfigurationSupported(void)
 		return false;
 	else
 	{
-		if (systemVersion[2] >= 0x8)
-			if (systemVersion[3] >= 0x00)
+		if (systemVersion[2] > 0x7)
+			return true;
+		else if ((systemVersion[2] == 0x7) && systemVersion[3] >= 0x53)
 				return true;
 		
 		return false;
@@ -348,6 +349,8 @@ void DoIdle(void)
 			EnableItem(menu, iSimilar); // and do stuff on the current selection
 			EnableItem(menu, iNone); 
 			EnableItem(menu, iInverse);
+			
+			EnableMenuItem(mPaste, iPasteIntoSelection);
 		}
 		else
 		{
@@ -359,6 +362,8 @@ void DoIdle(void)
 			DisableItem(menu, iSimilar);
 			DisableItem(menu, iNone);
 			DisableItem(menu, iInverse);
+			
+			DisableMenuItem(mPaste, iPasteIntoSelection);
 		}
 
 		if (frontEditor->status & canUndo) // if we can undo...
@@ -656,6 +661,7 @@ void DoMenuCommand(long menuResult)
 					{
 						case iPasteNormally: frontEditor->Paste(normally); break;
 						case iPasteAsIconAndMask: frontEditor->Paste(asIconAndMask); break;
+						case iPasteIntoSelection: frontEditor->Paste(intoSelection); break;
 					}
 				break;
 			case mView :
@@ -779,25 +785,21 @@ pascal bool AboutBoxEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *
 				GWorldPtr		picGW, maskGW, tempGW;
 				PixMapHandle	picPix, maskPix, tempPix;
 				Rect			targetRect;
-				short			itemType;
-				Handle			item;
+				ControlHandle	item;
 				
 				SAVEGWORLD; // we must save the current port
 				SAVECOLORS;
 				
 				SetPort(dialog);
-				GetDialogItem(dialog, iAboutPic, &itemType, &item, &targetRect);
+				//GetDialogItem(dialog, iAboutPic, &itemType, &item, &targetRect);
+				GetDialogItemAsControl(dialog, iAboutPic, &item);
+				targetRect = (**item).contrlRect;
 				NewGWorld(&tempGW, 32, &targetRect, NULL, NULL, 0);
 				tempPix = GetGWorldPixMap(tempGW);
 				LockPixels(tempPix);
 				SetGWorld(tempGW, NULL);
 				
-				CopyBits(&dialog->portBits,
-						 (BitMap*)*tempPix,
-						 &targetRect,
-						 &targetRect,
-						 srcCopy,
-						 NULL);
+				DrawDialogBackground(item, targetRect);
 						 
 				NewGWorld(&picGW, 32, &targetRect, NULL, NULL, 0);
 				picPix = GetGWorldPixMap(picGW);
@@ -827,7 +829,7 @@ pascal bool AboutBoxEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *
 						 &targetRect,
 						 &targetRect,
 						 srcCopy,
-						 NULL);
+						 dialog->visRgn);
 				
 				  
 				RESTOREGWORLD;
@@ -845,7 +847,6 @@ pascal bool AboutBoxEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *
 			handledEvent = AlertEventFilter(dialog, eventPtr, itemHit);
 			break;
 	}
-		 
 
 	return(handledEvent);
 }
@@ -1121,7 +1122,7 @@ void OpenIcon(FSSpec *fileToOpen)
 				gLastEditor->Load();
 			}
 			
-			gLastEditor->Show();
+			
 			
 			SAVEGWORLD;
 			SetPort(gLastEditor->window); // we must invalidate the window so that it can be
@@ -1129,6 +1130,8 @@ void OpenIcon(FSSpec *fileToOpen)
 			gLastEditor->Refresh();
 			
 			RESTOREGWORLD;
+			
+			gLastEditor->Show();
 			
 			DoIdle();
 			DrawMenuBar();
@@ -1531,8 +1534,8 @@ void CleanUp(void)
 			EventLoop();
 		}
 	
-	//if (NavServicesAvailable())
-	//	NavUnload();
+	if (NavServicesAvailable())
+		NavUnload();
 	
 	OSErr		err;
 	FSSpec		preferencesFile;

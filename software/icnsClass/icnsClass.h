@@ -8,6 +8,7 @@
 #pragma once
 #include "commonfunctions.h"
 #include "compression.h"
+#include "graphicalFunctions.h"
 #include "Find_icon.h"
 #include "MoreFilesExtras.h"
 
@@ -51,16 +52,37 @@ const static long ichSize = 0x240;
 const static long ich8Size = 0x900;
 const static long ich4Size = 0x480;
 
-enum iconSizes
-{
-	huge = 1,
-	large = 2,
-	small = 4
-};
-
 enum statusTypes
 {
 	outOfMemory = 1
+};
+
+enum iconElementNames
+{
+	current	= 1 << 0,
+	il32	= 1 << 1,
+	is32	= 1 << 2,
+	l8mk	= 1 << 3,
+	s8mk	= 1 << 4,
+	icl8	= 1 << 5,
+	ics8	= 1 << 6,
+	icl4	= 1 << 7,
+	ics4	= 1 << 8,
+	icni	= 1 << 9,
+	icsi	= 1 << 10,
+	icnm	= 1 << 11,
+	icsm	= 1 << 12,
+	ih32	= 1 << 13,
+	h8mk	= 1 << 14,
+	ichi	= 1 << 15,
+	ichm	= 1 << 16,
+	ich8	= 1 << 17,
+	ich4	= 1 << 18,
+	selection = 1 << 19,
+	selected = 1 << 20,
+	hugeSize = ih32 + h8mk + ich8 + ich4 + ichi + ichm,
+	largeSize = il32 + l8mk + icl8 + icl4 + icni + icnm,
+	smallSize = is32 + s8mk + ics8 + ics4 + icsi + icsm
 };
 
 enum saveFlags
@@ -129,6 +151,9 @@ class icnsClass
 		GWorldPtr		ics4GW; // ics4 = small 4 bit icon
 		PixMapHandle	ics4Pix;
 		
+		
+		
+		void			RefreshIconMembers(void);
 		void 			SaveOldStyle();
 		void			LoadFromIconSuite(IconSuiteRef theIconSuite);
 		void			LoadFromIconFamily(IconFamilyHandle icnsHandle);
@@ -137,7 +162,7 @@ class icnsClass
 		short			ID;
 		Str255			name;
 		short			flags;
-		int				sizes;
+		long			members;
 		
 		FSSpec			srcFileSpec;
 		
@@ -160,7 +185,7 @@ class icnsClass
 };
 pascal OSErr IconExtractor(ResType iconType, Handle *theIcon, void *dataPtr);
 IconFamilyElement* GeticnsMember(long iconType, IconFamilyHandle icnsHandle);
-void WriteicnsMember(IconFamilyElement *elementPtr, long iconType, long iconSize, Ptr iconSrc);
+void AddIconMember(IconFamilyHandle* icnsHandle, long iconType, PixMapHandle iconPix);
 OSStatus NewIconSet(GWorldPtr *gWorld,
 					PixMapHandle *pixMap,
 					Rect bounds,

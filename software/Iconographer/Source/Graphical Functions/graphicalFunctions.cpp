@@ -463,6 +463,49 @@ RGBColor GetGradientColor(int x, int y, gradientParams* params)
 	return returnColor;
 }
 
+void DrawRadialGradient32(int x1, int y1, RGBColor startColor,
+				         int x2, int y2, RGBColor endColor,
+				         PixMapHandle targetPix, Rect targetRect, RgnHandle clipRgn)
+{
+	gradientParams params;
+	
+	params.startColor = startColor;
+	params.endColor = endColor;
+	params.x1 = x1;
+	params.y1 = y1;
+	params.x2 = x2;
+	params.y2 = y2;
+	params.d = Distance(x1, y1, x2, y2);
+	params.dSquared = DistanceSquared(x1, y1, x2, y2);
+	
+	for (int y = targetRect.top; y < targetRect.bottom; y++)
+		for	(int x = targetRect.left; x < targetRect.right; x++)
+		{
+			Point temp = {y, x};
+			if (PtInRgn(temp, clipRgn) || clipRgn == NULL)
+				SetPixel32(x, y, RGBToLong(&GetRadialGradientColor(x, y, &params)), targetPix);
+		}
+}
+
+RGBColor GetRadialGradientColor(int x, int y, gradientParams* params)
+{
+	RGBColor	returnColor;
+	float		blendRatio, d;
+	
+	d = Distance(x, y, params->x1, params->y1);
+	
+	if (d > params->d)
+		blendRatio = 1.0;
+	else
+		blendRatio = d/params->d;
+	
+	returnColor.red = params->startColor.red * blendRatio + params->endColor.red * (1 - blendRatio);
+	returnColor.green = params->startColor.green * blendRatio + params->endColor.green * (1 - blendRatio);
+	returnColor.blue = params->startColor.blue * blendRatio + params->endColor.blue * (1 - blendRatio);
+	
+	return returnColor;
+}
+
 // __________________________________________________________________________________________
 // Name			: ColorPicker
 // Input		: pickerPic: the picture to be used as the palette
@@ -800,7 +843,10 @@ extern void PictureToARGB(PicHandle pic,
 			b = (255 * b2)/(b2 - b1 + 255);
 			
 			*maskCursor = a;
-			*picCursor = (r << 16) + (g << 8) + (b << 0);
+			if (a == 0)
+				*picCursor = 0xFFFFFF;
+			else
+				*picCursor = (r << 16) + (g << 8) + (b << 0);
 		}
 		
 	UnlockPixels(pix1);
@@ -916,6 +962,164 @@ void MergePix(PixMapHandle basePicPix,
 	
 	RESTOREGWORLD;
 	RESTORECOLORS;
+}
+
+OSErr NewGWorldUnpadded(GWorldPtr* gWorld, short depth, Rect* bounds, CTabHandle colorTable)
+{
+	PixMapHandle tempPix;
+	int realRowBytes, currentRowBytes;
+	Rect	tempBounds;
+	OSErr	err;
 	
+	tempBounds = *bounds;
+	
+	realRowBytes = (((bounds->right - bounds->left) * depth + 31) & -31) >> 3;
+	if (realRowBytes > 32)
+		tempBounds.right -= 16*8/depth;
+	else if (realRowBytes == 16)
+		tempBounds.right /= 2;
+	
+	err = NewGWorld(gWorld, depth, &tempBounds,  colorTable, NULL, 0);
+	if (err != noErr) return err;
+	tempPix = GetGWorldPixMap(*gWorld);
+	LockPixels(tempPix);
+	currentRowBytes = (**tempPix).rowBytes & 0x3FFF;
+	(**gWorld).portRect = *bounds;
+	(**tempPix).bounds = *bounds;
+	(**(**gWorld).portPixMap).bounds = *bounds;
+	(**(**gWorld).visRgn).rgnBBox = *bounds;
+	CropPixMap(tempPix, realRowBytes);
+	UnlockPixels(tempPix);
+	
+	return noErr;
+}
+
+bool IsEmptyPixMap(PixMapHandle srcPix)
+{
+	Rect bounds;
+	int rowBytes, rowWidth;
+	unsigned char *cursor, *baseAddr;
+	
+	bounds = (**srcPix).bounds;
+	baseAddr = (unsigned char*)(**srcPix).baseAddr;
+	rowBytes = (**srcPix).rowBytes & 0x3FFF;
+	rowWidth = (bounds.right - bounds.left) * (**srcPix).pixelSize/8;
+	
+	
+	switch ((**srcPix).pixelSize)
+	{
+		case 32:
+			for (int i=0; i < bounds.bottom - bounds.top; i++)
+			{
+				cursor = i * rowBytes + baseAddr;
+				for (int j=0; j < rowWidth; j+=4)
+					if (cursor[j + 1] != 0xFF ||
+					    cursor[j + 2] != 0xFF ||
+					    cursor[j + 3] != 0xFF)
+						return false;
+			}
+		break;
+		default:
+			int white;
+			
+			white = GetColorIndex(kWhiteAsRGB, (**srcPix).pmTable);
+			if ((**srcPix).pixelSize == 4)
+				white = white << 4 + white;
+			else if ((**srcPix).pixelSize == 1)
+				if (white == 1)
+					white = 0xFF;
+				else
+					white = 0;
+				
+			for (int i=0; i < bounds.bottom - bounds.top; i++)
+			{
+				cursor = i * rowBytes + baseAddr;
+				for (int j=0; j < rowWidth; j++)
+					if (cursor[j] != white)
+						return false;
+			}
+			break;
+		break;
+	}
+	
+	return true;
+}
+
+bool SamePixMap(PixMapHandle pix1, PixMapHandle pix2)
+{
+	Rect bounds;
+	int rowBytes1, rowBytes2, rowWidth;
+	unsigned char *cursor1, *cursor2, *baseAddr1, *baseAddr2;
+	
+	// need to add obvious checks (bounds, pixel size, etc.)
+	
+	bounds = (**pix1).bounds;
+	baseAddr1 = (unsigned char*)(**pix1).baseAddr;
+	baseAddr2 = (unsigned char*)(**pix2).baseAddr;
+	rowBytes1 = (**pix1).rowBytes & 0x3FFF;
+	rowBytes2 = (**pix2).rowBytes & 0x3FFF;
+	rowWidth = (bounds.right - bounds.left) * (**pix1).pixelSize/8;
+	
+	
+	switch ((**pix1).pixelSize)
+	{
+		case 32:
+			for (int i=0; i < bounds.bottom - bounds.top; i++)
+			{
+				cursor1 = i * rowBytes1 + baseAddr1;
+				cursor2 = i * rowBytes2 + baseAddr2;
+				for (int j=0; j < rowWidth; j+=4)
+					if (cursor1[j + 1] != cursor2[j + 1] ||
+					    cursor1[j + 2] != cursor2[j + 2] ||
+					    cursor1[j + 3] != cursor2[j + 3])
+						return false;
+			}
+		break;
+		default:
+			for (int i=0; i < bounds.bottom - bounds.top; i++)
+			{
+				cursor1 = i * rowBytes1 + baseAddr1;
+				cursor2 = i * rowBytes2 + baseAddr2;
+				for (int j=0; j < rowWidth; j++)
+					if (cursor1[j] != cursor2[j])
+						return false;
+			}
+			break;
+		break;
+	}
+	
+	return true;
+}
+
+void DrawPictureDithered(PicHandle srcPic, Rect* targetRect)
+{
+	GWorldPtr tempGW;
+	PixMapHandle tempPix;
+	
+	SAVEGWORLD;
+	SAVECOLORS;
+	
+	NewGWorld(&tempGW, 32, targetRect, NULL, NULL, 0);
+	tempPix = GetGWorldPixMap(tempGW);
+	LockPixels(tempPix);
+	
+	SetGWorld(tempGW, NULL);
+	
+	DrawPicture(srcPic, targetRect);
+	
+	RESTOREGWORLD;
+	
+	CopyBits((BitMap*)*tempPix,
+			 &qd.thePort->portBits,
+			 targetRect,
+			 targetRect,
+			 srcCopy + ditherCopy,
+			 NULL);
+			 
+
+	RESTORECOLORS;
+	
+	UnlockPixels(tempPix);
+	DisposeGWorld(tempGW);	
 }
 

@@ -8,6 +8,8 @@
 #pragma once
 
 OSStatus CompressPixMap(PixMapHandle srcPix, char** target, long *targetSize);
+OSStatus CompressPixMap32(PixMapHandle srcPix, char** target, long *targetSize);
 void PackData(unsigned char* source, long sourceSize, unsigned char* output, long* outputSize);
 OSStatus DecompressToPixMap(unsigned char *source, PixMapHandle targetPix);
+OSStatus DecompressToPixMap32(unsigned char *source, PixMapHandle targetPix);
 void UnpackData(unsigned char** source, unsigned char* target, int finalSize);

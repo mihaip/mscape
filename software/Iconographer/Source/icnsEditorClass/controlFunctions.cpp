@@ -52,6 +52,11 @@ pascal void PlacardDraw(ControlHandle theControl,SInt16 thePart)
 	}
 	
 	MoveTo(h, v);
+	if ((placardText[1] < '0' ||
+		placardText[1] > '9') &&
+		placardText[1] != 'N' &&
+		placardText[1] != 'I')
+		SysBeep(6);
 	DrawString(placardText);
 	
 	RESTORECOLORS;
@@ -156,17 +161,31 @@ pascal void DisplayDraw(ControlHandle theControl,SInt16 thePart)
 	
 	icnsEditorPtr	parentEditor; // the editor which this control belongs
 	Rect			hugeDisplayRect; // location where we'll be drawing the huge icon size
-	Rect			tempRect;
-	
-	
-	tempRect = (**theControl).contrlRect;
-	InsetRect(&tempRect, -2, -2);
-	EraseRect(&tempRect);
+	Rect			controlRect;
+	GWorldPtr		tempGW;
+	PixMapHandle	tempPix;
 	
 	parentEditor = GetEditor((**theControl).contrlOwner);
 	
 	if (parentEditor == NULL) // if there isn't a parent editor, then we have nothing to do
 		return;
+	
+	SAVEGWORLD;
+	SAVECOLORS;
+		
+	controlRect = (**theControl).contrlRect;
+	InsetRect(&controlRect, -2, -2);
+	
+	NewGWorld(&tempGW, 32, &controlRect, NULL, NULL, 0);
+	tempPix = GetGWorldPixMap(tempGW);
+	LockPixels(tempPix);
+	SetGWorld(tempGW, NULL);
+	
+	//RGBBackColor(&oldBackColor);
+	//EraseRect(&controlRect);
+	//BackColor(whiteColor);
+	
+	DrawDialogBackground(theControl, controlRect);
 	
 	if (theControl == parentEditor->controls.display.iconDisplay)
 	// if the control we're drawing is the icon display
@@ -175,13 +194,9 @@ pascal void DisplayDraw(ControlHandle theControl,SInt16 thePart)
 		// than the 48 x 48 icon (it's 52 x 52) and thus we need to center the drawing
 		// inside it (which is what MakeTargetRectDoes)
 		
-		SAVECOLORS;
-		
 		hugeDisplayRect = hugeIconRect;
 		MakeTargetRect(parentEditor->controls.display.iconHugeRect, &hugeDisplayRect);
-		EraseRect(&parentEditor->controls.display.iconHugeRect); // we fill it with white
-		
-		RESTORECOLORS;
+		EraseRect(&parentEditor->controls.display.iconHugeRect);
 		
 		// now we can draw the image wells
 		DrawImageWell(theControl, parentEditor->controls.display.iconHugeRect);
@@ -217,12 +232,12 @@ pascal void DisplayDraw(ControlHandle theControl,SInt16 thePart)
 	{
 		// same thing as above, except we're dealing with the mask depths
 		
-		SAVECOLORS;
+		
 		
 		hugeDisplayRect = hugeIconRect;
 		MakeTargetRect(parentEditor->controls.display.maskHugeRect, &hugeDisplayRect);
+		SAVECOLORS;
 		EraseRect(&parentEditor->controls.display.maskHugeRect);
-		
 		RESTORECOLORS;
 		
 		DrawImageWell(theControl, parentEditor->controls.display.maskHugeRect);
@@ -244,6 +259,19 @@ pascal void DisplayDraw(ControlHandle theControl,SInt16 thePart)
 		}
 	}
 	
+	RESTOREGWORLD;
+	
+	CopyBits((BitMap*)*tempPix,
+			 &qd.thePort->portBits,
+			 &controlRect,
+			 &controlRect,
+			 srcCopy,
+			 NULL);
+			 
+	UnlockPixels(tempPix);
+	DisposeGWorld(tempGW);
+	
+	RESTORECOLORS;
 }
 
 // __________________________________________________________________________________________
@@ -372,67 +400,84 @@ pascal void PreviewDraw(ControlHandle theControl,SInt16 thePart)
 	
 	PixPatHandle		desktopPattern; // the desktop pattern, which will be used for filling
 	Rect				controlRect, // the bounds of the whole control
-						tempRect, // temporary, used for the determining of the displayRect
-						displayRect; // used for the target of the various icon sizes
+						leftDisplayRect,
+						rightDisplayRect,
+						tempRect;
+	GWorldPtr			iconGW, maskGW;
+	PixMapHandle		iconPix, maskPix;
 	icnsEditorPtr		parentEditor; // the owner of the control
-	long				hugeIconSrc, largeIconSrc, smallIconSrc, // the sources for the icon
-						hugeMaskSrc, largeMaskSrc, smallMaskSrc; // and mask, based on the
-																 // current selections
+	long				iconSrc, maskSrc; // and mask, based on the
+										  // current selections
 	
 	parentEditor = GetEditor((**theControl).contrlOwner);
 	if (parentEditor == NULL) // no use drawing without a parent editor
 		return;
 	
-	// we get the icon source
-	switch (GetControlValue(parentEditor->controls.display.iconPopup))
-	{
-		case k32BitIcon: hugeIconSrc = ih32; largeIconSrc = il32; smallIconSrc = is32; break;
-		case k8BitIcon: hugeIconSrc = ich8; largeIconSrc = icl8; smallIconSrc = ics8; break;
-		case k4BitIcon: hugeIconSrc = ich4; largeIconSrc = icl4; smallIconSrc = ics4; break;
-		case k1BitIcon: hugeIconSrc = ichi; largeIconSrc = icni; smallIconSrc = icsi; break;
-	}
-	// and the mask source
-	switch (GetControlValue(parentEditor->controls.display.maskPopup))
-	{
-		case k8BitMask: hugeMaskSrc = h8mk; largeMaskSrc = l8mk; smallMaskSrc = s8mk; break;
-		case k1BitMask: hugeMaskSrc = ichm; largeMaskSrc = icnm; smallMaskSrc = icsm; break;
-	}
+	parentEditor->GetCurrentIconMask(&iconPix, &iconGW, &iconSrc, &maskPix, &maskGW, &maskSrc);
 	
 	// getting the control rect, and insetting it by one (since the image well has a border)
 	controlRect = (**theControl).contrlRect;
 	InsetRect(&controlRect, 1, 1);
 	
+	// we don't dispose since the handle is held by the system, we just got a reference to it
+	
+	GWorldPtr tempGW;
+	PixMapHandle tempPix;
+	SAVEGWORLD;
+	SAVECOLORS;
+	
+	tempRect = controlRect;
+	InsetRect(&tempRect, -2, -2);
+	
+	NewGWorld(&tempGW, 32, &tempRect, NULL, NULL, 0);
+	tempPix = GetGWorldPixMap(tempGW);
+	LockPixels(tempPix);
+	SetGWorld(tempGW, NULL);
 	// we draw the image well
+	RGBBackColor(&oldBackColor);
+	EraseRect(&tempRect);
+	BackColor(whiteColor);
 	DrawImageWell(theControl, controlRect);
 	
 	// then the destop pattern
+	tempRect = controlRect;
+	tempRect.left += (tempRect.right - tempRect.left)/2;
 	desktopPattern = LMGetDeskCPat();
 	HLock((Handle)desktopPattern);
-	FillCRect(&controlRect, desktopPattern);
+	FillCRect(&tempRect, desktopPattern);
 	HUnlock((Handle)desktopPattern);
-	// we don't dispose since the handle is held by the system, we just got a reference to it
 	
-	// then we draw the huge icon, which goes on the left side
+	rightDisplayRect = (**parentEditor->currentPix).bounds;
+	MakeTargetRect(tempRect, &rightDisplayRect);
+	
 	tempRect = controlRect;
-	tempRect.right = tempRect.left + (tempRect.bottom - tempRect.top);
-	displayRect = hugeIconRect;
-	MakeTargetRect(tempRect, &displayRect);
-	parentEditor->Display(displayRect, hugeIconSrc + hugeMaskSrc);
+	tempRect.right -= (tempRect.right - tempRect.left)/2;
+	EraseRect(&tempRect);
+	leftDisplayRect = (**parentEditor->currentPix).bounds;
+	MakeTargetRect(tempRect, &leftDisplayRect);
 	
-	// and now the large icon, which goes in the middle
-	tempRect = controlRect;
-	tempRect.left += (tempRect.bottom - tempRect.top);
-	tempRect.right = tempRect.left + (tempRect.bottom - tempRect.top) * 2/3;
-	displayRect = largeIconRect;
-	MakeTargetRect(tempRect, &displayRect);
-	parentEditor->Display(displayRect, largeIconSrc + largeMaskSrc);
+	if (parentEditor->controls.display.previewMode == previewNormal)
+	{
+		parentEditor->Display(leftDisplayRect, iconSrc + maskSrc);
+		parentEditor->Display(rightDisplayRect, iconSrc + maskSrc);
+	}
+	else
+	{
+		parentEditor->Display(leftDisplayRect, iconSrc + maskSrc + selected);
+		parentEditor->Display(rightDisplayRect, iconSrc + maskSrc + selected);
+	}
+	CopyBits((BitMap*)*tempPix,
+			  &(**theControl).contrlOwner->portBits,
+			  &(**tempPix).bounds,
+			  &(**tempPix).bounds,
+			  srcCopy,
+			  (**theControl).contrlOwner->visRgn);
+			  
+	RESTOREGWORLD;
+	RESTORECOLORS;
 	
-	// and finally the small icon, which goes on the right
-	tempRect.left = tempRect.right;
-	tempRect.right = controlRect.right;
-	displayRect = smallIconRect;
-	MakeTargetRect(tempRect, &displayRect);
-	parentEditor->Display(displayRect, smallIconSrc + smallMaskSrc);
+	UnlockPixels(tempPix);
+	DisposeGWorld(tempGW);
 }
 
 // __________________________________________________________________________________________
@@ -445,10 +490,24 @@ pascal void PreviewDraw(ControlHandle theControl,SInt16 thePart)
 
 pascal ControlPartCode PreviewHitTest(ControlHandle theControl, Point where)
 {
-	theControl; // ignored parameters
-	where;
+	if (PtInRect(where, &(**theControl).contrlRect))
+		return kControlImageWellPart;
+	else
+		return kControlNoPart;
+}
+
+pascal ControlPartCode PreviewTracking(ControlHandle theControl, Point startPt, ControlActionUPP actionProc)
+{
+#pragma unused (startPt, actionProc)
+	while (Button()){;}
 	
-	return kControlNoPart;
+	Point theMouse;
+	GetMouse(&theMouse);
+	
+	if (PtInRect(theMouse, &(**theControl).contrlRect))
+		return kControlImageWellPart;
+	else
+		return kControlNoPart;
 }
 
 // __________________________________________________________________________________________

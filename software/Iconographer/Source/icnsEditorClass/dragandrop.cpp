@@ -267,7 +267,7 @@ pascal OSErr DragReceiveHandler (WindowPtr theWindow, void *, DragReference theD
 			{
 				GetFlavorData (theDragRef,theItem,'Icon',&iconType,&typeSize,0);
 				if (iconType == selection)
-					parentEditor->InsertFromPicture(pic, targetGW, false);
+					parentEditor->InsertFromPicture(pic, targetGW, insertCentered);
 				else
 					switch (targetName)
 					{
@@ -276,25 +276,23 @@ pascal OSErr DragReceiveHandler (WindowPtr theWindow, void *, DragReference theD
 							switch (iconType)
 							{
 								case h8mk: case l8mk: case s8mk: case ichm: case icnm: case icsm:
-									parentEditor->InsertFromPicture(pic, targetGW, true);
+									parentEditor->InsertFromPicture(pic, targetGW, insertCentered + insertScaled);
 									break;
 								default:
 									parentEditor->PictureToMask(pic, targetGW);
 							}
 							break;
 						default:
-							parentEditor->InsertFromPicture(pic, targetGW, true);
+							parentEditor->InsertFromPicture(pic, targetGW, insertCentered + insertScaled);
 							break;
 					}
 			}
 			else
-				parentEditor->InsertFromPicture(pic, targetGW, false);
-			switch (targetName)
-			{
-				case ih32: case h8mk: case ich8: case ich4: case ichi: case ichm: parentEditor->sizes |= huge; break;
-				case il32: case l8mk: case icl8: case icl4: case icni: case icnm: parentEditor->sizes |= large; break;
-				case is32: case s8mk: case ics8: case ics4: case icsi: case icsm: parentEditor->sizes |= small; break;
-			}
+				parentEditor->InsertFromPicture(pic, targetGW, insertCentered);
+				
+			
+			parentEditor->members |= targetName;
+			
 			DisposeHandle((Handle)pic);
 			
 			
@@ -353,62 +351,12 @@ void InsertPicIntoIcon(icnsEditorPtr parentEditor, PicHandle pic)
 	
 	PictureToARGB(pic, iconPix, maskPix, true);
 	
-	switch (GetControlValue(parentEditor->controls.display.iconPopup))
-	{
-		case k32BitIcon:
-			switch ((**parentEditor->currentPix).bounds.right)
-			{
-				case 32: targetIconGW = parentEditor->il32GW; targetIconPix = parentEditor->il32Pix; targetIconName = il32; break;
-				case 16: targetIconGW = parentEditor->is32GW; targetIconPix = parentEditor->is32Pix; targetIconName = is32; break;
-				case 48: targetIconGW = parentEditor->ih32GW; targetIconPix = parentEditor->ih32Pix; targetIconName = ih32; break;
-			}
-			break;
-		case k8BitIcon:
-			switch ((**parentEditor->currentPix).bounds.right)
-			{
-				case 32: targetIconGW = parentEditor->icl8GW; targetIconPix = parentEditor->icl8Pix; targetIconName = icl8; break;
-				case 16: targetIconGW = parentEditor->ics8GW; targetIconPix = parentEditor->ics8Pix; targetIconName = ics8; break;
-				case 48: targetIconGW = parentEditor->ich8GW; targetIconPix = parentEditor->ich8Pix; targetIconName = ich8; break;
-			}
-			break;
-		case k4BitIcon:
-			switch ((**parentEditor->currentPix).bounds.right)
-			{
-				case 32: targetIconGW = parentEditor->icl4GW; targetIconPix = parentEditor->icl4Pix; targetIconName = icl4; break;
-				case 16: targetIconGW = parentEditor->ics4GW; targetIconPix = parentEditor->ics4Pix; targetIconName = ics4; break;
-				case 48: targetIconGW = parentEditor->ich4GW; targetIconPix = parentEditor->ich4Pix; targetIconName = ich4; break;
-			}
-			break;
-		case k1BitIcon:
-			switch ((**parentEditor->currentPix).bounds.right)
-			{
-				case 32: targetIconGW = parentEditor->icniGW; targetIconPix = parentEditor->icniPix; targetIconName = icni; break;
-				case 16: targetIconGW = parentEditor->icsiGW; targetIconPix = parentEditor->icsiPix; targetIconName = icsi; break;
-				case 48: targetIconGW = parentEditor->ichiGW; targetIconPix = parentEditor->ichiPix; targetIconName = ichi; break;
-			}
-			break;
-			
-	}
-	switch (GetControlValue(parentEditor->controls.display.maskPopup))
-	{
-		case k8BitMask:
-			switch ((**parentEditor->currentPix).bounds.right)
-			{
-				case 32: targetMaskGW = parentEditor->l8mkGW; targetMaskPix = parentEditor->l8mkPix; targetMaskName = l8mk; break;
-				case 16: targetMaskGW = parentEditor->s8mkGW; targetMaskPix = parentEditor->s8mkPix; targetMaskName = s8mk; break;
-				case 48: targetMaskGW = parentEditor->h8mkGW; targetMaskPix = parentEditor->h8mkPix; targetMaskName = h8mk; break;
-			}
-			break;
-		case k1BitMask:
-			switch ((**parentEditor->currentPix).bounds.right)
-			{
-				case 32: targetMaskGW = parentEditor->icnmGW; targetMaskPix = parentEditor->icnmPix; targetMaskName = icnm; break;
-				case 16: targetMaskGW = parentEditor->icsmGW; targetMaskPix = parentEditor->icsmPix; targetMaskName = icsm; break;
-				case 48: targetMaskGW = parentEditor->ichmGW; targetMaskPix = parentEditor->ichmPix; targetMaskName = ichm; break;
-			}
-			break;
-			
-	}
+	parentEditor->GetCurrentIconMask(&targetIconPix,
+									 &targetIconGW,
+									 &targetIconName,
+									 &targetMaskPix,
+									 &targetMaskGW,
+									 &targetMaskName);
 	
 	if (targetIconName != parentEditor->currentPixName)
 	{

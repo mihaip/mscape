@@ -76,6 +76,52 @@ resource 'dftb' (300) {
 	}
 };
 
+resource 'dlgx' (300) {
+	versionZero {
+		15
+	}
+};
+
+data 'ictb' (300) {
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000"                                          /* .... */
+};
+
+resource 'ldes' (300) {
+	versionZero {
+		0,
+		1,
+		14,
+		0,
+		hasVertScroll,
+		noHorizScroll,
+		0,
+		noGrowSpace
+	}
+};
+
+resource 'STR#' (300, "Icon Browser: List Strings", purgeable) {
+	{	/* array StringArray: 1 elements */
+		/* [1] */
+		"\t\t\t\t\t\t\t\t\tItem’s Finder Icon"
+	}
+};
+
+resource 'STR#' (301, "Icon Browser: Balloon Help", purgeable) {
+	{	/* array StringArray: 4 elements */
+		/* [1] */
+		"Opens the selected icon into an editor.",
+		/* [2] */
+		"Closes this dialog without opening any i"
+		"cons.",
+		/* [3] */
+		"Select an icon from this list.",
+		/* [4] */
+		"The preview for the selected icon is dis"
+		"played here."
+	}
+};
+
 resource 'DITL' (300, purgeable) {
 	{	/* array DITLarray: 5 elements */
 		/* [1] */
@@ -125,14 +171,8 @@ data 'DLGX' (300) {
 	$"0000 0005 0000 0000 0000 0000 0000"                 /* .............. */
 };
 
-resource 'dlgx' (300) {
-	versionZero {
-		15
-	}
-};
-
 resource 'DLOG' (300, "Icon Browser", purgeable) {
-	{317, 400, 544, 753},
+	{321, 46, 548, 399},
 	1043,
 	invisible,
 	goAway,
@@ -142,28 +182,17 @@ resource 'DLOG' (300, "Icon Browser", purgeable) {
 	centerParentWindowScreen
 };
 
-data 'ictb' (300) {
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000"                                          /* .... */
+data 'hrct' (300, "Icon Browser", purgeable) {
+	$"0002 0000 0000 0000 0000 0004 0014 0003"            /* ................ */
+	$"0000 0000 00C7 0115 00DB 0159 012D 0001"            /* .....«...€.Y.-.. */
+	$"0014 0003 0000 0000 00C7 00C5 00DB 0105"            /* .........«.≈.€.. */
+	$"012D 0002 0014 0003 0000 0000 0028 0044"            /* .-...........(.D */
+	$"00BE 0159 012D 0003 0014 0003 0000 0000"            /* .æ.Y.-.......... */
+	$"0026 0008 00C0 003E 012D 0004"                      /* .&...¿.>.-.. */
 };
 
-resource 'ldes' (300) {
-	versionZero {
-		0,
-		1,
-		14,
-		0,
-		hasVertScroll,
-		noHorizScroll,
-		0,
-		noGrowSpace
-	}
-};
-
-resource 'STR#' (300, purgeable) {
-	{	/* array StringArray: 1 elements */
-		/* [1] */
-		"\t\t\t\t\t\t\t\t\tItem’s Finder Icon"
-	}
+data 'hwin' (300, "Icon Browser", purgeable) {
+	$"0002 0000 0000 0001 012C 6872 6374 000C"            /* .........,hrct.. */
+	$"0C49 636F 6E20 4272 6F77 7365 7200"                 /* .Icon Browser. */
 };
 

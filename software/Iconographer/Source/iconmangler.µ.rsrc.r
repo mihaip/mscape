@@ -1,30 +1,4 @@
 /* Resource fork of software/Iconographer/Source/iconmangler.¬µ.rsrc */
-resource 'MENU' (129) {
-	129,
-	textMenuProc,
-	0x7FFFFFB7,
-	enabled,
-	"File",
-	{	/* array: 8 elements */
-		/* [1] */
-		"New Icon…", noIcon, "N", noMark, plain,
-		/* [2] */
-		"Open Icon…", noIcon, "O", noMark, plain,
-		/* [3] */
-		"Close", noIcon, "W", noMark, plain,
-		/* [4] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [5] */
-		"Save", noIcon, "S", noMark, plain,
-		/* [6] */
-		"Save As…", noIcon, noKey, noMark, plain,
-		/* [7] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [8] */
-		"Quit", noIcon, "Q", noMark, plain
-	}
-};
-
 resource 'MENU' (132) {
 	132,
 	textMenuProc,
@@ -81,20 +55,6 @@ resource 'MENU' (134) {
 	}
 };
 
-resource 'MENU' (133) {
-	133,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"Paste",
-	{	/* array: 2 elements */
-		/* [1] */
-		"Normally", noIcon, "V", noMark, plain,
-		/* [2] */
-		"As Icon and Mask", noIcon, "V", noMark, plain
-	}
-};
-
 resource 'MENU' (130) {
 	130,
 	textMenuProc,
@@ -143,18 +103,49 @@ resource 'MENU' (128) {
 	}
 };
 
-resource 'DLOG' (129) {
-	{259, 337, 394, 687},
-	1043,
-	invisible,
-	goAway,
-	0x0,
-	129,
-	"Register…",
-	alertPositionMainScreen
+resource 'MENU' (133) {
+	133,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Paste",
+	{	/* array: 3 elements */
+		/* [1] */
+		"Normally", noIcon, "V", noMark, plain,
+		/* [2] */
+		"As Icon and Mask", noIcon, "V", noMark, plain,
+		/* [3] */
+		"Into Current Selection", noIcon, "V", noMark, plain
+	}
 };
 
-resource 'DLOG' (128) {
+resource 'MENU' (129) {
+	129,
+	textMenuProc,
+	0x7FFFFFB7,
+	enabled,
+	"File",
+	{	/* array: 8 elements */
+		/* [1] */
+		"New Icon", noIcon, "N", noMark, plain,
+		/* [2] */
+		"Open Icon…", noIcon, "O", noMark, plain,
+		/* [3] */
+		"Close", noIcon, "W", noMark, plain,
+		/* [4] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"Save", noIcon, "S", noMark, plain,
+		/* [6] */
+		"Save As…", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"Quit", noIcon, "Q", noMark, plain
+	}
+};
+
+resource 'DLOG' (128, "About") {
 	{88, 131, 287, 437},
 	1043,
 	invisible,
@@ -162,7 +153,18 @@ resource 'DLOG' (128) {
 	0x0,
 	128,
 	"About…",
-	centerMainScreen
+	alertPositionMainScreen
+};
+
+resource 'DLOG' (129, "Register") {
+	{178, 612, 313, 962},
+	1043,
+	invisible,
+	goAway,
+	0x0,
+	129,
+	"Register…",
+	alertPositionMainScreen
 };
 
 resource 'FREF' (129) {
@@ -233,26 +235,26 @@ resource 'icl4' (128) {
 resource 'icl4' (-16455, "Item Icon ") {
 	$"FFFF FFFF FFFF FFFF FFFA EEEE FFFA FFFF"
 	$"FFFF FFFF FFFF FFFF FFFF FFFF FADD FFFF"
-	$"FFFA FFDB FFFA EEAB DDEF FFFF A1E3 FFFF"
-	$"FFFD BDDD BFDE DDDD DDDD DBFA 1BFF FFFF"
+	$"FFFA FFDB FFFA BBAB DDEF FFFF A1E3 FFFF"
+	$"FFFD BDDD BFDD DDDD DDDD DBFA 1BFF FFFF"
 	$"FFFD DDDD DDDD DDDD DDBB BFA1 BFFF FFFF"
 	$"EFFB DDDB AAAA EEAB DEFA FA1B FFFF FFFA"
-	$"EFFA DDDA EEAA BABB AACB A1BF FFFF FFF0"
-	$"0FFE DDBB BBBB BADE ACDA 1BFF FFFF FF00"
-	$"0FFE DDBB BDBB AEBA CDA1 BFFD DFFF FF00"
-	$"0FFE DDBB BBDE AEEC DA1B FFDD CCAF FFF0"
-	$"0FFE DDBD BDBE AACD A1BF FFDD CCCA FFF0"
-	$"0FFA DDBB DBDA AABA BBFF BADC CCCC FFFF"
+	$"EFFA DDDA EEAA BABB AACB A1BF FFFF FFFE"
+	$"0FFB DDBB BBBD BADE ACDA 1BFF FFFF FFE0"
+	$"0FFB DDBB BDDB AEBA CDA1 BFFD DFFF FFE0"
+	$"0FFB DDBB BDDE AEEC DA1B FFDD 1CAF FFFF"
+	$"0FFB DDBD DDBE AACD A1BF FFDD CCCA FFFF"
+	$"0FFA DDBB DDDA AABA BBFF BADC CCCC FFFF"
 	$"0FFE DDBB BEEA AEA1 AAFF ECCC CCCD FFFF"
 	$"0FFD DBDB AAAA AA1A DCCC CCCC CCCD FFFF"
 	$"FFED DDDE BBBA AFBF FEDD DDCC CCCD FFFF"
-	$"FADD DDBD BDDB FFFA FFFF FDDD DCCD FFFF"
+	$"FADD DDBD BDDB FFFA FFFF FBDD DCCD FFFF"
 	$"FADD DDDD DDDB FFEE FAEE EFFF FDDD FFFF"
-	$"FFFE DDBB BBDD AAEB AAEB BAFF FFFF FFFF"
-	$"FFFF EBBB DDBB AABD AABB BEFF FFFF FFFF"
+	$"FFFB DDBB BBDD AAEB AAEB BAFF FFFF FFFF"
+	$"FFFF BBBB DDBB AABD AABB BEFF FFFF FFFF"
 	$"FFFF EDBD DDBB AEDD EABB AFFF FFFF FFFF"
 	$"EFFF DDBB EAAA BDDB EABE FFFF FFFF FFFF"
-	$"0FFE DDBA AAAA BBDD ABDB FFFF FAFF FFFF"
+	$"0FFB DDBA AAAA BBDD ABDB FFFF FAFF FFFF"
 	$"0FFD DBEB BBEA AEBA BBDD EFFF FE0E EEE0"
 	$"EFED DBBD BBBB BBBD DDDB DFFF F000 0000"
 	$"AFED DBBD BBDB DBBB DBDB DAFF FE00 0000"
@@ -337,45 +339,45 @@ resource 'icl8' (-16455, "Item Icon ") {
 	$"FFFF FFFD FBFB FBFB FFFF B2FD FFFF FFFF"
 	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
 	$"E0FF FFFF FFFF FFFF FFAD 3838 DFFF FFFF"
-	$"FFFE E0FD FFFF 575D FFFF FFFD FBFB AD82"
+	$"FFFE E0FD FFFF 575D FFFF FFFD 8282 AD82"
 	$"3357 88FF FFE0 FFFF AD2F 886A DFFF FFFF"
-	$"FFFF FE33 5D33 3333 5EFE 33FB 3333 3333"
+	$"FFFF FE33 5D33 3333 5EFE 3357 3333 3333"
 	$"3333 3357 575E FFAD 2F34 E0FF FFFF FFFF"
 	$"FFFF FE33 3333 3333 3333 3333 3333 3357"
 	$"3333 5E5E 82FE AD2F 34FE FFFF FFFF FFFF"
 	$"FBE0 E082 3333 335E 8FDD 8F8E 8888 8F64"
 	$"3388 FEFD FFAD 2F34 FEFF FFFF FFFF FFFD"
 	$"FBFF FFAD 3333 578F 8888 8F8F 648F 645E"
-	$"89FD 2C5D AD2F 34FE FFFF FFFF FFFF FF00"
-	$"00FF FFFB 3333 5E5D 5D5D 5D5D 648F 5788"
-	$"AD2C 33AD 2F34 FEE0 E0FF FFFF FFFF 0000"
-	$"00FF FFFB 3333 5D5D 5D33 5D5D DD88 5EFD"
-	$"2C33 AD2F 34FE FE33 33FE FFFF FFFF 0000"
-	$"00FF FFFB 3333 5E5D 5E5D 3388 DD88 AC2C"
-	$"33AD 2F34 FEFF 3333 0808 FDFF FFFF FF00"
-	$"00FF FFFB 3333 5D33 5D33 5D88 DEAD 2C33"
-	$"AD2F 34FE FFE0 3333 0808 08AD FFFF FF00"
-	$"00FF E0FD 3333 5D5D 335D 338F DEAD 5D89"
-	$"5334 E0FF 82AD 3308 0808 0808 FEFF FFFF"
+	$"89FD 2C5D AD2F 34FE FFFF FFFF FFFF FFFB"
+	$"00FF FF82 3333 5E5D 5D5D 5D57 648F 5788"
+	$"AD2C 33AD 2F34 FEE0 E0FF FFFF FFFF FB00"
+	$"00FF FF82 3333 5D5D 5D33 575D DD88 5EFD"
+	$"2C33 AD2F 34FE FE33 33FE FFFF FFFF FB00"
+	$"00FF FF82 3333 5E5D 5E57 5788 DD88 AC2C"
+	$"33AD 2F34 FEFF 5733 0932 FDFF FFFF FFFF"
+	$"00FF FF82 3333 5D33 5757 5D88 DEAD 2C33"
+	$"AD2F 34FE FFE0 3333 0808 2CAD FFFF FFFF"
+	$"00FF E0FD 3333 5D5D 5757 578F DEAD 5D89"
+	$"5334 E0FF 82AD 3308 0808 0832 FEFF FFFF"
 	$"00FF FFAC 5733 5D5E 5E88 88DD DD88 AD2F"
-	$"83FD FEFE AC08 0808 0808 0833 E0FF FFFF"
+	$"83FD FEFE AC2C 0808 0808 0833 E0FF FFFF"
 	$"00FF FF57 335E 335E DD8F DDDD DEAD 2F89"
-	$"5708 0808 0808 0808 0808 0833 E0FF FFFF"
+	$"5732 0808 0808 0808 0808 0833 E0FF FFFF"
 	$"FFFF AC33 3333 5788 5E5E 5E8F DEDF 58FE"
 	$"FEAC 3333 3333 0808 0808 0833 E0FF FFFF"
 	$"FFAD 3333 3333 5E57 3433 335E FFFF FEAD"
-	$"DFDF E0E0 FE33 3333 3308 0833 E0FF FFFF"
+	$"DFDF E0E0 FE5D 3333 3308 0833 E0FF FFFF"
 	$"FFAD 3333 3333 3333 3357 575E E0DF 8888"
-	$"B3DE 8888 ACE0 E0E0 FE33 3333 E0FF FFFF"
-	$"FFFF FEFB 3333 345E 5E5D 3357 DEDE 885E"
+	$"B3DE 8888 ACE0 E0E0 FE57 3357 E0FF FFFF"
+	$"FFFF FE82 3333 345E 5E5D 3357 DEDE 885E"
 	$"DDDD 885E 82FD FFFF FFE0 E0E0 FFFF FFFF"
-	$"FFFF FEFF FB34 345E 3333 5D5D DDDD 5E57"
+	$"FFFF FEFF 8234 345E 3333 5D5D DDDD 5E57"
 	$"8EDD 5E5D 5E88 FFFF FFFF FFFF FFFF FFFF"
 	$"FFFF FFFF AC33 3A33 3333 5D5E DD88 5757"
 	$"88DD 5E5E ADFE FFFF FFFF FFFF FFFF FFFF"
 	$"FBFF FFFF 5733 585E 888F 8F8F 8257 3358"
 	$"888F 5E88 FFE0 FFFF FFFF FFFF FFFF FFFF"
-	$"00FF FFFB 3333 64DD DDDD DDDD 645E 3333"
+	$"00FF FF82 3333 64DD DDDD DDDD 645E 3333"
 	$"8F5E 575E FFFF FFFF FFFD FFFF FFFF FFFF"
 	$"00FF FE33 335E 885E 5E5E 88DD DD88 648E"
 	$"5E5E 3333 ACFF FFFF FFFB 00FB FBFB FB00"
@@ -425,13 +427,13 @@ resource 'ICN#' (128) {
 resource 'ICN#' (-16455, "Item Icon ") {
 	{	/* array: 2 elements */
 		/* [1] */
-		$"FFFF FFFF FFFF FFCF FCFF 3FBF E0C0 073F"
-		$"E000 3E7F F1FF 7CFF F1FE D9FF 730D 93FE"
-		$"720F 267E 709E 4C3F 701C 9C1F 721F 3C0F"
-		$"71FE F80F 65FD 000F E1FD C00F C01F F80F"
-		$"C01F FF8F F08F FFFF F80E EFFF F81C FFFF"
-		$"F1F8 DFFF 73F8 DFFF 67FF 8FDE E64E 0780"
-		$"E250 07C0 EA10 07C0 E1FF 7BC0 FFFF FFC0"
+		$"FFFF FFFF FFFF FFEF FDFF 3FBF EAE4 A7BF"
+		$"E916 BE7F FBFF 7CFF F5FF DBFF 73ED 93FE"
+		$"7BDF 6E7E 7B9E CCBF 777D BD3F 7BBF 7E1F"
+		$"77FE F84F 6FFD 010F E5FF D42F CB5F FC8F"
+		$"D55F FFDF FBEF FFFF FD7E FFFF FABD FFFF"
+		$"F5FA FFFF 7BFD FFFF 67FF DFDE EEFE 8F80"
+		$"F7F7 57C0 EEFE BFC0 FFFF 7FC0 FFFF FFC0"
 		$"FFFF FFE0 FFFF FFE0 FFFF FFC0 FFFF FFC0",
 		/* [2] */
 		$"4001 8038 77BF F478 7FBF FEFC 7FFF FFF8"
@@ -445,24 +447,24 @@ resource 'ICN#' (-16455, "Item Icon ") {
 	}
 };
 
-resource 'vers' (1) {
-	0x1,
-	0x0,
-	development,
-	0x5,
-	14,
-	"1.0d5",
-	"©1998-99 Mihai Parparita"
-};
-
 resource 'vers' (2) {
 	0x1,
 	0x0,
 	development,
-	0x5,
+	0x6,
 	14,
-	"1.0d5",
-	"Iconographer 1.0d5"
+	"1.0d6",
+	"Iconographer 1.0d6"
+};
+
+resource 'vers' (1) {
+	0x1,
+	0x0,
+	development,
+	0x6,
+	14,
+	"1.0d6",
+	"1.0d6 ©1998-99 Mihai Parparita"
 };
 
 resource 'dlgx' (-6043) {
@@ -486,65 +488,6 @@ resource 'dlgx' (129) {
 resource 'dlgx' (128) {
 	versionZero {
 		15
-	}
-};
-
-resource 'DITL' (129, "Registration") {
-	{	/* array DITLarray: 9 elements */
-		/* [1] */
-		{102, 270, 122, 338},
-		Button {
-			enabled,
-			"OK"
-		},
-		/* [2] */
-		{102, 190, 121, 254},
-		Button {
-			enabled,
-			"Cancel"
-		},
-		/* [3] */
-		{102, 7, 122, 158},
-		Button {
-			enabled,
-			"Launch Register App"
-		},
-		/* [4] */
-		{12, 136, 28, 336},
-		EditText {
-			enabled,
-			""
-		},
-		/* [5] */
-		{40, 136, 56, 336},
-		EditText {
-			enabled,
-			""
-		},
-		/* [6] */
-		{68, 136, 84, 336},
-		EditText {
-			enabled,
-			""
-		},
-		/* [7] */
-		{12, 8, 28, 51},
-		StaticText {
-			disabled,
-			"Name:"
-		},
-		/* [8] */
-		{40, 8, 56, 98},
-		StaticText {
-			disabled,
-			"Organization:"
-		},
-		/* [9] */
-		{68, 8, 84, 131},
-		StaticText {
-			disabled,
-			"Registration Code:"
-		}
 	}
 };
 
@@ -612,19 +555,63 @@ resource 'DITL' (128, "About Box") {
 	}
 };
 
-data 'DLGX' (129) {
-	$"0654 6563 686E 6F00 0000 0000 0000 0000"            /* .Techno......... */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
-	$"0009 0000 0000 0000 0000 0000 0000 0001"            /* ................ */
-	$"0000 0000 0000 0000 0000 0002 0000 0000"            /* ................ */
-	$"0000 0000 0000 0007 0000 0000 0000 0000"            /* ................ */
-	$"0000 0007 0000 0000 0000 0000 0000 0007"            /* ................ */
-	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
-	$"0000 0000 0000 0006 0000 0000 0000 0000"            /* ................ */
-	$"0000 0006 0000 0000 0000 0000 0000"                 /* .............. */
+resource 'DITL' (129, "Registration") {
+	{	/* array DITLarray: 9 elements */
+		/* [1] */
+		{102, 270, 122, 338},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{102, 190, 121, 254},
+		Button {
+			enabled,
+			"Cancel"
+		},
+		/* [3] */
+		{102, 7, 122, 158},
+		Button {
+			enabled,
+			"Launch Register App"
+		},
+		/* [4] */
+		{12, 136, 28, 336},
+		EditText {
+			enabled,
+			""
+		},
+		/* [5] */
+		{40, 136, 56, 336},
+		EditText {
+			enabled,
+			""
+		},
+		/* [6] */
+		{68, 136, 84, 336},
+		EditText {
+			enabled,
+			""
+		},
+		/* [7] */
+		{12, 8, 28, 51},
+		StaticText {
+			disabled,
+			"Name:"
+		},
+		/* [8] */
+		{40, 8, 56, 98},
+		StaticText {
+			disabled,
+			"Organization:"
+		},
+		/* [9] */
+		{68, 8, 84, 131},
+		StaticText {
+			disabled,
+			"Registration Code:"
+		}
+	}
 };
 
 data 'DLGX' (128) {
@@ -641,6 +628,21 @@ data 'DLGX' (128) {
 	$"0000 0000 0000 0006 0000 0000 0000 0000"            /* ................ */
 	$"0000 0006 0000 0000 0000 0000 0000 0006"            /* ................ */
 	$"0000 0000 0000 0000 0000"                           /* .......... */
+};
+
+data 'DLGX' (129) {
+	$"0654 6563 686E 6F00 0000 0000 0000 0000"            /* .Techno......... */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
+	$"0009 0000 0000 0000 0000 0000 0000 0001"            /* ................ */
+	$"0000 0000 0000 0000 0000 0002 0000 0000"            /* ................ */
+	$"0000 0000 0000 0007 0000 0000 0000 0000"            /* ................ */
+	$"0000 0007 0000 0000 0000 0000 0000 0007"            /* ................ */
+	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
+	$"0000 0000 0000 0006 0000 0000 0000 0000"            /* ................ */
+	$"0000 0006 0000 0000 0000 0000 0000"                 /* .............. */
 };
 
 data 'ictb' (132) {
@@ -943,6 +945,10 @@ data 'Mcmd' (130) {
 	$"0000 0000 0000"                                     /* ...... */
 };
 
+data 'Mcmd' (133) {
+	$"0000"                                               /* .. */
+};
+
 resource 'xmnu' (130, "Edit Menu") {
 	versionZero {
 		{	/* array ItemExtensions: 2 elements */
@@ -1026,7 +1032,7 @@ resource 'xmnu' (131, "Select") {
 
 resource 'xmnu' (133, "Paste Menu") {
 	versionZero {
-		{	/* array ItemExtensions: 2 elements */
+		{	/* array ItemExtensions: 3 elements */
 			/* [1] */
 			skipItem {
 
@@ -1035,6 +1041,17 @@ resource 'xmnu' (133, "Paste Menu") {
 			dataItem {
 				1061109567,
 				0x1,
+				currScript,
+				1061109567,
+				1061109567,
+				noHierID,
+				sysFont,
+				naturalGlyph
+			},
+			/* [3] */
+			dataItem {
+				1061109567,
+				0x2,
 				currScript,
 				1061109567,
 				1061109567,
@@ -1071,43 +1088,22 @@ resource 'STR#' (128, "Default Names", purgeable) {
 	}
 };
 
-resource 'STR#' (130, "Prompts", purgeable) {
-	{	/* array StringArray: 5 elements */
-		/* [1] */
-		"Do you want to save changes to the <app "
-		"name> document “<file name>” before clos"
-		"ing it?",
-		/* [2] */
-		"Select the file or folder whose icon you"
-		" want to edit.",
-		/* [3] */
-		"Save icon:",
-		/* [4] */
-		"Open Icon",
-		/* [5] */
-		"You have used <app name> to create <no o"
-		"f icons> icons. If you continue to use i"
-		"t, please pay the $15 shareware fee. Thi"
-		"s can be done online, or by using the en"
-		"closed Register application."
-	}
-};
-
 resource 'STR#' (129, "Standard Errors", purgeable) {
 	{	/* array StringArray: 14 elements */
 		/* [1] */
 		"The file you selected is already open in"
 		" another program.",
 		/* [2] */
-		"This beta of <app name> expired on June "
-		"15, 1999. Please download a newer versio"
-		"n.",
+		"This development copy of <app name> expi"
+		"red on July 1, 1999. Please download a n"
+		"ewer version.",
 		/* [3] */
 		"A needed resource is missing. <app name>"
 		" could be corrupted, please reinstall th"
 		"e program.",
 		/* [4] */
-		"<app name> requires Mac OS 8.0 or above.",
+		"<app name> requires System 7.5.3 or abov"
+		"e.",
 		/* [5] */
 		"AppleEvents could not be initialized, <a"
 		"pp name> cannot continue.",
@@ -1145,6 +1141,359 @@ resource 'STR#' (129, "Standard Errors", purgeable) {
 		"e received.",
 		/* [14] */
 		"Thank you for registering <app name>."
+	}
+};
+
+resource 'STR#' (130, "Prompts", purgeable) {
+	{	/* array StringArray: 5 elements */
+		/* [1] */
+		"Do you want to save changes to the <app "
+		"name> document “<file name>” before clos"
+		"ing it?",
+		/* [2] */
+		"Select the file or folder whose icon you"
+		" want to edit.",
+		/* [3] */
+		"Select a name and location for the icon "
+		"to be saved in.",
+		/* [4] */
+		"Open Icon",
+		/* [5] */
+		"You have used <app name> to create <no o"
+		"f icons> icons. If you continue to use i"
+		"t, please pay the $15 shareware fee. Thi"
+		"s can be done online, or by using the en"
+		"closed Register application."
+	}
+};
+
+resource 'STR#' (150, "App Balloon Help", purgeable) {
+	{	/* array StringArray: 1 elements */
+		/* [1] */
+		"Iconographer\n\nUse this application to ed"
+		"it the icons of files and folders. Drag "
+		"an item onto the application in order to"
+		" edit its icon."
+	}
+};
+
+resource 'STR#' (157, "View Balloon Help", purgeable) {
+	{	/* array StringArray: 6 elements */
+		/* [1] */
+		"View Menu\n\nThis menu can be used to modi"
+		"fy how the front-most icon is viewed.",
+		/* [2] */
+		"View Menu\n\nThis menu can be used to modi"
+		"fy how the front-most icon is viewed.\n\nN"
+		"ot available because there are no open e"
+		"ditors.",
+		/* [3] */
+		"This comman increases the magnification "
+		"level of the front-most editor.",
+		/* [4] */
+		"This comman increases the magnification "
+		"level of the front-most editor.\n\nNot ava"
+		"ilable because the editor is at maximum "
+		"magnification, or because there are no o"
+		"pen editors.",
+		/* [5] */
+		"This comman decreases the magnification "
+		"level of the front-most editor.",
+		/* [6] */
+		"This comman decreases the magnification "
+		"level of the front-most editor.\n\nNot ava"
+		"ilable because the editor is at minimum "
+		"magnification, or because there are no o"
+		"pen editors."
+	}
+};
+
+resource 'STR#' (156, "Paste Balloon Help", purgeable) {
+	{	/* array StringArray: 4 elements */
+		/* [1] */
+		"Pastes the clipboard contents into a flo"
+		"ated selection.",
+		/* [2] */
+		"Separates the clipboard contents as an i"
+		"con and as mask, which will be merged wi"
+		"th the current icon and mask contents.",
+		/* [3] */
+		"Pastes the clipboard contents scaled to "
+		"the dimensions of the current selection.",
+		/* [4] */
+		"Pastes the clipboard contents scaled to "
+		"the dimensions of the current selection."
+		"\n\nNot available because no selection has"
+		" been made."
+	}
+};
+
+resource 'STR#' (155, "Transform Balloon Help", purgeable) {
+	{	/* array StringArray: 5 elements */
+		/* [1] */
+		"Rotates the current selection (or the en"
+		"tire image if a selection is not availab"
+		"le) 90 degrees in a clockwise direction.",
+		/* [2] */
+		"Rotates the current selection (or the en"
+		"tire image if a selection is not availab"
+		"le) 90 degrees in a counter-clockwise di"
+		"rection.",
+		/* [3] */
+		"Mirrors the current selection (or the en"
+		"tire image if a selection is not availab"
+		"le) across the vertical axis.",
+		/* [4] */
+		"Mirrors the current selection (or the en"
+		"tire image if a selection is not availab"
+		"le) across the horizontal axis.",
+		/* [5] */
+		"Inverts (makes “negative”) the current s"
+		"election (or the entire image if a selec"
+		"tion is not available)."
+	}
+};
+
+resource 'STR#' (154, "Select Balloon Help", purgeable) {
+	{	/* array StringArray: 8 elements */
+		/* [1] */
+		"Selects the entire icon.",
+		/* [2] */
+		"Selects the entire icon.\n\nNot available "
+		"because a selection cannot be made at th"
+		"is time.",
+		/* [3] */
+		"Selects colors similar to the ones found"
+		" in the current selection.",
+		/* [4] */
+		"Selects colors similar to the ones found"
+		" in the current selection.\n\nNot availabl"
+		"e because there is no selection availabl"
+		"e.",
+		/* [5] */
+		"Removes the current selection.",
+		/* [6] */
+		"Removes the current selection.\n\nNot avai"
+		"lable because there is no selection avai"
+		"lable.",
+		/* [7] */
+		"Selects what is not currently selected a"
+		"nd vice-versa.",
+		/* [8] */
+		"Selects what is not currently selected a"
+		"nd vice-versa.\n\nNot available because th"
+		"ere is no selection available."
+	}
+};
+
+resource 'STR#' (151, "Apple Menu Balloon Help", purgeable) {
+	{	/* array StringArray: 4 elements */
+		/* [1] */
+		"Displays information about this version "
+		"of Iconographer.",
+		/* [2] */
+		"Displays information about this version "
+		"of Iconographer.\n\nNot available because "
+		"the about box cannot be shown at this ti"
+		"me.",
+		/* [3] */
+		"Allows you to register Iconographer, thu"
+		"s removing the shareware reminder.",
+		/* [4] */
+		"Allows you to register Iconographer, thu"
+		"s removing the shareware reminder.\n\nNot "
+		"available because the registration dialo"
+		"g cannot be shown at this time."
+	}
+};
+
+resource 'STR#' (153, "Edit Balloon Help", purgeable) {
+	{	/* array StringArray: 20 elements */
+		/* [1] */
+		"Edit Menu\n\nUse this menu to undo and red"
+		"o actions, to cut and paste or to set th"
+		"e Iconographer preferences.",
+		/* [2] */
+		"Edit Menu\n\nUse this menu to undo and red"
+		"o actions, to cut and paste or to set th"
+		"e Iconographer preferences.\n\nNot availab"
+		"le because the front-most window does no"
+		"t support these operations.",
+		/* [3] */
+		"Reverses the effects of the previous act"
+		"ion.",
+		/* [4] */
+		"Reverses the effects of the previous act"
+		"ion.\n\nNot available because all of the a"
+		"ctions have been undone, or because the "
+		"last action cannot be undone.",
+		/* [5] */
+		"Reapplies the effects of the action that"
+		" was just un-done.",
+		/* [6] */
+		"Reapplies the effects of the action that"
+		" was just un-done.\n\nNot available becaus"
+		"e no action was undone.",
+		/* [7] */
+		"Deletes the current selection and places"
+		" its contents in the clipboard.",
+		/* [8] */
+		"Deletes the current selection and places"
+		" its contents in the clipboard.\n\nNot ava"
+		"ilable because there is no selection or "
+		"there are no open editors.",
+		/* [9] */
+		"Places the contents of the current selec"
+		"tion in the clipboard.",
+		/* [10] */
+		"Places the contents of the current selec"
+		"tion in the clipboard.\n\nNot available be"
+		"cause there is no selection or there are"
+		" no open editors.",
+		/* [11] */
+		"Inserts the contents of the clipboard in"
+		"to the current editor.",
+		/* [12] */
+		"Inserts the contents of the clipboard in"
+		"to the current editor.\n\nNot available be"
+		"cause the clipboard is does not contain "
+		"any image data, or because there are no "
+		"open editors.",
+		/* [13] */
+		"Deletes the contents of the current sele"
+		"ction.",
+		/* [14] */
+		"Deletes the contents of the current sele"
+		"ction.\n\nNot available because there is n"
+		"o selection or there are no open editors"
+		".",
+		/* [15] */
+		"Performs various selection operations.",
+		/* [16] */
+		"Performs various selection operations.\n\n"
+		"Not available because there are no open "
+		"editors.",
+		/* [17] */
+		"Performs various transformations on imag"
+		"es.",
+		/* [18] */
+		"Performs various transformations on imag"
+		"es.\n\nNot available because there are no "
+		"open editors.",
+		/* [19] */
+		"Opens a dialog box which allows you to c"
+		"ustomize various aspects of Iconographer"
+		"’s operation.",
+		/* [20] */
+		"Opens a dialog box which allows you to c"
+		"ustomize various aspects of Iconographer"
+		"’s operation.\n\nNot available because the"
+		" preferences cannot be edited at this mo"
+		"ment."
+	}
+};
+
+resource 'STR#' (152, "File Balloon Help", purgeable) {
+	{	/* array StringArray: 14 elements */
+		/* [1] */
+		"File Menu\n\nUse this menu to perform oper"
+		"ations with files and folders.",
+		/* [2] */
+		"File Menu\n\nUse this menu to perform oper"
+		"ations with files and folders.\n\nNot avai"
+		"lable because file operations cannot be "
+		"performed at the moment.",
+		/* [3] */
+		"Creates a new editor window with an empt"
+		"y icon.",
+		/* [4] */
+		"Creates a new window editor with an empt"
+		"y icon.\n\nNot available because no more e"
+		"ditors can be created.",
+		/* [5] */
+		"Opens an item’s icon into a new editor w"
+		"indow.",
+		/* [6] */
+		"Opens an item’s icon into a new editor w"
+		"indow.\n\nNot available because no more ed"
+		"itors can be created.",
+		/* [7] */
+		"Closes the front-most editor window.",
+		/* [8] */
+		"Closes the front-most editor window.\n\nNo"
+		"t available because no editor windows ar"
+		"e opened.",
+		/* [9] */
+		"Saves the contents of the front-most edi"
+		"tor window.",
+		/* [10] */
+		"Saves the contents of the front-most edi"
+		"tor window.\n\nNot available because there"
+		" are no open editors, or because the fro"
+		"nt-most editor doesn’t need to be saved.",
+		/* [11] */
+		"Saves the contents of the front-most edi"
+		"tor window in a different file.",
+		/* [12] */
+		"Saves the contents of the front-most edi"
+		"tor window in a different file.\n\nNot ava"
+		"ilable because there are no open editors"
+		".",
+		/* [13] */
+		"Exits Iconographer, first asking if any "
+		"unsaved changes should be saved.",
+		/* [14] */
+		"Exits Iconographer, first asking if any "
+		"unsaved changes should be saved.\n\nNot av"
+		"ailable because Iconographer cannot be e"
+		"xited at this time."
+	}
+};
+
+resource 'STR#' (158, "About Balloon Help", purgeable) {
+	{	/* array StringArray: 5 elements */
+		/* [1] */
+		"Click here to dimiss this dialog.",
+		/* [2] */
+		"Drop-shadowing that works with any backg"
+		"round color. Cool, eh?",
+		/* [3] */
+		"Click here to visit the Mscape Software "
+		"homepage (requires Internet Config).",
+		/* [4] */
+		"Click here to e-mail the author (require"
+		"s Internet Config).",
+		/* [5] */
+		"If you’ve paid, thank your very much. If"
+		" you haven’t, perhaps you should conside"
+		"r it."
+	}
+};
+
+resource 'STR#' (159, "Registration Balloon Help", purgeable) {
+	{	/* array StringArray: 6 elements */
+		/* [1] */
+		"Click here to verify your registration c"
+		"ode. If it is valid then Iconographer wi"
+		"ll be registered.",
+		/* [2] */
+		"This button will abort the registration.",
+		/* [3] */
+		"Click here to open up the Register appli"
+		"cation. You can then fill out the form, "
+		"send it to Kagi and pay for Iconographer"
+		", thus removing the shareware messsages.",
+		/* [4] */
+		"Your name should be entered here. Please"
+		" make sure to type it in exactly as it a"
+		"ppears in the registration e-mail, since"
+		" the serial number is based on it.",
+		/* [5] */
+		"Optionally, your company name can be ent"
+		"ered here.",
+		/* [6] */
+		"The registration number you received goe"
+		"s here. "
 	}
 };
 
@@ -4854,6 +5203,88 @@ resource 'MBAR' (128) {
 	}
 };
 
+resource 'ics#' (-16455, "Item Icon ") {
+	{	/* array: 2 elements */
+		/* [1] */
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF",
+		/* [2] */
+		$"0000 0FCC 1390 01B0 01B0 01B0 07B0 0FB0"
+		$"01B0 01B8 0198 0198 0F10 1F10 01E0"
+	}
+};
+
+resource 'ics#' (128) {
+	{	/* array: 2 elements */
+		/* [1] */
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF",
+		/* [2] */
+		$"0000 0FCC 1390 01B0 01B0 01B0 07B0 0FB0"
+		$"01B0 01B8 0198 0198 0F10 1F10 01E0"
+	}
+};
+
+resource 'ics4' (-16455, "Item Icon ") {
+	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
+	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
+	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
+	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
+	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
+	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
+	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
+	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
+};
+
+resource 'ics4' (128) {
+	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
+	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
+	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
+	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
+	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
+	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
+	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
+	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
+};
+
+resource 'ics8' (128) {
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+};
+
+resource 'ics8' (-16455, "Item Icon ") {
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
+};
+
 data 'Pref' (128) {
 	$"0000 0001 0E4E 6F74 2072 6567 6973 7465"            /* .....Not registe */
 	$"7265 640B 02EA 000C 02EB 000C 02EB 000D"            /* red..Í...Î...Î.. */
@@ -4903,92 +5334,10 @@ data 'Pref' (128) {
 	$"0DB1 1CD0 AB00 0006 0000 0160 0004 5C4C"            /* .±.–´......`..\L */
 	$"0000 0000 00DD DDDD 0000 014E 0000 0000"            /* .....›››...N.... */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0004 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
 };
 
-resource 'ics#' (128) {
-	{	/* array: 2 elements */
-		/* [1] */
-		$"0000 0FDC 1BF0 11B0 03B0 03B0 0FB0 0FB8"
-		$"1BB8 01F8 01F8 01D8 1F98 1F30 33E0",
-		/* [2] */
-		$"0000 0FCC 1390 01B0 01B0 01B0 07B0 0FB0"
-		$"01B0 01B8 0198 0198 0F10 1F10 01E0"
-	}
-};
-
-resource 'ics#' (-16455, "Item Icon ") {
-	{	/* array: 2 elements */
-		/* [1] */
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF",
-		/* [2] */
-		$"0000 0FCC 1390 01B0 01B0 01B0 07B0 0FB0"
-		$"01B0 01B8 0198 0198 0F10 1F10 01E0"
-	}
-};
-
-resource 'ics4' (128) {
-	$"0000 0000 0000 0000 0000 AAAA AA0A AA00"
-	$"000A A0AA AAAA 0000 000A 000A A0AA 0000"
-	$"0000 00AA A0AA 0000 0000 00AA A0AA 0000"
-	$"0000 AAAA A0AA 0000 0000 AAAA A0AA A000"
-	$"000A A0AA A0AA A000 0000 000A AAAA A000"
-	$"0000 000A AAAA A000 0000 000A AA0A A000"
-	$"000A AAAA A00A A000 000A AAAA 00AA 0000"
-	$"00AA 00AA AAA0"
-};
-
-resource 'ics4' (-16455, "Item Icon ") {
-	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
-	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
-	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
-	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
-	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
-	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
-	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
-	$"AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA"
-};
-
-resource 'ics8' (128) {
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-};
-
-resource 'ics8' (-16455, "Item Icon ") {
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-};
-
-resource 'icns' (-16455, "Item Icon ") {
+resource 'icns' (-16455, "Item Icon") {
 	{	/* array elementArray: 10 elements */
 		/* [1] */
 		'ICN#',
@@ -5009,72 +5358,6 @@ resource 'icns' (-16455, "Item Icon ") {
 		$"FFFF FFC0 FFFF FFC0 FFFF FFC0 FFFF FFC0"
 		$"FFFF FFE0 FFFF FFE0 FFFF FFC0 FFFF FFC0",
 		/* [2] */
-		'icl8',
-		$"F7FC F800 00F5 F7F7 F500 0000 F500 00FB"
-		$"FB2B F600 0000 0000 00F7 FCFD FD2B F500"
-		$"56FF FFFC F7FD FDFE ACF6 FBFF ACFD FCFE"
-		$"FDFE FFF9 F8FC FA00 F782 3E38 B2F9 2BF5"
-		$"00FB FEAC FFFD 5757 E0F8 FFAC 5D5D AC5E"
-		$"5733 81FE FEFD FDF8 822F AC46 ADFA 2BF5"
-		$"00FA FD33 5733 3333 5DAD 3233 3357 3357"
-		$"3357 3933 575D EAFC 2F33 DFE9 8756 2B00"
-		$"00AC FD33 3333 3357 3333 5757 333A 5739"
-		$"573A 5882 5EFE AD05 33FE FEFB F9F7 F5F5"
-		$"00F5 B382 5D33 575E 88DE 8EDC 8888 DC82"
-		$"3488 B2FD E0AD 2F33 FDEA FBF9 F7F6 F500"
-		$"00F5 FBFD 3358 39DD 8888 DC88 6488 645D"
-		$"FDAD 085D AD28 34FE FFFB F9F7 F600 0000"
-		$"00F5 FE82 3933 8239 573A 5D57 5E8F 5788"
-		$"8932 33AD 2E34 FDFE FEFB F82B F500 0000"
-		$"0000 FD5D 5739 5D58 3957 335E 8E88 5EAC"
-		$"2C33 AD2F 33FE FE33 33FD FAF6 F500 0000"
-		$"0000 FC82 3A57 345D 5E57 5764 DD82 AC2C"
-		$"39AD 2F33 FDE0 3933 0933 FCF9 F6F5 0000"
-		$"00F5 FDFA 3334 5D33 5739 588E DDB2 0957"
-		$"AD2E 2EFD FFE9 3333 0801 33FC F92B F500"
-		$"0000 81FD 335D 575E 3358 3988 DEAD 5D88"
-		$"2F34 F3FF 82FD 3308 0808 0133 FDFD 2BF5"
-		$"0000 FD82 5733 5E57 5E88 888F 8EAD AD2F"
-		$"A6B3 FDFE 882C 0808 0808 0833 FEFE F8F6"
-		$"00F7 E057 325E 335E 8F8E 8FDD DDFD 2FAD"
-		$"3332 0808 2C08 0808 0808 0833 DFFF 562B"
-		$"56FF FB33 3357 5D88 5D34 5D8F DEFD 5DFD"
-		$"E0AC 3433 3333 0808 0808 0833 EAFE F92B"
-		$"FDFC 3333 3333 5839 3457 5D5E F4E0 ADAD"
-		$"DFDF FEFE B357 3333 3308 0833 FEFE F92B"
-		$"81AC 3357 3357 3358 3958 335D E0B3 88FC"
-		$"DEDE 8888 ACDF FEEA FD57 3357 DFFE F92B"
-		$"2BDF FE82 573A 5839 5E5D 3357 DEDE 825D"
-		$"DD8E 8282 5EAC FFFC FBAD FDDF FFFF F92B"
-		$"F5F8 FBFF 5E57 3A58 3357 5D58 8EDD 5E57"
-		$"8EDD 5D5E 5D89 EAFA 5656 FAFD FEFD 562B"
-		$"00F6 F7FD AC34 5D33 5733 5E5D 8F88 5D58"
-		$"88DD 5E57 ADFE F456 2B2A 2BF7 5656 F7F6"
-		$"0000 FAFE 5733 5864 888F 888F 8233 5D34"
-		$"888E 5888 F4AD ACF8 F5F5 F5F6 F6F6 F6F5"
-		$"002B EA5D 3333 648E DD8E DD8E 645E 335D"
-		$"8F5E 335E FEAC F9F7 F500 0000 00F5 0000"
-		$"00F9 AC33 325E 885E 5E5E 8EDD 8E88 6588"
-		$"5D5E 5D33 FCFF FAF6 F500 0000 0000 0000"
-		$"00FC FB33 575E 5E33 5D5E 3358 5E88 5E33"
-		$"5E33 335D 58AC AC2B 0000 0000 0000 0000"
-		$"00FB 882D 335D 5E57 585D 5E5D 3334 5D5E"
-		$"3358 3358 39AC FDF6 F500 0000 0000 0000"
-		$"00F8 EA57 5D5E 5758 395E 573A 585D 5833"
-		$"5E33 5D5E 5782 E0F9 F500 0000 0000 0000"
-		$"00F9 FE5D 5833 5E5D 825E 887C 5D89 8858"
-		$"575E 5E57 6458 FDAC F600 0000 0000 0000"
-		$"0081 FEAD FEFF FDE0 DFFF FDE0 FFEA FEFE"
-		$"88FD FEDF E0FE FDFE 2BF5 0000 0000 0000"
-		$"00FB FDAC 88AC FDFC E9FC FBFC ACFC ACAD"
-		$"FEAD FBFC FB88 FEFB F7F5 0000 0000 0000"
-		$"00F5 F756 FAF9 F9F9 F9FA 5656 5656 F95C"
-		$"F9FA F9F9 56F9 F956 2BF5 0000 0000 0000"
-		$"00F5 F6F7 2BF7 2B2B F72B 2BF6 F62B 2B2B"
-		$"F7F7 2B2B F62B 2B2B F500 0000 0000 0000"
-		$"0000 F500 F5F5 00F5 F500 F500 00F5 00F5"
-		$"F5F5 F500 F500 F500 F500 0000 0000 0000",
-		/* [3] */
 		'icl4',
 		$"CEC0 00CC 0000 000E EC00 0000 0CEA FC00"
 		$"DFFE CFAF F0EF FAEF EFFD CED0 CE4C EDC0"
@@ -5108,6 +5391,72 @@ resource 'icns' (-16455, "Item Icon ") {
 		$"00CD DDCD DDCD CDDD DDDD CDDC CC00 0000"
 		$"00CC CCCC CCC0 C0CC CCCC 0CCC 0000 0000"
 		$"0000 0000 0000 0C00 0000 C000 0000 0000",
+		/* [3] */
+		'icl8',
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFD FBFB FBFB FFFF B2FD FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"E0FF FFFF FFFF FFFF FFAD 3838 DFFF FFFF"
+		$"FFFE E0FD FFFF 575D FFFF FFFD 8282 AD82"
+		$"3357 88FF FFE0 FFFF AD2F 886A DFFF FFFF"
+		$"FFFF FE33 5D33 3333 5EFE 3357 3333 3333"
+		$"3333 3357 575E FFAD 2F34 E0FF FFFF FFFF"
+		$"FFFF FE33 3333 3333 3333 3333 3333 3357"
+		$"3333 5E5E 82FE AD2F 34FE FFFF FFFF FFFF"
+		$"FBE0 E082 3333 335E 8FDD 8F8E 8888 8F64"
+		$"3388 FEFD FFAD 2F34 FEFF FFFF FFFF FFFD"
+		$"FBFF FFAD 3333 578F 8888 8F8F 648F 645E"
+		$"89FD 2C5D AD2F 34FE FFFF FFFF FFFF FFFB"
+		$"00FF FF82 3333 5E5D 5D5D 5D57 648F 5788"
+		$"AD2C 33AD 2F34 FEE0 E0FF FFFF FFFF FB00"
+		$"00FF FF82 3333 5D5D 5D33 575D DD88 5EFD"
+		$"2C33 AD2F 34FE FE33 33FE FFFF FFFF FB00"
+		$"00FF FF82 3333 5E5D 5E57 5788 DD88 AC2C"
+		$"33AD 2F34 FEFF 5733 0932 FDFF FFFF FFFF"
+		$"00FF FF82 3333 5D33 5757 5D88 DEAD 2C33"
+		$"AD2F 34FE FFE0 3333 0808 2CAD FFFF FFFF"
+		$"00FF E0FD 3333 5D5D 5757 578F DEAD 5D89"
+		$"5334 E0FF 82AD 3308 0808 0832 FEFF FFFF"
+		$"00FF FFAC 5733 5D5E 5E88 88DD DD88 AD2F"
+		$"83FD FEFE AC2C 0808 0808 0833 E0FF FFFF"
+		$"00FF FF57 335E 335E DD8F DDDD DEAD 2F89"
+		$"5732 0808 0808 0808 0808 0833 E0FF FFFF"
+		$"FFFF AC33 3333 5788 5E5E 5E8F DEDF 58FE"
+		$"FEAC 3333 3333 0808 0808 0833 E0FF FFFF"
+		$"FFAD 3333 3333 5E57 3433 335E FFFF FEAD"
+		$"DFDF E0E0 FE5D 3333 3308 0833 E0FF FFFF"
+		$"FFAD 3333 3333 3333 3357 575E E0DF 8888"
+		$"B3DE 8888 ACE0 E0E0 FE57 3357 E0FF FFFF"
+		$"FFFF FE82 3333 345E 5E5D 3357 DEDE 885E"
+		$"DDDD 885E 82FD FFFF FFE0 E0E0 FFFF FFFF"
+		$"FFFF FEFF 8234 345E 3333 5D5D DDDD 5E57"
+		$"8EDD 5E5D 5E88 FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF AC33 3A33 3333 5D5E DD88 5757"
+		$"88DD 5E5E ADFE FFFF FFFF FFFF FFFF FFFF"
+		$"FBFF FFFF 5733 585E 888F 8F8F 8257 3358"
+		$"888F 5E88 FFE0 FFFF FFFF FFFF FFFF FFFF"
+		$"00FF FF82 3333 64DD DDDD DDDD 645E 3333"
+		$"8F5E 575E FFFF FFFF FFFD FFFF FFFF FFFF"
+		$"00FF FE33 335E 885E 5E5E 88DD DD88 648E"
+		$"5E5E 3333 ACFF FFFF FFFB 00FB FBFB FB00"
+		$"FBFF AC33 335E 5E33 5D5E 5E5E 5E64 5E33"
+		$"3333 3358 57E0 FFFF FF00 0000 0000 0000"
+		$"FDFF FC33 335E 5E57 5E5E 335E 335E 3A5E"
+		$"3334 3358 57AD FFFF FFFB 0000 0000 0000"
+		$"FDFF FF57 5D5E 5E57 5E5E 5E5E 5857 5E33"
+		$"5E33 575E 5788 FFFF FFFB 0000 0000 0000"
+		$"FBFF FF5D 575D 5E5E 5E82 825E 5E88 885E"
+		$"585E 5E5E 5E5E E0FF FFFF 0000 0000 0000"
+		$"FBFF FFAD FFE0 DFE0 E0FF E0FF FFFF FFFE"
+		$"ACFD E0E0 E0FE E0FF FFFF 0000 0000 0000"
+		$"FBFF E0FD FEE0 E0E0 E0FF FFFF DFFF E0E0"
+		$"E0E0 E0E0 DFAD E0FF FFFF FB00 0000 0000"
+		$"FDFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FB00 0000 0000"
+		$"FBFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF 0000 0000 0000"
+		$"FBFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFD 0000 0000 0000",
 		/* [4] */
 		'il32',
 		$"1302 0204 0004 0903 050A 0404 0100 0004"
@@ -5347,9 +5696,19 @@ resource 'icns' (-16455, "Item Icon ") {
 		'ics#',
 		$"0000 0FDC 1BF0 11B0 03B0 03B0 0FB0 0FB8"
 		$"1BB8 01F8 01F8 01D8 1F98 1F30 33E0 0000"
-		$"0000 0FCC 0090 01B0 01B0 01B0 07B0 0FB0"
-		$"01B0 01B8 0198 0198 0F10 1F10 01E0 0000",
+		$"0000 0FDC 1BF0 11B0 03B0 03B0 0FB0 0FB8"
+		$"1BB8 01F8 01F8 01D8 1F98 1F30 33E0 0000",
 		/* [7] */
+		'ics4',
+		$"0000 0000 0000 0000 0000 AAAA AA0A AA00"
+		$"000A A0AA AAAA 0000 000A 000A A0AA 0000"
+		$"0000 00AA A0AA 0000 0000 00AA A0AA 0000"
+		$"0000 AAAA A0AA 0000 0000 AAAA A0AA A000"
+		$"000A A0AA A0AA A000 0000 000A AAAA A000"
+		$"0000 000A AAAA A000 0000 000A AA0A A000"
+		$"000A AAAA A00A A000 000A AAAA 00AA 0000"
+		$"00AA 00AA AAA0 0000 0000 0000 0000 0000",
+		/* [8] */
 		'ics8',
 		$"0000 0000 0000 0000 0000 0000 0000 0000"
 		$"0000 0000 DDDD DDDD DDDD 00DD DDDD 0000"
@@ -5367,16 +5726,6 @@ resource 'icns' (-16455, "Item Icon ") {
 		$"0000 00DD DDDD DDDD 0000 DDDD 0000 0000"
 		$"0000 DDDD 0000 DDDD DDDD DD00 0000 0000"
 		$"0000 0000 0000 0000 0000 0000 0000 0000",
-		/* [8] */
-		'ics4',
-		$"0000 0000 0000 0000 0000 AAAA AA0A AA00"
-		$"000A A0AA AAAA 0000 000A 000A A0AA 0000"
-		$"0000 00AA A0AA 0000 0000 00AA A0AA 0000"
-		$"0000 AAAA A0AA 0000 0000 AAAA A0AA A000"
-		$"000A A0AA A0AA A000 0000 000A AAAA A000"
-		$"0000 000A AAAA A000 0000 000A AA0A A000"
-		$"000A AAAA A00A A000 000A AAAA 00AA 0000"
-		$"00AA 00AA AAA0 0000 0000 0000 0000 0000",
 		/* [9] */
 		'is32',
 		$"91FF 835D 00FF 805D 82FF 025D 5DFF 835D"
@@ -5420,5 +5769,117 @@ resource 'icns' (-16455, "Item Icon ") {
 		$"0000 3971 0000 39AA E38E 8E00 0000 0000"
 		$"0000 0000 0000 0000 0000 0000 0000 0000"
 	}
+};
+
+data 'hmnu' (128, "Apple", purgeable) {
+	$"0002 0000 0000 0000 0000 0003 0004 0100"            /* ................ */
+	$"0004 0100 0014 0003 0097 0001 0097 0002"            /* .........ó...ó.. */
+	$"0000 0000 0000 0000 0014 0003 0097 0003"            /* .............ó.. */
+	$"0097 0004 0000 0000 0000 0000"                      /* .ó.......... */
+};
+
+data 'hmnu' (130, "Edit", purgeable) {
+	$"0002 0000 0000 0000 0000 000C 0004 0100"            /* ................ */
+	$"0014 0003 0099 0001 0099 0002 0000 0000"            /* .....ô...ô...... */
+	$"0099 0002 0014 0003 0099 0003 0099 0004"            /* .ô.......ô...ô.. */
+	$"0000 0000 0000 0000 0014 0003 0099 0005"            /* .............ô.. */
+	$"0099 0006 0000 0000 0000 0000 0004 0100"            /* .ô.............. */
+	$"0014 0003 0099 0007 0099 0008 0000 0000"            /* .....ô...ô...... */
+	$"0000 0000 0014 0003 0099 0009 0087 000A"            /* .........ô...á.. */
+	$"0000 0000 0000 0000 0014 0003 0099 000B"            /* .............ô.. */
+	$"0099 000C 0000 0000 0000 0000 0014 0003"            /* .ô.............. */
+	$"0099 000D 0099 000E 0000 0000 0000 0000"            /* .ô...ô.......... */
+	$"0014 0003 0099 000F 0099 0010 0000 0000"            /* .....ô...ô...... */
+	$"0000 0000 0014 0003 0099 0011 0099 0012"            /* .........ô...ô.. */
+	$"0000 0000 0000 0000 0004 0100 0014 0003"            /* ................ */
+	$"0099 0013 0099 0014 0000 0000 0000 0000"            /* .ô...ô.......... */
+};
+
+data 'hmnu' (131, "Select", purgeable) {
+	$"0002 0000 0000 0000 0000 0005 0004 0100"            /* ................ */
+	$"0004 0100 0014 0003 009A 0001 009A 0002"            /* .........ö...ö.. */
+	$"0000 0000 0000 0000 0014 0003 009A 0003"            /* .............ö.. */
+	$"009A 0004 0000 0000 0000 0000 0014 0003"            /* .ö.............. */
+	$"009A 0005 009A 0006 0000 0000 0000 0000"            /* .ö...ö.......... */
+	$"0014 0003 009A 0007 009A 0008 0000 0000"            /* .....ö...ö...... */
+	$"0000 0000"                                          /* .... */
+};
+
+data 'hmnu' (132, "Transform", purgeable) {
+	$"0002 0000 0000 0000 0000 0008 0004 0100"            /* ................ */
+	$"0004 0100 0014 0003 009B 0001 0000 0000"            /* .........õ...... */
+	$"0000 0000 0000 0000 0014 0003 009B 0002"            /* .............õ.. */
+	$"0000 0000 0000 0000 0000 0000 0004 0100"            /* ................ */
+	$"0014 0003 009B 0003 0000 0000 0000 0000"            /* .....õ.......... */
+	$"0000 0000 0014 0003 009B 0004 0000 0000"            /* .........õ...... */
+	$"0000 0000 0000 0000 0004 0100 0014 0003"            /* ................ */
+	$"009B 0005 0000 0000 0000 0000 0000 0000"            /* .õ.............. */
+};
+
+data 'hmnu' (133, "Paste", purgeable) {
+	$"0002 0000 0000 0000 0000 0004 0004 0100"            /* ................ */
+	$"0004 0100 0014 0003 009C 0001 0000 0000"            /* .........ú...... */
+	$"0000 0000 0000 0000 0014 0003 009C 0002"            /* .............ú.. */
+	$"0000 0000 0000 0000 0000 0000 0014 0003"            /* ................ */
+	$"009C 0003 009C 0004 0000 0000 0000 0000"            /* .ú...ú.......... */
+};
+
+data 'hmnu' (134, "View", purgeable) {
+	$"0002 0000 0000 0000 0000 0003 0004 0100"            /* ................ */
+	$"0014 0003 009D 0001 009D 0002 0000 0000"            /* .....ù...ù...... */
+	$"009D 0002 0014 0003 009D 0003 009D 0004"            /* .ù.......ù...ù.. */
+	$"0000 0000 0000 0000 0014 0003 009D 0005"            /* .............ù.. */
+	$"009D 0006 0000 0000 0000 0000"                      /* .ù.......... */
+};
+
+data 'hmnu' (129, "File", purgeable) {
+	$"0002 0000 0000 0000 0000 0009 0004 0100"            /* ................ */
+	$"0014 0003 0098 0001 0098 0002 0000 0000"            /* .....ò...ò...... */
+	$"0098 0002 0014 0003 0098 0003 0098 0004"            /* .ò.......ò...ò.. */
+	$"0000 0000 0000 0000 0014 0003 0098 0005"            /* .............ò.. */
+	$"0098 0006 0000 0000 0000 0000 0014 0003"            /* .ò.............. */
+	$"0098 0007 0098 0008 0000 0000 0000 0000"            /* .ò...ò.......... */
+	$"0004 0100 0014 0003 0098 0009 0098 000A"            /* .........ò...ò.. */
+	$"0000 0000 0000 0000 0014 0003 0098 000B"            /* .............ò.. */
+	$"0098 000C 0000 0000 0000 0000 0004 0100"            /* .ò.............. */
+	$"0014 0003 0098 000D 0098 000E 0000 0000"            /* .....ò...ò...... */
+	$"0000 0000"                                          /* .... */
+};
+
+data 'hfdr' (-5696, purgeable) {
+	$"0002 0000 0000 0000 0000 0001 0008 0003"            /* ................ */
+	$"0096 0001"                                          /* .ñ.. */
+};
+
+data 'hwin' (128, "About", purgeable) {
+	$"0002 0000 0000 0001 0080 6872 6374 0005"            /* .........Ährct.. */
+	$"0541 626F 7574"                                     /* .About */
+};
+
+data 'hwin' (129, "Register", purgeable) {
+	$"0002 0000 0000 0001 0081 6872 6374 0008"            /* .........Åhrct.. */
+	$"0852 6567 6973 7465 7200"                           /* .Register. */
+};
+
+data 'hrct' (128, "About", purgeable) {
+	$"0002 0000 0000 0000 0000 0005 0014 0003"            /* ................ */
+	$"0000 0000 00A9 00EA 00BC 0124 009E 0001"            /* .....©.Í.º.$.û.. */
+	$"0014 0003 0000 0000 000A 000A 0062 0126"            /* .............b.& */
+	$"009E 0002 0014 0003 0000 0000 0090 00AC"            /* .û...........ê.¨ */
+	$"009C 0127 009E 0003 0014 0003 0000 0000"            /* .ú.'.û.......... */
+	$"0081 00CF 008D 0127 009E 0004 0014 0003"            /* .Å.œ.ç.'.û...... */
+	$"0000 0000 0066 0009 009C 009D 009E 0005"            /* .....f...ú.ù.û.. */
+};
+
+data 'hrct' (129, "Register", purgeable) {
+	$"0002 0000 0000 0000 0000 0006 0014 0003"            /* ................ */
+	$"0000 0000 0066 010E 007A 0152 009F 0001"            /* .....f...z.R.ü.. */
+	$"0014 0003 0000 0000 0066 00BE 0079 00FE"            /* .........f.æ.y.˛ */
+	$"009F 0002 0014 0003 0000 0000 0066 0007"            /* .ü...........f.. */
+	$"007A 009E 009F 0003 0014 0003 0000 0000"            /* .z.û.ü.......... */
+	$"000C 0088 001C 0150 009F 0004 0014 0003"            /* ...à...P.ü...... */
+	$"0000 0000 0028 0088 0038 0150 009F 0005"            /* .....(.à.8.P.ü.. */
+	$"0014 0003 0000 0000 0044 0088 0054 0150"            /* .........D.à.T.P */
+	$"009F 0006"                                          /* .ü.. */
 };
 

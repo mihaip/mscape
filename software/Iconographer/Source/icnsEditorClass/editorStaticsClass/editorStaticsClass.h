@@ -2,11 +2,6 @@
 
 #include "commonFunctions.h"
 
-enum preferencesFlags
-{
-	exitingWasSuccessful = 1
-};
-
 const static int kEmergencyMemorySize = 10240;
 const static int kMaxIconSize = 48; // huge (the biggest size) is 48 x 48
 
@@ -43,7 +38,10 @@ enum staticsResources
 enum preferencesDialogItems
 {
 	iDefaultZoomLevelField = 4,
-	iDefaultZoomLevelArrows = 5
+	iDefaultZoomLevelArrows = 5,
+	iDrawGrid = 6,
+	iCheckSync = 7,
+	iDither = 8
 };
 
 typedef struct preferencesStruct
@@ -74,6 +72,13 @@ class editorPreferencesClass
 		
 };
 
+enum preferencesFlags
+{
+	prefsDrawGrid = 1,
+	prefsDontCheckSync = 2,
+	prefsDither = 4
+};
+
 typedef struct textSettings
 {
 	Str255 text;
@@ -86,6 +91,7 @@ class editorStaticsClass
 {
 	private:
 		Ptr				tempMemoryChunk;
+		short			currentCursor;
 	public:
 						editorStaticsClass(void);
 						~editorStaticsClass(void);
@@ -116,10 +122,13 @@ class editorStaticsClass
 		
 		RgnHandle		dragHiliteRgn;
 		
+		long			currentBalloon;
+		
 		editorPreferencesClass preferences;
 		
 		void ReclaimEmergencyMemory(void);
 		void AllocateEmergencyMemory(void);
 		
 		short DisplayAlert(Str255 message, Str255 button1, Str255 button2, Str255 button3);
+		void ChangeCursor(short ID);
 };

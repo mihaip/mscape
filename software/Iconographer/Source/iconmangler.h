@@ -160,7 +160,8 @@ enum transformMenu
 enum pasteMenu
 {
 	iPasteNormally = 1,
-	iPasteAsIconAndMask = 2
+	iPasteAsIconAndMask = 2,
+	iPasteIntoSelection = 3
 };
 
 enum viewMenu

@@ -11,6 +11,16 @@
 #include "icnsClass.h"
 #include "commonFunctions.h"
 
+typedef struct IconBrowserData
+{
+	UpdateFunctionPtr UpdateFunction;
+	ControlHandle iconPreviewControl;
+	FSSpec fileSpec;
+	long ID;
+} IconBrowserData;
+
+typedef IconBrowserData* IconBrowserDataPtr;
+
 enum browserResources
 {
 	rIconBrowser = 300,
@@ -42,3 +52,4 @@ void		InsertIntoIconList(ListHandle theList, long ID, Str255 name);
 OSErr		BuildIconList(ListHandle theList, FSSpec srcSpec);
 int			FindIDInList(ListHandle theList, long ID, bool nearest);
 void 		DisplayIconPreview(ControlHandle displayControl, FSSpec srcSpec, long ID);
+pascal bool	IconBrowserEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *itemHit);

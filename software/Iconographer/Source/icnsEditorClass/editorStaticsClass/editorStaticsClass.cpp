@@ -76,6 +76,8 @@ editorStaticsClass::editorStaticsClass(void)
 	GetFNum("\pGeneva", &lastTextSettings.fontNo);
 	lastTextSettings.size = 12;
 	lastTextSettings.style = normal;
+	
+	currentBalloon = 0;
 }
 
 // __________________________________________________________________________________________
@@ -153,6 +155,8 @@ short editorStaticsClass::DisplayAlert(Str255 message, Str255 button1, Str255 bu
 	param.cancelButton  = 0;
 	param.position 		= 0;
 	
+	SysBeep(6);
+	
 	err = StandardAlert(kAlertStopAlert, message, NULL, &param, &itemHit);
 	if (err != noErr)
 		DisplayValue(err);
@@ -160,6 +164,28 @@ short editorStaticsClass::DisplayAlert(Str255 message, Str255 button1, Str255 bu
 	DisposeRoutineDescriptor(eventFilterUPP);
 	
 	return itemHit;
+}
+
+// __________________________________________________________________________________________
+// Name			: editorStaticsClass::ChangeCursor
+// Input		: ID: resource ID of the cursor which should be set
+// Output		: None
+// Description	: Sets the cursor to the required one, if necessary (first it compares the ID
+//				  with the ID of the current cursor)
+
+void editorStaticsClass::ChangeCursor(short ID)
+{
+	if (currentCursor != ID) // if the cursor isn't already set to the new value
+	{
+		switch (ID)
+		{
+			case rArrow: SetCursor(&qd.arrow); break;
+			case rIBeam: SetCursor(*GetCursor(iBeamCursor)); break;
+			default: SetCursor(ID); break;
+			
+		}
+		currentCursor = ID; // and we change the current cursor
+	}
 }
 
 #pragma mark -
@@ -279,7 +305,11 @@ void editorPreferencesClass::Edit()
 {
 	DialogPtr			preferencesDialog;
 	ModalFilterUPP		eventFilterUPP;
-	ControlHandle		defaultZoomLevelField, defaultZoomLevelArrows;
+	ControlHandle		defaultZoomLevelField,
+						defaultZoomLevelArrows,
+						drawGrid,
+						checkSync,
+						dither;
 	Str255				tempString;
 	short				itemHit;
 	bool				dialogDone;
@@ -309,6 +339,15 @@ void editorPreferencesClass::Edit()
 	(**defaultZoomLevelArrows).contrlMax = kMaxMagnification;
 	(**defaultZoomLevelArrows).contrlValue = (**data).defaultZoomLevel;
 	
+	GetDialogItemAsControl(preferencesDialog, iDrawGrid, &drawGrid);
+	SetControlValue(drawGrid, (**data).flags & prefsDrawGrid);
+	
+	GetDialogItemAsControl(preferencesDialog, iCheckSync, &checkSync);
+	SetControlValue(checkSync, !((**data).flags & prefsDontCheckSync));
+	
+	GetDialogItemAsControl(preferencesDialog, iDither, &dither);
+	SetControlValue(dither, (**data).flags & prefsDither);
+	
 	ClearKeyboardFocus(preferencesDialog);
 	
 	ShowWindow(preferencesDialog);
@@ -325,11 +364,17 @@ void editorPreferencesClass::Edit()
 				GetControlText(defaultZoomLevelField, tempString);
 				tempString[0] -= 3;
 				StringToNum(tempString, &(**data).defaultZoomLevel);
+				(**data).flags = (GetControlValue(drawGrid) << 0) |
+								 ((GetControlValue(checkSync) ^ 1) << 1) |
+								 (GetControlValue(dither) << 2);
 				dialogDone = true;
 				break;
 			case iCancel:
 				dialogDone = true;
 				break;
+			case iDrawGrid: ToggleCheckbox(drawGrid); break;
+			case iCheckSync: ToggleCheckbox(checkSync); break;
+			case iDither: ToggleCheckbox(dither); break;
 		}
 	}
 	

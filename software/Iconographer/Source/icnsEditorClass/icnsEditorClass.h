@@ -44,6 +44,7 @@ enum resources
 	// strings
 	rBasicStrings = 200,
 	rLabelStrings = 201,
+	rEditorBalloonHelp = 203,
 	
 	// dialogs
 	rIconInfo = 1001
@@ -66,7 +67,12 @@ enum basicStrings
 	sUntitledName = 1,
 	eIDAlreadyExists = 2,
 	eOverwriteButton = 3,
-	eInfoCancelButton = 4
+	eInfoCancelButton = 4,
+	eLargeMaskSync = 5,
+	eSmallMaskSync = 6,
+	eHugeMaskSync = 7,
+	eYesButton = 8,
+	eNoButton = 9
 };
 
 enum labelStrings
@@ -100,9 +106,13 @@ enum toolIDs
 	rMagicWandSubtractive = 205,
 	rLine = 136,
 	rRectangle = 137,
+	rRectangleFilled = 150,
 	rOval = 138,
+	rOvalFilled = 151,
 	rPolygon = 139,
+	rPolygonFilled = 152,
 	rGradient = 140,
+	rGradientRadial = 153,
 	rText = 141
 };
 
@@ -152,7 +162,8 @@ enum selectionTypes
 enum pasteTypes
 {
 	normally = 1,
-	asIconAndMask = 2
+	asIconAndMask = 2,
+	intoSelection = 3
 };
 
 enum flipTypes
@@ -165,6 +176,12 @@ enum positionFlags
 {
 	magnified = 1,
 	noLimit = 2
+};
+
+enum insertionFlags
+{
+	insertCentered = 1,
+	insertScaled = 2
 };
 
 enum tools
@@ -203,29 +220,14 @@ enum additionalStatusTypes
 	skipState = 4096
 };
 
-enum displayFlags
+enum modes
 {
-	current	= 1 << 0,
-	merged	= 1 << 1,
-	il32	= 1 << 2,
-	is32	= 1 << 3,
-	l8mk	= 1 << 4,
-	s8mk	= 1 << 5,
-	icl8	= 1 << 6,
-	ics8	= 1 << 7,
-	icl4	= 1 << 8,
-	ics4	= 1 << 9,
-	icni	= 1 << 10,
-	icsi	= 1 << 11,
-	icnm	= 1 << 12,
-	icsm	= 1 << 13,
-	ih32	= 1 << 14,
-	h8mk	= 1 << 15,
-	ichi	= 1 << 16,
-	ichm	= 1 << 17,
-	ich8	= 1 << 18,
-	ich4	= 1 << 19,
-	selection = 1 << 20
+	frame = 0,
+	filled = 1,
+	previewNormal = 2,
+	previewSelected = 3,
+	linear = 4,
+	radial = 5
 };
 
 // type definitions
@@ -246,6 +248,11 @@ typedef struct toolbarControls
 	ControlHandle	polygon;
 	ControlHandle	gradient;
 	ControlHandle	text;
+	
+	long			lastTool;
+	long			lastToolClickTicks;
+	long			toolMode;
+	long			gradientMode;
 } toolbarsControls;
 
 typedef struct display
@@ -260,7 +267,7 @@ typedef struct display
 	Rect			maskHugeRect, maskLargeRect, maskSmallRect;
 	ControlHandle	preview;
 	ControlHandle	previewLabel;
-	Rect			hugePreviewRect, largePreviewRect, smallPreviewRect;
+	long			previewMode;
 } display;
 
 typedef struct colorSwatch
@@ -307,20 +314,29 @@ class icnsEditorClass : public icnsClass
 		OSStatus		CreateControls(void);
 		void			InstallDraggingHandlers(void);
 		void			UpdateToolbar(void);
-		void			ChangeCursor(int ID);
 		void			RepositionControls(void);
 		void			InvalidateDrawingArea(void);
 		
+		void			PostLoad();
+		
 		void			HandleDisplayClick(EventRecord* eventPtr);
 		bool 			HandleToolClick(ControlHandle clickedControl);
+		void			HandleToolDoubleClick(long tool);
 		void			HandleSwatchClick(int controlPart, Point where);
 		void			GetColor(RGBColor* color, RgnHandle swatchRgn, Point where, Str255 messageString);
 		void			EditIconInfo(void);
+		void			RefreshPopups();
+		void			GetCurrentIconMask(PixMapHandle* iconPix, GWorldPtr* iconGW, long* iconName, 
+										   PixMapHandle* maskPix, GWorldPtr* maskGW, long* maskName);
+		void			ToggleIconMask(void);
+		void			CheckMaskSync(PixMapHandle basePix, PixMapHandle maskPix, int errorString);
+
 		
 		void 			HandleDrawing(void);
 		void			HandleMarquee(void);
 		bool			HandleMove(void);
 		void			HandleLasso(void);
+		RgnHandle		TightenLasso(RgnHandle lassoSelectionRgn);
 		void			HandleMagicWand(void);
 		void			HandleFilling(void);
 		void 			HandlePen(void);
@@ -335,14 +351,15 @@ class icnsEditorClass : public icnsClass
 		
 		inline void 	GetDrawingMousePosition(int *x, int *y, int flags);
 		void			Display(Rect targetRect, long flags);
-		void			DrawSelection(GWorldPtr targetGW, Rect targetRect, int source);
+		void			DrawSelection(GWorldPtr targetGW, Rect targetRect, int source, bool drawGrid);
+		void			DrawGrid(GWorldPtr targetGW, Rect targetRect);
 		void			FloatSelection(void);
 		void			DefloatSelection(void);
 		void			MagnifySelectionRgn(void);
 		void			ResizeWindow();
 		void			CopyDepth(int oldDepth, int newDepth, int iconOrMask);
 		void 			GetDisplayPix(Point theMouse, GWorldPtr *clickedGW, PixMapHandle *clickedPix, long *clickedName, Rect *clickedRect);
-		void			InsertFromPicture(PicHandle srcPic, GWorldPtr targetGW, bool scale);
+		void			InsertFromPicture(PicHandle srcPic, GWorldPtr targetGW, int options);
 		void			PictureToMask(PicHandle srcPic, GWorldPtr maskGW);
 		void			GetSelectionColors(RGBColor** colors, int* noOfColors);
 
@@ -353,7 +370,6 @@ class icnsEditorClass : public icnsClass
 		controlList		controls;
 		int				oldTool;
 		int				currentTool;
-		int				currentCursor;
 		
 		Rect			dragSrcRect;
 		
@@ -464,6 +480,8 @@ extern pascal ControlPartCode	EditWellHitTest (ControlHandle control, Point wher
 
 extern pascal void				PreviewDraw(ControlHandle theControl,SInt16 thePart);
 extern pascal ControlPartCode	PreviewHitTest(ControlHandle control, Point where);
+extern pascal ControlPartCode	PreviewTracking(ControlHandle theControl, Point startPt, ControlActionUPP actionProc);
+
 
 extern void						DrawDisplayItem(icnsEditorPtr parentEditor, Rect targetRect, long targetName);
 extern void						MakeDisplayRects(Rect controlRect, Rect *hugeRect,Rect *largeRect, Rect *smallRect);
@@ -482,3 +500,5 @@ extern icnsEditorPtr			GetFrontEditor(void);
 extern icnsEditorPtr			GetEditor(WindowPtr window);
 extern pascal bool StandardEditorDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit);
 extern pascal bool IconInfoDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit);
+extern void SetControlBalloonHelp(ControlHandle theControl, long stringNo);
+extern long GetControlBalloonHelp(ControlHandle theControl);

@@ -13,11 +13,16 @@ class drawingStateClass
 {
 	private:
 		// all of these are the private data used for storing/restoring
-		GWorldPtr		drawingGW, selectionGW, drawingSrcGW;
-		PixMapHandle	drawingPix, drawingSrcPix, selectionPix;
+		GWorldPtr		drawingSrcGW;
+		PixMapHandle	drawingSrcPix;
 		RgnHandle		selectionRgn;
+		Ptr				drawingData, selectionData;
+		long			drawingDataSize, selectionDataSize;
+		Rect			selectionBounds;
+		short			selectionDepth;
+		CTabHandle		selectionColorTable;
 		long			status;
-		long			sizes;
+		long			members;
 		long			drawingPixName;
 	public:
 		// linked list items

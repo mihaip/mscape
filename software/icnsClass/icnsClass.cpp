@@ -62,7 +62,7 @@ icnsClass::icnsClass()
 	DisposeCTable(grayscaleTable);
 	
 	// setting some default data
-	sizes = 0;
+	members = 0;
 	
 	flags = 0; // these are the resource flags, current set to none
 	ID = 128; // the default resource ID
@@ -128,219 +128,62 @@ icnsClass::~icnsClass()
 void icnsClass::LoadFromIconFamily(IconFamilyHandle icnsHandle)
 {
 	IconFamilyElement*	elementPtr; // pointer to the element within the icns resource
-	SAVEGWORLD; // saves the current port for restoring later
-	SAVECOLORS; // ditto for colors
+	Handle iconData;
+	int currentOffset;
 	
-	// we're clearing out all the previous contents (if any) of the gworlds
-	SetGWorld(ih32GW, NULL); EraseRect(&hugeIconRect); // 32 bit icon
-	SetGWorld(il32GW, NULL); EraseRect(&largeIconRect);
-	SetGWorld(is32GW, NULL); EraseRect(&smallIconRect);
-	SetGWorld(h8mkGW, NULL); EraseRect(&hugeIconRect); // 8 bit mask
-	SetGWorld(l8mkGW, NULL); EraseRect(&largeIconRect);
-	SetGWorld(s8mkGW, NULL); EraseRect(&smallIconRect);
-	SetGWorld(ich8GW, NULL); EraseRect(&hugeIconRect); // 8 bit icon
-	SetGWorld(icl8GW, NULL); EraseRect(&largeIconRect);
-	SetGWorld(ics8GW, NULL); EraseRect(&smallIconRect);
-	SetGWorld(ich4GW, NULL); EraseRect(&hugeIconRect); // 4 bit icon
-	SetGWorld(icl4GW, NULL); EraseRect(&largeIconRect);
-	SetGWorld(ics4GW, NULL); EraseRect(&smallIconRect);
-	SetGWorld(ichmGW, NULL); EraseRect(&hugeIconRect); // 1 bit mask
-	SetGWorld(icnmGW, NULL); EraseRect(&largeIconRect);
-	SetGWorld(icsmGW, NULL); EraseRect(&smallIconRect);
-	SetGWorld(ichiGW, NULL); EraseRect(&largeIconRect); // 1 bit icon
-	SetGWorld(icniGW, NULL); EraseRect(&largeIconRect);
-	SetGWorld(icsiGW, NULL); EraseRect(&smallIconRect);
-	
-	SetGWorld(il32GW, NULL);
+	members = 0;
 	
 	if (icnsHandle != NULL) // and process if it exists
 	{
 		HLock((Handle)icnsHandle); // locking the handle so that we can access it directly
 		
-		if (GeticnsMember('ich8', icnsHandle) == NULL &&
-			GeticnsMember('ich4', icnsHandle) == NULL && 
-			GeticnsMember('ich#', icnsHandle) == NULL && 
-			GeticnsMember('ih32', icnsHandle) == NULL &&
-			GeticnsMember('h8mk', icnsHandle) == NULL)
-			sizes &= ~huge; // if no huge sizes are present, then the huge bit is turned off
-		else
-			sizes |= huge;
+		currentOffset = sizeof(IconFamilyResource) - sizeof(IconFamilyElement);
 		
-		if (GeticnsMember('icl8', icnsHandle) == NULL &&
-			GeticnsMember('icl4', icnsHandle) == NULL && 
-			GeticnsMember('ICN#', icnsHandle) == NULL && 
-			GeticnsMember('il32', icnsHandle) == NULL &&
-			GeticnsMember('l8mk', icnsHandle) == NULL)
-			sizes &= ~large; // ditto for large
-		else
-			sizes |= large;
-			
-		if (GeticnsMember('ics8', icnsHandle) == NULL &&
-			GeticnsMember('ics4', icnsHandle) == NULL && 
-			GeticnsMember('ics#', icnsHandle) == NULL && 
-			GeticnsMember('is32', icnsHandle) == NULL &&
-			GeticnsMember('s8mk', icnsHandle) == NULL)
-			sizes &= ~small; // ditto for small
-		else
-			sizes |= small;
-		
-		// getting the icns pixmap data for the huge size
-		if (sizes & huge)
+		while (currentOffset != (**icnsHandle).resourceSize)
 		{
-			// what we're doing here is copying the pixel data from the resource directly
-			// into the pix map (and decompressing it if necessary)
+			elementPtr = (IconFamilyElement*)(((char*)(*icnsHandle)) + currentOffset);
 			
-			elementPtr = GeticnsMember('ich8', icnsHandle);
-			if (elementPtr != NULL)
-				BlockMove(elementPtr->elementData,
-						 (*ich8Pix)->baseAddr, ich8Size);
-						 // for some reason the huge 8 bit icon includes a mask too, but we
-						 // don't want to copy that
-				
-			elementPtr = GeticnsMember('ich4', icnsHandle);
-			if (elementPtr != NULL)
-				BlockMove(elementPtr->elementData,
-						 (*ich4Pix)->baseAddr, ich4Size);
-						 // same for the huge 4 bit icon
-			
-			elementPtr = GeticnsMember('ich#', icnsHandle);
-			if (elementPtr != NULL)
+			switch (elementPtr->elementType)
 			{
-				BlockMove(elementPtr->elementData, (*ichiPix)->baseAddr, ichSize/2);
-				BlockMove(&elementPtr->elementData[ichSize/2],
-						  (*ichmPix)->baseAddr, ichSize/2);
-				// the 1 bit memeber also includes both the icon and the mask, but this is
-				// consistent with the rest of the sizes, so we get the mask from here
+				case 'il32':
+					if ((elementPtr->elementSize - 8) != il32Size)
+						DecompressToPixMap(elementPtr->elementData, il32Pix);
+					else
+						BlockMoveData(elementPtr->elementData, (**il32Pix).baseAddr, il32Size);
+					
+					members |= il32;
+					break;
+				case 'is32':
+					if ((elementPtr->elementSize - 8) != is32Size)
+						DecompressToPixMap(elementPtr->elementData, is32Pix);
+					else
+						BlockMoveData(elementPtr->elementData, (**is32Pix).baseAddr, is32Size);
+					
+					members |= is32;
+					break;
+				case 'ih32':
+					if ((elementPtr->elementSize - 8) != ih32Size)
+						DecompressToPixMap(elementPtr->elementData, ih32Pix);
+					else
+						BlockMoveData(elementPtr->elementData, (**ih32Pix).baseAddr, ih32Size);
+					
+					members |= ih32;
+					break;
+				default:
+					iconData = NewHandleClear(elementPtr->elementSize - 8);
+					BlockMove(elementPtr->elementData, *iconData, elementPtr->elementSize - 8);
+					
+					IconExtractor(elementPtr->elementType, &iconData, this);
+					
+					DisposeHandle(iconData);
+					break;
 			}
 			
-			elementPtr = GeticnsMember('ih32', icnsHandle);
-			if (elementPtr != NULL)
-			{
-				if (elementPtr->elementSize != ih32Size)
-				// if the size is not what we expected then the resource must be compressed
-					DecompressToPixMap(elementPtr->elementData, ih32Pix);
-				else
-					BlockMove(elementPtr->elementData, (*ih32Pix)->baseAddr, ih32Size);
-			}
-			else // if there is no 32 bit icon, then we must copy into its place the 8 bit one
-				CopyBits((BitMap*)*ich8Pix,
-						 (BitMap*)*ih32Pix,
-						 &hugeIconRect,
-						 &hugeIconRect,
-						 srcCopy,
-						 NULL);
-			
-			elementPtr = GeticnsMember('h8mk', icnsHandle);
-			if (elementPtr != NULL)
-				BlockMove(elementPtr->elementData, (*h8mkPix)->baseAddr, h8mkSize);
-			else // same for the 8 bit mask
-				CopyBits((BitMap*)*ichmPix,
-					     (BitMap*)*h8mkPix,
-					     &hugeIconRect,
-					     &hugeIconRect,
-					     srcCopy,
-					     NULL);
+			currentOffset += elementPtr->elementSize;
 		}
-		
-		// large stuff, very similar to above, except the 8 and 4 bit icons do not include
-		// a 1 bit mask of their own (as was expected)
-		if (sizes & large)
-		{	
-			elementPtr = GeticnsMember('icl8', icnsHandle);
-			if (elementPtr != NULL)
-				BlockMove(elementPtr->elementData, (*icl8Pix)->baseAddr, icl8Size);
-				
-			elementPtr = GeticnsMember('icl4', icnsHandle);
-			if (elementPtr != NULL)
-				BlockMove(elementPtr->elementData, (*icl4Pix)->baseAddr, icl4Size);
 			
-			elementPtr = GeticnsMember('ICN#', icnsHandle);
-			if (elementPtr != NULL)
-			{
-				BlockMove(elementPtr->elementData, (*icniPix)->baseAddr, icnSize/2);
-				BlockMove(&elementPtr->elementData[icnSize/2],
-						  (*icnmPix)->baseAddr, icnSize/2);
-			}
-			
-			elementPtr = GeticnsMember('il32', icnsHandle);
-			if (elementPtr != NULL)
-			{
-				if (elementPtr->elementSize < il32Size)
-					DecompressToPixMap(elementPtr->elementData, il32Pix);
-				else
-					BlockMove(elementPtr->elementData, (*il32Pix)->baseAddr, il32Size);
-			}
-			else
-				CopyBits((BitMap*)*icl8Pix,
-						 (BitMap*)*il32Pix,
-						 &largeIconRect,
-						 &largeIconRect,
-						 srcCopy,
-						 NULL);
-			
-			elementPtr = GeticnsMember('l8mk', icnsHandle);
-			if (elementPtr != NULL)
-				BlockMove(elementPtr->elementData, (*l8mkPix)->baseAddr, l8mkSize);
-			else
-				CopyBits((BitMap*)*icnmPix,
-						 (BitMap*)*l8mkPix,
-						 &largeIconRect,
-						 &largeIconRect,
-						 srcCopy,
-						 NULL);
-		}
-		
-		// small stuff, very similar to large
-		if (sizes & small)
-		{
-			elementPtr = GeticnsMember('ics8', icnsHandle);
-			if (elementPtr != NULL)
-				BlockMove(elementPtr->elementData, (*ics8Pix)->baseAddr, ics8Size);
-				
-			elementPtr = GeticnsMember('ics4', icnsHandle);
-			if (elementPtr != NULL)
-				BlockMove(elementPtr->elementData, (*ics4Pix)->baseAddr, ics4Size);
-			
-			elementPtr = GeticnsMember('ics#', icnsHandle);
-			if (elementPtr != NULL)
-			{
-				BlockMove(&elementPtr->elementData, (*icsiPix)->baseAddr, icsSize/2);
-				BlockMove(&elementPtr->elementData[icsSize/2],
-						  (*icsmPix)->baseAddr, icsSize/2);
-			}
-				
-			elementPtr = GeticnsMember('is32', icnsHandle);
-			if (elementPtr != NULL)
-			{
-				if (elementPtr->elementSize < is32Size)
-					DecompressToPixMap(elementPtr->elementData, is32Pix);
-				else
-					BlockMove(elementPtr->elementData, (*is32Pix)->baseAddr, is32Size);
-			}
-			else
-				CopyBits((BitMap*)*ics8Pix,
-						 (BitMap*)*is32Pix,
-						 &smallIconRect,
-						 &smallIconRect,
-						 srcCopy,
-						 NULL);
-			
-			elementPtr = GeticnsMember('s8mk', icnsHandle);
-			if (elementPtr != NULL)
-				BlockMove(elementPtr->elementData, (*s8mkPix)->baseAddr, s8mkSize);
-			else
-				CopyBits((BitMap*)*icsmPix,
-						 (BitMap*)*s8mkPix,
-						 &smallIconRect,
-						 &smallIconRect,
-						 srcCopy,
-						 NULL);
-		}
 		HUnlock((Handle)icnsHandle); // we are done with the handle so we can unlock it...
 	}
-	
-	RESTOREGWORLD; // we can now restore the state
-	RESTORECOLORS;
 }
 
 void icnsClass::LoadFromIconSuite(IconSuiteRef theIconSuite)
@@ -349,7 +192,7 @@ void icnsClass::LoadFromIconSuite(IconSuiteRef theIconSuite)
 	
 	extractionAction = NewIconActionProc(IconExtractor);
 	
-	sizes = 0;
+	members = 0;
 	
 	ForEachIconDo(theIconSuite, kSelectorAllAvailableData, extractionAction, this);
 }
@@ -363,92 +206,90 @@ pascal OSErr IconExtractor(ResType iconType, Handle *theIcon, void *dataPtr)
 		return noErr;
 	
 	SAVECOLORS;
+	SAVEGWORLD;
 	
 	targetIcon = (icnsClass*)dataPtr;
 	
 	iconData = **theIcon;
 	
+	SetGWorld(targetIcon->il32GW, NULL);
+	
 	switch (iconType)
 	{
 		// large size
 		case 'ICN#':
-			targetIcon->sizes |= large;
 			BlockMove(iconData, (**targetIcon->icniPix).baseAddr, icnSize/2); 
-			CopyPixMap(targetIcon->icniPix, targetIcon->icl4Pix, &largeIconRect, &largeIconRect, srcCopy, NULL);
-			CopyPixMap(targetIcon->icniPix, targetIcon->icl8Pix, &largeIconRect, &largeIconRect, srcCopy, NULL);
-			CopyPixMap(targetIcon->icniPix, targetIcon->il32Pix, &largeIconRect, &largeIconRect, srcCopy, NULL);
 			BlockMove(&iconData[icnSize/2], (**targetIcon->icnmPix).baseAddr, icnSize/2); 
-			CopyPixMap(targetIcon->icnmPix, targetIcon->l8mkPix, &largeIconRect, &largeIconRect, srcCopy, NULL);
+			targetIcon->members |= icni;
+			targetIcon->members |= icnm;
 			break;
 		case 'icl4':
 			BlockMove(iconData, (**targetIcon->icl4Pix).baseAddr, icl4Size); 
-			CopyPixMap(targetIcon->icl4Pix, targetIcon->icl8Pix, &largeIconRect, &largeIconRect, srcCopy, NULL);
-			CopyPixMap(targetIcon->icl4Pix, targetIcon->il32Pix, &largeIconRect, &largeIconRect, srcCopy, NULL);
+			targetIcon->members |= icl4;
 			break;
 		case 'icl8':
 			BlockMove(iconData, (**targetIcon->icl8Pix).baseAddr, icl8Size); 
-			CopyPixMap(targetIcon->icl8Pix, targetIcon->il32Pix, &largeIconRect, &largeIconRect, srcCopy, NULL);
+			targetIcon->members |= icl8;
 			break;
 		case 'il32':
-			BlockMove(iconData, (**targetIcon->il32Pix).baseAddr, il32Size); 
+			BlockMove(iconData, (**targetIcon->il32Pix).baseAddr, il32Size);
+			targetIcon->members |= il32;
 			break;
 		case 'l8mk':
 			BlockMove(iconData, (**targetIcon->l8mkPix).baseAddr, l8mkSize);
+			targetIcon->members |= l8mk;
 			break;
 			
 		// small size
 		case 'ics#':
-			targetIcon->sizes |= small;
 			BlockMove(iconData, (**targetIcon->icsiPix).baseAddr, icsSize/2); 
-			CopyPixMap(targetIcon->icsiPix, targetIcon->ics4Pix, &smallIconRect, &smallIconRect, srcCopy, NULL);
-			CopyPixMap(targetIcon->icsiPix, targetIcon->ics8Pix, &smallIconRect, &smallIconRect, srcCopy, NULL);
-			CopyPixMap(targetIcon->icsiPix, targetIcon->is32Pix, &smallIconRect, &smallIconRect, srcCopy, NULL);
 			BlockMove(&iconData[icsSize/2], (**targetIcon->icsmPix).baseAddr, icsSize/2); 
-			CopyPixMap(targetIcon->icsmPix, targetIcon->s8mkPix, &smallIconRect, &smallIconRect, srcCopy, NULL);
+			targetIcon->members |= icsi;
+			targetIcon->members |= icsm;
 			break;
 		case 'ics4':
 			BlockMove(iconData, (**targetIcon->ics4Pix).baseAddr, ics4Size); 
-			CopyPixMap(targetIcon->ics4Pix, targetIcon->ics8Pix, &smallIconRect, &smallIconRect, srcCopy, NULL);
-			CopyPixMap(targetIcon->ics4Pix, targetIcon->is32Pix, &smallIconRect, &smallIconRect, srcCopy, NULL);
+			targetIcon->members |= ics4;
 			break;
 		case 'ics8':
 			BlockMove(iconData, (**targetIcon->ics8Pix).baseAddr, ics8Size); 
-			CopyPixMap(targetIcon->ics8Pix, targetIcon->is32Pix, &smallIconRect, &smallIconRect, srcCopy, NULL);
+			targetIcon->members |= ics8;
 			break;
 		case 'is32':
 			BlockMove(iconData, (**targetIcon->is32Pix).baseAddr, is32Size); 
+			targetIcon->members |= is32;
 			break;
 		case 's8mk':
 			BlockMove(iconData, (**targetIcon->s8mkPix).baseAddr, s8mkSize);
+			targetIcon->members |= s8mk;
 			break;
 			
 		// huge size
 		case 'ich#':
-			targetIcon->sizes |= huge;
 			BlockMove(iconData, (**targetIcon->ichiPix).baseAddr, ichSize/2); 
-			CopyPixMap(targetIcon->ichiPix, targetIcon->ich4Pix, &hugeIconRect, &hugeIconRect, srcCopy, NULL);
-			CopyPixMap(targetIcon->ichiPix, targetIcon->ich8Pix, &hugeIconRect, &hugeIconRect, srcCopy, NULL);
-			CopyPixMap(targetIcon->ichiPix, targetIcon->ih32Pix, &hugeIconRect, &hugeIconRect, srcCopy, NULL);
 			BlockMove(&iconData[ichSize/2], (**targetIcon->ichmPix).baseAddr, ichSize/2); 
-			CopyPixMap(targetIcon->ichmPix, targetIcon->h8mkPix, &hugeIconRect, &hugeIconRect, srcCopy, NULL);
+			targetIcon->members |= ichi;
+			targetIcon->members |= ichm;
 			break;
 		case 'ich4':
 			BlockMove(iconData, (**targetIcon->ich4Pix).baseAddr, ich4Size); 
-			CopyPixMap(targetIcon->ich4Pix, targetIcon->ich8Pix, &hugeIconRect, &hugeIconRect, srcCopy, NULL);
-			CopyPixMap(targetIcon->ich4Pix, targetIcon->ih32Pix, &hugeIconRect, &hugeIconRect, srcCopy, NULL);
+			targetIcon->members |= ich4;
 			break;
 		case 'ich8':
-			BlockMove(iconData, (**targetIcon->ics8Pix).baseAddr, ics8Size); 
-			CopyPixMap(targetIcon->ich8Pix, targetIcon->ih32Pix, &hugeIconRect, &hugeIconRect, srcCopy, NULL);
+			BlockMove(iconData, (**targetIcon->ich8Pix).baseAddr, ich8Size); 
+			targetIcon->members |= ich8;
 			break;
 		case 'ih32':
 			BlockMove(iconData, (**targetIcon->ih32Pix).baseAddr, ih32Size); 
+			targetIcon->members |= ih32;
 			break;
 		case 'h8mk':
 			BlockMove(iconData, (**targetIcon->h8mkPix).baseAddr, h8mkSize);
+			targetIcon->members |= h8mk;
 			break;
 	}
 	
+	RESTOREGWORLD;
 	RESTORECOLORS;
 	
 	return noErr;
@@ -541,6 +382,7 @@ void icnsClass::LoadFileIcon()
 
 void icnsClass::Display(Rect targetRect)
 {
+	PixMapHandle	iconPix, maskPix;
 	long		copyStyle;
 	int			size;
 	
@@ -556,287 +398,128 @@ void icnsClass::Display(Rect targetRect)
 	// if there is no appropriate size then the large one will be scaled (assuming it exists)
 	size = targetRect.bottom - targetRect.top;
 	
-	if (size == 48 && (sizes & huge))
-		CopyDeepMask((BitMap *)*ih32Pix,
-					 (BitMap *)*h8mkPix,
-					 &qd.thePort->portBits,
-					 &hugeIconRect,
-					 &hugeIconRect,
-					 &targetRect,
-					 copyStyle,
-					 NULL);
-	else if (size == 16 && (sizes & small))
-		CopyDeepMask((BitMap *)*is32Pix,
-					 (BitMap *)*s8mkPix,
-					 &qd.thePort->portBits,
-					 &smallIconRect,
-					 &smallIconRect,
-					 &targetRect,
-					 copyStyle,
-					 NULL);
-	else if (sizes & large)
-		CopyDeepMask((BitMap *)*il32Pix,
-					 (BitMap *)*l8mkPix,
-					 &qd.thePort->portBits,
-					 &largeIconRect,
-					 &largeIconRect,
-					 &targetRect,
-					 copyStyle,
-					 NULL);
-	
-	RESTORECOLORS;
-}
-
-// __________________________________________________________________________________________
-// Name			: icnsClass::ExportToPixMap
-// Input		: None
-// Output		: targetPix: pixmap where the split up icon should be drawn
-// Description	: Exports the icon into a c2i style pixmap (small and large 32 bit icons and
-//				  8 bit masks)
-
-void icnsClass::ExportToPixMap(PixMapHandle targetPix)
-{
-	Rect		targetSmallIconRect = {0, 0, 16, 16},
-				targetSmallMaskRect = {16, 0, 32, 16},
-				targetLargeIconRect = {0, 16, 32, 48},
-				targetLargeMaskRect = {0, 48, 32, 80};
-	
-	SAVECOLORS;
-	
-	LockPixels(targetPix);
-	
-	SetGWorld(il32GW, NULL);
-	if (sizes & small)
+	if (size >= 48)
 	{
-		CopyBits((BitMap*)*is32Pix,
-				 (BitMap*)*targetPix,
-				 &smallIconRect,
-				 &targetSmallIconRect,
-				 srcCopy,
-				 NULL);
-		CopyBits((BitMap*)*s8mkPix,
-				 (BitMap*)*targetPix,
-				 &smallIconRect,
-				 &targetSmallMaskRect,
-				 srcCopy,
-				 NULL);
+		if (members & ih32) iconPix = ih32Pix;
+		else if (members & ich8) iconPix = ich8Pix;
+		else if (members & ich4) iconPix = ich4Pix;
+		else if (members & ichi) iconPix = ichiPix;
+		
+		else if (members & il32) iconPix = il32Pix;
+		else if (members & icl8) iconPix = icl8Pix;
+		else if (members & icl4) iconPix = icl4Pix;
+		else if (members & icni) iconPix = icniPix;
+		
+		else if (members & is32) iconPix = is32Pix;
+		else if (members & ics8) iconPix = ics8Pix;
+		else if (members & ics4) iconPix = ics4Pix;
+		else if (members & icsi) iconPix = icsiPix;
+		
+		if (members & h8mk) maskPix = h8mkPix;
+		else if (members & ichm) maskPix = ichmPix;
+		
+		else if (members & l8mk) maskPix = l8mkPix;
+		else if (members & icnm) maskPix = icnmPix;
+		
+		else if (members & s8mk) maskPix = s8mkPix;
+		else if (members & icsm) maskPix = icsmPix;
+	}
+	else if (size <= 16)
+	{
+		if (members & is32) iconPix = is32Pix;
+		else if (members & ics8) iconPix = ics8Pix;
+		else if (members & ics4) iconPix = ics4Pix;
+		else if (members & icsi) iconPix = icsiPix;
+		
+		else if (members & il32) iconPix = il32Pix;
+		else if (members & icl8) iconPix = icl8Pix;
+		else if (members & icl4) iconPix = icl4Pix;
+		else if (members & icni) iconPix = icniPix;
+		
+		else if (members & ih32) iconPix = ih32Pix;
+		else if (members & ich8) iconPix = ich8Pix;
+		else if (members & ich4) iconPix = ich4Pix;
+		else if (members & ichi) iconPix = ichiPix;
+		
+		if (members & s8mk) maskPix = s8mkPix;
+		else if (members & icsm) maskPix = icsmPix;
+		
+		else if (members & l8mk) maskPix = l8mkPix;
+		else if (members & icnm) maskPix = icnmPix;
+		
+		else if (members & h8mk) maskPix = h8mkPix;
+		else if (members & ichm) maskPix = ichmPix;
 	}
 	else
 	{
-		CopyBits((BitMap*)*il32Pix,
-				 (BitMap*)*targetPix,
-				 &largeIconRect,
-				 &targetSmallIconRect,
-				 srcCopy,
-				 NULL);
-		CopyBits((BitMap*)*l8mkPix,
-				 (BitMap*)*targetPix,
-				 &largeIconRect,
-				 &targetSmallMaskRect,
-				 srcCopy,
-				 NULL);
+		if (members & il32) iconPix = il32Pix;
+		else if (members & icl8) iconPix = icl8Pix;
+		else if (members & icl4) iconPix = icl4Pix;
+		else if (members & icni) iconPix = icniPix;
+		
+		else if (members & ih32) iconPix = ih32Pix;
+		else if (members & ich8) iconPix = ich8Pix;
+		else if (members & ich4) iconPix = ich4Pix;
+		else if (members & ichi) iconPix = ichiPix;
+		
+		else if (members & is32) iconPix = is32Pix;
+		else if (members & ics8) iconPix = ics8Pix;
+		else if (members & ics4) iconPix = ics4Pix;
+		else if (members & icsi) iconPix = icsiPix;
+		
+		if (members & l8mk) maskPix = l8mkPix;
+		else if (members & icnm) maskPix = icnmPix;
+		
+		else if (members & h8mk) maskPix = h8mkPix;
+		else if (members & ichm) maskPix = ichmPix;
+		
+		else if (members & s8mk) maskPix = s8mkPix;
+		else if (members & icsm) maskPix = icsmPix;
 	}
-	CopyBits((BitMap*)*il32Pix,
-			 (BitMap*)*targetPix,
-			 &largeIconRect,
-			 &targetLargeIconRect,
-			 srcCopy,
-			 NULL);
-	CopyBits((BitMap*)*l8mkPix,
-			 (BitMap*)*targetPix,
-			 &largeIconRect,
-			 &targetLargeMaskRect,
-			 srcCopy,
-			 NULL);	
-	UnlockPixels(targetPix);
+	
+	CopyDeepMask((BitMap *)*iconPix,
+				 (BitMap *)*maskPix,
+				 &qd.thePort->portBits,
+				 &(**iconPix).bounds,
+				 &(**maskPix).bounds,
+				 &targetRect,
+				 copyStyle,
+				 NULL);
 	
 	RESTORECOLORS;
 }
 
-// __________________________________________________________________________________________
-// Name			: icnsClass::ImportFromClipboard
-// Input		: dither: bool specifying option to dither (method of using color patterns
-//				  to create appearance of color which aren't in the current palette, in this
-//				  case the system one).
-// Output		: None
-// Description	: Loads from clipboard an icon. The clipboard image is divided up so that 
-//				  if necessary maks and icons for small and large size are provided
-// Note			: This is not a normal clipboard importing function, rather it is used in
-//				  cases where editing by size/depth is not available and the icon must be
-//				  imported from somwhere
-
-void icnsClass::ImportFromClipboard(bool dither)
+void icnsClass::RefreshIconMembers(void)
 {
-	Rect				clipboardRect;
-	Rect				is32SrcRect = {0, 0, 16, 16};
-	Rect				s8mkSrcRect = {16, 0, 32, 16};
-	Rect				il32SrcRect = {0, 0, 32, 32};
-	Rect				l8mkSrcRect = {0, 32, 32, 64};
-	GWorldPtr			clipboardGWorld;
-	PixMapHandle		clipboardPix;
-	long				offset;
-	Handle				pic;
-	CTabHandle			grayscaleTable;
-	short				copyMode;
+	members = 0;
+	if (!IsEmptyPixMap(ih32Pix)) members |= ih32;
+	if (!IsEmptyPixMap(il32Pix)) members |= il32;
+	if (!IsEmptyPixMap(is32Pix)) members |= is32;
 	
-	if (dither)
-		copyMode = srcCopy + ditherCopy;
-	else
-		copyMode = srcCopy;	
+	if (!IsEmptyPixMap(h8mkPix)) members |= h8mk;
+	if (!IsEmptyPixMap(l8mkPix)) members |= l8mk;
+	if (!IsEmptyPixMap(s8mkPix)) members |= s8mk;
 	
-	pic = NewHandle (0);
-	if (GetScrap( pic, 'PICT', &offset ) < 0)
-		return;
+	if (!IsEmptyPixMap(ich8Pix)) members |= ich8;
+	if (!IsEmptyPixMap(icl8Pix)) members |= icl8;
+	if (!IsEmptyPixMap(ics8Pix)) members |= ics8;
 	
-	SAVEGWORLD;
-	SAVECOLORS;
+	if (!IsEmptyPixMap(ich4Pix)) members |= ich4;
+	if (!IsEmptyPixMap(icl4Pix)) members |= icl4;
+	if (!IsEmptyPixMap(ics4Pix)) members |= ics4;
 	
-	grayscaleTable = GetCTable(40);
-	HLock((Handle)grayscaleTable);
+	if (!IsEmptyPixMap(ichiPix)) members |= ichi;
+	if (!IsEmptyPixMap(icniPix)) members |= icni;
+	if (!IsEmptyPixMap(icsiPix)) members |= icsi;
 	
-	clipboardRect = (*(PicHandle)pic)->picFrame;
-	OffsetRect(&clipboardRect, -clipboardRect.left, -clipboardRect.top);
-	
-	switch (clipboardRect.right)
-	{
-		case 80:
-			sizes |= (small | large);
-			OffsetRect(&il32SrcRect, 16, 0);
-			OffsetRect(&l8mkSrcRect, 16, 0);
-			break;
-		case 64: sizes |= large; sizes &= ~small; break;
-		case 16: sizes |= small; sizes &= ~large; break;
-	}
-	
-	// first we draw the clipboard into a g world
-	NewGWorld(&clipboardGWorld, 32, &clipboardRect, NULL, NULL, 0);
-	clipboardPix = GetGWorldPixMap(clipboardGWorld);
-	LockPixels(clipboardPix);
-	SetGWorld(clipboardGWorld, NULL);
-	EraseRect(&qd.thePort->portRect);
-	DrawPicture((PicHandle)pic, &clipboardRect);
-	
-	
-	if (sizes & large)
-	{
-		// copying the merged icon + mask from the clipboard into the 8 bit icon
-		CopyDeepMask((BitMap *)*clipboardPix,
-					 (BitMap *)*clipboardPix,
-				 	 (BitMap *)*il32Pix,
-				 	 &il32SrcRect,
-				 	 &l8mkSrcRect,
-					 &largeIconRect,
-					 copyMode,
-					 NULL);
-		
-		CopyBits((BitMap *)*il32Pix,
-				 (BitMap *)*icl8Pix,
-				 &largeIconRect,
-				 &largeIconRect,
-				 copyMode,
-				 NULL);
-		
-		// and the 4 bit icon
-		CopyBits((BitMap *)*icl8Pix,
-			 	 (BitMap *)*icl4Pix,
-			 	 &largeIconRect,
-			 	 &largeIconRect,
-				 copyMode,
-				 NULL);
-				 
-		// now we're copying a piece of the clipboard into the 32 bit icon
-		CopyBits((BitMap *)*clipboardPix,
-				 (BitMap *)*il32Pix,
-				 &il32SrcRect,
-				 &largeIconRect,
-				 srcCopy,
-				 NULL);
-				 
-		// now we copy the 8 bit mask
-		CopyBits((BitMap *)*clipboardPix,
-				 (BitMap *)*l8mkPix,
-				 &l8mkSrcRect,
-				 &largeIconRect,
-				 srcCopy,
-				 NULL);
-		
-		// making the 1 bit mask
-		Make1BitMask(l8mkPix, icnmPix, (**l8mkPix).bounds);
-
-		// creating the bw version
-		CopyBits((BitMap *)*icl8Pix,
-			 	 (BitMap *)*icniPix,
-			 	 &largeIconRect,
-			 	 &largeIconRect,
-				 copyMode,
-				 NULL);
-	}
-	if (sizes & small)
-	{
-		// copying the merged icon + mask from the clipboard into the 8 bit icon
-		CopyDeepMask((BitMap *)*clipboardPix,
-					 (BitMap *)*clipboardPix,
-				 	 (BitMap *)*is32Pix,
-				 	 &is32SrcRect,
-				 	 &s8mkSrcRect,
-					 &smallIconRect,
-					 copyMode,
-					 NULL);
-		
-		CopyBits((BitMap *)*is32Pix,
-				 (BitMap *)*ics8Pix,
-				 &smallIconRect,
-				 &smallIconRect,
-				 copyMode,
-				 NULL);
-		
-		// and the 4 bit icon
-		CopyBits((BitMap *)*ics8Pix,
-			 	 (BitMap *)*ics4Pix,
-			 	 &smallIconRect,
-			 	 &smallIconRect,
-				 copyMode,
-				 NULL);
-
-		// now we're copying a piece of the clipboard into the 32 bit icon
-		CopyBits((BitMap *)*clipboardPix,
-				 (BitMap *)*is32Pix,
-				 &is32SrcRect,
-				 &smallIconRect,
-				 srcCopy,
-				 NULL);
-				 
-		// now we copy the 8 bit mask
-		CopyBits((BitMap *)*clipboardPix,
-				 (BitMap *)*s8mkPix,
-				 &s8mkSrcRect,
-				 &smallIconRect,
-				 srcCopy,
-				 NULL);
-		
-		// making the 1 bit mask		 
-		Make1BitMask(s8mkPix, icsmPix, (**s8mkPix).bounds);
-		
-		// creating the bw version
-		CopyBits((BitMap *)*ics8Pix,
-			 	 (BitMap *)*icsiPix,
-			 	 &smallIconRect,
-			 	 &smallIconRect,
-				 copyMode,
-				 NULL);
-	}
-	
-	RESTOREGWORLD;
-	RESTORECOLORS;
-	
-	UnlockPixels(clipboardPix);
-	DisposeGWorld(clipboardGWorld);
-	DisposeHandle(pic);
-	DisposeCTable(grayscaleTable);
+	if (!IsEmptyPixMap(ichmPix)) members |= ichm;
+	if (!IsEmptyPixMap(icnmPix)) members |= icnm;
+	if (!IsEmptyPixMap(icsmPix)) members |= icsm;
 }
 
+
 // __________________________________________________________________________________________
-// Name			: icnsClass::SaveToFile
+// Name			: icnsClass::Save
 // Input		: flags: options for saving. Possible values are includeOldStyle which
 //				  incorporates old style resources into the icns, and generateOldStyle which
 //				  makes old style resources out of the icns.
@@ -846,22 +529,18 @@ void icnsClass::ImportFromClipboard(bool dither)
 
 void icnsClass::Save(long flags)
 {
-	long				icnsSize, // the size of the final icns resource
-						ih32CompressedSize, il32CompressedSize, is32CompressedSize;
+	long				icnsSize; // the size of the final icns resource
 						// the sizes of the compressed 32 bit data for each size
 	IconFamilyHandle	icnsHandle; // handle which will be saved as the 'icns' resource
 	IconFamilyElement*	elementPtr; // pointer to element within the icns
 	short				targetFile,	// file reference numbers, one for the target file
 						oldFile; 	// and the other for the previous curent file
 	Handle				oldicns; // handle used to check if an icns existed before
-	Ptr					ih32Src, il32Src, is32Src, // the source for the icons
-						h8mkSrc, l8mkSrc, s8mkSrc,
-						ich8Src, icl8Src, ics8Src,
-						ich4Src, icl4Src, ics4Src,
-						ichiSrc, icniSrc, icsiSrc,
-						ichmSrc, icnmSrc, icsmSrc;
 	unsigned char 		isFolder, ignored;
 	FSSpec				savedSpec;
+	int 				lastElementOffset;
+	
+	RefreshIconMembers();
 	
 	ResolveAliasFile(&srcFileSpec,true,&isFolder, &ignored);
 	if (isFolder)
@@ -900,180 +579,86 @@ void icnsClass::Save(long flags)
 	
 	UseResFile(targetFile); // and set it as the current resoure file
 	
-	if (sizes & huge) // we compress the icon data as necessary
-		CompressPixMap(ih32Pix, &ih32Src, &ih32CompressedSize);
-	if (sizes & large)
-		CompressPixMap(il32Pix, &il32Src, &il32CompressedSize);
-	if (sizes & small)
-		CompressPixMap(is32Pix, &is32Src, &is32CompressedSize);
-	
 	icnsSize = sizeof(IconFamilyResource) - sizeof(IconFamilyElement);
-	// we start to calculate the size of the icns resource, the IconFamilyResource already
-	// includes an IconFamilyElement, which is why we must subtract it
-	if (sizes & huge)
-	// if there is a huge size, then add on the sizes of the depths that make up the huge size
-		icnsSize += (sizeof(IconFamilyElement) - icnsSizePadding) * 5 +
-				    ih32CompressedSize +
-				    h8mkSize +
-				    ichSize +
-				    ich8Size +
-				    ich4Size;
-	if (sizes & large) // ditto for the large
-		icnsSize += (sizeof(IconFamilyElement) - icnsSizePadding) * 5 +
-				    il32CompressedSize +
-				    l8mkSize +
-				    icnSize +
-				    icl8Size +
-				    icl4Size;
-	if (sizes & small) // and the small
-		icnsSize += (sizeof(IconFamilyElement) - icnsSizePadding) * 5 +
-				    is32CompressedSize +
-				    s8mkSize +
-				    icsSize +
-				    ics8Size +
-				    ics4Size;
-				    
-	icnsHandle = (IconFamilyHandle) NewHandleClear(icnsSize);
+	
+			    
+	icnsHandle = (IconFamilyHandle)NewHandleClear(icnsSize);
 	// we allocated memory for the icon that we are creating
 
-	HLock((Handle)icnsHandle);
+	//HLock((Handle)icnsHandle);
 	// we lock it so that we can deference it and access it safely
 	
 	(**icnsHandle).resourceType = 'icns'; // the resource type is always 'icns'
 	(**icnsHandle).resourceSize = icnsSize; // we have just calculated the size
-	
-	ichiSrc = (**ichiPix).baseAddr; // it'd get tedious to always have to dereference the
-	ichmSrc = (**ichmPix).baseAddr; // the pixmap handles, so these local variables are created
-	ich8Src = (**ich8Pix).baseAddr; // to make the code more readabled
-	ich4Src = (**ich4Pix).baseAddr;
-	h8mkSrc = (**h8mkPix).baseAddr;
-	
-	icniSrc = (**icniPix).baseAddr;
-	icnmSrc = (**icnmPix).baseAddr;
-	icl8Src = (**icl8Pix).baseAddr;
-	icl4Src = (**icl4Pix).baseAddr;
-	l8mkSrc = (**l8mkPix).baseAddr;
 
-	icsiSrc = (**icsiPix).baseAddr;
-	icsmSrc = (**icsmPix).baseAddr;
-	ics8Src = (**ics8Pix).baseAddr;
-	ics4Src = (**ics4Pix).baseAddr;
-	s8mkSrc = (**s8mkPix).baseAddr;
-	
-	if (flags & includeOldStyle)
+	if ((members & icni) || (members & icnm))
 	{
-		Handle				currentIcon; // handle to the old style icon,
-	
-		currentIcon = Get1Resource('ICN#', ID);
-		if (currentIcon != NULL)
-		{
-			icniSrc = *currentIcon;
-			icnmSrc = &(*currentIcon)[icnSize/2];
-		}
-		currentIcon = Get1Resource('icl8', ID);
-		if (currentIcon != NULL)
-			icl8Src = *currentIcon;
-			
-		currentIcon = Get1Resource('ics#', ID);
-		if (currentIcon != NULL)
-		{
-			icsiSrc = *currentIcon;
-			icsmSrc = &(*currentIcon)[icsSize/2];
-		}
-		currentIcon = Get1Resource('ics8', ID);
-		if (currentIcon != NULL)
-			ics8Src = *currentIcon;
-	}
-	
-	if (sizes & large) // if there is a large size then we must save it
-	{
-		elementPtr = &((**icnsHandle).elements[0]); // the first element
-		// the black and white element is special...
-		elementPtr->elementType = 'ICN#'; // we set the resource type
+		lastElementOffset = (**icnsHandle).resourceSize;
+		
+		GrowHandle((Handle*)&icnsHandle, icnSize + sizeof(IconFamilyElement) - icnsSizePadding);
+		(**icnsHandle).resourceSize += icnSize + sizeof(IconFamilyElement) - icnsSizePadding;
+		elementPtr = (IconFamilyElement*)(((char*)(*icnsHandle)) + lastElementOffset);
+		
+		elementPtr->elementType = 'ICN#';
 		elementPtr->elementSize = icnSize + sizeof(IconFamilyElement) - icnsSizePadding;
-		// the element size
-		BlockMove( icniSrc,elementPtr->elementData, icnSize/2);
-		// and we copy the data for the icon
-		BlockMove( icnmSrc, &elementPtr->elementData[icnSize / 2], icnSize/2);
-		// and the mask
-
-		// for the rest of the depths there is a common pattern, so we can use a generalized
-		// function
-		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-		// but first we must move the pointer to the next element
-		WriteicnsMember(elementPtr, 'icl8', icl8Size, icl8Src);
-		
-		// same for all the rest
-		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-		WriteicnsMember(elementPtr, 'icl4', icl4Size, icl4Src);
-		
-		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-		WriteicnsMember(elementPtr, 'il32', il32CompressedSize, il32Src);
-		
-		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-		WriteicnsMember(elementPtr, 'l8mk', l8mkSize, l8mkSrc);
+		BlockMoveData((**icniPix).baseAddr, elementPtr->elementData, icnSize/2);
+		BlockMoveData((**icnmPix).baseAddr, &elementPtr->elementData[icnSize / 2], icnSize/2);
 	}
+	if (members & icl4)
+		AddIconMember(&icnsHandle, 'icl4', icl4Pix);
+	if (members & icl8)
+		AddIconMember(&icnsHandle, 'icl8', icl8Pix);
+	if (members & il32)
+		AddIconMember(&icnsHandle, 'il32', il32Pix);
+	if (members & l8mk)
+		AddIconMember(&icnsHandle, 'l8mk', l8mkPix);
 	
-	if (sizes & small)
+	if ((members & ichi) || (members & ichm))
 	{
-		if (sizes & large) // if the elementPtr was already in use
-			elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-			// we can advance to the next one
-		else
-			elementPtr = &((**icnsHandle).elements[0]);
-			// otherwise we set it to the first element
+		lastElementOffset = (**icnsHandle).resourceSize;
 		
-		// the rest of the the saving is very similar to the above
-		elementPtr->elementType = 'ics#';
-		elementPtr->elementSize = icsSize + sizeof(IconFamilyElement) - icnsSizePadding;
-		BlockMove( icsiSrc ,elementPtr->elementData, icsSize/2);
-		BlockMove( icsmSrc, &elementPtr->elementData[icsSize / 2], icsSize/2);
+		GrowHandle((Handle*)&icnsHandle, ichSize + sizeof(IconFamilyElement) - icnsSizePadding);
+		(**icnsHandle).resourceSize += ichSize + sizeof(IconFamilyElement) - icnsSizePadding;
+		elementPtr = (IconFamilyElement*)(((char*)(*icnsHandle)) + lastElementOffset);
 		
-		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-		WriteicnsMember(elementPtr, 'ics8', ics8Size, ics8Src);
-		
-		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-		WriteicnsMember(elementPtr, 'ics4', ics4Size, ics4Src);
-		
-		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-		WriteicnsMember(elementPtr, 'is32', is32CompressedSize, is32Src);
-		
-		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-		WriteicnsMember(elementPtr, 's8mk', s8mkSize, s8mkSrc);
-	}
-	if (sizes & huge)
-	{
-		// very similar to the above too, except for the quirks in the 4 and 8 bit icon depths,
-		// as was mentioned in the loading code above
-		
-		if (sizes & large || sizes & small)
-			elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-		else
-			elementPtr = &((**icnsHandle).elements[0]);
-			
 		elementPtr->elementType = 'ich#';
 		elementPtr->elementSize = ichSize + sizeof(IconFamilyElement) - icnsSizePadding;
-		BlockMove( ichiSrc ,elementPtr->elementData, ichSize/2);
-		BlockMove( ichmSrc, &elementPtr->elementData[ichSize / 2], ichSize/2);
-		
-		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-		elementPtr->elementType = 'ich8';
-		elementPtr->elementSize = ich8Size + sizeof(IconFamilyElement) - icnsSizePadding;
-		BlockMove(ich8Src, elementPtr->elementData, ich8Size);
-		
-		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-		elementPtr->elementType = 'ich4';
-		elementPtr->elementSize = ich4Size + sizeof(IconFamilyElement) - icnsSizePadding;
-		BlockMove(ich4Src, elementPtr->elementData, ich4Size);
-		
-		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-		WriteicnsMember(elementPtr, 'ih32', ih32CompressedSize, ih32Src);
-		
-		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-		WriteicnsMember(elementPtr, 'h8mk', h8mkSize, h8mkSrc);
+		BlockMoveData((**ichiPix).baseAddr, elementPtr->elementData, ichSize/2);
+		BlockMoveData((**ichmPix).baseAddr, &elementPtr->elementData[ichSize / 2], ichSize/2);
 	}
+	if (members & ich4)
+		AddIconMember(&icnsHandle, 'ich4', ich4Pix);
+	if (members & ich8)
+		AddIconMember(&icnsHandle, 'ich8', ich8Pix);
+	if (members & ih32)
+		AddIconMember(&icnsHandle, 'ih32', ih32Pix);
+	if (members & h8mk)
+		AddIconMember(&icnsHandle, 'h8mk', h8mkPix);
 	
-	HUnlock((Handle)icnsHandle); // we're done with direct access to the handle
+	if ((members & icsi) || (members & icsm))
+	{
+		lastElementOffset = (**icnsHandle).resourceSize;
+		
+		GrowHandle((Handle*)&icnsHandle, icsSize + sizeof(IconFamilyElement) - icnsSizePadding);
+		(**icnsHandle).resourceSize += icsSize + sizeof(IconFamilyElement) - icnsSizePadding;
+		elementPtr = (IconFamilyElement*)(((char*)(*icnsHandle)) + lastElementOffset);
+		
+		elementPtr->elementType = 'ics#';
+		elementPtr->elementSize = icsSize + sizeof(IconFamilyElement) - icnsSizePadding;
+		BlockMoveData((**icsiPix).baseAddr, elementPtr->elementData, icsSize/2);
+		BlockMoveData((**icsmPix).baseAddr, &elementPtr->elementData[icsSize / 2], icsSize/2);
+	}
+	if (members & ics4)
+		AddIconMember(&icnsHandle, 'ics4', ics4Pix);
+	if (members & ics8)
+		AddIconMember(&icnsHandle, 'ics8', ics8Pix);
+	if (members & is32)
+		AddIconMember(&icnsHandle, 'is32', is32Pix);
+	if (members & s8mk)
+		AddIconMember(&icnsHandle, 's8mk', s8mkPix);
+	
+	
+	//HUnlock((Handle)icnsHandle); // we're done with direct access to the handle
 	if (ID == rCustomIcon) // if the ID is the custom icon ID...
 	{
 		FInfo	fileInfo;
@@ -1109,10 +694,6 @@ void icnsClass::Save(long flags)
 
 	DisposeHandle((Handle)icnsHandle); // we're done with the resource, and can dispose of it
 	
-	if (sizes & huge) DisposePtr(ih32Src); // and the temporary memory used to to store the
-	if (sizes & large) DisposePtr(il32Src); // compressed sizes
-	if (sizes & small) DisposePtr(is32Src);
-	
 	FSpBumpDate(&srcFileSpec);
 	
 	if (isFolder)
@@ -1137,7 +718,7 @@ void icnsClass::SaveOldStyle()
 	targetFile = FSpOpenResFile(&srcFileSpec, fsRdWrPerm);
 	UseResFile(targetFile);
 	
-	if (sizes & large)
+	if (members & icl8)
 	{
 		// the 8 bit large icon
 		iconHandle = Get1Resource('icl8', ID);
@@ -1149,7 +730,10 @@ void icnsClass::SaveOldStyle()
 		AddResource(iconHandle, 'icl8', ID, name);
 		SetResAttrs(iconHandle, flags);
 		ChangedResource(iconHandle);
-		
+	}
+	
+	if (members & icl4)
+	{
 		// the 4 bit large icon
 		iconHandle = Get1Resource('icl4', ID);
 		REMOVEICON;
@@ -1160,7 +744,10 @@ void icnsClass::SaveOldStyle()
 		AddResource(iconHandle, 'icl4', ID, name);
 		SetResAttrs(iconHandle, flags);
 		ChangedResource(iconHandle);
-		
+	}
+	
+	if ((members & icni) || (members & icnm))
+	{
 		// the 1 bit large icon
 		iconHandle = Get1Resource('ICN#', ID);
 		REMOVEICON;
@@ -1173,20 +760,23 @@ void icnsClass::SaveOldStyle()
 		SetResAttrs(iconHandle, flags);
 		ChangedResource(iconHandle);
 	}
-
-	if (sizes & small)
+	
+	if (members & ics8)
 	{
 		// the 8 bit small icon
 		iconHandle = Get1Resource('ics8', ID);
 		REMOVEICON;
-		
+	
 		iconHandle = NewHandleClear(ics8Size);
 		BlockMove((*ics8Pix)->baseAddr, *iconHandle, ics8Size);
 		DetachResource(iconHandle);
 		AddResource(iconHandle, 'ics8', ID, name);
 		SetResAttrs(iconHandle, flags);
 		ChangedResource(iconHandle);
-		
+	}
+	
+	if (members & ics4)
+	{	
 		// the 4 bit small icon
 		iconHandle = Get1Resource('ics4', ID);
 		REMOVEICON;
@@ -1197,7 +787,10 @@ void icnsClass::SaveOldStyle()
 		AddResource(iconHandle, 'ics4', ID, name);
 		SetResAttrs(iconHandle, flags);
 		ChangedResource(iconHandle);
-		
+	}
+	
+	if ((members & icsi) || (members & icsm))
+	{
 		// the 1 bit small icon
 		iconHandle = Get1Resource('ics#', ID);
 		REMOVEICON;
@@ -1221,9 +814,11 @@ long icnsClass::GetSize()
 {
 	long returnSize;
 	
+	RefreshIconMembers();
+	
 	returnSize = sizeof(IconFamilyResource) - sizeof(IconFamilyElement);
 	
-	if (sizes & huge)
+	if (members & ih32)
 	{
 		Ptr temp;
 		long ih32CompressedSize;
@@ -1231,9 +826,9 @@ long icnsClass::GetSize()
 		CompressPixMap(ih32Pix, &temp, &ih32CompressedSize);
 		DisposePtr(temp);
 		
-		returnSize += (sizeof(IconFamilyElement) - icnsSizePadding) * 5 + ichSize + ich4Size + ich8Size + ih32CompressedSize + h8mkSize;
+		returnSize += (sizeof(IconFamilyElement) - icnsSizePadding) + ih32CompressedSize;
 	}
-	if (sizes & large)
+	if (members & il32)
 	{
 		Ptr temp;
 		long il32CompressedSize;
@@ -1241,9 +836,9 @@ long icnsClass::GetSize()
 		CompressPixMap(il32Pix, &temp, &il32CompressedSize);
 		DisposePtr(temp);
 		
-		returnSize += (sizeof(IconFamilyElement) - icnsSizePadding) * 5 + icnSize + icl4Size + icl8Size + il32CompressedSize + l8mkSize;
+		returnSize += (sizeof(IconFamilyElement) - icnsSizePadding) + il32CompressedSize;
 	}
-	if (sizes & small)
+	if (members & is32)
 	{
 		Ptr temp;
 		long is32CompressedSize;
@@ -1251,8 +846,23 @@ long icnsClass::GetSize()
 		CompressPixMap(is32Pix, &temp, &is32CompressedSize);
 		DisposePtr(temp);
 		
-		returnSize += (sizeof(IconFamilyElement) - icnsSizePadding) * 5 + icsSize + ics4Size + ics8Size + is32CompressedSize + s8mkSize ;
+		returnSize += (sizeof(IconFamilyElement) - icnsSizePadding) + is32CompressedSize;
 	}
+	if (members & h8mk) returnSize += sizeof(IconFamilyElement) - icnsSizePadding + h8mkSize;
+	if (members & l8mk) returnSize += sizeof(IconFamilyElement) - icnsSizePadding + l8mkSize;
+	if (members & s8mk) returnSize += sizeof(IconFamilyElement) - icnsSizePadding + s8mkSize;
+	
+	if (members & ich8) returnSize += sizeof(IconFamilyElement) - icnsSizePadding + ich8Size;
+	if (members & icl8) returnSize += sizeof(IconFamilyElement) - icnsSizePadding + icl8Size;
+	if (members & ics8) returnSize += sizeof(IconFamilyElement) - icnsSizePadding + ics8Size;
+	
+	if (members & ich4) returnSize += sizeof(IconFamilyElement) - icnsSizePadding + ich4Size;
+	if (members & icl4) returnSize += sizeof(IconFamilyElement) - icnsSizePadding + icl4Size;
+	if (members & ics4) returnSize += sizeof(IconFamilyElement) - icnsSizePadding + ics4Size;
+	
+	if ((members & ichi) || (members & ichm)) returnSize += sizeof(IconFamilyElement) - icnsSizePadding + ichSize;
+	if ((members & icni) || (members & icnm)) returnSize += sizeof(IconFamilyElement) - icnsSizePadding + icnSize;
+	if ((members & icsi) || (members & icsm)) returnSize += sizeof(IconFamilyElement) - icnsSizePadding + icsSize;
 	
 	return returnSize;
 }
@@ -1265,7 +875,8 @@ OSStatus NewIconSet(GWorldPtr *gWorld, PixMapHandle *pixMap, Rect bounds, int de
 	
 	err = noErr;
 	
-	err = NewGWorld(gWorld, depth, &bounds, cTable, NULL, 0);
+	err = NewGWorldUnpadded(gWorld, depth, &bounds, cTable);
+	if (err != noErr) return err;
 	*pixMap = GetGWorldPixMap(*gWorld);
 	LockPixels(*pixMap);
 	SetGWorld(*gWorld, NULL);
@@ -1322,13 +933,34 @@ IconFamilyElement* GeticnsMember(long iconType, IconFamilyHandle icnsHandle)
 // Description	: Copies the required data into the icon element, setting all the fields as
 //				  requested
 
-void WriteicnsMember(IconFamilyElement *elementPtr, long iconType, long iconSize, Ptr iconSrc)
+void AddIconMember(IconFamilyHandle* icnsHandle, long iconType, PixMapHandle iconPix)
 {
-	if (elementPtr == NULL)
-		return;
+	Ptr iconData;
+	long size;
+	long lastElementOffset;
+	IconFamilyElement* elementPtr;
+	
+	if ((**iconPix).pixelSize == 32)
+		CompressPixMap(iconPix, &iconData, &size);
+	else
+	{
+		iconData = (**iconPix).baseAddr;
+		size = ((**iconPix).rowBytes & 0x3FFF) * ((**iconPix).bounds.bottom - (**iconPix).bounds.top);
+	}
+	
+	lastElementOffset = (***icnsHandle).resourceSize;
+	
+	GrowHandle((Handle*)icnsHandle, size + sizeof(IconFamilyElement) - icnsSizePadding);
+	(***icnsHandle).resourceSize += size + sizeof(IconFamilyElement) - icnsSizePadding;
+	elementPtr = (IconFamilyElement*)(((char*)(**icnsHandle)) + lastElementOffset);
+	
+	
 	elementPtr->elementType = iconType;
-	elementPtr->elementSize = iconSize + sizeof(IconFamilyElement) - icnsSizePadding;
-	BlockMove(iconSrc, elementPtr->elementData, iconSize);
+	elementPtr->elementSize = size + sizeof(IconFamilyElement) - icnsSizePadding;
+	BlockMove(iconData, elementPtr->elementData, size);
+	
+	if ((**iconPix).pixelSize == 32)
+		DisposePtr(iconData);
 }
 
 // __________________________________________________________________________________________

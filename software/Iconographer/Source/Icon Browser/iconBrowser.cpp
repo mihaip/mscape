@@ -27,22 +27,22 @@ OSErr IconBrowser(FSSpec fileSpec, long *ID, UpdateFunctionPtr updateFunction)
 	Cell				theCell; // a specific cell of the list
 	OSStatus			returnErr; // for error checking
 	int					listSize; // the length of the list of icons
+	IconBrowserData		data;
 	
 	
 	// we load the dialog
 	iconBrowser = GetNewDialog(rIconBrowser,NULL,(WindowPtr) -1);
 	
 	// set the function used for updates
-	SetWRefCon(iconBrowser, (long)updateFunction);
+	SetWRefCon(iconBrowser, (long)&data);
 	
 	// set some dialog attibutes
 	SetDialogDefaultItem(iconBrowser,kStdOkItemIndex);
 	SetDialogCancelItem(iconBrowser,kStdCancelItemIndex);
 	SetDialogTracksCursor(iconBrowser,true);
-	SetKeyboardFocus(iconBrowser,iconListControl,kControlListBoxPart);
 	
 	// set up the event processing function
-	eventFilterUPP = NewModalFilterProc((ProcPtr) StandardEventFilter);
+	eventFilterUPP = NewModalFilterProc((ProcPtr) IconBrowserEventFilter);
 	
 	// we load the two control variables
 	GetDialogItemAsControl(iconBrowser,iIconPreview,&iconPreviewControl);
@@ -96,8 +96,15 @@ OSErr IconBrowser(FSSpec fileSpec, long *ID, UpdateFunctionPtr updateFunction)
 	LSetSelect(true,theCell,iconList);
 	*ID = GetIDFromList(theCell, iconList);
 	
+	data.UpdateFunction = updateFunction;
+	data.fileSpec = fileSpec;
+	data.ID = *ID;
+	data.iconPreviewControl = iconPreviewControl;
+	
 	// and now that we're done we can show the dialog
 	ShowWindow(iconBrowser);
+	
+	SetKeyboardFocus(iconBrowser,iconListControl,1);//kControlListBoxPart);
 	
 	// we can now draw in the icon
 	SAVEGWORLD;
@@ -122,6 +129,7 @@ OSErr IconBrowser(FSSpec fileSpec, long *ID, UpdateFunctionPtr updateFunction)
 				SetPt(&theCell, 0, 0);
 				LGetSelect(true,&theCell,iconList);
 				*ID = GetIDFromList(theCell, iconList);
+				data.ID = *ID;
 				SAVEGWORLD;
 				SetPort(iconBrowser);
 				DisplayIconPreview(iconPreviewControl, fileSpec, *ID);
@@ -141,6 +149,47 @@ OSErr IconBrowser(FSSpec fileSpec, long *ID, UpdateFunctionPtr updateFunction)
 	
 	
 	return returnErr;
+}
+				
+pascal bool	IconBrowserEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *itemHit)
+{
+	bool	handledEvent; // if true then our function tool care of the event
+	IconBrowserDataPtr dataPtr;
+	
+	dataPtr = (IconBrowserDataPtr)GetWRefCon(dialog);
+
+	handledEvent = false; // by default we didn't handle the event
+	
+	switch (eventPtr->what)
+	{
+		case activateEvt: // if the window isn't the dialog, then we tell the update function
+		case updateEvt: //  to take care of it
+			if((WindowPtr) eventPtr->message == dialog)
+			{
+				SAVEGWORLD;
+				SetPort(dialog);
+				DisplayIconPreview(dataPtr->iconPreviewControl, dataPtr->fileSpec, dataPtr->ID);
+				RESTOREGWORLD;
+				break;
+			}
+			else
+			{
+				dataPtr->UpdateFunction(eventPtr);
+				handledEvent = true;
+			}
+			break;
+		default:
+			// if it's not an event we support, then we let the system take care of it
+			SAVEGWORLD;
+			SetPort(dialog);
+
+			handledEvent = StdFilterProc(dialog, eventPtr, itemHit);
+
+			RESTOREGWORLD;
+		break;
+	}
+		
+	return(handledEvent);
 }
 
 // __________________________________________________________________________________________
@@ -361,11 +410,11 @@ void DisplayIconPreview(ControlHandle displayControl, FSSpec srcSpec, long ID)
 	GWorldPtr		tempGW; // temporary GWorld since we want to draw the whole thing offscreen
 	PixMapHandle	tempPix; // and then copy it to the main screen
 	Rect			tempRect, // the dimensions of the control
-					tempDisplayRect, // used in determining the final display location
-					displayRect; // the place where we'll be drawing the icon
-	int				thirdOfHeight; // used in determing the display location
+					hugeDisplayRect = {0, 0, 0, 0},
+					largeDisplayRect = {0, 0, 0, 0},
+					smallDisplayRect = {0, 0, 0, 0},
+					gWorldRect;
 	PixPatHandle	desktopPattern; // the background of the preview
-	
 	SAVEGWORLD;
 	SAVECOLORS;
 	
@@ -380,9 +429,9 @@ void DisplayIconPreview(ControlHandle displayControl, FSSpec srcSpec, long ID)
 	}
 	
 	// create the temporary GWorld
-	tempRect = (**displayControl).contrlRect;
-	OffsetRect(&tempRect, -tempRect.left, -tempRect.top);
-	NewGWorld(&tempGW, 32, &tempRect, NULL, NULL, 0);
+	gWorldRect = (**displayControl).contrlRect;
+	OffsetRect(&gWorldRect, -gWorldRect.left, -gWorldRect.top);
+	NewGWorld(&tempGW, 32, &gWorldRect, NULL, NULL, 0);
 	tempPix = GetGWorldPixMap(tempGW);
 	LockPixels(tempPix);
 	SetGWorld(tempGW, NULL);
@@ -390,30 +439,97 @@ void DisplayIconPreview(ControlHandle displayControl, FSSpec srcSpec, long ID)
 	// fill it with the desktop pattern
 	desktopPattern = LMGetDeskCPat();
 	HLock((Handle)desktopPattern);
-	FillCRect(&tempRect, desktopPattern);
+	FillCRect(&gWorldRect, desktopPattern);
 	HUnlock((Handle)desktopPattern);
 	
-	// setting up this variable
-	thirdOfHeight = (tempRect.bottom - tempRect.top)/3;
+	if ((icon.members & hugeSize) && (icon.members & largeSize) && (icon.members & smallSize))
+	{
+		// huge icon rect
+		tempRect = gWorldRect;
+		tempRect.bottom = tempRect.top + (tempRect.right - tempRect.left);
+		hugeDisplayRect = hugeIconRect;
+		MakeTargetRect(tempRect, &hugeDisplayRect);
+		
+		// large icon rect
+		tempRect = gWorldRect;
+		tempRect.top += (tempRect.right - tempRect.left);
+		tempRect.bottom = tempRect.top + (tempRect.right - tempRect.left) * 2/3;
+		largeDisplayRect = largeIconRect;
+		MakeTargetRect(tempRect, &largeDisplayRect);
 	
-	// the huge icon goes in the upper third of the control
-	tempDisplayRect = tempRect;
-	tempDisplayRect.bottom = tempDisplayRect.top + thirdOfHeight;
-	displayRect = hugeIconRect;
-	MakeTargetRect(tempDisplayRect, &displayRect);
-	icon.Display(displayRect);
+		// small icon rect
+		tempRect.top = tempRect.bottom;
+		tempRect.bottom = gWorldRect.bottom;
+		smallDisplayRect = smallIconRect;
+		MakeTargetRect(tempRect, &smallDisplayRect);
+	}
+	else if (!(icon.members & hugeSize) && (icon.members & largeSize) && (icon.members & smallSize))
+	{
+		// large icon rect
+		tempRect = gWorldRect;
+		tempRect.bottom = tempRect.top + (tempRect.bottom - tempRect.top) * 5/9;
+		largeDisplayRect = largeIconRect;
+		MakeTargetRect(tempRect, &largeDisplayRect);
 	
-	// the large icon goes in the middle third
-	OffsetRect(&tempDisplayRect, 0, thirdOfHeight);
-	displayRect = largeIconRect;
-	MakeTargetRect(tempDisplayRect, &displayRect);
-	icon.Display(displayRect);
+		// small icon rect
+		tempRect.top = tempRect.bottom;
+		tempRect.bottom = gWorldRect.bottom;
+		smallDisplayRect = smallIconRect;
+		MakeTargetRect(tempRect, &smallDisplayRect);
+	}
+	else if (!(icon.members & hugeSize) && !(icon.members & largeSize) && (icon.members & smallSize))
+	{
+		// small icon rect
+		smallDisplayRect = smallIconRect;
+		MakeTargetRect(gWorldRect, &smallDisplayRect);
+	}
+	else if (!(icon.members & hugeSize) && (icon.members & largeSize) && !(icon.members & smallSize))
+	{
+		// large icon rect
+		largeDisplayRect = largeIconRect;
+		MakeTargetRect(gWorldRect, &largeDisplayRect);
+	}
+	else if ((icon.members & hugeSize) && !(icon.members & largeSize) && !(icon.members & smallSize))
+	{
+		// huge icon rect
+		hugeDisplayRect = hugeIconRect;
+		MakeTargetRect(gWorldRect, &hugeDisplayRect);
+	}
+	else if ((icon.members & hugeSize) && !(icon.members & largeSize) && (icon.members & smallSize))
+	{
+		// huge icon rect
+		tempRect = gWorldRect;
+		tempRect.bottom = tempRect.top + (tempRect.bottom - tempRect.top) * 2/3;
+		hugeDisplayRect = hugeIconRect;
+		MakeTargetRect(tempRect, &hugeDisplayRect);
 	
-	// and the small icon goes into the lower third
-	OffsetRect(&tempDisplayRect, 0, thirdOfHeight);
-	displayRect = smallIconRect;
-	MakeTargetRect(tempDisplayRect, &displayRect);
-	icon.Display(displayRect);
+		// small icon rect
+		tempRect.top = tempRect.bottom;
+		tempRect.bottom = gWorldRect.bottom;
+		smallDisplayRect = smallIconRect;
+		MakeTargetRect(tempRect, &smallDisplayRect);
+	}
+	else if ((icon.members & hugeSize) && (icon.members & largeSize) && !(icon.members & smallSize))
+	{
+		// huge icon rect
+		tempRect = gWorldRect;
+		tempRect.bottom = tempRect.top + (tempRect.bottom - tempRect.top) * 5/9;
+		hugeDisplayRect = hugeIconRect;
+		MakeTargetRect(tempRect, &hugeDisplayRect);
+	
+		// large icon rect
+		tempRect.top = tempRect.bottom;
+		tempRect.bottom = gWorldRect.bottom;
+		largeDisplayRect = largeIconRect;
+		MakeTargetRect(tempRect, &largeDisplayRect);
+	}
+
+	if (!EmptyRect(&hugeDisplayRect))
+		icon.Display(hugeDisplayRect);
+	if (!EmptyRect(&largeDisplayRect))
+		icon.Display(largeDisplayRect);
+	if (!EmptyRect(&smallDisplayRect))
+		icon.Display(smallDisplayRect);	
 	
 	// we're done, so we can display
 	RESTOREGWORLD;
@@ -421,7 +537,7 @@ void DisplayIconPreview(ControlHandle displayControl, FSSpec srcSpec, long ID)
 	BackColor(whiteColor);
 	CopyBits((BitMap*)*tempPix,
 			 &qd.thePort->portBits,
-			 &tempRect,
+			 &gWorldRect,
 			 &(**displayControl).contrlRect,
 			 srcCopy,
 			 NULL);

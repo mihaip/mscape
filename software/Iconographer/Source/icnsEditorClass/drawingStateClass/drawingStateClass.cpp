@@ -21,8 +21,6 @@
 
 drawingStateClass::drawingStateClass(drawingStatePtr previousLastState, icnsEditorPtr editor)
 {
-	Rect		drawingRect, // the bounds of the gworld that we'll be saving
-				selectionRect; // the rectangle that is the size of the selection
 	drawingStatePtr	tempState, // temporary states used in the deletion of uneeded items
 					tempState2;
 					
@@ -56,45 +54,19 @@ drawingStateClass::drawingStateClass(drawingStatePtr previousLastState, icnsEdit
 	if (editor->status & selectionFloated) // if there's a floated selection
 	{
 		// we must save its contents too
-		selectionRect = (**editor->selectionPix).bounds;
-		NewGWorld(&selectionGW,
-				 (**editor->selectionPix).pixelSize,
-				 &selectionRect,
-				 (**editor->selectionPix).pmTable,
-				 NULL,
-				 0);
-		selectionPix = GetGWorldPixMap(selectionGW);
-		LockPixels(selectionPix);
-		CropPixMap(selectionPix, (**editor->selectionPix).rowBytes & 0x3FFF);
-		CopyPixMap(editor->selectionPix,
-				   selectionPix,
-				   &selectionRect,
-				   &selectionRect,
-				   srcCopy,
-				   NULL);
+		selectionBounds = (**editor->selectionPix).bounds;
+		selectionDepth = (**editor->selectionPix).pixelSize;
+		if ((editor->currentPixName == h8mk) ||
+			(editor->currentPixName == l8mk) ||
+			(editor->currentPixName == s8mk))
+			selectionColorTable = GetCTable(40);
+		else
+		selectionColorTable = NULL;
+		CompressPixMap(editor->selectionPix, &selectionData, &selectionDataSize);
 	}
 	
 	// and now we save the contents of the drawing itself
-	drawingRect = (**editor->currentPix).bounds;
-	
-	NewGWorld(&drawingGW,
-			  (**editor->currentPix).pixelSize,
-			  &drawingRect,
-			  (**editor->currentPix).pmTable,
-			  NULL,
-			  0);
-			  
-	drawingPix = GetGWorldPixMap(drawingGW);
-	LockPixels(drawingPix);
-	
-	SetGWorld(drawingGW, NULL);
-	
-	CopyPixMap(editor->currentPix,
-			   drawingPix,
-			   &drawingRect,
-			   &drawingRect,
-			   srcCopy,
-			   NULL);
+	CompressPixMap(editor->currentPix, &drawingData, &drawingDataSize);
 	
 	// we also need to remember from which pixmap/gworld it was taken
 	drawingSrcPix = editor->currentPix;
@@ -103,7 +75,7 @@ drawingStateClass::drawingStateClass(drawingStatePtr previousLastState, icnsEdit
 	
 	// and also the status and the current icon sizes
 	status = editor->status;
-	sizes = editor->sizes;
+	members = editor->members;
 	
 	RESTOREGWORLD;
 	RESTORECOLORS; // we're done, so we can restore the colors
@@ -131,13 +103,13 @@ drawingStateClass::~drawingStateClass(void)
 	if (status & selectionFloated)
 	{
 		// and of the selection contents (if any)
-		UnlockPixels(selectionPix);
-		DisposeGWorld(selectionGW);
+		DisposePtr(selectionData);
+		if (selectionColorTable != NULL)
+			DisposeCTable(selectionColorTable);
 	}
 	
-	// and finally of the drawing contents
-	UnlockPixels(drawingPix);
-	DisposeGWorld(drawingGW);
+	DisposePtr(drawingData);
+	
 }
 
 // __________________________________________________________________________________________
@@ -156,15 +128,8 @@ void drawingStateClass::RestoreState(icnsEditorPtr editor)
 	SAVEGWORLD;
 	SAVECOLORS; // again, we'll be doing some copying
 	
-	SetGWorld(drawingGW, NULL);
-		
 	// first we restore the drawing
-	CopyPixMap(drawingPix,
-			   drawingSrcPix,
-			   &(**drawingPix).bounds,
-			   &(**drawingPix).bounds,
-			   srcCopy,
-			   NULL);
+	DecompressToPixMap((unsigned char*)drawingData, drawingSrcPix);
 			   
 	if (status & selectionFloated)
 	// then the selection, if any
@@ -173,21 +138,16 @@ void drawingStateClass::RestoreState(icnsEditorPtr editor)
 		DisposeGWorld(editor->selectionGW);
 		// we're restoring the attributes of the saved selection
 		NewGWorld(&editor->selectionGW,
-					(**selectionPix).pixelSize,	// including depth
-					&(**selectionPix).bounds,   // dimenions
-					(**selectionPix).pmTable,	// and color table (if any)
+					selectionDepth,	// including depth
+					&selectionBounds,   // dimenions
+					selectionColorTable,	// and color table (if any)
 					NULL,
 					0);
 		editor->selectionPix = GetGWorldPixMap(editor->selectionGW);
 		LockPixels(editor->selectionPix);
 		
 		// the copying of the contents
-		CopyPixMap(selectionPix,
-				   editor->selectionPix,
-				   &(**selectionPix).bounds,
-				   &(**selectionPix).bounds,
-				   srcCopy,
-				   NULL);
+		DecompressToPixMap((unsigned char*)selectionData, editor->selectionPix);
 	}
 	
 	// also the selection shape
@@ -201,11 +161,12 @@ void drawingStateClass::RestoreState(icnsEditorPtr editor)
 		editor->currentPix = drawingSrcPix;
 		editor->currentGW = drawingSrcGW;
 		editor->currentPixName = drawingPixName;
+		editor->RefreshPopups();
 	}
 	
 	// restoring the status
 	editor->status = status;
-	editor->sizes = sizes;
+	editor->members = members;
 	
 	// if there's a selection, we should also update the magnified selection region
 	if (status & hasSelection)
