@@ -5362,7 +5362,7 @@ resource 'PICT' (2055, "Windows 8-bit Picker") {
 };
 
 resource 'STR#' (200, "Basic Strings", purgeable) {
-	{	/* array StringArray: 15 elements */
+	{	/* array StringArray: 18 elements */
 		/* [1] */
 		"Sans-titre",
 		/* [2] */
@@ -5403,7 +5403,18 @@ resource 'STR#' (200, "Basic Strings", purgeable) {
 		"icon",
 		/* [15] */
 		"En l'absence de correction, l'affichage "
-		"dans le Finder pourrait être incorrect."
+		"dans le Finder pourrait être incorrect.",
+		/* [16] */
+		"Les icones Windows ne peuvent disposer d"
+		"e plus de 10 membres (cette icone en a <"
+		"number>).",
+		/* [17] */
+		"Les icones avec trop de membres ne sont "
+		"pas bien affichées par Windows 95/98/Me/"
+		"NT/2000. Souhaitez-vous continuer l'enre"
+		"gistrement ou supprimer des membres ?",
+		/* [18] */
+		"Continuer"
 	}
 };
 
@@ -5437,6 +5448,192 @@ resource 'STR#' (203, "Editor Balloon Help", purgeable) {
 		" menu Visualisation ou la case de redime"
 		"nsionnement en bas à droite de la fenêtr"
 		"e."
+	}
+};
+
+resource 'STR#' (1000, "Preferences Help", purgeable) {
+	{	/* array StringArray: 79 elements */
+		/* [1] */
+		"Appliquer les préférences affichées.",
+		/* [2] */
+		"Revenir aux réglages précédents.",
+		/* [3] */
+		"",
+		/* [4] */
+		"",
+		/* [5] */
+		"",
+		/* [6] */
+		"",
+		/* [7] */
+		"Notez que certains formats ne supportent"
+		" pas toutess les options (p. ex. Windows"
+		" ne gère pas les masques 8-bits ni les r"
+		"essource flags).",
+		/* [8] */
+		"",
+		/* [9] */
+		"",
+		/* [10] */
+		"",
+		/* [11] */
+		"",
+		/* [12] */
+		"",
+		/* [13] */
+		"",
+		/* [14] */
+		"",
+		/* [15] */
+		"",
+		/* [16] */
+		"",
+		/* [17] */
+		"",
+		/* [18] */
+		"16 x 12 pixels",
+		/* [19] */
+		"128 x 128 pixels",
+		/* [20] */
+		"48 x 48 pixels",
+		/* [21] */
+		"32 x 32 pixels",
+		/* [22] */
+		"16 x 16 pixels",
+		/* [23] */
+		"",
+		/* [24] */
+		"",
+		/* [25] */
+		"",
+		/* [26] */
+		"",
+		/* [27] */
+		"",
+		/* [28] */
+		"",
+		/* [29] */
+		"",
+		/* [30] */
+		"",
+		/* [31] */
+		"",
+		/* [32] */
+		"",
+		/* [33] */
+		"",
+		/* [34] */
+		"",
+		/* [35] */
+		"",
+		/* [36] */
+		"",
+		/* [37] */
+		"",
+		/* [38] */
+		"",
+		/* [39] */
+		"",
+		/* [40] */
+		"",
+		/* [41] */
+		"",
+		/* [42] */
+		"",
+		/* [43] */
+		"",
+		/* [44] */
+		"",
+		/* [45] */
+		"",
+		/* [46] */
+		"",
+		/* [47] */
+		"",
+		/* [48] */
+		"",
+		/* [49] */
+		"",
+		/* [50] */
+		"",
+		/* [51] */
+		"",
+		/* [52] */
+		"",
+		/* [53] */
+		"",
+		/* [54] */
+		"",
+		/* [55] */
+		"",
+		/* [56] */
+		"Editeur externe sélectionné.",
+		/* [57] */
+		"",
+		/* [58] */
+		"Raccourci-clavier d'éditeur sélectionné.",
+		/* [59] */
+		"",
+		/* [60] */
+		"",
+		/* [61] */
+		"",
+		/* [62] */
+		"N'afficher que les membres non-vides dan"
+		"s la palette.",
+		/* [63] */
+		"Eviter certains problèmes d'affichage.",
+		/* [64] */
+		"Utiliser les motifs pour simuler plus de"
+		" couleurs.",
+		/* [65] */
+		"",
+		/* [66] */
+		"",
+		/* [67] */
+		"",
+		/* [68] */
+		"",
+		/* [69] */
+		"",
+		/* [70] */
+		"",
+		/* [71] */
+		"",
+		/* [72] */
+		"",
+		/* [73] */
+		"",
+		/* [74] */
+		"",
+		/* [75] */
+		"Utiliser les positions par défaut.",
+		/* [76] */
+		"",
+		/* [77] */
+		"",
+		/* [78] */
+		"",
+		/* [79] */
+		"Conserver les membres utilisés, le nivea"
+		"u de zoom, etc."
+	}
+};
+
+resource 'STR#' (1003, "Add Member Help", purgeable) {
+	{	/* array StringArray: 5 elements */
+		/* [1] */
+		"Créer le membre sélectionné.",
+		/* [2] */
+		"Ne rien faire",
+		/* [3] */
+		"",
+		/* [4] */
+		"Choisir la taille et la profondeur d'un "
+		"membre.",
+		/* [5] */
+		"Créer un nouveau membre d'après un membr"
+		"e existant (optionnel)."
 	}
 };
 

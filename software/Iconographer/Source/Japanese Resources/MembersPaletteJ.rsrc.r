@@ -1,7 +1,7 @@
 /* Resource fork of software/Iconographer/Source/Japanese Resources/MembersPaletteJ.rsrc */
 resource 'CNTL' (400, "Members Pane", purgeable) {
 	{0, 4294967295, 128, 141},
-	0,
+	2,
 	visible,
 	100,
 	0,

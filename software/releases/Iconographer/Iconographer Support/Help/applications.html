@@ -1,0 +1,50 @@
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="content-type" CONTENT="text/html;charset=iso-8859-1">
+	<TITLE>Incorporating Icons into Applications</TITLE>
+	<META NAME="DP" CONTENT="1.9.1/3.1.1">
+</HEAD>
+<BODY BGCOLOR="#ffffff" link="#CC6600" alink="#AA33A00" vlink="#AA3300">
+<TABLE WIDTH=350><TR><TD valign=top>
+<FONT FACE="Helvetica,Arial" SIZE="4" COLOR="#993300"><B>Icons and Applications</B></FONT>
+<UL>
+	<FONT FACE="Geneva,Arial" SIZE="2">
+	Although editing the icons of single documents and folders is as easy as dragging that item onto Iconographer, changing an application's icons on a global scale requires more work. These icons are generally stored within the application file itself, along with a list determining which document types they are associated with. There are three basic categories of applications that Iconographer can handle, <A HREF="#resource">classic, resource-fork based ones</A>, <A HREF="#package">modern, packaged-ones</A> and <A HREF="#rb">applicatiosn created with RealBasic</A>.
+	</FONT>
+</UL>
+<A NAME="resource">
+<FONT FACE="Helvetica,Arial" SIZE="4" COLOR="#993300"><B>Resource Fork Based Applications</B></FONT>
+<UL>
+	<FONT FACE="Geneva,Arial" SIZE="2">
+	A resource-fork based application is a single file in which all of the icons and associated data are stored within the program itself. Simply opening the application file with Iconographer should present you with a browser window containg all the application's icons. These icons can be in either the <A HREF="iconbasics.html#formatold">Mac OS Old</A> or <A HREF="iconbasics.html#formatnew">Mac OS New</A> formats.
+	<P>
+	File type associations are determined by a 'BNDL' resource. Using a resource editor such as <A HREF="http://download.info.apple.com/Apple_Support_Area/Apple_Software_Updates/English-North_American/Macintosh/Utilities/ResEdit_2.1.3.sea.bin">ResEdit</A> or <A HREF="http://www.mathemaesthetics.com/">Resorcerer</A> it is possible to check which icon belongs to what document type and add new ones.</FONT>
+</UL>
+
+<A NAME="rb">
+<FONT FACE="Helvetica,Arial" SIZE="4" COLOR="#993300"><B>Packaged Applications</B></FONT>
+<UL>
+	<FONT FACE="Geneva,Arial" SIZE="2">
+	A packaged application is really a folder that contains all of the files associated with that program. To open up a packaged application, simply control-click on its icon in the Finder and select the "Show Package Contents" menu command (available only with Mac OS 9.x and Mac OS X). Inside there should be a "Contents" folder. There you will find a "Info.plist" file that controls the icons and documentes associated with that program. Opening it with the PropertyListEditor program (available with the Mac OS X Developer Tools CD) should present a hierarchical list of keys. The list of documents associated with the program is under the "CFBundleDocumentTypes" key. The "CFBundleTypeIconFile" property specifies the actual association. This value can either be a file (usually with a .icns extension) or a resorce ID of an icon.
+	<P>
+	If the application uses .icns files for its icons then these are in the <A HREF="iconbasics.html#formatosx">Mac OS X</A> format. They are usually contained within the "Resources" folder inside the application package. Iconographer can edit these directly, and you can add further icons by simply saving additional .icns files.
+	<P>
+	In the case of resource-based icons, they are stored within various .rsrc files also inside the "Resources" folder in the package. You can open these files directly in Iconographer and create and edit the icons contained in it that use either the <A HREF="iconbasics.html#formatold">Mac OS Old</A> or the <A HREF="iconbasics.html#formatnew">Mac OS New</A> formats.
+</UL>
+
+<A NAME="rb">
+<FONT FACE="Helvetica,Arial" SIZE="4" COLOR="#993300"><B>RealBasic Applications</B></FONT>
+<UL>
+	<FONT FACE="Geneva,Arial" SIZE="2">
+	Once compiled and ready for distribution, RealBasic applications behave  in the same manner as <A HREF="#resource">resource-fork based ones</A>. While building your program, associating icons with your project's final application and documents can be done directly within RealBasic's "File Types" dialog that is accessed from the Edit menu. However, this does not allow the inclusion of <A HREF="iconbasics.html#formatnew">Mac OS New</A> icons, only <A HREF="iconbasics.html#formatold">Mac OS Old</A> ones. To have icons of both types, it necessary to use an extra file. Use Iconographer to create all of your icons (with IDs numbered sequentially from 128 and higher) and save all of them in a file called "Resources." Upon dragging that file into the RealBasic IDE project window, all of the icons contained in it will be included in the final compiled application.
+</FONT>
+</UL>
+
+</TABLE></FONT></P>
+</FONT>
+</UL>
+<CENTER><FONT FACE="Geneva,Arial" SIZE="2"><B><A HREF="toc.html">Table of Contents</A></B><FONT></CENTER>
+</TD></TR></TABLE>
+</BODY>
+</HTML>
+

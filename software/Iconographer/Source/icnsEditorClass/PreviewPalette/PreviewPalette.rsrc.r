@@ -138,24 +138,14 @@ resource 'MENU' (500) {
 	}
 };
 
-resource 'STR#' (500, "Tool Palette Balloon Help", purgeable) {
+resource 'STR#' (500, "Preview Palette Help", purgeable) {
 	{	/* array StringArray: 3 elements */
 		/* [1] */
-		"Preview Size\n\nThe slider and text field "
-		"can be used to change the size of the pr"
-		"eview. Possible selections include anyth"
-		"ing between 128 and 64 (the icon will be"
-		" scaled smoothly), 48, 32, 16 and 12.",
+		"Preview Size",
 		/* [2] */
-		"Preview Area\n\nThe current icon member an"
-		"d mask are displayed here at the selecte"
-		"d size.",
+		"Preview (click to view selected version)",
 		/* [3] */
-		"Preview Settings\n\nThis menu can be used "
-		"to select the state of the preview icon "
-		"(normal or selected) and the background "
-		"(desktop, list view, white, black or a c"
-		"ustom color)."
+		"Preview background and state settings"
 	}
 };
 

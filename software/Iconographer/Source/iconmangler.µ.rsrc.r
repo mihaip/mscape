@@ -30,7 +30,7 @@ resource 'DITL' (129, "Registration") {
 			"OK"
 		},
 		/* [2] */
-		{102, 190, 121, 254},
+		{102, 190, 122, 254},
 		Button {
 			enabled,
 			"Cancel"
@@ -354,7 +354,7 @@ resource 'DLOG' (3002, "Save File", purgeable) {
 };
 
 resource 'MBAR' (128) {
-	{	/* array MenuArray: 5 elements */
+	{	/* array MenuArray: 6 elements */
 		/* [1] */
 		128,
 		/* [2] */
@@ -364,7 +364,9 @@ resource 'MBAR' (128) {
 		/* [4] */
 		136,
 		/* [5] */
-		138
+		138,
+		/* [6] */
+		139
 	}
 };
 
@@ -476,9 +478,9 @@ resource 'MENU' (132) {
 		/* [4] */
 		"Inverse", noIcon, "I", noMark, plain,
 		/* [5] */
-		"Expand/Contract", noIcon, "E", noMark, plain,
+		"Expand/Contract…", noIcon, "E", noMark, plain,
 		/* [6] */
-		"Stroke", noIcon, noKey, noMark, plain
+		"Stroke…", noIcon, noKey, noMark, plain
 	}
 };
 
@@ -597,6 +599,20 @@ resource 'MENU' (137) {
 resource 'MENU' (138) {
 	138,
 	textMenuProc,
+	0x7FFFFFFC,
+	enabled,
+	"Effects",
+	{	/* array: 2 elements */
+		/* [1] */
+		"Reapply", noIcon, "F", noMark, plain,
+		/* [2] */
+		"-", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (139) {
+	139,
+	textMenuProc,
 	0x7FFFFFCF,
 	enabled,
 	"Window",
@@ -616,7 +632,22 @@ resource 'MENU' (138) {
 	}
 };
 
+data 'Mcmd' (1) {
+	$"0000"                                               /* .. */
+};
+
+data 'Mcmd' (131) {
+	$"000C 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000"                                               /* .. */
+};
+
 data 'Mcmd' (136) {
+	$"0000"                                               /* .. */
+};
+
+data 'Mcmd' (138) {
 	$"0000"                                               /* .. */
 };
 
@@ -722,7 +753,7 @@ data 'Pref' (129, "Default Preferences") {
 };
 
 resource 'STR#' (128, "Default Names", purgeable) {
-	{	/* array StringArray: 36 elements */
+	{	/* array StringArray: 37 elements */
 		/* [1] */
 		"Iconographer",
 		/* [2] */
@@ -795,7 +826,9 @@ resource 'STR#' (128, "Default Names", purgeable) {
 		/* [35] */
 		"Registered To:",
 		/* [36] */
-		"Reposition"
+		"Reposition",
+		/* [37] */
+		"Reaplly “<effect name>”"
 	}
 };
 
@@ -929,7 +962,7 @@ resource 'STR#' (130, "Prompts", purgeable) {
 		"ld like to order your <app name> registr"
 		"ation code.",
 		/* [13] */
-		"Welcome to <app name> 2.1. If this is yo"
+		"Welcome to <app name> 2.4. If this is yo"
 		"ur first time using it, and you would li"
 		"ke to get more information on its operat"
 		"ion, extensive documentation is availabl"
@@ -1139,7 +1172,7 @@ resource 'STR#' (153, "Edit Balloon Help", purgeable) {
 };
 
 resource 'STR#' (154, "Select Balloon Help", purgeable) {
-	{	/* array StringArray: 8 elements */
+	{	/* array StringArray: 12 elements */
 		/* [1] */
 		"Selects the entire icon.",
 		/* [2] */
@@ -1152,21 +1185,34 @@ resource 'STR#' (154, "Select Balloon Help", purgeable) {
 		/* [4] */
 		"Selects colors similar to the ones found"
 		" in the current selection.\n\nNot availabl"
-		"e because there is no selection availabl"
-		"e.",
+		"e because no selection has been made.",
 		/* [5] */
 		"Removes the current selection.",
 		/* [6] */
 		"Removes the current selection.\n\nNot avai"
-		"lable because there is no selection avai"
-		"lable.",
+		"lable because no selection has been made"
+		".",
 		/* [7] */
 		"Selects what is not currently selected a"
 		"nd vice-versa.",
 		/* [8] */
 		"Selects what is not currently selected a"
-		"nd vice-versa.\n\nNot available because th"
-		"ere is no selection available."
+		"nd vice-versa.\n\nNot available because no"
+		" selection has been made.",
+		/* [9] */
+		"Uniformly enlarges or shrinks the curren"
+		"t selection.",
+		/* [10] */
+		"Uniformly enlarges or shrinks the curren"
+		"t selection.\n\nNot available because no s"
+		"election has been made.",
+		/* [11] */
+		"Outlines the current selection onto the "
+		"current icon.",
+		/* [12] */
+		"Outlines the current selection onto the "
+		"current icon.\n\nNot available because no "
+		"selection has been made."
 	}
 };
 
@@ -1252,7 +1298,7 @@ resource 'STR#' (157, "Copy Balloon Help", purgeable) {
 };
 
 resource 'STR#' (158, "Icon Balloon Help", purgeable) {
-	{	/* array StringArray: 15 elements */
+	{	/* array StringArray: 23 elements */
 		/* [1] */
 		"Icon Menu\n\nThis menu can be used to modi"
 		"fy certain attributes of the front-most "
@@ -1263,61 +1309,91 @@ resource 'STR#' (158, "Icon Balloon Help", purgeable) {
 		"icon.\n\nNot available because there are n"
 		"o open editors.",
 		/* [3] */
-		"This command increases the magnification"
-		" level of the front-most icon.",
+		"Increases the magnification level of the"
+		" front-most icon.",
 		/* [4] */
-		"This command increases the magnification"
-		" level of the front-most icon.\n\nNot avai"
-		"lable because the icon is at maximum mag"
-		"nification, or because there are no open"
-		" icons.",
+		"Increases the magnification level of the"
+		" front-most icon.\n\nNot available because"
+		" the icon is at maximum magnification, o"
+		"r because there are no open icons.",
 		/* [5] */
-		"This command decreases the magnification"
-		" level of the front-most icon.",
+		"Decreases the magnification level of the"
+		" front-most icon.",
 		/* [6] */
-		"This command decreases the magnification"
-		" level of the front-most icon.\n\nNot avai"
-		"lable because the icon is at minimum mag"
-		"nification, or because there are no open"
-		" icons.",
+		"Decreases the magnification level of the"
+		" front-most icon.\n\nNot available because"
+		" the icon is at minimum magnification, o"
+		"r because there are no open icons.",
 		/* [7] */
-		"This command allows you to change the co"
-		"lor palette used for the current icon.\n\n"
-		"Not available because the current depth "
-		"does not support different color depths,"
-		" or because there are no open icons.",
+		"Sets the magnification level to the high"
+		"est level possible that still allows the"
+		" entire icon to be visible.",
 		/* [8] */
-		"Displays a dialog which allows you to in"
-		"sert a new icon into the current file.",
+		"Sets the magnification level to the high"
+		"est level possible that still allows the"
+		" entire icon to be visible.\n\nNot availab"
+		"le because there are no open icons.",
 		/* [9] */
-		"Displays a dialog which allows you to in"
-		"sert a new icon into the current file.\n\n"
-		"Not available because no file is open (t"
-		"he front-most window must be an icon bro"
-		"wser).",
+		"Sets the magnification level to 100 perc"
+		"ent.",
 		/* [10] */
+		"Sets the magnification level to 100 perc"
+		"ent.\n\nNot available because there are no"
+		" open icons.",
+		/* [11] */
+		"Allows you to change the color palette u"
+		"sed for the current icon.\n\nNot available"
+		" because the current depth does not supp"
+		"ort different color depths, or because t"
+		"here are no open icons.",
+		/* [12] */
+		"Displays a dialog which allows you to in"
+		"sert a new icon or member into the curre"
+		"nt file.",
+		/* [13] */
+		"Displays a dialog which allows you to in"
+		"sert a new icon or member into the curre"
+		"nt file.\n\nNot available because no icon "
+		"is open.",
+		/* [14] */
 		"Displays a dialog which allows you to ch"
 		"ange the ID, name and flags of the curre"
 		"nt icon.",
-		/* [11] */
+		/* [15] */
 		"Displays a dialog which allows you to ch"
 		"ange the ID, name and flags of the curre"
 		"nt icon.\n\nNot available because there ar"
 		"e no open icons.",
-		/* [12] */
+		/* [16] */
 		"Toggles the visibily of the pixel grid ("
 		"thin white lines which separate one magn"
 		"ified pixel from another).",
-		/* [13] */
+		/* [17] */
 		"Toggles the visibily of the pixel grid ("
 		"thin white lines which separate one magn"
 		"ified pixel from another).\n\nNot availabl"
 		"e because no icons are open.",
-		/* [14] */
+		/* [18] */
+		"Automatically creates a visibility contr"
+		"olling mask that is applied to the curre"
+		"nt member.",
+		/* [19] */
+		"Automatically creates a visibility contr"
+		"olling mask that is applied to the curre"
+		"nt member.\n\nNot available because no ico"
+		"ns are open.",
+		/* [20] */
+		"Fills in all of the empty members based "
+		"on already drawn ones.",
+		/* [21] */
+		"Fills in all of the empty members based "
+		"on already drawn ones.\n\nNot available be"
+		"cause no icons are open.",
+		/* [22] */
 		"Opens the current icon into the external"
 		" that has been selected in the preferenc"
 		"es dialog.",
-		/* [15] */
+		/* [23] */
 		"Opens the current icon into the external"
 		" that has been selected in the preferenc"
 		"es dialog.\n\nNot available because there "
@@ -1338,8 +1414,8 @@ resource 'STR#' (159, "Colors Balloon Help", purgeable) {
 	}
 };
 
-resource 'STR#' (160, "About Balloon Help", purgeable) {
-	{	/* array StringArray: 3 elements */
+resource 'STR#' (160, "About Help", purgeable) {
+	{	/* array StringArray: 4 elements */
 		/* [1] */
 		"Click here to e-mail the author (require"
 		"s Internet Config).",
@@ -1347,30 +1423,32 @@ resource 'STR#' (160, "About Balloon Help", purgeable) {
 		"Click here to visit the Mscape Software "
 		"homepage (requires Internet Config).",
 		/* [3] */
+		"",
+		/* [4] */
 		"If you’ve paid, thank your very much. If"
 		" you haven’t, perhaps you should conside"
 		"r it."
 	}
 };
 
-resource 'STR#' (161, "Registration Balloon Help", purgeable) {
+resource 'STR#' (161, "Registration Help", purgeable) {
 	{	/* array StringArray: 6 elements */
 		/* [1] */
-		"Click here to verify your registration c"
-		"ode. If it is valid then Iconographer wi"
-		"ll be registered.",
+		"Verify your registration code. If it is "
+		"valid then Iconographer will be register"
+		"ed.",
 		/* [2] */
-		"This button will abort the registration.",
+		"Abort the registration.",
 		/* [3] */
-		"Click here to open up the Register appli"
-		"cation. You can then fill out the form, "
-		"send it to Kagi and pay for Iconographer"
-		", thus removing the shareware messsages.",
+		"You can then fill out a registration for"
+		"m, send it to Kagi and pay for Iconograp"
+		"her, thus removing the shareware messsag"
+		"es.",
 		/* [4] */
-		"Your name should be entered here. Please"
-		" make sure to type it in exactly as it a"
-		"ppears in the registration e-mail, since"
-		" the serial number is based on it.",
+		"Please make sure to type your name exact"
+		"ly as it appears in the registration e-m"
+		"ail, since the serial number is based on"
+		" it.",
 		/* [5] */
 		"Optionally, your company name can be ent"
 		"ered here.",
@@ -1415,6 +1493,42 @@ resource 'STR#' (162, "Windows Balloon Help", purgeable) {
 	}
 };
 
+resource 'STR#' (163, "Effects Balloon Help", purgeable) {
+	{	/* array StringArray: 4 elements */
+		/* [1] */
+		"Effects Menu\n\nThis menu can be used to a"
+		"pply various filters and effects to the "
+		"current icon.",
+		/* [2] */
+		"Effects Menu\n\nThis menu can be used to a"
+		"pply various filters and effects to the "
+		"current icon.\n\nNot available because no "
+		"icons are open.",
+		/* [3] */
+		"Reapplies the last selected effected to "
+		"the icon.",
+		/* [4] */
+		"Reapplies the last selected effected to "
+		"the icon.\n\nNot available because no effe"
+		"cts have been applied yet."
+	}
+};
+
+resource 'dctb' (129) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
+	}
+};
+
 resource 'dlgx' (-6043) {
 	versionZero {
 		9
@@ -1445,7 +1559,64 @@ resource 'dlgx' (3002) {
 	}
 };
 
+data 'ictb' (129) {
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000"                                          /* .... */
+};
+
+resource 'mctb' (131) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (132) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
 resource 'mctb' (136) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (138) {
 	{	/* array MCTBArray: 1 elements */
 		/* [1] */
 		mctbLast, 0,

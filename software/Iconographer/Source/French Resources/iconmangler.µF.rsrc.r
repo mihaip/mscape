@@ -544,7 +544,7 @@ resource 'ICN#' (131, "Mac OS X Icon") {
 };
 
 resource 'MBAR' (128) {
-	{	/* array MenuArray: 5 elements */
+	{	/* array MenuArray: 6 elements */
 		/* [1] */
 		128,
 		/* [2] */
@@ -554,7 +554,9 @@ resource 'MBAR' (128) {
 		/* [4] */
 		136,
 		/* [5] */
-		138
+		138,
+		/* [6] */
+		139
 	}
 };
 
@@ -656,7 +658,7 @@ resource 'MENU' (132) {
 	allEnabled,
 	enabled,
 	"Select",
-	{	/* array: 5 elements */
+	{	/* array: 6 elements */
 		/* [1] */
 		"Tout sélectionner", noIcon, "A", noMark, plain,
 		/* [2] */
@@ -666,7 +668,9 @@ resource 'MENU' (132) {
 		/* [4] */
 		"Intervertir", noIcon, "I", noMark, plain,
 		/* [5] */
-		"Dilater/Contacter", noIcon, "E", noMark, plain
+		"Dilater/Contacter…", noIcon, "E", noMark, plain,
+		/* [6] */
+		"Encadre…", noIcon, noKey, noMark, plain
 	}
 };
 
@@ -731,35 +735,39 @@ resource 'MENU' (135) {
 resource 'MENU' (136) {
 	136,
 	textMenuProc,
-	0x7FFFF6EB,
+	0x7FFFDBAF,
 	enabled,
 	"Icone",
-	{	/* array: 13 elements */
+	{	/* array: 15 elements */
 		/* [1] */
 		"Agrandir", noIcon, "=", noMark, plain,
 		/* [2] */
 		"Réduire", noIcon, "-", noMark, plain,
 		/* [3] */
-		"-", noIcon, noKey, noMark, plain,
+		"Taille écran", noIcon, "0", noMark, plain,
 		/* [4] */
-		"Couleurs", noIcon, hierarchicalMenu, "â", plain,
+		"Taille réelle", noIcon, "0", noMark, plain,
 		/* [5] */
 		"-", noIcon, noKey, noMark, plain,
 		/* [6] */
-		"Insérer", noIcon, "K", noMark, plain,
+		"Couleurs", noIcon, hierarchicalMenu, "â", plain,
 		/* [7] */
-		"Informations…", noIcon, "I", noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [8] */
-		"Show Pixel Grid", noIcon, "G", noMark, plain,
+		"Insérer", noIcon, "K", noMark, plain,
 		/* [9] */
-		"-", noIcon, noKey, noMark, plain,
+		"Informations…", noIcon, "I", noMark, plain,
 		/* [10] */
-		"Créer le masque", noIcon, "M", noMark, plain,
+		"Afficher la grille", noIcon, "G", noMark, plain,
 		/* [11] */
-		"Terminer l’icone", noIcon, noKey, noMark, plain,
-		/* [12] */
 		"-", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"Créer le masque", noIcon, "M", noMark, plain,
 		/* [13] */
+		"Terminer l’icone", noIcon, noKey, noMark, plain,
+		/* [14] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [15] */
 		"Ouvrir dans l’éditeur externe", noIcon, noKey, noMark, plain
 	}
 };
@@ -781,16 +789,30 @@ resource 'MENU' (137) {
 resource 'MENU' (138) {
 	138,
 	textMenuProc,
+	0x7FFFFFFC,
+	enabled,
+	"Effets",
+	{	/* array: 2 elements */
+		/* [1] */
+		"Réappliquer", noIcon, "F", noMark, plain,
+		/* [2] */
+		"-", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (139) {
+	139,
+	textMenuProc,
 	0x7FFFFFCF,
 	enabled,
 	"Fenêtres",
 	{	/* array: 6 elements */
 		/* [1] */
-		"Show Tools", noIcon, "1", noMark, plain,
+		"Afficher les outils", noIcon, "1", noMark, plain,
 		/* [2] */
-		"Show Members", noIcon, "2", noMark, plain,
+		"Afficher les membres", noIcon, "2", noMark, plain,
 		/* [3] */
-		"Show Preview", noIcon, "3", noMark, plain,
+		"Afficher la prévisualisation", noIcon, "3", noMark, plain,
 		/* [4] */
 		"Afficher la palette des couleurs", noIcon, "4", noMark, plain,
 		/* [5] */
@@ -907,7 +929,7 @@ data 'Pref' (129, "Default Preferences") {
 };
 
 resource 'STR#' (128, "Default Names", purgeable) {
-	{	/* array StringArray: 35 elements */
+	{	/* array StringArray: 37 elements */
 		/* [1] */
 		"Iconographer",
 		/* [2] */
@@ -927,7 +949,8 @@ resource 'STR#' (128, "Default Names", purgeable) {
 		/* [9] */
 		":Enregistrement",
 		/* [10] */
-		"http://order.kagi.com/?QEJ",
+		"http://order.kagi.com/cgi-bin/r1.cgi?QEJ"
+		"&&lang=fr",
 		/* [11] */
 		"Enregistrement en-ligne",
 		/* [12] */
@@ -978,12 +1001,16 @@ resource 'STR#' (128, "Default Names", purgeable) {
 		/* [34] */
 		"Continuer",
 		/* [35] */
-		"Enregistré pour :"
+		"Enregistré pour :",
+		/* [36] */
+		"Repositionner",
+		/* [37] */
+		"Réappliquer “<effect name>”"
 	}
 };
 
 resource 'STR#' (129, "Standard Errors", purgeable) {
-	{	/* array StringArray: 18 elements */
+	{	/* array StringArray: 20 elements */
 		/* [1] */
 		"Ce fichier est déjà utilisé par un autre"
 		" programme.",
@@ -1054,7 +1081,18 @@ resource 'STR#' (129, "Standard Errors", purgeable) {
 		"(Type <error type>) est survenue. ",
 		/* [18] */
 		"<app name> X nécessite Mac OS X 10.0 ou "
-		"sup."
+		"sup.",
+		/* [19] */
+		"La taille d'écran a été modifiée depuis "
+		"la dernière utilisation de <app name>, e"
+		"t les fenêtres ne sont plus ordonnées. V"
+		"oulez-vous que <app name> repositionne v"
+		"os fenêtres ?",
+		/* [20] */
+		"La résolution de l'écran a été modifiée,"
+		" et les fenêtres ne sont plus ordonnées."
+		" Voulez-vous que <app name> repositionne"
+		" vos fenêtres ?"
 	}
 };
 
@@ -1182,23 +1220,23 @@ resource 'STR#' (152, "File Balloon Help", purgeable) {
 		"Ferme l'éditeur au premier plan.\n\nDésact"
 		"ivé car il n'y a pas d'icone ouverte.",
 		/* [9] */
-		"Saves the front-most icon.",
+		"Enregistre l'icone au premier plan.",
 		/* [10] */
-		"Saves the front-most icon.\n\nNot availabl"
-		"e because there are no open icons, or be"
-		"cause the front-most icon doesn’t need t"
-		"o be saved.",
+		"Enregistre l'icone au premier plan.\n\nDés"
+		"activé car il n'y a pas d'icone ouverte,"
+		" ou car l'icone n'a pas besoin d'être en"
+		"registrée.",
 		/* [11] */
 		"Enregistre l'icone au premier plan.",
 		/* [12] */
 		"Enregistre l'icone au premier plan.\n\nDés"
 		"activé car il n'y a pas d'icone ouverte.",
 		/* [13] */
-		"Insert l'icone au premier-plan dans un f"
+		"Insère l'icone au premier-plan dans un f"
 		"ichier différent (sans remplacer son con"
 		"tenu).",
 		/* [14] */
-		"Insert l'icone au premier-plan dans un f"
+		"Insère l'icone au premier-plan dans un f"
 		"ichier différent (sans remplacer son con"
 		"tenu).\n\nDésactivé car il n'y a pas d'ico"
 		"ne ouverte.",
@@ -1278,8 +1316,8 @@ resource 'STR#' (153, "Edit Balloon Help", purgeable) {
 		/* [14] */
 		"Efface le contenu de la sélection.\n\nDésa"
 		"ctivé parce qu'il n'y a pas de sélection"
-		"\"\n\t\t\" ou parce qu'il n'y a pas d'éditeur"
-		" ouvert.",
+		" ou parce qu'il n'y a pas d'éditeur ouve"
+		"rt.",
 		/* [15] */
 		"Effectue différentes opérations de sélec"
 		"tion.",
@@ -1315,7 +1353,7 @@ resource 'STR#' (153, "Edit Balloon Help", purgeable) {
 };
 
 resource 'STR#' (154, "Select Balloon Help", purgeable) {
-	{	/* array StringArray: 8 elements */
+	{	/* array StringArray: 12 elements */
 		/* [1] */
 		"Sélectionne toute l'icone.",
 		/* [2] */
@@ -1343,7 +1381,21 @@ resource 'STR#' (154, "Select Balloon Help", purgeable) {
 		"Sélectionne les zones non-sélectionnées "
 		"et vice-versa.\n\nDésactivé parce qu'aucun"
 		"e sélection n'est disponible en ce momen"
-		"t."
+		"t.",
+		/* [9] */
+		"Dilate ou contracte de façon homogène la"
+		" sélection courante.",
+		/* [10] */
+		"Dilate ou contracte de façon homogène la"
+		" sélection courante.\n\nDésactivé parce qu"
+		"'aucune sélection n'est disponible en ce"
+		" moment.",
+		/* [11] */
+		"Encadre la sélection courante.",
+		/* [12] */
+		"Encadre la sélection courante.\n\nDésactiv"
+		"é parce qu'aucune sélection n'est dispon"
+		"ible en ce moment."
 	}
 };
 
@@ -1429,7 +1481,7 @@ resource 'STR#' (157, "Copy Balloon Help", purgeable) {
 };
 
 resource 'STR#' (158, "Icon Balloon Help", purgeable) {
-	{	/* array StringArray: 15 elements */
+	{	/* array StringArray: 23 elements */
 		/* [1] */
 		"Menu Icone\n\nUtilisez ce menu pour change"
 		"r certains attributs de l'icone au premi"
@@ -1456,42 +1508,69 @@ resource 'STR#' (158, "Icon Balloon Help", purgeable) {
 		"car le niveau minimal de zoom est attein"
 		"t ou parce qu'il n'y a pas d'icone.",
 		/* [7] */
+		"Augmente le zoom à son niveau maximal to"
+		"ut en conservant toute l'icone affichée.",
+		/* [8] */
+		"Augmente le zoom à son niveau maximal to"
+		"ut en conservant toute l'icone affichée."
+		"\n\nDésactivé car il n'y a pas d'icone ouv"
+		"erte.",
+		/* [9] */
+		"Zoom à 100%.",
+		/* [10] */
+		"Zoom à 100%.\n\nDésactivé car il n'y a pas"
+		" d'icone ouverte.",
+		/* [11] */
 		"Cette commande permet de modifier la pro"
 		"fondeur des couleurs pour cette icone.\n\n"
 		"Désactivé parce qu'il est impossible de "
 		"changer les profondeurs de couleurs de c"
 		"ette icone, ou parce qu'il n'y a pas d'i"
 		"cone ouverte.",
-		/* [8] */
+		/* [12] */
 		"Affiche un dialogue permettant d'insérer"
 		" une nouvelle icone dans le fichier actu"
 		"el.",
-		/* [9] */
+		/* [13] */
 		"Affiche un dialogue permettant d'insérer"
 		" une nouvelle icone dans le fichier actu"
 		"el.\n\nDésactivé car il n'y a pas de fichi"
 		"er ouvert (la fenêtre au premier-plan do"
 		"it être un navigateur d'icone).",
-		/* [10] */
+		/* [14] */
 		"Affiche une fenêtre vous permettant de m"
 		"ofidier le nom, l'ID et les attributs de"
 		" l'icone.",
-		/* [11] */
+		/* [15] */
 		"Affiche une fenêtre vous permettant de m"
 		"ofidier le nom, l'ID et les attributs de"
 		" l'icone.\n\nDésactivé car il n'y a pas de"
 		" fenêtre ouverte.",
-		/* [12] */
+		/* [16] */
 		"Affiche ou masque la grille (fine ligne "
 		"séparant deux pixels aggrandis).",
-		/* [13] */
+		/* [17] */
 		"Affiche ou masque la grille (fine ligne "
 		"séparant deux pixels aggrandis).\n\nDésact"
 		"ivé car il n'y a pas d'éditeur ouvert.",
-		/* [14] */
+		/* [18] */
+		"Crée automatiquement un masque de visibi"
+		"lité, appliqué à l'icone courante.",
+		/* [19] */
+		"Crée automatiquement un masque de visibi"
+		"lité, appliqué à l'icone courante.\n\nDésa"
+		"ctivé car il n'y a pas d'icone ouverte.",
+		/* [20] */
+		"Crée les membres vides, d'après les icon"
+		"es existantes.",
+		/* [21] */
+		"Crée les membres vides, d'après les icon"
+		"es existantes.\n\nDésactivé car il n'y a p"
+		"as d'icone ouverte.",
+		/* [22] */
 		"Ouvre l'icone actuelle dans l'éditeur ex"
 		"terne sélectionné dans les préférences.",
-		/* [15] */
+		/* [23] */
 		"Ouvre l'icone actuelle dans l'éditeur ex"
 		"terne sélectionné dans les préférences.\n"
 		"\nDésactivé car il n'y a pas d'icone ouve"
@@ -1513,7 +1592,7 @@ resource 'STR#' (159, "Colors Balloon Help", purgeable) {
 };
 
 resource 'STR#' (160, "About Balloon Help", purgeable) {
-	{	/* array StringArray: 3 elements */
+	{	/* array StringArray: 4 elements */
 		/* [1] */
 		"Cliquez-ici pour envoyer un e-mail à l'a"
 		"uteur (nécessite Internet Config).",
@@ -1522,6 +1601,8 @@ resource 'STR#' (160, "About Balloon Help", purgeable) {
 		"pe software (nécessite Internet Config)."
 		"\"",
 		/* [3] */
+		"",
+		/* [4] */
 		"Si vous avez payé, merci beaucoup ! Dans"
 		" le cas contraire, vous devriez peut-êtr"
 		"e y réfléchir."
@@ -1593,6 +1674,27 @@ resource 'STR#' (162, "Windows Balloon Help", purgeable) {
 	}
 };
 
+resource 'STR#' (163, "Effects Balloon Help", purgeable) {
+	{	/* array StringArray: 4 elements */
+		/* [1] */
+		"Menu Effets\n\nUtilisez ce menu pour appli"
+		"quer divers effets et filtres à l'icone "
+		"courante.",
+		/* [2] */
+		"Menu Effets\n\nUtilisez ce menu pour appli"
+		"quer divers effets et filtres à l'icone "
+		"courante.\n\nDésactivé car il n'y a pas d'"
+		"icone ouverte.",
+		/* [3] */
+		"Réapplique le dernier effet sélectionné "
+		"à l'icone.",
+		/* [4] */
+		"Réapplique le dernier effet sélectionné "
+		"à l'icone.\n\nDésactivé car aucun effet n'"
+		"a été appliqué."
+	}
+};
+
 resource 'dctb' (3001) {
 	{	/* array ColorSpec: 5 elements */
 		/* [1] */
@@ -1651,155 +1753,6 @@ resource 'dlgx' (3002) {
 	versionZero {
 		9
 	}
-};
-
-data 'hfdr' (-5696, purgeable) {
-	$"0002 0000 0000 0000 0000 0001 0008 0003"            /* ................ */
-	$"0096 0001"                                          /* .ñ.. */
-};
-
-data 'hmnu' (128, "Apple", purgeable) {
-	$"0002 0000 0000 0000 0000 0003 0004 0100"            /* ................ */
-	$"0004 0100 0014 0003 0097 0001 0097 0002"            /* .........ó...ó.. */
-	$"0000 0000 0000 0000 0014 0003 0097 0003"            /* .............ó.. */
-	$"0097 0004 0000 0000 0000 0000"                      /* .ó.......... */
-};
-
-data 'hmnu' (129, "File", purgeable) {
-	$"0002 0000 0000 0000 0000 000C 0004 0100"            /* ................ */
-	$"0014 0003 0098 0001 0098 0002 0000 0000"            /* .....ò...ò...... */
-	$"0098 0002 0014 0003 0098 0003 0098 0004"            /* .ò.......ò...ò.. */
-	$"0000 0000 0000 0000 0014 0003 0098 0005"            /* .............ò.. */
-	$"0098 0006 0000 0000 0000 0000 0004 0100"            /* .ò.............. */
-	$"0014 0003 0098 0007 0098 0008 0000 0000"            /* .....ò...ò...... */
-	$"0000 0000 0004 0100 0014 0003 0098 0009"            /* .............ò.. */
-	$"0098 000A 0000 0000 0000 0000 0014 0003"            /* .ò.............. */
-	$"0098 000B 0098 000C 0000 0000 0000 0000"            /* .ò...ò.......... */
-	$"0014 0003 0098 000D 0098 000E 0000 0000"            /* .....ò...ò...... */
-	$"0000 0000 0014 0003 0098 000F 0098 0010"            /* .........ò...ò.. */
-	$"0000 0000 0000 0000 0004 0100 0014 0003"            /* ................ */
-	$"0098 0011 0098 0012 0000 0000 0000 0000"            /* .ò...ò.......... */
-};
-
-data 'hmnu' (131, "Edit", purgeable) {
-	$"0002 0000 0000 0000 0000 000D 0004 0100"            /* ................ */
-	$"0014 0003 0099 0001 0099 0002 0000 0000"            /* .....ô...ô...... */
-	$"0099 0002 0014 0003 0099 0003 0099 0004"            /* .ô.......ô...ô.. */
-	$"0000 0000 0000 0000 0014 0003 0099 0005"            /* .............ô.. */
-	$"0099 0006 0000 0000 0000 0000 0004 0100"            /* .ô.............. */
-	$"0014 0003 0099 0007 0099 0008 0000 0000"            /* .....ô...ô...... */
-	$"0000 0000 0014 0003 0099 0009 0099 000A"            /* .........ô...ô.. */
-	$"0000 0000 0000 0000 0014 0003 0099 000B"            /* .............ô.. */
-	$"0099 000C 0000 0000 0000 0000 0014 0003"            /* .ô.............. */
-	$"0099 000D 0099 000E 0000 0000 0000 0000"            /* .ô...ô.......... */
-	$"0014 0003 0099 000F 0099 0010 0000 0000"            /* .....ô...ô...... */
-	$"0000 0000 0014 0003 0099 0011 0099 0012"            /* .........ô...ô.. */
-	$"0000 0000 0000 0000 0014 0003 0099 0013"            /* .............ô.. */
-	$"0099 0014 0000 0000 0000 0000 0004 0100"            /* .ô.............. */
-	$"0014 0003 0099 0015 0099 0016 0000 0000"            /* .....ô...ô...... */
-	$"0000 0000"                                          /* .... */
-};
-
-data 'hmnu' (132, "Select", purgeable) {
-	$"0002 0000 0000 0000 0000 0005 0004 0100"            /* ................ */
-	$"0004 0100 0014 0003 009A 0001 009A 0002"            /* .........ö...ö.. */
-	$"0000 0000 0000 0000 0014 0003 009A 0003"            /* .............ö.. */
-	$"009A 0004 0000 0000 0000 0000 0014 0003"            /* .ö.............. */
-	$"009A 0005 009A 0006 0000 0000 0000 0000"            /* .ö...ö.......... */
-	$"0014 0003 009A 0007 009A 0008 0000 0000"            /* .....ö...ö...... */
-	$"0000 0000"                                          /* .... */
-};
-
-data 'hmnu' (133, "Transform", purgeable) {
-	$"0002 0000 0000 0000 0000 0008 0004 0100"            /* ................ */
-	$"0004 0100 0014 0003 009B 0001 0000 0000"            /* .........õ...... */
-	$"0000 0000 0000 0000 0014 0003 009B 0002"            /* .............õ.. */
-	$"0000 0000 0000 0000 0000 0000 0004 0100"            /* ................ */
-	$"0014 0003 009B 0003 0000 0000 0000 0000"            /* .....õ.......... */
-	$"0000 0000 0014 0003 009B 0004 0000 0000"            /* .........õ...... */
-	$"0000 0000 0000 0000 0004 0100 0014 0003"            /* ................ */
-	$"009B 0005 0000 0000 0000 0000 0000 0000"            /* .õ.............. */
-};
-
-data 'hmnu' (134, "Paste", purgeable) {
-	$"0002 0000 0000 0000 0000 0005 0004 0100"            /* ................ */
-	$"0004 0100 0014 0003 009C 0001 0000 0000"            /* .........ú...... */
-	$"0000 0000 0000 0000 0014 0003 009C 0002"            /* .............ú.. */
-	$"0000 0000 0000 0000 0000 0000 0014 0003"            /* ................ */
-	$"009C 0003 009C 0004 0000 0000 0000 0000"            /* .ú...ú.......... */
-	$"0014 0003 009C 0005 009C 0006 0000 0000"            /* .....ú...ú...... */
-	$"0000 0000"                                          /* .... */
-};
-
-data 'hmnu' (135, "Copy", purgeable) {
-	$"0002 0000 0000 0000 0000 0004 0004 0100"            /* ................ */
-	$"0004 0100 0014 0003 009D 0001 009D 0002"            /* .........ù...ù.. */
-	$"0000 0000 0000 0000 0014 0003 009D 0003"            /* .............ù.. */
-	$"009D 0004 0000 0000 0000 0000 0014 0003"            /* .ù.............. */
-	$"009D 0005 009D 0006 0000 0000 0000 0000"            /* .ù...ù.......... */
-};
-
-data 'hmnu' (136, "Icon", purgeable) {
-	$"0002 0000 0000 0000 0000 000B 0004 0100"            /* ................ */
-	$"0014 0003 009E 0001 009E 0002 0000 0000"            /* .....û...û...... */
-	$"009E 0002 0014 0003 009E 0003 009E 0004"            /* .û.......û...û.. */
-	$"0000 0000 0000 0000 0014 0003 009E 0005"            /* .............û.. */
-	$"009E 0006 0000 0000 0000 0000 0004 0100"            /* .û.............. */
-	$"0014 0003 0000 0000 009E 0007 0000 0000"            /* .........û...... */
-	$"0000 0000 0004 0100 0014 0003 009E 0008"            /* .............û.. */
-	$"009E 0009 0000 0000 0000 0000 0014 0003"            /* .û.............. */
-	$"009E 000A 009E 000B 0000 0000 0000 0000"            /* .û...û.......... */
-	$"0014 0003 009E 000C 009E 000D 0000 0000"            /* .....û...û...... */
-	$"0000 0000 0004 0100 0014 0003 009E 000E"            /* .............û.. */
-	$"009E 000F 0000 0000 0000 0000"                      /* .û.......... */
-};
-
-data 'hmnu' (137, "Colors", purgeable) {
-	$"0002 0000 0000 0000 0000 0003 0004 0100"            /* ................ */
-	$"0004 0100 0014 0003 009F 0001 0000 0000"            /* .........ü...... */
-	$"009F 0001 0000 0000 0014 0003 009F 0002"            /* .ü...........ü.. */
-	$"0000 0000 009F 0002 0000 0000"                      /* .....ü...... */
-};
-
-data 'hmnu' (138, "Windows", purgeable) {
-	$"0002 0000 0000 0000 0000 0005 0004 0100"            /* ................ */
-	$"0014 0003 00A2 0001 00A2 0002 0000 0000"            /* .....¢...¢...... */
-	$"0000 0000 0014 0003 00A2 0003 0000 0000"            /* .........¢...... */
-	$"0000 0000 0000 0000 0014 0003 00A2 0004"            /* .............¢.. */
-	$"0000 0000 0000 0000 0000 0000 0014 0003"            /* ................ */
-	$"00A2 0005 0000 0000 0000 0000 0000 0000"            /* .¢.............. */
-	$"0014 0003 00A2 0006 0000 0000 0000 0000"            /* .....¢.......... */
-	$"0000 0000"                                          /* .... */
-};
-
-data 'hrct' (128, "About", purgeable) {
-	$"0002 0000 0000 0000 0000 0003 0014 0003"            /* ................ */
-	$"0000 0000 002C 002C 003E 009A 00A0 0001"            /* .....,.,.>.ö.†.. */
-	$"0014 0003 0000 0000 003C 0041 004E 00A1"            /* .........<.A.N.° */
-	$"00A0 0002 0014 0003 0000 0000 00B0 0002"            /* .†...........∞.. */
-	$"00D8 006E 00A0 0003"                                /* .ÿ.n.†.. */
-};
-
-data 'hrct' (129, "Register", purgeable) {
-	$"0002 0000 0000 0000 0000 0006 0014 0003"            /* ................ */
-	$"0000 0000 0066 010E 007A 0152 00A1 0001"            /* .....f...z.R.°.. */
-	$"0014 0003 0000 0000 0066 00BE 0079 00FE"            /* .........f.æ.y.˛ */
-	$"00A1 0002 0014 0003 0000 0000 0066 0007"            /* .°...........f.. */
-	$"007A 009E 00A1 0003 0014 0003 0000 0000"            /* .z.û.°.......... */
-	$"000C 0088 001C 0150 00A1 0004 0014 0003"            /* ...à...P.°...... */
-	$"0000 0000 0028 0088 0038 0150 00A1 0005"            /* .....(.à.8.P.°.. */
-	$"0014 0003 0000 0000 0044 0088 0054 0150"            /* .........D.à.T.P */
-	$"00A1 0006"                                          /* .°.. */
-};
-
-data 'hwin' (128, "About", purgeable) {
-	$"0002 0000 0000 0001 0080 6872 6374 0005"            /* .........Ährct.. */
-	$"0541 626F 7574"                                     /* .About */
-};
-
-data 'hwin' (129, "Register", purgeable) {
-	$"0002 0000 0000 0001 0081 6872 6374 0008"            /* .........Åhrct.. */
-	$"0852 6567 6973 7465 7200"                           /* .Register. */
 };
 
 resource 'icl8' (128) {
@@ -2321,7 +2274,7 @@ resource 'mctb' (135) {
 	}
 };
 
-resource 'mctb' (136) {
+resource 'mctb' (136, "Icone menu") {
 	{	/* array MCTBArray: 1 elements */
 		/* [1] */
 		mctbLast, 0,
@@ -2355,7 +2308,24 @@ resource 'mctb' (137) {
 	}
 };
 
-resource 'mctb' (138) {
+resource 'mctb' (138, "Effets menu") {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (139, "Fenêtres menu") {
 	{	/* array MCTBArray: 1 elements */
 		/* [1] */
 		mctbLast, 0,
@@ -2392,12 +2362,12 @@ resource 'open' (128) {
 
 resource 'vers' (1) {
 	0x2,
-	0x20,
+	0x40,
 	release,
 	0x0,
 	1,
-	"2.2",
-	"Iconographer 2.2\n©1998-2001 Mihai Parpar"
+	"2.4",
+	"Iconographer 2.4\n©1998-2002 Mihai Parpar"
 	"ita"
 };
 
@@ -2620,6 +2590,36 @@ resource 'xmnu' (135, "Copy Menu") {
 			dataItem {
 				1061109567,
 				0x4,
+				currScript,
+				1061109567,
+				1061109567,
+				noHierID,
+				sysFont,
+				naturalGlyph
+			}
+		}
+	}
+};
+
+resource 'xmnu' (136, "Icon Menu") {
+	versionZero {
+		{	/* array ItemExtensions: 4 elements */
+			/* [1] */
+			skipItem {
+
+			}			,
+			/* [2] */
+			skipItem {
+
+			}			,
+			/* [3] */
+			skipItem {
+
+			}			,
+			/* [4] */
+			dataItem {
+				1061109567,
+				0x2,
 				currScript,
 				1061109567,
 				1061109567,

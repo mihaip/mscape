@@ -8,7 +8,9 @@
 
 #include "iconmangler.h"
 #include "MHTMLHelp.h"
+#include "MHelp.h"
 #include "commonFunctions.h"
+#include <Movies.h>
 
 //#define EXPIRES
 
@@ -124,6 +126,10 @@ void Initialize()
 	}
 	
 	DEBUGTIMING("\pInited the apple events: ");
+	
+	EnterMovies();
+	
+	DEBUGTIMING("\pInited QuickTime: ");
 	
 	if (NavServicesAvailable())
 		NavLoad();
@@ -424,9 +430,67 @@ OSErr InitMenuBar()
 
 	DEBUGTIMING("\pFinished with the window menu: ");
 	
+	if (!MUtilities::GestaltQTVersion(3, 0))
+		MyDisableMenuItem(mEffects, 0);
+	else
+	{
+		MenuRef			effectsMenu;
+		QTAtomContainer	effectsList = NULL;
+		short			effectsCount;
+		OSErr			err = noErr;
+		
+		effectsMenu = GetMenuHandle(mEffects);
+		
+		// get a list of the available effects
+		err = QTNewAtomContainer(&effectsList);
+		if (err != noErr)
+			goto bail;
+			
+		err = QTGetEffectsList(&effectsList, 0, 1, 0L);
+		if (err != noErr)
+			goto bail;
+
+		// the returned effects list contains (at least) two atoms for each available effect component,
+		// a name atom and a type atom; happily, this list is already sorted alphabetically by effect name
+		effectsCount = QTCountChildrenOfType(effectsList, kParentAtomIsContainer, kEffectNameAtom);
+		
+		for (int i = 1; i <= effectsCount; i++)
+		{
+			QTAtom		nameAtom = 0L;
+			QTAtom		typeAtom = 0L;
+
+			nameAtom = QTFindChildByIndex(effectsList, kParentAtomIsContainer, kEffectNameAtom, i, NULL);
+			typeAtom = QTFindChildByIndex(effectsList, kParentAtomIsContainer, kEffectTypeAtom, i, NULL);
+			
+			if ((nameAtom != 0L) && (typeAtom != 0L))
+			{
+				Str255 			effectName;
+				OSType 			effectType;
+				long			nameSize;
+
+				// get the data from the type and name atoms
+				QTCopyAtomDataToPtr(effectsList, typeAtom, false, sizeof(effectType), &effectType, NULL);
+				QTCopyAtomDataToPtr(effectsList, nameAtom, true, sizeof(effectName), &effectName[1], &nameSize);
+				effectName[nameSize + 1] = effectName[nameSize + 2] = effectName[nameSize + 3] = '.';
+				effectName[0] = nameSize + 3;
+				
+				InsertMenuItemText(effectsMenu, effectName, i - 1 + iEffectsInsertionPoint);
+				SetMenuItemRefCon(effectsMenu, i + iEffectsInsertionPoint, effectType);
+			}
+		}
+			
+	bail:
+		QTDisposeAtomContainer(effectsList);	
+		if (err != noErr)
+			MyDisableMenuItem(mEffects, 0);
+	}
+	
+	DEBUGTIMING("\pCreated the effects menu: ");
+	
 	//DrawMenuBar(); // and draw the menubar
 	
 	DEBUGTIMING("\pDrew the menubar: ");
+	
 	
 	return noErr;
 }
@@ -547,9 +611,22 @@ void DoIdle(void)
 			FrontWindow() != gWindowPtrUnderMouse)
 			BringToFront(gWindowPtrUnderMouse);
 			
-	DEBUG("\pdealt with balloons");
+	DEBUG("\pbroght window to front for balloons");
 #endif
 
+	if (gWindowUnderMouse)
+	{
+		Point theMouse;
+	
+		SAVEGWORLD;
+		gWindowUnderMouse->SetPort();
+		GetMouse(&theMouse);
+		RESTOREGWORLD;
+			
+		MHelp::HandleHelp(theMouse, gWindowUnderMouse->GetWindow());
+	}
+	else
+		MHelp::RemoveHelp();
 
 	frontWindow = MWindow::GetFront();
 
@@ -744,6 +821,10 @@ void UpdateMenuBar(int status)
 		MyEnableMenuItem(mEdit, iTransform);
 		MyEnableMenuItem(mEdit, iCopy);
 		MyEnableMenuItem(mEdit, iAdjust);
+		if (MUtilities::GestaltQTVersion(3, 0))
+			MyEnableMenuItem(mEffects, 0);
+		else
+			MyDisableMenuItem(mEffects, 0);
 		
 		menu = GetMenuHandle(mSelect);
 		EnableMenuItem(menu, 0);
@@ -895,9 +976,9 @@ void UpdateMenuBar(int status)
 		MyDisableMenuItem(mEdit, iAdjust);
 		MyDisableMenuItem(mEdit, iTransform);
 		
-		//DisableMenuItem(mPaste, 0);
+		MyDisableMenuItem(mEffects, 0);
+		
 		MyDisableMenuItem(mSelect, 0);
-		//DisableMenuItem(mTransform, 0);
 	}
 }
 
@@ -1497,6 +1578,35 @@ void DoMenuCommand(long menuResult)
 						break;
 				}
 				break;
+			case mEffects:
+				OSType		effectType;
+				MenuHandle	effectsMenu;
+				
+				switch (item)
+				{
+					case iReapply:
+						if (frontEditor)
+							frontEditor->ReapplyQTEffect();
+						break;
+					default:
+					
+					effectsMenu = GetMenuHandle(mEffects);
+					GetMenuItemRefCon(effectsMenu, item, &effectType);
+					if (frontEditor)
+						if (frontEditor->ApplyQTEffect(effectType) == noErr)
+						{
+							Str255 reapplyItem, effectName;
+							
+							GetIndString(reapplyItem, rDefaultNames, eReapplyMenuItem);
+							GetMenuItemText(effectsMenu, item, effectName);
+							effectName[0] -= 3;
+							SubstituteString(reapplyItem, "\p<effect name>", effectName);
+							SetMenuItemText(effectsMenu, iReapply, reapplyItem);
+							EnableMenuItem(effectsMenu, iReapply);
+						}
+				}
+				
+				break;
 			default:
 				MenuRef selected;
 
@@ -1649,11 +1759,14 @@ void HandleResolutionChange(bool fromEvent)
 			
 			for (MWindowPtr currentWindow = MWindow::GetFirst(); currentWindow; currentWindow = currentWindow->GetNext())
 				if (currentWindow->GetType() == kEditorType)
-					icnsEditorPtr(currentWindow)->EnsureOnScreenPosition();					
+					icnsEditorPtr(currentWindow)->EnsureOnScreenPosition();			
 			break;
 		case kMACancel:
 			break;
 	}
+	
+	icnsEditorClass::statics.preferences.SetLastScreenBounds(MUtilities::GetUsableScreenRect());
+	
 }
 
 #pragma mark -
@@ -1790,6 +1903,9 @@ void ShowAboutBox()
 	eventFilterUPP = NewModalFilterUPP(AboutBoxEventFilter);
 	
 	dialogDone = false;
+	
+	MHelp::SetupDialogHelp(aboutBox, rAboutHelp);
+	
 	while (!dialogDone)
 	{
 		ModalDialog(eventFilterUPP, &itemHit);
@@ -1815,12 +1931,16 @@ void ShowAboutBox()
 	DisposeDialog(aboutBox);
 	
 	MWindow::ActivateAll();
+	
+	MHelp::CleanupDialogHelp();
 }
 
 pascal Boolean AboutBoxEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *itemHit)
 {
 	bool	handledEvent; // if true then our function tool care of the event
 	Rect	picRect, controlRect;
+	
+	MHelp::HandleHelp(dialog, eventPtr);
 	
 	handledEvent = false; // by default we didn't handle the event
 	
@@ -1933,6 +2053,8 @@ void Register(void)
 	
 	dialogDone = false;
 	
+	MHelp::SetupDialogHelp(registration, rRegisterHelp);
+	
 	while (!dialogDone)
 	{
 		ModalDialog(eventFilterUPP, &itemHit);
@@ -1980,6 +2102,8 @@ void Register(void)
 		}
 		
 	}
+	
+	MHelp::CleanupDialogHelp();
 	
 	MWindow::ActivateAll();
 }
@@ -2589,8 +2713,6 @@ OSErr SaveIcon(icnsEditorPtr frontEditor, int flags)
 		if (flags & saveInto)
 		{
 			FSSpec	oldSpec, editorFile;
-			Handle	icnsHandle;
-			short 	oldFile, file;
 			long	saveFormat;
 			
 			oldSpec = frontEditor->file.GetAssociatedFile();
@@ -2599,6 +2721,8 @@ OSErr SaveIcon(icnsEditorPtr frontEditor, int flags)
 				frontEditor->format != formatMacOSOld &&
 				frontEditor->format != formatMacOSUniversal)
 				saveFormat = formatMacOSUniversal;
+			else
+				saveFormat = frontEditor->format;
 			
 			editorFile = frontEditor->file.GetAssociatedFile();
 			err = GetIconFile(&editorFile, &saveFormat, true);
@@ -2608,19 +2732,10 @@ OSErr SaveIcon(icnsEditorPtr frontEditor, int flags)
 			frontEditor->format = saveFormat;
 			frontEditor->file.SetAssociatedFile(editorFile);
 			
-			oldFile = CurResFile();
-			file = frontEditor->file.OpenResourceFork(fsRdPerm);
-			
-			UseResFile(file);
-			
-			icnsHandle = Get1Resource('icns', frontEditor->ID);
-			
-			if (icnsHandle != NULL)
+			if (MIcon::FileHasIcon(&frontEditor->file, frontEditor->ID, frontEditor->format))
 			{
 				Str255 text, yesButton, noButton, IDAsString, fileName;
 				short itemHit;
-				
-				ReleaseResource(icnsHandle);
 				
 				GetIndString(text, rPrompts, eIconAlreadyExists);
 				
@@ -2635,17 +2750,13 @@ OSErr SaveIcon(icnsEditorPtr frontEditor, int flags)
 				itemHit = MUtilities::DisplayAlert(text, NULL, yesButton, noButton, "\p", kAlertCautionAlert, kWindowAlertPositionParentWindow);
 				if (itemHit == 2)
 				{
-					CloseResFile(file);
-					UseResFile(oldFile);
+					MIcon::DeleteIcon(&frontEditor->file, frontEditor->ID, frontEditor->format);
 					frontEditor->file.SetAssociatedFile(oldSpec);
 					return err;
 				}
+				else
+					newIcon = true;
 			}
-			else
-				newIcon = true;
-			
-			CloseResFile(file);
-			UseResFile(oldFile);
 			
 			frontEditor->RefreshWindowTitle();
 		}
@@ -2901,6 +3012,8 @@ pascal Boolean AlertEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *
 
 	handledEvent = false; // by default we didn't handle the event
 	
+	MHelp::HandleHelp(dialog, eventPtr);
+	
 	switch (eventPtr->what)
 	{
 		case activateEvt: // if the window isn't the dialog, then we tell the update function
@@ -2948,6 +3061,8 @@ void CleanUp(void)
 	
 	if (NavServicesAvailable())
 		NavUnload();
+		
+	ExitMovies();
 	
 	OSErr		err;
 	FSSpec		preferencesFile;

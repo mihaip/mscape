@@ -120,13 +120,13 @@ resource 'DITL' (1002, purgeable) {
 resource 'DITL' (1003, purgeable) {
 	{	/* array DITLarray: 5 elements */
 		/* [1] */
-		{116, 270, 136, 338},
+		{116, 270, 136, 339},
 		Button {
 			enabled,
 			"Add"
 		},
 		/* [2] */
-		{116, 190, 136, 254},
+		{116, 187, 136, 256},
 		Button {
 			enabled,
 			"Cancel"
@@ -242,6 +242,18 @@ resource 'DITL' (9999) {
 	}
 };
 
+data 'DLGX' (1003) {
+	$"0843 6861 7263 6F61 6C00 0000 0000 0000"            /* .Charcoal....... */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
+	$"0005 0002 0000 0000 0000 0000 0000 0001"            /* ................ */
+	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
+	$"0000 0000 0000 0005 0000 0000 0000 0000"            /* ................ */
+	$"0000 0005 0000 0000 0000 0000 0000"                 /* .............. */
+};
+
 resource 'DLOG' (1002, "Set External Editor Shortcut", purgeable) {
 	{259, 337, 318, 687},
 	dBoxProc,
@@ -254,7 +266,7 @@ resource 'DLOG' (1002, "Set External Editor Shortcut", purgeable) {
 };
 
 resource 'DLOG' (1003, "Add Member", purgeable) {
-	{475, 625, 623, 975},
+	{475, 627, 623, 977},
 	1043,
 	invisible,
 	noGoAway,
@@ -4734,17 +4746,195 @@ resource 'STR#' (201, "Labels", purgeable) {
 	}
 };
 
-resource 'STR#' (203, "Editor Balloon Help", purgeable) {
+resource 'STR#' (203, "Editor Help", purgeable) {
 	{	/* array StringArray: 2 elements */
 		/* [1] */
-		"This main editing area.\n\nThe current ico"
-		"n is displayed at a magnified size here.",
+		"Main (magnified) editing area",
 		/* [2] */
-		"The magnification level is displayed her"
-		"e.\n\nTo change it, you either use the Zoo"
-		"m In and Zoom Out commands from the View"
-		" menu, or the pop-up menu that apears wh"
-		"en you click"
+		"Current magnification level"
+	}
+};
+
+resource 'STR#' (1000, "Preferences Help", purgeable) {
+	{	/* array StringArray: 79 elements */
+		/* [1] */
+		"Apply the displayed preferences.",
+		/* [2] */
+		"Revert to the previous settings.",
+		/* [3] */
+		"",
+		/* [4] */
+		"",
+		/* [5] */
+		"",
+		/* [6] */
+		"",
+		/* [7] */
+		"Note that some formats do not support al"
+		"l options (e.g. Windows does not allow 8"
+		"-bit masks or resource flags).",
+		/* [8] */
+		"",
+		/* [9] */
+		"",
+		/* [10] */
+		"",
+		/* [11] */
+		"",
+		/* [12] */
+		"",
+		/* [13] */
+		"",
+		/* [14] */
+		"",
+		/* [15] */
+		"",
+		/* [16] */
+		"",
+		/* [17] */
+		"",
+		/* [18] */
+		"16 x 12 pixel size",
+		/* [19] */
+		"128 x 128 pixel size",
+		/* [20] */
+		"48 x 48 pixel size",
+		/* [21] */
+		"32 x 32 pixel size",
+		/* [22] */
+		"16 x 16 pixel size",
+		/* [23] */
+		"",
+		/* [24] */
+		"",
+		/* [25] */
+		"",
+		/* [26] */
+		"",
+		/* [27] */
+		"",
+		/* [28] */
+		"",
+		/* [29] */
+		"",
+		/* [30] */
+		"",
+		/* [31] */
+		"",
+		/* [32] */
+		"",
+		/* [33] */
+		"",
+		/* [34] */
+		"",
+		/* [35] */
+		"",
+		/* [36] */
+		"",
+		/* [37] */
+		"",
+		/* [38] */
+		"",
+		/* [39] */
+		"",
+		/* [40] */
+		"",
+		/* [41] */
+		"",
+		/* [42] */
+		"",
+		/* [43] */
+		"",
+		/* [44] */
+		"",
+		/* [45] */
+		"",
+		/* [46] */
+		"",
+		/* [47] */
+		"",
+		/* [48] */
+		"",
+		/* [49] */
+		"",
+		/* [50] */
+		"",
+		/* [51] */
+		"",
+		/* [52] */
+		"",
+		/* [53] */
+		"",
+		/* [54] */
+		"",
+		/* [55] */
+		"",
+		/* [56] */
+		"Currently chosen external editor.",
+		/* [57] */
+		"",
+		/* [58] */
+		"Currently selected editor shortcut.",
+		/* [59] */
+		"",
+		/* [60] */
+		"",
+		/* [61] */
+		"",
+		/* [62] */
+		"Display only non-empty members in the Me"
+		"mbers Palette.",
+		/* [63] */
+		"Prevent possible display problems.",
+		/* [64] */
+		"Use a pattern to simulate more colors.",
+		/* [65] */
+		"",
+		/* [66] */
+		"",
+		/* [67] */
+		"",
+		/* [68] */
+		"",
+		/* [69] */
+		"",
+		/* [70] */
+		"",
+		/* [71] */
+		"",
+		/* [72] */
+		"",
+		/* [73] */
+		"",
+		/* [74] */
+		"",
+		/* [75] */
+		"Use the default positions.",
+		/* [76] */
+		"",
+		/* [77] */
+		"",
+		/* [78] */
+		"",
+		/* [79] */
+		"Preserve the used members, magnification"
+		" level, etc. "
+	}
+};
+
+resource 'STR#' (1003, "Add Member Help", purgeable) {
+	{	/* array StringArray: 5 elements */
+		/* [1] */
+		"Create the selected member.",
+		/* [2] */
+		"Do nothing.",
+		/* [3] */
+		"",
+		/* [4] */
+		"Choose a member size and depth.",
+		/* [5] */
+		"Optionally base the new member on an exi"
+		"sting one."
 	}
 };
 

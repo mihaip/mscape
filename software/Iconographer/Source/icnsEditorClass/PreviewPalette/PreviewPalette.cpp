@@ -1,5 +1,6 @@
 #include "PreviewPalette.h"
 #include "icnsEditorClass.h"
+#include "MHelp.h"
 
 ControlActionUPP PreviewPalette::sliderActionUPP = NewControlActionUPP(PreviewPalette::SliderAction);
 
@@ -212,10 +213,12 @@ void PreviewPalette::CreateControls()
 	controls.preview = GetNewControl(rPPPreview, window);
 	SetControlUserPaneDraw(controls.preview, PreviewPalette::PreviewDraw);
 	SetControlUserPaneHitTest(controls.preview, GenericHitTest);
+	MHelp::SetControlHelp(controls.preview, rPPHelp, hPPArea);
 	
 	controls.text = GetNewControl(rPPText, window);
 	SetControlKeyFilter(controls.text, PreviewPalette::KeyFilter);
 	SetControlFontStyle(controls.text, &controlStyle);
+	MHelp::SetControlHelp(controls.text, rPPHelp, hPPSize);
 	
 	controls.slider = GetNewControl(rPPSlider, window);
 #if TARGET_API_MAC_CARBON
@@ -238,6 +241,7 @@ void PreviewPalette::CreateControls()
 		SetControlBounds(controls.text, &controlBounds);
 	}
 #endif
+	MHelp::SetControlHelp(controls.slider, rPPHelp, hPPSize);
 	
 	controls.settings = NewEnhancedPlacard(rPPSettings, window,
 										   enhancedPlacardDrawBorder + enhancedPlacardLargeArrow, applFont, 9, "\p",
@@ -245,6 +249,7 @@ void PreviewPalette::CreateControls()
 										   settingsMenu,
 										   icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix,
 										   PreviewPalette::SettingsUpdate, this);
+	MHelp::SetControlHelp(controls.settings, rPPHelp, hPPSettings);
 }
 
 void PreviewPalette::Update()
@@ -288,6 +293,19 @@ void PreviewPalette::SetPreviewSize(int size)
 		
 		RESTOREGWORLD;
 	}
+}
+
+#pragma mark -
+
+bool PreviewPalette::HandleBoundsChange(int attributes, Rect* originalBounds, Rect* previousBounds, Rect* currentBounds)
+{
+#pragma unused (originalBounds, previousBounds)
+	bool	changedBounds = false;
+	
+	if (!ISCOMMANDDOWN && attributes & kWindowBoundsChangeUserDrag)
+		changedBounds = icnsEditorClass::statics.SnapPalette(this, currentBounds);
+	
+	return changedBounds;
 }
 
 #pragma mark -
@@ -490,7 +508,7 @@ pascal void PreviewPalette::PreviewDraw(ControlHandle theControl, short thePart)
 	parent = icnsEditorClass::statics.previewPalette;
 	if (parent == NULL)
 		return;
-	
+		
 	GetControlBounds(theControl, &controlRect);
 	canvasRect = controlRect;
 	

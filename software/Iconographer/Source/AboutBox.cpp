@@ -1,6 +1,7 @@
 #include "AboutBox.h"
 #include "iconmangler.h"
 #include "commonfunctions.h"
+#include "MHelp.h"
 
 AboutBox::AboutBox()
 		 :MWindow(rAboutBoxWindow, kAboutBoxType)
@@ -36,6 +37,7 @@ AboutBox::AboutBox()
 	controlStyle.size = 10;
 	controlStyle.just = teFlushLeft;
 	SetControlFontStyle(registrationInfo, &controlStyle);
+	MHelp::SetControlHelp(registrationInfo, rAboutHelp, hRegistrationInfo);
 	
 	webAddressTitle = GetNewControl(rAboutBoxWebAddressTitle, window);
 	ResetStaticTextTitle(webAddressTitle);
@@ -53,10 +55,12 @@ AboutBox::AboutBox()
 	controlStyle.foreColor.red = controlStyle.foreColor.green = 0;
 	controlStyle.foreColor.blue = 0xFFFF;
 	SetControlFontStyle(webAddress, &controlStyle);
+	MHelp::SetControlHelp(webAddress, rAboutHelp, hWebAddress);
 	
 	emailAddress = GetNewControl(rAboutBoxEmailAddress, window);
 	ResetStaticTextTitle(emailAddress);
 	SetControlFontStyle(emailAddress, &controlStyle);
+	MHelp::SetControlHelp(emailAddress, rAboutHelp, hEmailAddress);
 }
 
 AboutBox::~AboutBox()

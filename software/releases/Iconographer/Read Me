@@ -42,6 +42,13 @@ Registrations for Iconographer are handled by the Kagi Shareware service run by 
 To register please use the enclosed Register application or register online at http://order.kagi.com/?QEJ. You will receive a registration code from Kagi, and when you enter that and your name in the registration dialog (available from the Apple menu) the reminder will be disabled.
 
 Version History
+2.4 April 16, 2002
+ - Support for the use of QuickTime effects
+ - Help tag support under Mac OS X
+ - Palette snapping (Mac OS X Only)
+ - Icons in the Mac OS X  Finder now reflect modifications much faster
+ - Performance and stability improvements 
+
 2.3 February 27, 2002
  - Additional navigation and selection commands
  - Documentation additions

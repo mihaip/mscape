@@ -3,6 +3,7 @@
 #include "MAlert.h"
 #include "iconBrowserClass.h"
 #include "AboutBox.h"
+#include "MHelp.h"
 
 const static int kPrefsSettingsPaneItems[] = {
 	iShowOnlyLoadedMembers, iCheckSync, iDither,
@@ -110,8 +111,6 @@ void editorStaticsClass::Load()
 	GetFNum("\pGeneva", &lastTextSettings.fontNo);
 	lastTextSettings.size = 12;
 	lastTextSettings.style = normal;
-	
-	currentBalloon = -1;
 	
 	DEBUGTIMING("\p	Setup the text: ");
 
@@ -285,6 +284,63 @@ void editorStaticsClass::GetPickerPix(long iconName, long colors, PixMapHandle* 
 	}
 }
 
+bool editorStaticsClass::SnapPalette(MFloaterPtr palette, Rect* currentBounds)
+{
+	MWindowPtr	palettes[kPaletteCount] = {toolPalette, previewPalette, membersPalette, colorsPalette};
+	bool		changedBounds = false;
+	
+	for (int i=0; i < kPaletteCount; i++)
+		if (palettes[i] == palette)
+		{
+			Point currentPosition, defaultPosition;
+			
+			currentPosition.h = currentBounds->left;
+			currentPosition.v = currentBounds->top;
+			defaultPosition = icnsEditorClass::statics.GetDefaultPalettePosition(palette);
+			
+			if (PointsNear(defaultPosition, currentPosition, kSnappingDistance, 32767))
+			{
+				OffsetRect(currentBounds, defaultPosition.h - currentPosition.h, 0);
+				changedBounds = true;
+			}
+			
+			if (PointsNear(defaultPosition, currentPosition, 32767, kSnappingDistance))
+			{
+				OffsetRect(currentBounds, 0, defaultPosition.v - currentPosition.v);
+				changedBounds = true;
+			}
+		}
+		else
+		{
+			Point 	currentPosition, snapPoint;
+			Rect	otherPaletteBounds;
+			
+			currentPosition.h = currentBounds->left;
+			currentPosition.v = currentBounds->top;
+			otherPaletteBounds = palettes[i]->GetPhysicalBounds();
+			
+			snapPoint.h = otherPaletteBounds.left - palettes[i]->GetBorderThickness(borderBottom);
+			snapPoint.v = otherPaletteBounds.bottom + kDefaultWindowSeparation + palette->GetBorderThickness(borderTop);
+			
+			if (PointsNear(snapPoint, currentPosition, kSnappingDistance, kSnappingDistance))
+			{
+				OffsetRect(currentBounds, snapPoint.h - currentPosition.h, snapPoint.v - currentPosition.v);
+				changedBounds = true;
+			}
+			
+			snapPoint.v = otherPaletteBounds.top - kDefaultWindowSeparation - palette->GetBorderThickness(borderBottom);
+			currentPosition.v = currentBounds->bottom;
+			
+			if (PointsNear(snapPoint, currentPosition, kSnappingDistance, kSnappingDistance))
+			{
+				OffsetRect(currentBounds, snapPoint.h - currentPosition.h, snapPoint.v - currentPosition.v);
+				changedBounds = true;
+			}
+		}
+		
+	return changedBounds;
+}
+
 Point editorStaticsClass::GetDefaultPalettePosition(MFloaterPtr palette)
 {
 	Point			position, dimensions;
@@ -395,11 +451,11 @@ Rect editorStaticsClass::GetAvailableScreenRect()
 	}
 	
 	if ((preferences.FeatureEnabled(prefsPreviewPaletteVisible) &&
-		PointsNear(GetDefaultPalettePosition(previewPalette), previewPalette->GetPosition(), 5, 32767)) &&
+		PointsNear(GetDefaultPalettePosition(previewPalette), previewPalette->GetPosition(), kSnappingDistance, 32767)) &&
 		(preferences.FeatureEnabled(prefsMembersPaletteVisible) &&
-		PointsNear(GetDefaultPalettePosition(membersPalette), membersPalette->GetPosition(), 5, 32767)) &&
+		PointsNear(GetDefaultPalettePosition(membersPalette), membersPalette->GetPosition(), kSnappingDistance, 32767)) &&
 		(preferences.FeatureEnabled(prefsColorsPaletteVisible) &&
-		PointsNear(GetDefaultPalettePosition(colorsPalette), colorsPalette->GetPosition(), 5, 32767)))
+		PointsNear(GetDefaultPalettePosition(colorsPalette), colorsPalette->GetPosition(), kSnappingDistance, 32767)))
 	{
 		position = previewPalette->GetPosition();
 		availableScreenRect.right = position.h - previewPalette->GetBorderThickness(borderLeft);
@@ -1045,6 +1101,8 @@ pascal Boolean editorPreferencesClass::PreferencesDialogFilter(DialogPtr dialog,
 {
 	bool handledEvent = false;
 	
+	MHelp::HandleHelp(dialog, eventPtr);
+	
 	switch (eventPtr->what)
 	{
 		case mouseDown:
@@ -1181,6 +1239,8 @@ void editorPreferencesClass::Edit(int pane)
 	ShowWindow(GetDialogWindow(preferencesDialog));
 	
 	dialogDone = false;
+	
+	MHelp::SetupDialogHelp(preferencesDialog, rPreferencesHelp);
 	
 	while (!dialogDone)
 	{
@@ -1344,6 +1404,8 @@ void editorPreferencesClass::Edit(int pane)
 #endif
 
 	MWindow::ActivateAll();
+	
+	MHelp::CleanupDialogHelp();
 }
 
 void editorPreferencesClass::SetPane(int pane)
@@ -1832,6 +1894,11 @@ int editorPreferencesClass::GetRecentFilesCount()
 Rect editorPreferencesClass::GetLastScreenBounds()
 {
 	return (**data).lastScreenBounds;
+}
+
+void editorPreferencesClass::SetLastScreenBounds(Rect bounds)
+{
+	(**data).lastScreenBounds = bounds;
 }
 
 #pragma mark -

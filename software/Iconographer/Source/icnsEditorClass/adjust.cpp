@@ -79,7 +79,10 @@ void icnsEditorClass::Adjust(void)
 			
 	FieldToSlider(dialogData.brightnessField, dialogData.brightnessSlider);
 	FieldToSlider(dialogData.contrastField, dialogData.contrastSlider);
-			
+	
+	dialogData.averageLuminance = GetAverageLuminance(dialogData.tempPix2);
+	dialogData.count = 0;
+	
 	adjustDialogWindow->SetRefCon(int(&dialogData));
 	
 	dialogLocation = statics.preferences.GetAdjustDialogLocation();
@@ -323,73 +326,80 @@ pascal Boolean AdjustDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short
 
 void UpdateEffects(AdjustDialogDataPtr dialogData)
 {
-	RGBMatrix	matrix;
-	RgnHandle	clippingRgn;
-	long		copyMode;
+	RGBMatrix		matrix;
+	RgnHandle		clippingRgn;
+	PixMapHandle	dest;
+	int				saturation, hue, contrast, brightness, colorize;
+	
+	saturation = GetControlValue(dialogData->saturationSlider);
+	hue = GetControlValue(dialogData->hueSlider);
+	brightness = GetControlValue(dialogData->brightnessSlider);
+	contrast = GetControlValue(dialogData->contrastSlider);
+	colorize = GetControlValue(dialogData->colorize);
 	
 	SAVECOLORS;
 	
+	if ((**dialogData->parentEditor->currentPix).pixelSize == 32)
+		dest = dialogData->parentEditor->currentPix;
+	else
+		dest = dialogData->tempPix2;
+		
 	CopyPixMap(dialogData->tempPix,
-			   dialogData->tempPix2,
+			   dest,
 			   &(**dialogData->tempPix).bounds,
 			   &(**dialogData->tempPix).bounds,
 			   srcCopy,
-			   NULL);
-	
+			   NULL);	
 	
 	IdentityMatrix(matrix);
-	OffsetMatrix(matrix,
-				 GetControlValue(dialogData->brightnessSlider),
-				 GetControlValue(dialogData->brightnessSlider),
-				 GetControlValue(dialogData->brightnessSlider));
+	OffsetMatrix(matrix, brightness, brightness, brightness);
 				 
-	/*ScaleMatrix(matrix,
-			    1.0 + (float)GetControlValue(dialogData->contrastSlider)/100.0,
-			    1.0 + (float)GetControlValue(dialogData->contrastSlider)/100.0,
-			    1.0 + (float)GetControlValue(dialogData->contrastSlider)/100.0);*/
-	
 	if (GetControlValue(dialogData->colorize))
-	{
-		ColorizePixMap(dialogData->tempPix2,
-					   GetControlValue(dialogData->hueSlider),
-					   (float)GetControlValue(dialogData->saturationSlider)/100.0);
-	}
+		ColorizePixMap(dest, hue, float(saturation)/100.0);
 	else
 	{
-		SaturateMatrix(matrix,
-					   1.0 + (float)GetControlValue(dialogData->saturationSlider)/100.0);
-	
-		HueRotateMatrix(matrix,
-						GetControlValue(dialogData->hueSlider));
+		SaturateMatrix(matrix, 1.0 + float(saturation)/100.0);
+		HueRotateMatrix(matrix, hue);
 	}
-	ApplyMatrix(matrix, dialogData->tempPix2);
 	
-	ChangeContrast(dialogData->tempPix2, GetControlValue(dialogData->contrastSlider));
+	if ((!colorize && (hue || saturation)) || brightness)
+		ApplyMatrix(matrix, dest);
+	
+	if (GetControlValue(dialogData->contrastSlider))
+		ChangeContrast(dest, GetControlValue(dialogData->contrastSlider), dialogData->averageLuminance);
 	
 	if (EmptyRgn(dialogData->parentEditor->selectionRgn))
 		clippingRgn = NULL;
 	else
 		clippingRgn = dialogData->parentEditor->selectionRgn;
-		
-	if (icnsEditorClass::statics.preferences.FeatureEnabled(prefsDither) &&
-		(**dialogData->tempPix2).pixelSize > (**dialogData->parentEditor->currentPix).pixelSize)
-		copyMode = srcCopy + ditherCopy;
-	else
-		copyMode = srcCopy;
-		
-	CopyPixMap(dialogData->tempPix2,
-			   dialogData->parentEditor->currentPix,
-			   &(**dialogData->tempPix).bounds,
-			   &(**dialogData->tempPix).bounds,
-			   copyMode,
-			   clippingRgn);
+	
+	if (dest != dialogData->parentEditor->currentPix)
+	{
+		long			copyMode;
+			
+		if (icnsEditorClass::statics.preferences.FeatureEnabled(prefsDither) &&
+			(**dialogData->tempPix2).pixelSize > (**dialogData->parentEditor->currentPix).pixelSize)
+			copyMode = srcCopy + ditherCopy;
+		else
+			copyMode = srcCopy;
+			
+		CopyPixMap(dialogData->tempPix2,
+				   dialogData->parentEditor->currentPix,
+				   &(**dialogData->tempPix).bounds,
+				   &(**dialogData->tempPix).bounds,
+				   copyMode,
+				   clippingRgn);
+	}
 	
 	
 	Draw1Control(dialogData->parentEditor->controls.editArea);
 	
-	icnsEditorClass::statics.UpdatePalettes(dialogData->parentEditor, 0);
+	if (!Button() || dialogData->count % 3 == 0)
+		icnsEditorClass::statics.UpdatePalettes(dialogData->parentEditor, 0);
 	
 	RESTORECOLORS;
+	
+	dialogData->count++;
 }
 
 pascal void SliderActionFunction(ControlHandle theControl, short thePart)

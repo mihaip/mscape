@@ -1,6 +1,7 @@
 #include "MembersPalette.h"
 #include "icnsEditorClass.h"
 #include "drawingStateClass.h"
+#include "MHelp.h"
 
 const static EventTimerInterval kDragScrollDelay = kEventDurationMillisecond;
 
@@ -16,7 +17,7 @@ MembersPalette::MembersPalette()
 	
 	previousEditor = NULL;
 	previousScrollValue = 0;
-	previousMembers = 0;
+	previousUsedMembers = previousMembers = 0;
 	previousCurrentControlIndex = -1;
 	
 	infoButtonPicture = GetPicture(rMPInfoButtonPicture);
@@ -39,7 +40,7 @@ MembersPalette::~MembersPalette()
 
 void MembersPalette::Activate()
 {
-	RefreshMemberPanes();
+	RefreshMemberPanes(true);
 }
 
 void MembersPalette::Deactivate()
@@ -55,48 +56,12 @@ void MembersPalette::Show()
 {
 	MFloater::Show();
 	
-	RefreshMemberPanes();
+	RefreshMemberPanes(true);
 }
 
 void MembersPalette::DoIdle(MWindowPtr windowUnderMouse)
 {
-	Point	theMouse; // the current mouse coordinates
-	
-	SAVEGWORLD; // we must save the gworld...
-	SetPort(); // since we set the current port to the editor's window...
-			
-	GetMouse(&theMouse); // because we want the mouse coordinates in terms of the window
-	
-	if (IsFrontProcess()) // if we're the main app now...
-	{
-		Rect windowRect;
-		
-		windowRect = GetPortRect();
-		
-#if !TARGET_API_MAC_CARBON
-		if (this == windowUnderMouse && HMGetBalloons())
-		{
-			Rect				infoButtonRect, addMemberButtonRect;
-			
-			GetControlBounds(controls.infoButton, &infoButtonRect);
-			GetControlBounds(controls.addMemberButton, &addMemberButtonRect);
-			
-			if (PtInRect(theMouse, &infoButtonRect))
-				HandleBalloon(rMPBalloonHelp, hInfoButton, infoButtonRect, theMouse);
-			else if (PtInRect(theMouse, &addMemberButtonRect))
-				HandleBalloon(rMPBalloonHelp, hAddMemberButton, addMemberButtonRect, theMouse);
-			else
-			{
-				HMRemoveBalloon();
-				icnsEditorClass::statics.currentBalloon = 0;
-			}
-		}
-#else
-#pragma unused (windowUnderMouse)
-#endif
-	}
-	
-	RESTOREGWORLD; // we can now restore the gworld
+#pragma unused(windowUnderMouse)
 }
 
 void MembersPalette::HandleWheelMove(Point location, int modifiers, EventMouseWheelAxis axis, long delta)
@@ -111,7 +76,18 @@ void MembersPalette::HandleWheelMove(Point location, int modifiers, EventMouseWh
 	
 	scrollValue = GetControlValue(controls.scrollbar);
 	
-	RefreshMemberPanes();
+	RefreshMemberPanes(true);
+}
+
+bool MembersPalette::HandleBoundsChange(int attributes, Rect* originalBounds, Rect* previousBounds, Rect* currentBounds)
+{
+#pragma unused (originalBounds, previousBounds)
+	bool	changedBounds = false;
+	
+	if (!ISCOMMANDDOWN && attributes & kWindowBoundsChangeUserDrag)
+		changedBounds = icnsEditorClass::statics.SnapPalette(this, currentBounds);
+	
+	return changedBounds;
 }
 
 void MembersPalette::HandleContentClick(EventRecord* eventPtr)
@@ -119,7 +95,6 @@ void MembersPalette::HandleContentClick(EventRecord* eventPtr)
 	Point 				where;
 	short 				controlPart;
 	ControlHandle 		clickedControl;
-	Rect				infoButtonRect, addMemberButtonRect;
 	
 	where = eventPtr->where;
 	
@@ -129,20 +104,7 @@ void MembersPalette::HandleContentClick(EventRecord* eventPtr)
 	
 	GlobalToLocal(&where);
 	
-	GetControlBounds(controls.infoButton, &infoButtonRect);
-	GetControlBounds(controls.addMemberButton, &addMemberButtonRect);
-	if (PtInRect(where, &infoButtonRect))
-	{
-		clickedControl = controls.infoButton;
-		controlPart = kControlIndicatorPart;
-	}
-	else if (PtInRect(where, &addMemberButtonRect))
-	{
-		clickedControl = controls.addMemberButton;
-		controlPart = kControlIndicatorPart;
-	}
-	else
-		controlPart = FindControl(where, window, &clickedControl);
+	controlPart = FindControl(where, window, &clickedControl);
 	
 	if (controlPart != kControlNoPart)
 	{
@@ -154,7 +116,7 @@ void MembersPalette::HandleContentClick(EventRecord* eventPtr)
 			if (TrackControl(clickedControl, where, (ControlActionUPP) -1))
 				EnhancedPlacardHandleClick(clickedControl);
 		}
-		else if (clickedControl == controls.backgroundPane)
+		else if (clickedControl == controls.backgroundPane || clickedControl == controls.fillerPlacard)
 		{
 			;
 		}
@@ -292,6 +254,8 @@ void MembersPalette::CreateControls()
 	ControlActionUPP			scrollBarActionUPP;
 	Str255						controlTitle;
 	
+	controls.fillerPlacard = controls.addMemberButton = controls.infoButton = NULL;
+	
 	CreateRootControl(window, &controls.root);
 	
 	controls.backgroundPane = GetNewControl(rMPBackgroundPane, window);
@@ -324,12 +288,14 @@ void MembersPalette::CreateControls()
 										  	 0, 0, controlTitle, infoButtonPicture, true, NULL,
 										  	 icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix,
 										  	 InfoButtonUpdate, this);
+	MHelp::SetControlHelp(controls.infoButton, rMPHelp, hInfoButton);
 										  	 
 	GetIndString(controlTitle, rMPNames, eMPAddMember);
 	controls.addMemberButton = NewEnhancedPlacard(rMPAddMemberButton, window, enhancedPlacardDrawBorder,
 												  0, 0, controlTitle, addMemberButtonPicture, true, NULL,
 												  icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix,
 												  AddMemberButtonUpdate, this);
+	MHelp::SetControlHelp(controls.addMemberButton, rMPHelp, hAddMemberButton);
 	
 	RepositionControls();
 }
@@ -366,6 +332,11 @@ void MembersPalette::ResizeMemberPanes()
 	int	currentHeight = -1;
 	int	previewHeight;
 	
+	// temporarily unembed controls so that we can move its parets around
+	if (controls.infoButton) EmbedControl(controls.infoButton, controls.root);
+	if (controls.addMemberButton) EmbedControl(controls.addMemberButton, controls.root);
+	if (controls.fillerPlacard) EmbedControl(controls.fillerPlacard, controls.root);
+	
 	previewHeight = icnsEditorClass::statics.preferences.GetPreviewSize();
 	
 	for (int i=0; i < kMembersCount; i++)
@@ -395,8 +366,13 @@ void MembersPalette::ResizeMemberPanes()
 		SetControlMaximum(controls.scrollbar, 0);
 	else
 		SetControlMaximum(controls.scrollbar, currentHeight - pageSize + 1);
+	
+	// restore the embedding
+	if (controls.infoButton) AutoEmbedControl(controls.infoButton, window);
+	if (controls.addMemberButton) AutoEmbedControl(controls.addMemberButton, window);
+	if (controls.fillerPlacard) AutoEmbedControl(controls.fillerPlacard, window);
 		
-	RefreshMemberPanes();
+	RefreshMemberPanes(true);
 }
 
 void MembersPalette::HandleGrow(Point where)
@@ -479,24 +455,31 @@ void MembersPalette::RepositionControls()
 	controlRect.top = controlRect.bottom - kSmallGrowBoxHeight - 1;
 	SetControlBounds(controls.infoButton, &controlRect);
 	
-	RefreshMemberPanes();
+	RefreshMemberPanes(previousEditor, true);
 }
 
 #pragma mark -
 
-void MembersPalette::RefreshMemberPanes()
+void MembersPalette::RefreshMemberPanes(bool checkCache)
 {
-	RefreshMemberPanes(GetFrontEditor());
+	RefreshMemberPanes(GetFrontEditor(), checkCache);
 }
 
-void MembersPalette::RefreshMemberPanes(icnsEditorPtr frontEditor)
+void MembersPalette::RefreshMemberPanes(icnsEditorPtr frontEditor, bool checkCache)
 {
 	parentEditor = frontEditor;
 	
-	if (frontEditor != previousEditor ||
+	// temporarily unembed controls so that we can move its parets around
+	if (controls.infoButton) EmbedControl(controls.infoButton, controls.root);
+	if (controls.addMemberButton) EmbedControl(controls.addMemberButton, controls.root);
+	if (controls.fillerPlacard) EmbedControl(controls.fillerPlacard, controls.root);
+	
+	if (!checkCache ||
+	    frontEditor != previousEditor ||
 		scrollValue != previousScrollValue ||
 		(frontEditor != NULL &&
 		(frontEditor->members != previousMembers ||
+		 frontEditor->usedMembers != previousUsedMembers ||
 		frontEditor->currentPixName != previousCurrentPixName)))
 	{
 		Rect	controlRect, windowRect;
@@ -507,17 +490,17 @@ void MembersPalette::RefreshMemberPanes(icnsEditorPtr frontEditor)
 		
 		if (frontEditor != NULL)
 		{
+			previousUsedMembers = frontEditor->usedMembers;
 			previousMembers = frontEditor->members;
 			previousCurrentPixName = frontEditor->currentPixName;
 			previousCurrentControlIndex = -1;
 		}
 		else
 		{
-			previousMembers = icons + masks;
+			previousUsedMembers = previousMembers = icons + masks;
 			previousCurrentPixName = 0;
 			previousCurrentControlIndex = -1;
 		}
-		
 		
 		SAVEGWORLD;
 		
@@ -574,7 +557,6 @@ void MembersPalette::RefreshMemberPanes(icnsEditorPtr frontEditor)
 		
 		EndClipping();
 		
-		
 		Draw1Control(controls.scrollbar);
 		Draw1Control(controls.backgroundPane);
 		
@@ -591,6 +573,11 @@ void MembersPalette::RefreshMemberPanes(icnsEditorPtr frontEditor)
 
 		EndClipping();
 	}
+	
+	// restore the embedding
+	if (controls.infoButton) AutoEmbedControl(controls.infoButton, window);
+	if (controls.addMemberButton) AutoEmbedControl(controls.addMemberButton, window);
+	if (controls.fillerPlacard) AutoEmbedControl(controls.fillerPlacard, window);
 }
 
 void MembersPalette::StartClipping()
@@ -718,7 +705,7 @@ void MembersPalette::ScrollToCurrentMember(icnsEditorPtr frontEditor)
 		}
 
 	
-	RefreshMemberPanes(frontEditor);
+	RefreshMemberPanes(frontEditor, true);
 	
 	for (int i=0; i < kMembersCount; i++)
 		if (kMembers[i].name & frontEditor->usedMembers &&
@@ -758,7 +745,7 @@ void MembersPalette::ScrollToCurrentMember(icnsEditorPtr frontEditor)
 					SetControlValue(controls.scrollbar, current);
 					scrollValue = GetControlValue(controls.scrollbar);
 			
-					RefreshMemberPanes(frontEditor);
+					RefreshMemberPanes(frontEditor, true);
 					
 					Flush();
 				}
@@ -768,7 +755,7 @@ void MembersPalette::ScrollToCurrentMember(icnsEditorPtr frontEditor)
 				SetControlValue(controls.scrollbar, target);
 				scrollValue = GetControlValue(controls.scrollbar);
 		
-				RefreshMemberPanes(frontEditor);
+				RefreshMemberPanes(frontEditor, true);
 			}
 			break;
 		}
@@ -1103,7 +1090,7 @@ void MembersPalette::DragScroll(Point theMouse)
 		if (dragHiliteRgn != NULL)
 			OffsetRgn(dragHiliteRgn, 0, scrollValue - oldValue);
 
-		RefreshMemberPanes();
+		RefreshMemberPanes(true);
 	}
 }
 
@@ -1339,5 +1326,5 @@ pascal void MembersPalette::ScrollbarAction(ControlHandle theControl, SInt16 the
 	
 	parentPalette->scrollValue = GetControlValue(theControl);
 	
-	parentPalette->RefreshMemberPanes();
+	parentPalette->RefreshMemberPanes(true);
 }

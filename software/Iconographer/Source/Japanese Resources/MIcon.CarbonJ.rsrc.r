@@ -7,7 +7,7 @@ resource 'CNTL' (1001, "Flags Group Box", purgeable) {
 	0,
 	160,
 	0,
-	"Resource Flags"
+	"ƒŠƒ\\[ƒXî•ñ"
 };
 
 resource 'CNTL' (1002, "ID Popup", purgeable) {

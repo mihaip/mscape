@@ -1,6 +1,7 @@
 #include "ColorsPalette.h"
 #include "icnsEditorClass.h"
 #include "graphicalFunctions.h"
+#include "MHelp.h"
 
 ControlActionUPP RGBColorPicker::sliderActionUPP = NewControlActionUPP(RGBColorPicker::SliderAction);
 ControlActionUPP HSVColorPicker::sliderActionUPP = NewControlActionUPP(HSVColorPicker::SliderAction);
@@ -107,26 +108,22 @@ void ColorsPalette::UpdateCursor(Point theMouse)
 		currentColorPicker->UpdateCursor(theMouse);
 	else
 	{
-#if !TARGET_API_MAC_CARBON
-		if (HMGetBalloons())
-		{
-			Rect			controlBounds;
-			
-			GetControlBounds(controls.tabs, &controlBounds);
-			
-			controlBounds.bottom = controlBounds.top + kSmallTabTabsHeight;
-			
-			if (PtInRect(theMouse, &controlBounds))
-				HandleBalloon(rCPBalloonHelp, hCPTabs, controlBounds, theMouse);
-			else
-				HandleBalloons(theMouse, window, rCPBalloonHelp);
-		}
-#endif
 		if (PtInRgn(theMouse, foreColorRgn))
 			UpdateReadout(-1, -1, fore);
 		else if (PtInRgn(theMouse, backColorRgn))
 			UpdateReadout(-1, -1, back);
 	}
+}
+
+bool ColorsPalette::HandleBoundsChange(int attributes, Rect* originalBounds, Rect* previousBounds, Rect* currentBounds)
+{
+#pragma unused (originalBounds, previousBounds)
+	bool	changedBounds = false;
+	
+	if (!ISCOMMANDDOWN && attributes & kWindowBoundsChangeUserDrag)
+		changedBounds = icnsEditorClass::statics.SnapPalette(this, currentBounds);
+	
+	return changedBounds;
 }
 
 void ColorsPalette::HandleContentClick(EventRecord* eventPtr)
@@ -351,7 +348,7 @@ void ColorsPalette::CreateControls()
 	EmbedControl(controls.swatch, controls.backgroundPane);
 	SetControlUserPaneDraw(controls.swatch, CPSwatchDraw);
 	SetControlUserPaneHitTest(controls.swatch, CPSwatchHitTest);
-	SetControlBalloonHelp(controls.swatch, hCPSwatch);	
+	MHelp::SetControlHelp(controls.swatch, rCPHelp, hCPSwatch);	
 
 	foreColorRgn = NewRgn();
 	GetControlBounds(controls.swatch, &tempRect);
@@ -371,21 +368,21 @@ void ColorsPalette::CreateControls()
 	
 	controls.tabs = GetNewControl(rCPTabs, window);
 	EmbedControl(controls.tabs, controls.backgroundPane);
-	SetControlBalloonHelp(controls.tabs, hCPTabs);
+	MHelp::SetControlHelp(controls.tabs, rCPHelp, hCPTabs);
 	
 	controls.separator1 = GetNewControl(rCPSeparator1, window);
 	controls.positionReadoutLabel = GetNewControl(rCPPositionReadoutLabel, window);
 	ResetStaticTextTitle(controls.positionReadoutLabel);
 	controls.positionReadoutData = GetNewControl(rCPPositionReadoutData, window);
 	SetControlFontStyle(controls.positionReadoutData, &readoutStyle);
-	SetControlBalloonHelp(controls.positionReadoutData, hCPPosReadout);
+	MHelp::SetControlHelp(controls.positionReadoutData, rCPHelp, hCPPosReadout);
 	
 	//controls.separator2 = GetNewControl(rCPSeparator2, window);
 	controls.colorReadoutLabel = GetNewControl(rCPColorReadoutLabel, window);
 	ResetStaticTextTitle(controls.colorReadoutLabel);
 	controls.colorReadoutData = GetNewControl(rCPColorReadoutData, window);
 	SetControlFontStyle(controls.colorReadoutData, &readoutStyle);
-	SetControlBalloonHelp(controls.colorReadoutData, hCPColorReadout);
+	MHelp::SetControlHelp(controls.colorReadoutData, rCPHelp, hCPColorReadout);
 	
 	controls.colorPickerArea = GetNewControl(rCPColorPickerArea, window);
 	EmbedControl(controls.colorPickerArea, controls.tabs);
@@ -498,12 +495,12 @@ void RGBColorPicker::CreateControls()
 	}
 #endif
 	
-	SetControlBalloonHelp(redSlider, hRGBCPRedSlider);
-	SetControlBalloonHelp(redPreview, hRGBCPRedPreview);
-	SetControlBalloonHelp(greenSlider, hRGBCPGreenSlider);
-	SetControlBalloonHelp(greenPreview, hRGBCPGreenPreview);
-	SetControlBalloonHelp(blueSlider, hRGBCPGreenSlider);
-	SetControlBalloonHelp(bluePreview, hRGBCPBluePreview);
+	MHelp::SetControlHelp(redSlider, rRGBCPHelp, hRGBCPRedSlider);
+	MHelp::SetControlHelp(redPreview, rRGBCPHelp, hRGBCPRedPreview);
+	MHelp::SetControlHelp(greenSlider, rRGBCPHelp, hRGBCPGreenSlider);
+	MHelp::SetControlHelp(greenPreview, rRGBCPHelp, hRGBCPGreenPreview);
+	MHelp::SetControlHelp(blueSlider, rRGBCPHelp, hRGBCPGreenSlider);
+	MHelp::SetControlHelp(bluePreview, rRGBCPHelp, hRGBCPBluePreview);
 }
 
 void RGBColorPicker::Hide()
@@ -542,17 +539,6 @@ void RGBColorPicker::Show()
 void RGBColorPicker::UpdateCursor(Point theMouse)
 {
 #pragma unused (theMouse)
-#if !TARGET_API_MAC_CARBON
-	if (HMGetBalloons())
-		if (HandleBalloon(rRGBCPBalloonHelp, redSlider, theMouse) ||
-			HandleBalloon(rRGBCPBalloonHelp, greenSlider, theMouse) ||
-			HandleBalloon(rRGBCPBalloonHelp, blueSlider, theMouse))
-		{
-			;
-		}
-		else
-			HandleBalloons(theMouse, parentWindow->GetWindow(), rRGBCPBalloonHelp);
-#endif
 }
 
 void RGBColorPicker::HandleContentClick(EventRecord* eventPtr)
@@ -801,12 +787,12 @@ void HSVColorPicker::CreateControls()
 	}
 #endif
 				   
-	SetControlBalloonHelp(hueSlider, hHSVCPHueSlider);
-	SetControlBalloonHelp(huePreview, hHSVCPValuePreview);
-	SetControlBalloonHelp(saturationSlider, hHSVCPSaturationSlider);
-	SetControlBalloonHelp(saturationPreview, hHSVCPSaturationPreview);
-	SetControlBalloonHelp(valueSlider, hHSVCPValueSlider);
-	SetControlBalloonHelp(valuePreview, hHSVCPValuePreview);
+	MHelp::SetControlHelp(hueSlider, rHSVCPHelp, hHSVCPHueSlider);
+	MHelp::SetControlHelp(huePreview, rHSVCPHelp, hHSVCPValuePreview);
+	MHelp::SetControlHelp(saturationSlider, rHSVCPHelp, hHSVCPSaturationSlider);
+	MHelp::SetControlHelp(saturationPreview, rHSVCPHelp, hHSVCPSaturationPreview);
+	MHelp::SetControlHelp(valueSlider, rHSVCPHelp, hHSVCPValueSlider);
+	MHelp::SetControlHelp(valuePreview, rHSVCPHelp, hHSVCPValuePreview);
 }
 
 void HSVColorPicker::Hide()
@@ -864,17 +850,6 @@ void HSVColorPicker::Show()
 void HSVColorPicker::UpdateCursor(Point theMouse)
 {
 #pragma unused (theMouse)
-#if !TARGET_API_MAC_CARBON
-	if (HMGetBalloons())
-		if (HandleBalloon(rHSVCPBalloonHelp, hueSlider, theMouse) ||
-			HandleBalloon(rHSVCPBalloonHelp, saturationSlider, theMouse) ||
-			HandleBalloon(rHSVCPBalloonHelp, valueSlider, theMouse))
-		{
-			;
-		}
-		else
-			HandleBalloons(theMouse, parentWindow->GetWindow(), rHSVCPBalloonHelp);
-#endif
 }
 
 void HSVColorPicker::HandleContentClick(EventRecord* eventPtr)
@@ -1088,7 +1063,7 @@ void SystemColorPicker::CreateControls()
 	SetControlUserPaneDraw(paletteControl, SystemColorPicker::PaletteDraw);
 	SetControlUserPaneHitTest(paletteControl, GenericHitTest);
 	
-	SetControlBalloonHelp(paletteControl, hSystemCPPalette);
+	MHelp::SetControlHelp(paletteControl, rSystemCPHelp, hSystemCPPalette);
 }
 
 void SystemColorPicker::Hide()
@@ -1124,11 +1099,6 @@ void SystemColorPicker::Show()
 void SystemColorPicker::UpdateCursor(Point theMouse)
 {
 	bool changed;
-	
-#if !TARGET_API_MAC_CARBON
-	if (HMGetBalloons())
-		HandleBalloons(theMouse, parentWindow->GetWindow(), rSystemCPBalloonHelp);
-#endif
 
 	parentWindow->UpdateReadout(-1, -1, GetColorUnderMouse(theMouse, &changed));
 }
@@ -1427,7 +1397,7 @@ void FavoritesColorPicker::CreateControls()
 	SetControlUserPaneDraw(paletteControl, FavoritesColorPicker::PaletteDraw);
 	SetControlUserPaneHitTest(paletteControl, GenericHitTest);
 				   
-	SetControlBalloonHelp(paletteControl, hFavoritesCPPalette);
+	MHelp::SetControlHelp(paletteControl, rFavoritesCPHelp, hFavoritesCPPalette);
 }
 
 void FavoritesColorPicker::Hide()
@@ -1457,11 +1427,6 @@ void FavoritesColorPicker::UpdateCursor(Point theMouse)
 {
 	Rect	paletteRect;
 	int		colorIndex;
-
-#if !TARGET_API_MAC_CARBON
-	if (HMGetBalloons())
-		HandleBalloons(theMouse, parentWindow->GetWindow(), rFavoritesCPBalloonHelp);
-#endif
 
 	GetControlBounds(paletteControl, &paletteRect);
 	

@@ -38,7 +38,10 @@ enum errorResources
 {
 	rDefaultNames = 128,
 	rStdErrors = 129,
-	rPrompts = 130
+	rPrompts = 130,
+	
+	rAboutHelp = 160,
+	rRegisterHelp = 161
 };
 
 // substrings
@@ -79,7 +82,8 @@ enum defaultNames
 	eOpenHelp = 33,
 	eContinue = 34,
 	eRegisteredTo = 35,
-	eRepositionButton = 36
+	eRepositionButton = 36,
+	eReapplyMenuItem = 37
 };
 
 enum stdErrors
@@ -124,6 +128,13 @@ enum prompts
 	eWantToSaveExplanation = 14
 };
 
+enum aboutHelp
+{
+	hEmailAddress = 1,
+	hWebAddress = 2,
+	hRegistrationInfo = 4
+};
+
 enum saveOptions
 {
 	noCancel = 1,
@@ -165,7 +176,8 @@ enum menus
 	mCopy = 135,
 	mIcon = 136,
 	mColors = 137,
-	mWindows = 138
+	mEffects = 138,
+	mWindows = 139
 };
 
 enum appleMenu
@@ -257,6 +269,12 @@ enum colorsMenu
 {
 	iMacOSColors = 1,
 	iWinColors = 2
+};
+
+enum effectsMenu
+{
+	iReapply = 1,
+	iEffectsInsertionPoint = 2
 };
 
 enum windowsMenu

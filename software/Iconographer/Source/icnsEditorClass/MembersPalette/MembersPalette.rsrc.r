@@ -1,7 +1,7 @@
 /* Resource fork of software/Iconographer/Source/icnsEditorClass/MembersPalette/MembersPalette.rsrc */
 resource 'CNTL' (400, "Members Pane", purgeable) {
 	{0, 4294967295, 128, 141},
-	0,
+	2,
 	visible,
 	100,
 	0,
@@ -216,16 +216,14 @@ resource 'PICT' (401, "Add Member Button") {
 	$"00FF"
 };
 
-resource 'STR#' (400, "Members Palette Balloon Help", purgeable) {
+resource 'STR#' (400, "Members Palette Help", purgeable) {
 	{	/* array StringArray: 2 elements */
 		/* [1] */
-		"Icon Info\n\nClick this button to set an i"
-		"con’s attributes (ID, name, members, and"
-		" flags).",
+		"Icon attributes (ID, name, members, and "
+		"flags)",
 		/* [2] */
-		"Add Member\n\nClick here to create an addi"
-		"tional member (icon part) with a specifi"
-		"c size and depth."
+		"Add member with a specific size and dept"
+		"h"
 	}
 };
 

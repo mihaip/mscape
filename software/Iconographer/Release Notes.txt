@@ -1,48 +1,38 @@
-UNCONFIRMED
-- copy from photoshop results in rainbow cursor of death when returning to iconographer (bug fix in 10.1.2 or 9.2.2?)
-- icon browser scrolling "dirt"
-
 TODO
-2.4
-- quicktime effects
-- get display area/edit rect to update properly when new one is smaller
-- update welcome text with proper version
-- see why there's too many screen updates for os x version
+2.5
+- double check that sync event is sent to folder, not to 'Icon\r' file
+- pen tool fore/back color inversion not intuitive for big brushes
+- have nearest neighbor/bilinear/bicubic scaling
+- look into windows icons still have 1-bit members when not necessary
+- scroll wheel over members palette should do the right thing (use SetUserFocusWindow)
+- when saving and having permission problems attempt to authenticate (os x)
+- option-multiplier for scrolling in icon browser should go one cell at a time
+- dragging minimized windows in os 9 doesn't work
+- zoom box for icon browser
+- live resizing with carbon events for all windows
+- tweak effects preview (don't scale/use custom area)
 - deal with files being in use better
-- look into rotatio/undo bug
-- fix 32 bit icons and 8 bit icons in docs/page
+- include list of cool qt effects
+- register help book (might require rearrangement of bundle hierarchy)
+- option while closing should close all windows
+- preview against desktop should use actual desktop background on os x 10.1 +
+- redo colors palette (bring back favorites)
+- use control hiding trick when switching tab panes
+
+FUTURE RELEASE
 - make customized text drawing (esp. in members palette) use drawthemetextbox
-- look into why there are window positioning issues when dock is on the left and pinned to the bottom (lithe setup)
-- make localized versions link to the translated online ordering page (and get the text translated for that too)
 - merge all language versions for Carbon version by using bundle
 - look into optimizing display of lines/gradient feedback by updating less pixels
-- figure out how to get OS X Finder to update icons sooner (use FNNotify?)
-- take into account used members when caching members palette
-- some polygonal lasso drawing issues
-- option while closing should close all windows
-- help tags
-- preferences and adjust balloon help
-- redo colors palette (merge sliders tab, bring back favorites)
-- hovering over RGB/HSB slider previews should show color in readout
-- readout should show up when in another editor's drawing area
-- 8-bit system palette balloon help/help tags should explain each section
-
-post 2.3
-- save into file icon replacing only checks for 'icns'
-- write some kind of step by step tutorial
-- include docs for using icons with new apps/RB projects
 - make prefs dialog movable modeless
 - refactor MIcon so that we don't statically allocate all members (and make it more generic to support any size)
 - quickmask mode (a la photoshop)
 - smooth brush
 - turn alerts, info, add member into sheets
 - anti-aliased text
-- palette position snapping
 - snap colors in color floater to current palette, system, web, grays, etc.
 - different centering styles for MAlert
 - settable default button for MAlert
 - 8 bit selections (so that text can be anti-aliased, and dragged data can be placed into a proper selection).
-- Effects menu with: Glow, Blur, Shadow, Make Folder Icon, Screen Grab
 - transformations (at least scaling and rotation)
 - contextual menus
 - insertion/saving into .ICL/.DLL files
@@ -58,11 +48,36 @@ OPTIMIZATION
 - when showing window, calling UpdatePaletets and ActivateFloaters
 - calling with updateAll for MembersPalette when opening/closing, not quite necessary?
 - adjust WNE sleep value when in background, when in TrackMouseLocation, etc.
-- for live previewing of hue/saturation effects, cache image stored as HSV.
 - look into why isfrontprocess takes so long in memberspalette doidle
 - add caching to other palettes too, not just members one
 
 CHANGES
+2.4
+- quicktime effects
+- help tags (and updated balloon help under os 8.x/9.x)
+- palette position snapping (OS X Only)
+- os x finder updates modified icons much faster
+- includes docs for using icons with new apps/RB projects
+- optimized color adjust functions
+- photoshop format actually works for external editors
+- huge member is selected by default when opening xp icons
+- increased classic version memory allocation to 5 megs
+- double click on pan/zoom tools doesn't result in new undo state being created
+- notifies about screen rez change only once as opposed to after every doc is opened
+- welcome text has proper version number
+- decreased number of forced screen updates when tracking under os x
+- check for existing icon when saving now looks at all possible formats
+- take into account used members when caching members palette
+- members palette doesn't go gray anymore after reset palette locations is pressed in prefs
+- display area updates properly after resize when new one is smaller than min window bounds
+- updated icnsEditorClass::SaveMembers to use only used members & loop instead of hard coded values
+- fixed undo/rotation bug
+- completed select submenu balloon help
+- made min size such that there's no one pixel gap for 2x zoomed large icon
+- localized versions now link to localized registration page
+- files like HIToolbox.rsrc won't occasionally crash the icon browser anymore
+- stroke selection uses foreground color
+
 2.3
 - added "fit on screen" and "actual pixels" to icon menu
 - added mac os x IDs to the icon info popup menu

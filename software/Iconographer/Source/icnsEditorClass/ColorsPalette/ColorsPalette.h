@@ -12,7 +12,7 @@ enum ColorsPaletteResources
 {
 	rCPWindow = 250,
 	rCPSwatch = 250,
-	rCPBalloonHelp = 250,
+	rCPHelp = 250,
 	rCPTabs = 251,
 	rCPBackgroundPane = 252,
 	rCPColorPickerArea = 253,
@@ -98,7 +98,7 @@ typedef ColorPicker* ColorPickerPtr;
 
 enum RGBColorPickerResources
 {
-	rRGBCPBalloonHelp = 260,
+	rRGBCPHelp = 260,
 	rRGBCPBaseControl = 260,
 	rRGBCPRedSlider = 261,
 	rRGBCPGreenSlider = 262,
@@ -162,7 +162,7 @@ class RGBColorPicker : public ColorPicker
 
 enum HSVColorPickerResources
 {
-	rHSVCPBalloonHelp = 270,
+	rHSVCPHelp = 270,
 	rHSVCPBaseControl = 270,
 	rHSVCPHueSlider = 271,
 	rHSVCPSaturationSlider = 272,
@@ -230,7 +230,7 @@ class HSVColorPicker : public ColorPicker
 enum SystemColorPickerResources
 {
 	rSystemCPPaletteControl = 280,
-	rSystemCPBalloonHelp = 280
+	rSystemCPHelp = 280
 };
 
 enum SystemColorPickerBalloonHelp
@@ -254,9 +254,6 @@ class SystemColorPicker : public ColorPicker
 		
 		void			CreateControls();
 		void			HandleContentClick(EventRecord* eventPtr);
-		
-		
-	
 	private:
 		static pascal void PaletteDraw(ControlHandle theControl, short thePart);
 		
@@ -283,7 +280,7 @@ class SystemColorPicker : public ColorPicker
 
 enum FavoritesColorPickerResources
 {
-	rFavoritesCPBalloonHelp = 290,
+	rFavoritesCPHelp = 290,
 	rFavoritesCPPaletteControl = 290,
 	rFavoritesCPScissors = 290
 };
@@ -344,6 +341,7 @@ class ColorsPalette : public MFloater
 		
 		void			Show();
 		
+		bool 			HandleBoundsChange(int attributes, Rect* originalBounds, Rect* previousBounds, Rect* currentBounds);
 		void			HandleContentClick(EventRecord* eventPtr);
 		
 		void			SetCurrentPicker(int picker);

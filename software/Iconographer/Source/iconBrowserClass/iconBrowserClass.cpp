@@ -220,8 +220,8 @@ void iconBrowserClass::LoadFamily(OSType type, bool newType, short oldFile, shor
 		if (newType)
 			GeticnsInfo((IconFamilyHandle)icon, &members, &cellHeight);
 		else
-			GetICNInfo(ID, name, &members, &cellHeight);
-		
+			GetICNInfo(ID, name, &members, &cellHeight, type);
+				
 		ReleaseResource(icon);
 		
 		UseResFile(oldFile);
@@ -255,7 +255,7 @@ void iconBrowserClass::AddIcon(int ID, Str255 name, long members, bool newType)
 {
 	ListDrawingData*	cellDrawingData;
 	MStringPtr			cellString;
-			
+	
 	iconBrowserClass::GetIconString(ID, name, members, newType, &cellString);
 				
 	cellDrawingData = new ListDrawingData;
@@ -683,14 +683,14 @@ void iconBrowserClass::Clear()
 	MAlert 				alert;
 	int					ID;
 	Str255 				IDAsString, fileName;
-	ListDrawingData*	drawingData;
+	ListDrawingData*	iconInfo;
 	
 	if (theList.GetSelection() == -1)
 		return;
 	
 	
-	theList.GetCellClientData(theList.GetSelection(), 0, (void**)&drawingData);
-	ID = drawingData->ID;
+	theList.GetCellClientData(theList.GetSelection(), 0, (void**)&iconInfo);
+	ID = iconInfo->ID;
 	
 	if (ID == kIDUseFileIcon)
 		return;
@@ -712,38 +712,10 @@ void iconBrowserClass::Clear()
 	
 	if (alert.Display() == kMAOK)
 	{
-		ListDrawingData* iconInfo;
-		short oldFile, srcFile;
-		Handle	iconResource;
-		
-		theList.GetCellClientData(theList.GetSelection(), 0, (void**)&iconInfo);
-		
-		oldFile = CurResFile();
-		srcFile = file.OpenResourceFork(fsRdWrPerm);
-		UseResFile(srcFile);
-		
 		if (iconInfo->newType)
-		{
-			iconResource = Get1Resource('icns', ID);
-				if (iconResource != NULL)
-					RemoveResource(iconResource);
-		}
+			MIcon::DeleteIcon(&file, ID, formatMacOSNew);
 		else
-		{
-			ResType iconResourceTypes[] = {'icl8', 'icl4', 'ICN#', 'ics8', 'ics4', 'ics#', 'icm8', 'icm4', 'icm#'};
-			int		iconResourceTypesCount = sizeof(iconResourceTypes)/sizeof(ResType);
-			
-			for (int i=0; i < iconResourceTypesCount; i++)
-			{
-				iconResource = Get1Resource(iconResourceTypes[i], ID);
-				if (iconResource != NULL)
-					RemoveResource(iconResource);
-			}
-		}
-		UpdateResFile(srcFile);
-		CloseResFile(srcFile);
-		UseResFile(oldFile);
-		
+			MIcon::DeleteIcon(&file, ID, formatMacOSOld);
 		
 		theList.Remove(theList.GetSelection(), 0);
 		RefreshList();
@@ -754,7 +726,7 @@ void iconBrowserClass::GetIconString(int ID, Str255 name, long members, bool new
 {
 	MString part("");
 	bool	defaultName = false;
-	Str255	localName;
+	Str255	localName = "\p";
 	
 	*iconString = new MString("");
 	

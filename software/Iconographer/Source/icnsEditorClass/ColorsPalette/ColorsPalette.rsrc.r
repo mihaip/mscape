@@ -609,106 +609,64 @@ resource 'DLOG' (290, "Colors Palette: Favorites Picker", purgeable) {
 resource 'STR#' (250, "Colors Palette: Balloon Help", purgeable) {
 	{	/* array StringArray: 4 elements */
 		/* [1] */
-		"The current foreground and background co"
-		"lors are displayed here. The color with "
-		"the focus around it is the one being cur"
-		"rently modified. Click on the other to s"
-		"elect that for modification",
+		"Foreground and background colors",
 		/* [2] */
-		"These tabs can be used to toggle among t"
-		"he various color pickers that are availa"
-		"ble: Red/Green/Blue sliders, Hue/Saturat"
-		"ion/Value sliders, the System palette an"
-		"d a set of slots for your Favorite color"
-		"s.",
+		"Color pickers (RGB, HSV and System)",
 		/* [3] */
-		"The current position of the cursor (in r"
-		"elation to the drawing) is displayed her"
-		"e.",
+		"Cursor position",
 		/* [4] */
-		"The colors in the drawing underneath the"
-		" cursor are displayed here."
+		"Spot color (underneath cursor)"
 	}
 };
 
 resource 'STR#' (260, "Colors Palette: RGB Picker: Balloon Help", purgeable) {
 	{	/* array StringArray: 6 elements */
 		/* [1] */
-		"Red slider: controls the intensity of th"
-		"e color red in the current mixture.",
+		"Red intensity control slider",
 		/* [2] */
-		"Red preview: displays the effects of set"
-		"ting the red slider at various points al"
-		"ong the track.",
+		"Red intensity preview",
 		/* [3] */
-		"Green slider: controls the intensity of "
-		"the color green in the current mixture.",
+		"Green intensity control slider",
 		/* [4] */
-		"Green preview: displays the effects of s"
-		"etting the green slider at various point"
-		"s along the track.",
+		"Green intensity preview",
 		/* [5] */
-		"Blue slider: controls the intensity of t"
-		"he color blue in the current mixture.",
+		"Blue intensity control slider",
 		/* [6] */
-		"Blue preview: displays the effects of se"
-		"tting the blue slider at various points "
-		"along the track."
+		"Blue intensity preview"
 	}
 };
 
 resource 'STR#' (270, "Colors Palette: HSV Picker: Balloon Help", purgeable) {
 	{	/* array StringArray: 6 elements */
 		/* [1] */
-		"Hue slider: controls the current hue of "
-		"the color. The hue is the overall tint a"
-		"nd color.\n\nIf disabled, you must first i"
-		"ncrease the value and then the saturatio"
-		"n in order to be able to have colors.",
+		"Hue (overall color) control slider",
 		/* [2] */
-		"Hue preview: displays the effects of set"
-		"ting the hue slider at various points al"
-		"ong the track.",
+		"Hue (overall color) preview",
 		/* [3] */
-		"Saturation slider: controls the saturati"
-		"on of the color. Saturation is the “puri"
-		"ty” of the color, at its lowest it yield"
-		"s a gray, at its maximum the current hue"
-		" at maximum.\n\nIf disabled, you must firs"
-		"t increase the value.",
+		"Saturation (“purity” of color) control s"
+		"lider",
 		/* [4] */
-		"Saturation preview: displays the effects"
-		" of setting the saturation slider at var"
-		"ious points along the track.",
+		"Saturation (“purity” of color) preview",
 		/* [5] */
-		"Value slider: controls the intensity of "
-		"the current hue in the current color. Th"
-		"e value is the intensity in a color.",
+		"Value (intensity of color) control slide"
+		"r",
 		/* [6] */
-		"Value preview: displays the effects of s"
-		"etting the value slider at various point"
-		"s along the track."
+		"Value (intensity of color) preview"
 	}
 };
 
 resource 'STR#' (280, "Colors Palette: System Picker: Balloon Help", purgeable) {
 	{	/* array StringArray: 1 elements */
 		/* [1] */
-		"The system palette depth is displayed he"
-		"re. Click on a square to set its content"
-		"s as your foreground/background color."
+		"System palette for the current depth"
 	}
 };
 
 resource 'STR#' (290, "Colors Palette: Favorites Picker: Baloon Help", purgeable) {
 	{	/* array StringArray: 1 elements */
 		/* [1] */
-		"You can store your favorite colors here."
-		" Simply click on an empty square to fill"
-		" it with the current color. Clicking on "
-		"it in the future will “pick-up” that col"
-		"or. You can command-click to remove a co"
-		"lor."
+		"Favorite colors.\n\nClick to pick-up (or f"
+		"ill if empty). Command-click to remove."
 	}
 };
 

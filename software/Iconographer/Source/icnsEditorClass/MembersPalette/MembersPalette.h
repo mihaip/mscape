@@ -23,7 +23,7 @@ enum MembersPaletteResources
 	rMPAddMemberButtonPicture = 401,
 	
 	// others
-	rMPBalloonHelp = 400,
+	rMPHelp = 400,
 	rMPNames = 401
 };
 
@@ -79,6 +79,7 @@ class MembersPalette : public MFloater
 		void					DoIdle(MWindowPtr windowUnderMouse);
 		
 		void 					HandleContentClick(EventRecord* eventPtr);
+		bool 					HandleBoundsChange(int attributes, Rect* originalBounds, Rect* previousBounds, Rect* currentBounds);
 		void					HandleGrow(Point where);
 		void 					HandleWheelMove(Point location, int modifiers, EventMouseWheelAxis axis, long delta);
 		
@@ -108,7 +109,7 @@ class MembersPalette : public MFloater
 		int						lastPaneClick;
 		
 		icnsEditorPtr			previousEditor;
-		int						previousMembers;
+		int						previousMembers, previousUsedMembers;
 		int						previousScrollValue;
 		int						previousCurrentPixName;
 		int						previousCurrentControlIndex;
@@ -130,8 +131,8 @@ class MembersPalette : public MFloater
 		
 		void					CreateControls();
 		void					RepositionControls();
-		void					RefreshMemberPanes();
-		void					RefreshMemberPanes(icnsEditorPtr frontEditor);
+		void					RefreshMemberPanes(bool checkCache);
+		void					RefreshMemberPanes(icnsEditorPtr frontEditor, bool checkCache);
 		int						GetTotalMembersHeight();
 		int						GetTotalMembersHeight(icnsEditorPtr	frontEditor);
 		

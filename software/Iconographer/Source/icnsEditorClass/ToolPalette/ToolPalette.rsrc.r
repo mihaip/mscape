@@ -1213,59 +1213,50 @@ resource 'PICT' (663, "Filled") {
 	$"0004 F6FF 0000 0400 FFF6 0000 00FF"
 };
 
-resource 'STR#' (600, "Tool Balloon Help", purgeable) {
+resource 'STR#' (600, "Tool Palette Help", purgeable) {
 	{	/* array StringArray: 23 elements */
 		/* [1] */
-		"Rectangular Marquee Tool (M)",
+		"Pencil (N)",
 		/* [2] */
-		"Move Tool (V)",
+		"Eye Dropper (I)",
 		/* [3] */
-		"Lasso Tool (L)",
+		"Paint Bucket (K)",
 		/* [4] */
-		"Magic Wand Tool (W)",
+		"Eraser (E)",
 		/* [5] */
-		"Pencil Tool (N)",
+		"Rectangular Marquee (M)",
 		/* [6] */
-		"Eye Dropper Tool (I)",
+		"Move (V)",
 		/* [7] */
-		"Paint Bucket Tool (K)",
+		"Lasso (L)",
 		/* [8] */
-		"Eraser Tool (E)",
+		"Magic Wand (W)",
 		/* [9] */
-		"Rectangle Tool (R)",
+		"Line (Y)",
 		/* [10] */
-		"Oval Tool (O)",
+		"Rectangle (R)",
 		/* [11] */
-		"Line Tool (Y)",
+		"Oval (O)",
 		/* [12] */
-		"Polygon Tool (P)",
+		"Polygon (P)",
 		/* [13] */
-		"Gradient Tool (G)",
+		"Gradient (G)",
 		/* [14] */
-		"Text Tool (T)",
+		"Text (T)",
 		/* [15] */
-		"Pan Tool (H)",
+		"Pan (H)",
 		/* [16] */
-		"Zoom Tool (Z)",
+		"Zoom (Z)",
 		/* [17] */
-		"Line Thickness\n\nClick to select the thic"
-		"kness of the lines drawn.",
+		"Line Thickness",
 		/* [18] */
-		"Aliasing\n\nClick to select between aliase"
-		"d (jagged) and anti-aliased (smooth) lin"
-		"es.",
+		"Aliasing Control",
 		/* [19] */
-		"Fill\n\nClick to toggle between unfilled a"
-		"nd filled shapes.",
+		"Fill Control",
 		/* [20] */
-		"Pattern\n\nThe current color pattern is di"
-		"splayed here. Click on the swatch to cha"
-		"nge it.",
+		"Pattern Swatch",
 		/* [21] */
-		"Color Swatch\n\nThe current foreground and"
-		" background colors are displayed here. C"
-		"lick on the color swatches to change the"
-		"m.",
+		"Color Swatch",
 		/* [22] */
 		"Swap Colors (X)",
 		/* [23] */

@@ -22,6 +22,9 @@ const static int kDefaultWindowSeparation = 2;
 const static int kCanvasWidth = 512 + 2 * 8 * 4; //kMaxIconSize * kMaxMagnification;
 const static int kCanvasHeight = 512 + 2 * 8 * 4;
 
+const static int kSnappingDistance = 7;
+const static int kPaletteCount = 4;
+
 const static int kMaxExternalEditorShortcutKeys = 5;
 
 enum recentFileStuff
@@ -53,7 +56,10 @@ enum staticsResources
 	
 	// others
 	rDefaultPrefID = 129,
-	mZoom = 201
+	mZoom = 201,
+	
+	// strings
+	rPreferencesHelp = 1000
 };
 
 enum preferencesDialogItems
@@ -277,6 +283,7 @@ class editorPreferencesClass
 		void				ResetPaletteLocations();
 		
 		Rect				GetLastScreenBounds();
+		void				SetLastScreenBounds(Rect bounds);
 		
 		void				IncrementTimesUsed();
 		int					GetTimesUsed();
@@ -385,8 +392,6 @@ class editorStaticsClass
 		
 		RgnHandle		dragHiliteRgn;
 		
-		long			currentBalloon;
-		
 		bool			firstTime;
 		
 		MenuHandle		zoomMenu,
@@ -399,6 +404,7 @@ class editorStaticsClass
 		
 		void	 		GetPickerPix(long iconName, long colors, PixMapHandle* pix, GWorldPtr* gW, RgnHandle* shapeRgn);
 		
+		bool			SnapPalette(MFloaterPtr palette, Rect* currentBounds);
 		Point 			GetDefaultPalettePosition(MFloaterPtr palette);
 		Point			GetDefaultMembersPaletteDimensions();
 		

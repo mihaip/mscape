@@ -373,7 +373,6 @@ pascal void NavOpenEventFilter(NavEventCallbackMessage callBackSelector,
 	UInt16			firstItem = 0;
 	Handle			customItems;
 	MenuHandle		typesMenu;
-	char			quickTimeVersion[4];
 	AEDesc			location;
 	SaveDataStruct*	saveData;
 	DialogPtr		navDialog;
@@ -459,8 +458,7 @@ pascal void NavOpenEventFilter(NavEventCallbackMessage callBackSelector,
 					
 					saveData->formatPopup = formatPopup;
 					
-					if (Gestalt(gestaltQuickTimeVersion, (long *)quickTimeVersion) != noErr ||
-						quickTimeVersion[0] < 4)
+					if (!MUtilities::GestaltQTVersion(4, 0))
 					{
 						typesMenu = GetControlPopupMenuHandle(formatPopup);
 						if (typesMenu != NULL)

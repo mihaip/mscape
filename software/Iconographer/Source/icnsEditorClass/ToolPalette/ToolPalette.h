@@ -46,7 +46,22 @@ enum ToolPaletteResources
 	rTPAliasedPic = 660,
 	rTPAntiAliasedPic = 661,
 	rTPUnfilledPic = 662,
-	rTPFilledPic = 663
+	rTPFilledPic = 663,
+	
+	// strings
+	rTPHelp = 600
+};
+
+enum ToolPaletteHelp
+{
+	hTPToolsBase = 1,
+	hTPLineThickness = 17,
+	hTPAliasing = 18,
+	hTPFill = 19,
+	hTPPattern = 20,
+	hTPColorSwatch = 21,
+	hTPSwapColors = 22,
+	hTPDefaultColors = 23
 };
 
 enum ToolPaletteTools
@@ -120,6 +135,7 @@ class ToolPalette : public MFloater
 		
 		void					DoIdle(MWindowPtr windowUnderMouse);
 		
+		bool					HandleBoundsChange(int attributes, Rect* originalBounds, Rect* previousBounds, Rect* currentBounds);
 		void 					HandleContentClick(EventRecord* eventPtr);
 		void 					HandleKeyDown(EventRecord *eventPtr);
 		

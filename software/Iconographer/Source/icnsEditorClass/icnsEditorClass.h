@@ -8,6 +8,7 @@
 #pragma once // we don't want any infinite inclusion loops
 
 // includes
+#include <QuickTimeComponents.h>
 #include "MDocumentWindow.h"
 #include "MIcon.h"
 #include "graphicalFunctions.h"
@@ -20,8 +21,8 @@ const static int kScrollbarWidth = 16 - 1;
 const static int kZoomPlacardWidth = 64;
 const static int kMinScrollbarLength = 16 * 4;
 
-const static int kMinWidth = 80;
-const static int kMinHeight = 80;
+const static int kMinWidth = 79;
+const static int kMinHeight = 79;
 
 const static int kDeleteKey = 0x08;
 const static char kDeleteGlyph = '';
@@ -32,12 +33,12 @@ const static int kSelectionDrawingDelay = 2;
 const static short rEditorWind = 200;
 const static long kEditorType = 'IcEd';
 
-const static long kPreferredMembers[] = {it32, il32, ih32, is32,
-										 icl8, ich8, ics8, icm8,
-										 icl4, ich4, ics4, icm4,
-										 icni, ichi, icsi, icsm,
-										 t8mk, l8mk, h8mk, s8mk,
-										 icnm, ichm, icsm, icmm};
+const static long kPreferredMembers[] = {it32, ih32, il32, is32,
+										 ich8, icl8, ics8, icm8,
+										 ich4, icl4, ics4, icm4,
+										 ichi, icni, icsi, icsm,
+										 t8mk, h8mk, l8mk, s8mk,
+										 ichm, icnm, icsm, icmm};
 const static int kPreferredMembersCount = sizeof(kPreferredMembers)/sizeof(long);
 
 const static int kMaxPanUpdateRects = 10;
@@ -61,7 +62,8 @@ enum resources
 	// strings
 	rBasicStrings = 200,
 	rLabelStrings = 201,
-	rEditorBalloonHelp = 203,
+	rEditorHelp = 203,
+	rAddMemberHelp = 1003,
 	
 	// dialogs
 	rAddMember = 1003,
@@ -159,7 +161,7 @@ enum labelStrings
 	sInfoLabelNoName = 7
 };
 
-enum editorBalloonHelp
+enum editorHelp
 {
 	hEditingArea = 1,
 	hZoomPlacard = 2
@@ -293,6 +295,7 @@ typedef struct AdjustDialogData
 	icnsEditorPtr		parentEditor;
 	GWorldPtr			tempGW, tempGW2;
 	PixMapHandle		tempPix, tempPix2;
+	int					averageLuminance, count;
 } AdjustDialogData, *AdjustDialogDataPtr;
 
 typedef struct
@@ -401,6 +404,15 @@ class icnsEditorClass : public MIcon, public MDocumentWindow
 		void			ExpandContract();
 		void			Stroke();
 		
+		bool 			RunEffectsDialogEventLoop(QTParameterDialog dialog, ComponentInstance componentInstance);
+		void			SetupEffectsDialog();
+		void			ApplyEffect(OSType effectType, QTAtomContainer effectDesc, GWorldPtr sourceGW, PixMapHandle sourcePix, RgnHandle clipRgn);
+		OSErr			GetEffectDescription(QTAtomContainer *effectDesc, OSType effectType);
+		OSErr			GetComponentInstance(ComponentInstance *componentInstance, OSType effectType);
+		
+		OSType			lastEffectType;
+		QTAtomContainer	lastEffectDesc;
+		
 		void			BuildMembersMenu(MenuHandle menu, int startingPoint, int membersToList);
 		
 		void			DragScroll();
@@ -480,7 +492,6 @@ class icnsEditorClass : public MIcon, public MDocumentWindow
 		void			EnsureOnScreenPosition();
 		
 		void 			HandleWheelMove(Point location, int modifiers, EventMouseWheelAxis axis, long delta);
-		void 			HandleBoundsChange(int attributes, Rect* originalBounds, Rect* previousBounds, Rect* currentBounds);
 		
 		void			Close();
 		void 			Load();
@@ -510,6 +521,8 @@ class icnsEditorClass : public MIcon, public MDocumentWindow
 		void			Flip(int flipType);
 		void			Invert(void);
 		void			Adjust();
+		OSErr			ApplyQTEffect(OSType effectType);
+		void			ReapplyQTEffect();
 		
 		void			ZoomIn();
 		void			ZoomOut();
@@ -588,13 +601,6 @@ extern pascal ControlPartCode	EditAreaHitTest(ControlHandle control, Point where
 
 extern icnsEditorPtr			GetFrontEditor(void);
 extern icnsEditorPtr			GetEditor(WindowPtr window);
-
-extern void SetControlBalloonHelp(ControlHandle theControl, long stringNo);
-
-extern long GetControlBalloonHelp(ControlHandle theControl);
-extern void HandleBalloons(Point theMouse, WindowPtr window, int strings);
-extern bool HandleBalloon(int strings, ControlHandle theControl, Point theMouse);
-extern void HandleBalloon(int strings, int index, Rect ballonRect, Point theMouse);
 
 extern pascal Boolean AdjustDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit);
 extern void FieldToSlider(ControlHandle field, ControlHandle slider);

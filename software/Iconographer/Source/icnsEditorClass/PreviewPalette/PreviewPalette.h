@@ -11,14 +11,20 @@ const static int kPPEasterEggPhraseLength = sizeof(kPPEasterEggPhrase)/sizeof(ch
 
 enum PreviewPaletteResources
 {
+	// general resources
 	rPPSettingsMenu = 500,
 	rPPWindow = 500,
-	rPPStrings = 501,
+	
+	// controls
 	rPPBackground = 500,
 	rPPPreview = 501,
 	rPPSlider = 502,
 	rPPText = 503,
-	rPPSettings = 504
+	rPPSettings = 504,
+	
+	// strings
+	rPPHelp = 500,
+	rPPStrings = 501
 };
 
 enum PreviewPalettePanes
@@ -42,6 +48,13 @@ enum previewSettingsMenu
 enum previewStrings
 {
 	ePPPickCustomColor = 1
+};
+
+enum previewHelp
+{
+	hPPSize = 1,
+	hPPArea = 2,
+	hPPSettings = 3
 };
 
 class icnsEditorClass;
@@ -93,6 +106,8 @@ class PreviewPalette : public MFloater
 		int						previousBackground;
 		
 		void					CreateControls();
+		
+		bool					HandleBoundsChange(int attributes, Rect* originalBounds, Rect* previousBounds, Rect* currentBounds);
 		
 		static void 			FillRectWithPreviewBackground(Rect targetRect);
 		

@@ -2,6 +2,7 @@
 #include "PatternPicker.h"
 #include "ToolPalette.h"
 #include "icnsEditorClass.h"
+#include "MHelp.h"
 
 ToolPalette::ToolPalette()
 			:MFloater(rTPWindow, kToolPaletteType)
@@ -85,7 +86,6 @@ void ToolPalette::Deactivate()
 
 void ToolPalette::DoIdle(MWindowPtr windowUnderMouse)
 {
-#pragma unused (windowUnderMouse)
 	icnsEditorPtr	frontEditor;
 	int			 	previousTool;
 	
@@ -134,11 +134,10 @@ void ToolPalette::DoIdle(MWindowPtr windowUnderMouse)
 			oldTool = toolNone;
 		}
 		
-		if (previousTool != currentTool)
+		if (previousTool != currentTool && frontEditor == windowUnderMouse)
 		{
 			Point theMouse;
 			
-			//MUtilities::GetMouseLocation(frontEditor->GetPort(), &theMouse);
 			SAVEGWORLD;
 			SetPort();
 			GetMouse(&theMouse);
@@ -241,6 +240,17 @@ void ToolPalette::UpdateCursor(Point theMouse)
 			icnsEditorClass::statics.colorsPalette->UpdateReadout(-1, -1, foreColor);
 		else if (PtInRect(theMouse, &colorSwatchRects[kTPBackColor]))
 			icnsEditorClass::statics.colorsPalette->UpdateReadout(-1, -1, backColor);
+}
+
+bool ToolPalette::HandleBoundsChange(int attributes, Rect* originalBounds, Rect* previousBounds, Rect* currentBounds)
+{
+#pragma unused (originalBounds, previousBounds)
+	bool	changedBounds = false;
+	
+	if (!ISCOMMANDDOWN && attributes & kWindowBoundsChangeUserDrag)
+		changedBounds = icnsEditorClass::statics.SnapPalette(this, currentBounds);
+	
+	return changedBounds;
 }
 
 void ToolPalette::HandleContentClick(EventRecord* eventPtr)
@@ -592,23 +602,31 @@ void ToolPalette::CreateControls()
 	CreateRootControl(window, &controls.root);
 	
 	for (int i=0; i < kToolCount; i++)
+	{
 		controls.tools[i] = GetNewControl(rTPToolBaseID + i, window);
+		MHelp::SetControlHelp(controls.tools[i], rTPHelp, hTPToolsBase + i);
+	}
 	
 	lineThicknessMenu = GetMenu(rTPLineThickness);
 	controls.lineThickness = NewEnhancedPlacard(rTPLineThickness, window, enhancedPlacardMenuAtBottom, applFont, 9,
 												"\p", NULL, false, lineThicknessMenu,
 												icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix,
 												LineThicknessUpdate, this);
+	MHelp::SetControlHelp(controls.lineThickness, rTPHelp, hTPLineThickness);
+	
 	antiAliasingMenu = GetMenu(rTPAntiAliasing);
 	controls.antiAliasing = NewEnhancedPlacard(rTPAntiAliasing, window, enhancedPlacardMenuAtBottom, applFont, 9,
 											   "\p", NULL, true, antiAliasingMenu,
 											   icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix,
 											   AntiAliasingUpdate, this);										   
+	MHelp::SetControlHelp(controls.antiAliasing, rTPHelp, hTPAliasing);
+	
 	fillMenu = GetMenu(rTPFill);
 	controls.fill = NewEnhancedPlacard(rTPFill, window, enhancedPlacardMenuAtBottom, applFont, 9,
 									   "\p", NULL, true, fillMenu,
 									   icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix,
 									   FillUpdate, this);
+	MHelp::SetControlHelp(controls.fill, rTPHelp, hTPFill);
 									   
 	controls.backgroundPane = GetNewControl(rTPBackgroundPane, window);
 	SetControlUserPaneDraw(controls.backgroundPane, BackgroundPaneDraw);
@@ -618,7 +636,7 @@ void ToolPalette::CreateControls()
 	EmbedControl(controls.colorSwatch, controls.backgroundPane);
 	SetControlUserPaneDraw(controls.colorSwatch, ColorSwatchDraw);
 	SetControlUserPaneHitTest(controls.colorSwatch, ColorSwatchHitTest);
-	//SetControlBalloonHelp(controls.colorSwatch.control, 18);
+	MHelp::SetControlHelp(controls.colorSwatch, rTPHelp, hTPColorSwatch);
 	
 	// here we create the rects that determine the subareas of the control
 	GetControlBounds(controls.colorSwatch, &controlRect);
@@ -628,7 +646,7 @@ void ToolPalette::CreateControls()
 	EmbedControl(controls.patterns, controls.backgroundPane);
 	SetControlUserPaneDraw(controls.patterns, PatternsDraw);
 	SetControlUserPaneHitTest(controls.patterns, PatternsHitTest);
-	//SetControlBalloonHelp(controls.patterns, 24);
+	MHelp::SetControlHelp(controls.patterns, rTPHelp, hTPPattern);
 }
 
 #pragma mark -
@@ -642,18 +660,6 @@ void ToolPalette::HandlePatternsClick(Point where)
 	
 	Draw1Control(controls.patterns);
 	Draw1Control(controls.colorSwatch);
-	/*pattern = XYMenu(where,
-					 window,
-					 2, 12,				// rows, cols of slots
-					 16, 16,			// width, height of 1 slot
-					 pattern + 1,		// current selection
-					 border,			// border options
-					 PatternMenuDraw,	// drawing function
-					 PatternMenuUpdate,	// updating function
-					 this)				// client data
-					 - 1;
-	
-	Draw1Control(controls.patterns);*/
 }
 
 Pattern ToolPalette::GetPattern()

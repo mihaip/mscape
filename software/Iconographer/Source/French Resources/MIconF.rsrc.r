@@ -547,57 +547,160 @@ resource 'STR#' (4002, "Misc. Icon Strings", purgeable) {
 	}
 };
 
-resource 'STR#' (4003, "Icon Info Balloon Help", purgeable) {
-	{	/* array StringArray: 13 elements */
+resource 'STR#' (4003, "Icon Info Help", purgeable) {
+	{	/* array StringArray: 70 elements */
 		/* [1] */
-		"Active vos choix et ferme le dialogue.",
+		"Changer les rŽglages et fermer la fentr"
+		"e.",
 		/* [2] */
-		"Ferme ce dialogue sans modifier quoi que"
-		" ce soit.",
+		"Fermer ce dialogue sans rien changer.",
 		/* [3] */
-		"Chaque icone dans un fichier doit avoir "
-		"son propre ID.",
+		"",
 		/* [4] */
-		"C'est la taille de la ressource d'icone "
-		"finale.",
+		"",
 		/* [5] */
-		"Les noms ne sont pas obligatoires mais i"
-		"ls peuvent vous aider ˆ reconnaitre vos "
-		"icones.",
+		"",
 		/* [6] */
-		"Une icone purgeable peut tre supprimŽe "
-		"de la mŽmoire vive si celle-ci vient ˆ m"
-		"anquer.",
+		"",
 		/* [7] */
-		"Une icone prŽ-chargŽe est chargŽe en mŽm"
-		"oire ds l'ouverture du fichier.",
+		"",
 		/* [8] */
-		"Une icone vŽrouillŽe ne peut pas tre pu"
-		"rgŽe ou dŽplacŽe quand elle est chargŽe "
-		"en mŽmoire.",
+		"",
 		/* [9] */
-		"Une icone protŽgŽe ne peut pas tre modi"
-		"fiŽe.",
+		"",
 		/* [10] */
-		"Une icone de ce type est chargŽe dans l'"
-		"espace de mŽmoire rŽservŽ au systme, au"
-		" lieu d'tre chargŽe dans la partition d"
-		"e mŽmoire principale.",
+		"",
 		/* [11] */
-		"Utilisez ce menu dŽroulant pour sŽlectio"
-		"nner des ID d'icone souvent utilisŽs.",
+		"",
 		/* [12] */
-		"Ce menu dŽroulant permet de choisir des "
-		"formats d'icone. Certains ne donnent pas"
-		" accs ˆ toutes les options (p. ex. Wind"
-		"ows ne supporte pas les masques 8-bits).",
+		"",
 		/* [13] */
-		"Ces cases ˆ cocher servent ˆ sŽlectionne"
-		"r les membres que peut avoir l'icone. Se"
-		"uls les membres sŽlectionnŽs pourront t"
-		"re affichŽs. Certaines cases peuvent tr"
-		"e dŽsactivŽes si le format actuel d'icon"
-		"e ne les autorise pas."
+		"",
+		/* [14] */
+		"",
+		/* [15] */
+		"",
+		/* [16] */
+		"",
+		/* [17] */
+		"",
+		/* [18] */
+		"16 x 12 pixels",
+		/* [19] */
+		"128 x 128 pixels",
+		/* [20] */
+		"48 x 48 pixels",
+		/* [21] */
+		"32 x 32 pixels",
+		/* [22] */
+		"16 x 16 pixels",
+		/* [23] */
+		"",
+		/* [24] */
+		"",
+		/* [25] */
+		"",
+		/* [26] */
+		"",
+		/* [27] */
+		"",
+		/* [28] */
+		"",
+		/* [29] */
+		"",
+		/* [30] */
+		"",
+		/* [31] */
+		"",
+		/* [32] */
+		"",
+		/* [33] */
+		"",
+		/* [34] */
+		"",
+		/* [35] */
+		"",
+		/* [36] */
+		"",
+		/* [37] */
+		"",
+		/* [38] */
+		"",
+		/* [39] */
+		"",
+		/* [40] */
+		"",
+		/* [41] */
+		"",
+		/* [42] */
+		"",
+		/* [43] */
+		"",
+		/* [44] */
+		"",
+		/* [45] */
+		"",
+		/* [46] */
+		"",
+		/* [47] */
+		"",
+		/* [48] */
+		"",
+		/* [49] */
+		"",
+		/* [50] */
+		"",
+		/* [51] */
+		"",
+		/* [52] */
+		"",
+		/* [53] */
+		"",
+		/* [54] */
+		"",
+		/* [55] */
+		"",
+		/* [56] */
+		"Chaque icone dans un fichier doit avoir "
+		"un ID unique.",
+		/* [57] */
+		"Menu pop-up prŽsentant les ID habituels.",
+		/* [58] */
+		"",
+		/* [59] */
+		"Les noms sont facultatifs, mais ils peuv"
+		"ent vous aider ˆ identifier les icones.",
+		/* [60] */
+		"",
+		/* [61] */
+		"Notez que certains formats ne supportent"
+		" pas toutess les options (p. ex. Windows"
+		" ne gre pas les masques 8-bits ni les r"
+		"essource flags).",
+		/* [62] */
+		"",
+		/* [63] */
+		"Taille de l'icone en ressource.",
+		/* [64] */
+		"",
+		/* [65] */
+		"",
+		/* [66] */
+		"Les ressources purgeables sont supprimŽe"
+		"s de la mŽmoire en cas de besoin.",
+		/* [67] */
+		"Les ressources prŽchargŽes sont placŽes "
+		"en mŽmoire ds l'ouverture du fichier.",
+		/* [68] */
+		"Les ressources vŽrouillŽes ne peuvent pa"
+		"s tre modifiŽes quand elles sont en mŽm"
+		"oire.",
+		/* [69] */
+		"Les icones protŽgŽes ne peuvent pas tre"
+		" modifiŽes.",
+		/* [70] */
+		"Les ressources en mŽmoire systme sont p"
+		"lacŽes dans l'espace mŽmoire du systme."
 	}
 };
 
@@ -761,171 +864,5 @@ data 'clut' (4001, "Windows 8-bit Colors") {
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000"                                /* ........ */
-};
-
-data 'hrct' (4000, "Icon Info", purgeable) {
-	$"0002 0000 0000 0000 0000 000D 0014 0003"            /* ................ */
-	$"0000 0000 013E 0132 0152 0176 0FA3 0001"            /* .....>.2.R.v.£.. */
-	$"0014 0003 0000 0000 013E 00E4 0152 0124"            /* .........>.ä.R.$ */
-	$"0FA3 0002 0014 0003 0000 0000 000D 0040"            /* .£.............@ */
-	$"001D 007C 0FA3 0003 0014 0003 0000 0000"            /* ...|.£.......... */
-	$"000D 00A5 001D 0178 0FA3 0004 0014 0003"            /* ...¥...x.£...... */
-	$"0000 0000 0046 0040 0056 0177 0FA3 0005"            /* .....F.@.V.w.£.. */
-	$"0014 0003 0000 0000 0108 000E 0118 007C"            /* ...............| */
-	$"0FA3 0006 0014 0003 0000 0000 011A 000E"            /* .£.............. */
-	$"012A 007C 0FA3 0007 0014 0003 0000 0000"            /* .*.|.£.......... */
-	$"0108 0108 0118 0176 0FA3 0008 0014 0003"            /* .......v.£...... */
-	$"0000 0000 0108 0086 0118 00F4 0FA3 0009"            /* .......†...ô.£.. */
-	$"0014 0003 0000 0000 011A 0086 012A 00F4"            /* ...........†.*.ô */
-	$"0FA3 000A 0014 0003 0000 0000 000B 0082"            /* .£.............‚ */
-	$"001F 0098 0FA3 000B 0014 0003 0000 0000"            /* ...˜.£.......... */
-	$"0028 000A 003C 017A 0FA3 000C 0014 0003"            /* .(...<.z.£...... */
-	$"0000 0000 0063 0009 00F1 017D 0FA3 000D"            /* .....c...ñ.}.£.. */
-};
-
-data 'hwin' (4000, "Icon Info", purgeable) {
-	$"0002 0000 0000 0001 0FA0 6872 6374 0009"            /* ......... hrct.. */
-	$"0949 636F 6E20 496E 666F"                           /* .Icon Info */
-};
-
-data 'hwin' (4001, "Insert Icon", purgeable) {
-	$"0002 0000 0000 0001 0FA0 6872 6374 000B"            /* ......... hrct.. */
-	$"0B49 6E73 6572 7420 4963 6F6E"                      /* .Insert Icon */
-};
-
-resource 'mctb' (202) {
-	{	/* array MCTBArray: 1 elements */
-		/* [1] */
-		mctbLast, 0,
-		{	/* array: 4 elements */
-			/* [1] */
-			0, 0, 0,
-			/* [2] */
-			0, 0, 0,
-			/* [3] */
-			0, 0, 0,
-			/* [4] */
-			0, 0, 0
-		}
-	}
-};
-
-resource 'mctb' (203) {
-	{	/* array MCTBArray: 1 elements */
-		/* [1] */
-		mctbLast, 0,
-		{	/* array: 4 elements */
-			/* [1] */
-			0, 0, 0,
-			/* [2] */
-			0, 0, 0,
-			/* [3] */
-			0, 0, 0,
-			/* [4] */
-			0, 0, 0
-		}
-	}
-};
-
-resource 'mctb' (204) {
-	{	/* array MCTBArray: 1 elements */
-		/* [1] */
-		mctbLast, 0,
-		{	/* array: 4 elements */
-			/* [1] */
-			0, 0, 0,
-			/* [2] */
-			0, 0, 0,
-			/* [3] */
-			0, 0, 0,
-			/* [4] */
-			0, 0, 0
-		}
-	}
-};
-
-resource 'mctb' (205) {
-	{	/* array MCTBArray: 1 elements */
-		/* [1] */
-		mctbLast, 0,
-		{	/* array: 4 elements */
-			/* [1] */
-			0, 0, 0,
-			/* [2] */
-			0, 0, 0,
-			/* [3] */
-			0, 0, 0,
-			/* [4] */
-			0, 0, 0
-		}
-	}
-};
-
-resource 'mctb' (206) {
-	{	/* array MCTBArray: 1 elements */
-		/* [1] */
-		mctbLast, 0,
-		{	/* array: 4 elements */
-			/* [1] */
-			0, 0, 0,
-			/* [2] */
-			0, 0, 0,
-			/* [3] */
-			0, 0, 0,
-			/* [4] */
-			0, 0, 0
-		}
-	}
-};
-
-resource 'mctb' (207) {
-	{	/* array MCTBArray: 1 elements */
-		/* [1] */
-		mctbLast, 0,
-		{	/* array: 4 elements */
-			/* [1] */
-			0, 0, 0,
-			/* [2] */
-			0, 0, 0,
-			/* [3] */
-			0, 0, 0,
-			/* [4] */
-			0, 0, 0
-		}
-	}
-};
-
-resource 'mctb' (208) {
-	{	/* array MCTBArray: 1 elements */
-		/* [1] */
-		mctbLast, 0,
-		{	/* array: 4 elements */
-			/* [1] */
-			0, 0, 0,
-			/* [2] */
-			0, 0, 0,
-			/* [3] */
-			0, 0, 0,
-			/* [4] */
-			0, 0, 0
-		}
-	}
-};
-
-resource 'mctb' (4000) {
-	{	/* array MCTBArray: 1 elements */
-		/* [1] */
-		mctbLast, 0,
-		{	/* array: 4 elements */
-			/* [1] */
-			0, 0, 0,
-			/* [2] */
-			0, 0, 0,
-			/* [3] */
-			0, 0, 0,
-			/* [4] */
-			0, 0, 0
-		}
-	}
 };
 
