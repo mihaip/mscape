@@ -193,7 +193,7 @@ void editorStaticsClass::AllocateEmergencyMemory(void)
 	tempMemoryChunk = NewPtr(kEmergencyMemorySize);
 }
 
-short editorStaticsClass::DisplayAlert(Str255 message, Str255 button1, Str255 button2, Str255 button3)
+short editorStaticsClass::DisplayAlert(Str255 message, Str255 button1, Str255 button2, Str255 button3, int type)
 {
 	MAlert		alert;
 	MString		temp;
@@ -214,7 +214,10 @@ short editorStaticsClass::DisplayAlert(Str255 message, Str255 button1, Str255 bu
 	
 	alert.SetType(kAlertStopAlert);
 	
-	alert.SetBeep(true);
+	if (type == kAlertStopAlert)
+		alert.SetBeep(true);
+	
+	alert.SetType(type);
 	
 	return alert.Display();
 }
@@ -426,7 +429,7 @@ bool editorStaticsClass::GetSupportFolder(FSSpec* supportFolder)
 		
 		GetIndString(error, rBasicStrings, eIconographerSupportFolderError);
 		
-		DisplayAlert(error, "\pOK", "\p", "\p");
+		DisplayAlert(error, "\pOK", "\p", "\p", kAlertStopAlert);
 		
 		appSpec = GetApplicationFileSpec();
 		
@@ -534,6 +537,14 @@ void editorPreferencesClass::Load(int ID)
 	if ((**data).externalEditorAlias != NULL)
 		DetachResource(Handle((**data).externalEditorAlias));
 	
+	(**data).recentFilesCount = 0;
+	
+	for (int i=0; i < kMaxRecentFiles; i++)
+	{
+		(**data).recentFiles[(**data).recentFilesCount] = AliasHandle(Get1Resource('Alis', kRecentFilesBaseID + i));
+		if ((**data).recentFiles[i] != NULL)
+			DetachResource(Handle((**data).recentFiles[(**data).recentFilesCount++]));
+	}
 	
 	GenerateRegCode((**data).name, tempRegCode);
 	
@@ -1244,9 +1255,16 @@ void editorPreferencesClass::Save(int ID)
 	ChangedResource((Handle)data);
 	WriteResource((Handle)data);
 	
-	AddResource((Handle)(**data).externalEditorAlias, 'Alis', 128, "\p");
+	AddResource((Handle)(**data).externalEditorAlias, 'Alis', 128, "\pExternal Editor");
 	ChangedResource((Handle)(**data).externalEditorAlias);
 	WriteResource((Handle)(**data).externalEditorAlias);
+	
+	for (int i=0; i < kMaxRecentFiles; i++)
+	{
+		AddResource((Handle)(**data).recentFiles[i], 'Alis', kRecentFilesBaseID + i, "\p");
+		ChangedResource((Handle)(**data).recentFiles[i]);
+		WriteResource((Handle)(**data).recentFiles[i]);
+	}
 }
 
 #pragma mark -
@@ -1419,18 +1437,14 @@ bool editorPreferencesClass::IsEditorShortcutPressed()
 FSSpec editorPreferencesClass::GetExternalEditor()
 {
 	FSSpec editorSpec;
+	Boolean wasChanged;
 	
-	if ((**data).externalEditorAlias == NULL)
+	if ((**data).externalEditorAlias == NULL ||
+		ResolveAlias(NULL, (**data).externalEditorAlias, &editorSpec, &wasChanged) != noErr)
 	{
 		GetIndString(editorSpec.name, rBasicStrings, eClickToChooseAnEditor);
 		editorSpec.vRefNum = -1;
 		editorSpec.parID = -1;
-	}
-	else
-	{
-		Boolean wasChanged;
-		
-		ResolveAlias(NULL, (**data).externalEditorAlias, &editorSpec, &wasChanged);	
 	}
 	
 	return editorSpec;
@@ -1499,6 +1513,71 @@ int editorPreferencesClass::GetPreviewBackground()
 void editorPreferencesClass::SetPreviewBackground(int background)
 {
 	(**data).previewBackground = background;
+}
+
+#pragma mark -
+
+FSSpec editorPreferencesClass::GetNthRecentFile(int index)
+{
+	FSSpec recentFile;
+	
+	if ((**data).recentFiles[index] == NULL || index >= (**data).recentFilesCount)
+	{
+		CopyString(recentFile.name, "\p");
+		recentFile.vRefNum = -1;
+		recentFile.parID = -1;
+	}
+	else
+	{
+		Boolean wasChanged;
+		
+		if (ResolveAlias(NULL, (**data).recentFiles[index], &recentFile, &wasChanged) != noErr)
+		{
+			CopyString(recentFile.name, "\p");
+			recentFile.vRefNum = -1;
+			recentFile.parID = -1;
+			
+			for (int i=index; i < (**data).recentFilesCount - 1; i++)
+				(**data).recentFiles[i] = (**data).recentFiles[i + 1];
+			
+			(**data).recentFilesCount--;
+		}
+	}
+	
+	return recentFile;
+}
+
+void editorPreferencesClass::AddRecentFile(FSSpec file)
+{
+	FSSpec currentFile;
+	int	indexToBeDeleted;
+	
+	if ((**data).recentFilesCount < kMaxRecentFiles)
+		indexToBeDeleted = -1;
+	else
+		indexToBeDeleted = kMaxRecentFiles - 1;
+	
+	for (int i=0; i < (**data).recentFilesCount; i++)
+	{
+		currentFile	= GetNthRecentFile(i);
+		if (SameFile(currentFile, file))
+			indexToBeDeleted = i;
+	}
+	
+	if (indexToBeDeleted != -1 && (**data).recentFiles[indexToBeDeleted] != NULL)
+		DisposeHandle(Handle((**data).recentFiles[indexToBeDeleted]));
+	else
+		indexToBeDeleted = (**data).recentFilesCount++;
+	
+	for (int i=indexToBeDeleted; i > 0; i--)
+		(**data).recentFiles[i] = (**data).recentFiles[i - 1];
+	
+	NewAliasMinimal(&file, &(**data).recentFiles[0]);
+}
+
+int editorPreferencesClass::GetRecentFilesCount()
+{
+	return (**data).recentFilesCount;
 }
 
 #pragma mark -

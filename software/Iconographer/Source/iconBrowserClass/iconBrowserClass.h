@@ -1,5 +1,5 @@
 #include "icnsClass.h"
-#include "MWindow.h"
+#include "MDocumentWindow.h"
 #include "MList.h"
 #include "icnsClass.h"
 #include "commonFunctions.h"
@@ -53,7 +53,8 @@ enum IBStrings
 	eIBListMembers = 8,
 	eIBIconTypes = 9,
 	eIBIconCountLabel = 10,
-	eIBDeleteWarning = 11
+	eIBDeleteWarning = 11,
+	eIBWindowTitle = 12
 };
 
 enum IBTypesMenu
@@ -89,7 +90,7 @@ enum IBStatus
 	loadingIcons = 2
 };
 
-class iconBrowserClass : public MWindow
+class iconBrowserClass : public MDocumentWindow
 {
 	public:
 				iconBrowserClass(FSSpec file, OpenFuncPtr OpenFunc, int format);
@@ -105,6 +106,7 @@ class iconBrowserClass : public MWindow
 		
 		void	DoIdle();
 		
+		void	RefreshWindowTitle();
 		void	RefreshList();
 		void	HandleContentClick(EventRecord* eventPtr);
 		void	HandleGrow(Point where);

@@ -49,12 +49,15 @@ typedef EnhancedPlacardData* EnhancedPlacardDataPtr;
 
 enum EnhancedPlacardFlags
 {
-	enhancedPlacardDrawBorder = 1,
-	enhancedPlacardLargeArrow = 2,
-	enhancedPlacardMenuAtBottom = 4,
+	enhancedPlacardDrawBorder		= 1,
+	enhancedPlacardLargeArrow		= 2,
+	enhancedPlacardMenuAtBottom		= 4,
+	enhancedPlacardMenuAtRight		= 8,
+	enhancedPlacardNoHitTest		= 16,
+	enhancedPlacardDrawDialogFrame	= 32,
 	
-	enhancedPlacardStateChanged = 1,
-	enhancedPlacardUpdateState = 2
+	enhancedPlacardStateChanged		= 1,
+	enhancedPlacardUpdateState		= 2
 };
 
 const static float kEnhancedPlacardMenuArrowBlend = 0.75;
@@ -180,6 +183,7 @@ extern void FillPixMap32(PixMapHandle src, unsigned long fill);
 extern GrafPtr CreateGrafPort(Rect* bounds);
 extern void DisposeGrafPort(GrafPtr doomedPort );
 extern void MakeTargetRect(Rect src, Rect* target);
+extern FSSpec GetApplicationFileSpec();
 extern OSType GetApplSignature ( );
 extern NavTypeListHandle MakeTypeList ( OSType applSignature, int numTypes, ... );
 extern void DummyFunction();
@@ -246,6 +250,7 @@ extern pascal Boolean OnlyVisibleObjectsCustomFileFilter(CInfoPBPtr myCInfoPBPtr
 extern OSErr Get1IconSuite(IconSuiteRef* theIconSuite, SInt16 ID, IconSelectorValue selector);
 extern void AddResourceToSuite(OSType iconType, SInt16 ID, IconSuiteRef theIconSuite);
 extern long RegionArea(RgnHandle rgn);
+extern long RectArea(Rect bounds);
 extern void GrowHandle(Handle* inHandle, int delta);
 extern void SetBevelButtonIcon(ControlHandle theControl, short iconID);
 extern OSErr FSReadLE(short refNum, long* count, void* buffPtr);
@@ -289,8 +294,8 @@ extern ControlHandle NewEnhancedPlacard(short controlID, WindowPtr parentWindow,
 extern pascal void EnhancedPlacardDraw(ControlHandle placard, short partCode);
 extern pascal short EnhancedPlacardHitTest(ControlHandle placard, Point where);
 extern pascal short EnhancedPlacardTracking(ControlHandle placard, Point startPt, ControlActionUPP actionProc);
-
 extern void EnhancedPlacardHandleClick(ControlHandle placard);
+extern void SetEnhancedPlacardMenuValue(ControlHandle placard, int menuValue);
 
 // inline functions
 inline void CopyPixMap(PixMapHandle srcPix, PixMapHandle targetPix, const Rect* srcRect, const Rect* targetRect, long flags, RgnHandle clipRgn)

@@ -1,31 +1,17 @@
-possibiles issues:
-- when using click there it is, dragging save dialog causes it to dissapear
-- crashes involving icon info dialog
-- possible crashes with pop-up in save dialog
-- standard event filter not refresing properly background windows (640 x 480, 16-bit, Mac OS 8.5)
-- copying something over to the 8-bit mask, using option-delete to fill it, not all filled (garbage?), undoing and doing it again works (selectionGW problems?) (640 x 480, 16-bit, Mac OS 8.5)
-- type anti-aliasing issues with japanese version
-
 shoulds:
 - different centering styles for MAlert
 - settable default button for MAlert
 - hovering over RGB/HSB slider previews should show color in readout
 - readout should show up when in another editor's drawing area
-- should move all control functions as static function members of the class they belong to
-- remember current tab
 - move palette on screen if not within new screen bounds (when res changes, etc.)
 - 8-bit system palette balloon help should explain each section
-- clicking in preview should set slider to that color
 - don't trying open folders when verying if an icon already exists when doing save into icon
 - tinting when dragging and there's a floated selection...
 
 Future stuff (planned version in parantheses):
 - loading of file icons when dragged into side display/preview (1.1)
-- popup menu with magnifications (1.1)
 - 8 bit selections (so that text can be anti-aliased, and dragged data can be placed into a proper selection). (1.1)
-- proxy icons (1.1)
 - screen grab command (1.1)
-- tear-off palettes (1.1/1.5)
 - .tiff saving (1.1/1.5)
 - Effects menu with: Glow, Blur, Shadow, Make Folder Icon (1.1/1.5)
 - split up picture into icons command (1.1/1.5)
@@ -35,22 +21,46 @@ Future stuff (planned version in parantheses):
 - integration with glypher (1.5)
 - transparency controls for tools (1.5/2.0)
 - simultaneous editing of icon and mask (goes with anti-aliasing) (1.5/2.0)
-- floaters everywhere (2.0)
+- multiple views (2.1/2.5)
 
-todo:
-- update homepage
-
-(future)
+todo for 2.1:
+- carbon compliance
+- anti-aliased text
+- palette position snapping
+- clicking once with the marquee (and lasso) should deselect
+- snap colors in color floater to current palette, system, web, grays, etc.
+- better handle converting to windows icon and saving immediately (check datafork, name, etc.)
+- redo colors and pattern pop-up (common base, use dialog instead)
+- refactor tools so that it can be made more friendly with background processes
+- refactor icnseditorclass so that we don't depend on the internals of the icns class
+- refactor icnsclass so that we don't statically allocate all members
+- refactor icnseditorclass so that we can support the multiple views
 - .rsrc files
 - preferences and adjust balloon help
-- colors and pattern pop-ups should use dialog window to be carbon/OS X compliant
 - pop-ups should emulate menu behavior (click and release should leave the display open)
 - deal with icon and mask not being the same size in icon browser preview
 - scale icon up if previewing at a size that isn't available
 - when hitting the editor key shortcut, the icon menu should be hilighted
 - preference for not hiding floaters when in background
+- magnification pop-up slightly off
+- handle empty icons better (i.e. don't crash)
 
 Changes:
+2.0.1
+- proxy icons
+- open recent files command
+- works again with pre 8.5 systems
+- fixed crashes when using ID menu, format menu in info window
+- fixed bug with typing in icon names in info window
+- handles corrupted icons better
+- when saving while having a floated selection, the selection is merged into the icon
+- registration message doesn't appear twice at startup if you've made more than 50 icons
+- clicking no in the generate and sync mask dialogs will actually not peform those operations
+- included "aprentice hat" icon now has 8 bit icon member
+- saving works properly even when the original file is moved or renamed
+- alert icons better match the seriousness of the message
+- fixed drag hilighting issues
+
 2.0x9
 - preview palette approximates display if current icon doesn't include that size (e.g. large icons are scaled up to the thumbnail size for old icons)
 - fixed glitch with using selection tools (wand, lasso, marquee) to move a floated selection

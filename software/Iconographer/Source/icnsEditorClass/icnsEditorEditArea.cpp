@@ -163,7 +163,7 @@ void icnsEditorClass::DrawMember(int pixName, Rect targetRect)
 		RESTOREGWORLD;
 		
 		CopyBits((BitMap*)*statics.canvasPix,
-				  GetPortBitMapForCopyBits(qd.thePort),
+				  GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
 				  &pixRect,
 				  &targetRect,
 				  srcCopy,
@@ -268,7 +268,7 @@ void icnsEditorClass::PreviewDisplay(int height, int depth, int maskDepth, Rect 
 	
 	CopyDeepMask((BitMap*)*srcPix,
 				 (BitMap*)*maskPix,
-				 GetPortBitMapForCopyBits(qd.thePort),
+				 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
 				 &pixRect,
 				 &maskRect,
 				 &targetRect,
@@ -414,7 +414,7 @@ void icnsEditorClass::PaintEditAreaRect(Rect targetRect)
 {
 	Rect			canvasRect, sourceRect, canvasSourceRect; // the target rect moved so that it's top/left corner is at 0, 0
 	OSStatus		err = noErr; // used for error checking
-	const BitMap *	target = GetPortBitMapForCopyBits(qd.thePort);
+	const BitMap *	target = GetPortBitMapForCopyBits(GetQDGlobalsThePort());
 	int				dX, dY;
 	RgnHandle		visibleRegion = NewRgn();
 	
@@ -569,10 +569,10 @@ void icnsEditorClass::DrawSelection(Rect sourceRect, Rect targetRect, int dX, in
 	SAVECOLORS;
 	
 	if (cycleSelectionPattern &&
-		LMGetTicks() > lastSelectionTicks + kSelectionDrawingDelay)
+		TickCount() > lastSelectionTicks + kSelectionDrawingDelay)
 	// if it's time to update the selection pattern...
 	{
-		lastSelectionTicks = LMGetTicks();
+		lastSelectionTicks = TickCount();
 		currentSelectionPattern++;
 	}
 	

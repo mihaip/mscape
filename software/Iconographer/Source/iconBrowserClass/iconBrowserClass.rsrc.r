@@ -240,8 +240,24 @@ resource 'WIND' (300, purgeable) {
 	staggerMainScreen
 };
 
+resource 'MENU' (303, "Icon Browser: Icon Types") {
+	303,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Icon Types",
+	{	/* array: 3 elements */
+		/* [1] */
+		"New", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Old", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Both", noIcon, noKey, noMark, plain
+	}
+};
+
 resource 'STR#' (300, "Icon Browser: Strings", purgeable) {
-	{	/* array StringArray: 11 elements */
+	{	/* array StringArray: 12 elements */
 		/* [1] */
 		"Loading Icon: <ID>",
 		/* [2] */
@@ -265,23 +281,9 @@ resource 'STR#' (300, "Icon Browser: Strings", purgeable) {
 		/* [11] */
 		"Are you sure you want to delete the icon"
 		" ID: <icon ID> from the file Ò<file name"
-		">Ó?"
-	}
-};
-
-resource 'MENU' (303, "Icon Browser: Icon Types") {
-	303,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"Icon Types",
-	{	/* array: 3 elements */
-		/* [1] */
-		"New", noIcon, noKey, noMark, plain,
-		/* [2] */
-		"Old", noIcon, noKey, noMark, plain,
-		/* [3] */
-		"Both", noIcon, noKey, noMark, plain
+		">Ó?",
+		/* [12] */
+		"<name> (Icon Browser)"
 	}
 };
 

@@ -256,8 +256,8 @@ void ToolPalette::HandleContentClick(EventRecord* eventPtr)
 					{
 						toolClick = true;
 						if (lastToolClick == -1 || i != currentTool)
-							lastToolClick = LMGetTicks();
-						else if (LMGetTicks() - lastToolClick <= LMGetDoubleTime())
+							lastToolClick = TickCount();
+						else if (TickCount() - lastToolClick <= LMGetDoubleTime())
 						{
 							if (i == toolRectangle ||
 								i == toolOval ||
@@ -268,7 +268,7 @@ void ToolPalette::HandleContentClick(EventRecord* eventPtr)
 							lastToolClick = -1;
 						}
 						else
-							lastToolClick = LMGetTicks();
+							lastToolClick = TickCount();
 						
 						SetCurrentTool(i);
 					}
@@ -725,7 +725,7 @@ pascal void	ToolPalette::ColorSwatchDraw(ControlHandle theControl,SInt16 thePart
 	}
 	
 	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
-			 GetPortBitMapForCopyBits(qd.thePort),
+			 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
 			 &canvasRect,
 			 &controlRect,
 			 srcCopy,
@@ -869,7 +869,7 @@ pascal void	ToolPalette::PatternsDraw(ControlHandle theControl,SInt16 thePart)
 	
 	RESTOREGWORLD;
 	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
-		     GetPortBitMapForCopyBits(qd.thePort),
+		     GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
 		     &canvasRect,
 		     &controlRect,
 		     srcCopy,
@@ -953,7 +953,7 @@ void ToolPalette::LineThicknessUpdate(struct EnhancedPlacardData* data, int flag
 		
 		ClosePicture();
 		
-		for (int i=1; i <= CountMItems(data->menu); i++)
+		for (int i=1; i <= CountMenuItems(data->menu); i++)
 		{
 			if (i == icnsEditorClass::statics.preferences.GetLineThickness())
 				CheckMenuItem(data->menu, i, true);

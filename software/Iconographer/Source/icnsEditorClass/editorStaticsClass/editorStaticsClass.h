@@ -15,10 +15,16 @@ const static int kMinMagnification = 1;
 
 const static int kDefaultWindowSeparation = 2;
 
-const static int kCanvasWidth = 512 + 2 * 8 * 3 + 2 * 8; //kMaxIconSize * kMaxMagnification;
-const static int kCanvasHeight = 512 + 2 * 8 * 3 + 2 * 8;
+const static int kCanvasWidth = 512 + 2 * 8 * 4; //kMaxIconSize * kMaxMagnification;
+const static int kCanvasHeight = 512 + 2 * 8 * 4;
 
 const static int kMaxExternalEditorShortcutKeys = 5;
+
+enum recentFileStuff
+{
+	kMaxRecentFiles = 5,
+	kRecentFilesBaseID = 200
+};
 
 enum staticsResources
 {
@@ -134,6 +140,8 @@ typedef struct preferencesStruct
 	Point		adjustDialogLocation;
 	long		currentColorPicker;
 	long		previewBackground;
+	AliasHandle	recentFiles[kMaxRecentFiles];
+	int			recentFilesCount;
 } PreferencesStruct;
 
 typedef PreferencesStruct** PreferencesHandle;
@@ -178,6 +186,10 @@ class editorPreferencesClass
 		int					GetExternalEditorFormat();
 		long				GetExternalEditorCreator();
 		bool				ExternalEditorChosen();
+		
+		FSSpec				GetNthRecentFile(int index);
+		void				AddRecentFile(FSSpec file);
+		int					GetRecentFilesCount();
 		
 		int					GetLineThickness();
 		void				SetLineThickness(int thickness);
@@ -301,7 +313,7 @@ class editorStaticsClass
 		void			ReclaimEmergencyMemory(void);
 		void			AllocateEmergencyMemory(void);
 		
-		short			DisplayAlert(Str255 message, Str255 button1, Str255 button2, Str255 button3);
+		short			DisplayAlert(Str255 message, Str255 button1, Str255 button2, Str255 button3, int type);
 		
 		void	 		GetPickerPix(long iconName, long colors, PixMapHandle* pix, GWorldPtr* gW, RgnHandle* shapeRgn);
 		

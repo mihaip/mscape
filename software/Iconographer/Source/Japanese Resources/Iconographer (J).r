@@ -1,177 +1,4 @@
-resource 'WIND' (200, purgeable) {
-	{42, 6, 298, 432},
-	1025,
-	invisible,
-	goAway,
-	0x0,
-	"",
-	staggerMainScreen
-};
-
-resource 'WIND' (300, purgeable) {
-	{229, 200, 485, 540},
-	1025,
-	invisible,
-	goAway,
-	0x0,
-	"<name> (ƒAƒCƒRƒ“ƒuƒ‰ƒEƒU)",
-	staggerMainScreen
-};
-
-resource 'WIND' (250, "Colors Palette", purgeable) {
-	{244, 408, 404, 728},
-	1057,
-	invisible,
-	goAway,
-	0x0,
-	"ƒJƒ‰[ƒpƒŒƒbƒg",
-	noAutoCenter
-};
-
-resource 'CNTL' (200, "Icon Edit Well", purgeable) {
-	{8, 64, 202, 258},
-	0,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (201, "Zoom Placard", purgeable) {
-	{241, -1, 257, 62},
-	32,
-	visible,
-	0,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (1000, "Zoom Level Arrows", purgeable) {
-	{13, 293, 37, 306},
-	0,
-	visible,
-	100,
-	0,
-	96,
-	0,
-	""
-};
-
-resource 'CNTL' (1001, "|Flags Group Box", purgeable) {
-	{70, 10, 150, 271},
-	0,
-	visible,
-	100,
-	0,
-	160,
-	0,
-	"‘®@«"
-};
-
-resource 'CNTL' (1002, "ID Popup", purgeable) {
-	{11, 124, 31, 146},
-	0,
-	visible,
-	0,
-	202,
-	400,
-	0,
-	""
-};
-
-resource 'CNTL' (1003, "|Startup Options Group Box", purgeable) {
-	{93, 7, 169, 308},
-	0,
-	visible,
-	100,
-	0,
-	160,
-	0,
-	"‹N“®‚Ìİ’è"
-};
-
-resource 'CNTL' (1010, "Adjust Tabs", purgeable) {
-	{8, -1, 141, 368},
-	1010,
-	visible,
-	100,
-	0,
-	128,
-	0,
-	""
-};
-
-resource 'CNTL' (1011, "|Hue Slider", purgeable) {
-	{47, 83, 78, 303},
-	5,
-	visible,
-	180,
-	-180,
-	51,
-	0,
-	"F‘ŠF"
-};
-
-resource 'CNTL' (1012, "|Saturation Slider", purgeable) {
-	{85, 83, 116, 303},
-	5,
-	visible,
-	100,
-	-100,
-	51,
-	0,
-	"Ê“xF"
-};
-
-resource 'CNTL' (1013, "|Lightness Slider", purgeable) {
-	{124, 92, 155, 312},
-	6,
-	visible,
-	100,
-	-100,
-	51,
-	0,
-	"–¾“xF"
-};
-
-resource 'CNTL' (1014, "|Brightness Slider", purgeable) {
-	{47, 83, 78, 303},
-	5,
-	visible,
-	100,
-	-100,
-	51,
-	0,
-	"–¾‚é‚³F"
-};
-
-resource 'CNTL' (1015, "|Contrast Slider", purgeable) {
-	{85, 83, 116, 303},
-	5,
-	visible,
-	100,
-	-100,
-	51,
-	0,
-	"ƒRƒ“ƒgƒ‰ƒXƒgF"
-};
-
-resource 'CNTL' (1410, "|Font Popup", purgeable) {
-	{8, 8, 28, 188},
-	0,
-	visible,
-	45,
-	1410,
-	405,
-	1179602500,
-	"ƒtƒHƒ“ƒgF"
-};
-
-resource 'CNTL' (1411, "Size Popup", purgeable) {
+resource 'CNTL' (1411, "Size Popup") {
 	{37, 166, 57, 188},
 	0,
 	visible,
@@ -182,7 +9,7 @@ resource 'CNTL' (1411, "Size Popup", purgeable) {
 	""
 };
 
-resource 'CNTL' (1412, "|Size Popup", purgeable) {
+resource 'CNTL' (1412, "Size Popup") {
 	{66, 8, 86, 190},
 	0,
 	visible,
@@ -193,8 +20,96 @@ resource 'CNTL' (1412, "|Size Popup", purgeable) {
 	"ƒXƒ^ƒCƒ‹F"
 };
 
-resource 'CNTL' (300, "Icon Browser: Scroll Bar", purgeable) {
-	{-1, 319, 343, 335},
+resource 'CNTL' (1410, "Font Popup") {
+	{8, 8, 28, 188},
+	0,
+	visible,
+	45,
+	1410,
+	405,
+	1179602500,
+	"ƒtƒHƒ“ƒgF"
+};
+
+resource 'CNTL' (1013, "Lightness Slider") {
+	{124, 92, 155, 312},
+	6,
+	visible,
+	100,
+	-100,
+	51,
+	0,
+	"–¾‚é‚³F"
+};
+
+resource 'CNTL' (1011, "Hue Slider") {
+	{47, 83, 78, 303},
+	5,
+	visible,
+	180,
+	-180,
+	51,
+	0,
+	"F‘ŠF"
+};
+
+resource 'CNTL' (1012, "Saturation Slider") {
+	{85, 83, 116, 303},
+	5,
+	visible,
+	100,
+	-100,
+	51,
+	0,
+	"Ê“xF"
+};
+
+resource 'CNTL' (1014, "Brightness Slider") {
+	{47, 83, 78, 303},
+	5,
+	visible,
+	100,
+	-100,
+	51,
+	0,
+	"–¾‚é‚³F"
+};
+
+resource 'CNTL' (1015, "Contrast Slider") {
+	{85, 83, 116, 303},
+	5,
+	visible,
+	100,
+	-100,
+	51,
+	0,
+	"ƒRƒ“ƒgƒ‰ƒXƒgF"
+};
+
+resource 'CNTL' (1010, "Adjust Tabs") {
+	{8, 0, 141, 367},
+	1010,
+	visible,
+	100,
+	0,
+	128,
+	0,
+	""
+};
+
+resource 'CNTL' (200, "Icon Edit Well") {
+	{0, 0, 194, 194},
+	0,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (202, "Vertical Scrollbar") {
+	{-1, 193, 194, 209},
 	0,
 	visible,
 	100,
@@ -204,29 +119,337 @@ resource 'CNTL' (300, "Icon Browser: Scroll Bar", purgeable) {
 	""
 };
 
-resource 'CNTL' (301, "Icon Browser: Info Pane", purgeable) {
-	{343, 120, 359, 320},
+resource 'CNTL' (203, "Horizontal Scrollbar") {
+	{193, 62, 209, 194},
 	0,
 	visible,
 	100,
 	0,
-	256,
+	386,
 	0,
-	"27 ƒAƒCƒRƒ“"
+	""
 };
 
-resource 'CNTL' (302, "Icon Browser: List", purgeable) {
-	{0, 0, 344, 320},
+resource 'CNTL' (1001, "Flags Group Box") {
+	{245, 10, 307, 379},
 	0,
 	visible,
 	100,
+	0,
+	160,
+	0,
+	"‘®«"
+};
+
+resource 'CNTL' (1002, "ID Popup") {
+	{11, 130, 31, 152},
+	0,
+	visible,
+	0,
+	202,
+	400,
+	0,
+	""
+};
+
+resource 'CNTL' (1005, "Icon Info: Icon Format") {
+	{40, 10, 60, 378},
+	0,
+	visible,
+	-1,
+	4000,
+	401,
+	0,
+	"ƒAƒCƒRƒ“‚ÌŒ`®F"
+};
+
+resource 'CNTL' (1006, "Members Group Box") {
+	{99, 9, 241, 381},
+	0,
+	visible,
+	100,
+	0,
+	160,
+	0,
+	"ˆê——•\¦‚Ìí—Ş"
+};
+
+resource 'CNTL' (1106) {
+	{264, 14, 280, 124},
+	0,
+	visible,
+	100,
+	0,
+	377,
+	0,
+	"ƒp[ƒWƒƒƒuƒ‹"
+};
+
+resource 'CNTL' (1107) {
+	{282, 14, 298, 124},
+	0,
+	visible,
+	100,
+	0,
+	377,
+	0,
+	"ƒvƒŠƒ[ƒh"
+};
+
+resource 'CNTL' (1108) {
+	{264, 134, 280, 244},
+	0,
+	visible,
+	100,
+	0,
+	377,
+	0,
+	"ƒvƒƒeƒNƒg"
+};
+
+resource 'CNTL' (1109) {
+	{282, 134, 298, 244},
+	0,
+	visible,
+	100,
+	0,
+	377,
+	0,
+	"ƒVƒXƒeƒ€ƒq[ƒv"
+};
+
+resource 'CNTL' (1110) {
+	{264, 264, 280, 374},
+	0,
+	visible,
+	100,
+	0,
+	377,
+	0,
+	"ƒƒbƒN"
+};
+
+resource 'CNTL' (201, "Zoom Placard") {
+	{193, -1, 209, 63},
+	32,
+	visible,
+	0,
 	0,
 	256,
 	0,
 	""
 };
 
-resource 'CNTL' (310, "Icon Browser: Progress Bar", purgeable) {
+resource 'CNTL' (1000, "Zoom Level Arrows") {
+	{40, 366, 64, 379},
+	0,
+	visible,
+	100,
+	0,
+	96,
+	0,
+	""
+};
+
+resource 'CNTL' (1003, "Startup Options Group Box") {
+	{92, 9, 160, 189},
+	0,
+	visible,
+	120,
+	0,
+	160,
+	0,
+	"‹N“®ƒIƒvƒVƒ‡ƒ“F"
+};
+
+resource 'CNTL' (1004, "Default Format") {
+	{74, 10, 94, 378},
+	0,
+	visible,
+	-1,
+	4000,
+	401,
+	0,
+	"•W€ƒAƒCƒRƒ“Œ`®F"
+};
+
+resource 'CNTL' (1007, "Preferences Tabs") {
+	{8, 0, 252, 390},
+	1007,
+	visible,
+	100,
+	0,
+	128,
+	0,
+	""
+};
+
+resource 'CNTL' (1008, "Default Members Group Box") {
+	{99, 9, 241, 381},
+	0,
+	visible,
+	100,
+	0,
+	160,
+	0,
+	"•W€‚Ìˆê——•\¦“à—e"
+};
+
+resource 'CNTL' (1009, "Saving Options Group Box") {
+	{92, 198, 160, 378},
+	0,
+	visible,
+	120,
+	0,
+	160,
+	0,
+	"•Û‘¶ƒf[ƒ^“à—eF"
+};
+
+resource 'CNTL' (1016, "External Format") {
+	{95, 7, 115, 379},
+	0,
+	visible,
+	172,
+	1016,
+	401,
+	0,
+	"o—ÍŒ`®F"
+};
+
+resource 'CNTL' (1017, "External Editor App") {
+	{41, 179, 62, 379},
+	0,
+	visible,
+	100,
+	0,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (1018, "External Editor Shortcut") {
+	{68, 179, 89, 379},
+	0,
+	visible,
+	100,
+	0,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (1019, "Members Palette Box") {
+	{162, 9, 215, 378},
+	0,
+	visible,
+	100,
+	0,
+	160,
+	0,
+	"ˆê——‚Ì•\¦•û–@F"
+};
+
+resource 'CNTL' (1020, "Members Palette Display Slider") {
+	{187, 222, 203, 340},
+	64,
+	visible,
+	64,
+	16,
+	57,
+	0,
+	""
+};
+
+resource 'CNTL' (1100) {
+	{121, 13, 137, 153},
+	0,
+	visible,
+	100,
+	0,
+	377,
+	0,
+	"ƒTƒ€ƒlƒCƒ‹ (128 x 128)"
+};
+
+resource 'CNTL' (1101) {
+	{165, 13, 181, 153},
+	0,
+	visible,
+	100,
+	0,
+	377,
+	0,
+	"Å‘å (48 x 48)"
+};
+
+resource 'CNTL' (1102) {
+	{184, 13, 200, 153},
+	0,
+	visible,
+	100,
+	0,
+	377,
+	0,
+	"ƒ‰[ƒW (32 x 32)"
+};
+
+resource 'CNTL' (1103) {
+	{202, 13, 218, 153},
+	0,
+	visible,
+	100,
+	0,
+	377,
+	0,
+	"ƒXƒ‚[ƒ‹ (16 x 16)"
+};
+
+resource 'CNTL' (1104) {
+	{220, 13, 236, 153},
+	0,
+	visible,
+	100,
+	0,
+	377,
+	0,
+	"ƒ~ƒj (16 x 12)"
+};
+
+resource 'CNTL' (1105, "Members Divider") {
+	{159, 15, 162, 373},
+	0,
+	visible,
+	100,
+	0,
+	144,
+	0,
+	"ƒp[ƒWƒƒƒuƒ‹"
+};
+
+resource 'CNTL' (1120, "Add Member Type Menu") {
+	{56, 4, 76, 338},
+	0,
+	visible,
+	100,
+	1120,
+	401,
+	0,
+	"’Ç‰ÁæF"
+};
+
+resource 'CNTL' (1121, "Add Member Source Menu") {
+	{82, 4, 102, 338},
+	0,
+	visible,
+	100,
+	1121,
+	401,
+	0,
+	"QÆŒ³F"
+};
+
+resource 'CNTL' (310, "Icon Browser: Progress Bar") {
 	{28, 8, 41, 342},
 	0,
 	visible,
@@ -237,62 +460,73 @@ resource 'CNTL' (310, "Icon Browser: Progress Bar", purgeable) {
 	""
 };
 
-resource 'CNTL' (2000, "|Types Pop-up", purgeable) {
-	{6, 8, 26, 258},
+resource 'CNTL' (302, "Icon Browser: List") {
+	{0, 0, 344, 320},
 	0,
-	visible,
-	60,
-	4000,
-	409,
-	0,
-	"Œ`®F"
-};
-
-resource 'CNTL' (2001, "|Old Types Pop-up", purgeable) {
-	{185, 11, 205, 261},
-	0,
-	visible,
-	60,
-	4000,
-	409,
-	0,
-	"Œ`®F"
-};
-
-resource 'CNTL' (1004, "Default Format", purgeable) {
-	{42, 6, 62, 306},
-	0,
-	visible,
-	140,
-	4000,
-	401,
-	0,
-	"•W€ƒAƒCƒRƒ“Œ`®"
-};
-
-resource 'CNTL' (1005, "Icon Info: Icon Format", purgeable) {
-	{40, 10, 60, 270},
-	0,
-	visible,
-	-1,
-	4000,
-	401,
-	0,
-	"ƒAƒCƒRƒ“Œ`®F"
-};
-
-resource 'CNTL' (303, "Icon Browser: Type Menu", purgeable) {
-	{343, -1, 359, 121},
-	300,
 	visible,
 	100,
 	0,
-	36,
+	256,
 	0,
-	"ƒAƒCƒRƒ“í•ÊF"
+	""
 };
 
-resource 'CNTL' (252, "Colors Palette: Background Pane", purgeable) {
+resource 'CNTL' (300, "Icon Browser: Scroll Bar") {
+	{-1, 319, 343, 335},
+	0,
+	visible,
+	100,
+	0,
+	386,
+	0,
+	""
+};
+
+resource 'CNTL' (301, "Icon Browser: Info Pane") {
+	{343, 100, 359, 320},
+	0,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	"27 ƒAƒCƒRƒ“"
+};
+
+resource 'CNTL' (303, "Icon Browser: Type Menu") {
+	{343, -1, 359, 101},
+	32,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	"ƒAƒCƒRƒ“‚Ìí—ŞF"
+};
+
+resource 'CNTL' (2000, "Types Pop-up") {
+	{6, 8, 26, 258},
+	0,
+	visible,
+	100,
+	4000,
+	409,
+	0,
+	"ƒAƒCƒRƒ“‚ÌŒ`®F"
+};
+
+resource 'CNTL' (2001, "Old Types Pop-up") {
+	{185, 11, 205, 261},
+	0,
+	visible,
+	100,
+	4000,
+	409,
+	0,
+	"ƒAƒCƒRƒ“‚ÌŒ`®F"
+};
+
+resource 'CNTL' (252, "Colors Palette: Background Pane") {
 	{-1, -1, 11, 10},
 	0,
 	visible,
@@ -303,84 +537,7 @@ resource 'CNTL' (252, "Colors Palette: Background Pane", purgeable) {
 	""
 };
 
-resource 'CNTL' (264, "Colors Palette: RGB Colors: Red Label", purgeable) {
-	{34, 84, 45, 96},
-	0,
-	visible,
-	100,
-	0,
-	296,
-	0,
-	"R:"
-};
-
-resource 'CNTL' (265, "Colors Palette: RGB Colors: Green Label", purgeable) {
-	{71, 84, 82, 96},
-	0,
-	visible,
-	100,
-	0,
-	296,
-	0,
-	"G:"
-};
-
-resource 'CNTL' (266, "Colors Palette: RGB Colors: Blue Label", purgeable) {
-	{108, 84, 119, 96},
-	0,
-	visible,
-	100,
-	0,
-	296,
-	0,
-	"B:"
-};
-
-resource 'CNTL' (274, "Colors Palette: HSV Colors: Hue Label", purgeable) {
-	{34, 84, 47, 96},
-	0,
-	visible,
-	100,
-	0,
-	296,
-	0,
-	"HF"
-};
-
-resource 'CNTL' (275, "Colors Palette: HSV Colors: Saturation Label", purgeable) {
-	{71, 84, 82, 96},
-	0,
-	visible,
-	100,
-	0,
-	296,
-	0,
-	"SF"
-};
-
-resource 'CNTL' (276, "Colors Palette: HSV Colors: Value Label", purgeable) {
-	{108, 84, 119, 96},
-	0,
-	visible,
-	100,
-	0,
-	296,
-	0,
-	"VF"
-};
-
-resource 'CNTL' (261, "Colors Palette: RGB Picker: Red Slider", purgeable) {
-	{34, 100, 52, 308},
-	0,
-	visible,
-	255,
-	0,
-	49,
-	0,
-	"RF"
-};
-
-resource 'CNTL' (262, "Colors Palette: RGB Picker: Green Slider", purgeable) {
+resource 'CNTL' (262, "Colors Palette: RGB Picker: Green Slider") {
 	{71, 100, 89, 308},
 	0,
 	visible,
@@ -388,10 +545,10 @@ resource 'CNTL' (262, "Colors Palette: RGB Picker: Green Slider", purgeable) {
 	0,
 	49,
 	0,
-	"GF"
+	"—ÎF"
 };
 
-resource 'CNTL' (263, "Colors Palette: RGB Picker: Blue Slider", purgeable) {
+resource 'CNTL' (263, "Colors Palette: RGB Picker: Blue Slider") {
 	{108, 100, 126, 308},
 	0,
 	visible,
@@ -399,76 +556,10 @@ resource 'CNTL' (263, "Colors Palette: RGB Picker: Blue Slider", purgeable) {
 	0,
 	49,
 	0,
-	"BF"
+	"ÂF"
 };
 
-resource 'CNTL' (277, "Colors Palette: HSV Picker: Hue Preview", purgeable) {
-	{54, 111, 62, 298},
-	0,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (278, "Colors Palette: HSV Picker: Saturation Preview", purgeable) {
-	{91, 111, 99, 298},
-	0,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (279, "Colors Palette: HSV Picker: Value Preview", purgeable) {
-	{128, 111, 136, 298},
-	0,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (271, "Colors Palette: HSV Picker: Hue Slider", purgeable) {
-	{34, 100, 54, 308},
-	0,
-	visible,
-	360,
-	0,
-	49,
-	0,
-	"F‘Š"
-};
-
-resource 'CNTL' (272, "Colors Palette: HSV Picker: Saturation Slider", purgeable) {
-	{71, 100, 91, 308},
-	0,
-	visible,
-	100,
-	0,
-	49,
-	0,
-	"GF"
-};
-
-resource 'CNTL' (273, "Colors Palette: HSV Picker: Value Slider", purgeable) {
-	{108, 100, 128, 308},
-	0,
-	visible,
-	100,
-	0,
-	49,
-	0,
-	"’lF"
-};
-
-resource 'CNTL' (251, "Colors Palette: Tabs", purgeable) {
+resource 'CNTL' (251, "Colors Palette: Tabs") {
 	{3, 71, 161, 321},
 	251,
 	visible,
@@ -479,7 +570,7 @@ resource 'CNTL' (251, "Colors Palette: Tabs", purgeable) {
 	""
 };
 
-resource 'CNTL' (250, "Colors Palette: Fore/Back Colors", purgeable) {
+resource 'CNTL' (250, "Colors Palette: Fore/Back Colors") {
 	{23, 8, 77, 62},
 	0,
 	visible,
@@ -490,7 +581,7 @@ resource 'CNTL' (250, "Colors Palette: Fore/Back Colors", purgeable) {
 	""
 };
 
-resource 'CNTL' (253, "Colors Palette: Color Pickers Area", purgeable) {
+resource 'CNTL' (253, "Colors Palette: Color Pickers Area") {
 	{22, 73, 158, 317},
 	0,
 	visible,
@@ -501,18 +592,7 @@ resource 'CNTL' (253, "Colors Palette: Color Pickers Area", purgeable) {
 	""
 };
 
-resource 'CNTL' (260, "Colors Palette: RGB Picker: Parent", purgeable) {
-	{22, 73, 158, 317},
-	2,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (270, "Colors Palette: HSV Picker: Parent", purgeable) {
+resource 'CNTL' (260, "Colors Palette: RGB Picker: Parent") {
 	{22, 73, 158, 317},
 	2,
 	visible,
@@ -523,7 +603,7 @@ resource 'CNTL' (270, "Colors Palette: HSV Picker: Parent", purgeable) {
 	""
 };
 
-resource 'CNTL' (280, "Colors Palette: System Picker: Palette", purgeable) {
+resource 'CNTL' (270, "Colors Palette: HSV Picker: Parent") {
 	{22, 73, 158, 317},
 	2,
 	visible,
@@ -534,7 +614,7 @@ resource 'CNTL' (280, "Colors Palette: System Picker: Palette", purgeable) {
 	""
 };
 
-resource 'CNTL' (290, "Colors Palette: Favorites Picker: Palette", purgeable) {
+resource 'CNTL' (280, "Colors Palette: System Picker: Palette") {
 	{22, 73, 158, 317},
 	2,
 	visible,
@@ -545,7 +625,7 @@ resource 'CNTL' (290, "Colors Palette: Favorites Picker: Palette", purgeable) {
 	""
 };
 
-resource 'CNTL' (267, "Colors Palette: RGB Picker: Red Preview", purgeable) {
+resource 'CNTL' (267, "Colors Palette: RGB Picker: Red Preview") {
 	{52, 109, 64, 300},
 	0,
 	visible,
@@ -556,7 +636,7 @@ resource 'CNTL' (267, "Colors Palette: RGB Picker: Red Preview", purgeable) {
 	""
 };
 
-resource 'CNTL' (268, "Colors Palette: RGB Picker: Green Preview", purgeable) {
+resource 'CNTL' (268, "Colors Palette: RGB Picker: Green Preview") {
 	{89, 109, 101, 300},
 	0,
 	visible,
@@ -567,7 +647,7 @@ resource 'CNTL' (268, "Colors Palette: RGB Picker: Green Preview", purgeable) {
 	""
 };
 
-resource 'CNTL' (269, "Colors Palette: RGB Picker: Blue Preview", purgeable) {
+resource 'CNTL' (269, "Colors Palette: RGB Picker: Blue Preview") {
 	{126, 109, 138, 300},
 	0,
 	visible,
@@ -578,7 +658,7 @@ resource 'CNTL' (269, "Colors Palette: RGB Picker: Blue Preview", purgeable) {
 	""
 };
 
-resource 'CNTL' (257, "Colors Palette: Separator 2", purgeable) {
+resource 'CNTL' (257, "Colors Palette: Separator 2") {
 	{116, 6, 117, 66},
 	0,
 	visible,
@@ -589,29 +669,7 @@ resource 'CNTL' (257, "Colors Palette: Separator 2", purgeable) {
 	""
 };
 
-resource 'CNTL' (258, "Colors Palette: Color Readout Label", purgeable) {
-	{120, 8, 155, 20},
-	0,
-	visible,
-	100,
-	0,
-	296,
-	0,
-	"R:\nG:\nB:"
-};
-
-resource 'CNTL' (259, "Colors Palette: Color Readout Data", purgeable) {
-	{120, 20, 155, 62},
-	0,
-	visible,
-	100,
-	0,
-	296,
-	0,
-	"100%\n100%\n100%"
-};
-
-resource 'CNTL' (254, "Colors Palette: Separator 1", purgeable) {
+resource 'CNTL' (254, "Colors Palette: Separator 1") {
 	{84, 6, 85, 66},
 	0,
 	visible,
@@ -622,19 +680,547 @@ resource 'CNTL' (254, "Colors Palette: Separator 1", purgeable) {
 	""
 };
 
-resource 'CNTL' (255, "Colors Palette: Position Readout Label", purgeable) {
-	{90, 8, 115, 20},
+resource 'CNTL' (264, "Colors Palette: RGB Colors: Red Label") {
+	{34, 84, 45, 96},
 	0,
 	visible,
 	100,
 	0,
 	296,
 	0,
-	"X:\nY:"
+	"ÔF"
 };
 
-resource 'CNTL' (256, "Colors Palette: Position Readout Data", purgeable) {
-	{90, 20, 115, 62},
+resource 'CNTL' (265, "Colors Palette: RGB Colors: Green Label") {
+	{71, 84, 82, 96},
+	0,
+	visible,
+	100,
+	0,
+	296,
+	0,
+	"—ÎF"
+};
+
+resource 'CNTL' (266, "Colors Palette: RGB Colors: Blue Label") {
+	{108, 84, 119, 96},
+	0,
+	visible,
+	100,
+	0,
+	296,
+	0,
+	"ÂF"
+};
+
+resource 'CNTL' (274, "Colors Palette: HSV Colors: Hue Label") {
+	{34, 84, 47, 96},
+	0,
+	visible,
+	100,
+	0,
+	296,
+	0,
+	"F‘ŠF"
+};
+
+resource 'CNTL' (275, "Colors Palette: HSV Colors: Saturation Label") {
+	{71, 84, 82, 96},
+	0,
+	visible,
+	100,
+	0,
+	296,
+	0,
+	"Ê“xF"
+};
+
+resource 'CNTL' (276, "Colors Palette: HSV Colors: Value Label") {
+	{108, 84, 119, 96},
+	0,
+	visible,
+	100,
+	0,
+	296,
+	0,
+	"–¾“xF"
+};
+
+resource 'CNTL' (277, "Colors Palette: HSV Picker: Hue Preview") {
+	{52, 109, 64, 300},
+	0,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (278, "Colors Palette: HSV Picker: Saturation Preview") {
+	{89, 109, 101, 300},
+	0,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (279, "Colors Palette: HSV Picker: Value Preview") {
+	{126, 109, 138, 300},
+	0,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (290, "Colors Palette: Favorites Picker: Palette") {
+	{28, 74, 152, 316},
+	2,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (261, "Colors Palette: RGB Picker: Red Slider") {
+	{34, 100, 50, 308},
+	0,
+	visible,
+	255,
+	0,
+	49,
+	0,
+	"ÔF"
+};
+
+resource 'CNTL' (271, "Colors Palette: HSV Picker: Hue Slider") {
+	{34, 100, 50, 308},
+	0,
+	visible,
+	360,
+	0,
+	49,
+	0,
+	"F‘Š"
+};
+
+resource 'CNTL' (272, "Colors Palette: HSV Picker: Saturation Slider") {
+	{71, 100, 87, 308},
+	0,
+	visible,
+	100,
+	0,
+	49,
+	0,
+	"—ÎF"
+};
+
+resource 'CNTL' (273, "Colors Palette: HSV Picker: Value Slider") {
+	{108, 100, 124, 308},
+	0,
+	visible,
+	100,
+	0,
+	49,
+	0,
+	"–¾“xF"
+};
+
+resource 'CNTL' (10100, "User Pane") {
+	{0, 0, 16, 16},
+	0,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (400, "Members Pane") {
+	{0, -1, 128, 141},
+	0,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (401, "Members Scrollbar") {
+	{-1, 140, 451, 151},
+	0,
+	visible,
+	100,
+	0,
+	386,
+	0,
+	""
+};
+
+resource 'CNTL' (403, "Background Pane") {
+	{0, -1, 100, 99},
+	0,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (402, "Members State Selection") {
+	{450, -1, 461, 41},
+	400,
+	visible,
+	402,
+	512,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (404, "Members Info") {
+	{450, 109, 461, 141},
+	400,
+	visible,
+	402,
+	512,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (405, "Add Member") {
+	{450, 40, 461, 110},
+	400,
+	visible,
+	402,
+	512,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (500, "Preview Background") {
+	{-1, -1, 176, 151},
+	0,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (501, "Preview Area") {
+	{32, 6, 170, 144},
+	0,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (503, "Preview Text") {
+	{9, 122, 21, 142},
+	0,
+	visible,
+	100,
+	0,
+	280,
+	0,
+	""
+};
+
+resource 'CNTL' (502, "Preview Slider") {
+	{7, 6, 23, 116},
+	32,
+	visible,
+	128,
+	0,
+	57,
+	0,
+	""
+};
+
+resource 'CNTL' (504, "Preview Settings") {
+	{175, -1, 191, 151},
+	32,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (600, "Pen Tool") {
+	{41, -1, 63, 26},
+	0,
+	visible,
+	600,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (601, "Eyedropper Tool") {
+	{41, 25, 63, 52},
+	0,
+	visible,
+	601,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (602, "Fill Tool") {
+	{62, -1, 84, 26},
+	0,
+	visible,
+	602,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (603, "Eraser Tool") {
+	{62, 25, 84, 52},
+	0,
+	visible,
+	603,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (604, "Marquee Tool") {
+	{-1, -1, 21, 26},
+	0,
+	visible,
+	604,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (605, "Move Tool") {
+	{-1, 25, 21, 52},
+	0,
+	visible,
+	605,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (606, "Lasso Tool") {
+	{20, -1, 42, 26},
+	0,
+	visible,
+	606,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (607, "Wand Tool") {
+	{20, 25, 42, 52},
+	0,
+	visible,
+	607,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (608, "Line Tool") {
+	{104, -1, 126, 26},
+	0,
+	visible,
+	608,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (609, "Rectangle Tool") {
+	{83, -1, 105, 26},
+	0,
+	visible,
+	609,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (610, "Oval Tool") {
+	{83, 25, 105, 52},
+	0,
+	visible,
+	610,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (611, "Polygon Tool") {
+	{104, 25, 126, 52},
+	0,
+	visible,
+	611,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (612, "Gradient Tool") {
+	{125, -1, 147, 26},
+	0,
+	visible,
+	612,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (613, "Text Tool") {
+	{125, 25, 147, 52},
+	0,
+	visible,
+	613,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (614, "Pan Tool") {
+	{146, -1, 168, 26},
+	0,
+	visible,
+	614,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (615, "Zoom Tool") {
+	{146, 25, 168, 52},
+	0,
+	visible,
+	615,
+	258,
+	32,
+	0,
+	""
+};
+
+resource 'CNTL' (622, "Background Pane") {
+	{185, -1, 254, 52},
+	0,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (623, "Line Thickness") {
+	{168, 0, 185, 17},
+	32,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (624, "Anti-aliasing") {
+	{168, 17, 185, 34},
+	32,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (625, "Fill") {
+	{168, 34, 185, 51},
+	32,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (620, "Color Swatch") {
+	{210, 5, 251, 46},
+	0,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (621, "Patterns") {
+	{189, 5, 207, 46},
+	0,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (255, "Colors Palette: Position Readout Label") {
+	{90, 5, 115, 21},
+	0,
+	visible,
+	100,
+	0,
+	296,
+	0,
+	"XF\nYF"
+};
+
+resource 'CNTL' (256, "Colors Palette: Position Readout Data") {
+	{90, 22, 115, 64},
 	0,
 	visible,
 	100,
@@ -644,1439 +1230,1196 @@ resource 'CNTL' (256, "Colors Palette: Position Readout Data", purgeable) {
 	"128\n67"
 };
 
-resource 'DITL' (1001, "Icon Info", purgeable) {
-	{	/* array DITLarray: 15 elements */
+resource 'CNTL' (258, "Colors Palette: Color Readout Label") {
+	{120, 2, 155, 21},
+	0,
+	visible,
+	100,
+	0,
+	296,
+	0,
+	"ÔF\n—ÎF\nÂF"
+};
+
+resource 'CNTL' (259, "Colors Palette: Color Readout Data") {
+	{120, 21, 155, 63},
+	0,
+	visible,
+	100,
+	0,
+	296,
+	0,
+	"100%\n100%\n100%"
+};
+
+resource 'STR#' (201, "Labels") {
+	{	/* array StringArray: 8 elements */
 		/* [1] */
-		{186, 198, 206, 266},
-		Button {
-			enabled,
-			"OK"
-		},
+		"ƒAƒCƒRƒ“",
 		/* [2] */
-		{186, 110, 206, 184},
-		Button {
-			enabled,
-			"ƒLƒƒƒ“ƒZƒ‹"
-		},
+		"ƒ}ƒXƒN",
 		/* [3] */
-		{13, 7, 29, 58},
-		StaticText {
-			enabled,
-			"I DF"
-		},
+		"ƒvƒŒƒrƒ…[",
 		/* [4] */
-		{13, 64, 29, 116},
-		EditText {
-			enabled,
-			"-16455"
-		},
+		"‘OŒiF‚ğ‘I‘ğF",
 		/* [5] */
-		{70, 10, 86, 60},
-		StaticText {
-			disabled,
-			"–¼ÌF"
-		},
+		"”wŒiF‚ğ‘I‘ğF",
 		/* [6] */
-		{70, 64, 86, 267},
-		EditText {
-			enabled,
-			""
-		},
+		" ƒoƒCƒg",
 		/* [7] */
-		{96, 10, 176, 271},
-		Control {
-			enabled,
-			1001
-		},
+		"–¼‘OFg<name>h IDF<ID>",
 		/* [8] */
-		{13, 186, 29, 276},
-		StaticText {
-			disabled,
-			""
-		},
+		"IDF<ID>"
+	}
+};
+
+resource 'STR#' (203, "Editor Balloon Help") {
+	{	/* array StringArray: 2 elements */
+		/* [1] */
+		"ƒƒCƒ“‚Ì•ÒW‰æ–Ê‚Å‚·B\n\nŒ»İ•ÒW’†‚ÌƒAƒCƒRƒ“‚ªŠg‘å‚³‚ê‚Ä•\¦‚³‚ê‚Ü‚·B",
+		/* [2] */
+		"•ÒWƒEƒCƒ“ƒhƒE‚ÌŒ»İ‚ÌŠg‘åƒTƒCƒY‚ª‚±‚±‚É•\¦‚³‚ê‚Ü‚·B\n\nŠg‘åƒTƒCƒY‚ğ•ÏX‚·‚é‚É‚ÍƒAƒCƒRƒ“ƒƒjƒ…[‚©‚çŠg‘å^k¬‚ğs‚È‚¤‚©"
+		"A•ÒWƒEƒCƒ“ƒhƒE‰º•”‚Ìƒ|ƒbƒvƒAƒbƒvƒƒjƒ…[‚ÅƒTƒCƒY‚ğ•ÏX‚µ‚Ä‰º‚³‚¢B"
+	}
+};
+
+resource 'STR#' (204, "- Icon Info Balloon Help") {
+	{	/* array StringArray: 13 elements */
+		/* [1] */
+		"•ÏX‚ğ•Û‘¶‚µ‚Ä‚±‚Ìƒ_ƒCƒAƒƒO‚ğ•Â‚¶‚éB",
+		/* [2] */
+		"•ÏX‚ğ•Û‘¶‚µ‚È‚¢‚Å‚±‚Ìƒ_ƒCƒAƒƒO‚ğ•Â‚¶‚éB",
+		/* [3] */
+		"‚P‚Â‚Ìƒtƒ@ƒCƒ‹‚É•¡”‚ÌƒAƒCƒRƒ“‚ğŠÜ‚Ü‚¹‚éê‡A‚±‚±‚ÅŠeƒAƒCƒRƒ“‚É•ÊX‚Ì ID ”Ô†‚ğ•t‚¯‚é•K—v‚ª‚ ‚è‚Ü‚·B",
+		/* [4] */
+		"‚±‚ê‚ÍÅI“I‚ÈƒAƒCƒRƒ“‚ÌƒŠƒ\[ƒX‚Ì—e—Ê‚Å‚·B",
+		/* [5] */
+		"–¼Ìİ’è‚ÍƒIƒvƒVƒ‡ƒ“‚Å‚·‚ªAƒAƒCƒRƒ“ƒŠƒ\[ƒX‚ğŒŸõ‚·‚éÛ‚É•Ö—˜‚Å‚·B",
+		/* [6] */
+		"‚±‚±‚ğƒ`ƒFƒbƒN‚·‚é‚ÆAƒƒ‚ƒŠ‚ª•s‘«‚µ‚Ä‚¢‚éê‡‚ÉƒAƒCƒRƒ“‚ğ“Ç‚İ‚Ü‚È‚¢‚Å‚¨‚­‚±‚Æ‚ªo—ˆ‚Ü‚·B",
+		/* [7] */
+		"‚±‚±‚ğƒ`ƒFƒbƒN‚·‚é‚ÆAƒtƒ@ƒCƒ‹‚ğŠJ‚­‚É©“®“I‚ÉƒAƒCƒRƒ“‚ğ“Ç‚İ‚Ş‚±‚Æ‚ªo—ˆ‚Ü‚·B",
+		/* [8] */
+		"‚±‚±‚ğƒ`ƒFƒbƒN‚·‚é‚ÆAƒAƒCƒRƒ“‚ªƒƒbƒN‚³‚êAƒƒ‚ƒŠ“à‚É“Ç‚İ‚ñ‚¾‚Éƒƒ‚ƒŠ—Ìˆæ‚ğˆÚ“®‚Å‚«‚È‚­‚È‚è‚Ü‚·B",
 		/* [9] */
-		{116, 14, 132, 124},
-		CheckBox {
-			enabled,
-			"ƒp[ƒWƒƒƒuƒ‹"
-		},
+		"‚±‚±‚ğƒ`ƒFƒbƒN‚·‚é‚ÆAƒAƒCƒRƒ“‚É•ÏX‚ğ‰Á‚¦‚ç‚ê‚È‚­‚È‚è‚Ü‚·B",
 		/* [10] */
-		{134, 14, 150, 124},
-		CheckBox {
-			enabled,
-			"ƒvƒŠƒ[ƒh"
-		},
+		"‚±‚±‚ğƒ`ƒFƒbƒN‚·‚é‚ÆAƒVƒXƒeƒ€‚Ìg—p‚·‚éƒƒ‚ƒŠ—Ìˆæ‚ÉƒAƒCƒRƒ“‚ğ“Ç‚İ‚Ş‚æ‚¤‚É‚È‚è‚Ü‚·B",
 		/* [11] */
-		{153, 14, 169, 124},
-		CheckBox {
-			enabled,
-			"ƒƒbƒN"
-		},
+		"‚±‚Ìƒ|ƒbƒvƒAƒbƒvƒƒjƒ…[‚©‚çAŠù‘¶‚ÌƒAƒCƒRƒ“ ID ‚ğ‘I‘ğ‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
 		/* [12] */
-		{116, 146, 132, 256},
-		CheckBox {
-			enabled,
-			"ƒvƒƒeƒNƒg"
-		},
+		"‚±‚Ìƒ|ƒbƒvƒAƒbƒvƒƒjƒ…[‚ÍAŠeíƒAƒCƒRƒ“Œ`®‚ğ‘I‘ğ‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·BŒ`®‚É‚æ‚Á‚Ä‚Í‚¢‚­‚Â‚©‚ÌƒIƒvƒVƒ‡ƒ“‚ªg—po—ˆ‚Ü‚¹"
+		"‚ñB(—áFWindows Œ`®‚Ì 8bit ƒ}ƒXƒN‚È‚Ç)",
 		/* [13] */
-		{134, 146, 150, 256},
-		CheckBox {
-			enabled,
-			"ƒVƒXƒeƒ€ƒq[ƒv"
-		},
-		/* [14] */
-		{13, 147, 29, 188},
-		StaticText {
-			disabled,
-			"—e—ÊF"
-		},
-		/* [15] */
-		{11, 124, 31, 146},
-		Control {
-			enabled,
-			1002
-		},
-		/* [16] */
-		{40, 10, 60, 270},
-		Control {
-			enabled,
-			1005
-		}
+		"‚±‚ê‚ç‚Ìƒ`ƒFƒbƒNƒ{ƒbƒNƒX‚ğg—p‚·‚é‚±‚Æ‚É‚æ‚Á‚ÄƒAƒCƒRƒ“‚ÉŠÜ‚Ü‚ê‚éƒAƒCƒRƒ“‚Ìí—Ş‚ğİ’è‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·Bƒ`ƒFƒbƒN‚µ‚½í—Ş"
+		"‚Ì‚İƒAƒCƒRƒ“ˆê——‚É•\¦‚³‚ê‚Ü‚·B‚»‚ÌŒ`®‚ÅƒTƒ|[ƒg‚µ‚Ä‚¢‚È‚¢í—Ş‚Ìƒ`ƒFƒbƒNƒ{ƒbƒNƒX‚Í–³Œø‚É‚È‚è‚Ü‚·B"
 	}
 };
 
-resource 'DITL' (1010, "Adjust", purgeable) {
-	{	/* array DITLarray: 4 elements */
+resource 'STR#' (200, "- Basic Strings") {
+	{	/* array StringArray: 19 elements */
 		/* [1] */
-		{153, 285, 173, 353},
-		Button {
-			enabled,
-			"OK"
-		},
+		"–¼Ì–¢İ’è",
 		/* [2] */
-		{153, 195, 173, 269},
-		Button {
-			enabled,
-			"ƒLƒƒƒ“ƒZƒ‹"
-		},
+		"ƒAƒCƒRƒ“‚Ì ID <ID> ‚Í‚·‚Å‚Éƒtƒ@ƒCƒ‹‚Åİ’è‚³‚ê‚Ä‚¢‚Ü‚·Bˆ—‚ğŒp‘±‚·‚é‚ÆAŒÃ‚¢ƒAƒCƒRƒ“‚ğŒ»İ‚ÌƒAƒCƒRƒ“‚Åã‘‚«•Û‘¶‚µ‚Ü‚·"
+		"B",
 		/* [3] */
-		{153, 5, 173, 165},
-		CheckBox {
-			enabled,
-			"•ÏX‚ğ‚·‚®‚É”½‰f‚³‚¹‚é"
-		},
+		"ã‘‚«",
 		/* [4] */
-		{8, -1, 141, 368},
-		Control {
-			enabled,
-			1010
-		}
-	}
-};
-
-resource 'DITL' (1011, "Adjust: Hue & Saturation Pane", purgeable) {
-	{	/* array DITLarray: 7 elements */
-		/* [1] */
-		{47, 83, 78, 303},
-		Control {
-			enabled,
-			1011
-		},
-		/* [2] */
-		{85, 83, 116, 303},
-		Control {
-			enabled,
-			1012
-		},
-		/* [3] */
-		{50, 316, 66, 352},
-		EditText {
-			enabled,
-			"0"
-		},
-		/* [4] */
-		{87, 316, 103, 352},
-		EditText {
-			enabled,
-			"0"
-		},
+		"ƒLƒƒƒ“ƒZƒ‹",
 		/* [5] */
-		{116, 6, 132, 166},
-		CheckBox {
-			enabled,
-			"FÊ‚ğ“ˆê"
-		},
+		"ƒTƒCƒY <size> ‚Ì 8ƒrƒbƒg‚Æ 1ƒrƒbƒg‚Ìƒ}ƒXƒN‚ªˆÙ‚È‚Á‚Ä‚¢‚é‚Ì‚Å Finder ‚Å‚ÌƒAƒCƒRƒ“‚Ì•¦‚É–â‘è‚ª”­¶‚·‚é‚©‚à‚µ‚ê‚Ü‚¹‚ñBƒT"
+		"ƒCƒY <size> ‚Ì1ƒrƒbƒg‚Ìƒ}ƒXƒN‚ğ 8ƒrƒbƒg‚Ìƒ}ƒXƒN‚©‚çÄ¶¬‚µ‚Ä‚à‚æ‚ë‚µ‚¢‚Å‚·‚©H",
 		/* [6] */
-		{47, 5, 68, 80},
-		StaticText {
-			disabled,
-			"F‘ŠF"
-		},
+		"ƒ}ƒXƒN‚ğÄ¶¬",
 		/* [7] */
-		{85, 5, 106, 80},
-		StaticText {
-			disabled,
-			"Ê“xF"
-		}
-	}
-};
-
-resource 'DITL' (1012, "Adjust: Brightness & Saturation Pane", purgeable) {
-	{	/* array DITLarray: 6 elements */
-		/* [1] */
-		{47, 83, 78, 303},
-		Control {
-			enabled,
-			1014
-		},
-		/* [2] */
-		{85, 83, 116, 303},
-		Control {
-			enabled,
-			1015
-		},
-		/* [3] */
-		{50, 316, 66, 352},
-		EditText {
-			enabled,
-			"0"
-		},
-		/* [4] */
-		{87, 316, 103, 352},
-		EditText {
-			enabled,
-			"0"
-		},
-		/* [5] */
-		{47, 5, 67, 84},
-		StaticText {
-			disabled,
-			"–¾‚é‚³F"
-		},
-		/* [6] */
-		{85, 5, 105, 84},
-		StaticText {
-			disabled,
-			"ƒRƒ“ƒgƒ‰ƒXƒg:"
-		}
-	}
-};
-
-resource 'DITL' (1410, "Text Tool", purgeable) {
-	{	/* array DITLarray: 9 elements */
-		/* [1] */
-		{204, 123, 224, 191},
-		Button {
-			enabled,
-			"OK"
-		},
-		/* [2] */
-		{204, 43, 224, 107},
-		Button {
-			enabled,
-			"ƒLƒƒƒ“ƒZƒ‹"
-		},
-		/* [3] */
-		{100, 11, 116, 51},
-		StaticText {
-			disabled,
-			"•¶šF"
-		},
-		/* [4] */
-		{119, 16, 187, 192},
-		EditText {
-			enabled,
-			"Icon Mangler"
-		},
-		/* [5] */
-		{8, 8, 28, 188},
-		Control {
-			enabled,
-			1410
-		},
-		/* [6] */
-		{38, 11, 54, 56},
-		StaticText {
-			disabled,
-			"ƒTƒCƒYF"
-		},
-		/* [7] */
-		{39, 124, 55, 158},
-		EditText {
-			enabled,
-			"12"
-		},
+		"‚Í‚¢",
 		/* [8] */
-		{37, 166, 57, 188},
-		Control {
-			enabled,
-			1411
-		},
+		"‚¢‚¢‚¦",
 		/* [9] */
-		{66, 8, 86, 190},
-		Control {
-			enabled,
-			1412
-		}
-	}
-};
-
-resource 'DITL' (3001, "Select Object", purgeable) {
-	{	/* array DITLarray: 11 elements */
-		/* [1] */
-		{157, 253, 177, 333},
-		Button {
-			enabled,
-			"ŠJ‚­"
-		},
-		/* [2] */
-		{126, 253, 146, 333},
-		Button {
-			enabled,
-			"ƒLƒƒƒ“ƒZƒ‹"
-		},
-		/* [3] */
-		{0, 0, 0, 0},
-		HelpItem {
-			disabled,
-			HMScanhdlg {
-				-6043
-			}
-		},
-		/* [4] */
-		{30, 236, 46, 338},
-		UserItem {
-			enabled
-		},
-		/* [5] */
-		{54, 253, 74, 333},
-		Button {
-			enabled,
-			"æ‚èo‚µ"
-		},
-		/* [6] */
-		{82, 253, 102, 333},
-		Button {
-			enabled,
-			"ƒfƒXƒNƒgƒbƒv"
-		},
-		/* [7] */
-		{51, 13, 181, 231},
-		UserItem {
-			enabled
-		},
-		/* [8] */
-		{28, 13, 47, 231},
-		UserItem {
-			enabled
-		},
-		/* [9] */
-		{113, 252, 114, 334},
-		Picture {
-			disabled,
-			11
-		},
+		"ƒTƒCƒY <size> ‚Íƒ}ƒXƒN‚ğŠÜ‚ñ‚Å‚¢‚È‚¢‚Ì‚ÅƒAƒCƒRƒ“‚Ì•\¦‚ª‚Å‚«‚È‚¢‚©‚à‚µ‚ê‚Ü‚¹‚ñBƒ}ƒXƒN‚ğ©“®“I‚É¶¬‚µ‚Ü‚·‚©H",
 		/* [10] */
-		{189, 24, 209, 211},
-		Button {
-			enabled,
-			"g<file name>h‚ğ‘I‘ğ"
-		},
+		"ƒ}ƒXƒN‚ğ¶¬",
 		/* [11] */
-		{6, 15, 23, 300},
-		StaticText {
-			disabled,
-			"ƒtƒ@ƒCƒ‹AƒtƒHƒ‹ƒ_AƒfƒBƒXƒN‚ğ‘I‘ğF"
-		}
-	}
-};
-
-resource 'DITL' (9999) {
-	{	/* array DITLarray: 29 elements */
-		/* [1] */
-		{7, 5, 29, 31},
-		Control {
-			enabled,
-			132
-		},
-		/* [2] */
-		{7, 31, 29, 57},
-		Control {
-			enabled,
-			133
-		},
-		/* [3] */
-		{29, 5, 51, 31},
-		Control {
-			enabled,
-			134
-		},
-		/* [4] */
-		{29, 31, 51, 57},
-		Control {
-			enabled,
-			135
-		},
-		/* [5] */
-		{8, 64, 202, 258},
-		Control {
-			enabled,
-			200
-		},
-		/* [6] */
-		{241, -1, 257, 62},
-		Control {
-			enabled,
-			201
-		},
-		/* [7] */
-		{241, 62, 257, 418},
-		Control {
-			enabled,
-			202
-		},
-		/* [8] */
-		{187, 11, 227, 51},
-		Control {
-			enabled,
-			203
-		},
-		/* [9] */
-		{24, 296, 124, 356},
-		Control {
-			enabled,
-			204
-		},
-		/* [10] */
-		{24, 360, 124, 420},
-		Control {
-			enabled,
-			205
-		},
-		/* [11] */
-		{5, 296, 21, 356},
-		Control {
-			enabled,
-			206
-		},
+		"ƒAƒCƒRƒ“‘}“ü...",
 		/* [12] */
-		{5, 360, 21, 420},
-		Control {
-			enabled,
-			207
-		},
+		"ƒtƒ@ƒCƒ‹ <file name> ‚ÍAƒf[ƒ^ƒtƒH[ƒN‚Éî•ñ‚ğ‚·‚Å‚É‚Á‚Ä‚¢‚é‚Ì‚ÅAƒAƒCƒRƒ“‚ğ•Û‘¶‚·‚é‚Æ“à—e‚ğã‘‚«‚µ‚Ü‚·Bˆ—‚ğŒp‘±"
+		"‚·‚é‚©A‘¼‚Ìƒtƒ@ƒCƒ‹‚É•Û‘¶‚µ‚Ü‚·‚©H",
 		/* [13] */
-		{126, 298, 138, 352},
-		Control {
-			enabled,
-			208
-		},
+		"‘¼‚Ìƒtƒ@ƒCƒ‹‚ğ‘I‘ğ",
 		/* [14] */
-		{126, 366, 138, 420},
-		Control {
-			enabled,
-			209
-		},
+		"ƒVƒ‡[ƒgƒJƒbƒg‚ğ‘I‘ğ",
 		/* [15] */
-		{51, 5, 73, 31},
-		Control {
-			enabled,
-			128
-		},
+		"ŠO•”ƒGƒfƒBƒ^‚ğ‘I‘ğ",
 		/* [16] */
-		{51, 31, 73, 57},
-		Control {
-			enabled,
-			129
-		},
+		"Iconographer ƒTƒ|[ƒg",
 		/* [17] */
-		{139, 31, 161, 57},
-		Control {
-			enabled,
-			141
-		},
+		"ƒtƒHƒ‹ƒ_gIconographer ƒTƒ|[ƒgh‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñBIconographer ‚ğÄƒCƒ“ƒXƒg[ƒ‹‚·‚é‚Ü‚Åƒwƒ‹ƒv‚Í—˜—p‚Å‚«‚Ü‚¹‚ñB",
 		/* [18] */
-		{73, 31, 95, 57},
-		Control {
-			enabled,
-			131
-		},
+		"ŠO•”ƒGƒfƒBƒ^‚ª‘I‘ğ‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB‰Šúİ’èƒ_ƒCƒAƒƒO‚É‚Äİ’è‚ğs‚Á‚Ä‰º‚³‚¢B",
 		/* [19] */
-		{73, 5, 95, 31},
-		Control {
-			enabled,
-			130
-		},
-		/* [20] */
-		{95, 31, 117, 57},
-		Control {
-			enabled,
-			138
-		},
-		/* [21] */
-		{141, 296, 195, 420},
-		Control {
-			enabled,
-			210
-		},
-		/* [22] */
-		{196, 296, 208, 420},
-		Control {
-			enabled,
-			211
-		},
-		/* [23] */
-		{95, 5, 117, 31},
-		Control {
-			enabled,
-			137
-		},
-		/* [24] */
-		{139, 5, 161, 31},
-		Control {
-			enabled,
-			140
-		},
-		/* [25] */
-		{117, 31, 139, 57},
-		Control {
-			enabled,
-			139
-		},
-		/* [26] */
-		{117, 5, 139, 31},
-		Control {
-			enabled,
-			136
-		},
-		/* [27] */
-		{167, 7, 181, 55},
-		Control {
-			enabled,
-			212
-		},
-		/* [28] */
-		{-1, -1, 4, 4},
-		Control {
-			enabled,
-			213
-		},
-		/* [29] */
-		{7, 5, 161, 57},
-		Control {
-			enabled,
-			214
-		}
+		"‰Šúİ’è‚ğŠJ‚­"
 	}
 };
 
-resource 'DITL' (1000, "Preferences", purgeable) {
-	{	/* array DITLarray: 14 elements */
+resource 'STR#' (300, "Icon Browser: Strings") {
+	{	/* array StringArray: 12 elements */
 		/* [1] */
-		{227, 238, 247, 306},
-		Button {
-			enabled,
-			"OK"
-		},
+		"ƒAƒCƒRƒ““Ç‚İ‚İ’†F<ID>",
 		/* [2] */
-		{227, 148, 247, 222},
-		Button {
-			enabled,
-			"ƒLƒƒƒ“ƒZƒ‹"
-		},
+		"ƒAƒCƒRƒ““Ç‚İ‚İ’†F<ID> g<name>h",
 		/* [3] */
-		{145, 8, 221, 309},
-		Control {
-			enabled,
-			1003
-		},
+		"<B>IDF</B> ",
 		/* [4] */
-		{19, 247, 30, 287},
-		EditText {
-			disabled,
-			"1000%"
-		},
+		"<B>–¼ÌF</B> ",
 		/* [5] */
-		{13, 293, 37, 306},
-		Control {
-			enabled,
-			1000
-		},
+		"<B>í—ŞF</B> ",
 		/* [6] */
-		{68, 8, 84, 272},
-		CheckBox {
-			enabled,
-			"ƒAƒCƒRƒ“•ÒWƒEƒCƒ“ƒhƒE‚ÉƒOƒŠƒbƒh‚ğ•\\¦"
-		},
+		"V",
 		/* [7] */
-		{85, 8, 101, 313},
-		CheckBox {
-			enabled,
-			"8 bit ‚Æ 1 bit ‚Ìƒ}ƒXƒN‚ğ“¯Šú‚³‚¹‚é"
-		},
+		"‹Œ",
 		/* [8] */
-		{102, 8, 118, 313},
-		CheckBox {
-			enabled,
-			"F”‚ª•s‘«‚µ‚Ä‚¢‚éê‡ƒfƒBƒUƒŠƒ“ƒO‚ğ‚©‚¯‚é"
-		},
+		"<B>ˆê——F</B> ",
 		/* [9] */
-		{162, 13, 178, 235},
-		RadioButton {
-			enabled,
-			"V‹KƒAƒCƒRƒ“ì¬"
-		},
+		"ƒAƒCƒRƒ“‚Ìí—ŞF <types>",
 		/* [10] */
-		{178, 13, 194, 232},
-		RadioButton {
-			enabled,
-			"gŠJ‚­hƒ_ƒCƒAƒƒO‚ğŠJ‚­"
-		},
+		"<number>/<total> ƒAƒCƒRƒ“",
 		/* [11] */
-		{194, 13, 210, 233},
-		RadioButton {
-			enabled,
-			"‚È‚É‚à‚µ‚È‚¢"
-		},
+		"ƒtƒ@ƒCƒ‹–¼g<file name>h‚ÌƒAƒCƒRƒ“ IDF<icon ID> ‚ğ–{“–‚Éíœ‚µ‚Ä‚à‚æ‚ë‚µ‚¢‚Å‚·‚©H",
 		/* [12] */
-		{16, 9, 34, 183},
-		StaticText {
-			disabled,
-			"•ÒW‰æ–Ê•\¦ƒTƒCƒYF"
-		},
+		"<name> (ƒAƒCƒRƒ“ƒuƒ‰ƒEƒU)"
+	}
+};
+
+resource 'STR#' (3001, "Select Object Strings") {
+	{	/* array StringArray: 2 elements */
+		/* [1] */
+		"g<file name>h‚ğ‘I‘ğ",
+		/* [2] */
+		"ƒfƒXƒNƒgƒbƒv‚ğ‘I‘ğ"
+	}
+};
+
+resource 'STR#' (3000, "Key Names") {
+	{	/* array StringArray: 128 elements */
+		/* [1] */
+		"A",
+		/* [2] */
+		"S",
+		/* [3] */
+		"D",
+		/* [4] */
+		"F",
+		/* [5] */
+		"H",
+		/* [6] */
+		"G",
+		/* [7] */
+		"Z",
+		/* [8] */
+		"X",
+		/* [9] */
+		"C",
+		/* [10] */
+		"V",
+		/* [11] */
+		"0x0A",
+		/* [12] */
+		"B",
 		/* [13] */
-		{42, 6, 62, 306},
-		Control {
-			enabled,
-			1004
-		},
+		"Q",
 		/* [14] */
-		{120, 8, 136, 313},
-		CheckBox {
-			enabled,
-			"ƒAƒ“ƒ`ƒGƒCƒŠƒAƒVƒ“ƒO•`‰æ"
-		}
+		"W",
+		/* [15] */
+		"E",
+		/* [16] */
+		"R",
+		/* [17] */
+		"Y",
+		/* [18] */
+		"T",
+		/* [19] */
+		"1",
+		/* [20] */
+		"2",
+		/* [21] */
+		"3",
+		/* [22] */
+		"4",
+		/* [23] */
+		"6",
+		/* [24] */
+		"5",
+		/* [25] */
+		"=",
+		/* [26] */
+		"9",
+		/* [27] */
+		"7",
+		/* [28] */
+		"-",
+		/* [29] */
+		"8",
+		/* [30] */
+		"0",
+		/* [31] */
+		"]",
+		/* [32] */
+		"O",
+		/* [33] */
+		"U",
+		/* [34] */
+		"[",
+		/* [35] */
+		"I",
+		/* [36] */
+		"P",
+		/* [37] */
+		"Return",
+		/* [38] */
+		"L",
+		/* [39] */
+		"J",
+		/* [40] */
+		"'",
+		/* [41] */
+		"K",
+		/* [42] */
+		";",
+		/* [43] */
+		"\\",
+		/* [44] */
+		",",
+		/* [45] */
+		"/",
+		/* [46] */
+		"N",
+		/* [47] */
+		"M",
+		/* [48] */
+		".",
+		/* [49] */
+		"Tab",
+		/* [50] */
+		"Space",
+		/* [51] */
+		"`",
+		/* [52] */
+		"Delete",
+		/* [53] */
+		"0x34",
+		/* [54] */
+		"Escape",
+		/* [55] */
+		"0x35",
+		/* [56] */
+		"Command",
+		/* [57] */
+		"Shift",
+		/* [58] */
+		"Caps Lock",
+		/* [59] */
+		"Option",
+		/* [60] */
+		"Control",
+		/* [61] */
+		"0x3C",
+		/* [62] */
+		"0x3D",
+		/* [63] */
+		"0x3E",
+		/* [64] */
+		"0x3F",
+		/* [65] */
+		"0x40",
+		/* [66] */
+		"Keypad .",
+		/* [67] */
+		"0x42",
+		/* [68] */
+		"Keypad *",
+		/* [69] */
+		"0x44",
+		/* [70] */
+		"Keypad +",
+		/* [71] */
+		"0x46",
+		/* [72] */
+		"Clear",
+		/* [73] */
+		"0x48",
+		/* [74] */
+		"0x49",
+		/* [75] */
+		"0x4A",
+		/* [76] */
+		"Keypad /",
+		/* [77] */
+		"Enter",
+		/* [78] */
+		"0x4D",
+		/* [79] */
+		"Keypad -",
+		/* [80] */
+		"0x4F",
+		/* [81] */
+		"0x50",
+		/* [82] */
+		"Keypad =",
+		/* [83] */
+		"Keypad 0",
+		/* [84] */
+		"Keypad 1",
+		/* [85] */
+		"Keypad 2",
+		/* [86] */
+		"Keypad 3",
+		/* [87] */
+		"Keypad 4",
+		/* [88] */
+		"Keypad 5",
+		/* [89] */
+		"Keypad 6",
+		/* [90] */
+		"Keypad 7",
+		/* [91] */
+		"0x5A",
+		/* [92] */
+		"Keypad 8",
+		/* [93] */
+		"Keypad 9",
+		/* [94] */
+		"0x5D",
+		/* [95] */
+		"0x5E",
+		/* [96] */
+		"0x5F",
+		/* [97] */
+		"F5",
+		/* [98] */
+		"F6",
+		/* [99] */
+		"F7",
+		/* [100] */
+		"F3",
+		/* [101] */
+		"F8",
+		/* [102] */
+		"F9",
+		/* [103] */
+		"0x66",
+		/* [104] */
+		"F11",
+		/* [105] */
+		"0x68",
+		/* [106] */
+		"F13",
+		/* [107] */
+		"0x6A",
+		/* [108] */
+		"F14",
+		/* [109] */
+		"0x6C",
+		/* [110] */
+		"F10",
+		/* [111] */
+		"0x6E",
+		/* [112] */
+		"F12",
+		/* [113] */
+		"0x70",
+		/* [114] */
+		"F15",
+		/* [115] */
+		"Help",
+		/* [116] */
+		"Home",
+		/* [117] */
+		"Page Up",
+		/* [118] */
+		"Forw. Del.",
+		/* [119] */
+		"F4",
+		/* [120] */
+		"End",
+		/* [121] */
+		"F2",
+		/* [122] */
+		"Page Down",
+		/* [123] */
+		"F1",
+		/* [124] */
+		"Left Arrow",
+		/* [125] */
+		"Right Arrow",
+		/* [126] */
+		"Down Arrow",
+		/* [127] */
+		"Up Arrow",
+		/* [128] */
+		"PowerKey"
 	}
 };
 
-resource 'DITL' (301, purgeable) {
-	{	/* array DITLarray: 4 elements */
+resource 'STR#' (150, "App Balloon Help") {
+	{	/* array StringArray: 1 elements */
 		/* [1] */
-		{18, 319, 344, 335},
-		Control {
-			enabled,
-			300
-		},
+		"Iconographer “ú–{Œê”Å\n\n‚±‚ÌƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚Åƒtƒ@ƒCƒ‹‚âƒtƒHƒ‹ƒ_‚ÌƒAƒCƒRƒ“‚ğ•ÒW‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B•ÒW‚·‚éƒAƒCƒRƒ“‚ÌŠÜ"
+		"‚Ü‚ê‚½ƒtƒ@ƒCƒ‹‚ğ‚±‚ÌƒAƒCƒRƒ“‚Éƒhƒ‰ƒbƒOƒAƒ“ƒhƒhƒƒbƒv‚µ‚Ä‰º‚³‚¢B"
+	}
+};
+
+resource 'STR#' (151, "Apple Menu Balloon Help") {
+	{	/* array StringArray: 4 elements */
+		/* [1] */
+		"‚±‚Ìƒo[ƒWƒ‡ƒ“‚ÌgIconographerh‚Ìî•ñ‚ğ•\¦‚µ‚Ü‚·B",
 		/* [2] */
-		{-1, -1, 20, 335},
-		Control {
-			enabled,
-			301
-		},
+		"‚±‚Ìƒo[ƒWƒ‡ƒ“‚ÌgIconographerh‚Ìî•ñ‚ğ•\¦‚µ‚Ü‚·B\n\nŒ»İAî•ñƒ{ƒbƒNƒX‚ğ•\¦‚Å‚«‚È‚¢‚Ì‚Å—˜—po—ˆ‚Ü‚¹‚ñB",
 		/* [3] */
-		{20, 0, 359, 320},
-		Control {
-			enabled,
-			302
-		},
+		"gIconographerh‚Ì“o˜^‚ªo—ˆ‚Ü‚·B\n“o˜^‚ğÏ‚Ü‚¹‚é‚ÆƒVƒFƒAƒEƒFƒA—¿‹àx•¥‚¢Ã‘£ƒƒbƒZ[ƒW‚Ío‚È‚­‚È‚è‚Ü‚·B",
 		/* [4] */
-		{2, 3, 18, 19},
-		Control {
-			enabled,
-			303
-		}
+		"gIconographerh‚Ì“o˜^‚ªo—ˆ‚Ü‚·B\n“o˜^‚ğÏ‚Ü‚¹‚é‚ÆƒVƒFƒAƒEƒFƒA—¿‹àx•¥‚¢Ã‘£ƒƒbƒZ[ƒW‚Ío‚È‚­‚È‚è‚Ü‚·B\n\nŒ»İA“o˜^ƒ_"
+		"ƒCƒAƒƒOƒ{ƒbƒNƒX‚ğ•\¦‚Å‚«‚È‚¢‚Ì‚Å—˜—po—ˆ‚Ü‚¹‚ñB"
 	}
 };
 
-resource 'DITL' (300, purgeable) {
-	{	/* array DITLarray: 2 elements */
+resource 'STR#' (161, "Registration Balloon Help") {
+	{	/* array StringArray: 6 elements */
 		/* [1] */
-		{28, 8, 41, 342},
-		Control {
-			enabled,
-			310
-		},
+		"•K—v‚Èî•ñ‚ğ“ü—Í‚µ‚½‚ç‚±‚Ìƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚Ä‰º‚³‚¢B“o˜^“à—e‚ÉŠÔˆá‚¢‚ª‚È‚¯‚ê‚ÎgIconographerh‚Ì“o˜^‚ÍŠ®—¹‚µ‚Ü‚·B",
 		/* [2] */
-		{4, 8, 21, 341},
-		StaticText {
-			disabled,
-			""
-		}
-	}
-};
-
-resource 'DITL' (128, "About Box") {
-	{	/* array DITLarray: 6 elements */
-		/* [1] */
-		{44, 6, 58, 98},
-		UserItem {
-			enabled
-		},
-		/* [2] */
-		{60, 5, 72, 103},
-		UserItem {
-			enabled
-		},
+		"‚±‚Ìƒ{ƒ^ƒ“‚Å“o˜^‚Ì’†~‚ğ‚µ‚Ü‚·B",
 		/* [3] */
-		{0, 0, 219, 324},
-		UserItem {
-			enabled
-		},
+		"‚±‚±‚ğƒNƒŠƒbƒN‚·‚é‚Æg“o˜^hƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ª‹N“®‚µ‚Ü‚·B•K—v‚È“à—e‚ğ“ü—Í‚µ‚ÄgKagih‚É‘—M‚µ‚Ä“o˜^‚ğŠ®—¹‚·‚ê‚ÎgIconog"
+		"rapherh‚©‚ç‚ÌƒVƒFƒAƒEƒFƒA“o˜^Ã‘£‚ÌƒƒbƒZ[ƒW‚Í•\¦‚³‚ê‚È‚­‚È‚è‚Ü‚·B",
 		/* [4] */
-		{176, 2, 188, 110},
-		UserItem {
-			disabled
-		},
+		"‚ ‚È‚½‚Ì–¼‘O‚ğ‚±‚±‚É“ü—Í‚µ‚Ä‰º‚³‚¢B“o˜^”Ô†‚Æˆê‚Éó‚¯æ‚Á‚½“o˜^Ò–¼‚ğ³Šm‚É“ü—Í‚µ‚Ä‰º‚³‚¢B",
 		/* [5] */
-		{190, 2, 202, 110},
-		UserItem {
-			disabled
-		},
+		"‚ ‚È‚½‚Ì‰ïĞ–¼‚ğ“ü—Í‚·‚éê‡‚Í‚±‚±‚É“ü—Í‚µ‚Ä‰º‚³‚¢B",
 		/* [6] */
-		{204, 2, 216, 110},
-		UserItem {
-			disabled
-		}
+		"‚ ‚È‚½‚Ìó‚¯æ‚Á‚½“o˜^”Ô†‚ğ‚±‚±‚É“ü—Í‚µ‚Ä‰º‚³‚¢B"
 	}
 };
 
-resource 'DITL' (129, "Registration") {
-	{	/* array DITLarray: 9 elements */
+resource 'STR#' (160, "About Balloon Help") {
+	{	/* array StringArray: 3 elements */
 		/* [1] */
-		{102, 270, 122, 338},
-		Button {
-			enabled,
-			"“o˜^"
-		},
+		"‚±‚±‚ğƒNƒŠƒbƒN‚·‚é‚ÆìÒ‚É“dqƒ[ƒ‹‚ğ‘—M‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B(ƒCƒ“ƒ^[ƒlƒbƒgİ’è‹@”\Šg’£‚ªƒCƒ“ƒXƒg[ƒ‹‚³‚ê‚Ä‚¢‚é•K—v‚ª"
+		"‚ ‚è‚Ü‚·B)",
 		/* [2] */
-		{102, 180, 121, 254},
-		Button {
-			enabled,
-			"ƒLƒƒƒ“ƒZƒ‹"
-		},
+		"‚±‚±‚ğƒNƒŠƒbƒN‚·‚é‚Æ Mscape Software ‚Ìƒz[ƒ€ƒy[ƒW‚És‚­‚±‚Æ‚ªo—ˆ‚Ü‚·B(ƒCƒ“ƒ^[ƒlƒbƒgİ’è‹@”\Šg’£‚ªƒCƒ“ƒXƒg[ƒ‹‚³‚ê‚Ä"
+		"‚¢‚é•K—v‚ª‚ ‚è‚Ü‚·B)",
 		/* [3] */
-		{102, 7, 122, 168},
-		Button {
-			enabled,
-			"“o˜^ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‹N“®"
-		},
+		"‚à‚µA“o˜^‚ªŠ®—¹‚µ‚Ä‚¢‚½‚çA“o˜^‚Ç‚¤‚à‚ ‚è‚ª‚Æ‚¤I‚à‚µ“o˜^‚ª‚Ü‚¾‚È‚çA“o˜^‚ğŒäŒŸ“¢‰º‚³‚¢B"
+	}
+};
+
+resource 'STR#' (153, "Edit Balloon Help") {
+	{	/* array StringArray: 22 elements */
+		/* [1] */
+		"g•ÒWhƒƒjƒ…[\n\n‚±‚Ìƒƒjƒ…[‚Íæ‚èÁ‚µA‚â‚è’¼‚µAƒJƒbƒgAƒy[ƒXƒgAgIconographerh‚ÌŠeíİ’è‚È‚Ç‚Ì‘€ì‚ğs‚¤‚½‚ß‚Ég"
+		"—p‚µ‚Ü‚·B",
+		/* [2] */
+		"g•ÒWhƒƒjƒ…[\n\n‚±‚Ìƒƒjƒ…[‚Íæ‚èÁ‚µA‚â‚è’¼‚µAƒJƒbƒgAƒy[ƒXƒgAgIconographerh‚ÌŠeíİ’è‚È‚Ç‚Ì‘€ì‚ğs‚¤‚½‚ß‚Ég"
+		"—p‚µ‚Ü‚·B\n\nÅ‘O–Ê‚É‚ ‚éƒEƒCƒ“ƒhƒE‚ª‚±‚ê‚ç‚Ì‘€ì‚ğó‚¯•t‚¯‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
+		/* [3] */
+		"’¼‘O‚És‚È‚Á‚½‘€ì‚ğŒ³‚É–ß‚µ‚Ü‚·B",
 		/* [4] */
-		{12, 136, 28, 336},
-		EditText {
-			enabled,
-			""
-		},
+		"’¼‘O‚És‚È‚Á‚½‘€ì‚ğŒ³‚É–ß‚µ‚Ü‚·B\n\n‚·‚×‚Ä‚Ì‘€ì‚ªŒ³‚É–ß‚Á‚Ä‚¢‚é‚©AÅŒã‚És‚È‚Á‚½‘€ì‚ªŒ³‚É–ß‚¹‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
 		/* [5] */
-		{40, 136, 56, 336},
-		EditText {
-			enabled,
-			""
-		},
+		"Œ³‚É–ß‚µ‚½‘€ì‚ğ‚à‚¤ˆê“x‚â‚è’¼‚µ‚Ü‚·B",
 		/* [6] */
-		{68, 136, 84, 336},
-		EditText {
-			enabled,
-			""
-		},
+		"Œ³‚É–ß‚µ‚½‘€ì‚ğ‚à‚¤ˆê“x‚â‚è’¼‚µ‚Ü‚·B\n\n‘€ì‚ª‚â‚è’¼‚¹‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
 		/* [7] */
-		{12, 8, 28, 131},
-		StaticText {
-			disabled,
-			"“o˜^Ò–¼F"
-		},
+		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚ğ“à—e‚ğíœ‚µ‚ÄAƒNƒŠƒbƒvƒ{[ƒh“]‘—‚µ‚Ü‚·B",
 		/* [8] */
-		{40, 8, 56, 131},
-		StaticText {
-			disabled,
-			"Š@@‘®F"
-		},
+		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚ğ“à—e‚ğíœ‚µ‚ÄAƒNƒŠƒbƒvƒ{[ƒh“]‘—‚µ‚Ü‚·B\n\n‰½‚à‘I‘ğ‚³‚ê‚Ä‚¢‚È‚¢‚©A•ÒWƒEƒCƒ“ƒhƒE‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½‚ß‘I"
+		"‘ğo—ˆ‚Ü‚¹‚ñB",
 		/* [9] */
-		{68, 8, 84, 131},
-		StaticText {
-			disabled,
-			"“o˜^”Ô†F"
-		}
-	}
-};
-
-resource 'DITL' (3002, purgeable) {
-	{	/* array DITLarray: 13 elements */
-		/* [1] */
-		{161, 277, 181, 357},
-		Button {
-			enabled,
-			"•Û‘¶"
-		},
-		/* [2] */
-		{130, 277, 150, 357},
-		Button {
-			enabled,
-			"ƒLƒƒƒ“ƒZƒ‹"
-		},
-		/* [3] */
-		{0, 0, 0, 0},
-		HelpItem {
-			disabled,
-			HMScanhdlg {
-				-6043
-			}
-		},
-		/* [4] */
-		{8, 267, 24, 363},
-		UserItem {
-			enabled
-		},
-		/* [5] */
-		{32, 277, 52, 357},
-		Button {
-			enabled,
-			"æ‚èo‚µ"
-		},
-		/* [6] */
-		{60, 277, 80, 357},
-		Button {
-			enabled,
-			"ƒfƒXƒNƒgƒbƒv"
-		},
-		/* [7] */
-		{29, 12, 127, 261},
-		UserItem {
-			enabled
-		},
-		/* [8] */
-		{6, 12, 25, 261},
-		UserItem {
-			enabled
-		},
-		/* [9] */
-		{119, 275, 120, 359},
-		Picture {
-			disabled,
-			11
-		},
+		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚Ì“à—e‚ğˆê“I‚ÉƒNƒŠƒbƒvƒ{[ƒh‚É’u‚­‚±‚Æ‚ªo—ˆ‚Ü‚·B",
 		/* [10] */
-		{157, 15, 173, 259},
-		EditText {
-			enabled,
-			""
-		},
+		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚Ì“à—e‚ğˆê“I‚ÉƒNƒŠƒbƒvƒ{[ƒh‚É’u‚­‚±‚Æ‚ªo—ˆ‚Ü‚·B\n\n‰½‚à‘I‘ğ‚³‚ê‚Ä‚¢‚È‚¢‚©A•ÒWƒEƒCƒ“ƒhƒE‚ªŠJ‚©‚ê‚Ä‚¢‚È"
+		"‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
 		/* [11] */
-		{136, 15, 152, 227},
-		StaticText {
-			disabled,
-			"•Û‘¶‚·‚éƒAƒCƒRƒ“–¼F"
-		},
+		"ƒNƒŠƒbƒvƒ{[ƒh‚É‚ ‚é“à—e‚ğŒ»İg—p’†‚Ì•ÒWƒEƒCƒ“ƒhƒE‚É“Ç‚İ‚İ‚Ü‚·B",
 		/* [12] */
-		{88, 277, 108, 357},
-		UserItem {
-			disabled
-		},
+		"ƒNƒŠƒbƒvƒ{[ƒh‚É‚ ‚é“à—e‚ğŒ»İg—p’†‚Ì•ÒWƒEƒCƒ“ƒhƒE‚É“Ç‚İ‚İ‚Ü‚·B\n\nƒNƒŠƒbƒvƒ{[ƒh‚É‰æ‘œƒf[ƒ^‚ªŠÜ‚Ü‚ê‚Ä‚¢‚È‚¢‚©A•ÒW"
+		"ƒEƒCƒ“ƒhƒE‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
 		/* [13] */
-		{185, 11, 205, 261},
-		Control {
-			enabled,
-			2001
-		}
+		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚É‚ ‚é“à—e‚ğíœ‚µ‚Ü‚·B",
+		/* [14] */
+		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚É‚ ‚é“à—e‚ğíœ‚µ‚Ü‚·B\n\n‰½‚à‘I‘ğ‚³‚ê‚Ä‚¢‚È‚¢‚©A•ÒWƒEƒCƒ“ƒhƒE‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
+		/* [15] */
+		"‚¢‚ë‚¢‚ë‚È‘€ì‚ğ‘I‘ğ”ÍˆÍ‚É‘Î‚µ‚Äs‚¢‚Ü‚·B",
+		/* [16] */
+		"‚¢‚ë‚¢‚ë‚È‘€ì‚ğ‘I‘ğ”ÍˆÍ‚É‘Î‚µ‚Äs‚¢‚Ü‚·B\n\nƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
+		/* [17] */
+		"‰æ‘œ‚É‚½‚¢‚µ‚Ä‚¢‚ë‚¢‚ë‚È‘€ì‚ğÀs‚µ‚Ü‚·B",
+		/* [18] */
+		"‰æ‘œ‚É‚½‚¢‚µ‚Ä‚¢‚ë‚¢‚ë‚È‘€ì‚ğÀs‚µ‚Ü‚·B\n\nƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
+		/* [19] */
+		"ƒAƒCƒRƒ“‚ÌF’²®‚ğ‚µ‚Ü‚·B",
+		/* [20] */
+		"ƒAƒCƒRƒ“‚ÌF’²®‚ğ‚µ‚Ü‚·B\n\nƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
+		/* [21] */
+		"gIconographerh‚Ì‘€ì‚ğŠeíƒJƒXƒ^ƒ}ƒCƒY‚·‚éƒ_ƒCƒAƒƒOƒ{ƒbƒNƒX‚ğŠJ‚­‚Ì‚Ég—p‚µ‚Ü‚·B",
+		/* [22] */
+		"gIconographerh‚Ì‘€ì‚ğŠeíƒJƒXƒ^ƒ}ƒCƒY‚·‚éƒ_ƒCƒAƒƒOƒ{ƒbƒNƒX‚ğŠJ‚­‚Ì‚Ég—p‚µ‚Ü‚·B\n\nŒ»İA‰Šúİ’èƒtƒ@ƒCƒ‹‚ğ•ÒW‚Å‚«‚È"
+		"‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB"
 	}
 };
 
-resource 'DITL' (3000, "Basic Alert") {
-	{	/* array DITLarray: 2 elements */
+resource 'STR#' (154, "Select Balloon Help") {
+	{	/* array StringArray: 8 elements */
 		/* [1] */
-		{67, 311, 87, 369},
-		Button {
-			enabled,
-			"OK"
-		},
+		"ƒAƒCƒRƒ“‚·‚×‚Ä‚ğ‘I‘ğ‚µ‚Ü‚·B",
 		/* [2] */
-		{8, 58, 60, 369},
-		StaticText {
-			disabled,
-			"^0 ^1B"
-		}
-	}
-};
-
-resource 'DITL' (2000, purgeable) {
-	{	/* array DITLarray: 1 elements */
-		/* [1] */
-		{6, 8, 26, 258},
-		Control {
-			enabled,
-			2000
-		}
-	}
-};
-
-resource 'DITL' (270, purgeable) {
-	{	/* array DITLarray: 10 elements */
-		/* [1] */
-		{22, 73, 158, 317},
-		Control {
-			enabled,
-			270
-		},
-		/* [2] */
-		{108, 100, 128, 308},
-		Control {
-			enabled,
-			273
-		},
+		"ƒAƒCƒRƒ“‚·‚×‚Ä‚ğ‘I‘ğ‚µ‚Ü‚·B\n\n‘I‘ğ”ÍˆÍ‚ğì¬‚Å‚«‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹‚ñB",
 		/* [3] */
-		{34, 100, 54, 308},
-		Control {
-			enabled,
-			271
-		},
+		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚ÌF‚Æ“¯‚¶F‚ğ‘I‘ğ‚µ‚Ü‚·B",
 		/* [4] */
-		{71, 100, 91, 308},
-		Control {
-			enabled,
-			272
-		},
+		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚ÌF‚Æ“¯‚¶F‚ğ‘I‘ğ‚µ‚Ü‚·B\n\n—˜—p‰Â”\‚È‘I‘ğ”ÍˆÍ‚ª‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹‚ñB",
 		/* [5] */
-		{34, 84, 47, 102},
-		Control {
-			enabled,
-			274
-		},
+		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚ğ‰½‚à‘I‘ğ‚µ‚Ä‚¢‚È‚¢ó‘Ô‚É‚µ‚Ü‚·B",
 		/* [6] */
-		{71, 84, 82, 102},
-		Control {
-			enabled,
-			275
-		},
+		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚ğ‰½‚à‘I‘ğ‚µ‚Ä‚¢‚È‚¢ó‘Ô‚É‚µ‚Ü‚·B\n\n—˜—p‰Â”\‚È‘I‘ğ”ÍˆÍ‚ª‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹‚ñB",
 		/* [7] */
-		{108, 84, 119, 102},
-		Control {
-			enabled,
-			276
-		},
+		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚ğ”½“]‚µ‚Ü‚·B",
 		/* [8] */
-		{54, 111, 62, 298},
-		Control {
-			enabled,
-			277
-		},
+		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚ğ”½“]‚µ‚Ü‚·B\n\n—˜—p‰Â”\‚È‘I‘ğ”ÍˆÍ‚ª‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹‚ñB"
+	}
+};
+
+resource 'STR#' (155, "Transform Balloon Help") {
+	{	/* array StringArray: 5 elements */
+		/* [1] */
+		"Œ»İ‚Ì‘I‘ğ”ÍˆÍi‚Ü‚½‚Í‘I‘ğ”ÍˆÍ‚ª‚È‚¢ê‡‚É‚Í‰æ‘œ‘S‘Ìj‚ğ 90‹Œv‰ñ‚è‚É‰ñ“]‚µ‚Ü‚·B",
+		/* [2] */
+		"Œ»İ‚Ì‘I‘ğ”ÍˆÍi‚Ü‚½‚Í‘I‘ğ”ÍˆÍ‚ª‚È‚¢ê‡‚É‚Í‰æ‘œ‘S‘Ìj‚ğ 90‹”½Œv‰ñ‚è‚É‰ñ“]‚µ‚Ü‚·B",
+		/* [3] */
+		"Œ»İ‚Ì‘I‘ğ”ÍˆÍi‚Ü‚½‚Í‘I‘ğ”ÍˆÍ‚ª‚È‚¢ê‡‚É‚Í‰æ‘œ‘S‘Ìj‚ğ‚’¼•ûŒü‚É”½“]‚µ‚Ü‚·B",
+		/* [4] */
+		"Œ»İ‚Ì‘I‘ğ”ÍˆÍi‚Ü‚½‚Í‘I‘ğ”ÍˆÍ‚ª‚È‚¢ê‡‚É‚Í‰æ‘œ‘S‘Ìj‚ğ…•½•ûŒü‚É”½“]‚µ‚Ü‚·B",
+		/* [5] */
+		"Œ»İ‚Ì‘I‘ğ”ÍˆÍi‚Ü‚½‚Í‘I‘ğ”ÍˆÍ‚ª‚È‚¢ê‡‚É‚Í‰æ‘œ‘S‘Ìj‚ÌF‚ÌŠK’²‚ğ”½“]‚µ‚Ü‚·B"
+	}
+};
+
+resource 'STR#' (156, "Paste Balloon Help") {
+	{	/* array StringArray: 6 elements */
+		/* [1] */
+		"ƒNƒŠƒbƒvƒ{[ƒh‚Ì“à—e‚ğƒtƒ[ƒgó‘Ô‚Ì‘I‘ğ”ÍˆÍ‚É“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
+		/* [2] */
+		"ƒNƒŠƒbƒvƒ{[ƒh‚Ì“à—e‚ğŒ»İ•ÒW’†‚ÌƒAƒCƒRƒ“‚ÌƒAƒCƒRƒ“‰æ‘œ‚Æƒ}ƒXƒN‰æ‘œ‚É‚í‚¯‚Ä“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
+		/* [3] */
+		"ƒNƒŠƒbƒvƒ{[ƒh‚Ì“à—e‚ğŒ»İ‚Ì‘I‘ğ”ÍˆÍ‚Ì‘å‚«‚³‚É‡‚í‚¹‚Ä“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
+		/* [4] */
+		"ƒNƒŠƒbƒvƒ{[ƒh‚Ì“à—e‚ğŒ»İ‚Ì‚Ì‘I‘ğ”ÍˆÍ‚Ì‘å‚«‚³‚É‡‚í‚¹‚Ä“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B\n\n‰½‚à‘I‘ğ”ÍˆÍ‚ª‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹‚ñB",
+		/* [5] */
+		"Œ»İ•ÒW’†‚ÌƒAƒCƒRƒ“‚ÌƒAƒCƒRƒ“ˆê——‚·‚×‚Ä‚É“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
+		/* [6] */
+		"Œ»İ•ÒW’†‚ÌƒAƒCƒRƒ“‚ÌƒAƒCƒRƒ“ˆê——‚·‚×‚Ä‚É“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B\n\nƒNƒŠƒbƒvƒ{[ƒh‚Ì“à—e‚ÉƒAƒCƒRƒ“ˆê——‚ªŠÜ‚Ü‚ê‚Ä‚¢‚È‚¢‚Ì"
+		"‚Å‘I‘ğo—ˆ‚Ü‚¹‚ñB"
+	}
+};
+
+resource 'STR#' (157, "Copy Balloon Help") {
+	{	/* array StringArray: 6 elements */
+		/* [1] */
+		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚Ì‰æ‘œ‚ğƒNƒŠƒbƒvƒ{[ƒh‚É“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
+		/* [2] */
+		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚Ì‰æ‘œ‚ğƒNƒŠƒbƒvƒ{[ƒh‚É“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B\n\n‰½‚à‘I‘ğ‚³‚ê‚Ä‚¢‚È‚¢‚©A•ÒWƒEƒCƒ“ƒhƒE‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½"
+		"‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
+		/* [3] */
+		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚ÌƒAƒCƒRƒ“‰æ‘œ‚Æƒ}ƒXƒN‰æ‘œ‚Ì—¼•û‚ğƒNƒŠƒbƒvƒ{[ƒh‚É“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
+		/* [4] */
+		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚ÌƒAƒCƒRƒ“‰æ‘œ‚Æƒ}ƒXƒN‰æ‘œ‚Ì—¼•û‚ğƒNƒŠƒbƒvƒ{[ƒh‚É“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B\n\n‰½‚àƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½"
+		"‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
+		/* [5] */
+		"•ÒW’†‚ÌƒAƒCƒRƒ“‚Ì‚·‚×‚Ä‚ÌF[“xAƒTƒCƒY‚ğƒNƒŠƒbƒvƒ{[ƒh‚É“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
+		/* [6] */
+		"•ÒW’†‚ÌƒAƒCƒRƒ“‚Ì‚·‚×‚Ä‚ÌF[“xAƒTƒCƒY‚ğƒNƒŠƒbƒvƒ{[ƒh‚É“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B\n\n‰½‚àƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½‚ß‘I‘ğ"
+		"o—ˆ‚Ü‚¹‚ñB"
+	}
+};
+
+resource 'STR#' (159, "Colors Balloon Help") {
+	{	/* array StringArray: 2 elements */
+		/* [1] */
+		"Macintosh ‚Ì•W€F‚ğg—p‚µ‚Ä‚¢‚Ü‚·Bƒ‚ƒjƒ^‚ÌF”‚ª16F‚Éİ’è‚³‚ê‚Ä‚¢‚éê‡A‚±‚ÌF‚Ì‚İ‚ª•\¦‚³‚ê‚Ü‚·B",
+		/* [2] */
+		"Windows ‚Ì•W€F‚ğg—p‚µ‚Ä‚¢‚Ü‚·BPC‚Ìƒ‚ƒjƒ^‚ÌF”‚ª16F‚Éİ’è‚³‚ê‚Ä‚¢‚éê‡A‚±‚ÌF‚Ì‚İ‚ª•\¦‚³‚ê‚Ü‚·B"
+	}
+};
+
+resource 'STR#' (152, "File Balloon Help") {
+	{	/* array StringArray: 18 elements */
+		/* [1] */
+		"gƒtƒ@ƒCƒ‹hƒƒjƒ…[\n\n‚±‚Ìƒƒjƒ…[‚Íƒtƒ@ƒCƒ‹‚âƒtƒHƒ‹ƒ_‚Ì‘€ì‚Ég—p‚µ‚Ü‚·B",
+		/* [2] */
+		"gƒtƒ@ƒCƒ‹hƒƒjƒ…[\n\n‚±‚Ìƒƒjƒ…[‚Íƒtƒ@ƒCƒ‹‚âƒtƒHƒ‹ƒ_‚Ì‘€ì‚Ég—p‚µ‚Ü‚·B\n\n—˜—p‰Â”‚Èƒtƒ@ƒCƒ‹‘€ì‚ª‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹"
+		"‚ñB",
+		/* [3] */
+		"‹ó”’‚ÌV‹KƒAƒCƒRƒ“•ÒWƒEƒCƒ“ƒhƒE‚ğì¬‚µ‚Ü‚·B",
+		/* [4] */
+		"‹ó”’‚ÌV‹KƒAƒCƒRƒ“•ÒWƒEƒCƒ“ƒhƒE‚ğì¬‚µ‚Ü‚·B\n\n—˜—p‰Â”\‚È•ÒWƒEƒCƒ“ƒhƒE‚ğì¬o—ˆ‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹‚ñB",
+		/* [5] */
+		"V‹K•ÒWƒEƒCƒ“ƒhƒE‚ÅƒAƒCƒeƒ€ƒAƒCƒRƒ“‚ğŠJ‚«‚Ü‚·BˆÙ‚È‚éƒAƒCƒRƒ“Œ`®(Mac OSAWindowsAMac OS X Server)‚ğ‘I‘ğ‚Å‚«‚Ü‚·B",
+		/* [6] */
+		"V‹K•ÒWƒEƒCƒ“ƒhƒE‚ÅƒAƒCƒeƒ€ƒAƒCƒRƒ“‚ğŠJ‚«‚Ü‚·BˆÙ‚È‚éƒAƒCƒRƒ“Œ`®(Mac OSAWindowsAMac OS X Server)‚ğ‘I‘ğ‚Å‚«‚Ü‚·B\n\nƒA"
+		"ƒCƒRƒ“‚ğ‚±‚êˆÈãŠJ‚­‚±‚Æ‚ªo—ˆ‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹‚ñB",
+		/* [7] */
+		"Å‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚ğ•Â‚¶‚Ü‚·B",
+		/* [8] */
+		"Å‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚ğ•Â‚¶‚Ü‚·B\n\nƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹‚ñB",
 		/* [9] */
-		{91, 111, 99, 298},
-		Control {
-			enabled,
-			278
-		},
+		"Å‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚ğ•Û‘¶‚µ‚Ü‚·B",
 		/* [10] */
-		{128, 111, 136, 298},
-		Control {
-			enabled,
-			279
-		}
+		"Å‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚ğ•Û‘¶‚µ‚Ü‚·B\n\nƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚©A•Û‘¶‚Ì•K—v‚ª‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
+		/* [11] */
+		"Å‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚ğ•Ê–¼‚Å•Û‘¶‚µ‚Ü‚·B",
+		/* [12] */
+		"Å‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚ğ•Ê–¼‚Å•Û‘¶‚µ‚Ü‚·B\n\nƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹‚ñB",
+		/* [13] */
+		"Å‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚ğ•Ê‚Ìƒtƒ@ƒCƒ‹‚É‘}“ü‚µ‚Ü‚·B (ƒAƒCƒRƒ“ˆÈŠO‚Ì“à—e‚Ì•ÏX‚Í‚µ‚Ü‚¹‚ñ)",
+		/* [14] */
+		"Å‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚ğ•Ê‚Ìƒtƒ@ƒCƒ‹‚É‘}“ü‚µ‚Ü‚·B (ƒAƒCƒRƒ“ˆÈŠO‚Ì“à—e‚É•ÏX‚Í‚µ‚Ü‚¹‚ñ)\n\nƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚Ì‚Å‘I‘ğ"
+		"o—ˆ‚Ü‚¹‚ñB",
+		/* [15] */
+		"Å‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚ğÅŒã‚É•Û‘¶‚µ‚½ó‘Ô‚É–ß‚µ‚Ü‚·B",
+		/* [16] */
+		"Å‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚ğÅŒã‚É•Û‘¶‚µ‚½ó‘Ô‚É–ß‚µ‚Ü‚·B\n\nƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚©•Û‘¶‚³‚ê‚Ä‚¢‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹‚ñB",
+		/* [17] */
+		"gIconographerh‚ğI—¹‚µ‚Ü‚·BI—¹‚·‚é‘O‚É•Û‘¶‚³‚ê‚Ä‚¢‚È‚¢ƒAƒCƒRƒ“‚ğ•Û‘¶‚·‚é‚©‚Ç‚¤‚©Šm”F‚µ‚Ü‚·B",
+		/* [18] */
+		"gIconographerh‚ğI—¹‚µ‚Ü‚·BI—¹‚·‚é‘O‚É•Û‘¶‚³‚ê‚Ä‚¢‚È‚¢ƒAƒCƒRƒ“‚ğ•Û‘¶‚·‚é‚©‚Ç‚¤‚©Šm”F‚µ‚Ü‚·B\n\nŒ»İAgIconographerh"
+		"‚ğI—¹‚Å‚«‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹‚ñB"
 	}
 };
 
-resource 'DITL' (280, purgeable) {
-	{	/* array DITLarray: 1 elements */
+resource 'STR#' (158, "- Icon Balloon Help") {
+	{	/* array StringArray: 15 elements */
 		/* [1] */
-		{22, 73, 158, 317},
-		Control {
-			enabled,
-			280
-		}
-	}
-};
-
-resource 'DITL' (290, purgeable) {
-	{	/* array DITLarray: 1 elements */
-		/* [1] */
-		{22, 73, 158, 317},
-		Control {
-			enabled,
-			290
-		}
-	}
-};
-
-resource 'DITL' (260, purgeable) {
-	{	/* array DITLarray: 10 elements */
-		/* [1] */
-		{22, 73, 158, 317},
-		Control {
-			enabled,
-			260
-		},
+		"gƒAƒCƒRƒ“hƒƒjƒ…[\n\n‚±‚Ìƒƒjƒ…[‚ÍÅ‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚ÌŠeí‘®«‚ğ•ÏX‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B",
 		/* [2] */
-		{108, 100, 126, 308},
-		Control {
-			enabled,
-			263
-		},
+		"gƒAƒCƒRƒ“hƒƒjƒ…[\n\n‚±‚Ìƒƒjƒ…[‚ÍÅ‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚ÌŠeí‘®«‚ğ•ÏX‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B\n\n•ÒWƒEƒCƒ“ƒhƒE‚ªŠJ‚©‚ê‚Ä"
+		"‚¢‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
 		/* [3] */
-		{34, 100, 52, 308},
-		Control {
-			enabled,
-			261
-		},
+		"‚±‚Ìƒƒjƒ…[‚ÍÅ‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“•ÒWƒEƒCƒ“ƒhƒE‚ÌƒTƒCƒY‚ğŠg‘å‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B",
 		/* [4] */
-		{71, 100, 89, 308},
-		Control {
-			enabled,
-			262
-		},
+		"‚±‚Ìƒƒjƒ…[‚ÍÅ‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“•ÒWƒEƒCƒ“ƒhƒE‚ÌƒTƒCƒY‚ğŠg‘å‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B\n\n•ÒW’†‚ÌƒAƒCƒRƒ“‚Í‚·‚Å‚ÉÅ‘åƒTƒCƒY"
+		"‚Ü‚ÅŠg‘å‚³‚ê‚Ä‚¢‚é‚©A‚Ü‚½‚ÍƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
 		/* [5] */
-		{108, 84, 119, 102},
-		Control {
-			enabled,
-			266
-		},
+		"‚±‚Ìƒƒjƒ…[‚ÍÅ‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“•ÒWƒEƒCƒ“ƒhƒE‚ÌƒTƒCƒY‚ğk¬‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B",
 		/* [6] */
-		{34, 84, 45, 102},
-		Control {
-			enabled,
-			264
-		},
+		"‚±‚Ìƒƒjƒ…[‚ÍÅ‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“•ÒWƒEƒCƒ“ƒhƒE‚ÌƒTƒCƒY‚ğk¬‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B\n\n•ÒW’†‚ÌƒAƒCƒRƒ“‚Í‚·‚Å‚ÉÅ¬ƒTƒCƒY"
+		"‚Ü‚Åk¬‚³‚ê‚Ä‚¢‚é‚©A‚Ü‚½‚ÍƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
 		/* [7] */
-		{71, 84, 82, 102},
-		Control {
-			enabled,
-			265
-		},
+		"Œ»İ•ÒW’†‚ÌƒAƒCƒRƒ“‚Åg—p‚³‚ê‚Ä‚¢‚éƒJƒ‰[ƒpƒŒƒbƒg‚ğ•ÏX‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B\n\n•ÒW’†‚ÌƒAƒCƒRƒ“‚ÌF[“x‚ª‘¼‚ÌF[“x‚ğƒT"
+		"ƒ|[ƒg‚µ‚Ä‚¢‚È‚¢‚©AƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
 		/* [8] */
-		{52, 109, 64, 300},
-		Control {
-			enabled,
-			267
-		},
+		"Œ»İ‚ÌƒŠƒXƒg‚ÉƒAƒCƒRƒ“‚ğ‘}“ü‚·‚é‚½‚ß‚Ìƒ_ƒCƒAƒƒO‚ğ•\¦‚µ‚Ü‚·B",
 		/* [9] */
-		{89, 109, 101, 300},
-		Control {
-			enabled,
-			268
-		},
+		"Œ»İ‚ÌƒŠƒXƒg‚ÉƒAƒCƒRƒ“‚ğ‘}“ü‚·‚é‚½‚ß‚Ìƒ_ƒCƒAƒƒO‚ğ•\¦‚µ‚Ü‚·B\n\nƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB (Å‘O–Ê‚ÌƒE"
+		"ƒCƒ“ƒhƒE‚ªƒAƒCƒRƒ“ƒuƒ‰ƒEƒU‚Å‚ ‚é•K—v‚ª‚ ‚è‚Ü‚·)",
 		/* [10] */
-		{126, 109, 138, 300},
-		Control {
-			enabled,
-			269
-		}
+		"‚±‚±‚ğ‘I‘ğ‚µ‚Ä•\¦‚³‚ê‚éƒ_ƒCƒAƒƒO‚ÅŒ»İ•ÒW’†‚ÌƒAƒCƒRƒ“‚Ì–¼Ì‚â‘®«AID “™‚ğ•ÏX‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
+		/* [11] */
+		"‚±‚±‚ğ‘I‘ğ‚µ‚Ä•\¦‚³‚ê‚éƒ_ƒCƒAƒƒO‚ÅŒ»İ•ÒW’†‚ÌƒAƒCƒRƒ“‚Ì–¼Ì‚â‘®«AID “™‚ğ•ÏX‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B\n\nƒAƒCƒRƒ“‚ªŠJ‚©‚ê"
+		"‚Ä‚¢‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
+		/* [12] */
+		"ƒOƒŠƒbƒh‚Ì•\¦/”ñ•\¦‚ğØ‚è‘Ö‚¦‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B(‚PƒsƒNƒZƒ‹‚²‚Æ‚É”’‚¢×‚¢ƒ‰ƒCƒ“‚Å‹æ•ª‚¯‚µ‚Ä‚¢‚Ü‚·B)",
+		/* [13] */
+		"ƒOƒŠƒbƒh‚Ì•\¦/”ñ•\¦‚ğØ‚è‘Ö‚¦‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B(‚PƒsƒNƒZƒ‹‚²‚Æ‚É”’‚¢×‚¢ƒ‰ƒCƒ“‚Å‹æ•ª‚¯‚µ‚Ä‚¢‚Ü‚·B)\n\nƒAƒCƒRƒ“‚ªŠJ‚©"
+		"‚ê‚Ä‚¢‚È‚¢‚½‚ßg—p‚Å‚«‚Ü‚¹‚ñB",
+		/* [14] */
+		"‰Šúİ’è‚Å‘I‘ğ‚µ‚½ŠO•”ƒGƒfƒBƒ^‚ÖŒ»İ•ÒW’†‚ÌƒAƒCƒRƒ“‚Ì‰æ‘œ‚ğo—Í‚·‚é‚½‚ß‚ÌƒRƒ}ƒ“ƒh‚Å‚·B",
+		/* [15] */
+		"‰Šúİ’è‚Å‘I‘ğ‚µ‚½ŠO•”ƒGƒfƒBƒ^‚ÖŒ»İ•ÒW’†‚ÌƒAƒCƒRƒ“‚Ì‰æ‘œ‚ğo—Í‚·‚é‚½‚ß‚ÌƒRƒ}ƒ“ƒh‚Å‚·B\n\nƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½‚ßg"
+		"—p‚Å‚«‚Ü‚¹‚ñB"
 	}
 };
 
-resource 'DITL' (250, purgeable) {
-	{	/* array DITLarray: 10 elements */
+resource 'STR#' (162, "- Windows Balloon Help") {
+	{	/* array StringArray: 6 elements */
 		/* [1] */
-		{23, 8, 77, 62},
-		Control {
-			enabled,
-			250
-		},
+		"ƒEƒCƒ“ƒhƒEƒƒjƒ…[\n\n‚±‚Ìƒƒjƒ…[‚ÍAIconographer ‚ªƒAƒCƒRƒ“‚ğŠJ‚¢‚½‚Ég—p‚·‚éƒpƒŒƒbƒg‚ğ•\¦/”ñ•\¦‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·"
+		"B",
 		/* [2] */
-		{3, 71, 161, 321},
-		Control {
-			enabled,
-			251
-		},
+		"ƒEƒCƒ“ƒhƒEƒƒjƒ…[\n\n‚±‚Ìƒƒjƒ…[‚ÍAIconographer ‚ªƒAƒCƒRƒ“‚ğŠJ‚¢‚½‚Ég—p‚·‚éƒpƒŒƒbƒg‚ğ•\¦/”ñ•\¦‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·"
+		"B\n\n—˜—p‰Â”\‚ÈƒEƒCƒ“ƒhƒE‚ª‘¶İ‚µ‚È‚¢‚Ì‚Åg—po—ˆ‚Ü‚¹‚ñB",
 		/* [3] */
-		{-1, -1, 11, 10},
-		Control {
-			enabled,
-			252
-		},
+		"ƒc[ƒ‹ƒpƒŒƒbƒg‚Ì•\¦/”ñ•\¦‚ğØ‚è‘Ö‚¦‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B‘€ì‚ğs‚¤‚½‚ß‚Ì•`‰æƒc[ƒ‹‚È‚Ç‚ªŠÜ‚Ü‚ê‚½ƒtƒ[ƒeƒBƒ“ƒOƒEƒCƒ“ƒh"
+		"ƒE‚Å‚·B",
 		/* [4] */
-		{22, 73, 158, 317},
-		Control {
-			enabled,
-			253
-		},
+		"ˆê——ƒpƒŒƒbƒg‚Ì•\¦/”ñ•\¦‚ğØ‚è‘Ö‚¦‚é‚½‚ß‚Ég—p‚µ‚Ü‚·BÄ‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚Ìˆê——(—lX‚ÈƒTƒCƒY‚ÆF[“x)‚Ìƒtƒ[ƒeƒBƒ“ƒO"
+		"ƒEƒCƒ“ƒhƒE‚Å‚·B",
 		/* [5] */
-		{116, 6, 117, 66},
-		Control {
-			enabled,
-			257
-		},
+		"ƒvƒŒƒrƒ…[ƒpƒŒƒbƒg‚Ì•\¦/”ñ•\¦‚ğØ‚è‘Ö‚¦‚é‚½‚ß‚Ég—p‚µ‚Ü‚·BÄ‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚Ì—lX‚ÈƒTƒCƒY‚ÌŠeí”wŒi•t‚«ƒvƒŒƒrƒ…["
+		"‚Ìƒtƒ[ƒeƒBƒ“ƒOƒEƒCƒ“ƒhƒE‚Å‚·B",
 		/* [6] */
-		{120, 20, 155, 62},
-		Control {
-			enabled,
-			259
-		},
+		"ƒJƒ‰[ƒpƒŒƒbƒg‚Ì•\¦/”ñ•\¦‚ğØ‚è‘Ö‚¦‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B—lX‚ÈƒJƒ‰[ƒe[ƒuƒ‹‚Ìƒtƒ[ƒeƒBƒ“ƒOƒEƒCƒ“ƒhƒE‚Å‚·B"
+	}
+};
+
+resource 'STR#' (128, "Default Names") {
+	{	/* array StringArray: 34 elements */
+		/* [1] */
+		"Iconographer “ú–{Œê”Å",
+		/* [2] */
+		"Iconographer ‰Šúİ’è",
+		/* [3] */
+		"OK",
+		/* [4] */
+		"•Û‘¶",
+		/* [5] */
+		"ƒLƒƒƒ“ƒZƒ‹",
+		/* [6] */
+		"•Û‘¶‚µ‚È‚¢",
 		/* [7] */
-		{120, 8, 155, 20},
-		Control {
-			enabled,
-			258
-		},
+		"“o˜^",
 		/* [8] */
-		{84, 6, 85, 66},
-		Control {
-			enabled,
-			254
-		},
+		"‚Ü‚¾‚µ‚È‚¢",
 		/* [9] */
-		{90, 20, 115, 62},
-		Control {
-			enabled,
-			256
-		},
+		"F“o˜^",
 		/* [10] */
-		{90, 8, 115, 20},
-		Control {
-			enabled,
-			255
-		}
+		"http://order.kagi.com/?QEJ",
+		/* [11] */
+		"ƒIƒ“ƒ‰ƒCƒ““o˜^",
+		/* [12] */
+		"“o˜^ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ğ‹N“®",
+		/* [13] */
+		"–¢“o˜^‚Å‚·",
+		/* [14] */
+		"mailto:mihai@mscape.com",
+		/* [15] */
+		"http://www.mscape.com/products/iconographerJ.html",
+		/* [16] */
+		"FŒ©–{‚ğ•\¦‚·‚é",
+		/* [17] */
+		"FŒ©–{‚ğ‰B‚·",
+		/* [18] */
+		"ƒAƒCƒRƒ“ˆê——‚ğ•\¦‚·‚é",
+		/* [19] */
+		"ƒAƒCƒRƒ“ˆê——‚ğ‰B‚·",
+		/* [20] */
+		"ƒvƒŒƒrƒ…[‚ğ•\¦‚·‚é",
+		/* [21] */
+		"ƒvƒŒƒrƒ…[‚ğ‰B‚·",
+		/* [22] */
+		"ƒc[ƒ‹‚ğ•\¦‚·‚é",
+		/* [23] */
+		"ƒc[ƒ‹‚ğ‰B‚·",
+		/* [24] */
+		"Iconographer ƒwƒ‹ƒv",
+		/* [25] */
+		"ìÒ‚É“dqƒ[ƒ‹‚ğ‘—‚é",
+		/* [26] */
+		"Iconographer ƒz[ƒ€ƒy[ƒW",
+		/* [27] */
+		":Iconographer ƒTƒ|[ƒg:Help:toc.html",
+		/* [28] */
+		"•œ‹A",
+		/* [29] */
+		"ƒOƒŠƒbƒh‚ğ•\¦‚·‚é",
+		/* [30] */
+		"ƒOƒŠƒbƒh‚ğ‰B‚·",
+		/* [31] */
+		"ƒAƒCƒRƒ“ˆê——‚É’Ç‰Á",
+		/* [32] */
+		"ƒAƒCƒRƒ“‚ğ‘}“ü",
+		/* [33] */
+		"ƒwƒ‹ƒv‚ğŠJ‚­",
+		/* [34] */
+		"‘±‚¯‚é"
 	}
 };
 
-resource 'DITL' (4000, purgeable) {
-	{	/* array DITLarray: 8 elements */
+resource 'STR#' (130, "Prompts") {
+	{	/* array StringArray: 13 elements */
 		/* [1] */
-		{58, 288, 78, 356},
-		Button {
-			enabled,
-			"OK"
-		},
+		"•ÏX‚Ì‚ ‚Á‚½<app name>‘—Şg<file name>h‚ğ•Â‚¶‚é‘O‚É•Û‘¶‚µ‚Ü‚·‚©H",
 		/* [2] */
-		{58, 208, 78, 272},
-		Button {
-			enabled,
-			"ƒLƒƒƒ“ƒZƒ‹"
-		},
+		"•ÒW‚µ‚½‚¢ƒAƒCƒRƒ“‚Ì‚ ‚éƒtƒ@ƒCƒ‹‚©ƒtƒHƒ‹ƒ_‚ğ‘I‘ğ‚µ‚Ä‰º‚³‚¢B",
 		/* [3] */
-		{58, 70, 78, 150},
-		Button {
-			enabled,
-			"ƒ{ƒ^ƒ“"
-		},
+		"•Û‘¶‚·‚éƒAƒCƒRƒ“‚Ì–¼‘O‚ÆêŠ‚ğw’è‚µ‚Ä‰º‚³‚¢B",
 		/* [4] */
-		{12, 20, 44, 52},
-		Icon {
-			disabled,
-			2
-		},
+		"ƒAƒCƒRƒ“‚ğ’u‚«Š·‚¦‚éƒtƒ@ƒCƒ‹‚©ƒtƒHƒ‹ƒ_‚ğw’è‚µ‚Ä‰º‚³‚¢B",
 		/* [5] */
-		{12, 70, 28, 356},
-		StaticText {
-			disabled,
-			"Static text"
-		},
+		"ƒAƒCƒRƒ“‚ğƒtƒ@ƒCƒ‹‚É‘}“ü",
 		/* [6] */
-		{32, 70, 46, 356},
-		StaticText {
-			disabled,
-			"Static text"
-		},
+		"ƒAƒCƒRƒ“‚ğŠJ‚­",
 		/* [7] */
-		{12, 20, 44, 52},
-		Icon {
-			disabled,
-			0
-		},
+		"‚ ‚È‚½‚Í <no of icons> ŒÂ‚ÌƒAƒCƒRƒ“‚ğì¬‚·‚é‚Ì‚É<app name>‚ğg—p‚µ‚Ü‚µ‚½B‚±‚Ì‚Ü‚Üg—p‚µ‘±‚¯‚é‚È‚ç‚Î $15 ‚ÌƒVƒFƒAƒEƒFƒA"
+		"—¿‹à‚ğ‚¨x•¥‚¢‰º‚³‚¢BgƒIƒ“ƒ‰ƒCƒ““o˜^h‚â‚±‚Ìƒ\ƒtƒgƒEƒFƒA‚ÉŠÜ‚Ü‚ê‚ég“o˜^hƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚Å“o˜^‚ªo—ˆ‚Ü‚·B",
 		/* [8] */
-		{12, 20, 44, 52},
-		Icon {
-			disabled,
-			1
-		}
+		"•ÒW‚µ‚½‚¢ Windows ƒAƒCƒRƒ“ƒtƒ@ƒCƒ‹y.icoz‚ğ‘I‘ğ‚µ‚Ä‰º‚³‚¢B",
+		/* [9] */
+		"•ÒW‚µ‚½‚¢ MacOS X Server ƒAƒCƒRƒ“ƒtƒ@ƒCƒ‹y.tiffz‚ğ‘I‘ğ‚µ‚Ä‰º‚³‚¢B",
+		/* [10] */
+		"IDF<ID> ‚ÌƒAƒCƒRƒ“‚Íg<file name>h‚ÉA‚·‚Å‚ÉŠÜ‚Ü‚ê‚Ä‚¢‚Ü‚·B–{“–‚É’u‚«Š·‚¦‚Ä‚à‚æ‚ë‚µ‚¢‚Å‚·‚©H",
+		/* [11] */
+		"‘—Şg<file name>h‚ğ <app name> ‚Å•Û‘¶‚µ‚½ÅŒã‚Ìó‘Ô‚É–ß‚µ‚Ä‚à‚æ‚ë‚µ‚¢‚Å‚·‚©H",
+		/* [12] */
+		"<app name> ‚ÍƒIƒ“ƒ‰ƒCƒ“‚Å“o˜^‚ğ‚µ‚½‚èAŠeíx•¥‚¢•û–@‚É‚æ‚é—X•Ö‚Å‚Ì“o˜^‚ğ‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·BD‚«‚È•û–@‚ğ‘I‘ğ‚µ‚Ä <app n"
+		"ame> ‚Ì“o˜^”Ô†‚ğw“ü‚µ‚Ä‰º‚³‚¢B",
+		/* [13] */
+		"‚æ‚¤‚±‚» <app name> 2.0“ú–{Œê”Å‚ÖI‚Í‚¶‚ß‚Äg—p‚·‚éê‡‚É‚ÍAÚ‚µ‚¢‘€ì•û–@‚âî•ñ‚ğŒä——‚É‚È‚é‚±‚Æ‚ğ‚¨Š©‚ß‚µ‚Ü‚·B¡‚·‚®"
+		"‚É‚±‚ê‚ç‚Ì‘—Ş‚ğŒä——‚É‚È‚è‚Ü‚·‚©H"
 	}
 };
 
-resource 'DLOG' (1001, "Icon Info", purgeable) {
-	{453, 384, 666, 663},
-	1043,
-	invisible,
-	goAway,
-	0x0,
-	1001,
-	"ƒAƒCƒRƒ“î•ñ...",
-	centerParentWindow
+resource 'STR#' (129, "Standard Errors") {
+	{	/* array StringArray: 17 elements */
+		/* [1] */
+		"‚±‚Ìƒtƒ@ƒCƒ‹‚Í‚·‚Å‚É‘¼‚ÌƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ÅŠJ‚©‚ê‚Ä‚¢‚Ü‚·B",
+		/* [2] */
+		"‚±‚Ìƒfƒxƒƒbƒp[ƒo[ƒWƒ‡ƒ“‚Ì <app name> ‚Í2000”N10Œ1“ú‚Åg—pŠúŒÀ‚ªØ‚ê‚Ä‚¢‚Ü‚·BV‚µ‚¢ƒo[ƒWƒ‡ƒ“‚ğƒ_ƒEƒ“ƒ[ƒh‚µ‚Ä‰º‚³"
+		"‚¢B",
+		/* [3] */
+		"<app name> ‚Ì•K—v‚ÈƒŠƒ\[ƒX‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½BƒCƒ“ƒXƒg[ƒ‹‚µ‚È‚¨‚µ‚Ä‰º‚³‚¢B",
+		/* [4] */
+		"<app name> ‚Ì“®ì‚É‚Í Š¿šTalk 7.5.3 ˆÈ~‚ª•K—v‚Å‚·B",
+		/* [5] */
+		"Apple ƒCƒxƒ“ƒg‚ğ‰Šú‰»‚Å‚«‚È‚©‚Á‚½‚Ì‚Å <app name> ‚Íˆ—‚ğ‘±‚¯‚é‚±‚Æ‚ªo—ˆ‚Ü‚¹‚ñB",
+		/* [6] */
+		"ƒAƒsƒAƒ‰ƒ“ƒXƒ}ƒl[ƒWƒƒ‚Ì‰Šú‰»’†‚ÉƒGƒ‰[‚ª‹N‚«‚½‚½‚ß <app name> ‚Íˆ—‚ğ‘±‚¯‚é‚±‚Æ‚ªo—ˆ‚Ü‚¹‚ñB",
+		/* [7] */
+		"ƒƒjƒ…[ƒo[‚Ì‰Šú‰»’†‚ÉƒGƒ‰[‚ª‹N‚«‚Ü‚µ‚½B<app name> ‚ÌƒŠƒ\[ƒX‚ÉáŠQ‚ª”­¶‚µ‚Ä‚¢‚é‰Â”«‚ª‚ ‚é‚Ì‚ÅƒCƒ“ƒXƒg[ƒ‹‚µ‚È‚¨‚µ"
+		"‚Ä‰º‚³‚¢B",
+		/* [8] */
+		"gƒCƒ“ƒ^[ƒlƒbƒgİ’è‹@”\Šg’£h‚ªƒCƒ“ƒXƒg[ƒ‹‚³‚ê‚Ä‚¢‚È‚¢‚Ì‚Å‚±‚Ì URL ‚ÉÚ‘±‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚¹‚ñB",
+		/* [9] */
+		"V‚µ‚¢ƒGƒfƒBƒ^‚ğì¬‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B‚¨‚»‚ç‚­ƒƒ‚ƒŠ[‚ª•s‘«‚µ‚Ä‚¢‚Ü‚·BŠJ‚¢‚Ä‚¢‚é‚¢‚­‚Â‚©‚ÌƒGƒfƒBƒ^‚ğ•Â‚¶‚é‚©A<app nam"
+		"e> ‚Ìƒƒ‚ƒŠŠ„‚è“–‚Ä‚ğ‘‚â‚µ‚Ä‰º‚³‚¢B",
+		/* [10] */
+		"<app name> ‚Ìƒƒ‚ƒŠ‚ª•s‘«‚µ‚Ä‚¢‚Ü‚·B‚±‚ÌƒGƒfƒBƒ^‚Å•`‰æ‚³‚ê‚Ä‚¢‚é‚à‚Ì‚ª”jŠü‚³‚ê‚Ü‚·B",
+		/* [11] */
+		"<app name> ‚Íƒƒ‚ƒŠ‚ª‘«‚è‚È‚­‚È‚è‚Ü‚µ‚½B‚»‚Ì‚½‚ß‚±‚ÌƒGƒfƒBƒ^‚Í•Â‚¶‚ç‚ê‚Ü‚·B",
+		/* [12] */
+		"g“o˜^hƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½B<app name> ‚ğƒCƒ“ƒXƒg[ƒ‹‚µ‚È‚¨‚µ‚Ä‰º‚³‚¢B",
+		/* [13] */
+		"“ü—Í‚µ‚½“o˜^”Ô†‚ÍŠÔˆá‚Á‚Ä‚¢‚Ü‚·B‚ ‚È‚½‚Ìó‚¯æ‚Á‚½“dqƒ[ƒ‹‚É‘‚©‚ê‚Ä‚¢‚é“o˜^”Ô†‚ğ³Šm‚É“ü—Í‚µ‚Ä‰º‚³‚¢B",
+		/* [14] */
+		"<app name> ‚ÌƒVƒFƒAƒEƒFƒA“o˜^‚Ç‚¤‚à‚ ‚è‚ª‚Æ‚¤",
+		/* [15] */
+		"<app name> ‚ğg—p‚·‚é‚É‚ÍAƒAƒsƒAƒ‰ƒ“ƒXƒ}ƒl[ƒWƒƒ‚ªƒCƒ“ƒXƒg[ƒ‹‚³‚ê‚Ä‚¢‚é•K—v‚ª‚ ‚è‚Ü‚·BMacOS 8.0 ˆÈ~‚ÌƒVƒXƒeƒ€ƒ\ƒtƒg"
+		"ƒEƒFƒA‚©AƒAƒbƒvƒ‹’ñ‹Ÿ‚ÌƒAƒsƒAƒ‰ƒ“ƒXƒ}ƒl[ƒWƒƒ SDK ‚ğ“üè‚µ‚ÄƒAƒsƒAƒ‰ƒ“ƒXƒ}ƒl[ƒWƒƒ‚ğƒCƒ“ƒXƒg[ƒ‹‚µ‚Ä‰º‚³‚¢B",
+		/* [16] */
+		"gƒCƒ“ƒ^[ƒlƒbƒgİ’è‹@”\Šg’£h‚ªƒCƒ“ƒXƒg[ƒ‹‚³‚ê‚Ä‚¢‚È‚¢‚Ì‚Å‚±‚Ì URL ‚ÉÚ‘±‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚¹‚ñB\n\n‚à‚µƒIƒ“ƒ‰ƒCƒ““o˜^‚ğ"
+		"s‚¢‚½‚¢ê‡‚É‚ÍAƒEƒFƒuƒuƒ‰ƒEƒU‚Å http://order.kagi.com/?QEJ ‚ÉƒAƒNƒZƒX‚µ‚Ä‰º‚³‚¢B",
+		/* [17] */
+		"ƒGƒ‰[ (ƒ^ƒCƒv <error type>) ‚ª”­¶‚µ‚½‚Ì‚ÅAƒtƒ@ƒCƒ‹g<file name>h‚ğŠJ‚­‚±‚Æ‚ªo—ˆ‚Ü‚¹‚ñ‚Å‚µ‚½B"
+	}
 };
 
-resource 'DLOG' (1010, "Adjust", purgeable) {
-	{259, 337, 443, 704},
-	1043,
-	invisible,
-	noGoAway,
-	0x0,
-	1010,
-	"F‚Ì’²®...",
-	centerParentWindowScreen
+resource 'STR#' (4000, "Format Names") {
+	{	/* array StringArray: 1 elements */
+		/* [1] */
+		"‚·‚×‚Ä‚ÌŒ`®"
+	}
 };
 
-resource 'DLOG' (1011, purgeable) {
-	{341, 144, 561, 519},
-	1024,
-	visible,
-	goAway,
-	0x0,
-	1011,
-	"DITL 1011 gAdjust: Pane 1h from icnsEditorClass.rsrc",
-	noAutoCenter
+resource 'STR#' (4001, "Icon Part Names") {
+	{	/* array StringArray: 24 elements */
+		/* [1] */
+		"ƒTƒ€ƒlƒCƒ‹ 32 ƒrƒbƒg ƒAƒCƒRƒ“",
+		/* [2] */
+		"ƒTƒ€ƒlƒCƒ‹ 8 ƒrƒbƒg ƒ}ƒXƒN",
+		/* [3] */
+		"Å‘å 32 ƒrƒbƒg ƒAƒCƒRƒ“",
+		/* [4] */
+		"Å‘å 8 ƒrƒbƒg ƒAƒCƒRƒ“",
+		/* [5] */
+		"Å‘å 4 ƒrƒbƒg ƒAƒCƒRƒ“",
+		/* [6] */
+		"Å‘å 1 ƒrƒbƒg ƒAƒCƒRƒ“",
+		/* [7] */
+		"Å‘å 8 ƒrƒbƒg ƒ}ƒXƒN",
+		/* [8] */
+		"Å‘å 1 ƒrƒbƒg ƒ}ƒXƒN",
+		/* [9] */
+		"ƒ‰[ƒW 32 ƒrƒbƒg ƒAƒCƒRƒ“",
+		/* [10] */
+		"ƒ‰[ƒW 8 ƒrƒbƒg ƒAƒCƒRƒ“",
+		/* [11] */
+		"ƒ‰[ƒW 4 ƒrƒbƒg ƒAƒCƒRƒ“",
+		/* [12] */
+		"ƒ‰[ƒW 1 ƒrƒbƒg ƒAƒCƒRƒ“",
+		/* [13] */
+		"ƒ‰[ƒW 8 ƒrƒbƒg ƒ}ƒXƒN",
+		/* [14] */
+		"ƒ‰[ƒW 1 ƒrƒbƒg ƒ}ƒXƒN",
+		/* [15] */
+		"ƒXƒ‚[ƒ‹ 32 ƒrƒbƒg ƒAƒCƒRƒ“",
+		/* [16] */
+		"ƒXƒ‚[ƒ‹ 8 ƒrƒbƒg ƒAƒCƒRƒ“",
+		/* [17] */
+		"ƒXƒ‚[ƒ‹ 4 ƒrƒbƒg ƒAƒCƒRƒ“",
+		/* [18] */
+		"ƒXƒ‚[ƒ‹ 1 ƒrƒbƒg ƒAƒCƒRƒ“",
+		/* [19] */
+		"ƒXƒ‚[ƒ‹ 8 ƒrƒbƒg ƒ}ƒXƒN",
+		/* [20] */
+		"ƒXƒ‚[ƒ‹ 1 ƒrƒbƒg ƒ}ƒXƒN",
+		/* [21] */
+		"ƒ~ƒj 8 ƒrƒbƒg ƒAƒCƒRƒ“",
+		/* [22] */
+		"ƒ~ƒj 4 ƒrƒbƒg ƒAƒCƒRƒ“",
+		/* [23] */
+		"ƒ~ƒj 1 ƒrƒbƒg ƒAƒCƒRƒ“",
+		/* [24] */
+		"ƒ~ƒj 1 ƒrƒbƒg ƒ}ƒXƒN"
+	}
 };
 
-resource 'DLOG' (1012, purgeable) {
-	{337, 600, 549, 1015},
-	1024,
-	visible,
-	goAway,
-	0x0,
-	1012,
-	"",
-	noAutoCenter
+resource 'STR#' (4002, "Misc. Icon Strings") {
+	{	/* array StringArray: 2 elements */
+		/* [1] */
+		"<I>‚È‚µ</I>",
+		/* [2] */
+		"<I>Finder ƒAƒCƒRƒ“</I>"
+	}
 };
 
-resource 'DLOG' (1410, "Text Tool", purgeable) {
-	{389, 44, 622, 250},
-	1043,
-	invisible,
-	goAway,
-	0x0,
+resource 'STR#' (260, "Colors Palette: RGB Picker: Balloon Help") {
+	{	/* array StringArray: 6 elements */
+		/* [1] */
+		"Ô ƒXƒ‰ƒCƒ_[FŒ»İ‚ÌF‚ÌÔ‚Ì‹­“x‚ğ§Œä‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B",
+		/* [2] */
+		"Ô ƒvƒŒƒrƒ…[FÔ-ƒXƒ‰ƒCƒ_[‚É‚æ‚éF‚Ì•ÏXŒ‹‰Ê‚ÌŒ©–{‚ğ•\¦‚µ‚Ü‚·B",
+		/* [3] */
+		"—Î ƒXƒ‰ƒCƒ_[FŒ»İ‚ÌF‚Ì—Î‚Ì‹­“x‚ğ§Œä‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B",
+		/* [4] */
+		"—Î ƒvƒŒƒrƒ…[F—Î-ƒXƒ‰ƒCƒ_[‚É‚æ‚éF‚Ì•ÏXŒ‹‰Ê‚ÌŒ©–{‚ğ•\¦‚µ‚Ü‚·B",
+		/* [5] */
+		"Â ƒXƒ‰ƒCƒ_[FŒ»İ‚ÌF‚ÌÂ‚Ì‹­“x‚ğ§Œä‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B",
+		/* [6] */
+		"Â ƒvƒŒƒrƒ…[F—Î-ƒXƒ‰ƒCƒ_[‚É‚æ‚éF‚Ì•ÏXŒ‹‰Ê‚ÌŒ©–{‚ğ•\¦‚µ‚Ü‚·B"
+	}
+};
+
+resource 'STR#' (270, "Colors Palette: HSV Picker: Balloon Help") {
+	{	/* array StringArray: 6 elements */
+		/* [1] */
+		"F‘Š ƒXƒ‰ƒCƒ_[F Œ»İ‚ÌF‚ÌF‡‚¢‚ğ§Œä‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B‘S‘Ì“I‚ÈF‚Ìí—Ş‚ğİ’è‚µ‚Ü‚·B\n\ng—p•s‰Â‚Ìê‡A‚Ü‚¸‚»‚Ì’l"
+		"‚ğ‘‚â‚·•K—v‚ª‚ ‚è‚Ü‚·B",
+		/* [2] */
+		"F‘Š ƒvƒŒƒrƒ…[FF‘Š-ƒXƒ‰ƒCƒ_[‚É‚æ‚éF‡‚¢‚Ì•ÏXŒ‹‰Ê‚ÌŒ©–{‚ğ•\¦‚µ‚Ü‚·B",
+		/* [3] */
+		"Ê“x ƒXƒ‰ƒCƒ_[FŒ»İ‚ÌF‚ÌÊ“x‚ğ§Œä‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·BÊ“x‚Í‚»‚ÌF©‘Ì‚Ì‹­‚³‚ğİ’è‚µ‚Ü‚·Bã‚­‚·‚é‚ÆŠDF‚©‚ç”’‚Ö‚Æ"
+		"•Ï‰»‚µ‚Ä‚¢‚«‚Ü‚·B\n\ng—p•s‰Â‚Ìê‡A‚Ü‚¸‚»‚Ì’l‚ğ‘‚â‚·•K—v‚ª‚ ‚è‚Ü‚·B",
+		/* [4] */
+		"Ê“x ƒvƒŒƒrƒ…[FÊ“x-ƒXƒ‰ƒCƒ_[‚É‚æ‚éÊ“x‚Ì•ÏXŒ‹‰Ê‚ÌŒ©–{‚ğ•\¦‚µ‚Ü‚·B",
+		/* [5] */
+		"–¾“x ƒXƒ‰ƒCƒ_[FŒ»İ‚ÌF‚Ì’l‚Ì‹­“x‚ğ§Œä‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B’l‚ÍF‚Ì–¾‚é‚³‚ğİ’è‚µ‚Ü‚·B",
+		/* [6] */
+		"–¾“x ƒvƒŒƒrƒ…[F–¾“x-ƒXƒ‰ƒCƒ_[‚É‚æ‚é’l‚Ì•ÏXŒ‹‰Ê‚ÌŒ©–{‚ğ•\¦‚µ‚Ü‚·B"
+	}
+};
+
+resource 'STR#' (280, "Colors Palette: System Picker: Balloon Help") {
+	{	/* array StringArray: 1 elements */
+		/* [1] */
+		"ƒVƒXƒeƒ€ƒpƒŒƒbƒg‚ÌF[“x‚ğ‚±‚±‚É•\¦‚µ‚Ü‚·BlŠp‚¢˜g‚ğƒNƒŠƒbƒN‚µ‚Ä‘OŒiF^”wŒiF‚Ìİ’è‚µ‚Ü‚·B"
+	}
+};
+
+resource 'STR#' (290, "Colors Palette: Favorites Picker: Baloon Help") {
+	{	/* array StringArray: 1 elements */
+		/* [1] */
+		"D‚«‚ÈF‚ğ’u‚¢‚Ä‚¨‚­‚±‚Æ‚ªo—ˆ‚éƒpƒŒƒbƒg‚Å‚·BƒpƒŒƒbƒg‚Ì‹ó‚¢‚Ä‚¢‚é•”•ª‚Éƒ}ƒEƒX‚ğˆÚ“®‚µƒNƒŠƒbƒN‚·‚ê‚Î‚»‚±‚Ö•Û‘¶‚·‚é‚±‚Æ‚ª"
+		"o—ˆ‚Ü‚·BF‚ğíœ‚·‚éê‡‚É‚ÍAƒRƒ}ƒ“ƒh‚ğ‰Ÿ‚µ‚È‚ª‚ç‘I‘ğ‚µƒNƒŠƒbƒN‚µ‚Ä‰º‚³‚¢B"
+	}
+};
+
+resource 'STR#' (250, "Colors Palette: Balloon Help") {
+	{	/* array StringArray: 4 elements */
+		/* [1] */
+		"Œ»İ‚Ì‘OŒiF^”wŒiF‚ª‚±‚±‚É•\¦‚³‚ê‚Ü‚·B‘I‘ğ˜g‚ª•\¦‚³‚ê‚Ä‚¢‚é•”•ª‚ªŒ»İ•ÒW’†‚ÌF‚Å‚·B‚à‚¤ˆê•û‚Ì˜g‚ğ‘I‘ğ‚·‚é‚±‚Æ‚Å•Ò"
+		"W‚·‚éF‚ğ•ÏX‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
+		/* [2] */
+		"‚±‚ê‚ç‚Ìƒ^ƒu‚ÍA‚¢‚­‚Â‚©‚ÌFŒ©–{‚ğ‘I‘ğ‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·BF Ô^—Î^ÂAF‡‚¢^Ê“x^’lAƒVƒXƒeƒ€ƒpƒŒƒbƒgA‚¨‹C‚É“ü"
+		"‚èƒpƒŒƒbƒg‚È‚Ç",
+		/* [3] */
+		"Œ»İ•ÒW’†‚Ì‰æ‘œ“à‚Å‚ÌƒJ[ƒ\ƒ‹‚ÌˆÊ’uî•ñ‚ğ•\¦‚µ‚Ü‚·B",
+		/* [4] */
+		"Œ»İ•ÒW’†‚Ì‰æ‘œ“à‚Å‚ÌƒJ[ƒ\ƒ‹‚ÌˆÊ’u‚ÌFî•ñ‚ğ•\¦‚µ‚Ü‚·B"
+	}
+};
+
+resource 'STR#' (401, "Members Palette Names") {
+	{	/* array StringArray: 2 elements */
+		/* [1] */
+		"î•ñ",
+		/* [2] */
+		"ˆê——‚É’Ç‰Á"
+	}
+};
+
+resource 'STR#' (400, "Members Palette Balloon Help") {
+	{	/* array StringArray: 2 elements */
+		/* [1] */
+		"ƒAƒCƒRƒ“î•ñ\n\nƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚ÄƒAƒCƒRƒ“‚Ì‘®«iIDA–¼‘OAˆê——A‘®«j‚ğİ’è‚µ‚Ä‰º‚³‚¢B",
+		/* [2] */
+		"ˆê——‚É’Ç‰Á\n\n‚±‚±‚ğƒNƒŠƒbƒN‚·‚é‚ÆÅ“K‚ÈƒTƒCƒY‚ÆF[“x‚ÌƒAƒCƒRƒ“‚ğˆê——‚É’Ç‰Áì¬‚µ‚Ü‚·B"
+	}
+};
+
+resource 'STR#' (500, "- Tool Palette Balloon Help") {
+	{	/* array StringArray: 3 elements */
+		/* [1] */
+		"ƒvƒŒƒrƒ…[ƒTƒCƒY\n\n‚±‚ÌƒXƒ‰ƒCƒ_[‚Æ”’l“ü—Íƒ{ƒbƒNƒX‚ÅƒvƒŒƒrƒ…[‚Ì•\¦ƒTƒCƒY‚ğ•ÏX‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·B128 ‚©‚ç 64 (ŠŠ‚ç‚©"
+		"‚ÉŠg‘åk¬‚³‚ê‚Ü‚·)‚Ü‚Å‚Æ 48A32A16A12 ‚Ì”ÍˆÍ‚Åİ’è‰Â”\‚Å‚·B",
+		/* [2] */
+		"ƒvƒŒƒrƒ…[—Ìˆæ\n\nŒ»İ‚ÌƒAƒCƒRƒ“‚Æƒ}ƒXƒN‚ğ‚±‚±‚Åİ’è‚µ‚½ƒTƒCƒY‚Å•\¦‚µ‚Ü‚·B",
+		/* [3] */
+		"ƒvƒŒƒrƒ…[İ’è\n\n‚±‚Ìƒƒjƒ…[‚ÅƒAƒCƒRƒ“‚Ìó‘Ô(•W€A‘I‘ğ)‚Æ”wŒi(ƒfƒXƒNƒgƒbƒvAƒŠƒXƒg•\¦A”’A•)‚Ìİ’è‚ğs‚¤‚±‚Æ‚ª‚Å"
+		"‚«‚Ü‚·B"
+	}
+};
+
+resource 'STR#' (600, "Tool Balloon Help") {
+	{	/* array StringArray: 23 elements */
+		/* [1] */
+		"‹éŒ`‘I‘ğƒc[ƒ‹ (M)",
+		/* [2] */
+		"ˆÚ“®ƒc[ƒ‹ (V)",
+		/* [3] */
+		"‚È‚°‚È‚í‘I‘ğƒc[ƒ‹ (L)",
+		/* [4] */
+		"©“®‘I‘ğƒc[ƒ‹ (W)",
+		/* [5] */
+		"‰”•Mƒc[ƒ‹ (N)",
+		/* [6] */
+		"ƒXƒ|ƒCƒgƒc[ƒ‹ (I)",
+		/* [7] */
+		"“h‚è‚Â‚Ô‚µƒc[ƒ‹ (K)",
+		/* [8] */
+		"Á‚µƒSƒ€ƒc[ƒ‹ (E)",
+		/* [9] */
+		"‹éŒ`•`‰æƒc[ƒ‹ (R)",
+		/* [10] */
+		"‘È‰~Œ`•`‰æƒc[ƒ‹ (O)",
+		/* [11] */
+		"ƒ‰ƒCƒ“•`‰æƒc[ƒ‹ (Y)",
+		/* [12] */
+		"‘½ŠpŒ`•`‰æƒc[ƒ‹ (P)",
+		/* [13] */
+		"ƒOƒ‰ƒf[ƒVƒ‡ƒ“•`‰æƒc[ƒ‹ (G)",
+		/* [14] */
+		"•¶š•`‰æƒc[ƒ‹ (T)",
+		/* [15] */
+		"‰ñ“]ƒc[ƒ‹ (H)",
+		/* [16] */
+		"Šg‘å^k¬ƒc[ƒ‹ (Z)",
+		/* [17] */
+		"ƒ‰ƒCƒ“‚Ì‘¾‚³\n\n‚±‚±‚ğƒNƒŠƒbƒN‚·‚é‚±‚Æ‚Å•`‰æ‚·‚éƒ‰ƒCƒ“‚Ì‘¾‚³‚ğ•ÏX‚Å‚«‚Ü‚·B",
+		/* [18] */
+		"ƒAƒ“ƒ`ƒGƒCƒŠƒAƒX\n\n‚±‚±‚ğƒNƒŠƒbƒN‚·‚é‚±‚Æ‚Å•`‰æ‚·‚éƒ‰ƒCƒ“‚ÉƒAƒ“ƒ`ƒGƒCƒŠƒAƒX‚ğ‚©‚¯‚é‚©‚Ç‚¤‚©İ’è‚Å‚«‚Ü‚·B",
+		/* [19] */
+		"“h‚è\n\n‚±‚±‚ğƒNƒŠƒbƒN‚·‚é‚ÆŒ`ó‚Ì“à‘¤‚ğ“h‚è‚Â‚Ô‚·‚©‚Ç‚¤‚©‚ğİ’è‚Å‚«‚Ü‚·B",
+		/* [20] */
+		"ƒpƒ^[ƒ“\n\nŒ»İ‚Ì•`‰æƒpƒ^[ƒ“‚ª‚±‚±‚É•\¦‚³‚ê‚Ü‚·B‚±‚±‚ğƒNƒŠƒbƒN‚·‚é‚Æ•`‰æƒpƒ^[ƒ“‚ğ•ÏXo—ˆ‚Ü‚·B",
+		/* [21] */
+		"FØ‚è‘Ö‚¦\n\nŒ»İ‚Ì‘OŒiF‚Æ”wŒiF‚ª‚±‚±‚É•\¦‚³‚ê‚Ü‚·B‚±‚±‚ğƒNƒŠƒbƒN‚·‚é‚ÆF‚ğ•ÏXo—ˆ‚Ü‚·B",
+		/* [22] */
+		"F‚Ì“ü‚ê‘Ö‚¦ (X)",
+		/* [23] */
+		"•W€‚ÌF (D)"
+	}
+};
+
+resource 'STR#' (5000, "MHTMLHelp Strings") {
+	{	/* array StringArray: 2 elements */
+		/* [1] */
+		"ƒwƒ‹ƒp[‰Šúİ’è",
+		/* [2] */
+		"‘I‘ğ‚µ‚Äƒuƒ‰ƒEƒU‚ÅŠJ‚¢‚Ä‰º‚³‚¢B"
+	}
+};
+
+resource 'MENU' (1410) {
 	1410,
-	"•¶šƒc[ƒ‹",
-	centerParentWindow
-};
-
-data 'DLOG' (3001, "Select Object", purgeable) {
-	$"0000 0000 00D7 0158 0001 0000 0000 0000 0000 0BB9 00"                                                                                               /* .....×.X...........¹. */
-};
-
-resource 'DLOG' (9999, purgeable) {
-	{200, 219, 456, 645},
-	documentProc,
-	visible,
-	goAway,
-	0x0,
-	9999,
-	"–¼Ì–¢İ’èƒAƒCƒRƒ“",
-	noAutoCenter
-};
-
-resource 'DLOG' (1000, "Preferences", purgeable) {
-	{277, 561, 534, 876},
-	1043,
-	invisible,
-	goAway,
-	0x0,
-	1000,
-	"Šeíİ’è",
-	centerMainScreen
-};
-
-resource 'DLOG' (301, "Icon Browser Mockup", purgeable) {
-	{230, 146, 588, 480},
-	documentProc,
-	visible,
-	goAway,
-	0x0,
-	301,
-	"",
-	noAutoCenter
-};
-
-resource 'DLOG' (300, "Icon Browser: Progress", purgeable) {
-	{260, 315, 312, 664},
-	1043,
-	invisible,
-	noGoAway,
-	0x0,
-	300,
-	"ƒAƒCƒRƒ““Ç‚İ‚İ’†F<name>",
-	centerMainScreen
-};
-
-resource 'DLOG' (128, "About") {
-	{88, 131, 307, 455},
-	plainDBox,
-	invisible,
-	noGoAway,
-	0x0,
-	128,
-	"‚É‚Â‚¢‚Ä",
-	alertPositionMainScreen
-};
-
-resource 'DLOG' (129, "Register") {
-	{178, 612, 313, 962},
-	1043,
-	invisible,
-	goAway,
-	0x0,
-	129,
-	"“o˜^",
-	alertPositionMainScreen
-};
-
-resource 'DLOG' (3002, "Save File", purgeable) {
-	{185, 272, 401, 639},
-	dBoxProc,
-	invisible,
-	noGoAway,
-	0x746D4449,
-	3002,
-	"",
-	noAutoCenter
-};
-
-resource 'DLOG' (2000, "Nav Custom Items", purgeable) {
-	{253, 278, 283, 547},
-	1024,
-	visible,
-	goAway,
-	0x0,
-	2000,
-	"DITL 2000 from iconmangler.µ.rsrc",
-	noAutoCenter
-};
-
-resource 'DLOG' (270, "Colors Palette: HSV Picker", purgeable) {
-	{299, 526, 459, 846},
-	dBoxProc,
-	visible,
-	goAway,
-	0x0,
-	270,
-	"",
-	noAutoCenter
-};
-
-resource 'DLOG' (280, "Colors Palette: System Picker", purgeable) {
-	{299, 526, 459, 846},
-	dBoxProc,
-	visible,
-	goAway,
-	0x0,
-	280,
-	"",
-	noAutoCenter
-};
-
-resource 'DLOG' (290, "Colors Palette: Favorites Picker", purgeable) {
-	{299, 526, 459, 846},
-	dBoxProc,
-	visible,
-	goAway,
-	0x0,
-	290,
-	"",
-	noAutoCenter
-};
-
-resource 'DLOG' (260, "Colors Palette: RGB Picker", purgeable) {
-	{299, 526, 459, 846},
-	dBoxProc,
-	visible,
-	goAway,
-	0x0,
-	260,
-	"",
-	noAutoCenter
-};
-
-resource 'DLOG' (250, "Colors Palette", purgeable) {
-	{432, 158, 592, 478},
-	1057,
-	visible,
-	goAway,
-	0x0,
-	250,
-	"ƒJƒ‰[ƒpƒŒƒbƒg",
-	noAutoCenter
-};
-
-resource 'DLOG' (4000, "MAlert: Movable", purgeable) {
-	{566, 19, 656, 387},
-	1045,
-	invisible,
-	goAway,
-	0x0,
-	4000,
-	"",
-	noAutoCenter
-};
-
-resource 'DLOG' (4001, "MAlert: Non Movable", purgeable) {
-	{566, 19, 656, 387},
-	1044,
-	invisible,
-	goAway,
-	0x0,
-	4000,
-	"",
-	noAutoCenter
-};
-
-resource 'hwin' (1001, "Icon Info", purgeable) {
-	2,
-	0,
-	{	/* array HWinArray: 1 elements */
-		/* [1] */
-		1001,
-		'hrct',
-		10,
-		"ƒAƒCƒRƒ“î•ñ..."
-	}
-};
-
-resource 'hwin' (1002, "Insert Icon", purgeable) {
-	2,
-	0,
-	{	/* array HWinArray: 1 elements */
-		/* [1] */
-		1001,
-		'hrct',
-		14,
-		"ƒAƒCƒRƒ“‚ğ‘}“ü"
-	}
-};
-
-resource 'hwin' (128, "About", purgeable) {
-	2,
-	0,
-	{	/* array HWinArray: 1 elements */
-		/* [1] */
-		128,
-		'hrct',
-		5,
-		"‚É‚Â‚¢‚Ä"
-	}
-};
-
-resource 'hwin' (129, "Register", purgeable) {
-	2,
-	0,
-	{	/* array HWinArray: 1 elements */
-		/* [1] */
-		129,
-		'hrct',
-		4,
-		"“o˜^"
-	}
-};
-
-resource 'hwin' (300, "Icon Browser", purgeable) {
-	2,
-	0,
-	{	/* array HWinArray: 1 elements */
-		/* [1] */
-		300,
-		'hrct',
-		12,
-		"ƒAƒCƒRƒ“ƒuƒ‰ƒEƒU"
-	}
-};
-
-resource 'MENU' (200) {
-	200,
 	textMenuProc,
 	allEnabled,
 	enabled,
-	"ƒAƒCƒRƒ“F[“x",
+	"ƒtƒHƒ“ƒg",
+	{	/* array: 0 elements */
+	}
+};
+
+resource 'MENU' (1412) {
+	1412,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"ƒXƒ^ƒCƒ‹",
+	{	/* array: 7 elements */
+		/* [1] */
+		"•W€", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"ƒ{[ƒ‹ƒh", noIcon, noKey, noMark, 1,
+		/* [3] */
+		"Î‘Ì", noIcon, noKey, noMark, 2,
+		/* [4] */
+		"‰ºü", noIcon, noKey, noMark, 4,
+		/* [5] */
+		"‰e•t‚«", noIcon, noKey, noMark, 16,
+		/* [6] */
+		"•¶šŠÔ‚ğ‹l‚ß‚é", noIcon, noKey, noMark, 32,
+		/* [7] */
+		"•¶šŠÔ‚ğŠg‚°‚é", noIcon, noKey, noMark, 64
+	}
+};
+
+resource 'MENU' (1411) {
+	1411,
+	textMenuProc,
+	0x7FFFFDFF,
+	enabled,
+	"ƒTƒCƒY",
+	{	/* array: 11 elements */
+		/* [1] */
+		"9", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"10", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"12", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"14", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"18", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"24", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"36", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"48", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"72", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [11] */
+		"‚»‚Ì‘¼", noIcon, noKey, noMark, 2
+	}
+};
+
+resource 'MENU' (1016) {
+	1016,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"‰æ‘œƒtƒH[ƒ}ƒbƒg",
 	{	/* array: 4 elements */
 		/* [1] */
-		"32 bit", noIcon, noKey, noMark, plain,
+		"PICT", noIcon, noKey, noMark, plain,
 		/* [2] */
-		"  8 bit", noIcon, noKey, noMark, plain,
+		"Photoshop", noIcon, noKey, noMark, plain,
 		/* [3] */
-		"  4 bit", noIcon, noKey, noMark, plain,
+		"PNG", noIcon, noKey, noMark, plain,
 		/* [4] */
-		"  1 bit", noIcon, noKey, noMark, plain
+		"TIFF", noIcon, noKey, noMark, plain
 	}
 };
 
@@ -2085,12 +2428,418 @@ resource 'MENU' (201) {
 	textMenuProc,
 	allEnabled,
 	enabled,
-	"ƒ}ƒXƒNF[“x",
+	"Šg‘å",
+	{	/* array: 5 elements */
+		/* [1] */
+		"100%", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"200%", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"400%", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"800%", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"1600%", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (1120) {
+	1120,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"ƒAƒCƒRƒ“‚Ìí—Ş",
+	{	/* array: 0 elements */
+	}
+};
+
+resource 'MENU' (1121) {
+	1121,
+	textMenuProc,
+	0x7FFFFFFB,
+	enabled,
+	"ƒ[ƒX",
+	{	/* array: 3 elements */
+		/* [1] */
+		"‚È‚µ", noIcon, noKey, noMark, 2,
+		/* [2] */
+		"Œ»İ", noIcon, noKey, noMark, 2,
+		/* [3] */
+		"-", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (303, "Icon Browser: Icon Types") {
+	303,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"ƒAƒCƒRƒ“‚Ìí—Ş",
+	{	/* array: 3 elements */
+		/* [1] */
+		"VŒ`® (32 bit)", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"‹ŒŒ`® (   8 bit)", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"”Ä@—p", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (128) {
+	128,
+	textMenuProc,
+	0x7FFFFFFB,
+	enabled,
+	apple,
+	{	/* array: 3 elements */
+		/* [1] */
+		"Iconographer “ú–{Œê”Å‚É‚Â‚¢‚Ä...", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"“o˜^...", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"-", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (133) {
+	133,
+	textMenuProc,
+	0x7FFFFFDB,
+	enabled,
+	"•ÏŠ·",
+	{	/* array: 7 elements */
+		/* [1] */
+		"Œv‰ñ‚è‚É 90‹‰ñ“]", noIcon, "T", noMark, plain,
+		/* [2] */
+		"”½Œv‰ñ‚è‚É 90‹‰ñ“]", noIcon, "T", noMark, plain,
+		/* [3] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"…•½•ûŒü‚É”½“]", noIcon, "[", noMark, plain,
+		/* [5] */
+		"‚’¼•ûŒü‚É”½“]", noIcon, "]", noMark, plain,
+		/* [6] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"F’²‚ğ”½“]", noIcon, "I", noMark, plain
+	}
+};
+
+resource 'MENU' (134) {
+	134,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"ƒy[ƒXƒg",
+	{	/* array: 4 elements */
+		/* [1] */
+		"•W€", noIcon, "V", noMark, plain,
+		/* [2] */
+		"ƒAƒCƒRƒ“‚Æƒ}ƒXƒN", noIcon, "V", noMark, plain,
+		/* [3] */
+		"‘I‘ğ”ÍˆÍ‚Éƒy[ƒXƒg", noIcon, "V", noMark, plain,
+		/* [4] */
+		"‚·‚×‚Ä‚ğƒy[ƒXƒg", noIcon, "V", noMark, plain
+	}
+};
+
+resource 'MENU' (135) {
+	135,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"ƒRƒs[",
+	{	/* array: 3 elements */
+		/* [1] */
+		"•W€", noIcon, "C", noMark, plain,
+		/* [2] */
+		"ƒAƒCƒRƒ“‚Æƒ}ƒXƒN", noIcon, "C", noMark, plain,
+		/* [3] */
+		"ŠeƒTƒCƒY‚ÌƒAƒCƒRƒ“‚·‚×‚Ä", noIcon, "C", noMark, plain
+	}
+};
+
+resource 'MENU' (132) {
+	132,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"‘I‘ğ",
+	{	/* array: 4 elements */
+		/* [1] */
+		"‚·‚×‚Ä‘I‘ğ", noIcon, "A", noMark, plain,
+		/* [2] */
+		"“¯F‚ğ‘I‘ğ", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"‘I‘ğ‚ğ‰ğœ", noIcon, "D", noMark, plain,
+		/* [4] */
+		"‘I‘ğ‚ğ”½“]", noIcon, "I", noMark, plain
+	}
+};
+
+resource 'MENU' (130) {
+	130,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Open Recent",
+	{	/* array: 0 elements */
+	}
+};
+
+resource 'MENU' (137) {
+	137,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"F",
 	{	/* array: 2 elements */
 		/* [1] */
-		"8 bit", noIcon, noKey, noMark, plain,
+		"Mac OS ƒVƒXƒeƒ€F", noIcon, noKey, noMark, plain,
 		/* [2] */
-		"1 bit", noIcon, noKey, noMark, plain
+		"Windows ƒVƒXƒeƒ€F", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (138) {
+	138,
+	textMenuProc,
+	0x7FFFFFCF,
+	enabled,
+	"ƒEƒCƒ“ƒhƒE",
+	{	/* array: 6 elements */
+		/* [1] */
+		"ƒc[ƒ‹‚ğ•\¦", noIcon, "1", noMark, plain,
+		/* [2] */
+		"ˆê——‚ğ•\¦", noIcon, "2", noMark, plain,
+		/* [3] */
+		"ƒvƒŒƒrƒ…[‚ğ•\¦", noIcon, "3", noMark, plain,
+		/* [4] */
+		"FŒ©–{‚ğ•\¦", noIcon, "4", noMark, plain,
+		/* [5] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"-", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (4000, "Icon Formats") {
+	4000,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"ƒAƒCƒRƒ“Œ`®",
+	{	/* array: 5 elements */
+		/* [1] */
+		"Mac OS ”Ä@—p", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Mac OS VŒ`®", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Mac OS ‹ŒŒ`®", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"Windows Œ`®", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"Mac OS X Server Œ`®", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (400, "Icon States") {
+	400,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"ƒAƒCƒRƒ“‚Ìó‘Ô",
+	{	/* array: 8 elements */
+		/* [1] */
+		"•W€‚Ìó‘Ô", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"ˆÚ“®’†‚Ìó‘Ô", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"‘I‘ğ‚³‚ê‚Ä‚¢‚éó‘Ô", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"ŠJ‚©‚ê‚Ä‚¢‚éó‘Ô", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"ƒhƒƒbƒv‚³‚ê‚½ó‘Ô", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"ƒhƒƒbƒv‚³‚ê‚Ä‹N“®‚µ‚½ó‘Ô", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"–³Œø", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"ƒ^ƒCƒ‹", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (500) {
+	500,
+	textMenuProc,
+	0x7FFFFFFB,
+	enabled,
+	"•\¦İ’è",
+	{	/* array: 7 elements */
+		/* [1] */
+		"•W€", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"‘I‘ğ", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"ƒfƒXƒNƒgƒbƒv", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"ƒŠƒXƒg•\¦", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"”’”wŒi", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"•”wŒi", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (624) {
+	624,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Antialias",
+	{	/* array: 2 elements */
+		/* [1] */
+		"ƒAƒ“ƒ`ƒGƒCƒŠƒAƒX - Ø", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"ƒAƒ“ƒ`ƒGƒCƒŠƒAƒX - “ü", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (625) {
+	625,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Fill",
+	{	/* array: 2 elements */
+		/* [1] */
+		"‹«ŠEü‚ğ•`‚­", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"“h‚è’×‚µ", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (623) {
+	623,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"ƒ‰ƒCƒ“‚Ì‘¾‚³",
+	{	/* array: 8 elements */
+		/* [1] */
+		" ", 1, noKey, noMark, plain,
+		/* [2] */
+		" ", 2, noKey, noMark, plain,
+		/* [3] */
+		" ", 3, noKey, noMark, plain,
+		/* [4] */
+		" ", 4, noKey, noMark, plain,
+		/* [5] */
+		" ", 5, noKey, noMark, plain,
+		/* [6] */
+		" ", 6, noKey, noMark, plain,
+		/* [7] */
+		" ", 7, noKey, noMark, plain,
+		/* [8] */
+		" ", 8, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (129) {
+	129,
+	textMenuProc,
+	0x7FFFFEF7,
+	enabled,
+	"ƒtƒ@ƒCƒ‹",
+	{	/* array: 11 elements */
+		/* [1] */
+		"V‹KƒAƒCƒRƒ“", noIcon, "N", noMark, plain,
+		/* [2] */
+		"ƒAƒCƒRƒ“‚ğŠJ‚­", noIcon, "O", noMark, plain,
+		/* [3] */
+		"Å‹ßg—p‚µ‚½ƒtƒ@ƒCƒ‹...", noIcon, hierarchicalMenu, "‚", plain,
+		/* [4] */
+		"•Â‚¶‚é", noIcon, "W", noMark, plain,
+		/* [5] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"•Û‘¶", noIcon, "S", noMark, plain,
+		/* [7] */
+		"•Ê–¼‚Å•Û‘¶...", noIcon, "S", noMark, plain,
+		/* [8] */
+		"ƒtƒ@ƒCƒ‹‚É‘}“ü...", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"•œ‹A", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [11] */
+		"I—¹", noIcon, "Q", noMark, plain
+	}
+};
+
+resource 'MENU' (131) {
+	131,
+	textMenuProc,
+	0x7FFFFBFB,
+	enabled,
+	"•ÒW",
+	{	/* array: 12 elements */
+		/* [1] */
+		"æ‚èÁ‚µ", noIcon, "Z", noMark, plain,
+		/* [2] */
+		"‚â‚è’¼‚µ", noIcon, "Z", noMark, plain,
+		/* [3] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"ƒJƒbƒg", noIcon, "X", noMark, plain,
+		/* [5] */
+		"ƒRƒs[", noIcon, hierarchicalMenu, "‡", plain,
+		/* [6] */
+		"ƒy[ƒXƒg", noIcon, hierarchicalMenu, "†", plain,
+		/* [7] */
+		"Á‹", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"‘I‘ğ", noIcon, hierarchicalMenu, "„", plain,
+		/* [9] */
+		"•ÏŠ·", noIcon, hierarchicalMenu, "…", plain,
+		/* [10] */
+		"F’²®...", noIcon, "U", noMark, plain,
+		/* [11] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"‰Šúİ’è...", noIcon, ";", noMark, plain
+	}
+};
+
+resource 'MENU' (136) {
+	136,
+	textMenuProc,
+	0x7FFFFEEB,
+	enabled,
+	"ƒAƒCƒRƒ“",
+	{	/* array: 10 elements */
+		/* [1] */
+		"Šg‘å", noIcon, "=", noMark, plain,
+		/* [2] */
+		"k¬", noIcon, "-", noMark, plain,
+		/* [3] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"F", noIcon, hierarchicalMenu, "‰", plain,
+		/* [5] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"‘}“ü...", noIcon, "K", noMark, plain,
+		/* [7] */
+		"î•ñ‚ğŒ©‚é...", noIcon, "I", noMark, plain,
+		/* [8] */
+		"ƒOƒŠƒbƒh‚ğ•\¦", noIcon, "G", noMark, plain,
+		/* [9] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"ŠO•”ƒGƒfƒBƒ^‚ÅŠJ‚­", noIcon, noKey, noMark, plain
 	}
 };
 
@@ -2110,11 +2859,145 @@ resource 'MENU' (202) {
 		/* [4] */
 		"ƒCƒ“ƒ^[ƒlƒbƒgƒAƒCƒRƒ“", noIcon, hierarchicalMenu, "Î", plain,
 		/* [5] */
-		"ƒoƒbƒeƒŠ•\¦", noIcon, hierarchicalMenu, "Ï", plain,
+		"ƒoƒbƒeƒŠ[•\¦", noIcon, hierarchicalMenu, "Ï", plain,
 		/* [6] */
 		"ƒoƒbƒa", noIcon, hierarchicalMenu, "Ğ", plain,
 		/* [7] */
 		"‚»‚Ì‘¼", noIcon, hierarchicalMenu, "Ñ", plain
+	}
+};
+
+resource 'MENU' (203) {
+	203,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"ƒAƒCƒeƒ€ƒAƒCƒRƒ“",
+	{	/* array: 1 elements */
+		/* [1] */
+		"|16455 ƒAƒCƒeƒ€ƒAƒCƒRƒ“", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (204) {
+	204,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"ƒVƒXƒeƒ€ƒtƒHƒ‹ƒ_",
+	{	/* array: 56 elements */
+		/* [1] */
+		"|20803 Œ¾Œê & ’nˆæƒTƒ|[ƒg", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"|20801 ƒCƒ“ƒ^[ƒlƒbƒgŒŸõƒTƒCƒg", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"|20797 ƒXƒNƒŠƒvƒg", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"|20792 ColorSync ƒvƒƒtƒ@ƒCƒ‹", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"|20744 ƒCƒ“ƒ^[ƒlƒbƒg", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"|20729 ‚æ‚­g‚¤€–Ú", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"|20724 Speakable Items", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"|20723 ƒAƒsƒAƒ‰ƒ“ƒX", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"|3999 ”Ä—pƒtƒHƒ‹ƒ_", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"|3997 ŠJ‚¢‚½ƒtƒHƒ‹ƒ_", noIcon, noKey, noMark, plain,
+		/* [11] */
+		"|3994 ŒÂlƒtƒHƒ‹ƒ_", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"|3993 ƒSƒ~”  ‹ó", noIcon, noKey, noMark, plain,
+		/* [13] */
+		"|3992 ƒfƒXƒNƒgƒbƒv", noIcon, noKey, noMark, plain,
+		/* [14] */
+		"|3984 ƒSƒ~”  ‚¢‚Á‚Ï‚¢", noIcon, noKey, noMark, plain,
+		/* [15] */
+		"|3983 ƒVƒXƒeƒ€ƒtƒHƒ‹ƒ_", noIcon, noKey, noMark, plain,
+		/* [16] */
+		"|3982 ƒAƒbƒvƒ‹ƒƒjƒ…[", noIcon, noKey, noMark, plain,
+		/* [17] */
+		"|3981 ‹N“®€–Ú", noIcon, noKey, noMark, plain,
+		/* [18] */
+		"|3980 ‹¤—LƒtƒHƒ‹ƒ_", noIcon, noKey, noMark, plain,
+		/* [19] */
+		"|3979 ƒhƒƒbƒvƒtƒHƒ‹ƒ_", noIcon, noKey, noMark, plain,
+		/* [20] */
+		"|3978 ‹¤—L“r’†ƒtƒHƒ‹ƒ_", noIcon, noKey, noMark, plain,
+		/* [21] */
+		"|3977 ‹¤—LŠ®—¹ƒtƒHƒ‹ƒ_", noIcon, noKey, noMark, plain,
+		/* [22] */
+		"|3976 ƒRƒ“ƒgƒ[ƒ‹ƒpƒlƒ‹", noIcon, noKey, noMark, plain,
+		/* [23] */
+		"|3975 ƒvƒŠƒ“ƒgƒXƒv[ƒ‹", noIcon, noKey, noMark, plain,
+		/* [24] */
+		"|3974 ‰Šúİ’è", noIcon, noKey, noMark, plain,
+		/* [25] */
+		"|3973 ‹@”\Šg’£", noIcon, noKey, noMark, plain,
+		/* [26] */
+		"|3972 ƒtƒ@ƒCƒ‹ƒT[ƒo[", noIcon, noKey, noMark, plain,
+		/* [27] */
+		"|3968 ƒtƒHƒ“ƒg", noIcon, noKey, noMark, plain,
+		/* [28] */
+		"|3966 Å‹ßg‚Á‚½‘—Ş", noIcon, noKey, noMark, plain,
+		/* [29] */
+		"|3965 Å‹ßg‚Á‚½ƒAƒvƒŠƒP[ƒVƒ‡ƒ“", noIcon, noKey, noMark, plain,
+		/* [30] */
+		"|3964 Å‹ßg‚Á‚½ƒT[ƒo[", noIcon, noKey, noMark, plain,
+		/* [31] */
+		"|3963 MacOS î•ñƒtƒ@ƒCƒ‹", noIcon, noKey, noMark, plain,
+		/* [32] */
+		"|3962 ƒRƒ“ƒgƒ[ƒ‹ƒo[€–Ú", noIcon, noKey, noMark, plain,
+		/* [33] */
+		"|3961 ƒTƒEƒ“ƒh", noIcon, noKey, noMark, plain,
+		/* [34] */
+		"|3960 ƒwƒ‹ƒv", noIcon, noKey, noMark, plain,
+		/* [35] */
+		"|3959 ƒXƒNƒŠƒvƒeƒBƒ“ƒO‹@”’Ç‰Á", noIcon, noKey, noMark, plain,
+		/* [36] */
+		"|3958 ƒCƒ“ƒ^[ƒlƒbƒgƒvƒ‰ƒOƒCƒ“", noIcon, noKey, noMark, plain,
+		/* [37] */
+		"|3957 Œ¾ŒêƒTƒ|[ƒg", noIcon, noKey, noMark, plain,
+		/* [38] */
+		"|3956 ‹¤—Lƒ‰ƒCƒuƒ‰ƒŠ", noIcon, noKey, noMark, plain,
+		/* [39] */
+		"|3955 ƒeƒLƒXƒgƒGƒ“ƒR[ƒfƒBƒ“ƒO", noIcon, noKey, noMark, plain,
+		/* [40] */
+		"|3954 ƒvƒŠƒ“ƒ^ƒhƒ‰ƒCƒo", noIcon, noKey, noMark, plain,
+		/* [41] */
+		"|3953 ƒvƒŠƒ“ƒ^‹Lqƒtƒ@ƒCƒ‹", noIcon, noKey, noMark, plain,
+		/* [42] */
+		"|3952 Voices", noIcon, noKey, noMark, plain,
+		/* [43] */
+		"|3951 ƒRƒ“ƒgƒ[ƒ‹ƒpƒlƒ‹ig—p’â~j", noIcon, noKey, noMark, plain,
+		/* [44] */
+		"|3950 ‹@”\Šg’£ig—p’â~j", noIcon, noKey, noMark, plain,
+		/* [45] */
+		"|3949 ‹N“®€–Úig—p’â~j", noIcon, noKey, noMark, plain,
+		/* [46] */
+		"|3948 ƒVƒXƒeƒ€I—¹€–Úig—p’â~j", noIcon, noKey, noMark, plain,
+		/* [47] */
+		"|3947 ƒVƒXƒeƒ€‹@”\Šg’£ig—p’â~j", noIcon, noKey, noMark, plain,
+		/* [48] */
+		"|3946 ƒAƒVƒXƒ^ƒ“ƒg", noIcon, noKey, noMark, plain,
+		/* [49] */
+		"|3945 ƒ†[ƒeƒBƒŠƒeƒB", noIcon, noKey, noMark, plain,
+		/* [50] */
+		"|3944 ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒTƒ|[ƒg", noIcon, noKey, noMark, plain,
+		/* [51] */
+		"|3943 Apple ƒGƒNƒXƒgƒ‰", noIcon, noKey, noMark, plain,
+		/* [52] */
+		"|3942 ƒRƒ“ƒeƒNƒXƒgƒƒjƒ…[€–Ú", noIcon, noKey, noMark, plain,
+		/* [53] */
+		"|3812 ƒ[ƒNƒOƒ‹[ƒv", noIcon, noKey, noMark, plain,
+		/* [54] */
+		"|3811 —˜—pÒ", noIcon, noKey, noMark, plain,
+		/* [55] */
+		"|3774 ƒVƒXƒeƒ€ƒtƒHƒ‹ƒ_ (•ÛŒì)", noIcon, noKey, noMark, plain,
+		/* [56] */
+		"|3773 ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒtƒHƒ‹ƒ_ (•ÛŒì)", noIcon, noKey, noMark, plain
 	}
 };
 
@@ -2138,7 +3021,7 @@ resource 'MENU' (205) {
 		/* [6] */
 		"|20732 TrueType ƒtƒ‰ƒbƒgƒtƒHƒ“ƒg", noIcon, noKey, noMark, plain,
 		/* [7] */
-		"|16415 ”Ä—p‹@”\Šg’£", noIcon, noKey, noMark, plain,
+		"|16415 ”Ä—p‹@”Šg’£", noIcon, noKey, noMark, plain,
 		/* [8] */
 		"|4000 ”Ä—p‘—Ş", noIcon, noKey, noMark, plain,
 		/* [9] */
@@ -2241,7 +3124,7 @@ resource 'MENU' (207) {
 	textMenuProc,
 	0x7FFFFEFF,
 	enabled,
-	"ƒoƒbƒeƒŠ•\¦",
+	"ƒoƒbƒeƒŠ[•\¦",
 	{	/* array: 19 elements */
 		/* [1] */
 		"|20290 ƒoƒbƒeƒŠ[[“d’† 100%", noIcon, noKey, noMark, plain,
@@ -2400,1101 +3283,1943 @@ resource 'MENU' (209) {
 	}
 };
 
-resource 'MENU' (1410) {
-	1410,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"ƒtƒHƒ“ƒg",
-	{	/* array: 0 elements */
-	}
-};
-
-resource 'MENU' (1411) {
-	1411,
-	textMenuProc,
-	0x7FFFFDFF,
-	enabled,
-	"ƒTƒCƒY",
-	{	/* array: 11 elements */
+resource 'DITL' (1410, "Text Tool") {
+	{	/* array DITLarray: 9 elements */
 		/* [1] */
-		"9", noIcon, noKey, noMark, plain,
+		{204, 123, 224, 191},
+		Button {
+			enabled,
+			"OK"
+		},
 		/* [2] */
-		"10", noIcon, noKey, noMark, plain,
+		{204, 43, 224, 107},
+		Button {
+			enabled,
+			"ƒLƒƒƒ“ƒZƒ‹"
+		},
 		/* [3] */
-		"12", noIcon, noKey, noMark, plain,
+		{100, 11, 116, 51},
+		StaticText {
+			disabled,
+			"•¶šF"
+		},
 		/* [4] */
-		"14", noIcon, noKey, noMark, plain,
+		{119, 16, 187, 192},
+		EditText {
+			enabled,
+			"Icon Mangler"
+		},
 		/* [5] */
-		"18", noIcon, noKey, noMark, plain,
+		{8, 8, 28, 188},
+		Control {
+			enabled,
+			1410
+		},
 		/* [6] */
-		"24", noIcon, noKey, noMark, plain,
+		{38, 11, 54, 56},
+		StaticText {
+			disabled,
+			"ƒTƒCƒYF"
+		},
 		/* [7] */
-		"36", noIcon, noKey, noMark, plain,
+		{39, 124, 55, 158},
+		EditText {
+			enabled,
+			"12"
+		},
 		/* [8] */
-		"48", noIcon, noKey, noMark, plain,
+		{37, 166, 57, 188},
+		Control {
+			enabled,
+			1411
+		},
 		/* [9] */
-		"72", noIcon, noKey, noMark, plain,
-		/* [10] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [11] */
-		"‚»‚Ì‘¼", noIcon, noKey, noMark, 2
+		{66, 8, 86, 190},
+		Control {
+			enabled,
+			1412
+		}
 	}
 };
 
-resource 'MENU' (1412) {
-	1412,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"ƒXƒ^ƒCƒ‹",
-	{	/* array: 7 elements */
+resource 'DITL' (1011, "Adjust: Hue & Saturation Pane") {
+	{	/* array DITLarray: 7 elements */
 		/* [1] */
-		"•W€", noIcon, noKey, noMark, plain,
+		{47, 83, 78, 303},
+		Control {
+			enabled,
+			1011
+		},
 		/* [2] */
-		"ƒ{[ƒ‹ƒh", noIcon, noKey, noMark, 1,
+		{85, 83, 116, 303},
+		Control {
+			enabled,
+			1012
+		},
 		/* [3] */
-		"Î‘Ì", noIcon, noKey, noMark, 2,
+		{50, 316, 66, 352},
+		EditText {
+			enabled,
+			"0"
+		},
 		/* [4] */
-		"‰ºü", noIcon, noKey, noMark, 4,
+		{87, 316, 103, 352},
+		EditText {
+			enabled,
+			"0"
+		},
 		/* [5] */
-		"‰e•t‚«", noIcon, noKey, noMark, 16,
+		{116, 6, 132, 166},
+		CheckBox {
+			enabled,
+			"FÊ‚Ì“ˆê"
+		},
 		/* [6] */
-		"•¶šŠÔ‚ğ‹l‚ß‚é", noIcon, noKey, noMark, 32,
+		{47, 5, 68, 80},
+		StaticText {
+			disabled,
+			"F‘ŠF"
+		},
 		/* [7] */
-		"•¶šŠÔ‚ğŠg‚°‚é", noIcon, noKey, noMark, 64
+		{85, 5, 106, 80},
+		StaticText {
+			disabled,
+			"Ê“xF"
+		}
 	}
 };
 
-resource 'MENU' (203) {
-	203,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"ƒAƒCƒeƒ€ƒAƒCƒRƒ“",
-	{	/* array: 1 elements */
+resource 'DITL' (9999) {
+	{	/* array DITLarray: 4 elements */
 		/* [1] */
-		"|16455 ƒAƒCƒeƒ€ƒAƒCƒRƒ“", noIcon, noKey, noMark, plain
-	}
-};
-
-resource 'MENU' (204) {
-	204,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"ƒVƒXƒeƒ€ƒtƒHƒ‹ƒ_",
-	{	/* array: 56 elements */
-		/* [1] */
-		"|20803 Œ¾Œê & ’nˆæƒTƒ|[ƒg", noIcon, noKey, noMark, plain,
+		{0, 0, 194, 194},
+		Control {
+			enabled,
+			200
+		},
 		/* [2] */
-		"|20801 ƒCƒ“ƒ^[ƒlƒbƒgŒŸõƒTƒCƒg", noIcon, noKey, noMark, plain,
+		{193, -1, 209, 63},
+		Control {
+			enabled,
+			201
+		},
 		/* [3] */
-		"|20797 ƒXƒNƒŠƒvƒg", noIcon, noKey, noMark, plain,
+		{193, 62, 209, 194},
+		Control {
+			enabled,
+			203
+		},
 		/* [4] */
-		"|20792 ColorSync ƒvƒƒtƒ@ƒCƒ‹", noIcon, noKey, noMark, plain,
+		{-1, 193, 194, 209},
+		Control {
+			enabled,
+			202
+		}
+	}
+};
+
+resource 'DITL' (1002) {
+	{	/* array DITLarray: 2 elements */
+		/* [1] */
+		{2, 2, 34, 346},
+		StaticText {
+			disabled,
+			"ƒVƒ‡[ƒgƒJƒbƒg‚Æ‚µ‚Äg—p‚·‚éƒL[‚ğ‰Ÿ‚µ‚Ä‰º‚³‚¢B"
+		},
+		/* [2] */
+		{38, 2, 55, 346},
+		StaticText {
+			disabled,
+			""
+		}
+	}
+};
+
+resource 'DITL' (1003) {
+	{	/* array DITLarray: 5 elements */
+		/* [1] */
+		{116, 270, 136, 338},
+		Button {
+			enabled,
+			"’Ç‰Á"
+		},
+		/* [2] */
+		{116, 190, 136, 254},
+		Button {
+			enabled,
+			"ƒLƒƒƒ“ƒZƒ‹"
+		},
+		/* [3] */
+		{4, 4, 52, 344},
+		StaticText {
+			disabled,
+			"’Ç‰Á‚·‚éƒAƒCƒRƒ“‚Ìí—Ş‚Æ’Ç‰Áæ‚ÌƒAƒCƒRƒ“‚Ìí—Ş‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢B"
+		},
+		/* [4] */
+		{56, 4, 76, 338},
+		Control {
+			enabled,
+			1120
+		},
 		/* [5] */
-		"|20744 ƒCƒ“ƒ^[ƒlƒbƒg", noIcon, noKey, noMark, plain,
+		{82, 4, 102, 338},
+		Control {
+			enabled,
+			1121
+		}
+	}
+};
+
+resource 'DITL' (300) {
+	{	/* array DITLarray: 2 elements */
+		/* [1] */
+		{28, 8, 41, 342},
+		Control {
+			enabled,
+			310
+		},
+		/* [2] */
+		{4, 8, 21, 341},
+		StaticText {
+			disabled,
+			""
+		}
+	}
+};
+
+resource 'DITL' (301) {
+	{	/* array DITLarray: 4 elements */
+		/* [1] */
+		{-1, 319, 343, 335},
+		Control {
+			enabled,
+			300
+		},
+		/* [2] */
+		{343, 100, 359, 320},
+		Control {
+			enabled,
+			301
+		},
+		/* [3] */
+		{0, 0, 344, 320},
+		Control {
+			enabled,
+			302
+		},
+		/* [4] */
+		{343, -1, 359, 101},
+		Control {
+			enabled,
+			303
+		}
+	}
+};
+
+resource 'DITL' (3000, "Basic Alert") {
+	{	/* array DITLarray: 2 elements */
+		/* [1] */
+		{67, 311, 87, 369},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{8, 58, 60, 369},
+		StaticText {
+			disabled,
+			"^0 ^1B"
+		}
+	}
+};
+
+resource 'DITL' (3001, "Select Object") {
+	{	/* array DITLarray: 11 elements */
+		/* [1] */
+		{157, 253, 177, 333},
+		Button {
+			enabled,
+			"ŠJ‚­"
+		},
+		/* [2] */
+		{126, 253, 146, 333},
+		Button {
+			enabled,
+			"ƒLƒƒƒ“ƒZƒ‹"
+		},
+		/* [3] */
+		{0, 0, 0, 0},
+		HelpItem {
+			disabled,
+			HMScanhdlg {
+				-6043
+			}
+		},
+		/* [4] */
+		{30, 236, 46, 338},
+		UserItem {
+			enabled
+		},
+		/* [5] */
+		{54, 253, 74, 333},
+		Button {
+			enabled,
+			"æ‚èo‚µ"
+		},
 		/* [6] */
-		"|20729 ‚æ‚­g‚¤€–Ú", noIcon, noKey, noMark, plain,
+		{82, 253, 102, 333},
+		Button {
+			enabled,
+			"ƒfƒXƒNƒgƒbƒv"
+		},
 		/* [7] */
-		"|20724 Speakable Items", noIcon, noKey, noMark, plain,
+		{51, 13, 181, 231},
+		UserItem {
+			enabled
+		},
 		/* [8] */
-		"|20723 ƒAƒsƒAƒ‰ƒ“ƒX", noIcon, noKey, noMark, plain,
+		{28, 13, 47, 231},
+		UserItem {
+			enabled
+		},
 		/* [9] */
-		"|3999 ”Ä—pƒtƒHƒ‹ƒ_", noIcon, noKey, noMark, plain,
+		{113, 252, 114, 334},
+		Picture {
+			disabled,
+			11
+		},
 		/* [10] */
-		"|3997 ŠJ‚¢‚½ƒtƒHƒ‹ƒ_", noIcon, noKey, noMark, plain,
+		{189, 24, 209, 211},
+		Button {
+			enabled,
+			"g<file name>h‚ğ‘I‘ğ"
+		},
 		/* [11] */
-		"|3994 ŒÂlƒtƒHƒ‹ƒ_", noIcon, noKey, noMark, plain,
+		{6, 15, 23, 300},
+		StaticText {
+			disabled,
+			"ƒtƒ@ƒCƒ‹AƒtƒHƒ‹ƒ_AƒfƒBƒXƒN‚ğ‘I‘ğF"
+		}
+	}
+};
+
+resource 'DITL' (3002) {
+	{	/* array DITLarray: 13 elements */
+		/* [1] */
+		{161, 277, 181, 357},
+		Button {
+			enabled,
+			"•Û‘¶"
+		},
+		/* [2] */
+		{130, 277, 150, 357},
+		Button {
+			enabled,
+			"ƒLƒƒƒ“ƒZƒ‹"
+		},
+		/* [3] */
+		{0, 0, 0, 0},
+		HelpItem {
+			disabled,
+			HMScanhdlg {
+				-6043
+			}
+		},
+		/* [4] */
+		{8, 267, 24, 363},
+		UserItem {
+			enabled
+		},
+		/* [5] */
+		{32, 277, 52, 357},
+		Button {
+			enabled,
+			"æ‚èo‚µ"
+		},
+		/* [6] */
+		{60, 277, 80, 357},
+		Button {
+			enabled,
+			"ƒfƒXƒNƒgƒbƒv"
+		},
+		/* [7] */
+		{29, 12, 127, 261},
+		UserItem {
+			enabled
+		},
+		/* [8] */
+		{6, 12, 25, 261},
+		UserItem {
+			enabled
+		},
+		/* [9] */
+		{119, 275, 120, 359},
+		Picture {
+			disabled,
+			11
+		},
+		/* [10] */
+		{157, 15, 173, 259},
+		EditText {
+			enabled,
+			""
+		},
+		/* [11] */
+		{136, 15, 152, 227},
+		StaticText {
+			disabled,
+			"•Ê–¼‚Å•Û‘¶‚·‚éƒAƒCƒRƒ“–¼F"
+		},
 		/* [12] */
-		"|3993 ƒSƒ~”  ‹ó", noIcon, noKey, noMark, plain,
+		{88, 277, 108, 357},
+		UserItem {
+			disabled
+		},
 		/* [13] */
-		"|3992 ƒfƒXƒNƒgƒbƒv", noIcon, noKey, noMark, plain,
+		{185, 11, 205, 261},
+		Control {
+			enabled,
+			2001
+		}
+	}
+};
+
+resource 'DITL' (2000) {
+	{	/* array DITLarray: 1 elements */
+		/* [1] */
+		{6, 8, 26, 258},
+		Control {
+			enabled,
+			2000
+		}
+	}
+};
+
+resource 'DITL' (280) {
+	{	/* array DITLarray: 1 elements */
+		/* [1] */
+		{22, 73, 158, 317},
+		Control {
+			enabled,
+			280
+		}
+	}
+};
+
+resource 'DITL' (260) {
+	{	/* array DITLarray: 10 elements */
+		/* [1] */
+		{22, 73, 158, 317},
+		Control {
+			enabled,
+			260
+		},
+		/* [2] */
+		{108, 100, 126, 308},
+		Control {
+			enabled,
+			263
+		},
+		/* [3] */
+		{34, 100, 52, 308},
+		Control {
+			enabled,
+			261
+		},
+		/* [4] */
+		{71, 100, 89, 308},
+		Control {
+			enabled,
+			262
+		},
+		/* [5] */
+		{108, 84, 119, 96},
+		Control {
+			enabled,
+			266
+		},
+		/* [6] */
+		{34, 84, 45, 96},
+		Control {
+			enabled,
+			264
+		},
+		/* [7] */
+		{71, 84, 82, 96},
+		Control {
+			enabled,
+			265
+		},
+		/* [8] */
+		{52, 109, 64, 300},
+		Control {
+			enabled,
+			267
+		},
+		/* [9] */
+		{89, 109, 101, 300},
+		Control {
+			enabled,
+			268
+		},
+		/* [10] */
+		{126, 109, 138, 300},
+		Control {
+			enabled,
+			269
+		}
+	}
+};
+
+resource 'DITL' (290) {
+	{	/* array DITLarray: 1 elements */
+		/* [1] */
+		{28, 74, 152, 316},
+		Control {
+			enabled,
+			290
+		}
+	}
+};
+
+resource 'DITL' (270) {
+	{	/* array DITLarray: 10 elements */
+		/* [1] */
+		{22, 73, 158, 317},
+		Control {
+			enabled,
+			270
+		},
+		/* [2] */
+		{108, 100, 124, 308},
+		Control {
+			enabled,
+			273
+		},
+		/* [3] */
+		{34, 100, 50, 308},
+		Control {
+			enabled,
+			271
+		},
+		/* [4] */
+		{71, 100, 87, 308},
+		Control {
+			enabled,
+			272
+		},
+		/* [5] */
+		{34, 84, 47, 96},
+		Control {
+			enabled,
+			274
+		},
+		/* [6] */
+		{71, 84, 82, 96},
+		Control {
+			enabled,
+			275
+		},
+		/* [7] */
+		{108, 84, 119, 96},
+		Control {
+			enabled,
+			276
+		},
+		/* [8] */
+		{52, 109, 64, 300},
+		Control {
+			enabled,
+			277
+		},
+		/* [9] */
+		{89, 109, 101, 300},
+		Control {
+			enabled,
+			278
+		},
+		/* [10] */
+		{126, 109, 138, 300},
+		Control {
+			enabled,
+			279
+		}
+	}
+};
+
+resource 'DITL' (4000) {
+	{	/* array DITLarray: 8 elements */
+		/* [1] */
+		{58, 288, 78, 356},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{58, 208, 78, 272},
+		Button {
+			enabled,
+			"ƒLƒƒƒ“ƒZƒ‹"
+		},
+		/* [3] */
+		{58, 70, 78, 150},
+		Button {
+			enabled,
+			"ƒ{ƒ^ƒ“"
+		},
+		/* [4] */
+		{12, 20, 44, 52},
+		Icon {
+			disabled,
+			2
+		},
+		/* [5] */
+		{12, 70, 28, 356},
+		StaticText {
+			disabled,
+			"Static text"
+		},
+		/* [6] */
+		{32, 70, 46, 356},
+		StaticText {
+			disabled,
+			"Static text"
+		},
+		/* [7] */
+		{12, 20, 44, 52},
+		Icon {
+			disabled,
+			0
+		},
+		/* [8] */
+		{12, 20, 44, 52},
+		Icon {
+			disabled,
+			1
+		}
+	}
+};
+
+resource 'DITL' (1001, "Icon Info") {
+	{	/* array DITLarray: 54 elements */
+		/* [1] */
+		{318, 306, 338, 374},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{318, 212, 338, 292},
+		Button {
+			enabled,
+			"ƒLƒƒƒ“ƒZƒ‹"
+		},
+		/* [3] */
+		{13, 7, 29, 58},
+		StaticText {
+			enabled,
+			"IDF"
+		},
+		/* [4] */
+		{13, 64, 29, 124},
+		EditText {
+			enabled,
+			"-16455"
+		},
+		/* [5] */
+		{70, 10, 86, 60},
+		StaticText {
+			disabled,
+			"–¼ÌF"
+		},
+		/* [6] */
+		{70, 64, 86, 375},
+		EditText {
+			enabled,
+			""
+		},
+		/* [7] */
+		{245, 10, 307, 379},
+		Control {
+			enabled,
+			1001
+		},
+		/* [8] */
+		{13, 218, 29, 376},
+		StaticText {
+			disabled,
+			""
+		},
+		/* [9] */
+		{264, 14, 280, 124},
+		Control {
+			enabled,
+			1106
+		},
+		/* [10] */
+		{282, 14, 298, 124},
+		Control {
+			enabled,
+			1107
+		},
+		/* [11] */
+		{264, 264, 280, 374},
+		Control {
+			enabled,
+			1110
+		},
+		/* [12] */
+		{264, 134, 280, 244},
+		Control {
+			enabled,
+			1108
+		},
+		/* [13] */
+		{282, 134, 298, 244},
+		Control {
+			enabled,
+			1109
+		},
 		/* [14] */
-		"|3984 ƒSƒ~”  ‚¢‚Á‚Ï‚¢", noIcon, noKey, noMark, plain,
+		{13, 165, 29, 220},
+		StaticText {
+			disabled,
+			"ƒTƒCƒYF"
+		},
 		/* [15] */
-		"|3983 ƒVƒXƒeƒ€ƒtƒHƒ‹ƒ_", noIcon, noKey, noMark, plain,
+		{11, 130, 31, 152},
+		Control {
+			enabled,
+			1002
+		},
 		/* [16] */
-		"|3982 ƒAƒbƒvƒ‹ƒƒjƒ…[", noIcon, noKey, noMark, plain,
+		{40, 10, 60, 378},
+		Control {
+			enabled,
+			1005
+		},
 		/* [17] */
-		"|3981 ‹N“®€–Ú", noIcon, noKey, noMark, plain,
+		{99, 9, 241, 381},
+		Control {
+			enabled,
+			1006
+		},
 		/* [18] */
-		"|3980 ‹¤—LƒtƒHƒ‹ƒ_", noIcon, noKey, noMark, plain,
+		{220, 13, 236, 153},
+		Control {
+			enabled,
+			1104
+		},
 		/* [19] */
-		"|3979 ƒhƒƒbƒvƒtƒHƒ‹ƒ_", noIcon, noKey, noMark, plain,
+		{121, 13, 137, 153},
+		Control {
+			enabled,
+			1100
+		},
 		/* [20] */
-		"|3978 ‹¤—L“r’†ƒtƒHƒ‹ƒ_", noIcon, noKey, noMark, plain,
+		{165, 13, 181, 153},
+		Control {
+			enabled,
+			1101
+		},
 		/* [21] */
-		"|3977 ‹¤—LŠ®—¹ƒtƒHƒ‹ƒ_", noIcon, noKey, noMark, plain,
+		{184, 13, 200, 153},
+		Control {
+			enabled,
+			1102
+		},
 		/* [22] */
-		"|3976 ƒRƒ“ƒgƒ[ƒ‹ƒpƒlƒ‹", noIcon, noKey, noMark, plain,
+		{202, 13, 218, 153},
+		Control {
+			enabled,
+			1103
+		},
 		/* [23] */
-		"|3975 ƒvƒŠƒ“ƒgƒXƒv[ƒ‹", noIcon, noKey, noMark, plain,
+		{159, 15, 162, 373},
+		Control {
+			enabled,
+			1105
+		},
 		/* [24] */
-		"|3974 ‰Šúİ’è", noIcon, noKey, noMark, plain,
+		{142, 15, 156, 65},
+		StaticText {
+			disabled,
+			"à–¾"
+		},
 		/* [25] */
-		"|3973 ‹@”\Šg’£", noIcon, noKey, noMark, plain,
+		{142, 90, 154, 150},
+		StaticText {
+			disabled,
+			"ƒAƒCƒRƒ“F"
+		},
 		/* [26] */
-		"|3972 ƒtƒ@ƒCƒ‹ƒT[ƒo[", noIcon, noKey, noMark, plain,
+		{142, 148, 154, 179},
+		StaticText {
+			disabled,
+			"32-bit"
+		},
 		/* [27] */
-		"|3968 ƒtƒHƒ“ƒg", noIcon, noKey, noMark, plain,
+		{142, 180, 154, 211},
+		StaticText {
+			disabled,
+			"8-bit"
+		},
 		/* [28] */
-		"|3966 Å‹ßg‚Á‚½‘—Ş", noIcon, noKey, noMark, plain,
+		{142, 212, 154, 243},
+		StaticText {
+			disabled,
+			"4-bit"
+		},
 		/* [29] */
-		"|3965 Å‹ßg‚Á‚½ƒAƒvƒŠƒP[ƒVƒ‡ƒ“", noIcon, noKey, noMark, plain,
+		{142, 244, 154, 275},
+		StaticText {
+			disabled,
+			"1-bit"
+		},
 		/* [30] */
-		"|3964 Å‹ßg‚Á‚½ƒT[ƒo[", noIcon, noKey, noMark, plain,
+		{142, 273, 154, 318},
+		StaticText {
+			disabled,
+			"ƒ}ƒXƒNF"
+		},
 		/* [31] */
-		"|3963 MacOS î•ñƒtƒ@ƒCƒ‹", noIcon, noKey, noMark, plain,
+		{142, 315, 154, 346},
+		StaticText {
+			disabled,
+			"8-bit"
+		},
 		/* [32] */
-		"|3962 ƒRƒ“ƒgƒ[ƒ‹ƒo[€–Ú", noIcon, noKey, noMark, plain,
+		{142, 347, 154, 378},
+		StaticText {
+			disabled,
+			"1-bit"
+		},
 		/* [33] */
-		"|3961 ƒTƒEƒ“ƒh", noIcon, noKey, noMark, plain,
+		{165, 154, 181, 171},
+		CheckBox {
+			enabled,
+			""
+		},
 		/* [34] */
-		"|3960 ƒwƒ‹ƒv", noIcon, noKey, noMark, plain,
+		{184, 154, 200, 171},
+		CheckBox {
+			enabled,
+			""
+		},
 		/* [35] */
-		"|3959 ƒXƒNƒŠƒvƒeƒBƒ“ƒO‹@”\’Ç‰Á", noIcon, noKey, noMark, plain,
+		{202, 154, 218, 171},
+		CheckBox {
+			enabled,
+			""
+		},
 		/* [36] */
-		"|3958 ƒCƒ“ƒ^[ƒlƒbƒgƒvƒ‰ƒOƒCƒ“", noIcon, noKey, noMark, plain,
+		{165, 182, 181, 199},
+		CheckBox {
+			enabled,
+			""
+		},
 		/* [37] */
-		"|3957 Œ¾ŒêƒTƒ|[ƒg", noIcon, noKey, noMark, plain,
+		{184, 182, 200, 199},
+		CheckBox {
+			enabled,
+			""
+		},
 		/* [38] */
-		"|3956 ‹¤—Lƒ‰ƒCƒuƒ‰ƒŠ", noIcon, noKey, noMark, plain,
+		{202, 182, 218, 199},
+		CheckBox {
+			enabled,
+			""
+		},
 		/* [39] */
-		"|3955 ƒeƒLƒXƒgƒGƒ“ƒR[ƒfƒBƒ“ƒO", noIcon, noKey, noMark, plain,
+		{220, 182, 236, 199},
+		CheckBox {
+			enabled,
+			""
+		},
 		/* [40] */
-		"|3954 ƒvƒŠƒ“ƒ^ƒhƒ‰ƒCƒo", noIcon, noKey, noMark, plain,
+		{165, 214, 181, 231},
+		CheckBox {
+			enabled,
+			""
+		},
 		/* [41] */
-		"|3953 ƒvƒŠƒ“ƒ^‹Lqƒtƒ@ƒCƒ‹", noIcon, noKey, noMark, plain,
+		{184, 214, 200, 231},
+		CheckBox {
+			enabled,
+			""
+		},
 		/* [42] */
-		"|3952 Voices", noIcon, noKey, noMark, plain,
+		{202, 214, 218, 231},
+		CheckBox {
+			enabled,
+			""
+		},
 		/* [43] */
-		"|3951 ƒRƒ“ƒgƒ[ƒ‹ƒpƒlƒ‹ig—p’â~j", noIcon, noKey, noMark, plain,
+		{220, 214, 236, 231},
+		CheckBox {
+			enabled,
+			""
+		},
 		/* [44] */
-		"|3950 ‹@”\Šg’£ig—p’â~j", noIcon, noKey, noMark, plain,
+		{165, 246, 181, 263},
+		CheckBox {
+			disabled,
+			""
+		},
 		/* [45] */
-		"|3949 ‹N“®€–Úig—p’â~j", noIcon, noKey, noMark, plain,
+		{184, 246, 200, 263},
+		CheckBox {
+			disabled,
+			""
+		},
 		/* [46] */
-		"|3948 ƒVƒXƒeƒ€I—¹€–Úig—p’â~j", noIcon, noKey, noMark, plain,
+		{202, 246, 218, 263},
+		CheckBox {
+			disabled,
+			""
+		},
 		/* [47] */
-		"|3947 ƒVƒXƒeƒ€‹@”\Šg’£ig—p’â~j", noIcon, noKey, noMark, plain,
+		{220, 246, 236, 263},
+		CheckBox {
+			disabled,
+			""
+		},
 		/* [48] */
-		"|3946 ƒAƒVƒXƒ^ƒ“ƒg", noIcon, noKey, noMark, plain,
+		{165, 318, 181, 335},
+		CheckBox {
+			enabled,
+			""
+		},
 		/* [49] */
-		"|3945 ƒ†[ƒeƒBƒŠƒeƒB", noIcon, noKey, noMark, plain,
+		{184, 318, 200, 335},
+		CheckBox {
+			enabled,
+			""
+		},
 		/* [50] */
-		"|3944 ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒTƒ|[ƒg", noIcon, noKey, noMark, plain,
+		{202, 318, 218, 335},
+		CheckBox {
+			enabled,
+			""
+		},
 		/* [51] */
-		"|3943 Apple ƒGƒNƒXƒgƒ‰", noIcon, noKey, noMark, plain,
+		{165, 350, 181, 367},
+		CheckBox {
+			disabled,
+			""
+		},
 		/* [52] */
-		"|3942 ƒRƒ“ƒeƒNƒXƒgƒƒjƒ…[€–Ú", noIcon, noKey, noMark, plain,
+		{184, 350, 200, 367},
+		CheckBox {
+			disabled,
+			""
+		},
 		/* [53] */
-		"|3812 ƒ[ƒNƒOƒ‹[ƒv", noIcon, noKey, noMark, plain,
+		{202, 350, 218, 367},
+		CheckBox {
+			disabled,
+			""
+		},
 		/* [54] */
-		"|3811 —˜—pÒ", noIcon, noKey, noMark, plain,
-		/* [55] */
-		"|3774 ƒVƒXƒeƒ€ƒtƒHƒ‹ƒ_ (•ÛŒì)", noIcon, noKey, noMark, plain,
-		/* [56] */
-		"|3773 ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒtƒHƒ‹ƒ_ (•ÛŒì)", noIcon, noKey, noMark, plain
+		{220, 350, 236, 367},
+		CheckBox {
+			disabled,
+			""
+		}
 	}
 };
 
-resource 'MENU' (128) {
-	128,
-	textMenuProc,
-	0x7FFFFFFB,
-	enabled,
-	apple,
-	{	/* array: 3 elements */
+resource 'DITL' (128, "About Box") {
+	{	/* array DITLarray: 6 elements */
 		/* [1] */
-		"Iconographer ‚É‚Â‚¢‚Ä...", noIcon, noKey, noMark, plain,
+		{68, 9, 92, 167},
+		UserItem {
+			enabled
+		},
 		/* [2] */
-		"“o˜^...", noIcon, noKey, noMark, plain,
+		{92, 9, 116, 165},
+		UserItem {
+			enabled
+		},
 		/* [3] */
-		"-", noIcon, noKey, noMark, plain
-	}
-};
-
-resource 'MENU' (129) {
-	129,
-	textMenuProc,
-	0x7FFFFF77,
-	enabled,
-	"ƒtƒ@ƒCƒ‹",
-	{	/* array: 9 elements */
-		/* [1] */
-		"V‹KƒAƒCƒRƒ“", noIcon, "N", noMark, plain,
-		/* [2] */
-		"ŠJ‚­", noIcon, "O", noMark, plain,
-		/* [3] */
-		"•Â‚¶‚é", noIcon, "W", noMark, plain,
+		{0, 0, 300, 456},
+		UserItem {
+			enabled
+		},
 		/* [4] */
-		"-", noIcon, noKey, noMark, plain,
+		{253, 2, 265, 202},
+		UserItem {
+			disabled
+		},
 		/* [5] */
-		"•Û‘¶", noIcon, "S", noMark, plain,
+		{267, 2, 279, 202},
+		UserItem {
+			disabled
+		},
 		/* [6] */
-		"•Ê–¼‚Å•Û‘¶...", noIcon, "S", noMark, plain,
+		{281, 2, 293, 202},
+		UserItem {
+			disabled
+		}
+	}
+};
+
+resource 'DITL' (250) {
+	{	/* array DITLarray: 10 elements */
+		/* [1] */
+		{23, 8, 77, 62},
+		Control {
+			enabled,
+			250
+		},
+		/* [2] */
+		{3, 71, 161, 321},
+		Control {
+			enabled,
+			251
+		},
+		/* [3] */
+		{-1, -1, 11, 10},
+		Control {
+			enabled,
+			252
+		},
+		/* [4] */
+		{22, 73, 158, 317},
+		Control {
+			enabled,
+			253
+		},
+		/* [5] */
+		{116, 6, 117, 66},
+		Control {
+			enabled,
+			257
+		},
+		/* [6] */
+		{120, 21, 155, 63},
+		Control {
+			enabled,
+			259
+		},
 		/* [7] */
-		"ƒtƒ@ƒCƒ‹‚ÉƒAƒCƒRƒ“‚ğ‘}“ü...", noIcon, noKey, noMark, plain,
+		{120, 2, 155, 21},
+		Control {
+			enabled,
+			258
+		},
 		/* [8] */
-		"-", noIcon, noKey, noMark, plain,
+		{84, 6, 85, 66},
+		Control {
+			enabled,
+			254
+		},
 		/* [9] */
-		"I—¹", noIcon, "Q", noMark, plain
-	}
-};
-
-resource 'MENU' (131) {
-	131,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"‘I‘ğ",
-	{	/* array: 4 elements */
-		/* [1] */
-		"‚·‚×‚Ä‚ğ‘I‘ğ", noIcon, "A", noMark, plain,
-		/* [2] */
-		"“¯‚¶F‚ğ‘I‘ğ", noIcon, noKey, noMark, plain,
-		/* [3] */
-		"‘I‘ğ”ÍˆÍ‚ğ‰ğœ", noIcon, "D", noMark, plain,
-		/* [4] */
-		"‘I‘ğ”ÍˆÍ‚ğ”½“]", noIcon, "I", noMark, plain
-	}
-};
-
-resource 'MENU' (132) {
-	132,
-	textMenuProc,
-	0x7FFFFFDB,
-	enabled,
-	"•ÏŠ·",
-	{	/* array: 7 elements */
-		/* [1] */
-		"Œv‰ñ‚è‚É 90‹‰ñ“]", noIcon, "T", noMark, plain,
-		/* [2] */
-		"”½Œv‰ñ‚è‚É 90‹‰ñ“]", noIcon, "T", noMark, plain,
-		/* [3] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [4] */
-		"…•½•ûŒü‚É”½“]", noIcon, "[", noMark, plain,
-		/* [5] */
-		"‚’¼•ûŒü‚É”½“]", noIcon, "]", noMark, plain,
-		/* [6] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [7] */
-		"F’²‚ğ”½“]", noIcon, "I", noMark, plain
-	}
-};
-
-resource 'MENU' (133) {
-	133,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"ƒy[ƒXƒg",
-	{	/* array: 4 elements */
-		/* [1] */
-		"•W€", noIcon, "V", noMark, plain,
-		/* [2] */
-		"ƒAƒCƒRƒ“‚Æƒ}ƒXƒN", noIcon, "V", noMark, plain,
-		/* [3] */
-		"‘I‘ğ”ÍˆÍ‚Éƒy[ƒXƒg", noIcon, "V", noMark, plain,
-		/* [4] */
-		"ŠeƒTƒCƒY‚ÌƒAƒCƒRƒ“‚·‚×‚Ä", noIcon, "V", noMark, plain
-	}
-};
-
-resource 'MENU' (134) {
-	134,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"ƒRƒs[",
-	{	/* array: 3 elements */
-		/* [1] */
-		"•W€", noIcon, "C", noMark, plain,
-		/* [2] */
-		"ƒAƒCƒRƒ“‚Æƒ}ƒXƒN", noIcon, "C", noMark, plain,
-		/* [3] */
-		"ŠeƒTƒCƒY‚ÌƒAƒCƒRƒ“‚·‚×‚Ä", noIcon, "C", noMark, plain
-	}
-};
-
-resource 'MENU' (136) {
-	136,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"F",
-	{	/* array: 2 elements */
-		/* [1] */
-		"MacOS ƒVƒXƒeƒ€F", noIcon, noKey, noMark, plain,
-		/* [2] */
-		"Windows ƒVƒXƒeƒ€F", noIcon, noKey, noMark, plain
-	}
-};
-
-resource 'MENU' (130) {
-	130,
-	textMenuProc,
-	0x7FFFFBFB,
-	enabled,
-	"•ÒW",
-	{	/* array: 12 elements */
-		/* [1] */
-		"æ‚èÁ‚µ", noIcon, "Z", noMark, plain,
-		/* [2] */
-		"‚â‚è’¼‚µ", noIcon, "Z", noMark, plain,
-		/* [3] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [4] */
-		"ƒJƒbƒg", noIcon, "X", noMark, plain,
-		/* [5] */
-		"ƒRƒs[", noIcon, hierarchicalMenu, "†", plain,
-		/* [6] */
-		"ƒy[ƒXƒg", noIcon, hierarchicalMenu, "…", plain,
-		/* [7] */
-		"Á‹", noIcon, noKey, noMark, plain,
-		/* [8] */
-		"‘I‘ğ", noIcon, hierarchicalMenu, "ƒ", plain,
-		/* [9] */
-		"•ÏŠ·...", noIcon, hierarchicalMenu, "„", plain,
+		{90, 22, 115, 64},
+		Control {
+			enabled,
+			256
+		},
 		/* [10] */
-		"F‚Ì’²®...", noIcon, "U", noMark, plain,
+		{90, 5, 115, 21},
+		Control {
+			enabled,
+			255
+		}
+	}
+};
+
+resource 'DITL' (129, "Registration") {
+	{	/* array DITLarray: 9 elements */
+		/* [1] */
+		{102, 270, 122, 338},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{102, 190, 121, 254},
+		Button {
+			enabled,
+			"ƒLƒƒƒ“ƒZƒ‹"
+		},
+		/* [3] */
+		{102, 7, 122, 167},
+		Button {
+			enabled,
+			"¡‚·‚®w“ü‚·‚é"
+		},
+		/* [4] */
+		{12, 136, 28, 336},
+		EditText {
+			enabled,
+			""
+		},
+		/* [5] */
+		{40, 136, 56, 336},
+		EditText {
+			enabled,
+			""
+		},
+		/* [6] */
+		{68, 136, 84, 336},
+		EditText {
+			enabled,
+			""
+		},
+		/* [7] */
+		{12, 8, 28, 88},
+		StaticText {
+			disabled,
+			"“o˜^Ò–¼F"
+		},
+		/* [8] */
+		{40, 8, 56, 98},
+		StaticText {
+			disabled,
+			"Š@@‘®F"
+		},
+		/* [9] */
+		{68, 8, 84, 131},
+		StaticText {
+			disabled,
+			"“o˜^”Ô†F"
+		}
+	}
+};
+
+resource 'DITL' (1000, "Preferences") {
+	{	/* array DITLarray: 69 elements */
+		/* [1] */
+		{261, 306, 281, 374},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{261, 214, 281, 294},
+		Button {
+			enabled,
+			"ƒLƒƒƒ“ƒZƒ‹"
+		},
+		/* [3] */
+		{39, 8, 55, 313},
+		CheckBox {
+			enabled,
+			"“Ç‚İ‚İ‰Â”\‚Èˆê——‚Ì‚İ•\¦‚·‚é"
+		},
+		/* [4] */
+		{46, 320, 57, 360},
+		EditText {
+			disabled,
+			"1000%"
+		},
+		/* [5] */
+		{40, 366, 64, 379},
+		Control {
+			enabled,
+			1000
+		},
+		/* [6] */
+		{107, 16, 123, 181},
+		RadioButton {
+			enabled,
+			"V‹KƒAƒCƒRƒ“ì¬"
+		},
+		/* [7] */
+		{123, 16, 139, 181},
+		RadioButton {
+			enabled,
+			"ƒ_ƒCƒAƒƒO‚ğŠJ‚­"
+		},
+		/* [8] */
+		{139, 16, 155, 181},
+		RadioButton {
+			enabled,
+			"‚È‚É‚à‚µ‚È‚¢"
+		},
+		/* [9] */
+		{56, 8, 72, 313},
+		CheckBox {
+			enabled,
+			"•Û‘¶‚Éƒ}ƒXƒN‚ğ©“®¶¬‚·‚é‚©Šm”F‚·‚é"
+		},
+		/* [10] */
+		{73, 8, 89, 313},
+		CheckBox {
+			enabled,
+			"F”‚ª•s‘«‚µ‚Ä‚é‚ÉƒfƒBƒUƒŠƒ“ƒO‚ğ‚©‚¯‚é"
+		},
 		/* [11] */
-		"-", noIcon, noKey, noMark, plain,
+		{162, 9, 215, 378},
+		Control {
+			enabled,
+			1019
+		},
 		/* [12] */
-		"Šeíİ’è...", noIcon, noKey, noMark, plain
-	}
-};
-
-resource 'MENU' (135) {
-	135,
-	textMenuProc,
-	0x7FFFFFEB,
-	enabled,
-	"ƒAƒCƒRƒ“",
-	{	/* array: 7 elements */
-		/* [1] */
-		"Šg‘å", noIcon, "=", noMark, plain,
-		/* [2] */
-		"k¬", noIcon, "-", noMark, plain,
-		/* [3] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [4] */
-		"F", noIcon, hierarchicalMenu, "ˆ", plain,
-		/* [5] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [6] */
-		"‘}“ü...", noIcon, "K", noMark, plain,
-		/* [7] */
-		"î•ñ‚ğŒ©‚é...", noIcon, noKey, noMark, plain
-	}
-};
-
-resource 'MENU' (300, "Icon Browser: Icon Types") {
-	300,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"ƒAƒCƒRƒ“í•Ê",
-	{	/* array: 3 elements */
-		/* [1] */
-		"VŒ`®", noIcon, noKey, noMark, plain,
-		/* [2] */
-		"‹ŒŒ`®", noIcon, noKey, noMark, plain,
-		/* [3] */
-		"”Ä@—p", noIcon, noKey, noMark, plain
-	}
-};
-
-resource 'MENU' (137) {
-	137,
-	textMenuProc,
-	0x7FFFFFF9,
-	enabled,
-	"ƒEƒCƒ“ƒhƒE",
-	{	/* array: 3 elements */
-		/* [1] */
-		"ƒJƒ‰[ƒpƒŒƒbƒg‚ğ•\¦", noIcon, noKey, noMark, plain,
-		/* [2] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [3] */
-		"-", noIcon, noKey, noMark, plain
-	}
-};
-
-resource 'MENU' (4000, "Icon Formats") {
-	4000,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"ƒAƒCƒRƒ“Œ`®",
-	{	/* array: 5 elements */
-		/* [1] */
-		"Mac OS ”Ä—p", noIcon, noKey, noMark, plain,
-		/* [2] */
-		"Mac OS VŒ`®", noIcon, noKey, noMark, plain,
-		/* [3] */
-		"Mac OS ‹ŒŒ`®", noIcon, noKey, noMark, plain,
-		/* [4] */
-		"Windows Œ`®", noIcon, noKey, noMark, plain,
-		/* [5] */
-		"Mac OS X Server Œ`®", noIcon, noKey, noMark, plain
-	}
-};
-
-resource 'STR#' (200, "-Basic Strings", purgeable) {
-	{	/* array StringArray: 10 elements */
-		/* [1] */
-		"–¼Ì–¢İ’è",
-		/* [2] */
-		"‚±‚ÌƒAƒCƒRƒ“‚Ì IDF<ID> ‚Í‚·‚Å‚É‚±‚Ìƒtƒ@ƒCƒ‹‚Ì’†‚Åg‚í‚ê‚Ä‚¢‚Ü‚·B‚à‚µ‚±‚Ì‚Ü‚Ü‘€ì‚ğ‘±‚¯‚é‚ÆAŒÃ‚¢ƒAƒCƒRƒ“‚Éã‘‚«‚³‚ê‚Ü"
-		"‚·B",
-		/* [3] */
-		"ã‘‚«",
-		/* [4] */
-		"ƒLƒƒƒ“ƒZƒ‹",
-		/* [5] */
-		"‘åƒTƒCƒY 8 bit ‚Æ 1 bit ‚Ìƒ}ƒXƒN‚ªˆÙ‚È‚Á‚Ä‚¢‚Ü‚·B‘åƒTƒCƒY 1 bit ‚Ìƒ}ƒXƒN‚ğ 8 bit ‚Ìƒ}ƒXƒN‚©‚ç©“®¶¬‚µ‚Ü‚·‚©H",
-		/* [6] */
-		"¬ƒTƒCƒY 8 bit ‚Æ 1 bit ‚Ìƒ}ƒXƒN‚ªˆÙ‚È‚Á‚Ä‚¢‚Ü‚·B¬ƒTƒCƒY 1 bit ‚Ìƒ}ƒXƒN‚ğ 8 bit ‚Ìƒ}ƒXƒN‚©‚ç©“®¶¬‚µ‚Ü‚·‚©H",
-		/* [7] */
-		"Å‘åƒTƒCƒY 8 bit ‚Æ 1 bit ‚Ìƒ}ƒXƒN‚ªˆÙ‚È‚Á‚Ä‚¢‚Ü‚·BÅ‘åƒTƒCƒY 1 bit ‚Ìƒ}ƒXƒN‚ğ 8 bit ‚Ìƒ}ƒXƒN‚©‚ç©“®¶¬‚µ‚Ü‚·‚©H ",
-		/* [8] */
-		"‚Í‚¢",
-		/* [9] */
-		"‚¢‚¢‚¦",
-		/* [10] */
-		"ƒAƒCƒRƒ“‚ğ‘}“ü..."
-	}
-};
-
-resource 'STR#' (4001, "-Icon Part Names", purgeable) {
-	{	/* array StringArray: 24 elements */
-		"Thumbnail 32-bit Icon",
-		"Thumbnail 8-bit Mask",
-		
-		" Å‘åƒTƒCƒY 32 bit ƒAƒCƒRƒ“",
-		" Å‘åƒTƒCƒY 8 bit ƒAƒCƒRƒ“",
-		" Å‘åƒTƒCƒY 4 bit ƒAƒCƒRƒ“"
-		" Å‘åƒTƒCƒY 1 bit ƒAƒCƒRƒ“",
-		" Å‘åƒTƒCƒY 8 bit ƒ}ƒXƒN",
-		" Å‘åƒTƒCƒY 1 bit ƒ}ƒXƒN",
-		
-		" ‘åƒTƒCƒY  32 bit ƒAƒCƒRƒ“",
-		" ‘åƒTƒCƒY  8 bit ƒAƒCƒRƒ“",
-		" ‘åƒTƒCƒY  4 bit ƒAƒCƒRƒ“",
-		" ‘åƒTƒCƒY  1 bit ƒAƒCƒRƒ“",
-		" ‘åƒTƒCƒY  8 bit ƒ}ƒXƒN",
-		" ‘åƒTƒCƒY  1 bit ƒ}ƒXƒN",
-		
-		" ¬ƒTƒCƒY  32 bit ƒAƒCƒRƒ“",
-		" ¬ƒTƒCƒY  8 bit ƒAƒCƒRƒ“",
-		" ¬ƒTƒCƒY  4 bit ƒAƒCƒRƒ“",
-		" ¬ƒTƒCƒY  1 bit ƒAƒCƒRƒ“",
-		" ¬ƒTƒCƒY  8 bit ƒ}ƒXƒN",
-		" ¬ƒTƒCƒY  1 bit ƒ}ƒXƒN",
-
-		"Mini 8-bit Icon",
-		"Mini 4-bit Icon",
-		"Mini 1-bit Icon",
-		"Mini 1-bit Mask"
-	}
-};
-
-resource 'STR#' (203, "-Editor Balloon Help", purgeable) {
-	{	/* array StringArray: 24 elements */
-		/* [1] */
-		"‹éŒ`‘I‘ğƒc[ƒ‹ (M)",
-		/* [2] */
-		"ˆÚ“®ƒc[ƒ‹ (V)",
-		/* [3] */
-		"‚È‚°‚È‚í‘I‘ğƒc[ƒ‹ (L)",
-		/* [4] */
-		"©“®‘I‘ğƒc[ƒ‹ (W)",
-		/* [5] */
-		"‰”•Mƒc[ƒ‹ (N)",
-		/* [6] */
-		"ƒXƒ|ƒCƒgƒc[ƒ‹ (I)",
-		/* [7] */
-		"“h‚è‚Â‚Ô‚µƒc[ƒ‹ (K)",
-		/* [8] */
-		"Á‚µƒSƒ€ƒc[ƒ‹ (E)",
-		/* [9] */
-		"‹éŒ`•`‰æƒc[ƒ‹ (R)",
-		/* [10] */
-		"‘È‰~Œ`•`‰æƒc[ƒ‹ (O)",
-		/* [11] */
-		"ƒ‰ƒCƒ“•`‰æƒc[ƒ‹ (Y)",
-		/* [12] */
-		"‘½ŠpŒ`•`‰æƒc[ƒ‹ (P)",
+		{44, 10, 62, 309},
+		StaticText {
+			disabled,
+			"•W€•ÒW‰æ–ÊŠg‘åƒTƒCƒYF"
+		},
 		/* [13] */
-		"ƒOƒ‰ƒf[ƒVƒ‡ƒ“•`‰æƒc[ƒ‹ (G)",
+		{74, 10, 94, 378},
+		Control {
+			enabled,
+			1004
+		},
 		/* [14] */
-		"•¶š•`‰æƒc[ƒ‹ (T)",
+		{92, 9, 160, 189},
+		Control {
+			enabled,
+			1003
+		},
 		/* [15] */
-		"ƒƒCƒ“‚Ì•ÒW‰æ–Ê‚Å‚·BŒ»İ•ÒW’†‚ÌƒAƒCƒRƒ“‚ªŠg‘å‚³‚ê‚Ä•\\¦‚³‚ê‚Ü‚·B",
+		{8, 0, 252, 390},
+		Control {
+			enabled,
+			1007
+		},
 		/* [16] */
-		"Œ»İ‚ÌŠg‘åƒTƒCƒY‚ª‚±‚±‚É•\\¦‚³‚ê‚Ü‚·BŠg‘åƒTƒCƒY‚ğ•ÏX‚·‚é‚É‚ÍƒAƒCƒRƒ“ƒƒjƒ…[‚©‚çŠg‘å^k¬‚©‚çs‚È‚¤‚©AƒEƒCƒ“ƒhƒEƒTƒC"
-		"ƒYƒ{ƒbƒNƒX‚Å•ÒWƒEƒCƒ“ƒhƒE‚ÌƒTƒCƒY‚ğ•ÏX‚µ‚Ä‰º‚³‚¢B",
+		{92, 198, 160, 378},
+		Control {
+			enabled,
+			1009
+		},
 		/* [17] */
-		"Œ»İ•ÒW’†‚ÌƒAƒCƒRƒ“‚Ì–¼Ì‚Æ ID ‚ª‚±‚±‚É•\\¦‚³‚ê‚Ü‚·B‚±‚±‚ğƒNƒŠƒbƒN‚µ‚Ä•\\¦‚³‚ê‚éƒ_ƒCƒAƒƒO‚ÅƒAƒCƒRƒ“‚Ì–¼Ì‚â ID AŠeí"
-		"İ’è‚ğ•ÏX‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
+		{99, 9, 241, 381},
+		Control {
+			enabled,
+			1008
+		},
 		/* [18] */
-		"Œ»İ‚Ì‘OŒiF‚Æ”wŒiF‚ª‚±‚±‚É•\\¦‚³‚ê‚Ü‚·B‚±‚±‚ğƒNƒŠƒbƒN‚·‚é‚ÆF‚ğ•ÏXo—ˆ‚Ü‚·B",
+		{220, 13, 236, 153},
+		Control {
+			enabled,
+			1104
+		},
 		/* [19] */
-		"Œ»İ•ÒW’†‚ÌF[“x‚ÌƒAƒCƒRƒ“‚Ì 3 í—Ş‚ÌƒTƒCƒY (48 x 48A32 x 32A16 x16) ‚ÌƒAƒCƒRƒ“‰æ‘œ‚ª‚±‚±‚É•\\¦‚³‚ê‚Ü‚·B‚±‚±‚ğƒNƒŠƒ"
-		"bƒN‚·‚é‚Æ•ÒW‚·‚éƒTƒCƒY‚ÌƒAƒCƒRƒ“‚ğ•ÏX‚Å‚«‚Ü‚·BƒTƒCƒY‚Ìˆá‚¤ƒAƒCƒRƒ“‚ğ©“®“I‚ÉƒTƒCƒY‚ğ’²®‚µ‚ÄƒRƒs[‚·‚é‚±‚Æ‚ào—ˆ‚Ü‚·"
-		"B",
+		{121, 13, 137, 153},
+		Control {
+			enabled,
+			1100
+		},
 		/* [20] */
-		"‚±‚Ìƒ|ƒbƒvƒAƒbƒvƒƒjƒ…[‚ÍƒAƒCƒRƒ“‚ÌF[“x‚ğ•ÏX‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·BƒIƒvƒVƒ‡ƒ“ƒL[‚ğ‰Ÿ‚µ‚È‚ª‚çAˆá‚¤F[“x‚É•ÏX‚·‚é‚±"
-		"‚Æ‚É‚æ‚Á‚ÄŒ»İ‚ÌƒAƒCƒRƒ“‚ğƒRƒs[‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
+		{165, 13, 181, 153},
+		Control {
+			enabled,
+			1101
+		},
 		/* [21] */
-		"Œ»İ•ÒW’†‚ÌF[“x‚ÌƒAƒCƒRƒ“‚Ì 3 í—Ş‚ÌƒTƒCƒY (48 x 48A32 x 32A16 x16) ‚Ìƒ}ƒXƒN‰æ‘œ‚ª‚±‚±‚É•\\¦‚³‚ê‚Ü‚·B‚±‚±‚ğƒNƒŠƒbƒ"
-		"N‚·‚é‚Æ•ÒW‚·‚éƒTƒCƒY‚Ìƒ}ƒXƒN‚ğ•ÏX‚Å‚«‚Ü‚·BƒTƒCƒY‚Ìˆá‚¤ƒ}ƒXƒN‚ğ©“®“I‚ÉƒTƒCƒY‚ğ’²®‚µ‚ÄƒRƒs[‚·‚é‚±‚Æ‚ào—ˆ‚Ü‚·B",
+		{184, 13, 200, 153},
+		Control {
+			enabled,
+			1102
+		},
 		/* [22] */
-		"‚±‚Ìƒ|ƒbƒvƒAƒbƒvƒƒjƒ…[‚Íƒ}ƒXƒN‚ÌF[“x‚ğ•ÏX‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·BƒIƒvƒVƒ‡ƒ“ƒL[‚ğ‰Ÿ‚µ‚È‚ª‚çAˆá‚¤F[“x‚É•ÏX‚·‚é‚±‚Æ"
-		"‚É‚æ‚Á‚ÄŒ»İ‚Ìƒ}ƒXƒN‚ğƒRƒs[‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
+		{202, 13, 218, 153},
+		Control {
+			enabled,
+			1103
+		},
 		/* [23] */
-		"Œ»İ•ÒW’†‚ÌƒAƒCƒRƒ“‚ğƒ}ƒXƒN‚ğ‡¬‚µ‚½ó‘Ô‚Å2 í—Ş‚Ì”wŒii”’F‚Ì”wŒi‚ÆŒ»İ‚ÌƒfƒXƒNƒgƒbƒvƒpƒ^[ƒ“j‚É•\\¦‚³‚ê‚Ü‚·B‚±‚ÌƒA"
-		"ƒCƒRƒ“‚ğƒNƒŠƒbƒN‚·‚é‚Æ‘I‘ğ^”ñ‘I‘ğ‚Ì—¼•û‚Ìó‘Ô‚ÌƒAƒCƒRƒ“‚ğƒvƒŒƒrƒ…[‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
+		{159, 15, 162, 373},
+		Control {
+			enabled,
+			1105
+		},
 		/* [24] */
-		"Œ»İ‚Ì•`‰æƒpƒ^[ƒ“‚ª‚±‚±‚É•\\¦‚³‚ê‚Ü‚·B‚±‚±‚ğƒNƒŠƒbƒN‚·‚é‚Æ•`‰æƒpƒ^[ƒ“‚ğ•ÏXo—ˆ‚Ü‚·B"
+		{142, 15, 156, 53},
+		StaticText {
+			disabled,
+			"à–¾"
+		},
+		/* [25] */
+		{142, 92, 154, 152},
+		StaticText {
+			disabled,
+			"ƒAƒCƒRƒ“F"
+		},
+		/* [26] */
+		{142, 148, 154, 179},
+		StaticText {
+			disabled,
+			"32-bit"
+		},
+		/* [27] */
+		{142, 180, 154, 211},
+		StaticText {
+			disabled,
+			"8-bit"
+		},
+		/* [28] */
+		{142, 212, 154, 243},
+		StaticText {
+			disabled,
+			"4-bit"
+		},
+		/* [29] */
+		{142, 244, 154, 275},
+		StaticText {
+			disabled,
+			"1-bit"
+		},
+		/* [30] */
+		{142, 273, 154, 318},
+		StaticText {
+			disabled,
+			"ƒ}ƒXƒNF"
+		},
+		/* [31] */
+		{142, 315, 154, 346},
+		StaticText {
+			disabled,
+			"8-bit"
+		},
+		/* [32] */
+		{142, 347, 154, 378},
+		StaticText {
+			disabled,
+			"1-bit"
+		},
+		/* [33] */
+		{165, 154, 181, 171},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [34] */
+		{184, 154, 200, 171},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [35] */
+		{202, 154, 218, 171},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [36] */
+		{165, 182, 181, 199},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [37] */
+		{184, 182, 200, 199},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [38] */
+		{202, 182, 218, 199},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [39] */
+		{220, 182, 236, 199},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [40] */
+		{165, 214, 181, 231},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [41] */
+		{184, 214, 200, 231},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [42] */
+		{202, 214, 218, 231},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [43] */
+		{220, 214, 236, 231},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [44] */
+		{165, 246, 181, 263},
+		CheckBox {
+			disabled,
+			""
+		},
+		/* [45] */
+		{184, 246, 200, 263},
+		CheckBox {
+			disabled,
+			""
+		},
+		/* [46] */
+		{202, 246, 218, 263},
+		CheckBox {
+			disabled,
+			""
+		},
+		/* [47] */
+		{220, 246, 236, 263},
+		CheckBox {
+			disabled,
+			""
+		},
+		/* [48] */
+		{165, 318, 181, 335},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [49] */
+		{184, 318, 200, 335},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [50] */
+		{202, 318, 218, 335},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [51] */
+		{165, 350, 181, 367},
+		CheckBox {
+			disabled,
+			""
+		},
+		/* [52] */
+		{184, 350, 200, 367},
+		CheckBox {
+			disabled,
+			""
+		},
+		/* [53] */
+		{202, 350, 218, 367},
+		CheckBox {
+			disabled,
+			""
+		},
+		/* [54] */
+		{220, 350, 236, 367},
+		CheckBox {
+			disabled,
+			""
+		},
+		/* [55] */
+		{107, 202, 123, 367},
+		RadioButton {
+			enabled,
+			"ƒf[ƒ^^ƒŠƒ\[ƒX‚Ì—¼•û"
+		},
+		/* [56] */
+		{123, 202, 139, 367},
+		RadioButton {
+			enabled,
+			"ƒŠƒ\[ƒXƒtƒH[ƒN‚Ì‚İ"
+		},
+		/* [57] */
+		{139, 202, 155, 367},
+		RadioButton {
+			enabled,
+			"ƒf[ƒ^ƒtƒH[ƒN‚Ì‚İ"
+		},
+		/* [58] */
+		{222, 99, 242, 277},
+		Button {
+			enabled,
+			"ƒpƒŒƒbƒg‚ÌˆÊ’u‚ğ‚à‚Æ‚É–ß‚·"
+		},
+		/* [59] */
+		{95, 7, 115, 379},
+		Control {
+			enabled,
+			1016
+		},
+		/* [60] */
+		{119, 9, 135, 309},
+		CheckBox {
+			enabled,
+			"ƒAƒCƒRƒ“‚Æƒ}ƒXƒN‚Ì—¼•û‚ğo—Í"
+		},
+		/* [61] */
+		{41, 179, 62, 379},
+		Control {
+			enabled,
+			1017
+		},
+		/* [62] */
+		{68, 179, 89, 379},
+		Control {
+			enabled,
+			1018
+		},
+		/* [63] */
+		{44, 10, 61, 119},
+		StaticText {
+			disabled,
+			"ŠO•”ƒGƒfƒBƒ^F"
+		},
+		/* [64] */
+		{71, 10, 88, 149},
+		StaticText {
+			disabled,
+			"ƒVƒ‡[ƒgƒJƒbƒgF"
+		},
+		/* [65] */
+		{177, 16, 193, 176},
+		RadioButton {
+			enabled,
+			"ŒÅ’è‚ÌƒTƒCƒY"
+		},
+		/* [66] */
+		{193, 16, 209, 176},
+		RadioButton {
+			enabled,
+			"©—R‚ÈƒTƒCƒY"
+		},
+		/* [67] */
+		{187, 222, 203, 340},
+		Control {
+			enabled,
+			1020
+		},
+		/* [68] */
+		{189, 347, 201, 363},
+		EditText {
+			enabled,
+			"64"
+		},
+		/* [69] */
+		{187, 167, 203, 220},
+		StaticText {
+			disabled,
+			"ƒTƒCƒYF"
+		}
 	}
 };
 
-resource 'STR#' (204, "-Icon Info Balloon Help", purgeable) {
-	{	/* array StringArray: 11 elements */
+resource 'DITL' (1012, "Adjust: Brightness & Saturation Pane") {
+	{	/* array DITLarray: 6 elements */
 		/* [1] */
-		"•ÏX‚ğ•Û‘¶‚µ‚Ä‚±‚Ìƒ_ƒCƒAƒƒO‚ğ•Â‚¶‚éB",
+		{47, 83, 78, 303},
+		Control {
+			enabled,
+			1014
+		},
 		/* [2] */
-		"•ÏX‚ğ•Û‘¶‚µ‚È‚¢‚Å‚±‚Ìƒ_ƒCƒAƒƒO‚ğ•Â‚¶‚éB",
+		{85, 83, 116, 303},
+		Control {
+			enabled,
+			1015
+		},
 		/* [3] */
-		"‚P‚Â‚Ìƒtƒ@ƒCƒ‹‚É•¡”‚ÌƒAƒCƒRƒ“‚ğŠÜ‚Ü‚¹‚éê‡A‚±‚±‚ÅŠeƒAƒCƒRƒ“‚É•ÊX‚Ì ID ”Ô†‚ğ•t‚¯‚é•K—v‚ª‚ ‚è‚Ü‚·B",
+		{50, 316, 66, 352},
+		EditText {
+			enabled,
+			"0"
+		},
 		/* [4] */
-		"‚±‚ê‚ÍÅI“I‚ÈƒAƒCƒRƒ“‚ÌƒŠƒ\\[ƒX‚Ì—e—Ê‚Å‚·B",
+		{87, 316, 103, 352},
+		EditText {
+			enabled,
+			"0"
+		},
 		/* [5] */
-		"–¼Ìİ’è‚ÍƒIƒvƒVƒ‡ƒ“‚Å‚·‚ªAƒAƒCƒRƒ“ƒŠƒ\\[ƒX‚ğŒŸõ‚·‚éÛ‚É•Ö—˜‚Å‚·B",
+		{47, 5, 67, 80},
+		StaticText {
+			disabled,
+			"–¾‚é‚³F"
+		},
 		/* [6] */
-		"‚±‚±‚ğƒ`ƒFƒbƒN‚·‚é‚ÆAƒƒ‚ƒŠ‚ª•s‘«‚µ‚Ä‚¢‚éê‡‚ÉƒAƒCƒRƒ“‚ğ“Ç‚İ‚Ü‚È‚¢‚Å‚¨‚­‚±‚Æ‚ªo—ˆ‚Ü‚·B",
-		/* [7] */
-		"‚±‚±‚ğƒ`ƒFƒbƒN‚·‚é‚ÆAƒtƒ@ƒCƒ‹‚ğŠJ‚­‚É©“®“I‚ÉƒAƒCƒRƒ“‚ğ“Ç‚İ‚Ş‚±‚Æ‚ªo—ˆ‚Ü‚·B",
-		/* [8] */
-		"‚±‚±‚ğƒ`ƒFƒbƒN‚·‚é‚ÆAƒAƒCƒRƒ“‚ªƒƒbƒN‚³‚êAƒƒ‚ƒŠ“à‚É“Ç‚İ‚ñ‚¾‚Éƒƒ‚ƒŠ—Ìˆæ‚ğˆÚ“®‚Å‚«‚È‚­‚È‚è‚Ü‚·B",
-		/* [9] */
-		"‚±‚±‚ğƒ`ƒFƒbƒN‚·‚é‚ÆAƒAƒCƒRƒ“‚É•ÏX‚ğ‰Á‚¦‚ç‚ê‚È‚­‚È‚è‚Ü‚·B",
-		/* [10] */
-		"‚±‚±‚ğƒ`ƒFƒbƒN‚·‚é‚ÆAƒVƒXƒeƒ€‚Ìg—p‚·‚éƒƒ‚ƒŠ—Ìˆæ‚ÉƒAƒCƒRƒ“‚ğ“Ç‚İ‚Ş‚æ‚¤‚É‚È‚è‚Ü‚·B",
-		/* [11] */
-		"‚±‚Ìƒ|ƒbƒvƒAƒbƒvƒƒjƒ…[‚©‚çAŠù‘¶‚ÌƒAƒCƒRƒ“ ID ‚ğ‘I‘ğ‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
-		/* [12] */
-		"‚±‚Ìƒ|ƒbƒvƒAƒbƒvƒƒjƒ…[‚ÍAŠeíƒAƒCƒRƒ“Œ`®‚ğ‘I‘ğ‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·BŒ`®‚É‚æ‚Á‚Ä‚Í‚¢‚­‚Â‚©‚ÌƒIƒvƒVƒ‡ƒ“‚ª"
-		"g—po—ˆ‚Ü‚¹‚ñB(—áFWindows Œ`®‚Ì 8bit ƒ}ƒXƒN‚È‚Ç)"
+		{85, 5, 105, 85},
+		StaticText {
+			disabled,
+			"ƒRƒ“ƒgƒ‰ƒXƒg:"
+		}
 	}
 };
 
-resource 'STR#' (201, "-Labels", purgeable) {
-	{	/* array StringArray: 8 elements */
+resource 'DITL' (1010, "Adjust") {
+	{	/* array DITLarray: 4 elements */
 		/* [1] */
-		"ƒAƒCƒRƒ“",
+		{153, 285, 173, 353},
+		Button {
+			enabled,
+			"OK"
+		},
 		/* [2] */
-		"ƒ}ƒXƒN",
+		{153, 193, 173, 273},
+		Button {
+			enabled,
+			"ƒLƒƒƒ“ƒZƒ‹"
+		},
 		/* [3] */
-		"ƒvƒŒƒrƒ…[",
+		{153, 5, 173, 165},
+		CheckBox {
+			enabled,
+			"ƒŠƒAƒ‹ƒ^ƒCƒ€ƒvƒŒƒrƒ…["
+		},
 		/* [4] */
-		"‘OŒiF‚ğ‘I‘ğF",
-		/* [5] */
-		"”wŒiF‚ğ‘I‘ğF",
-		/* [6] */
-		" ƒoƒCƒg",
-		/* [7] */
-		"–¼‘OF\"<name>\" IDF<ID>",
-		/* [8] */
-		"IDF<ID>"
+		{8, 0, 141, 367},
+		Control {
+			enabled,
+			1010
+		}
 	}
 };
 
-resource 'STR#' (300, "Icon Browser: Strings", purgeable) {
-	{	/* array StringArray: 7 elements */
+resource 'DLOG' (1410, "Text Tool", purgeable) {
+	{389, 44, 622, 250},
+	1043,
+	invisible,
+	goAway,
+	0x0,
+	1410,
+	"•¶šƒc[ƒ‹",
+	centerParentWindow
+};
+
+resource 'DLOG' (1011, purgeable) {
+	{341, 144, 561, 519},
+	1024,
+	visible,
+	goAway,
+	0x0,
+	1011,
+	"DITL 1011 gAdjust: Pane 1h from icnsEditorClass.rsrc",
+	noAutoCenter
+};
+
+resource 'DLOG' (9999, purgeable) {
+	{200, 219, 407, 426},
+	1025,
+	visible,
+	goAway,
+	0x0,
+	9999,
+	"–¼Ì–¢İ’èƒAƒCƒRƒ“",
+	noAutoCenter
+};
+
+resource 'DLOG' (1002, "Set External Editor Shortcut", purgeable) {
+	{259, 337, 318, 687},
+	dBoxProc,
+	invisible,
+	noGoAway,
+	0x0,
+	1002,
+	"",
+	centerParentWindow
+};
+
+resource 'DLOG' (1003, "Add Member", purgeable) {
+	{475, 625, 623, 975},
+	1043,
+	invisible,
+	noGoAway,
+	0x0,
+	1003,
+	"ˆê——‚É’Ç‰Á",
+	noAutoCenter
+};
+
+resource 'DLOG' (300, "Icon Browser: Progress", purgeable) {
+	{260, 315, 312, 664},
+	1043,
+	invisible,
+	noGoAway,
+	0x0,
+	300,
+	"<name> ƒAƒCƒRƒ““Ç‚İ‚İ’†",
+	centerMainScreen
+};
+
+resource 'DLOG' (301, "Icon Browser Mockup", purgeable) {
+	{230, 146, 588, 480},
+	documentProc,
+	visible,
+	goAway,
+	0x0,
+	301,
+	"",
+	noAutoCenter
+};
+
+data 'DLOG' (3001, "Select Object", purgeable) {
+	$"0000 0000 00D7 0158 0001 0000 0000 0000 0000 0BB9 00"                                                                                               /* .....×.X...........¹. */
+};
+
+resource 'DLOG' (3002, "Save File", purgeable) {
+	{185, 272, 401, 639},
+	dBoxProc,
+	invisible,
+	noGoAway,
+	0x746D4449,
+	3002,
+	"",
+	noAutoCenter
+};
+
+resource 'DLOG' (2000, "Nav Custom Items", purgeable) {
+	{253, 278, 283, 547},
+	1024,
+	visible,
+	goAway,
+	0x0,
+	2000,
+	"DITL 2000 from iconmangler.µ.rsrc",
+	noAutoCenter
+};
+
+resource 'DLOG' (280, "Colors Palette: System Picker", purgeable) {
+	{299, 526, 459, 846},
+	dBoxProc,
+	visible,
+	goAway,
+	0x0,
+	280,
+	"",
+	noAutoCenter
+};
+
+resource 'DLOG' (260, "Colors Palette: RGB Picker", purgeable) {
+	{299, 526, 459, 846},
+	dBoxProc,
+	visible,
+	goAway,
+	0x0,
+	260,
+	"",
+	noAutoCenter
+};
+
+resource 'DLOG' (290, "Colors Palette: Favorites Picker", purgeable) {
+	{299, 526, 459, 846},
+	dBoxProc,
+	visible,
+	goAway,
+	0x0,
+	290,
+	"",
+	noAutoCenter
+};
+
+resource 'DLOG' (270, "Colors Palette: HSV Picker", purgeable) {
+	{299, 526, 459, 846},
+	dBoxProc,
+	visible,
+	goAway,
+	0x0,
+	270,
+	"",
+	noAutoCenter
+};
+
+resource 'DLOG' (4000, "MAlert: Movable", purgeable) {
+	{566, 19, 656, 387},
+	1045,
+	invisible,
+	goAway,
+	0x0,
+	4000,
+	"",
+	noAutoCenter
+};
+
+resource 'DLOG' (4001, "MAlert: Non Movable", purgeable) {
+	{566, 19, 656, 387},
+	1044,
+	invisible,
+	goAway,
+	0x0,
+	4000,
+	"",
+	noAutoCenter
+};
+
+resource 'DLOG' (1001, "Icon Info", purgeable) {
+	{228, 594, 575, 978},
+	1043,
+	invisible,
+	goAway,
+	0x0,
+	1001,
+	"ƒAƒCƒRƒ“î•ñ",
+	centerMainScreen
+};
+
+resource 'DLOG' (128, "About") {
+	{100, 100, 400, 556},
+	plainDBox,
+	invisible,
+	noGoAway,
+	0x0,
+	128,
+	"Iconographer “ú–{Œê”Å‚É‚Â‚¢‚Ä",
+	alertPositionMainScreen
+};
+
+resource 'DLOG' (250, "Colors Palette", purgeable) {
+	{432, 158, 592, 478},
+	1057,
+	visible,
+	goAway,
+	0x0,
+	250,
+	"FŒ©–{",
+	noAutoCenter
+};
+
+resource 'DLOG' (129, "Register") {
+	{178, 612, 313, 962},
+	1043,
+	invisible,
+	goAway,
+	0x0,
+	129,
+	"“o˜^",
+	alertPositionMainScreen
+};
+
+resource 'DLOG' (1000, "Preferences", purgeable) {
+	{285, 148, 576, 539},
+	1043,
+	invisible,
+	goAway,
+	0x0,
+	1000,
+	"‰Šúİ’è",
+	centerMainScreen
+};
+
+resource 'DLOG' (1012, purgeable) {
+	{337, 600, 549, 1015},
+	1024,
+	visible,
+	goAway,
+	0x0,
+	1012,
+	"",
+	noAutoCenter
+};
+
+resource 'DLOG' (1010, "Adjust", purgeable) {
+	{259, 337, 443, 704},
+	1043,
+	invisible,
+	noGoAway,
+	0x0,
+	1010,
+	"F’²®",
+	centerParentWindowScreen
+};
+
+resource 'hwin' (128, "About", purgeable) {
+	2,
+	0,
+	{	/* array HWinArray: 1 elements */
 		/* [1] */
-		"ƒAƒCƒRƒ““Ç‚İ‚İ’†F<ID>",
-		/* [2] */
-		"ƒAƒCƒRƒ““Ç‚İ‚İ’†F<ID> g<name>h",
-		/* [3] */
-		"IDF<ID> ƒ^ƒCƒvF<type> ƒtƒ@ƒ~ƒŠ[",
-		/* [4] */
-		"IDF<ID> –¼‘OFg<name>h ƒ^ƒCƒvF<type> ƒtƒ@ƒ~ƒŠ[",
-		/* [5] */
-		"ƒAƒCƒRƒ“í•ÊF <types>",
-		/* [6] */
-		"<number>/<total> ƒAƒCƒRƒ“",
-		/* [7] */
-		"ƒtƒ@ƒCƒ‹–¼g<file name>h‚ÌƒAƒCƒRƒ“ IDF<icon ID> ‚ğ–{“–‚Éíœ‚µ‚Ä‚à‚æ‚ë‚µ‚¢‚Å‚·‚©H"
+		128,
+		'hrct',
+		29,
+		"Iconographer “ú–{Œê”Å‚É‚Â‚¢‚Ä"
 	}
 };
 
-resource 'STR#' (130, "-Prompts", purgeable) {
-	{	/* array StringArray: 10 elements */
+resource 'hwin' (129, "Register", purgeable) {
+	2,
+	0,
+	{	/* array HWinArray: 1 elements */
 		/* [1] */
-		"•ÏX‚Ì‚ ‚Á‚½<app name>‘—Şg<file name>h‚ğ•Â‚¶‚é‘O‚É•Û‘¶‚µ‚Ü‚·‚©H",
-		/* [2] */
-		"•ÒW‚µ‚½‚¢ƒAƒCƒRƒ“‚Ì‚ ‚éƒtƒ@ƒCƒ‹‚©ƒtƒHƒ‹ƒ_‚ğ‘I‘ğ‚µ‚Ä‰º‚³‚¢B",
-		/* [3] */
-		"•Û‘¶‚·‚éƒAƒCƒRƒ“‚Ì–¼‘O‚ÆêŠ‚ğw’è‚µ‚Ä‰º‚³‚¢B",
-		/* [4] */
-		"ƒAƒCƒRƒ“‚ğ‘}“ü‚·‚éƒtƒ@ƒCƒ‹‚©ƒtƒHƒ‹ƒ_‚ğw’è‚µ‚Ä‰º‚³‚¢B",
-		/* [5] */
-		"ƒAƒCƒRƒ“‚ğ‘}“ü",
-		/* [6] */
-		"ƒAƒCƒRƒ“‚ğŠJ‚­",
-		/* [7] */
-		"‚ ‚È‚½‚Í <no of icons> ŒÂ‚ÌƒAƒCƒRƒ“‚ğì¬‚·‚é‚Ì‚É<app name>‚ğg—p‚µ‚Ü‚µ‚½B‚±‚Ì‚Ü‚Üg—p‚µ‘±‚¯‚é‚È‚ç‚Î $15 ‚ÌƒVƒFƒAƒEƒFƒA"
-		"—¿‹à‚ğ‚¨x•¥‚¢‰º‚³‚¢BgƒIƒ“ƒ‰ƒCƒ““o˜^h‚â‚±‚Ìƒ\\ƒtƒgƒEƒFƒA‚ÉŠÜ‚Ü‚ê‚ég“o˜^hƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚Å“o˜^‚ªo—ˆ‚Ü‚·B",
-		/* [8] */
-		"•ÒW‚µ‚½‚¢ Windows ƒAƒCƒRƒ“ƒtƒ@ƒCƒ‹y.icoz‚ğ‘I‘ğ‚µ‚Ä‰º‚³‚¢B",
-		/* [9] */
-		"•ÒW‚µ‚½‚¢ MacOS X Server ƒAƒCƒRƒ“ƒtƒ@ƒCƒ‹y.tiffz‚ğ‘I‘ğ‚µ‚Ä‰º‚³‚¢B",
-		/* [10] */
-		"IDF<ID> ‚ÌƒAƒCƒRƒ“‚Íg<file name>h‚ÉA‚·‚Å‚ÉŠÜ‚Ü‚ê‚Ä‚¢‚Ü‚·B–{“–‚É’u‚«Š·‚¦‚Ä‚à‚æ‚ë‚µ‚¢‚Å‚·‚©H"
+		129,
+		'hrct',
+		4,
+		"“o˜^"
 	}
 };
 
-resource 'STR#' (150, "-App Balloon Help", purgeable) {
-	{	/* array StringArray: 1 elements */
+resource 'hwin' (500, purgeable) {
+	2,
+	0,
+	{	/* array HWinArray: 1 elements */
 		/* [1] */
-		"Iconographer\n\n‚±‚ÌƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚Åƒtƒ@ƒCƒ‹‚âƒtƒHƒ‹ƒ_‚ÌƒAƒCƒRƒ“‚ğ•ÒW‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B•ÒW‚·‚éƒAƒCƒRƒ“‚ÌŠÜ‚Ü‚ê‚½ƒtƒ@"
-		"ƒCƒ‹‚ğ‚±‚ÌƒAƒCƒRƒ“‚Éƒhƒ‰ƒbƒOƒAƒ“ƒhƒhƒƒbƒv‚µ‚Ä‰º‚³‚¢B"
+		500,
+		'hrct',
+		10,
+		"ƒvƒŒƒrƒ…["
 	}
 };
 
-resource 'STR#' (151, "-Apple Menu Balloon Help", purgeable) {
-	{	/* array StringArray: 4 elements */
+resource 'hwin' (600, purgeable) {
+	2,
+	0,
+	{	/* array HWinArray: 1 elements */
 		/* [1] */
-		"‚±‚Ìƒo[ƒWƒ‡ƒ“‚ÌgIconographerh‚Ìî•ñ‚ğ•\\¦‚µ‚Ü‚·B",
-		/* [2] */
-		"‚±‚Ìƒo[ƒWƒ‡ƒ“‚ÌgIconographerh‚Ìî•ñ‚ğ•\\¦‚µ‚Ü‚·B\n\nŒ»İAî•ñƒ{ƒbƒNƒX‚ğ•\\¦‚Å‚«‚È‚¢‚Ì‚Å—˜—po—ˆ‚Ü‚¹‚ñB",
-		/* [3] */
-		"gIconographerh‚Ì“o˜^‚ªo—ˆ‚Ü‚·B\n“o˜^‚ğÏ‚Ü‚¹‚é‚ÆƒVƒFƒAƒEƒFƒA—¿‹àx•¥‚¢Ã‘£ƒƒbƒZ[ƒW‚Ío‚È‚­‚È‚è‚Ü‚·B",
-		/* [4] */
-		"gIconographerh‚Ì“o˜^‚ªo—ˆ‚Ü‚·B\n“o˜^‚ğÏ‚Ü‚¹‚é‚ÆƒVƒFƒAƒEƒFƒA—¿‹àx•¥‚¢Ã‘£ƒƒbƒZ[ƒW‚Ío‚È‚­‚È‚è‚Ü‚·B\n\nŒ»İA“o˜^ƒ_ƒ"
-		"CƒAƒƒOƒ{ƒbƒNƒX‚ğ•\\¦‚Å‚«‚È‚¢‚Ì‚Å—˜—po—ˆ‚Ü‚¹‚ñB"
+		600,
+		'hrct',
+		6,
+		"ƒc[ƒ‹"
 	}
 };
 
-resource 'STR#' (160, "-About Balloon Help", purgeable) {
-	{	/* array StringArray: 3 elements */
+resource 'hwin' (1001, "Icon Info", purgeable) {
+	2,
+	0,
+	{	/* array HWinArray: 1 elements */
 		/* [1] */
-		"‚±‚±‚ğƒNƒŠƒbƒN‚·‚é‚ÆìÒ‚É“dqƒ[ƒ‹‚ğ‘—M‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B(ƒCƒ“ƒ^[ƒlƒbƒgİ’è‹@”\\Šg’£‚ªƒCƒ“ƒXƒg[ƒ‹‚³‚ê‚Ä‚¢‚é•K—v‚ª‚"
-		" ‚è‚Ü‚·B)",
-		/* [2] */
-		"‚±‚±‚ğƒNƒŠƒbƒN‚·‚é‚Æ Mscape Software ‚Ìƒz[ƒ€ƒy[ƒW‚És‚­‚±‚Æ‚ªo—ˆ‚Ü‚·B(ƒCƒ“ƒ^[ƒlƒbƒgİ’è‹@”\\Šg’£‚ªƒCƒ“ƒXƒg[ƒ‹‚³‚ê‚Ä"
-		"‚¢‚é•K—v‚ª‚ ‚è‚Ü‚·B)",
-		/* [3] */
-		"‚à‚µA“o˜^‚ªŠ®—¹‚µ‚Ä‚¢‚½‚çA“o˜^‚Ç‚¤‚à‚ ‚è‚ª‚Æ‚¤I‚à‚µ“o˜^‚ª‚Ü‚¾‚È‚çA“o˜^‚ğŒäŒŸ“¢‰º‚³‚¢B"
+		1001,
+		'hrct',
+		12,
+		"ƒAƒCƒRƒ“î•ñ"
 	}
 };
 
-resource 'STR#' (161, "-Registration Balloon Help", purgeable) {
-	{	/* array StringArray: 6 elements */
+resource 'hwin' (1002, "Insert Icon", purgeable) {
+	2,
+	0,
+	{	/* array HWinArray: 1 elements */
 		/* [1] */
-		"•K—v‚Èî•ñ‚ğ“ü—Í‚µ‚½‚ç‚±‚Ìƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚Ä‰º‚³‚¢B“o˜^“à—e‚ÉŠÔˆá‚¢‚ª‚È‚¯‚ê‚ÎgIconographerh‚Ì“o˜^‚ÍŠ®—¹‚µ‚Ü‚·B",
-		/* [2] */
-		"“o˜^‚Ì’†~‚ğ‚µ‚Ü‚·B",
-		/* [3] */
-		"‚±‚±‚ğƒNƒŠƒbƒN‚·‚é‚Æg“o˜^hƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ª‹N“®‚µ‚Ü‚·B•K—v‚È“à—e‚ğ“ü—Í‚µ‚ÄgKagih‚É‘—M‚µ‚Ä“o˜^‚ğŠ®—¹‚·‚ê‚ÎgIconog"
-		"rapherh‚©‚ç‚ÌƒVƒFƒAƒEƒFƒA“o˜^Ã‘£‚ÌƒƒbƒZ[ƒW‚Í•\\¦‚³‚ê‚È‚­‚È‚è‚Ü‚·B",
-		/* [4] */
-		"‚ ‚È‚½‚Ì–¼‘O‚ğ‚±‚±‚É“ü—Í‚µ‚Ä‰º‚³‚¢B“o˜^”Ô†‚Æˆê‚Éó‚¯æ‚Á‚½“o˜^Ò–¼‚ğ³Šm‚É“ü—Í‚µ‚Ä‰º‚³‚¢B",
-		/* [5] */
-		"‚ ‚È‚½‚Ì‰ïĞ–¼‚ğ“ü—Í‚·‚éê‡‚Í‚±‚±‚É“ü—Í‚µ‚Ä‰º‚³‚¢B",
-		/* [6] */
-		"‚ ‚È‚½‚Ìó‚¯æ‚Á‚½“o˜^”Ô†‚ğ‚±‚±‚É“ü—Í‚µ‚Ä‰º‚³‚¢B"
+		1001,
+		'hrct',
+		15,
+		"ƒAƒCƒRƒ“‘}“ü..."
 	}
 };
 
-resource 'STR#' (152, "-File Balloon Help", purgeable) {
-	{	/* array StringArray: 16 elements */
-		/* [1] */
-		"gƒtƒ@ƒCƒ‹hƒƒjƒ…[\n\n‚±‚Ìƒƒjƒ…[‚Íƒtƒ@ƒCƒ‹‚âƒtƒHƒ‹ƒ_‚Ì‘€ì‚Ég—p‚µ‚Ü‚·B",
-		/* [2] */
-		"gƒtƒ@ƒCƒ‹hƒƒjƒ…[\n\n‚±‚Ìƒƒjƒ…[‚Íƒtƒ@ƒCƒ‹‚âƒtƒHƒ‹ƒ_‚Ì‘€ì‚Ég—p‚µ‚Ü‚·B\n\n—˜—p‰Â”\\‚Èƒtƒ@ƒCƒ‹‘€ì‚ª‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹"
-		"‚ñB",
-		/* [3] */
-		"‹ó”’‚ÌV‹KƒAƒCƒRƒ“•ÒWƒEƒCƒ“ƒhƒE‚ğì¬‚µ‚Ü‚·B",
-		/* [4] */
-		"‹ó”’‚ÌV‹KƒAƒCƒRƒ“•ÒWƒEƒCƒ“ƒhƒE‚ğì¬‚µ‚Ü‚·B\n\n—˜—p‰Â”\\‚È•ÒWƒEƒCƒ“ƒhƒE‚ğì¬o—ˆ‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [5] */
-		"ƒAƒCƒRƒ“‚ğ•ÒWƒEƒCƒ“ƒhƒE‚ÉŠJ‚«‚Ü‚·B",
-		/* [6] */
-		"ƒAƒCƒRƒ“‚ğ•ÒWƒEƒCƒ“ƒhƒE‚ÉŠJ‚«‚Ü‚·B\n\n‚±‚êˆÈã•ÒWƒEƒCƒ“ƒhƒE‚ğì¬‚Å‚«‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [7] */
-		"Å‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚ğ•Â‚¶‚Ü‚·B",
-		/* [8] */
-		"Å‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚ğ•Â‚¶‚Ü‚·B\n\nƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [9] */
-		"Å‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚ğ•Û‘¶‚µ‚Ü‚·B",
-		/* [10] */
-		"Å‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚ğ•Û‘¶‚µ‚Ü‚·B\n\nƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚©A•Û‘¶‚Ì•K—v‚ª‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [11] */
-		"Å‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚ğ•Ê–¼‚Å•Û‘¶‚µ‚Ü‚·B",
-		/* [12] */
-		"Å‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚ğ•Ê–¼‚Å•Û‘¶‚µ‚Ü‚·B\n\nƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [13] */
-		"Å‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚ğ•Ê‚Ìƒtƒ@ƒCƒ‹‚É‘}“ü‚µ‚Ü‚·B (ƒAƒCƒRƒ“ˆÈŠO‚Ì“à—e‚Ì•ÏX‚Í‚µ‚Ü‚¹‚ñ)",
-		/* [14] */
-		"Å‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚ğ•Ê‚Ìƒtƒ@ƒCƒ‹‚É‘}“ü‚µ‚Ü‚·B (ƒAƒCƒRƒ“ˆÈŠO‚Ì“à—e‚É•ÏX‚Í‚µ‚Ü‚¹‚ñ)\n\nƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚Ì‚Å‘I‘ğ"
-		"o—ˆ‚Ü‚¹‚ñB",
-		/* [15] */
-		"gIconographerh‚ğI—¹‚µ‚Ü‚·BI—¹‚·‚é‘O‚É•Û‘¶‚³‚ê‚Ä‚¢‚È‚¢ƒAƒCƒRƒ“‚ğ•Û‘¶‚·‚é‚©‚Ç‚¤‚©Šm”F‚µ‚Ü‚·B",
-		/* [16] */
-		"gIconographerh‚ğI—¹‚µ‚Ü‚·BI—¹‚·‚é‘O‚É•Û‘¶‚³‚ê‚Ä‚¢‚È‚¢ƒAƒCƒRƒ“‚ğ•Û‘¶‚·‚é‚©‚Ç‚¤‚©Šm”F‚µ‚Ü‚·B\n\nŒ»İAgIconographerh"
-		"‚ğI—¹‚Å‚«‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹‚ñB"
-	}
-};
-
-resource 'STR#' (153, "-Edit Balloon Help", purgeable) {
-	{	/* array StringArray: 22 elements */
-		/* [1] */
-		"g•ÒWhƒƒjƒ…[\n\n‚±‚Ìƒƒjƒ…[‚Íæ‚èÁ‚µA‚â‚è’¼‚µAƒJƒbƒgAƒy[ƒXƒgAgIconographerh‚ÌŠeíİ’è‚È‚Ç‚Ì‘€ì‚ğs‚¤‚½‚ß‚Ég"
-		"—p‚µ‚Ü‚·B",
-		/* [2] */
-		"g•ÒWhƒƒjƒ…[\n\n‚±‚Ìƒƒjƒ…[‚Íæ‚èÁ‚µA‚â‚è’¼‚µAƒJƒbƒgAƒy[ƒXƒgAgIconographerh‚ÌŠeíİ’è‚È‚Ç‚Ì‘€ì‚ğs‚¤‚½‚ß‚Ég"
-		"—p‚µ‚Ü‚·B\n\nÅ‘O–Ê‚É‚ ‚éƒEƒCƒ“ƒhƒE‚ª‚±‚ê‚ç‚Ì‘€ì‚ğó‚¯•t‚¯‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [3] */
-		"’¼‘O‚És‚È‚Á‚½‘€ì‚ğŒ³‚É–ß‚µ‚Ü‚·B",
-		/* [4] */
-		"’¼‘O‚És‚È‚Á‚½‘€ì‚ğŒ³‚É–ß‚µ‚Ü‚·B\n\n‚·‚×‚Ä‚Ì‘€ì‚ªŒ³‚É–ß‚Á‚Ä‚¢‚é‚©AÅŒã‚És‚È‚Á‚½‘€ì‚ªŒ³‚É–ß‚¹‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [5] */
-		"Œ³‚É–ß‚µ‚½‘€ì‚ğ‚à‚¤ˆê“x‚â‚è’¼‚µ‚Ü‚·B",
-		/* [6] */
-		"Œ³‚É–ß‚µ‚½‘€ì‚ğ‚à‚¤ˆê“x‚â‚è’¼‚µ‚Ü‚·B\n\n‘€ì‚ª‚â‚è’¼‚¹‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [7] */
-		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚ğ“à—e‚ğíœ‚µ‚ÄAƒNƒŠƒbƒvƒ{[ƒh“]‘—‚µ‚Ü‚·B",
-		/* [8] */
-		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚ğ“à—e‚ğíœ‚µ‚ÄAƒNƒŠƒbƒvƒ{[ƒh“]‘—‚µ‚Ü‚·B\n\n‰½‚à‘I‘ğ‚³‚ê‚Ä‚¢‚È‚¢‚©A•ÒWƒEƒCƒ“ƒhƒE‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½‚ß‘I"
-		"‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [9] */
-		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚Ì“à—e‚ğˆê“I‚ÉƒNƒŠƒbƒvƒ{[ƒh‚É’u‚­‚±‚Æ‚ªo—ˆ‚Ü‚·B",
-		/* [10] */
-		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚Ì“à—e‚ğˆê“I‚ÉƒNƒŠƒbƒvƒ{[ƒh‚É’u‚­‚±‚Æ‚ªo—ˆ‚Ü‚·B\n\n‰½‚à‘I‘ğ‚³‚ê‚Ä‚¢‚È‚¢‚©A•ÒWƒEƒCƒ“ƒhƒE‚ªŠJ‚©‚ê‚Ä‚¢‚È"
-		"‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [11] */
-		"ƒNƒŠƒbƒvƒ{[ƒh‚É‚ ‚é“à—e‚ğŒ»İg—p’†‚Ì•ÒWƒEƒCƒ“ƒhƒE‚É“Ç‚İ‚İ‚Ü‚·B",
-		/* [12] */
-		"ƒNƒŠƒbƒvƒ{[ƒh‚É‚ ‚é“à—e‚ğŒ»İg—p’†‚Ì•ÒWƒEƒCƒ“ƒhƒE‚É“Ç‚İ‚İ‚Ü‚·B\n\nƒNƒŠƒbƒvƒ{[ƒh‚É‰æ‘œƒf[ƒ^‚ªŠÜ‚Ü‚ê‚Ä‚¢‚È‚¢‚©A•ÒW"
-		"ƒEƒCƒ“ƒhƒE‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [13] */
-		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚É‚ ‚é“à—e‚ğíœ‚µ‚Ü‚·B",
-		/* [14] */
-		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚É‚ ‚é“à—e‚ğíœ‚µ‚Ü‚·B\n\n‰½‚à‘I‘ğ‚³‚ê‚Ä‚¢‚È‚¢‚©A•ÒWƒEƒCƒ“ƒhƒE‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [15] */
-		"‚¢‚ë‚¢‚ë‚È‘€ì‚ğÀs‚µ‚Ü‚·B",
-		/* [16] */
-		"‚¢‚ë‚¢‚ë‚È‘€ì‚ğÀs‚µ‚Ü‚·B\n\nƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [17] */
-		"‰æ‘œ‚É‚½‚¢‚µ‚Ä‚¢‚ë‚¢‚ë‚È‘€ì‚ğÀs‚µ‚Ü‚·B\n",
-		/* [18] */
-		"‰æ‘œ‚É‚½‚¢‚µ‚Ä‚¢‚ë‚¢‚ë‚È‘€ì‚ğÀs‚µ‚Ü‚·B\n\nƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [19] */
-		"ƒAƒCƒRƒ“‚ÌF‚ğ•ÏŠ·‚µ‚Ü‚·B",
-		/* [20] */
-		"ƒAƒCƒRƒ“‚ÌF‚ğ•ÏŠ·‚µ‚Ü‚·B\n\nƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [21] */
-		"gIconographerh‚Ì‘€ì‚ğŠeíƒJƒXƒ^ƒ}ƒCƒY‚·‚éƒ_ƒCƒAƒƒOƒ{ƒbƒNƒX‚ğŠJ‚­‚Ì‚Ég—p‚µ‚Ü‚·B",
-		/* [22] */
-		"gIconographerh‚Ì‘€ì‚ğŠeíƒJƒXƒ^ƒ}ƒCƒY‚·‚éƒ_ƒCƒAƒƒOƒ{ƒbƒNƒX‚ğŠJ‚­‚Ì‚Ég—p‚µ‚Ü‚·B\n\nŒ»İA‰Šúİ’èƒtƒ@ƒCƒ‹‚ğ•ÒW‚Å‚«‚È"
-		"‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB"
-	}
-};
-
-resource 'STR#' (154, "-Select Balloon Help", purgeable) {
-	{	/* array StringArray: 8 elements */
-		/* [1] */
-		"ƒAƒCƒRƒ“‚·‚×‚Ä‚ğ‘I‘ğ‚µ‚Ü‚·B",
-		/* [2] */
-		"ƒAƒCƒRƒ“‚·‚×‚Ä‚ğ‘I‘ğ‚µ‚Ü‚·B\n\n‘I‘ğ”ÍˆÍ‚ğì¬‚Å‚«‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [3] */
-		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚ÌF‚Æ“¯‚¶F‚ğ‘I‘ğ‚µ‚Ü‚·B",
-		/* [4] */
-		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚ÌF‚Æ“¯‚¶F‚ğ‘I‘ğ‚µ‚Ü‚·B\n\n—˜—p‰Â”\\‚È‘I‘ğ”ÍˆÍ‚ª‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [5] */
-		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚ğ‰½‚à‘I‘ğ‚µ‚Ä‚¢‚È‚¢ó‘Ô‚É‚µ‚Ü‚·B",
-		/* [6] */
-		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚ğ‰½‚à‘I‘ğ‚µ‚Ä‚¢‚È‚¢ó‘Ô‚É‚µ‚Ü‚·B\n\n—˜—p‰Â”\\‚È‘I‘ğ”ÍˆÍ‚ª‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [7] */
-		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚ğ”½“]‚µ‚Ü‚·B",
-		/* [8] */
-		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚ğ”½“]‚µ‚Ü‚·B\n\n—˜—p‰Â”\\‚È‘I‘ğ”ÍˆÍ‚ª‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹‚ñB"
-	}
-};
-
-resource 'STR#' (155, "-Transform Balloon Help", purgeable) {
-	{	/* array StringArray: 5 elements */
-		/* [1] */
-		"Œ»İ‚Ì‘I‘ğ”ÍˆÍi‚Ü‚½‚Í‘I‘ğ”ÍˆÍ‚ª‚È‚¢ê‡‚É‚Í‰æ‘œ‘S‘Ìj‚ğ 90‹Œv‰ñ‚è‚É‰ñ“]‚µ‚Ü‚·B",
-		/* [2] */
-		"Œ»İ‚Ì‘I‘ğ”ÍˆÍi‚Ü‚½‚Í‘I‘ğ”ÍˆÍ‚ª‚È‚¢ê‡‚É‚Í‰æ‘œ‘S‘Ìj‚ğ 90‹”½Œv‰ñ‚è‚É‰ñ“]‚µ‚Ü‚·B",
-		/* [3] */
-		"Œ»İ‚Ì‘I‘ğ”ÍˆÍi‚Ü‚½‚Í‘I‘ğ”ÍˆÍ‚ª‚È‚¢ê‡‚É‚Í‰æ‘œ‘S‘Ìj‚ğ‚’¼•ûŒü‚É”½“]‚µ‚Ü‚·B",
-		/* [4] */
-		"Œ»İ‚Ì‘I‘ğ”ÍˆÍi‚Ü‚½‚Í‘I‘ğ”ÍˆÍ‚ª‚È‚¢ê‡‚É‚Í‰æ‘œ‘S‘Ìj‚ğ…•½•ûŒü‚É”½“]‚µ‚Ü‚·B",
-		/* [5] */
-		"Œ»İ‚Ì‘I‘ğ”ÍˆÍi‚Ü‚½‚Í‘I‘ğ”ÍˆÍ‚ª‚È‚¢ê‡‚É‚Í‰æ‘œ‘S‘Ìj‚ÌF‚ÌŠK’²‚ğ”½“]‚µ‚Ü‚·B"
-	}
-};
-
-resource 'STR#' (156, "-Paste Balloon Help", purgeable) {
-	{	/* array StringArray: 6 elements */
-		/* [1] */
-		"ƒNƒŠƒbƒvƒ{[ƒh‚Ì“à—e‚ğƒtƒ[ƒgó‘Ô‚Ì‘I‘ğ”ÍˆÍ‚É“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
-		/* [2] */
-		"ƒNƒŠƒbƒvƒ{[ƒh‚Ì“à—e‚ğŒ»İ•ÒW’†‚ÌƒAƒCƒRƒ“‚ÌƒAƒCƒRƒ“‰æ‘œ‚Æƒ}ƒXƒN‰æ‘œ‚É‚í‚¯‚Ä“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
-		/* [3] */
-		"ƒNƒŠƒbƒvƒ{[ƒh‚Ì“à—e‚ğŒ»İ‚Ì‘I‘ğ”ÍˆÍ‚Ì‘å‚«‚³‚É‡‚í‚¹‚Ä“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
-		/* [4] */
-		"ƒNƒŠƒbƒvƒ{[ƒh‚Ì“à—e‚ğŒ»İ‚Ì‚Ì‘I‘ğ”ÍˆÍ‚Ì‘å‚«‚³‚É‡‚í‚¹‚Ä“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B\n\n‰½‚à‘I‘ğ”ÍˆÍ‚ª‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [5] */
-		"Œ»İ•ÒW’†‚ÌƒAƒCƒRƒ“‚ÌƒAƒCƒRƒ“ƒtƒ@ƒ~ƒŠ[‚·‚×‚Ä‚É“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
-		/* [6] */
-		"Œ»İ•ÒW’†‚ÌƒAƒCƒRƒ“‚ÌƒAƒCƒRƒ“ƒtƒ@ƒ~ƒŠ[‚·‚×‚Ä‚É“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B\n\nƒNƒŠƒbƒvƒ{[ƒh‚Ì“à—e‚ÉƒAƒCƒRƒ“ƒtƒ@ƒ~ƒŠ[‚ªŠÜ‚Ü"
-		"‚ê‚Ä‚¢‚È‚¢‚Ì‚Å‘I‘ğo—ˆ‚Ü‚¹‚ñB"
-	}
-};
-
-resource 'STR#' (157, "-Copy Balloon Help", purgeable) {
-	{	/* array StringArray: 6 elements */
-		/* [1] */
-		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚Ì‰æ‘œ‚ğƒNƒŠƒbƒvƒ{[ƒh‚É“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
-		/* [2] */
-		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚Ì‰æ‘œ‚ğƒNƒŠƒbƒvƒ{[ƒh‚É“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B\n\n‰½‚à‘I‘ğ‚³‚ê‚Ä‚¢‚È‚¢‚©A•ÒWƒEƒCƒ“ƒhƒE‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½"
-		"‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [3] */
-		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚ÌƒAƒCƒRƒ“‰æ‘œ‚Æƒ}ƒXƒN‰æ‘œ‚Ì—¼•û‚ğƒNƒŠƒbƒvƒ{[ƒh‚É“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
-		/* [4] */
-		"Œ»İ‚Ì‘I‘ğ”ÍˆÍ‚ÌƒAƒCƒRƒ“‰æ‘œ‚Æƒ}ƒXƒN‰æ‘œ‚Ì—¼•û‚ğƒNƒŠƒbƒvƒ{[ƒh‚É“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B\n\n‰½‚àƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½"
-		"‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [5] */
-		"•ÒW’†‚ÌƒAƒCƒRƒ“‚Ì‚·‚×‚Ä‚ÌF[“xAƒTƒCƒY‚ğƒNƒŠƒbƒvƒ{[ƒh‚É“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
-		/* [6] */
-		"•ÒW’†‚ÌƒAƒCƒRƒ“‚Ì‚·‚×‚Ä‚ÌF[“xAƒTƒCƒY‚ğƒNƒŠƒbƒvƒ{[ƒh‚É“]‘—‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B\n\n‰½‚àƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½‚ß‘I‘ğ"
-		"o—ˆ‚Ü‚¹‚ñB"
-	}
-};
-
-resource 'STR#' (158, "-Icon Balloon Help", purgeable) {
-	{	/* array StringArray: 9 elements */
-		/* [1] */
-		"gƒAƒCƒRƒ“hƒƒjƒ…[\n\n‚±‚Ìƒƒjƒ…[‚ÍÅ‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚ÌŠeí‘®«‚ğ•ÏX‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B",
-		/* [2] */
-		"gƒAƒCƒRƒ“hƒƒjƒ…[\n\n‚±‚Ìƒƒjƒ…[‚ÍÅ‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“‚ÌŠeí‘®«‚ğ•ÏX‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B\n\n•ÒWƒEƒCƒ“ƒhƒE‚ªŠJ‚©‚ê‚Ä"
-		"‚¢‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [3] */
-		"‚±‚Ìƒƒjƒ…[‚ÍÅ‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“•ÒWƒEƒCƒ“ƒhƒE‚ÌƒTƒCƒY‚ğŠg‘å‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B",
-		/* [4] */
-		"‚±‚Ìƒƒjƒ…[‚ÍÅ‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“•ÒWƒEƒCƒ“ƒhƒE‚ÌƒTƒCƒY‚ğŠg‘å‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B\n\n•ÒW’†‚ÌƒAƒCƒRƒ“‚Í‚·‚Å‚ÉÅ‘åƒTƒCƒY"
-		"‚Ü‚ÅŠg‘å‚³‚ê‚Ä‚¢‚é‚©A‚Ü‚½‚ÍƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [5] */
-		"‚±‚Ìƒƒjƒ…[‚ÍÅ‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“•ÒWƒEƒCƒ“ƒhƒE‚ÌƒTƒCƒY‚ğk¬‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B",
-		/* [6] */
-		"‚±‚Ìƒƒjƒ…[‚ÍÅ‘O–Ê‚É‚ ‚éƒAƒCƒRƒ“•ÒWƒEƒCƒ“ƒhƒE‚ÌƒTƒCƒY‚ğk¬‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B\n\n•ÒW’†‚ÌƒAƒCƒRƒ“‚Í‚·‚Å‚ÉÅ¬ƒTƒCƒY"
-		"‚Ü‚Åk¬‚³‚ê‚Ä‚¢‚é‚©A‚Ü‚½‚ÍƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [7] */
-		"Œ»İ•ÒW’†‚ÌƒAƒCƒRƒ“‚Åg—p‚³‚ê‚Ä‚¢‚éƒJƒ‰[ƒpƒŒƒbƒg‚ğ•ÏX‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B\n\n•ÒW’†‚ÌƒAƒCƒRƒ“‚ÌF[“x‚ª‘¼‚ÌF[“x‚ğƒT"
-		"ƒ|[ƒg‚µ‚Ä‚¢‚È‚¢‚©AƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚Ä‚¢‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB",
-		/* [8] */
-		"‚±‚±‚ğ‘I‘ğ‚µ‚Ä•\\¦‚³‚ê‚éƒ_ƒCƒAƒƒO‚ÅŒ»İ•ÒW’†‚ÌƒAƒCƒRƒ“‚Ì–¼Ì‚â‘®«AID “™‚ğ•ÏX‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
-		/* [9] */
-		"‚±‚±‚ğ‘I‘ğ‚µ‚Ä•\\¦‚³‚ê‚éƒ_ƒCƒAƒƒO‚ÅŒ»İ•ÒW’†‚ÌƒAƒCƒRƒ“‚Ì–¼Ì‚â‘®«AID “™‚ğ•ÏX‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B\n\nƒAƒCƒRƒ“‚ªŠJ‚©‚ê‚"
-		"Ä‚¢‚È‚¢‚½‚ß‘I‘ğo—ˆ‚Ü‚¹‚ñB"
-	}
-};
-
-resource 'STR#' (159, "Colors Balloon Help", purgeable) {
-	{	/* array StringArray: 2 elements */
-		/* [1] */
-		"Macintosh ‚Ì•W€F‚ğg—p‚µ‚Ä‚¢‚Ü‚·Bƒ‚ƒjƒ^‚ÌF”‚ª16F‚Éİ’è‚³‚ê‚Ä‚¢‚éê‡A‚±‚ÌF‚Ì‚İ‚ª•\¦‚³‚ê‚Ü‚·B",
-		/* [2] */
-		"Windows ‚Ì•W€F‚ğg—p‚µ‚Ä‚¢‚Ü‚·BPC‚Ìƒ‚ƒjƒ^‚ÌF”‚ª16F‚Éİ’è‚³‚ê‚Ä‚¢‚éê‡A‚±‚ÌF‚Ì‚İ‚ª•\¦‚³‚ê‚Ü‚·B"
-	}
-};
-
-resource 'STR#' (128, "-Default Names", purgeable) {
-	{	/* array StringArray: 14 elements */
-		/* [1] */
-		"gIconographerh",
-		/* [2] */
-		"Iconographer ‰Šúİ’è",
-		/* [3] */
-		"OK",
-		/* [4] */
-		"•Û‘¶",
-		/* [5] */
-		"ƒLƒƒƒ“ƒZƒ‹",
-		/* [6] */
-		"•Û‘¶‚µ‚È‚¢",
-		/* [7] */
-		"“o˜^",
-		/* [8] */
-		"‚Ü‚¾",
-		/* [9] */
-		":“o˜^",
-		/* [10] */
-		"–¢“o˜^‚ÌƒRƒs[‚Å‚·",
-		/* [11] */
-		"mailto:mihai@mscape.com",
-		/* [12] */
-		"http://www.mscape.com/",
-		/* [13] */
-		"ƒJƒ‰[ƒpƒŒƒbƒg‚ğ•\\¦‚·‚é",
-		/* [14] */
-		"ƒJƒ‰[ƒpƒŒƒbƒg‚ğ‰B‚·"
-	}
-};
-
-resource 'STR#' (129, "-Standard Errors", purgeable) {
-	{	/* array StringArray: 15 elements */
-		/* [1] */
-		"‚±‚Ìƒtƒ@ƒCƒ‹‚Í‚·‚Å‚É‘¼‚ÌƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ÅŠJ‚©‚ê‚Ä‚¢‚Ü‚·B",
-		/* [2] */
-		"‚±‚Ìƒfƒxƒƒbƒp[ƒo[ƒWƒ‡ƒ“‚Ì <app name> ‚Í1999”N9Œ1“ú‚Åg—pŠúŒÀ‚ªØ‚ê‚Ä‚¢‚Ü‚·BV‚µ‚¢ƒo[ƒWƒ‡ƒ“‚ğƒ_ƒEƒ“ƒ[ƒh‚µ‚Ä‰º‚³‚¢"
-		"B",
-		/* [3] */
-		"<app name> ‚Ì•K—v‚ÈƒŠƒ\\[ƒX‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½BƒCƒ“ƒXƒg[ƒ‹‚µ‚È‚¨‚µ‚Ä‰º‚³‚¢B",
-		/* [4] */
-		"<app name> ‚Ì“®ì‚É‚Í Š¿šTalk 7.5.3 ˆÈ~‚ª•K—v‚Å‚·B",
-		/* [5] */
-		"Apple ƒCƒxƒ“ƒg‚ğ‰Šú‰»‚Å‚«‚È‚©‚Á‚½‚Ì‚Å <app name> ‚Íˆ—‚ğ‘±‚¯‚é‚±‚Æ‚ªo—ˆ‚Ü‚¹‚ñB",
-		/* [6] */
-		"ƒAƒsƒAƒ‰ƒ“ƒXƒ}ƒl[ƒWƒƒ‚Ì‰Šú‰»’†‚ÉƒGƒ‰[‚ª‹N‚«‚½‚½‚ß <app name> ‚Íˆ—‚ğ‘±‚¯‚é‚±‚Æ‚ªo—ˆ‚Ü‚¹‚ñB",
-		/* [7] */
-		"ƒƒjƒ…[ƒo[‚Ì‰Šú‰»’†‚ÉƒGƒ‰[‚ª‹N‚«‚Ü‚µ‚½B<app name> ‚ÌƒŠƒ\\[ƒX‚ÉáŠQ‚ª”­¶‚·‚é‰Â”\\«‚ª‚ ‚é‚Ì‚ÅƒCƒ“ƒXƒg[ƒ‹‚µ‚È‚¨‚µ‚Ä‰"
-		"º‚³‚¢B",
-		/* [8] */
-		"gƒCƒ“ƒ^[ƒlƒbƒgİ’è‹@”\\Šg’£h‚ªƒCƒ“ƒXƒg[ƒ‹‚³‚ê‚Ä‚¢‚È‚¢‚Ì‚Å‚±‚Ì URL ‚ÉÚ‘±‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚¹‚ñB",
-		/* [9] */
-		"V‚µ‚¢ƒGƒfƒBƒ^‚ğì¬‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B‚¨‚»‚ç‚­ƒƒ‚ƒŠ[‚ª•s‘«‚µ‚Ä‚¢‚Ü‚·BŠJ‚¢‚Ä‚¢‚é‚¢‚­‚Â‚©‚ÌƒGƒfƒBƒ^‚ğ•Â‚¶‚é‚©A<app nam"
-		"e> ‚Ìƒƒ‚ƒŠŠ„‚è“–‚Ä‚ğ‘‚â‚µ‚Ä‰º‚³‚¢B",
-		/* [10] */
-		"<app name> ‚Ìƒƒ‚ƒŠ‚ª•s‘«‚µ‚Ä‚¢‚Ü‚·B‚±‚ÌƒGƒfƒBƒ^‚Å•`‰æ‚³‚ê‚Ä‚¢‚é‚à‚Ì‚ª”jŠü‚³‚ê‚Ü‚·B",
-		/* [11] */
-		"<app name> ‚Íƒƒ‚ƒŠ‚ª‘«‚è‚È‚­‚È‚è‚Ü‚µ‚½B‚»‚Ì‚½‚ß‚±‚ÌƒGƒfƒBƒ^‚Í•Â‚¶‚ç‚ê‚Ü‚·B",
-		/* [12] */
-		"g“o˜^hƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½B<app name> ‚ğƒCƒ“ƒXƒg[ƒ‹‚µ‚È‚¨‚µ‚Ä‰º‚³‚¢B",
-		/* [13] */
-		"“ü—Í‚µ‚½“o˜^”Ô†‚ÍŠÔˆá‚Á‚Ä‚¢‚Ü‚·B‚ ‚È‚½‚Ìó‚¯æ‚Á‚½“dqƒ[ƒ‹‚É‘‚©‚ê‚Ä‚¢‚é“o˜^”Ô†‚ğ³Šm‚É“ü—Í‚µ‚Ä‰º‚³‚¢B",
-		/* [14] */
-		"<app name> ‚ÌƒVƒFƒAƒEƒFƒA“o˜^‚Ç‚¤‚à‚ ‚è‚ª‚Æ‚¤",
-		/* [15] */
-		"<app name> ‚ğg—p‚·‚é‚É‚ÍAƒAƒsƒAƒ‰ƒ“ƒXƒ}ƒl[ƒWƒƒ‚ªƒCƒ“ƒXƒg[ƒ‹‚³‚ê‚Ä‚¢‚é•K—v‚ª‚ ‚è‚Ü‚·BMacOS 8.0 ˆÈ~‚ÌƒVƒXƒeƒ€ƒ\ƒtƒgƒEƒFƒA‚©AƒAƒsƒAƒ‰ƒ“ƒXƒ}ƒl[ƒWƒƒ‚ğƒCƒ“ƒXƒg[ƒ‹‚µ‚Ä‰º‚³‚¢B"
-		"ƒAƒbƒvƒ‹’ñ‹Ÿ‚Ì Manager SDK ‚ğg—p‚µ‚Ä‚¢‚Ü‚·B"
-	}
-};
-
-resource 'STR#' (3001, "Select Object Strings") {
-	{	/* array StringArray: 2 elements */
-		/* [1] */
-		"\"<file name>\"‚ğ‘I‘ğ",
-		/* [2] */
-		"ƒfƒXƒNƒgƒbƒv‚ğ‘I‘ğ"
-	}
-};
-
-resource 'STR#' (162, "Windows Balloon Help", purgeable) {
-	{	/* array StringArray: 3 elements */
-		/* [1] */
-		"ƒEƒCƒ“ƒhƒEƒƒjƒ…[\n\n‚±‚Ìƒƒjƒ…[‚ÍAIconographer ‚ªƒAƒCƒRƒ“‚ğŠJ‚¢‚½‚Ég—p‚·‚éƒpƒŒƒbƒg‚ğ•\\¦/”ñ•\\¦‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·"
-		"B",
-		/* [2] */
-		"ƒEƒCƒ“ƒhƒEƒƒjƒ…[\n\n‚±‚Ìƒƒjƒ…[‚ÍAIconographer ‚ªƒAƒCƒRƒ“‚ğŠJ‚¢‚½‚Ég—p‚·‚éƒpƒŒƒbƒg‚ğ•\\¦/”ñ•\\¦‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·"
-		"B\n\n—˜—p‰Â”\\‚ÈƒEƒCƒ“ƒhƒE‚ª‘¶İ‚µ‚È‚¢‚Ì‚Åg—po—ˆ‚Ü‚¹‚ñB",
-		/* [3] */
-		"F‘I‘ğ‚Ì‚½‚ß‚ÌŠeí‹@”\\‚ğŠÜ‚Şƒtƒ[ƒeƒBƒ“ƒOƒEƒCƒ“ƒhƒE‚Ì•\\¦/”ñ•\\¦‚ğØ‚è‘Ö‚¦‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B"
-	}
-};
-
-resource 'STR#' (4000, purgeable) {
-	{	/* array StringArray: 1 elements */
-		/* [1] */
-		"‚·‚×‚Ä‚ÌŒ`®"
-	}
-};
-
-resource 'STR#' (260, "Colors Palette: RGB Picker: Balloon Help", purgeable) {
-	{	/* array StringArray: 6 elements */
-		/* [1] */
-		"Ô ƒXƒ‰ƒCƒ_[FŒ»İ‚ÌF‚ÌÔ‚Ì‹­“x‚ğ§Œä‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B",
-		/* [2] */
-		"Ô ƒvƒŒƒrƒ…[FÔ-ƒXƒ‰ƒCƒ_[‚É‚æ‚éF‚Ì•ÏXŒ‹‰Ê‚ÌŒ©–{‚ğ•\\¦‚µ‚Ü‚·B",
-		/* [3] */
-		"—Î ƒXƒ‰ƒCƒ_[FŒ»İ‚ÌF‚Ì—Î‚Ì‹­“x‚ğ§Œä‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B",
-		/* [4] */
-		"—Î ƒvƒŒƒrƒ…[F—Î-ƒXƒ‰ƒCƒ_[‚É‚æ‚éF‚Ì•ÏXŒ‹‰Ê‚ÌŒ©–{‚ğ•\\¦‚µ‚Ü‚·B",
-		/* [5] */
-		"Â ƒXƒ‰ƒCƒ_[FŒ»İ‚ÌF‚ÌÂ‚Ì‹­“x‚ğ§Œä‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B",
-		/* [6] */
-		"Â ƒvƒŒƒrƒ…[F—Î-ƒXƒ‰ƒCƒ_[‚É‚æ‚éF‚Ì•ÏXŒ‹‰Ê‚ÌŒ©–{‚ğ•\\¦‚µ‚Ü‚·B"
-	}
-};
-
-resource 'STR#' (270, "Colors Palette: HSV Picker: Balloon Help", purgeable) {
-	{	/* array StringArray: 6 elements */
-		/* [1] */
-		"F‡‚¢ ƒXƒ‰ƒCƒ_[F Œ»İ‚ÌF‚ÌF‡‚¢‚ğ§Œä‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B‘S‘Ì“I‚ÈF‚Ìí—Ş‚ğİ’è‚µ‚Ü‚·B\n\ng—p•s‰Â‚Ìê‡A‚Ü‚¸‚»‚Ì"
-		"’l‚ğ‘‚â‚·•K—v‚ª‚ ‚è‚Ü‚·B",
-		/* [2] */
-		"F‡‚¢ ƒvƒŒƒrƒ…[FF‡‚¢-ƒXƒ‰ƒCƒ_[‚É‚æ‚éF‡‚¢‚Ì•ÏXŒ‹‰Ê‚ÌŒ©–{‚ğ•\\¦‚µ‚Ü‚·B",
-		/* [3] */
-		"Ê“x ƒXƒ‰ƒCƒ_[FŒ»İ‚ÌF‚ÌÊ“x‚ğ§Œä‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·BÊ“x‚Í‚»‚ÌF©‘Ì‚Ì‹­‚³‚ğİ’è‚µ‚Ü‚·Bã‚­‚·‚é‚ÆŠDF‚©‚ç”’‚Ö‚Æ•"
-		"Ï‰»‚µ‚Ä‚¢‚«‚Ü‚·B\n\ng—p•s‰Â‚Ìê‡A‚Ü‚¸‚»‚Ì’l‚ğ‘‚â‚·•K—v‚ª‚ ‚è‚Ü‚·B",
-		/* [4] */
-		"Ê“x ƒvƒŒƒrƒ…[FÊ“x-ƒXƒ‰ƒCƒ_[‚É‚æ‚éÊ“x‚Ì•ÏXŒ‹‰Ê‚ÌŒ©–{‚ğ•\\¦‚µ‚Ü‚·B",
-		/* [5] */
-		"’l ƒXƒ‰ƒCƒ_[FŒ»İ‚ÌF‚Ì’l‚Ì‹­“x‚ğ§Œä‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·B’l‚ÍF‚Ì–¾‚é‚³‚ğİ’è‚µ‚Ü‚·B",
-		/* [6] */
-		"’l ƒvƒŒƒrƒ…[F’l-ƒXƒ‰ƒCƒ_[‚É‚æ‚é’l‚Ì•ÏXŒ‹‰Ê‚ÌŒ©–{‚ğ•\\¦‚µ‚Ü‚·B"
-	}
-};
-
-resource 'STR#' (280, "Colors Palette: System Picker: Balloon Help", purgeable) {
-	{	/* array StringArray: 1 elements */
-		/* [1] */
-		"ƒVƒXƒeƒ€ƒpƒŒƒbƒg‚ÌF[“x‚ğ‚±‚±‚É•\\¦‚µ‚Ü‚·BlŠp‚¢˜g‚ğƒNƒŠƒbƒN‚µ‚Ä‘OŒiF^”wŒiF‚Ìİ’è‚µ‚Ü‚·B"
-	}
-};
-
-resource 'STR#' (290, "Colors Palette: Favorites Picker: Baloon Help", purgeable) {
-	{	/* array StringArray: 1 elements */
-		/* [1] */
-		"D‚«‚ÈF‚ğ’u‚¢‚Ä‚¨‚­‚±‚Æ‚ªo—ˆ‚éƒpƒŒƒbƒg‚Å‚·BƒpƒŒƒbƒg‚Ì‹ó‚¢‚Ä‚¢‚é•”•ª‚Éƒ}ƒEƒX‚ğˆÚ“®‚µƒNƒŠƒbƒN‚·‚ê‚Î‚»‚±‚Ö•Û‘¶‚·‚é‚±‚Æ‚ª"
-		"o—ˆ‚Ü‚·BF‚ğíœ‚·‚éê‡‚É‚ÍAƒRƒ}ƒ“ƒh‚ğ‰Ÿ‚µ‚È‚ª‚ç‘I‘ğ‚µƒNƒŠƒbƒN‚µ‚Ä‰º‚³‚¢B"
-	}
-};
-
-resource 'STR#' (250, "Colors Palette: Balloon Help", purgeable) {
-	{	/* array StringArray: 4 elements */
-		/* [1] */
-		"Œ»İ‚Ì‘OŒiF^”wŒiF‚ª‚±‚±‚É•\\¦‚³‚ê‚Ü‚·B‘I‘ğ˜g‚ª•\\¦‚³‚ê‚Ä‚¢‚é•”•ª‚ªŒ»İ•ÒW’†‚ÌF‚Å‚·B‚à‚¤ˆê•û‚Ì˜g‚ğ‘I‘ğ‚·‚é‚±‚Æ‚Å•Ò"
-		"W‚·‚éF‚ğ•ÏX‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B",
-		/* [2] */
-		"‚±‚ê‚ç‚Ìƒ^ƒu‚ÍA‚¢‚­‚Â‚©‚ÌFŒ©–{‚ğ‘I‘ğ‚·‚é‚½‚ß‚Ég—p‚µ‚Ü‚·BF Ô^—Î^ÂAF‡‚¢^Ê“x^’lAƒVƒXƒeƒ€ƒpƒŒƒbƒgA‚¨‹C‚É“ü‚"
-		"èƒpƒŒƒbƒg‚È‚Ç",
-		/* [3] */
-		"Œ»İ•ÒW’†‚Ì‰æ‘œ“à‚Å‚ÌƒJ[ƒ\\ƒ‹‚ÌˆÊ’uî•ñ‚ğ•\\¦‚µ‚Ü‚·B",
-		/* [4] */
-		"Œ»İ•ÒW’†‚Ì‰æ‘œ“à‚Å‚ÌƒJ[ƒ\\ƒ‹‚ÌˆÊ’u‚ÌFî•ñ‚ğ•\\¦‚µ‚Ü‚·B"
-	}
-};
-
-resource 'tab#' (1010) {
+resource 'tab#' (1010, "Hue & Saturation Tabs") {
 	versionZero {
 		{	/* array TabInfo: 2 elements */
 			/* [1] */
 			0,
-			"F‘ŠEÊ“x",
+			"F‘Š‚ÆÊ“x",
 			/* [2] */
 			0,
-			"–¾‚é‚³EƒRƒ“ƒgƒ‰ƒXƒg"
+			"–¾‚é‚³‚ÆƒRƒ“ƒgƒ‰ƒXƒg"
+		}
+	}
+};
+
+resource 'tab#' (1007, "Preferences Tabs") {
+	versionZero {
+		{	/* array TabInfo: 3 elements */
+			/* [1] */
+			0,
+			"ˆê”Êİ’è",
+			/* [2] */
+			0,
+			"•W€İ’è",
+			/* [3] */
+			0,
+			"Šg’£İ’è"
 		}
 	}
 };
@@ -3518,129 +5243,77 @@ resource 'tab#' (251, "Color Palette Tabs") {
 	}
 };
 
-resource 'vers' (2) {
-	0x1,
-	0x11,
-	release,
-	0x0,
-	0,
-	"1.1.1",
-	"http://www.mscape.com/"
-};
-
-resource 'vers' (1) {
-	0x1,
-	0x11,
-	release,
-	0x0,
-	14,
-	"1.1.1J",
-	"1.1.1 “ú–{Œê”Å ı1998-2000 Mihai Parparita\n“ú–{Œê”Å–|–óÒFYoshi SAKUMA"
-};
-
-data 'Mngl' (0, "Owner resource") {
-	$"18A9 2031 3939 382D 3920 4D69 6861 6920 5061 7270 6172 6974 61"                                                                                     /* .© 1998-9 Mihai Parparita */
-};
-
-resource 'hfdr' (-5696, purgeable) {
-	2,
-	0,
-	0,
-	0,
-	{	/* array HFdrArray: 1 elements */
-		/* [1] */
-		HMStringResItem {
-			150,
-			1
+resource 'tab#' (500, "Preview Tabs") {
+	versionZero {
+		{	/* array TabInfo: 2 elements */
+			/* [1] */
+			0,
+			"ƒTƒ€ƒlƒCƒ‹",
+			/* [2] */
+			0,
+			"ƒqƒ“ƒg"
 		}
 	}
 };
 
-resource 'open' (128) {
-	'Mngl',
-	{	/* array typeArray: 6 elements */
-		/* [1] */
-		'Icon',
-		/* [2] */
-		'WIco',
-		/* [3] */
-		'TIFF',
-		/* [4] */
-		'****',
-		/* [5] */
-		'fold',
-		/* [6] */
-		'disk'
-	}
+resource 'WIND' (200) {
+	{50, 10, 258, 204},
+	1031,
+	invisible,
+	goAway,
+	0x0,
+	"",
+	noAutoCenter
 };
 
-resource 'kind' (128) {
-	'Mngl',
-	0,
-	{	/* array kindArray: 3 elements */
-		/* [1] */
-		'Icon', "Mac OS Œ`®ƒAƒCƒRƒ“",
-		/* [2] */
-		'ICO ', "Windows Œ`®ƒAƒCƒRƒ“",
-		/* [3] */
-		'TIFF', "Mac OS X Œ`®ƒAƒCƒRƒ“"
-	}
+resource 'WIND' (300) {
+	{229, 200, 485, 540},
+	1025,
+	invisible,
+	goAway,
+	0x0,
+	"<name> iƒAƒCƒRƒ“ƒuƒ‰ƒEƒUj",
+	33130
 };
 
-resource 'BNDL' (128) {
-	'Mngl',
-	0,
-	{	/* array TypeArray: 2 elements */
-		/* [1] */
-		'ICN#',
-		{	/* array IDArray: 7 elements */
-			/* [1] */
-			0, 128,
-			/* [2] */
-			1, 0,
-			/* [3] */
-			2, 129,
-			/* [4] */
-			3, 0,
-			/* [5] */
-			4, 0,
-			/* [6] */
-			5, 130,
-			/* [7] */
-			6, 131
-		},
-		/* [2] */
-		'FREF',
-		{	/* array IDArray: 7 elements */
-			/* [1] */
-			0, 128,
-			/* [2] */
-			1, 129,
-			/* [3] */
-			2, 130,
-			/* [4] */
-			3, 131,
-			/* [5] */
-			4, 132,
-			/* [6] */
-			5, 133,
-			/* [7] */
-			6, 134
-		}
-	}
+resource 'WIND' (250, "Colors Palette") {
+	{244, 408, 404, 728},
+	1057,
+	invisible,
+	goAway,
+	0x0,
+	"FŒ©–{",
+	31638
 };
 
-resource 'MBAR' (128) {
-	{	/* array MenuArray: 4 elements */
-		/* [1] */
-		128,
-		/* [2] */
-		129,
-		/* [3] */
-		130,
-		/* [4] */
-		135
-	}
+resource 'WIND' (400, "Members Palette") {
+	{226, 867, 760, 1017},
+	1059,
+	invisible,
+	goAway,
+	0x0,
+	"ƒAƒCƒRƒ“ˆê——",
+	26519
+};
+
+resource 'WIND' (500, "Preview Palette") {
+	{39, 867, 229, 1017},
+	1057,
+	invisible,
+	goAway,
+	0x0,
+	"ƒvƒŒƒrƒ…[",
+	23425
+};
+
+resource 'WIND' (600, "Tool Palette") {
+	{40, 10, 293, 61},
+	1057,
+	invisible,
+	goAway,
+	0x0,
+	"ƒc[ƒ‹",
+	35715
 };
 
 resource 'ALRT' (3000) {
@@ -3657,6 +5330,39 @@ resource 'ALRT' (3000) {
 		OK, visible, sound1
 	},
 	alertPositionMainScreen
+};
+
+resource 'vers' (1) {
+	0x2,
+	0x1,
+	release,
+	0x0,
+	14,
+	"2.0.1J",
+	"2.0.1 “ú–{Œê”Å <–|–óFYoshi SAKUMA>\nı1998-2000 Mihai Parparita"
+};
+
+resource 'vers' (2) {
+	0x2,
+	0x1,
+	release,
+	0x0,
+	14,
+	"2.0.1J",
+	"http://www.mscape.com/"
+};
+
+resource 'kind' (128) {
+	'Mngl',
+	0,
+	{	/* array kindArray: 3 elements */
+		/* [1] */
+		'Icon', "Mac OS ƒAƒCƒRƒ“",
+		/* [2] */
+		'ICO ', "Windows ƒAƒCƒRƒ“",
+		/* [3] */
+		'TIFF', "Mac OS X Server ƒAƒCƒRƒ“"
+	}
 };
 
 

@@ -281,7 +281,7 @@ void icnsEditorClass::HandleText(Point theMouse)
 	if (status & hasSelection)
 	{
 		if (status & selectionFloated)
-			DefloatSelection();
+			DefloatSelection(true);
 		SetEmptyRgn(selectionRgn);
 	}
 	
@@ -732,7 +732,7 @@ void icnsEditorClass::HandlePolygon(Point startMouse)
 	
 	while (Button()){;}
 	
-	lastClick = LMGetTicks();
+	lastClick = TickCount();
 	
 	oldMouse = currentMouse = startMouse;
 	
@@ -776,19 +776,19 @@ void icnsEditorClass::HandlePolygon(Point startMouse)
 			
 			while (Button()){;}
 			
-			if ((LMGetTicks() - lastClick) <= clickDelay &&
+			if ((TickCount() - lastClick) <= clickDelay &&
 				(vertices[noOfVertices - 1].h == x &&
 				(vertices[noOfVertices - 1].v == y)))
 			{
 				vertices[noOfVertices].h = vertices[0].h;
 				vertices[noOfVertices].v = vertices[0].v;
-				lastClick = LMGetTicks();
+				lastClick = TickCount();
 			}
 			else
 			{
 				vertices[noOfVertices].h = x;
 				vertices[noOfVertices].v = y;
-				lastClick = LMGetTicks();
+				lastClick = TickCount();
 			}
 			
 			if (firstTime) firstTime = false;
@@ -1043,7 +1043,7 @@ void icnsEditorClass::HandleLasso(Point startMouse)
 		
 	// we defloat the selection if we need to
 	if ((status & selectionFloated) && (mode == normal || mode == additive))
-		DefloatSelection();
+		DefloatSelection(true);
 	
 	// we deselect the current selection if we need to
 	if (mode == normal)
@@ -1174,7 +1174,7 @@ void icnsEditorClass::HandlePolygonalLasso(void)
 	
 	while (Button()){;}
 	
-	lastClick = LMGetTicks();
+	lastClick = TickCount();
 	
 	while ((vertices[0].h > vertices[noOfVertices].h + 3) ||
 		   (vertices[0].h < vertices[noOfVertices].h - 3) ||
@@ -1220,17 +1220,17 @@ void icnsEditorClass::HandlePolygonalLasso(void)
 			
 			while (Button()){;}
 			
-			if ((LMGetTicks() - lastClick) <= clickDelay)
+			if ((TickCount() - lastClick) <= clickDelay)
 			{
 				vertices[noOfVertices].h = vertices[0].h;
 				vertices[noOfVertices].v = vertices[0].v;
-				lastClick = LMGetTicks();
+				lastClick = TickCount();
 			}
 			else
 			{
 				vertices[noOfVertices].h = x;
 				vertices[noOfVertices].v = y;
-				lastClick = LMGetTicks();
+				lastClick = TickCount();
 			}
 			
 			GetMouse(&startMouse);
@@ -1341,7 +1341,7 @@ void icnsEditorClass::HandleMagicWand(Point theMouse)
 	
 	// depending on the mode we have to defloat
 	if ((status & selectionFloated) && (mode == normal || mode == additive))
-		DefloatSelection();	
+		DefloatSelection(true);	
 	
 	// setting up the variables
 	currentBounds = (**currentPix).bounds;
@@ -1488,7 +1488,7 @@ bool icnsEditorClass::HandleMove(Point startMouse)
 			event.what = mouseDown;
 			event.message = 0;
 			event.where = localMouse;
-			event.when = LMGetTicks();
+			event.when = TickCount();
 			LocalToGlobal(&event.where);
 			event.modifiers = 0;
 			
@@ -1634,7 +1634,7 @@ void icnsEditorClass::FloatSelection(void)
 // Description	: If there is a floated selection (see above) this function merges it back
 //				  with the drawing.
 
-void icnsEditorClass::DefloatSelection(void)
+void icnsEditorClass::DefloatSelection(bool trueDefloat)
 {
 	if (!(status & selectionFloated)) // nothing to defloat
 		return;
@@ -1654,16 +1654,19 @@ void icnsEditorClass::DefloatSelection(void)
 			   &(**currentPix).bounds,
 			   srcCopy,
 			   selectionRgn);
-	// and reset the bounds of the selection gworld
-	OffsetRect(&(**selectionPix).bounds,
-				-(**selectionPix).bounds.left,
-				-(**selectionPix).bounds.top);
 				
 	RESTOREGWORLD;
 	RESTORECOLORS;
 	
-	// not floated anymore
-	status &= ~selectionFloated;
+	if (trueDefloat)
+	{
+		// not floated anymore
+		status &= ~selectionFloated;
+		// and reset the bounds of the selection gworld
+		OffsetRect(&(**selectionPix).bounds,
+					-(**selectionPix).bounds.left,
+					-(**selectionPix).bounds.top);
+	}
 }
 
 // __________________________________________________________________________________________
@@ -1738,7 +1741,7 @@ void icnsEditorClass::HandleMarquee(Point startMouse)
 	
 	// if there's a floated selection and we're in these modes...
 	if ((status & selectionFloated) && (mode == normal || mode == additive))
-		DefloatSelection(); // we must defloat it
+		DefloatSelection(true); // we must defloat it
 	
 	GetRegionBounds(selectionRgn, &oldMarqueeRect);
 	
@@ -2114,8 +2117,9 @@ void icnsEditorClass::HandleEyeDropper(Point theMouse)
 {
 	int oldX, oldY, x, y;
 	Point clickLocation;
-	SAVEGWORLD;
 	RGBColor	newColor;
+	
+	SAVEGWORLD;
 	
 	GetDrawingMousePosition(&x, &y, &theMouse, 0); // we find out where the user clicked
 	
@@ -2137,16 +2141,16 @@ void icnsEditorClass::HandleEyeDropper(Point theMouse)
 				SetGWorld(currentGW, NULL); // go into the gworld
 			
 			GetCPixel(x, y, &newColor);
-			
+			RESTOREGWORLD;
 			if (((ISOPTIONDOWN || ISSHIFTDOWN) && !statics.toolPalette->InToggleMode()) || // if option is down and we're not in toggle mode
 				(ISSHIFTDOWN && statics.toolPalette->InToggleMode()))
 				statics.toolPalette->SetColors(NULL, &newColor);
 			else
 				statics.toolPalette->SetColors(&newColor, NULL); // otherwise it goes into the foreground color
-			RESTOREGWORLD;
 			
-			if (statics.colorsPalette->IsVisible())
-				statics.colorsPalette->UpdateReadout(x, y, newColor);
+			
+			/*if (statics.colorsPalette->IsVisible())
+				statics.colorsPalette->UpdateReadout(x, y, newColor);*/
 		}
 				
 		GetDrawingMousePosition(&x, &y, NULL, 0); // we find out where the user clicked

@@ -9,6 +9,7 @@
 
 #include "icnsClass.h"
 #include "graphicalFunctions.h"
+#include "MUtilities.h"
 
 GWorldPtr 		icnsClass::canvasGW = NULL;
 PixMapHandle	icnsClass::canvasPix = NULL;
@@ -605,7 +606,7 @@ void icnsClass::Display(Rect targetRect, bool selected)
 	
 	SAVECOLORS;
 	
-	if ((**((CGrafPort*)qd.thePort)->portPixMap).pixelSize == 1)
+	if (!IsPortColor(qd.thePort))
 	// dithering looks bad in 1 bit, so we turn it off...
 		copyStyle = srcCopy;
 	else
@@ -763,9 +764,9 @@ void icnsClass::Display(Rect targetRect, bool selected)
 	
 	CopyDeepMask((BitMap *)*iconPix,
 				 (BitMap *)*maskPix,
-				 &qd.thePort->portBits,
+				 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
 				 &bounds,
-				 &bounds,
+				 &(**maskPix).bounds,
 				 &displayRect,
 				 copyStyle,
 				 NULL);
@@ -872,7 +873,7 @@ void icnsClass::DisplayMember(int member, Rect targetRect, bool selected)
 	if (iconPix != NULL && maskPix != NULL)
 		CopyDeepMask((BitMap *)*iconPix,
 					 (BitMap *)*maskPix,
-					 &qd.thePort->portBits,
+					 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
 					 &(**iconPix).bounds,
 					 &(**maskPix).bounds,
 					 &targetRect,
@@ -897,7 +898,7 @@ void icnsClass::DrawMember(int member, Rect targetRect)
 	
 	if (srcPix != NULL)
 		CopyBits((BitMap *)*srcPix,
-				 &qd.thePort->portBits,
+				 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
 				 &(**srcPix).bounds,
 				 &targetRect,
 				 srcCopy,
@@ -1096,6 +1097,8 @@ void icnsClass::Save()
 		case formatMacOSXServer:
 			break;
 	}
+	
+	MUtilities::AESendFinderUpdate(srcFileSpec);
 }
 
 void icnsClass::SaveUniversal()
@@ -1143,14 +1146,17 @@ void icnsClass::CleanupFileSpec()
 }
 
 void icnsClass::PreSave()
-{	
+{
+	int error;
 	SetupFileSpec(true);
 	
 	oldFile = CurResFile(); // we save the old file that was in use
 	targetFile = FSpOpenResFile(&srcFileSpec, fsRdWrPerm); // we open the target file
 	
+	error = ResError();
+	
 	if (targetFile == -1)
-		switch(ResError())
+		switch(error)
 		{
 			case eofErr:
 				FInfo fileInfo;
@@ -1159,7 +1165,12 @@ void icnsClass::PreSave()
 				targetFile = FSpOpenResFile(&srcFileSpec, fsRdWrPerm); // we open the target file
 				break;
 			default:
-				return;
+				Str255 errorAsString, errorString = "\pError occured when saving (Type <type>)";
+				
+				NumToString(error, errorAsString);
+				SubstituteString(errorString, "\p<type>", errorAsString);
+				
+				DisplayPAlert("\p", errorString);
 				break;
 		}
 	
@@ -1505,9 +1516,23 @@ bool icnsClass::IDChanged()
 
 int icnsClass::GetPixName(int height, int depth, bool icon)
 {
+	if (height == 12)
+	{
+		if (icon && (depth == 32)) depth = 8;
+		if (!icon && (depth == 8)) depth = 1;
+	}
+	else if (height > 48)
+	{
+		height = 128;
+		if (icon)
+			depth = 32;
+		else
+			depth = 8;
+	}
+	
 	for (int i=0; i < kMembersCount; i++)
 	{
-		if (kMembers[i].height == height &&
+		if ((kMembers[i].height == height) &&
 			kMembers[i].depth == depth &&
 			kMembers[i].icon == icon)
 			return kMembers[i].name;
@@ -1527,7 +1552,7 @@ int icnsClass::GetBestMaskName(int height, int depth, bool strict)
 		case 32:
 		case 8:
 			maskName = GetPixName(height, 8, false);
-			if (maskName != -1 && (HASMEMBER(maskName) || (height == 128)))
+			if (maskName != -1 && (HASMEMBER(maskName) || (height > 48)))
 				return maskName;
 			else
 				return GetPixName(height, 1, false);
@@ -1684,34 +1709,40 @@ MString	icnsClass::GetMembersListNames(long members)
 	return membersList;
 }
 
-MString icnsClass::GetSizeListNames(long members, long size)
+void icnsClass::GetSizeName(long size, Str255 sizeName)
 {
-	MString	list("");
-	int		startIndex;
-	Str255	memberName;
-	bool	first = true;
-	
 	for (int i=0; i < kMembersCount; i++)
 		if (kMembers[i].name & size)
 		{
-			MString	temporary("");
+			GetMemberNameString(kMembers[i].name, sizeName);
 			
-			GetMemberNameString(kMembers[i].name, memberName);
-					
-			temporary = memberName;
-			startIndex = 0;
-			list += temporary.GetWord(&startIndex);
-			break;
+			for (int j=1; j <= sizeName[0]; j++)
+				if (sizeName[j] == ' ')
+				{
+					sizeName[0] = j - 1;
+					return;
+				}
 		}
+		
+	CopyString(sizeName, "\p");
+}
+
+MString icnsClass::GetSizeListNames(long members, long size)
+{
+	MString	list("");
+	Str255	sizeName;
+	bool	first = true;
+	
+	GetSizeName(size, sizeName);
+	
+	list += sizeName;
 	
 	list += " (";
 	
 	for (int i=0; i < kMembersCount; i++)
 		if ((kMembers[i].name & (members & size)) &&
 			!(kMembers[i].name & masks))
-		{
-			MString temporary("");
-			
+		{	
 			if (!first)
 				list += ", ";
 			else

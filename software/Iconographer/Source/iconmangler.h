@@ -87,7 +87,8 @@ enum stdErrors
 	eBadRegCode = 13,
 	eThanksForRegistering = 14,
 	eAppearanceNotInstalled = 15,
-	eNeedInternetConfigRegistration = 16
+	eNeedInternetConfigRegistration = 16,
+	eCantOpenFile = 17
 };
 
 enum prompts
@@ -140,14 +141,15 @@ enum menus
 {
 	mApple = 128,
 	mFile = 129,
-	mEdit = 130,
-	mSelect = 131,
-	mTransform = 132,
-	mPaste = 133,
-	mCopy = 134,
-	mIcon = 135,
-	mColors = 136,
-	mWindows = 137
+	mOpenRecent = 130,
+	mEdit = 131,
+	mSelect = 132,
+	mTransform = 133,
+	mPaste = 134,
+	mCopy = 135,
+	mIcon = 136,
+	mColors = 137,
+	mWindows = 138
 };
 
 enum appleMenu
@@ -160,12 +162,13 @@ enum fileMenu
 {
 	iNewIcon = 1,
 	iOpenIcon = 2,
-	iClose = 3,
-	iSave = 5,
-	iSaveAs = 6,
-	iSaveInto = 7,
-	iRevert = 8,
-	iQuit = 10
+	iOpenRecent = 3,
+	iClose = 4,
+	iSave = 6,
+	iSaveAs = 7,
+	iSaveInto = 8,
+	iRevert = 9,
+	iQuit = 11
 };
 
 enum editMenu
@@ -322,9 +325,11 @@ OSErr		SaveIcon(int flags);
 void		Revert();
 void 		RefreshIconBrowser(bool newIcon, int deletedIcon, int deletedIconFormat);
 void		CleanUp(void);
-extern void	DoError(int resourceID, int stringNo);
+void		DoError(int resourceID, int stringNo);
+void		DoError(Str255 text);
 void		OpenIconFromBrowser(FSSpec *fileToOpen, long ID, long format, long member);
 icnsEditorPtr GetEmptyEditor(FSSpec fileToOpen, long ID, int format);
+void		RebuildRecentFilesMenu();
 void		RebuildWindowsMenu();
 
 void 		TogglePalette(MFloaterPtr palette, int menuItem, int showStringIndex, int hideStringIndex);

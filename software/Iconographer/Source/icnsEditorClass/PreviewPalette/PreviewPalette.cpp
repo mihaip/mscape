@@ -36,7 +36,7 @@ void PreviewPalette::DoIdle()
 		int newTicks, delta;
 		Str255	valueAsString;
 		
-		newTicks = LMGetTicks();
+		newTicks = TickCount();
 		
 		if (oscillationTicks == -1 || (newTicks - oscillationTicks) > 64)
 			delta = 4;
@@ -519,7 +519,7 @@ pascal void PreviewPalette::PreviewDraw(ControlHandle theControl, short thePart)
 	RESTOREGWORLD;
 	
 	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
-			 GetPortBitMapForCopyBits(qd.thePort),
+			 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
 			 &canvasRect,
 			 &controlRect,
 			 srcCopy,

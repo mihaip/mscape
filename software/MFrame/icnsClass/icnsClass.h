@@ -213,10 +213,10 @@ const static int kMembersCount = sizeof(kMembers)/sizeof(MemberDescription);
 const static long kDefaultMembers[kFormatCount + 1] = 
 {
 	0,
-	icon32 + icon8 + icon4 + icon1 + mask8 + mask1, // mac os universal
-	icon32 + icon8 + icon4 + icon1 + mask8 + mask1 - miniSize, // mac os new
-	icon8 - ich8 + icon4 - ich4 + icon1 - ichi + mask1 - ichm, // mac os old
-	icon32 - it32 + icon8 + icon4 + icon1 + mask1 - miniSize, // windows
+	icon32 | icon8 | icon4 | icon1 | mask8 | mask1, // mac os universal
+	icon32 | icon8 | icon4 | icon1 | mask8 | mask1, // mac os new
+	(icon8 | icon4 | icon1 | mask1) &~ (thumbnailSize | hugeSize), // mac os old
+	(icon32 | icon8 | icon4 | icon1 | mask1) &~ (thumbnailSize | miniSize), // windows
 	hugeSize + largeSize + smallSize // mac os server
 };
 
@@ -374,6 +374,7 @@ class icnsClass
 		static void		GetMemberResourceNameString(int name, Str255 nameString);
 		static MString	GetMembersListNames(long members);
 		static MString 	GetSizeListNames(long members, long size);
+		static void		GetSizeName(long size, Str255 sizeName);
 		
 		int				GetMemberIndex(int name);
 		

@@ -197,37 +197,45 @@ OSErr InitMenuBar()
 	
 	menu = GetMenu(mSelect);
 	if(menu != NULL)
-		InsertMenu(menu,hierMenu); // the select menu is not directly in the menubar,
+		InsertMenu(menu,kInsertHierarchicalMenu); // the select menu is not directly in the menubar,
 							       // rather it is a submenu of the edit menu
 	else
 		return resNotFound;
 	
 	menu = GetMenu(mTransform); // same for the transform menu
 	if(menu != NULL)
-		InsertMenu(menu,hierMenu);
+		InsertMenu(menu,kInsertHierarchicalMenu);
 	else
 		return resNotFound;
 		
 	menu = GetMenu(mPaste); // same for the paste menu
 	if(menu != NULL)
-		InsertMenu(menu,hierMenu);
+		InsertMenu(menu,kInsertHierarchicalMenu);
 	else
 		return resNotFound;
 		
 	menu = GetMenu(mCopy); // same for the copy menu
 	if(menu != NULL)
-		InsertMenu(menu,hierMenu);
+		InsertMenu(menu,kInsertHierarchicalMenu);
 	else
 		return resNotFound;
 		
 	menu = GetMenu(mColors); // same for the colors menu
 	if(menu != NULL)
 	{
-		InsertMenu(menu,hierMenu);
+		InsertMenu(menu,kInsertHierarchicalMenu);
 		CheckItem(menu, iMacOSColors, true);
 	}
 	else
 		return resNotFound;
+		
+	menu = GetMenu(mOpenRecent); // same for the open recent menu
+	if(menu != NULL)
+		InsertMenu(menu, kInsertHierarchicalMenu);
+	else
+		return resNotFound;
+		
+	RebuildRecentFilesMenu();
 
 	SetupPixelGrid();
 	
@@ -245,7 +253,7 @@ OSErr InitMenuBar()
 	
 	// help menu	
 	HMGetHelpMenuHandle(&menu);
-	menuItemCount = CountMItems(menu);
+	menuItemCount = CountMenuItems(menu);
 	
 	GetIndString(menuItemText, rDefaultNames, eIconographerHelp);
 	InsertMenuItem(menu, menuItemText, menuItemCount++);
@@ -700,6 +708,11 @@ void HandleMouseDown(EventRecord *eventPtr)
 			SystemClick(eventPtr, theWindow);
 			break;
 		case inDrag : // the user is attempting to drag the window
+			if (currentWindow != NULL &&
+				(currentWindow->GetType() == kEditorType ||
+				 currentWindow->GetType() == kBrowserType) &&
+				 MDocumentWindowPtr(currentWindow)->IsPathSelectClick(eventPtr))
+				 MDocumentWindowPtr(currentWindow)->PathSelect();
 			mainScreen = GetMainDevice();
 			currentWindow->Drag(eventPtr->where, (**mainScreen).gdRect);
 			break;
@@ -746,6 +759,13 @@ void HandleMouseDown(EventRecord *eventPtr)
 			if (currentWindow != NULL)
 				currentWindow->HandleGrow(eventPtr->where);
 			break;
+		case inProxyIcon:
+			if (currentWindow != NULL &&
+				(currentWindow->GetType() == kEditorType ||
+				 currentWindow->GetType() == kBrowserType))
+				 MDocumentWindowPtr(currentWindow)->TrackProxyDrag(eventPtr->where);
+			break;
+				 
 	}
 }
 
@@ -875,6 +895,28 @@ void HandleOSEvent(EventRecord *eventPtr)
 	}
 }
 
+void RebuildRecentFilesMenu()
+{
+	MenuHandle	recentFilesMenu;
+	FSSpec		file;
+	int			insertionPoint = 0;
+	
+	recentFilesMenu = GetMenu(mOpenRecent);
+	
+	for (int i=CountMenuItems(recentFilesMenu); i >= 1; i--)
+		DeleteMenuItem(recentFilesMenu, i);
+		
+	for (int i=0; i < icnsEditorClass::statics.preferences.GetRecentFilesCount(); i++)
+	{
+		file = icnsEditorClass::statics.preferences.GetNthRecentFile(i);
+		if (file.vRefNum != -1 || file.parID != -1)
+		{
+			InsertMenuItem(recentFilesMenu, "\pscratch", insertionPoint++);
+			SetMenuItemText(recentFilesMenu, insertionPoint, file.name);
+		}
+	}	
+}
+
 void RebuildWindowsMenu()
 {
 	MWindowPtr	currentWindow;
@@ -887,7 +929,7 @@ void RebuildWindowsMenu()
 	
 	windowsMenu = GetMenu(mWindows);
 	
-	for (int i=CountMItems(windowsMenu); i >= iEditorsInsertionPoint; i--)
+	for (int i=CountMenuItems(windowsMenu); i >= iEditorsInsertionPoint; i--)
 		DeleteMenuItem(windowsMenu, i);
 		
 	InsertMenuItem(windowsMenu, "\p-", iEditorsInsertionPoint - 1);
@@ -966,7 +1008,7 @@ void DoMenuCommand(long menuResult)
 	{
 		long startTicks;
 		
-		startTicks = LMGetTicks();
+		startTicks = TickCount();
 		
 		menuID = (menuResult & 0xFFFF0000) >> 16; // we get the ID (upper half of the long)
 		item = (menuResult & 0x0000FFFF); // and the item number (lower half of the number)
@@ -1004,6 +1046,32 @@ void DoMenuCommand(long menuResult)
 					case iRevert : Revert(); break;
 					case iQuit :gIsDone = true; break;
 				}
+				break;
+			case mOpenRecent:
+				FSSpec fileToOpen;
+				
+				fileToOpen = icnsEditorClass::statics.preferences.GetNthRecentFile(item - 1);
+				
+				if (fileToOpen.vRefNum == -1 && fileToOpen.parID == -1)
+				{
+					Str255 text, fileName;
+					MenuHandle menu;
+					
+					GetIndString(text, rStdErrors, eCantOpenFile);
+					
+					menu = GetMenu(mOpenRecent);
+					GetMenuItemText(menu, item, fileName);
+					
+					SubstituteString(text, "\p<file name>", fileName);
+					SubstituteString(text, "\p<error type>", "\p-43");
+					
+					DoError(text);
+					
+					RebuildRecentFilesMenu();
+				}
+				else
+					OpenIcon(&fileToOpen);
+					
 				break;
 			case mEdit :
 				if (frontEditor != NULL)
@@ -1182,7 +1250,7 @@ void DoMenuCommand(long menuResult)
 				break;
 		}
 		
-		while (LMGetTicks() < startTicks + 4) {;}
+		while (TickCount() < startTicks + 4) {;}
 		
 		HiliteMenu(0); // after the command has been executed, we must unhilite the menu
 	}
@@ -1865,9 +1933,10 @@ void OpenIcon(FSSpec *inFile)
 		
 		DoIdle();
 		DrawMenuBar();
+			
+		icnsEditorClass::statics.preferences.AddRecentFile(newEditor->srcFileSpec);
+		RebuildRecentFilesMenu();
 	}
-	
-	//RebuildWindowsMenu();
 }
 
 void OpenIconFromBrowser(FSSpec *fileToOpen, long ID, long format, long member)
@@ -1910,6 +1979,9 @@ void OpenIconFromBrowser(FSSpec *fileToOpen, long ID, long format, long member)
 		
 		DoIdle();
 		DrawMenuBar();
+		
+		icnsEditorClass::statics.preferences.AddRecentFile(newEditor->srcFileSpec);
+		RebuildRecentFilesMenu();
 	}
 }
 
@@ -2092,7 +2164,7 @@ OSErr SaveIcon(int flags)
 				GetIndString(yesButton, rBasicStrings, eYesButton);
 				GetIndString(noButton, rBasicStrings, eNoButton);
 				
-				itemHit = icnsEditorClass::statics.DisplayAlert(text, yesButton, noButton, "\p");
+				itemHit = icnsEditorClass::statics.DisplayAlert(text, yesButton, noButton, "\p", kAlertCautionAlert);
 				if (itemHit == 2)
 				{
 					CloseResFile(file);
@@ -2156,6 +2228,9 @@ OSErr SaveIcon(int flags)
 		
 		if (!(icnsEditorClass::statics.preferences.IsRegistered()))
 			Nag(false);
+			
+		icnsEditorClass::statics.preferences.AddRecentFile(frontEditor->srcFileSpec);
+		RebuildRecentFilesMenu();
 	}
 	
 	return noErr;
@@ -2321,13 +2396,19 @@ void Nag(bool startup)
 void DoError(int resourceID, int stringNo)
 {
 	Str255	text;
-	MAlert	alert;
 	
 	GetIndString(text, resourceID, stringNo); // the message is loaded from the specified
 	// string in the specified resource
 	
 	if (FindSubstring(text, "\p<app name>") != -1) // if there are placeholders, we must
 		SubstituteString(text, "\p<app name>", gAppName); // substitute
+	
+	DoError(text);
+}
+
+void DoError(Str255 text)
+{
+	MAlert	alert;
 	
 	alert.SetMovable(true);
 	alert.SetBeep(true);

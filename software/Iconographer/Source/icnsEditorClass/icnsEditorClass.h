@@ -8,7 +8,7 @@
 #pragma once // we don't want any infinite inclusion loops
 
 // includes
-#include "MWindow.h"
+#include "MDocumentWindow.h"
 #include "icnsClass.h"
 #include "graphicalFunctions.h"
 #include "textTool.h"
@@ -336,7 +336,7 @@ typedef drawingStateClass* drawingStatePtr;
 
 class editorStaticsClass;
 
-class icnsEditorClass : public icnsClass, public MWindow
+class icnsEditorClass : public icnsClass, public MDocumentWindow
 {
 	private:
 		OSStatus		CreateControls(void);
@@ -345,7 +345,6 @@ class icnsEditorClass : public icnsClass, public MWindow
 		void			InvalidateDrawingArea(void);
 		
 		void			PostLoad();
-		void			PostSave();
 		void			LoadUsedMembers();
 		void			SaveUsedMembers();
 		bool			HasNonIconDataFork();
@@ -401,7 +400,7 @@ class icnsEditorClass : public icnsClass, public MWindow
 		
 		void			DrawGrid(Rect targetRect);
 		void			FloatSelection(void);
-		void			DefloatSelection(void);
+		void			DefloatSelection(bool trueDefloat);
 		void			MagnifySelectionRgn(void);
 		void 			DragSelection(int anchorX, int anchorY);
 		//void			ResizeWindow();

@@ -176,7 +176,7 @@ void DrawResPicture(int pictureID)
 	
 	window = FrontWindow();
 	
-	pictureRect = qd.thePort->portRect;
+	GetPortBounds(qd.thePort, &pictureRect);
 	
 	picture = GetPicture(pictureID);
 	
@@ -401,18 +401,22 @@ short ReadDataWord(Handle data, int *currentOffset)
 
 void DrawTranslucentRect(Rect* targetRect)
 {
-	int			oldMode;
-	Pattern		oldPattern;
+	int				oldMode;
+	PixPatHandle	oldPattern;
 	
-	oldMode = qd.thePort->pnMode;
-	oldPattern = qd.thePort->pnPat;
+	oldMode = GetPortPenMode(qd.thePort);
+	oldPattern = PixPatHandle(NewHandle(sizeof(PixPat)));
+	GetPortPenPixPat(qd.thePort, oldPattern);
+	
 
 	PenMode(srcOr);
 	PenPat(&qd.gray);
 	PaintRect(targetRect);
 	
-	PenMode(oldMode);
-	PenPat(&oldPattern);
+	SetPortPenMode(qd.thePort, oldMode);
+	SetPortPenPixPat(qd.thePort, oldPattern);
+	
+	DisposeHandle(Handle(oldPattern));
 }
 
 void CopyString(Str255 dst, const Str255 src)
@@ -504,8 +508,13 @@ void FillPixMap32(PixMapHandle src, unsigned long fill)
 
 GrafPtr CreateGrafPort(Rect* bounds)	/* Originally written by Forrest Tanaka. */
 {
-	GrafPtr	savedPort;		/* Saved GrafPtr for later restore. */
 	GrafPtr	newPort;		/* New GrafPort. */
+	
+#if COMPILING_FOR_CARBON
+#error "this needs to be redone"
+#else
+	GrafPtr	savedPort;		/* Saved GrafPtr for later restore. */
+	
 	Rect	localBounds;	/* Local copy of bounds. */
 
 	GetPort( &savedPort );
@@ -546,15 +555,21 @@ GrafPtr CreateGrafPort(Rect* bounds)	/* Originally written by Forrest Tanaka. */
 	}
 	
 	SetPort( savedPort );
+#endif
 	return newPort;
 }
 
 void DisposeGrafPort(GrafPtr doomedPort )		/* Originally written by Forrest Tanaka. */
 {
+#if COMPILING_FOR_CARBON
+#error "this needs to be redone"
+#else
 	ClosePort( doomedPort );
 	DisposePtr( doomedPort->portBits.baseAddr );
 	DisposePtr( (Ptr)doomedPort );
+#endif
 }
+
 
 void MakeTargetRect(Rect src, Rect* target)
 {
@@ -590,6 +605,23 @@ void MakeTargetRect(Rect src, Rect* target)
 		OffsetRect(target, 0, ((src.bottom - src.top) - (target->bottom - target->top))/2);
 		return;
 	}
+}
+
+FSSpec GetApplicationFileSpec()
+{
+	ProcessSerialNumber	PSN;
+	ProcessInfoRec		info;
+	Str31				processName;
+	FSSpec				fileSpec;
+	
+	info.processInfoLength = sizeof ( ProcessInfoRec );	 					
+	info.processName = processName;
+	info.processAppSpec = &fileSpec;
+	
+	GetCurrentProcess(&PSN);
+	GetProcessInformation(&PSN, &info);
+	
+	return fileSpec;
 }
 
 OSType GetApplSignature ( )
@@ -656,28 +688,35 @@ void CropPixMap(PixMapHandle pixMap, int targetRowBytes)
 		BlockMove((*pixMap)->baseAddr + i*oldRowBytes, (*pixMap)->baseAddr + i*targetRowBytes, targetRowBytes);
 }
 
-void GetFSSpecFromAEDesc ( AEDesc &inDesc, FSSpec &outValue )
+void GetFSSpecFromAEDesc(AEDesc &inDesc, FSSpec &outValue)
 {
-	Handle	dataH;
+	Ptr		data;
 	AEDesc	coerceDesc = {typeNull, nil};
+	int		size;
+	bool	coerced = false;
 
-	if (inDesc.descriptorType == typeFSS) {
-		dataH = inDesc.dataHandle;		// Descriptor is the type we want
+	if (inDesc.descriptorType == typeFSS)
+	{
+		size = AEGetDescDataSize(&inDesc);
+		data = NewPtr(size);
 		
-	} else {							// Try to coerce to the desired type
-		if (AECoerceDesc(&inDesc, typeFSS, &coerceDesc) == noErr) {
-										// Coercion succeeded
-			dataH = coerceDesc.dataHandle;
-
-		} else {						// Coercion failed
-			throw (errAETypeError);
-		}
+		AEGetDescData(&inDesc, data, size); // Descriptor is the type we want
+	}
+	else if (AECoerceDesc(&inDesc, typeFSS, &coerceDesc) == noErr) // Try to coerce to the desired type
+	{
+		coerced = true;
+		size = AEGetDescDataSize(&coerceDesc);
+		data = NewPtr(size);
+		
+		AEGetDescData(&coerceDesc, data, size); // Coercion succeeded
 	}
 	
-	outValue = **(FSSpec**) dataH;	// Extract value from Handle
-	if (coerceDesc.dataHandle != nil) {
+	outValue = *(FSSpec*) data;	// Extract value from Handle
+	
+	DisposePtr(data);
+	
+	if (coerced)
 		AEDisposeDesc(&coerceDesc);
-	}
 }
 
 OSErr SendFinderAEOpen(FSSpec &inFile)
@@ -732,7 +771,7 @@ void ToggleCheckbox(ControlHandle checkbox)
 	SAVEGWORLD;
 
 #if OPAQUE_TOOLBOX_STRUCTS
-	SetPort(GetControlOwner(checkbox));
+	SetPortWindowPort(GetControlOwner(checkbox));
 #else
 	SetPort((**checkbox).contrlOwner);
 #endif
@@ -787,7 +826,7 @@ void ToggleMenuItem(int menuID, int itemNo)
 {
 	MenuHandle		menu;
 	menu = GetMenuHandle(menuID);
-	if ((**menu).enableFlags & (1 << itemNo))
+	if (IsMenuItemEnabled(menu, itemNo))
 		DisableItem(menu, itemNo);
 	else
 		EnableItem(menu, itemNo);
@@ -1043,8 +1082,8 @@ void PixMapToPicture(PixMapHandle srcPix, RgnHandle maskRgn, PicHandle *targetPi
 	if (maskRgn == NULL)
 		picRect = (**srcPix).bounds;
 	else
-		picRect = (**maskRgn).rgnBBox;
-	
+		GetRegionBounds(maskRgn, &picRect);
+		
 	picParams.srcRect = picRect;
 	picParams.hRes =  0x00480000;
 	picParams.vRes =  0x00480000;
@@ -1056,7 +1095,8 @@ void PixMapToPicture(PixMapHandle srcPix, RgnHandle maskRgn, PicHandle *targetPi
 	*targetPic = OpenCPicture(&picParams);
 	err = QDError();
 	if (picRect.left == 0 && picRect.right == 32 &&
-		picRect.top == 0 && picRect.bottom == 32)
+		picRect.top == 0 && picRect.bottom == 32 &&
+		(**srcPix).pixelSize > 8)
 	{
 		Rect tempRect;
 		
@@ -1064,7 +1104,7 @@ void PixMapToPicture(PixMapHandle srcPix, RgnHandle maskRgn, PicHandle *targetPi
 		
 		tempRect.right--;
 		CopyBits((BitMap*)*srcPix,
-				  &qd.thePort->portBits,
+				  GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
 				  &tempRect,
 				  &tempRect,
 				  srcCopy,
@@ -1074,14 +1114,14 @@ void PixMapToPicture(PixMapHandle srcPix, RgnHandle maskRgn, PicHandle *targetPi
 		tempRect.left = tempRect.right - 1;
 		
 		CopyBits((BitMap*)*srcPix,
-				  &qd.thePort->portBits,
+				  GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
 				  &tempRect,
 				  &tempRect,
 				  srcCopy,
 				  maskRgn);
 	}
 	else
-		CopyBits((BitMap*)*srcPix, &qd.thePort->portBits, &picRect, &picRect, srcCopy, maskRgn);
+		CopyBits((BitMap*)*srcPix, GetPortBitMapForCopyBits(GetQDGlobalsThePort()), &picRect, &picRect, srcCopy, maskRgn);
 	ClosePicture();
 	
 	RESTOREGWORLD;
@@ -1095,7 +1135,11 @@ bool IsMenuItemEnabled(int menuID, int itemNo)
 {
 	MenuHandle		menu;
 	menu = GetMenuHandle(menuID);
+#if COMPILING_FOR_CARBON
+	return IsMenuItemEnabled(menu, itemNo);
+#else
 	return ((**menu).enableFlags & (1 << itemNo));
+#endif
 }
 
 void EnableMenuItem(int menuID, int item)
@@ -1235,14 +1279,14 @@ OSStatus Make1BitMask(PixMapHandle srcPix, PixMapHandle targetPix, Rect bounds)
 	maskColorSearchUPP = NewColorSearchProc(MaskColorSearch);
 	
 	CalcCMask((BitMap*)*srcPix,
-			  &mask->portBits,
+			  GetPortBitMapForCopyBits(mask),
 			  &bounds,
 			  &localBounds,
 			  &white,
 			  maskColorSearchUPP,
 			  0);
 	
-	CopyBits(&mask->portBits,
+	CopyBits(GetPortBitMapForCopyBits(mask),
 			 (BitMap*)*targetPix,
 			 &localBounds,
 			 &(**targetPix).bounds,
@@ -1312,9 +1356,9 @@ pascal bool	StandardEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *
 	{
 		case activateEvt: // if the window isn't the dialog, then we tell the update function
 		case updateEvt: //  to take care of it
-			if((WindowPtr) eventPtr->message != dialog)
+			if((DialogPtr) eventPtr->message != dialog)
 			{
-				((UpdateFunctionPtr)GetWRefCon(dialog))(eventPtr);
+				((UpdateFunctionPtr)GetWRefCon(GetDialogWindow(dialog)))(eventPtr);
 				handledEvent = true;
 			}
 			break;
@@ -1348,7 +1392,7 @@ pascal bool	StandardEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *
 		default:
 			// if it's not an event we support, then we let the system take care of it
 			SAVEGWORLD;
-			SetPort(dialog);
+			SetPortDialogPort(dialog);
 
 			handledEvent = StdFilterProc(dialog, eventPtr, itemHit);
 
@@ -1429,7 +1473,7 @@ int FindMenuItem(MenuHandle theMenu, Str255 itemName)
 	int itemCount, location = 0;
 	Str255 currentItemName;
 	
-	itemCount = CountMItems(theMenu);
+	itemCount = CountMenuItems(theMenu);
 	
 	for (int i = 1; i <= itemCount; i++)
 	{
@@ -1630,14 +1674,14 @@ static pascal Boolean SFGetObjectModalDialogFilter(DialogPtr theDlgPtr, EventRec
 	{
 		case activateEvt: // if the window isn't the dialog, then we tell the update function
 		case updateEvt: //  to take care of it
-			if((WindowPtr) eventPtr->message != theDlgPtr)
+			if((DialogPtr) eventPtr->message != theDlgPtr)
 			{
 				theUserDataRecPtr->updateFunction(eventPtr);
 				handledEvent = true;
 			}
 			break;
 		case keyDown:
-			if (WindowPeek(theDlgPtr)->refCon == sfMainDialogRefCon)
+			if (GetWRefCon(GetDialogWindow(theDlgPtr)) == sfMainDialogRefCon)
 			{
 				if ((eventPtr->modifiers & cmdKey) 
 					&& ((eventPtr->message & charCodeMask) == GetSelectKey()))
@@ -1671,7 +1715,7 @@ static pascal short SFGetObjectDialogHook(short item, DialogPtr theDlgPtr, Ptr d
 	// be sure Std File is really showing us the intended dialog,
 	// not a nested modal dialog
 	
-	if (((WindowPeek) theDlgPtr)->refCon != sfMainDialogRefCon)
+	if (GetWRefCon(GetDialogWindow(theDlgPtr)) != sfMainDialogRefCon)
 	{
 		return item;
 	}
@@ -2087,13 +2131,17 @@ void AddResourceToSuite(OSType iconType, SInt16 ID, IconSuiteRef theIconSuite)
 
 long RegionArea(RgnHandle rgn)
 {
-	Rect bounds;
+	Rect	regionBounds;
 	
-	bounds = (**rgn).rgnBBox;
+	GetRegionBounds(rgn, &regionBounds);
 	
-	return (bounds.bottom - bounds.top) * (bounds.right - bounds.left);
+	return RectArea(regionBounds);	
 }
 
+long RectArea(Rect bounds)
+{
+	return (bounds.bottom - bounds.top) * (bounds.right - bounds.left);
+}
 
 void GrowHandle(Handle* inHandle, int delta)
 {
@@ -2184,7 +2232,7 @@ int XYMenu(Point where,
 	PixMapHandle	savedPix, menuPix;
 	int				previousSelection, selection;
 	Rect			menuRect, saveRect, tempRect;
-	BitMapPtr		currentPortBits;
+	const BitMap *	currentPortBits = GetPortBitMapForCopyBits(GetQDGlobalsThePort());
 	RgnHandle		savedVis, unclippedRgn, clippedRgn, menuRgn;
 	int				borderIncrement;
 	OSErr			err;
@@ -2198,10 +2246,8 @@ int XYMenu(Point where,
 	SAVEGWORLD;
 	SAVECOLORS;
 	
-	currentPortBits = &qd.thePort->portBits;
-	
 	savedVis = NewRgn();
-	CopyRgn(window->visRgn, savedVis);
+	GetPortVisibleRegion(GetWindowPort(window), savedVis);
 	
 	unclippedRgn = NewRgn();
 	SetRectRgn(unclippedRgn,
@@ -2209,7 +2255,7 @@ int XYMenu(Point where,
 			   -32767,
 			   32767,
 			   32767);
-	CopyRgn(unclippedRgn, window->visRgn);
+	SetPortVisibleRegion(GetWindowPort(window), unclippedRgn);
 	
 	switch (borderOptions)
 	{
@@ -2284,7 +2330,7 @@ int XYMenu(Point where,
 	RESTOREGWORLD;
 
 	
-	CopyRgn(unclippedRgn, window->visRgn);
+	SetPortVisibleRegion(GetWindowPort(window), unclippedRgn);
 	
 	DrawThemeMenuBackground(&menuRect, kThemeMenuTypePopUp);
 
@@ -2344,9 +2390,9 @@ int XYMenu(Point where,
 		
 		if (selection != previousSelection)
 		{
-			CopyRgn(clippedRgn, window->visRgn);
-			Update(selection, clientData);
-			CopyRgn(unclippedRgn, window->visRgn);
+			SetPortVisibleRegion(GetWindowPort(window), clippedRgn);
+			Update(selection, clientData);	
+			SetPortVisibleRegion(GetWindowPort(window), unclippedRgn);
 			
 			ForeColor(blackColor);
 			BackColor(whiteColor);
@@ -2392,7 +2438,7 @@ int XYMenu(Point where,
 	UnlockPixels(menuPix);
 	DisposeGWorld(menuGW);
 	
-	CopyRgn(savedVis, window->visRgn);
+	SetPortVisibleRegion(GetWindowPort(window), savedVis);
 	
 	DisposeRgn(clippedRgn);
 	DisposeRgn(unclippedRgn);
@@ -2436,12 +2482,18 @@ pascal void EnhancedPlacardDraw(ControlHandle placard, short partCode)
 {
 #pragma unused (partCode)
 	EnhancedPlacardDataPtr data;
-	Rect	bounds, canvasBounds, placardBounds;
+	Rect	bounds, canvasBounds, placardBounds, pictureRect;
+	int		titleWidth;
 	
 	data = EnhancedPlacardDataPtr(GetControlReference(placard));
 	
 	if (data->updateFunc)
 		data->updateFunc(data, enhancedPlacardUpdateState);
+		
+	if (data->picture)
+		pictureRect = (**data->picture).picFrame;
+	else
+		SetRect(&pictureRect, 0, 0, 0, 0);
 	
 	SAVEGWORLD;
 	
@@ -2455,13 +2507,26 @@ pascal void EnhancedPlacardDraw(ControlHandle placard, short partCode)
 		InsetRect(&placardBounds, -1, -1);
 		
 	
-	if (IsControlActive(placard))
-		if (IsControlHilited(placard))
-			DrawThemePlacard(&placardBounds, kThemeStatePressed);
+	if (data->flags & enhancedPlacardDrawDialogFrame)
+	{
+		DrawThemeModelessDialogFrame(&placardBounds, IsControlActive(placard));
+		if (IsControlActive(placard))
+			SetThemePen(kThemeBrushDialogBackgroundActive, 32, true);
 		else
-			DrawThemePlacard(&placardBounds, kThemeStateActive); 
+			SetThemePen(kThemeBrushDialogBackgroundInactive, 32, true);
+		PaintRect(&placardBounds);
+		SetThemePen(kThemeBrushBlack, 32, true);
+	}
 	else
-		DrawThemePlacard(&placardBounds, kThemeStateInactive);
+	{
+		if (IsControlActive(placard))
+			if (IsControlHilited(placard))
+				DrawThemePlacard(&placardBounds, kThemeStatePressed);
+			else
+				DrawThemePlacard(&placardBounds, kThemeStateActive); 
+		else
+			DrawThemePlacard(&placardBounds, kThemeStateInactive);
+	}
 	
 	if (data->title[0] != 0)
 	{
@@ -2478,8 +2543,13 @@ pascal void EnhancedPlacardDraw(ControlHandle placard, short partCode)
 		else
 			SetThemeTextColor(kThemeTextColorPlacardActive, 32, true); // still active since we do blending...
 		
-		h = placardBounds.left + (placardBounds.right - placardBounds.left - StringWidth(data->title))/2;
+		titleWidth = StringWidth(data->title);
+		
+		h = placardBounds.left + (placardBounds.right - placardBounds.left - titleWidth)/2;
 		v = placardBounds.bottom - (placardBounds.bottom - placardBounds.top - StringHeight(data->title))/2 - 2;
+		
+		if (data->picture)
+			h += (pictureRect.right - pictureRect.left) - 2;
 		
 		MoveTo(h, v);
 		DrawString(data->title);
@@ -2513,14 +2583,13 @@ pascal void EnhancedPlacardDraw(ControlHandle placard, short partCode)
 	}
 	
 	if (data->picture != NULL)
-	{
-		Rect pictureRect;
-		
-		pictureRect = (**data->picture).picFrame;
-		
+	{	
 		OffsetRect(&pictureRect,
 				   placardBounds.left + ((placardBounds.right - placardBounds.left) - (pictureRect.right - pictureRect.left))/2,
 				   placardBounds.top + ((placardBounds.bottom - placardBounds.top) - (pictureRect.bottom - pictureRect.top))/2);
+		
+		if (data->title[0])
+			OffsetRect(&pictureRect, -(titleWidth/2), 0);
 				   
 		DrawPicture(data->picture, &pictureRect);
 	}
@@ -2534,7 +2603,15 @@ pascal void EnhancedPlacardDraw(ControlHandle placard, short partCode)
 		
 		OffsetRect(&newPlacardRect, newPlacardRect.right - newPlacardRect.left, 0);
 		
-		DrawThemePlacard(&newPlacardRect, kThemeStateInactive);
+		if (data->flags & enhancedPlacardDrawDialogFrame)
+		{
+			DrawThemeModelessDialogFrame(&newPlacardRect, false);
+			SetThemePen(kThemeBrushDialogBackgroundInactive, 32, true);
+			PaintRect(&newPlacardRect);
+			SetThemePen(kThemeBrushBlack, 32, true);
+		}
+		else
+			DrawThemePlacard(&newPlacardRect, kThemeStateInactive);
 		
 		InsetRect(&newPlacardRect, 2, 2);
 		
@@ -2564,7 +2641,7 @@ pascal void EnhancedPlacardDraw(ControlHandle placard, short partCode)
 	
 	
 	CopyBits((BitMap*)*data->canvasPix,
-			 &qd.thePort->portBits,
+			 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
 			 &canvasBounds,
 			 &bounds,
 			 srcCopy,
@@ -2576,10 +2653,18 @@ pascal void EnhancedPlacardDraw(ControlHandle placard, short partCode)
 pascal short EnhancedPlacardHitTest(ControlHandle placard, Point where)
 {
 	Rect controlBounds;
+	EnhancedPlacardDataPtr	data;
 	
-	GetControlBounds(placard, &controlBounds);
+	data = EnhancedPlacardDataPtr(GetControlReference(placard));
 	
-	return PtInRect(where, &controlBounds);
+	if (data->flags & enhancedPlacardNoHitTest)
+		return kControlNoPart;
+	else
+	{
+		GetControlBounds(placard, &controlBounds);
+	
+		return PtInRect(where, &controlBounds);
+	}
 }
 
 pascal short EnhancedPlacardTracking(ControlHandle placard, Point startPt, ControlActionUPP actionProc)
@@ -2622,15 +2707,13 @@ pascal short EnhancedPlacardTracking(ControlHandle placard, Point startPt, Contr
 	{	
 		if (PtInRect(startPt, &controlBounds))
 		{
-			long	newValue, oldSP;
+			long	newValue, oldSP, startingValue;
 			short	oldFont, oldSize;
 			
 			HiliteControl(placard, kControlIndicatorPart);
 			Draw1Control(placard);
 			
 			
-			
-			InsertMenu(data->menu, hierMenu);
 			
 			if (data->font != 0 || data->size != 0)
 			{
@@ -2645,18 +2728,37 @@ pascal short EnhancedPlacardTracking(ControlHandle placard, Point startPt, Contr
 			
 			if (data->flags & enhancedPlacardMenuAtBottom)
 			{
-				startPt.h = controlBounds.left + 1;
-				startPt.v = controlBounds.bottom + 1;
-				LocalToGlobal(&startPt);
-				newValue = PopUpMenuSelect(data->menu, startPt.v, startPt.h, 0);
+				startPt.v = controlBounds.bottom;
+				startingValue = 0;
+			}
 			
+			if (data->flags & enhancedPlacardMenuAtRight)
+			{
+				startPt.h = controlBounds.right - GetMenuWidth(data->menu);
+				startingValue = 0;
 			}
 			else
 			{
-				startPt.h = controlBounds.left + 1;
-				LocalToGlobal(&startPt);
-				newValue = PopUpMenuSelect(data->menu, startPt.v, startPt.h, data->menuValue);
+				startPt.h = controlBounds.left;
 			}
+			
+			if (!(data->flags & (enhancedPlacardMenuAtBottom | enhancedPlacardMenuAtRight)))
+			{
+				startPt.h = controlBounds.left;
+				startingValue = data->menuValue;
+			}
+			
+			//if (!(data->flags & enhancedPlacardDrawBorder))
+			//{
+				startPt.h++;
+				startPt.v++;
+			//}
+			
+			LocalToGlobal(&startPt);
+			
+			InsertMenu(data->menu, kInsertHierarchicalMenu);
+			
+			newValue = PopUpMenuSelect(data->menu, startPt.v, startPt.h, startingValue);
 			
 			if (data->font != 0 || data->size != 0)
 			{
@@ -2665,7 +2767,7 @@ pascal short EnhancedPlacardTracking(ControlHandle placard, Point startPt, Contr
 				LMSetLastSPExtra(oldSP);
 			}
 			
-			DeleteMenu((**data->menu).menuID);
+			DeleteMenu(GetMenuID(data->menu));
 			
 			HiliteControl(placard, kControlNoPart);
 			Draw1Control(placard);
@@ -2675,7 +2777,10 @@ pascal short EnhancedPlacardTracking(ControlHandle placard, Point startPt, Contr
 				return kControlNoPart;
 			else
 			{
+				CheckItem(data->menu, data->menuValue, false);
 				data->menuValue = newValue & 0x0000FFFF;
+				CheckItem(data->menu, data->menuValue, true);
+
 				return kControlIndicatorPart;
 			}
 		}
@@ -2696,7 +2801,17 @@ void EnhancedPlacardHandleClick(ControlHandle placard)
 	}
 }
 
-
+void SetEnhancedPlacardMenuValue(ControlHandle placard, int menuValue)
+{
+	EnhancedPlacardDataPtr data;
+	data = EnhancedPlacardDataPtr(GetControlReference(placard));
+	
+	CheckItem(data->menu, data->menuValue, false);
+	
+	data->menuValue = menuValue;
+	
+	CheckItem(data->menu, data->menuValue, true);
+}
 
 #pragma mark -
 

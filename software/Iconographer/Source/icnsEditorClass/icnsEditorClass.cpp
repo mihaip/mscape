@@ -10,6 +10,7 @@
 #include "icnsEditorClass.h"
 #include "drawingStateClass.h"
 #include "editorStaticsClass.h"
+#include "MAlert.h"
 
 editorStaticsClass icnsEditorClass::statics;
 
@@ -24,7 +25,7 @@ editorStaticsClass icnsEditorClass::statics;
 //				  window, the controls, sets some default data and refreshes the display
 
 icnsEditorClass::icnsEditorClass(void) :
-			 	 MWindow(rEditorWind, kEditorType)
+			 	 MDocumentWindow(rEditorWind, kEditorType)
 {
 	OSStatus	err = noErr; // used for checking if everything went OK
 	Str255		fileName;
@@ -76,7 +77,7 @@ icnsEditorClass::icnsEditorClass(void) :
 	
 	currentSelectionPattern = 0; // this is used to keep track of the which pattern (we cycle
 	// through them in order to get an animation) is being currently used
-	lastSelectionTicks = LMGetTicks();
+	lastSelectionTicks = TickCount();
 	// we step through the animations every few ticks (controlled by a constant), and this
 	// variable is used to see when the last update was, and when we need a new one
 	
@@ -124,10 +125,11 @@ icnsEditorClass::icnsEditorClass(void) :
 		
 	ZoomFitWindow();
 	
-	InstallDraggingHandlers(); // the functions which handle drag and drop must be installed
-							   // after the window is visible
+	InstallDraggingHandlers();
 	
 	statics.Stagger(this);
+	
+	SetProxyIcon(MUtilities::GetFrontProcessCreator(),iconFormats[format]);
 }
 
 // __________________________________________________________________________________________
@@ -402,9 +404,28 @@ void icnsEditorClass::DoIdle(void)
 		status |= canZoomIn; // we can still zoom in
 	else
 		status &= ~canZoomIn;
-		
+	
+	if (srcFileSpec.vRefNum == 0 &&
+		srcFileSpec.parID == 0)
+		SetModified(true);
+	else
+		SetModified(status & needToSave);
+	
 	if (status & resized) // if the window has been resized, we need to refresh it
 		Refresh();
+	
+	if (srcFileSpec.vRefNum != 0 ||
+		srcFileSpec.parID != 0)
+	{
+		FSSpec newSrcSpec;
+		
+		GetAssociatedFile(&newSrcSpec);
+		if (!SameFile(newSrcSpec, srcFileSpec))
+		{
+			srcFileSpec = newSrcSpec;
+			RefreshWindowTitle();
+		}
+	}
 		
 	RESTOREGWORLD; // we can now restore the gworld
 }
@@ -751,7 +772,7 @@ void icnsEditorClass::HandleToolDoubleClick(long tool)
 			break;
 		case toolMarquee:
 			if (status & selectionFloated)
-				DefloatSelection();
+				DefloatSelection(true);
 			RectRgn(selectionRgn, &(**currentPix).bounds);
 			MagnifySelectionRgn();
 			status |= hasSelection;
@@ -988,7 +1009,7 @@ int icnsEditorClass::EditIconInfo(int mode)
 	{
 		menu = GetMenu(i);
 		if(menu != NULL)
-			InsertMenu(menu,hierMenu);
+			InsertMenu(menu,kInsertHierarchicalMenu);
 	}
 	
 	if (mode == kInsertIcon)
@@ -1084,7 +1105,7 @@ int icnsEditorClass::EditIconInfo(int mode)
 							SubstituteString(message, "\p<ID>", tempString);
 							GetIndString(overwriteButtonName, rBasicStrings, eOverwriteButton);
 							GetIndString(cancelButtonName, rBasicStrings, eInfoCancelButton);
-							itemHit = icnsEditorClass::statics.DisplayAlert(message, overwriteButtonName, cancelButtonName, "\p");
+							itemHit = icnsEditorClass::statics.DisplayAlert(message, overwriteButtonName, cancelButtonName, "\p", kAlertCautionAlert);
 							if (itemHit == 2)
 								dialogDone = false;
 						}
@@ -1157,6 +1178,8 @@ int icnsEditorClass::EditIconInfo(int mode)
 				else if (!IsControlActive(IDField))
 					ToggleNonMacOSItems(infoDialog);
 				break;
+			case iIconNameField:
+				break;
 			default:
 				HandleMembersCheckbox(infoDialog, itemHit, &usedMembers, format);
 				break; 
@@ -1226,16 +1249,17 @@ void GetIDMenu(int ID, MenuHandle* menu, int* item, Str255 name)
 	if (menu != NULL)
 		*menu = (MenuHandle)Get1Resource('MENU', mBaseIDMenu + mIDMenuCount - 1);
 	if (item != NULL)
-		*item = CountMItems(*menu);
+		*item = CountMenuItems(*menu);
 	
 	for (int i = 0; i < mIDMenuCount; i++)
 	{
-		currentMenu = (MenuHandle) Get1Resource('MENU', mBaseIDMenu + i);
+		//currentMenu = (MenuHandle) Get1Resource('MENU', mBaseIDMenu + i);
+		currentMenu = GetMenu(mBaseIDMenu + i);
 		
 		if (currentMenu == NULL)
 			DisplayValue(mBaseIDMenu + i);
 		
-		itemCount = CountMItems(currentMenu);
+		itemCount = CountMenuItems(currentMenu);
 		
 		for (int j = 1; j <= itemCount; j++)
 		{
@@ -1255,7 +1279,7 @@ void GetIDMenu(int ID, MenuHandle* menu, int* item, Str255 name)
 			}
 		}
 		
-		ReleaseResource(Handle(currentMenu));
+		//ReleaseResource(Handle(currentMenu));
 	}
 
 }
@@ -1911,6 +1935,8 @@ void icnsEditorClass::LoadDataFork()
 
 void icnsEditorClass::PostLoad()
 {
+	SetAssociatedFile(srcFileSpec);
+	
 	LoadUsedMembers();
 	
 	for (int i=0; i < kPreferredMembersCount; i++)
@@ -2031,7 +2057,7 @@ void icnsEditorClass::CheckMaskSync(PixMapHandle basePix, PixMapHandle maskPix, 
 		
 		GetIndString(regenerateButton, rBasicStrings, eRegenerateButton);
 		GetIndString(noButton, rBasicStrings, eNoButton);
-		if (statics.DisplayAlert(text, regenerateButton, noButton, "\p"))
+		if (statics.DisplayAlert(text, regenerateButton, noButton, "\p", kAlertCautionAlert) == kMAOK)
 		{
 			SAVECOLORS;
 			CopyPixMap(tempPix, maskPix, &bounds, &bounds, srcCopy, NULL);
@@ -2053,7 +2079,7 @@ void icnsEditorClass::GenerateMask(int maskName)
 	
 	GetIndString(generateButton, rBasicStrings, eGenerateButton);
 	GetIndString(noButton, rBasicStrings, eNoButton);
-	if (statics.DisplayAlert(text, generateButton, noButton, "\p"))
+	if (statics.DisplayAlert(text, generateButton, noButton, "\p", kAlertCautionAlert) == kMAOK)
 	{
 		GWorldPtr		iconGW, maskGW;
 		PixMapHandle	iconPix, maskPix;
@@ -2180,6 +2206,9 @@ OSErr icnsEditorClass::Save(void)
 		UseResFile(oldFile);
 	}
 	
+	if (status & selectionFloated)
+		DefloatSelection(false);
+	
 	if (statics.preferences.GetSaveFork() == dataAndResourceForks ||
 		statics.preferences.GetSaveFork() == dataFork)
 	{
@@ -2196,7 +2225,7 @@ OSErr icnsEditorClass::Save(void)
 			
 			SubstituteString(text, "\p<file name>", srcFileSpec.name);
 			
-			itemHit = statics.DisplayAlert(text, yesButton, noButton, otherButton);
+			itemHit = statics.DisplayAlert(text, yesButton, noButton, otherButton, kAlertCautionAlert);
 			switch (itemHit)
 			{
 				case 1:
@@ -2219,7 +2248,19 @@ OSErr icnsEditorClass::Save(void)
 	else
 		icnsClass::Save(); // this is from the base class
 	
-	PostSave();
+	if (status & selectionFloated)
+		currentState->RestoreState(this);
+	
+	SaveUsedMembers();
+	
+	status &= ~needToSave; // we don't need to save (at least until the user modifies the
+						   // icon)
+	DisposeStates(); // we don't need the saved states either, since we assume that that he
+					 // likes what he has so far
+
+	status |= needsUpdate;
+	
+	SetAssociatedFile(srcFileSpec);
 	
 	return noErr;
 }
@@ -2251,18 +2292,6 @@ bool icnsEditorClass::HasNonIconDataFork()
 	return nonIconDataFork;
 }
 
-void icnsEditorClass::PostSave()
-{
-	SaveUsedMembers();
-	
-	status &= ~needToSave; // we don't need to save (at least until the user modifies the
-						   // icon)
-	DisposeStates(); // we don't need the saved states either, since we assume that that he
-					 // likes what he has so far
-
-	status |= needsUpdate;
-}
-
 #pragma mark -
 
 void icnsEditorClass::OpenInExternalEditor()
@@ -2281,7 +2310,7 @@ void icnsEditorClass::OpenInExternalEditor()
 		GetIndString(prefsButton, rBasicStrings, eOpenPreferences);
 		GetIndString(cancelButton, rBasicStrings, eInfoCancelButton);
 		
-		if (statics.DisplayAlert(error, prefsButton, cancelButton, "\p") == 1)
+		if (statics.DisplayAlert(error, prefsButton, cancelButton, "\p", kAlertStopAlert) == 1)
 		{
 			statics.preferences.Edit(kPrefsExternalEditorPane);
 			
@@ -2477,7 +2506,7 @@ void icnsEditorClass::SetCurrentMember(long memberName, bool fancy)
 		if (!EmptyRgn(selectionRgn)) // if there was a selection
 		{
 			if (status & selectionFloated) // we must defloat it
-				DefloatSelection();
+				DefloatSelection(true);
 			SetEmptyRgn(selectionRgn); // and deselect it
 			status &= ~hasSelection; // and now we don't have a selection anymore
 		}
@@ -3043,7 +3072,7 @@ void icnsEditorClass::Paste(int pasteType)
 					break;
 				case intoSelection:
 					if (status & selectionFloated)
-						DefloatSelection();
+						DefloatSelection(true);
 					GetRegionBounds(selectionRgn, &(**clipPicture).picFrame);
 					InsertFromPicture(clipPicture, currentGW, 0);
 					break;
@@ -3099,7 +3128,7 @@ void icnsEditorClass::InsertFromPicture(PicHandle srcPic, GWorldPtr targetGW, in
 	// if we're inserting into the current gworld we must put the picture into a floating selection
 	{
 		if (status & selectionFloated) // if there was a selection already...
-			DefloatSelection(); // we must defloat it
+			DefloatSelection(true); // we must defloat it
 		
 		status |= (selectionFloated | hasSelection);
 		// we'll be creating a new selection so we must set these flags
@@ -3285,7 +3314,7 @@ void icnsEditorClass::Fill(void)
 void icnsEditorClass::MakeSelection(int selectionType)
 {
 	if (status & selectionFloated) // if there was a selection already we must defloat it
-		DefloatSelection();
+		DefloatSelection(true);
 		
 	switch (selectionType) // based on the operation we want to do
 	{
@@ -3299,7 +3328,7 @@ void icnsEditorClass::MakeSelection(int selectionType)
 			int	noOfColors;
 			
 			if (status & selectionFloated)
-				DefloatSelection();
+				DefloatSelection(true);
 			
 			status &= ~selectionFloated;
 			

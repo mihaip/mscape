@@ -3,11 +3,9 @@
 #include "MAlert.h"
 
 iconBrowserClass::iconBrowserClass(FSSpec file, OpenFuncPtr OpenFunc, int format) :
-				  MWindow(rBrowserWind, kBrowserType),
+				  MDocumentWindow(rBrowserWind, kBrowserType),
 				  theList(BrowserStringCompare, IconDraw, NULL, IconFilter, IconUpdate)
 {
-	Str255 title;
-	
 	status = 0;
 	
 	if (window == NULL)
@@ -25,7 +23,7 @@ iconBrowserClass::iconBrowserClass(FSSpec file, OpenFuncPtr OpenFunc, int format
 		return;
 	}
 	
-	lastSelectionTime = LMGetTicks();
+	lastSelectionTime = TickCount();
 	lastSelection = -1;
 	
 	drawIcon.srcFileSpec = file;
@@ -51,9 +49,10 @@ iconBrowserClass::iconBrowserClass(FSSpec file, OpenFuncPtr OpenFunc, int format
 	
 	RepositionControls();
 	
-	GetWTitle(window, title);
-	SubstituteString(title, "\p<name>", srcFileSpec.name);
-	SetWTitle(window, title);
+	RefreshWindowTitle();
+	
+	SetAssociatedFile(srcFileSpec);
+	SetModified(false);
 	
 	icnsEditorClass::statics.Stagger(this);
 	
@@ -312,7 +311,28 @@ void iconBrowserClass::Deactivate()
 
 void iconBrowserClass::DoIdle()
 {
-	;
+	if (srcFileSpec.vRefNum != 0 ||
+		srcFileSpec.parID != 0)
+	{
+		FSSpec newSrcSpec;
+		
+		GetAssociatedFile(&newSrcSpec);
+		if (!SameFile(newSrcSpec, srcFileSpec))
+		{
+			srcFileSpec = newSrcSpec;
+			RefreshWindowTitle();
+		}
+	}
+}
+
+void iconBrowserClass::RefreshWindowTitle()
+{
+	Str255 title;
+	
+	GetIndString(title, rIBStrings, eIBWindowTitle);
+	SubstituteString(title, "\p<name>", srcFileSpec.name);
+	
+	SetWTitle(window, title);
 }
 
 void iconBrowserClass::RefreshList()
@@ -419,11 +439,11 @@ void iconBrowserClass::HandleContentClick(EventRecord* eventPtr)
 					Draw1Control(controls.list);
 				}
 			} while(Button());
-			if (((LMGetTicks() - lastSelectionTime) < LMGetDoubleTime())
+			if (((TickCount() - lastSelectionTime) < LMGetDoubleTime())
 				&& (currentSelection == lastSelection))
 				OpenCurrentIcon();
 			
-			lastSelectionTime = LMGetTicks();
+			lastSelectionTime = TickCount();
 			lastSelection = currentSelection;
 		}
 		else
@@ -441,7 +461,7 @@ void iconBrowserClass::OpenCurrentIcon()
 	
 	if (currentSelection == -1) return;
 	
-	theList.GetCellClientData(currentSelection, 0, &cellData);
+	theList.GetCellClientData(currentSelection, 0, (void**)&cellData);
 	ID = cellData->ID;
 	if (cellData->newType)
 		Open(&srcFileSpec, ID, formatMacOSNew, -1);
@@ -609,7 +629,7 @@ void iconBrowserClass::Clear()
 	
 	GetIndString(message, rIBStrings, eIBDeleteWarning);
 	
-	theList.GetCellClientData(theList.GetSelection(), 0, &drawingData);
+	theList.GetCellClientData(theList.GetSelection(), 0, (void**)&drawingData);
 	ID = drawingData->ID;
 	NumToString(ID, IDAsString);
 	

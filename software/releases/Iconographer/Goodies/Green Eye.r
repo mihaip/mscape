@@ -1,4 +1,4 @@
-/* Resource fork of software/releases/Iconographer/Goodies/grneye */
+/* Resource fork of software/releases/Iconographer/Goodies/Green Eye */
 resource 'icl8' (-16455) {
 	$"0000 0000 0000 0000 F7FB FDFF FFFF EAFF"
 	$"EAEA FFFF FEAC 5600 0000 0000 0000 0000"

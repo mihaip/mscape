@@ -602,7 +602,7 @@ void RGBColorPicker::DrawGradient(Rect targetRect, RGBColor color,
 	SAVECOLORS;
 	
 	CopyBits((BitMap*)*tempPix,
-			 GetPortBitMapForCopyBits(qd.thePort),
+			 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
 			 &tempRect,
 			 &targetRect,
 			 srcCopy,
@@ -874,7 +874,7 @@ void HSVColorPicker::DrawGradient(Rect targetRect, HSVColor color,
 	SAVECOLORS;
 	
 	CopyBits((BitMap*)*tempPix,
-			 GetPortBitMapForCopyBits(qd.thePort),
+			 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
 			 &tempRect,
 			 &targetRect,
 			 srcCopy,
@@ -1182,7 +1182,7 @@ pascal void SystemColorPicker::PaletteDraw(ControlHandle theControl, short thePa
 	RESTOREGWORLD;
 	
 	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
-			 GetPortBitMapForCopyBits(qd.thePort),
+			 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
 			 &canvasRect,
 			 &controlRect,
 			 srcCopy,
@@ -1414,7 +1414,7 @@ pascal void FavoritesColorPicker::PaletteDraw(ControlHandle theControl, short th
 	RESTOREGWORLD;
 	
 	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
-			  GetPortBitMapForCopyBits(qd.thePort),
+			  GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
 			  &canvasRect,
 			  &controlRect,
 			  srcCopy,
@@ -1521,7 +1521,7 @@ pascal void	CPSwatchDraw(ControlHandle theControl,SInt16 thePart)
 	RESTOREGWORLD;
 	
 	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
-			 GetPortBitMapForCopyBits(qd.thePort),
+			 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
 			 &canvasRect,
 			 &controlRect,
 			 srcCopy,

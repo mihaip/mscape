@@ -39,33 +39,29 @@ pascal OSErr ApproveDragReference (DragReference theDragRef, bool *approved, icn
 
 pascal OSErr DrawDragHilite(DragReference theDragRef, icnsEditorPtr parentEditor)
 {
-	OSErr err = noErr;
-	Point	theMouse;
-	bool	approved;
-	Rect	wellRect;
+	OSErr 		err = noErr;
+	Point		theMouse;
+	bool		approved;
+	Rect		wellRect, tempRect = {-20, -20, -10, -10};
+	RgnHandle	hiliteRgn = NewRgn (), dummyRegion = NewRgn();
 	
+	RectRgn(dummyRegion, &tempRect); 
+		
 	GetDragMouse(theDragRef, &theMouse, 0);
 	GlobalToLocal(&theMouse);
 	
 	wellRect = parentEditor->editAreaRect;
 
-	RgnHandle hiliteRgn = NewRgn ( );
 	if (!hiliteRgn)
 		err = nilHandleErr;
 	else
 	{
 		if (!((ApproveDragReference (theDragRef,&approved, parentEditor) == noErr) && approved))
-		{
-			Rect	tempRect = {-1, -1, 0, 0};
-			RectRgn(hiliteRgn, &tempRect);
-		}
+			RectRgn(hiliteRgn, &tempRect), approved = false;
 		else if (PtInRect(theMouse, &wellRect))
-			RectRgn(hiliteRgn,&wellRect);
+			RectRgn(hiliteRgn,&wellRect), approved = true;
 		else
-		{
-			Rect	tempRect = {-1, -1, 0, 0};
-			RectRgn(hiliteRgn, &tempRect);
-		}
+			RectRgn(hiliteRgn, &tempRect), approved = false;
 		
 		RGBColor dragHiliteColor, windowForeColor;
 		RgnHandle	tempRgn;
@@ -93,9 +89,12 @@ pascal OSErr DrawDragHilite(DragReference theDragRef, icnsEditorPtr parentEditor
 		{			 
 			parentEditor->statics.dragHiliteRgn = hiliteRgn;
 			
-			//PlayThemeSound(kThemeSoundDragTargetUnhilite);
-			 
 			PaintRgn(hiliteRgn);
+			
+			if (approved)
+				ShowDragHilite(theDragRef, dummyRegion, true);
+			else
+				HideDragHilite(theDragRef);
 		}
 		else if (!EqualRgn(hiliteRgn, parentEditor->statics.dragHiliteRgn))
 		{
@@ -104,11 +103,15 @@ pascal OSErr DrawDragHilite(DragReference theDragRef, icnsEditorPtr parentEditor
 			
 			DisposeRgn(parentEditor->statics.dragHiliteRgn);
 			
-			//PlayThemeSound(kThemeSoundDragTargetHilite);
-			
 			parentEditor->statics.dragHiliteRgn = hiliteRgn;
 			
 			PaintRgn(hiliteRgn);
+			
+			if (approved)
+				ShowDragHilite(theDragRef, dummyRegion, true);
+			else
+				HideDragHilite(theDragRef);
+			
 		}
 		else
 			DisposeRgn(hiliteRgn);
@@ -117,6 +120,8 @@ pascal OSErr DrawDragHilite(DragReference theDragRef, icnsEditorPtr parentEditor
 		RESTOREGWORLD;
 		RESTORECOLORS;
 	}
+	
+	DisposeRgn(dummyRegion);
 	
 	return err;
 }
@@ -138,10 +143,14 @@ pascal OSErr DragTrackingHandler(DragTrackingMessage message, WindowPtr theWindo
 			break;
 
 		case kDragTrackingLeaveWindow:
-
-			//(void) HideDragHilite (theDragRef);
-			//Draw1Control(parentEditor->controls.rootControl);
-			// fall thru
+			
+			DrawDragHilite(theDragRef, parentEditor);
+			if (parentEditor->statics.dragHiliteRgn != NULL)
+			{
+				DisposeRgn(parentEditor->statics.dragHiliteRgn);
+				parentEditor->statics.dragHiliteRgn = NULL;
+			}
+			break;
 
 		default :
 			break;
@@ -268,7 +277,7 @@ pascal OSErr DragReceiveHandler (WindowPtr theWindow, void *, DragReference theD
 			err = badDragFlavorErr;
 	}
 	
-	return err;
+	return dragNotAcceptedErr;
 }
 
 void InsertPicIntoIcon(icnsEditorPtr parentEditor, PicHandle pic)

@@ -23,11 +23,11 @@ void icnsEditorClass::ZoomPlacardUpdate(struct EnhancedPlacardData* data, int fl
 		
 		data->menuValue = -1;
 		
-		if (CountMItems(data->menu) > kZoomMenuItemCount)
-			for (int i=kZoomMenuItemCount + 1; i <= CountMItems(data->menu);)
+		if (CountMenuItems(data->menu) > kZoomMenuItemCount)
+			for (int i=kZoomMenuItemCount + 1; i <= CountMenuItems(data->menu);)
 				DeleteMenuItem(data->menu, i);
 		
-		for (int i=1; i <= CountMItems(data->menu); i++)
+		for (int i=1; i <= CountMenuItems(data->menu); i++)
 		{
 			CheckItem(data->menu, i, false);
 			GetMenuItemText(data->menu, i, currentMenuItem);

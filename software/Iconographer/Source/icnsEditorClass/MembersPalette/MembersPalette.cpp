@@ -1044,7 +1044,7 @@ pascal void MembersPalette::MemberPaneDraw(ControlHandle theControl, short thePa
 	RESTOREGWORLD;
 	
 	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
-			 GetPortBitMapForCopyBits(qd.thePort),
+			 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
 			 &canvasRect,
 			 &controlRect,
 			 srcCopy,

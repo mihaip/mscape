@@ -308,14 +308,14 @@ void UnpackData(unsigned char** source, unsigned char* target, int finalSize)
 		{
 			// we do so
 			end = (*source)[sourceCursor++] + 1;
-			for (int i=0; i < end; i++)
+			for (int i=0; i < end && targetCursor < finalSize; i++)
 				target[targetCursor++] = (*source)[sourceCursor++];
 		}
 		else
 		{
 			// otherwise we have a repeat area
 			end = (*source)[sourceCursor++] - 125;
-			for (int i=0; i < end; i++)
+			for (int i=0; i < end && targetCursor < finalSize; i++)
 				target[targetCursor++] = (*source)[sourceCursor];
 			sourceCursor++;
 		}
