@@ -14,8 +14,6 @@ typedef struct
 	long			format;
 	ControlHandle	formatPopup;
 	bool			save;
-	FSSpec			file;
-	bool			accepted;
 } SaveDataStruct;
 
 OSErr GetIconFile(FSSpec* fileSpec, long* format, bool save)
@@ -26,7 +24,6 @@ OSErr GetIconFile(FSSpec* fileSpec, long* format, bool save)
 	saveData.formatPopup = NULL;
 	saveData.format = *format;
 	saveData.save = save;
-	saveData.accepted = false;
 	
 	MWindow::DeactivateAll();
 	
@@ -43,9 +40,8 @@ OSErr GetIconFile(FSSpec* fileSpec, long* format, bool save)
 		
 		dialogOptions.preferenceKey = 'MnOp';
 		
-		dialogOptions.dialogOptionFlags -= kNavAllowMultipleFiles;
-		dialogOptions.dialogOptionFlags += kNavNoTypePopup;
-		dialogOptions.dialogOptionFlags += kNavAllowPreviews;
+		dialogOptions.dialogOptionFlags &= ~kNavAllowMultipleFiles;
+		dialogOptions.dialogOptionFlags |= (kNavNoTypePopup | kNavAllowPreviews | kNavSupportPackages | kNavAllowOpenPackages);
 		
 		if (save)
 			GetIndString(windowTitle, rPrompts, eInsertTitle);
@@ -69,12 +65,11 @@ OSErr GetIconFile(FSSpec* fileSpec, long* format, bool save)
 		DisposeNavEventUPP(eventUPP);
 		DisposeNavObjectFilterUPP(filterUPP);
 
-		if (returnErr == noErr && saveData.accepted)
+		if (returnErr == noErr)
 		{
 			*format = saveData.format;
-			if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x09, 0x00))	
-				*fileSpec = saveData.file;
-			else if (reply.validRecord)
+			
+			if (reply.validRecord)
 			{
 				AEDesc resultDesc;
 				AEGetNthDesc( &(reply.selection), 1, typeFSS, NULL, &resultDesc );
@@ -85,7 +80,6 @@ OSErr GetIconFile(FSSpec* fileSpec, long* format, bool save)
 			}
 			else
 				returnErr = paramErr;
-				
 		}
 		else
 			returnErr = paramErr;
@@ -223,6 +217,7 @@ pascal Boolean OpenEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short
 			{
 				DisableMenuItem(typesMenu, formatWindows);
 				DisableMenuItem(typesMenu, formatMacOSXServer);
+				DisableMenuItem(typesMenu, formatMacOSX);
 			}
 			
 			SetControlValue(saveData->formatPopup, saveData->format);
@@ -289,9 +284,8 @@ OSErr SaveFile(FSSpec* fileSpec, long* format)
 		long				fileType;
 		
 		NavGetDefaultDialogOptions ( &dialogOptions );
-		dialogOptions.dialogOptionFlags &= ~kNavAllowMultipleFiles;
-		dialogOptions.dialogOptionFlags |= kNavNoTypePopup;
-		dialogOptions.dialogOptionFlags &= ~kNavAllowPreviews;
+		dialogOptions.dialogOptionFlags &= ~(kNavAllowMultipleFiles | kNavAllowPreviews);
+		dialogOptions.dialogOptionFlags |= (kNavNoTypePopup | kNavSupportPackages | kNavAllowOpenPackages);
 		CopyString(dialogOptions.savedFileName, fileSpec->name);
 		GetIndString((unsigned char*)&dialogOptions.message, rPrompts, eSaveFile);
 		
@@ -308,11 +302,11 @@ OSErr SaveFile(FSSpec* fileSpec, long* format)
 		DisposeNavEventUPP(eventUPP);
 		
 		if (returnErr == noErr)
-		{
-			*format = saveData.format;
-			
+		{	
 			if (reply.validRecord)
 			{
+				*format = saveData.format;
+				
 				AEGetNthDesc( &(reply.selection), 1, typeFSS, NULL, &resultDesc );
 
 				GetFSSpecFromAEDesc(resultDesc, *fileSpec);
@@ -349,13 +343,12 @@ OSErr SaveFile(FSSpec* fileSpec, long* format)
 					  NULL,
 					  NULL,
 					  &saveData);
-		
-		*format = saveData.format;
 					  
 		DisposeRoutineDescriptor(modalFilterUPP);
 		
 		if (reply.sfGood)
 		{
+			*format = saveData.format;
 			*fileSpec = reply.sfFile;
 		}
 		else
@@ -373,7 +366,7 @@ pascal void NavOpenEventFilter(NavEventCallbackMessage callBackSelector,
 						   NavCallBackUserData callBackUD)
 {
 	OSErr			theErr = noErr;
-	ControlHandle	formatPopup, button;
+	ControlHandle	formatPopup;
 	UInt16			firstItem = 0;
 	Handle			customItems;
 	MenuHandle		typesMenu;
@@ -400,6 +393,8 @@ pascal void NavOpenEventFilter(NavEventCallbackMessage callBackSelector,
 					theItem = FindDialogItem(navDialog, where);	// get the item number of the control
 					partCode = FindControl(where,callBackParms->window,&formatPopup);	// get the control itself
 					
+					saveData->formatPopup = formatPopup;
+					
 					if (formatPopup != NULL)
 					{
 						NavCustomControl(callBackParms->context, kNavCtlGetLocation, &location);
@@ -418,25 +413,6 @@ pascal void NavOpenEventFilter(NavEventCallbackMessage callBackSelector,
 				case activateEvt:
 				case updateEvt:
 					HandleUpdate(callBackParms->eventData.eventDataParms.event);
-					break;
-				case keyDown:
-				case autoKey:
-				default:
-					if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x09, 0x00) &&
-						GetDialogDefaultItem(navDialog) == kNavSelect &&
-						(MUtilities::IsKeyPressed(kReturnKeyCode) ||
-						MUtilities::IsKeyPressed(kEnterKeyCode)))
-					{
-						/*AEDescList selectionList;
-						
-						NavCustomControl(callBackParms->context, kNavCtlGetSelection, &selectionList);
-						AEGetNthDesc(&selectionList, 1, typeFSS, NULL, &selectedFile);
-						GetFSSpecFromAEDesc(selectedFile, saveData->file);
-						AEDisposeDesc(&selectedFile);*/
-						
-						saveData->accepted = true;
-						NavCustomControl(callBackParms->context, kNavCtlAccept, NULL);
-					}
 					break;
 			}
 			break;
@@ -508,131 +484,11 @@ pascal void NavOpenEventFilter(NavEventCallbackMessage callBackSelector,
 					}
 				}			
 			break;
-		case kNavCBCancel:
-			saveData->accepted = false;
-			break;
-		case kNavCBAccept:
-			saveData->accepted = true;
-			break;
 		case kNavCBTerminate:
-			AEDescList selectionList;
-			AEDesc		selectedFile;
-			
-			theErr = NavCustomControl(callBackParms->context,kNavCtlGetFirstControlID,&firstItem);	// ask NavServices for our first control ID
-			GetDialogItemAsControl(navDialog, firstItem + 1, &formatPopup);
-			
-			saveData->format = GetControlValue(formatPopup);
-			
-			if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x09, 0x00))
-			{
-				NavCustomControl(callBackParms->context, kNavCtlGetSelection, &selectionList);
-				AEGetNthDesc(&selectionList, 1, typeFSS, NULL, &selectedFile);
-				GetFSSpecFromAEDesc(selectedFile, saveData->file);
-				AEDisposeDesc(&selectedFile);
-			}
-			else
-				saveData->accepted = true;
+			saveData->format = GetControlValue(saveData->formatPopup);
 							
-			customItems = (Handle)GetControlReference(formatPopup);
+			customItems = (Handle)GetControlReference(saveData->formatPopup);
 			ReleaseResource(customItems);
-			break;
-		case kNavCBSelectEntry:
-			if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x09, 0x00))
-			{
-				FSSpec	currentFile;
-				int		defaultItem;
-				
-				if (AEGetNthDesc((AEDesc*)callBackParms->eventData.eventDataParms.param, 1, typeFSS, NULL, &selectedFile) == noErr)
-				{
-					GetFSSpecFromAEDesc(selectedFile, currentFile);
-					AEDisposeDesc(&selectedFile);
-					
-					if (MUtilities::IsFileFolder(currentFile))
-						defaultItem = kNavOpen;
-					else
-						defaultItem = kNavSelect;
-						
-					if (GetDialogDefaultItem(navDialog) != defaultItem)
-					{
-						SetDialogDefaultItem(navDialog, defaultItem);
-						GetDialogItemAsControl(navDialog, kNavOpen, &button);
-						Draw1Control(button);
-						GetDialogItemAsControl(navDialog, kNavSelect, &button);
-						Draw1Control(button);
-					}
-				}
-			}
-			break;
-	}
-}
-
-void SetFileName(ControlHandle formatPopup, Str255 fileName)
-{
-	switch (GetControlValue(formatPopup))
-	{
-		case formatMacOSUniversal:
-		case formatMacOSNew:
-		case formatMacOSOld:
-			if (IsICOFile(fileName))
-				fileName[0] -= 4;
-			else if (IsicnsFile(fileName))
-				fileName[0] -= 5;
-			else if (IsTIFFFile(fileName))
-				if (fileName[fileName[0] - 4] == '.')
-					fileName[0] -= 5;
-				else if (fileName[fileName[0] - 3] == '.')
-					fileName[0] -= 4;
-					
-			if (GetControlValue(formatPopup) != formatMacOSOld &&
-				(icnsEditorClass::statics.preferences.GetSaveFork() == dataAndResourceForks ||
-				icnsEditorClass::statics.preferences.GetSaveFork() == dataFork))
-				AppendString(fileName, "\p.icns");
-			break;
-		case formatWindows:
-			if (!IsICOFile(fileName))
-			{
-				if (fileName[fileName[0] - 4] == '.')
-					fileName[0] -= 5;
-				else if (fileName[fileName[0] - 3] == '.')
-					fileName[0] -= 4;
-				else if (fileName[fileName[0] - 2] == '.')
-					fileName[0] -= 3;
-				else if (fileName[fileName[0] - 1] == '.')
-					fileName[0] -= 2;
-				else if (fileName[fileName[0]] == '.')
-					fileName[0] -= 1;
-				AppendString(fileName, "\p.ico");	
-					
-				/*fileName[fileName[0] + 1] = '.';
-				fileName[fileName[0] + 2] = 'i';
-				fileName[fileName[0] + 3] = 'c';
-				fileName[fileName[0] + 4] = 'o';
-				fileName[0] += 4;*/
-			}
-			break;
-		case formatMacOSXServer:
-			if (!IsTIFFFile(fileName))
-			{
-				if (fileName[fileName[0] - 4] == '.')
-					fileName[0] -= 5;
-				else if (fileName[fileName[0] - 3] == '.')
-					fileName[0] -= 4;
-				else if (fileName[fileName[0] - 2] == '.')
-					fileName[0] -= 3;
-				else if (fileName[fileName[0] - 1] == '.')
-					fileName[0] -= 2;
-				else if (fileName[fileName[0]] == '.')
-					fileName[0] -= 1;
-					
-				
-				AppendString(fileName, "\p.tiff");
-				/*fileName[fileName[0] + 1] = '.';
-				fileName[fileName[0] + 2] = 't';
-				fileName[fileName[0] + 3] = 'i';
-				fileName[fileName[0] + 4] = 'f';
-				fileName[fileName[0] + 5] = 'f';
-				fileName[0] += 5;*/
-			}
 			break;
 	}
 }
@@ -696,7 +552,7 @@ pascal void NavSaveEventFilter(NavEventCallbackMessage callBackSelector,
 					{
 						NavCustomControl(callBackParms->context,kNavCtlGetEditFileName,&fileName);
 						
-						SetFileName(formatPopup, fileName);
+						SetFileExtension(GetControlValue(formatPopup), fileName);
 						
 						NavCustomControl(callBackParms->context,kNavCtlSetEditFileName,&fileName);
 					}
@@ -749,6 +605,8 @@ pascal void NavSaveEventFilter(NavEventCallbackMessage callBackSelector,
 					theErr = NavCustomControl(callBackParms->context, kNavCtlGetFirstControlID, &firstItem);
 					GetDialogItemAsControl(navDialog, firstItem + 1, &formatPopup);
 					
+					saveData->formatPopup = formatPopup;
+					
 					SetControlReference(formatPopup, (SInt32)customItems);
 					
 					typesMenu = GetControlPopupMenuHandle(formatPopup);
@@ -761,19 +619,16 @@ pascal void NavSaveEventFilter(NavEventCallbackMessage callBackSelector,
 					
 					NavCustomControl(callBackParms->context,kNavCtlGetEditFileName,&fileName);
 						
-					SetFileName(formatPopup, fileName);
+					SetFileExtension(GetControlValue(formatPopup), fileName);
 						
 					NavCustomControl(callBackParms->context,kNavCtlSetEditFileName,&fileName);
 				}			
 			break;
 			
 		case kNavCBTerminate:
-			theErr = NavCustomControl(callBackParms->context,kNavCtlGetFirstControlID,&firstItem);	// ask NavServices for our first control ID
-			GetDialogItemAsControl(navDialog, firstItem + 1, &formatPopup);
+			saveData->format = GetControlValue(saveData->formatPopup);
 			
-			saveData->format = GetControlValue(formatPopup);
-			
-			customItems = (Handle)GetControlReference(formatPopup);
+			customItems = (Handle)GetControlReference(saveData->formatPopup);
 			ReleaseResource(customItems);
 			break;
 	}
@@ -802,7 +657,7 @@ pascal Boolean SaveEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short
 			
 		GetDialogItemText((Handle)nameField, fileName);
 		
-		SetFileName(saveData->formatPopup, fileName);
+		SetFileExtension(GetControlValue(saveData->formatPopup), fileName);
 		
 		SetDialogItemText((Handle)nameField, fileName);
 	}
@@ -842,7 +697,7 @@ pascal Boolean SaveEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short
 			{
 				GetDialogItemText((Handle)nameField, fileName);
 				
-				SetFileName(formatPopup, fileName);
+				SetFileExtension(GetControlValue(formatPopup), fileName);
 				
 				SetDialogItemText((Handle)nameField, fileName);
 				
@@ -882,6 +737,8 @@ void SyncPopupToName(Str255 fileName, ControlHandle formatPopup)
 		SetControlValue(formatPopup, formatWindows);
 	else if (IsTIFFFile(fileName))
 		SetControlValue(formatPopup, formatMacOSXServer);
+	else if (IsicnsFile(fileName))
+		SetControlValue(formatPopup, formatMacOSX);
 	else
 	{
 		short currentValue;

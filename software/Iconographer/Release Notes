@@ -3,7 +3,7 @@ shoulds:
 - settable default button for MAlert
 - hovering over RGB/HSB slider previews should show color in readout
 - readout should show up when in another editor's drawing area
-- move palette on screen if not within new screen bounds (when res changes, etc.)
+- move palettes on screen if not within new screen bounds (when res changes, etc.)
 - 8-bit system palette balloon help should explain each section
 - don't trying open folders when verying if an icon already exists when doing save into icon
 - tinting when dragging and there's a floated selection...
@@ -23,36 +23,63 @@ Future stuff (planned version in parantheses):
 - simultaneous editing of icon and mask (goes with anti-aliasing) (1.5/2.0)
 - multiple views (2.1/2.5)
 
-todo for 2.1:
-- carbon compliance
+todo:
 - option while closing should close all windows
-- open menu item should have ellipsis
-- naming of new windows should be "untitled", "untitled 2", "untitled 3", etc.
-- pasting should be centered in current view/on curent selection
 - mac os x style about box
 - alerts should use application icon
 - turn alerts into sheets?
-- small slider in preview palette
-- live window dragging (switch to native floaters?)
 - anti-aliased text
 - palette position snapping
 - snap colors in color floater to current palette, system, web, grays, etc.
-- better handle converting to windows icon and saving immediately (check datafork, name, etc.)
-- redo colors and pattern pop-up (common base, use dialog instead)
 - refactor tools so that it can be made more friendly with background processes
 - refactor icnseditorclass so that we don't depend on the internals of the icns class
 - refactor icnsclass so that we don't statically allocate all members
 - refactor icnseditorclass so that we can support the multiple views
 - .rsrc files
 - preferences and adjust balloon help
-- deal with icon and mask not being the same size in icon browser preview
 - scale icon up if previewing at a size that isn't available
 - when hitting the editor key shortcut, the icon menu should be hilighted
 - preference for not hiding floaters when in background
-- double click on member in palette should select all
-- name clippings
+- make new 128 x 128 icons for documents
+- don't dither when going from 4 bit to 8 bit
+- remember zoom levels for saved documents
+
+optimization:
+- decrease startup time by converting palette picts into raw data
+- calling UpdatePalettes twice when closing editors
+- too many updates at startup/application switching
+- when closing window, calling UpdatePalettes and ActivateFloaters redundant?
+- zoom rects slow?
+- when showing window, calling UpdatePaletets and ActivateFloaters
+- calling with updateAll for MembersPalette when opening/closing, not quite necessary?
+- adjust WNE sleep value when in background, when in TrackMouseLocation, etc.
+- check for unnecessary updates (with QuartzDebug)
+- investigate why do idle gets called twice when status changes
 
 Changes:
+2.1:
+- carbon compliant
+- better handles converting to windows icon and saving immediately (checks datafork, name, etc.)
+- made .icns files separate format ("Mac OS X Icon")
+- format change results in the appropriate extension being added when saving
+- if a member was removed, and it was the current one, the current one is changed to the closest
+- windows icons don't need 1-bit icon member
+- fixed black screen in thousands bug (again)
+- system palette picker didn't seem to update when the member's palette changed
+- naming of new windows is now "Untitled", "Untitled 2", "Untitled 3", etc.
+- redone colors and pattern pop-ups (mostly coding/carbon compliance changes, not visual)
+- redone colors palette (old style/positioning got in way of dock on OS X)
+- clippings are now named "icon clipping"
+- double click or command click on member in members palette does a select all
+- default members checkboxes in prefs work again
+- pasting is centered in current view/on curent selection
+- standard carbon window menu
+- colors and pattern pop-ups now behave like real menus, you don't have to hold the button down all the time
+- live resizing (under os 9 too)
+- when autoscrolling to the current member, the member palette does this smoothly under os x
+- controls now take advantage of window double buffering under os x
+- when creating new editor, calling setbestmember, that updates the color palette and then calls UpdatePalettes, redudant?
+
 2.0.2
 - fixed sporadic crash at startup
 - improved mini icon saving
@@ -91,6 +118,7 @@ Changes:
 - renamed "check mask sync" preference to "check masks when saving" and made it also check if masks exist in the first place
 - window staggering now works properly even when the front-most window is window-shaded
 - background windows disable when the registration windows shows up
+
 
 2.0x8:
 - updated documentation

@@ -199,7 +199,7 @@ resource 'CNTL' (621, "Patterns", purgeable) {
 
 resource 'CNTL' (622, "Background Pane", purgeable) {
 	{185, 4294967295, 254, 52},
-	0,
+	2,
 	visible,
 	100,
 	0,
@@ -1313,7 +1313,7 @@ resource 'WIND' (600, "Tool Palette", purgeable) {
 	invisible,
 	goAway,
 	0x0,
-	"Tools",
+	"",
 	noAutoCenter
 };
 
@@ -1513,6 +1513,19 @@ resource 'cctb' (614) {
 };
 
 resource 'cctb' (615) {
+	{	/* array ColorSpec: 4 elements */
+		/* [1] */
+		cFrameColor, 0, 0, 0,
+		/* [2] */
+		cBodyColor, 65535, 65535, 65535,
+		/* [3] */
+		cTextColor, 0, 0, 0,
+		/* [4] */
+		cElevatorColor, 65535, 65535, 65535
+	}
+};
+
+resource 'cctb' (622) {
 	{	/* array ColorSpec: 4 elements */
 		/* [1] */
 		cFrameColor, 0, 0, 0,

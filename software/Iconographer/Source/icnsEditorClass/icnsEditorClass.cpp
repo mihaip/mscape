@@ -28,9 +28,6 @@ icnsEditorClass::icnsEditorClass(void) :
 			 	 MDocumentWindow(rEditorWind, kEditorType)
 {
 	OSStatus	err = noErr; // used for checking if everything went OK
-	Str255		fileName;
-	MenuHandle	menuHandle;
-	int			ignored;
 		
 	overlayPix = NULL; // unitliazed values, if they are still NULL when the destructor
 	selectionGW = NULL; // is called then we won't attempt to dispose them
@@ -112,13 +109,9 @@ icnsEditorClass::icnsEditorClass(void) :
 	
 	srcFileSpec.vRefNum = 0;
 	srcFileSpec.parID = 0;
-	GetIndString(fileName, rBasicStrings, sUntitledName);
-	CopyString(srcFileSpec.name, fileName);
-	
-	RefreshWindowTitle(); // the window title is updated to reflect the icon name
 	
 	ID = rCustomIcon; // the default ID is the standard finder custom icon ID
-	GetIDMenu(ID, &menuHandle, &ignored, name);
+	GetIDMenu(ID, NULL, NULL, name);
 	
 	magnification = statics.preferences.GetDefaultZoomLevel();
 	UpdateZoom();
@@ -159,7 +152,7 @@ OSStatus icnsEditorClass::CreateControls()
 
 	// zoom placard
 	controls.zoomPlacard = NewEnhancedPlacard(rZoomPlacard, window, enhancedPlacardDrawBorder | enhancedPlacardLargeArrow, 0, 0,
-											 "\p", NULL, statics.zoomMenu, statics.canvasGW, statics.canvasPix, ZoomPlacardUpdate, this);
+											 "\p", NULL, false, statics.zoomMenu, statics.canvasGW, statics.canvasPix, ZoomPlacardUpdate, this);
 	
 	// scrollbars
 	controls.vScrollbar = GetNewControl(rVScrollbar, window);
@@ -224,7 +217,6 @@ void icnsEditorClass::Activate()
 	
 	if (exportMode && GetModificationDate(exportFile) > exportDate)
 		ReloadFromExternalEditor();
-		
 }
 
 // __________________________________________________________________________________________
@@ -304,7 +296,8 @@ void icnsEditorClass::DoIdle(void)
 	LocalToGlobal(&globalMouse);
 	
 	FindWindow(globalMouse, &windowUnderMouse);
-	
+
+#if !TARGET_API_MAC_CARBON
 	if (IsFrontProcess()) // if we're the main app now...
 	{
 		WindowPtr windowUnderMouse;
@@ -318,7 +311,7 @@ void icnsEditorClass::DoIdle(void)
 		
 		if (window == windowUnderMouse)
 		{
-#if !TARGET_API_MAC_CARBON
+
 			if (HMGetBalloons())
 				if (PtInRect(theMouse, &editAreaRect))
 					HandleBalloon(rEditorBalloonHelp, hEditingArea, editAreaRect, theMouse);
@@ -339,10 +332,15 @@ void icnsEditorClass::DoIdle(void)
 					else
 						HandleBalloons(theMouse, window, rEditorBalloonHelp);
 				}
-#endif
+
 		}
 	}
+#endif
 	
+	if (EmptyRgn(selectionRgn))
+		status &= ~hasSelection;
+	else
+		status |= hasSelection;
 	
 	if (status & needsUpdate)
 	{
@@ -351,7 +349,7 @@ void icnsEditorClass::DoIdle(void)
 		statics.UpdatePalettes(this, updateAll);
 		status &= ~needsUpdate;
 	}
-	else if (!EmptyRgn(selectionRgn))
+	else if (status & hasSelection)
 	{
 		Rect selectionUpdateRect;
 		
@@ -392,11 +390,7 @@ void icnsEditorClass::DoIdle(void)
 	else
 		status &= ~canZoomIn;
 	
-	if (srcFileSpec.vRefNum == 0 &&
-		srcFileSpec.parID == 0)
-		SetModified(true);
-	else
-		SetModified(status & needToSave);
+	SetModified(status & needToSave);
 	
 	if (status & resized) // if the window has been resized, we need to refresh it
 		Refresh();
@@ -413,23 +407,51 @@ void icnsEditorClass::DoIdle(void)
 			RefreshWindowTitle();
 		}
 	}
+	
+	if (MUtilities::ScrapHasFlavor('PICT'))
+		status |= canPaste;
+	else
+		status &= ~canPaste;
+		
+	if (MUtilities::ScrapHasFlavor('icns'))
+		status |= canPasteFamily;
+	else
+		status &= ~canPasteFamily;
+		
+	if (status & needToSave && (srcFileSpec.vRefNum != 0 || srcFileSpec.parID != 0))
+		status |= canRevert;
+	else
+		status &= ~canRevert;
+		
+	if (ISOPTIONDOWN) status |= isOptionDown; else status &= ~isOptionDown;
+	if (ISSHIFTDOWN) status |= isShiftDown; else status &= ~isShiftDown;
+	if (ISCOMMANDDOWN) status |= isCommandDown; else status &= ~isCommandDown;
 		
 	RESTOREGWORLD; // we can now restore the gworld
 }
 
 void icnsEditorClass::UpdateCursor(Point theMouse)
-{	
+{			
 	if (PtInRect(theMouse, &editAreaRect))
+	{
+		int x, y;
+		Point drawingMouse, temp;
+		
+		status |= mouseInEditArea;
+			
+		temp = theMouse;
+		GetDrawingMousePosition(&x, &y, &temp, 0);
+		
+		drawingMouse.h = x;
+		drawingMouse.v = y;
+	
+		if (status & hasSelection && PtInRgn(drawingMouse, selectionRgn))
+			status |= mouseInSelection;
+		else
+			status &= ~mouseInSelection;
+		
 		if (this == MWindow::GetFront())
 		{
-			int flags = 0;
-			int x, y;
-			Point drawingMouse;
-			
-			GetDrawingMousePosition(&x, &y, &theMouse, 0);
-			drawingMouse.h = x;
-			drawingMouse.v = y;
-			
 			if (statics.colorsPalette->IsVisible())
 			{
 				RGBColor tempColor;
@@ -443,29 +465,13 @@ void icnsEditorClass::UpdateCursor(Point theMouse)
 				statics.colorsPalette->UpdateReadout(x, y, tempColor);
 			}
 			
-			if (!EmptyRgn(selectionRgn))
-			{
-				flags |= cursorFlagsHasSelection;
-				
-				if (PtInRgn(drawingMouse, selectionRgn))
-					flags |= cursorFlagsInSelection;
-					
-				if (status & selectionFloated)
-					flags |= cursorFlagsFloatedSelection;
-			}				
-				
-			if (magnification < kMaxMagnification)
-				flags |= cursorFlagsCanZoomIn;
-				
-			if (magnification > kMinMagnification)
-				flags |= cursorFlagsCanZoomOut;
-				
-			statics.toolPalette->ChangeCursor(flags);
+			statics.toolPalette->ChangeCursor(status);
 		}
 		else if (statics.toolPalette->GetCurrentTool() == toolEyeDropper)
 			MUtilities::ChangeCursor(rTPToolBaseID + toolEyeDropper);
-			
-	
+	}
+	else
+		status &= ~(mouseInSelection | mouseInEditArea);
 }
 
 bool icnsEditorClass::CurrentDepthSupportsColors(void)
@@ -786,10 +792,10 @@ void icnsEditorClass::HandleToolDoubleClick(long tool)
 			MagnifySelectionRgn();
 			status |= hasSelection;
 			break;
-		/*case lasso:
+		case toolLasso:
 			RgnHandle tempRgn, temp2Rgn;
 			if (status & selectionFloated)
-				DefloatSelection();
+				DefloatSelection(true);
 			tempRgn = NewRgn();
 			RectRgn(tempRgn, &(**currentPix).bounds);
 			temp2Rgn = TightenLasso(tempRgn);
@@ -801,7 +807,7 @@ void icnsEditorClass::HandleToolDoubleClick(long tool)
 			}	
 			DisposeRgn(tempRgn);
 			DisposeRgn(temp2Rgn);
-			break;*/
+			break;
 		case toolZoom:
 			magnification = 1;
 			ZoomFitWindow();
@@ -810,6 +816,13 @@ void icnsEditorClass::HandleToolDoubleClick(long tool)
 			UpdateZoom();
 			break;
 		case toolPan:
+			Point tempPosition;
+			
+			tempPosition = statics.GetDefaultWindowPosition();
+			tempPosition.h += GetBorderThickness(borderLeft) + kDefaultWindowSeparation;
+			tempPosition.v += GetBorderThickness(borderTop);
+			SetPosition(tempPosition);
+		
 			magnification = GetMaxMagnification();
 			ZoomFitWindow();
 			ClampScrollValues();
@@ -832,7 +845,19 @@ void icnsEditorClass::EditIconInfo()
 	itemHit = icnsClass::EditIconInfo(kIconInfo);
 	
 	if (itemHit == iOK)
+	{
 		status |= needToSave;
+		
+		if (!(currentPixName & usedMembers))
+		{
+			for (int i=0; i < kPreferredMembersCount; i++)
+				if (usedMembers & kPreferredMembers[i])
+				{
+					SetCurrentMember(kPreferredMembers[i], 2);
+					break;
+				}
+		}
+	}
 }
 
 void icnsEditorClass::AddMember()
@@ -912,7 +937,8 @@ void icnsEditorClass::AddMember()
 					
 					SAVECOLORS;
 					
-					if (statics.preferences.FeatureEnabled(prefsDither))
+					if (statics.preferences.FeatureEnabled(prefsDither) &&
+						(**sourcePix).pixelSize > (**targetPix).pixelSize)
 						CopyPixMap(sourcePix, targetPix, &(**sourcePix).bounds, &(**targetPix).bounds, srcCopy + ditherCopy, NULL);
 					else
 						CopyPixMap(sourcePix, targetPix, &(**sourcePix).bounds, &(**targetPix).bounds, srcCopy, NULL);
@@ -920,7 +946,7 @@ void icnsEditorClass::AddMember()
 					RESTORECOLORS;
 				}
 				
-				SetCurrentMember(newMember, true);
+				SetCurrentMember(newMember, 2);
 					
 				dialogDone = true;
 				break;
@@ -972,6 +998,80 @@ void icnsEditorClass::BuildMembersMenu(MenuHandle menu, int startingPoint, int m
 //				  This is called after the window has been resized.
 
 void icnsEditorClass::RepositionControls()
+{
+	Rect	windowRect, // the rectangle of the editor window
+			controlRect; // the rectangle for the various controls I'll be moving
+	int		h; // the target horizontal coordinate 
+	int		v; // the target vertical coordinate
+	// how much the edit area should be grown by for each magnification level
+	
+	// the edit well is enlaged according to the magnification level
+	h = magnification * ((**currentPix).bounds.right - (**currentPix).bounds.left);
+	v = magnification * (**currentPix).bounds.bottom - (**currentPix).bounds.top;
+	MakeEditAreaRect(h, v, &editAreaRect);
+	
+	if (editAreaRect.top != 0 || editAreaRect.left != 0)
+		HideControl(controls.rootControl);
+	
+	SAVEGWORLD;
+	SetPort(); // we'll be changing controls in this window, so the coordinates must
+					 // be local to here
+	
+	windowRect = GetPortRect();
+	OffsetRect(&windowRect, -windowRect.left, -windowRect.top);
+	windowRect.bottom -= kScrollbarHeight;
+	windowRect.right -= kScrollbarWidth;
+	
+	// the zoom display placard goes in the bottom left corner
+	if (windowRect.right - kZoomPlacardWidth < kMinScrollbarLength)
+	{
+		if (IsControlVisible(controls.zoomPlacard))
+			HideControl(controls.zoomPlacard);
+		
+		// horizontal scrollbar
+		SetRect(&controlRect, -1, windowRect.bottom, windowRect.right + 1, windowRect.bottom + 16);
+		SetControlBounds(controls.hScrollbar, &controlRect);
+	}
+	else
+	{
+		if (!IsControlVisible(controls.zoomPlacard))
+			ShowControl(controls.zoomPlacard);
+			
+		GetControlBounds(controls.zoomPlacard, &controlRect);
+		OffsetRect(&controlRect, -controlRect.left -1, -controlRect.top + windowRect.bottom);
+		SetControlBounds(controls.zoomPlacard, &controlRect);
+		
+		SetRect(&controlRect, kZoomPlacardWidth - 2, windowRect.bottom, windowRect.right + 1, windowRect.bottom + 16);
+		SetControlBounds(controls.hScrollbar, &controlRect);
+	}
+	
+	SetRect(&controlRect, windowRect.right, -1, windowRect.right + 16, windowRect.bottom + 1);
+	SetControlBounds(controls.vScrollbar, &controlRect);
+	
+	SetControlBounds(controls.editArea, &editAreaRect);
+	
+	SetControlMaximum(controls.hScrollbar, h - (editAreaRect.right - editAreaRect.left));
+	SetControlMaximum(controls.vScrollbar, v - (editAreaRect.bottom - editAreaRect.top));
+	
+	hScrollbarValue = GetControlValue(controls.hScrollbar);
+	vScrollbarValue = GetControlValue(controls.vScrollbar);
+	
+	if (GestaltVersion(gestaltSystemVersion, 0x08, 0x50))
+	{
+		SetControlViewSize(controls.hScrollbar, editAreaRect.right - editAreaRect.left);
+		SetControlViewSize(controls.vScrollbar, editAreaRect.bottom - editAreaRect.top);
+	}
+	
+	
+	if (!IsControlVisible(controls.rootControl))
+		ShowControl(controls.rootControl);
+	else
+		Draw1Control(controls.rootControl);
+	
+	RESTOREGWORLD;
+}
+
+/*void icnsEditorClass::RepositionControls()
 {
 	Rect	windowRect, // the rectangle of the editor window
 			controlRect; // the rectangle for the various controls I'll be moving
@@ -1040,7 +1140,7 @@ void icnsEditorClass::RepositionControls()
 	ShowControl(controls.rootControl); // we're done with the moving, so we can show the controls
 	
 	RESTOREGWORLD;
-}
+}*/
 
 void icnsEditorClass::MakeEditAreaRect(int h, int v, Rect* areaRect)
 {
@@ -1115,34 +1215,26 @@ void icnsEditorClass::ClampScrollValues()
 Point icnsEditorClass::GetMaxDimensions()
 {
 	Point		maximum, currentPosition, limits, temp;
-	Rect		screenRect;
-	GDHandle	mainScreen;
+	Rect		usableRect;
 	
-	mainScreen = GetMainDevice();
-	screenRect = (**mainScreen).gdRect;
+	usableRect = MUtilities::GetUsableScreenRect();
 	
 	if ((statics.previewPalette->IsVisible() &&
 		PointsNear(statics.GetDefaultPalettePosition(statics.previewPalette), statics.previewPalette->GetPosition(), 5, 5)) ||
 		(statics.membersPalette->IsVisible() &&
-		PointsNear(statics.GetDefaultPalettePosition(statics.membersPalette), statics.membersPalette->GetPosition(), 5, 5)))
+		PointsNear(statics.GetDefaultPalettePosition(statics.membersPalette), statics.membersPalette->GetPosition(), 5, 5)) ||
+		(statics.colorsPalette->IsVisible() &&
+		PointsNear(statics.GetDefaultPalettePosition(statics.colorsPalette), statics.colorsPalette->GetPosition(), 5, 5)))
 	{
 		temp = statics.previewPalette->GetPosition();
 		limits.h = temp.h - statics.previewPalette->GetBorderThickness(borderLeft);
 	}
 	else
 	{
-		limits.h = screenRect.right;
+		limits.h = usableRect.right;
 	}
 	
-	if (statics.colorsPalette->IsVisible() && PointsNear(statics.GetDefaultPalettePosition(statics.colorsPalette), statics.colorsPalette->GetPosition(), 5, 5))
-	{
-		temp = statics.colorsPalette->GetPosition();
-		limits.v = temp.v - statics.colorsPalette->GetBorderThickness(borderTop);
-	}
-	else
-	{
-		limits.v = screenRect.bottom;
-	}
+	limits.v = usableRect.bottom;
 	
 	currentPosition = GetPosition();
 	
@@ -1191,7 +1283,7 @@ void icnsEditorClass::UpdateZoom()
 //				  function is called), and then the window is resized (which eventually leads
 //				  to the controls being repositioned too)
 
-void icnsEditorClass::HandleGrow(Point where)
+/*void icnsEditorClass::HandleGrow(Point where)
 {
 	Rect		maxGrowRect;
 	long		growSize;
@@ -1235,6 +1327,63 @@ void icnsEditorClass::HandleGrow(Point where)
 			abs(v - currentDimensions.v) > kZoomThreshold)
 			zoomPosition.h = zoomPosition.v = zoomDimensions.h = zoomDimensions.v = -1;
 	}
+}*/
+
+void icnsEditorClass::HandleGrow(Point where)
+{
+	Point 	initialDimensions, maxDimensions,
+			currentDimensions, initial, previousDimensions, usableRectOffset;
+	Rect	usableRect;
+	
+	previousDimensions = initialDimensions = GetDimensions();
+	initial = where;
+	
+	maxDimensions.h = magnification * (**currentPix).bounds.right + 15;
+	maxDimensions.v = magnification * (**currentPix).bounds.bottom + 15;
+	
+	usableRect = MUtilities::GetUsableScreenRect();
+	
+	SAVEGWORLD;
+	SetPort();
+	GlobalToLocal(&initial);
+	GlobalToLocal((Point*)&usableRect.top);
+	GlobalToLocal((Point*)&usableRect.bottom);
+	RESTOREGWORLD;
+	
+	usableRectOffset.h = GetBorderThickness(borderRight) + initialDimensions.h - initial.h;
+	usableRectOffset.v = GetBorderThickness(borderBottom) + initialDimensions.v - initial.v;
+	
+	OffsetRect(&usableRect, -usableRectOffset.h, -usableRectOffset.v);
+	
+	while (Button())
+	{
+		MUtilities::GetMouseLocation(GetWindowPort(window), &where);
+		
+		*((long*)&where) = PinRect(&usableRect, where);
+		
+		currentDimensions.h = initialDimensions.h + where.h - initial.h;
+		currentDimensions.v = initialDimensions.v + where.v - initial.v;
+		
+		if (currentDimensions.h > maxDimensions.h) currentDimensions.h = maxDimensions.h;
+		if (currentDimensions.v > maxDimensions.v) currentDimensions.v = maxDimensions.v;
+		
+		if (currentDimensions.h < kMinWidth) currentDimensions.h = kMinWidth;
+		if (currentDimensions.v < kMinHeight) currentDimensions.v = kMinHeight;
+		
+		if (currentDimensions.h != previousDimensions.h ||
+			currentDimensions.v != previousDimensions.v)
+		{
+			SizeWindow(window, currentDimensions.h, currentDimensions.v, false);
+		
+			RepositionControls();
+		}
+		
+		previousDimensions = currentDimensions;
+	}
+	
+	if (abs(initialDimensions.h - currentDimensions.h) > kZoomThreshold ||
+		abs(initialDimensions.v - currentDimensions.v) > kZoomThreshold)
+		zoomPosition.h = zoomPosition.v = zoomDimensions.h = zoomDimensions.v = -1;
 }
 
 void icnsEditorClass::Drag(Point startPoint, Rect draggingBounds)
@@ -1302,7 +1451,7 @@ void icnsEditorClass::ResizeWindow(void)
 	
 	InvalidateDrawingArea();
 	GetControlBounds(controls.zoomPlacard, &controlRect);
-	InvalRect(&controlRect);
+	InvalWindowRect(window, &controlRect);
 	
 	RESTOREGWORLD; // and we can restore the port
 
@@ -1362,25 +1511,17 @@ void icnsEditorClass::ToggleZoom()
 		zoomPosition = GetPosition();
 		zoomMagnification = magnification;
 		
+		tempPosition = statics.GetDefaultWindowPosition();
+		tempPosition.h += GetBorderThickness(borderLeft) + kDefaultWindowSeparation;
+		tempPosition.v += GetBorderThickness(borderTop);
+		SetPosition(tempPosition);
+			
 		if ((editAreaRect.right - editAreaRect.left) == magnification * ((**currentPix).bounds.right - (**currentPix).bounds.left) &&
-			(editAreaRect.bottom - editAreaRect.top) == magnification * ((**currentPix).bounds.bottom - (**currentPix).bounds.top))
-		{
-			tempPosition = statics.GetDefaultWindowPosition();
-			tempPosition.h += GetBorderThickness(borderLeft) + kDefaultWindowSeparation;
-			tempPosition.v += GetBorderThickness(borderTop);
-			SetPosition(tempPosition);
-			if (editAreaRect.top == 0 && editAreaRect.left == 0)
-				magnification = GetMaxMagnification();
-			ZoomFitWindow();
-		}
-		else
-		{
-			tempPosition = statics.GetDefaultWindowPosition();
-			tempPosition.h += GetBorderThickness(borderLeft);
-			tempPosition.v += GetBorderThickness(borderTop);
-			SetPosition(tempPosition);
-			ZoomFitWindow();
-		}
+			(editAreaRect.bottom - editAreaRect.top) == magnification * ((**currentPix).bounds.bottom - (**currentPix).bounds.top) &&
+			(editAreaRect.top == 0 && editAreaRect.left == 0))
+			magnification = GetMaxMagnification();
+			
+		ZoomFitWindow();
 	}	
 	else
 	{
@@ -1450,12 +1591,24 @@ void icnsEditorClass::PostLoad()
 	
 	LoadUsedMembers();
 	
-	for (int i=0; i < kPreferredMembersCount; i++)
-		if (members & kPreferredMembers[i])
-		{
-			SetCurrentMember(kPreferredMembers[i], false);
-			break;
-		}
+	if (members)
+	{
+		for (int i=0; i < kPreferredMembersCount; i++)
+			if (members & kPreferredMembers[i])
+			{
+				SetCurrentMember(kPreferredMembers[i], 0);
+				break;
+			}
+	}
+	else
+	{
+		for (int i=0; i < kPreferredMembersCount; i++)
+			if (usedMembers & kPreferredMembers[i])
+			{
+				SetCurrentMember(kPreferredMembers[i], 0);
+				break;
+			}
+	}
 	
 	ResetStates();
 	
@@ -1479,20 +1632,27 @@ void icnsEditorClass::LoadUsedMembers()
 		oldFile = CurResFile();
 		targetFile = FSpOpenResFile(&srcFileSpec, fsRdWrPerm);
 		
-		UseResFile(targetFile);
-		
-		usedMembersResource = Get1Resource('Mngl', 128);
-		
-		if (usedMembersResource != NULL)
-			usedMembers = **((long**)usedMembersResource);
-		else
-			usedMembers |= members;
-		
-		CloseResFile(targetFile);
-		UseResFile(oldFile);
-		
+		if (targetFile != -1 && ResError() == noErr)
+		{
+			UseResFile(targetFile);
+			
+			usedMembersResource = Get1Resource('Mngl', ID);
+			
+			if (usedMembersResource != NULL &&
+				GetHandleSize(usedMembersResource) == sizeof(long))
+				usedMembers = **((long**)usedMembersResource);
+			else
+				usedMembers |= members;
+			
+			ReleaseResource(usedMembersResource);
+			CloseResFile(targetFile);
+			UseResFile(oldFile);
+		}
 		CleanupFileSpec();
 	}
+	
+	usedMembers &= kDefaultMembers[format];
+	members &= usedMembers;
 }
 
 void icnsEditorClass::SaveUsedMembers()
@@ -1515,7 +1675,7 @@ void icnsEditorClass::SaveUsedMembers()
 		
 		do
 		{
-			usedMembersResource = Get1Resource('Mngl', 128);
+			usedMembersResource = Get1Resource('Mngl', ID);
 			if (usedMembersResource != NULL)
 			{
 				RemoveResource(usedMembersResource);
@@ -1528,7 +1688,7 @@ void icnsEditorClass::SaveUsedMembers()
 		BlockMoveData(&usedMembers, *usedMembersResource, sizeof(usedMembers));
 		
 		DetachResource(usedMembersResource);
-		AddResource(usedMembersResource, 'Mngl', 128, "\p");
+		AddResource(usedMembersResource, 'Mngl', ID, "\p");
 		
 		ChangedResource(usedMembersResource);
 		WriteResource(usedMembersResource);
@@ -1541,12 +1701,11 @@ void icnsEditorClass::SaveUsedMembers()
 	}
 }
 
-void icnsEditorClass::CheckMaskSync(PixMapHandle basePix, PixMapHandle maskPix, int size)
+void icnsEditorClass::CheckMaskSync(PixMapHandle basePix, PixMapHandle maskPix, int maskName, int size)
 {
 	GWorldPtr 		tempGW;
 	PixMapHandle	tempPix;
 	Rect			bounds;
-	
 	
 	bounds = (**basePix).bounds;
 	
@@ -1573,6 +1732,7 @@ void icnsEditorClass::CheckMaskSync(PixMapHandle basePix, PixMapHandle maskPix, 
 			SAVECOLORS;
 			CopyPixMap(tempPix, maskPix, &bounds, &bounds, srcCopy, NULL);
 			RESTORECOLORS;
+			members |= maskName;
 		}
 	}
 	UnlockPixels(tempPix);
@@ -1601,6 +1761,8 @@ void icnsEditorClass::GenerateMask(int maskName)
 		GetGWorldAndPix(iconName, &iconGW, &iconPix);
 		
 		Make1BitMask(iconPix, maskPix, (**maskPix).bounds);
+		
+		members |= maskName;
 	}
 }
 
@@ -1613,6 +1775,8 @@ void icnsEditorClass::GenerateMask(int maskName)
 
 OSErr icnsEditorClass::Save(void)
 {
+	OSErr err;
+	
 	if (!statics.preferences.FeatureEnabled(prefsDontCheckMasks))
 	{
 		RefreshIconMembers();
@@ -1620,9 +1784,9 @@ OSErr icnsEditorClass::Save(void)
 		if (format == formatMacOSUniversal ||
 			format == formatMacOSNew)
 		{
-			if (members & l8mk)	CheckMaskSync(l8mkPix, icnmPix, largeSize);
-			if (members & s8mk)	CheckMaskSync(s8mkPix, icsmPix, smallSize);
-			if (members & h8mk)	CheckMaskSync(h8mkPix, ichmPix, hugeSize);
+			if (members & l8mk)	CheckMaskSync(l8mkPix, icnmPix, icnm, largeSize);
+			if (members & s8mk)	CheckMaskSync(s8mkPix, icsmPix, icsm, smallSize);
+			if (members & h8mk)	CheckMaskSync(h8mkPix, ichmPix, ichm, hugeSize);
 		}
 		
 		if (members & thumbnailSize && !(members & t8mk)) GenerateMask(t8mk);
@@ -1630,7 +1794,7 @@ OSErr icnsEditorClass::Save(void)
 		if (members & largeSize && !(members & (l8mk | icnm))) GenerateMask(icnm);
 		if (members & smallSize && !(members & (s8mk | icsm))) GenerateMask(icsm);
 		if (members & miniSize && !(members & icmm)) GenerateMask(icmm);
-	}
+	}	
 	
 	
 	if (format != formatWindows && colors == winColors)
@@ -1639,46 +1803,14 @@ OSErr icnsEditorClass::Save(void)
 	if (status & selectionFloated)
 		DefloatSelection(false);
 	
-	if (statics.preferences.GetSaveFork() == dataAndResourceForks ||
-		statics.preferences.GetSaveFork() == dataFork)
-	{
-	
-		if (HasNonIconDataFork())
-		{
-			Str255	text, yesButton, noButton, otherButton;
-			short	itemHit;
-			
-			GetIndString(text, rBasicStrings, eNonIconDataFork);
-			GetIndString(yesButton, rBasicStrings, eYesButton);
-			GetIndString(noButton, rBasicStrings, eNoButton);
-			GetIndString(otherButton, rBasicStrings, eChooseAnotherFile);
-			
-			SubstituteString(text, "\p<file name>", srcFileSpec.name);
-			
-			itemHit = MUtilities::DisplayAlert(text, yesButton, noButton, otherButton, kAlertCautionAlert);
-			switch (itemHit)
-			{
-				case 1:
-					break;
-				case 2:
-					return noErr;
-					break;
-				case 3:
-					return fnOpnErr;
-					break;
-			}
-		}
-		
-		icnsClass::SaveDataFork();
-		
-		if (statics.preferences.GetSaveFork() == dataAndResourceForks)
-			icnsClass::Save();
-	}
-	else
-		icnsClass::Save(); // this is from the base class
+	err = icnsClass::Save(); // this is from the base class
+	RefreshWindowTitle();
 	
 	if (status & selectionFloated)
 		currentState->RestoreState(this);
+	
+	if (err != noErr)
+		return err;
 	
 	SaveUsedMembers();
 	
@@ -1692,33 +1824,6 @@ OSErr icnsEditorClass::Save(void)
 	SetAssociatedFile(srcFileSpec);
 	
 	return noErr;
-}
-
-bool icnsEditorClass::HasNonIconDataFork()
-{
-	short	file;
-	long	readLength, iconType;
-	bool	nonIconDataFork;
-	
-	FSpOpenDF(&srcFileSpec, fsRdPerm, &file);
-	
-	SetFPos(file, fsFromStart, 0);
-	
-	GetEOF(file, &readLength);
-	
-	if (readLength == 0)
-		nonIconDataFork = false;
-	else
-	{
-		readLength = sizeof(long);
-		
-		FSRead(file, &readLength, &iconType);
-		
-		nonIconDataFork = (iconType != 'icns');
-	}
-	
-	FSClose(file);
-	return nonIconDataFork;
 }
 
 #pragma mark -
@@ -1841,7 +1946,7 @@ void icnsEditorClass::OpenInExternalEditor()
 			
 	}
 	
-	SendFinderAEOpen(exportFile);
+	MUtilities::AESendFinderOpen(exportFile);
 
 	exportMode = true;
 	exportDate = GetModificationDate(exportFile);
@@ -1869,7 +1974,8 @@ void icnsEditorClass::ReloadFromExternalEditor()
 		
 		bounds = (**iconPix).bounds;
 		
-		if (icnsEditorClass::statics.preferences.FeatureEnabled(prefsDither))
+		if (icnsEditorClass::statics.preferences.FeatureEnabled(prefsDither) &&
+			(**statics.canvasPix).pixelSize > (**iconPix).pixelSize)
 			CopyPixMap(statics.canvasPix, iconPix, &bounds, &bounds, srcCopy + ditherCopy, NULL);
 		else
 			CopyPixMap(statics.canvasPix, iconPix, &bounds, &bounds, srcCopy, NULL);
@@ -1924,13 +2030,13 @@ void icnsEditorClass::RefreshWindowTitle()
 	SetWTitle(window, windowTitle); // and set the title
 }
 
-void icnsEditorClass::SetCurrentMember(long memberName, bool fancy)
+void icnsEditorClass::SetCurrentMember(long memberName, int fancinessLevel)
 {
 	GWorldPtr		memberGW;
 	PixMapHandle	memberPix;
 	bool			resize;
 	
-	if (fancy)
+	if (fancinessLevel)
 	{
 		if (!EmptyRgn(selectionRgn)) // if there was a selection
 		{
@@ -1966,7 +2072,7 @@ void icnsEditorClass::SetCurrentMember(long memberName, bool fancy)
 		RepositionControls();
 	}
 	
-	if (fancy && statics.previewPalette)
+	if (fancinessLevel && statics.previewPalette)
 		statics.previewPalette->SetPreviewSize((**currentPix).bounds.bottom);
 	
 	SAVEGWORLD;
@@ -1977,14 +2083,16 @@ void icnsEditorClass::SetCurrentMember(long memberName, bool fancy)
 	RefreshWindowTitle();
 	
 	statics.membersPalette->ScrollToCurrentMember(this);
-	icnsEditorClass::statics.UpdatePalettes(this, updateAll);
 	
-	if (fancy)
+	if (fancinessLevel > 1)
+		icnsEditorClass::statics.UpdatePalettes(this, updateAll);
+	
+	if (fancinessLevel)
 	{
 		currentState = new drawingStateClass(currentState, this);
 		
 		if (resize)
-			zoomPosition.h = zoomPosition.v = zoomDimensions.h = zoomDimensions.v = -1;
+			zoomPosition.h = zoomPosition.v = zoomDimensions.h = zoomDimensions.v = -1;		
 	}
 }
 
@@ -2025,13 +2133,13 @@ void icnsEditorClass::SetBestMember()
 		case formatMacOSUniversal:
 		case formatMacOSNew:
 		case formatMacOSXServer:
-			SetCurrentMember(il32, true);
+			SetCurrentMember(il32, 1);
 			break;
 		case formatMacOSOld:
-			SetCurrentMember(icl8, true);
+			SetCurrentMember(icl8, 1);
 			break;
 		case formatWindows:
-			SetCurrentMember(il32, true);
+			SetCurrentMember(il32, 1);
 			break;
 	}
 	
@@ -2052,7 +2160,7 @@ void icnsEditorClass::ToggleIconMask()
 	if (oldToggleMember != -1 &&
 		currentToggleMember == currentPixName)
 	{
-		SetCurrentMember(oldToggleMember, true);
+		SetCurrentMember(oldToggleMember, 2);
 		
 		oldToggleMember = currentToggleMember;
 		currentToggleMember = currentPixName;
@@ -2064,9 +2172,9 @@ void icnsEditorClass::ToggleIconMask()
 		GetCurrentIconMask(&iconPix, &iconGW, &iconName, &maskPix, &maskGW, &maskName, false);
 		
 		if (iconName == currentPixName)
-			SetCurrentMember(maskName, true);
+			SetCurrentMember(maskName, 2);
 		else
-			SetCurrentMember(iconName, true);
+			SetCurrentMember(iconName, 2);
 			
 		currentToggleMember = currentPixName;
 	}
@@ -2549,9 +2657,35 @@ void icnsEditorClass::InsertFromPicture(PicHandle srcPic, GWorldPtr targetGW, in
 	OffsetRect(&picRect, -picRect.left, -picRect.top);
 	
 	if (options & insertCentered)
-		OffsetRect(&picRect,
-				   (targetGWBounds.right - picRect.right)/2,
-				   (targetGWBounds.bottom - picRect.bottom)/2);
+		if (targetGW == currentGW)
+		{
+			Rect visibleRect;
+			
+			if (status & hasSelection)
+			{
+				GetRegionBounds(selectionRgn, &visibleRect);
+			}
+			else
+			{
+				visibleRect = editAreaRect;
+				OffsetRect(&visibleRect,
+						   -editAreaRect.left + hScrollbarValue,
+						   -editAreaRect.top + vScrollbarValue);
+				SetRect(&visibleRect,
+						visibleRect.left / magnification,
+						visibleRect.top / magnification,
+						visibleRect.right / magnification + 1,
+						visibleRect.bottom / magnification + 1);
+			}
+			
+			OffsetRect(&picRect,
+				   visibleRect.left + (visibleRect.right - visibleRect.left - picRect.right)/2,
+				   visibleRect.top + (visibleRect.bottom - visibleRect.top - picRect.bottom)/2);
+		}
+		else	
+			OffsetRect(&picRect,
+					   (targetGWBounds.right - picRect.right)/2,
+					   (targetGWBounds.bottom - picRect.bottom)/2);
 	
 	if (targetGW == currentGW)
 	// if we're inserting into the current gworld we must put the picture into a floating selection

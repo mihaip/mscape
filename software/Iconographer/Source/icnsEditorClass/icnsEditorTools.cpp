@@ -66,13 +66,15 @@ void icnsEditorClass::HandleZoom(Point startMouse)
 	while (Button()) {;}
 	
 	if (ISOPTIONDOWN)
-	{
-		if (magnification > kMinMagnification)
-			magnification /= 2;
-	}
-	else if (magnification < kMaxMagnification)
+		magnification /= 2;
+	else
 		magnification *= 2;
 		
+	if (magnification < kMinMagnification)
+		magnification = kMinMagnification;
+	else if (magnification > kMaxMagnification)
+		magnification = kMaxMagnification;
+	
 	UpdateZoom();
 	
 	ZoomFitWindow();
@@ -246,7 +248,8 @@ void icnsEditorClass::HandleGradient(Point startMouse)
 							 x, y, endColor,
 							 statics.canvasPix, (**targetPix).bounds, clipRgn);
 
-	if (statics.preferences.FeatureEnabled(prefsDither))		 
+	if (statics.preferences.FeatureEnabled(prefsDither) &&
+		(**statics.canvasPix).pixelSize > (**targetPix).pixelSize)		 
 		CopyPixMap(statics.canvasPix, targetPix, &(**targetPix).bounds, &(**targetPix).bounds, srcCopy + ditherCopy, clipRgn);
 	else
 		CopyPixMap(statics.canvasPix, targetPix, &(**targetPix).bounds, &(**targetPix).bounds, srcCopy, clipRgn);
@@ -998,13 +1001,14 @@ void icnsEditorClass::HandleLine(Point startMouse)
 
 void icnsEditorClass::HandleLasso(Point startMouse)
 {
-	Rect			currentBounds; // the bounds of the current pixmap
+	Rect			currentBounds, selectionBounds; // the bounds of the current pixmap
 	int				startX, startY, // the starting x and y coordinates
 					mode; // the selection mode
 	RgnHandle		lassoSelectionRgn, // the drawn selection shape
 					tightenedRgn; 
 	OSStatus		err = noErr; // error checking
 	Point			trueStartMouse;
+	bool			needsUpdate = false;
 	SAVEGWORLD;
 	SAVECOLORS;
 	
@@ -1042,14 +1046,24 @@ void icnsEditorClass::HandleLasso(Point startMouse)
 			return;
 		}
 	}
-		
+	
+	if (!EmptyRgn(selectionRgn))
+		GetRegionBounds(selectionRgn, &selectionBounds);
 	// we defloat the selection if we need to
 	if ((status & selectionFloated) && (mode == normal || mode == additive))
+	{
 		DefloatSelection(true);
-	
+		needsUpdate = true;
+	}
 	// we deselect the current selection if we need to
 	if (mode == normal)
+	{
 		SetEmptyRgn(selectionRgn);
+		needsUpdate = true;
+	}
+	
+	if (needsUpdate)
+		UpdateEditArea(selectionBounds, selectionBounds, 0);
 	
 	// we get the current bounds, but we want them at the magnified resolution 
 	currentBounds = (**currentPix).bounds;
@@ -1058,11 +1072,10 @@ void icnsEditorClass::HandleLasso(Point startMouse)
 	// we create the overlay
 	err = NewGWorld(&overlayGW, 1, &currentBounds, NULL, NULL, 0);
 	if (err != noErr) {status |= outOfMemory; return; }
-	SetGWorld(overlayGW, NULL);
-	EraseRect(&currentBounds);
 	overlayPix = GetGWorldPixMap(overlayGW);
 	LockPixels(overlayPix);
-	
+	SetGWorld(overlayGW, NULL);
+	EraseRect(&currentBounds);
 	
 	MoveTo(startX, startY);
 	
@@ -1072,13 +1085,10 @@ void icnsEditorClass::HandleLasso(Point startMouse)
 		HandleFreehandLasso();
 	else
 		HandlePolygonalLasso();
-		
+			
 	SetGWorld(overlayGW, NULL);
-	
 	// we connect it back to the starting point
 	LineTo(startX, startY);
-	
-	//SetGWorld(il32GW, NULL);
 	
 	// we create these regions
 	lassoSelectionRgn = NewRgn();
@@ -1107,7 +1117,7 @@ void icnsEditorClass::HandleLasso(Point startMouse)
 	MagnifySelectionRgn();
 	
 	// dispose with the regions
-	DisposeRgn(tightenedRgn);
+	//DisposeRgn(tightenedRgn);
 	DisposeRgn(lassoSelectionRgn);
 	
 	// and with the overlay
@@ -1203,7 +1213,7 @@ void icnsEditorClass::HandlePolygonalLasso(void)
 		MoveTo(vertices[0].h, vertices[0].v);
 		
 		for (int i=1; i <= noOfVertices; i++)
-				LineTo(vertices[i].h, vertices[i].v);
+			LineTo(vertices[i].h, vertices[i].v);
 		
 		LineTo(x, y);
 		RESTOREGWORLD;
@@ -1234,6 +1244,12 @@ void icnsEditorClass::HandlePolygonalLasso(void)
 				vertices[noOfVertices].v = y;
 				lastClick = TickCount();
 			}
+			
+			SetGWorld(overlayGW, NULL);
+			BackColor(whiteColor);
+			ForeColor(blackColor);
+			LineTo(vertices[noOfVertices].h, vertices[noOfVertices].v);
+			RESTOREGWORLD;
 			
 			MUtilities::GetMouseLocation(GetWindowPort(window), &startMouse);
 		}
@@ -2443,8 +2459,6 @@ inline void icnsEditorClass::GetDrawingMousePosition(int *x, int *y, Point* theM
 		limitRect = editAreaRect;
 		InsetRect(&limitRect, magnification * 2, magnification * 2);
 	}
-	
-	
 	
 	if (!PtInRect(originalMouse, &limitRect))
 	{

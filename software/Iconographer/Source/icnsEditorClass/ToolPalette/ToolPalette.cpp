@@ -1,3 +1,5 @@
+#include "PixMapColorPicker.h"
+#include "PatternPicker.h"
 #include "ToolPalette.h"
 #include "icnsEditorClass.h"
 
@@ -33,9 +35,15 @@ ToolPalette::ToolPalette()
 	foreColor = kBlackAsRGB;
 	backColor = kWhiteAsRGB;
 	
+	oldTool = toolNone;
+	currentTool = toolNone;
+	
 	pattern = 0;
 	
+	colorPicker = new PixMapColorPicker(this, icnsEditorClass::statics.canvasPix, icnsEditorClass::statics.canvasGW);
+	patternPicker = new PatternPicker(this, icnsEditorClass::statics.canvasPix, icnsEditorClass::statics.canvasGW);
 	
+	oldStatus = 0;
 }
 
 ToolPalette::~ToolPalette()
@@ -52,6 +60,9 @@ ToolPalette::~ToolPalette()
 	DisposeEnhancedPlacard(controls.lineThickness);
 	DisposeEnhancedPlacard(controls.antiAliasing);
 	DisposeEnhancedPlacard(controls.fill);
+	
+	delete colorPicker;
+	delete patternPicker;
 }
 
 void ToolPalette::Activate()
@@ -121,53 +132,31 @@ void ToolPalette::DoIdle()
 		{
 			Point theMouse;
 			
+			//MUtilities::GetMouseLocation(frontEditor->GetPort(), &theMouse);
 			SAVEGWORLD;
-			frontEditor->SetPort();
+			SetPort();
 			GetMouse(&theMouse);
 			RESTOREGWORLD;
+			
 			frontEditor->UpdateCursor(theMouse);
 		}
-		
-		/*
-		if (currentTool == lasso &&
-			ISOPTIONDOWN &&
-			controls.toolbar.lassoMode != polygonal &&
-			controls.toolbar.oldLassoMode == noTool &&
-			!(status & hasSelection))
-		{
-			controls.toolbar.lassoMode = polygonal;
-			controls.toolbar.oldLassoMode = freehand;
-		}
-		else if ((currentTool == lasso && 
-				 !ISOPTIONDOWN &&
-				 controls.toolbar.oldLassoMode != noTool) ||
-				 (ISOPTIONDOWN && (status & hasSelection) && controls.toolbar.oldLassoMode != noTool))
-		{
-			controls.toolbar.lassoMode = freehand;
-			controls.toolbar.oldLassoMode = noTool;
-		}
-		*/
 	}
-	
-	/*
-	if (statics.colorsPalette->IsVisible())
-				if (PtInRect(theMouse, &controls.colorSwatch.foreColorRect))
-					statics.colorsPalette->UpdateReadout(-1, -1, foreColor);
-				else if (PtInRect(theMouse, &controls.colorSwatch.backColorRect))
-					statics.colorsPalette->UpdateReadout(-1, -1, backColor);
-	*/
 }
 
-void ToolPalette::ChangeCursor(int flags)
+void ToolPalette::ChangeCursor(int status)
 {
 	int newID;
 	
-	if ((flags & cursorFlagsInSelection) &&
+	oldStatus = status;
+	
+	if (!(status & mouseInEditArea))
+		newID = rArrow;
+	else if ((status & mouseInSelection) &&
 		(currentTool == toolMove || currentTool == toolLasso ||
 		currentTool == toolMarquee || currentTool == toolMagicWand) &&
 		!ISOPTIONDOWN && !ISSHIFTDOWN)
 	{
-		if (flags & cursorFlagsFloatedSelection)
+		if (status & selectionFloated)
 			newID = rTPMoveSelectionContents;
 		else
 		{
@@ -180,33 +169,33 @@ void ToolPalette::ChangeCursor(int flags)
 	else switch (currentTool)
 	{
 		case toolMarquee:
-			if (ISSHIFTDOWN && (flags & cursorFlagsHasSelection))
+			if (ISSHIFTDOWN && (status & hasSelection))
 				newID = rTPMarqueeAdditive;
-			else if (ISOPTIONDOWN  && (flags & cursorFlagsHasSelection))
+			else if (ISOPTIONDOWN  && (status & hasSelection))
 				newID = rTPMarqueeSubtractive;
 			else
 				newID = rTPToolBaseID + toolMarquee;
 			break;
 		case toolLasso:
 			if (GetToolMode(toolLasso) == toolModeNormal)
-				if (ISSHIFTDOWN && (flags & cursorFlagsHasSelection)) // same here
+				if (ISSHIFTDOWN && (status & hasSelection)) // same here
 					newID = rTPLassoAdditive;
-				else if (ISOPTIONDOWN && (flags & cursorFlagsHasSelection))
+				else if (ISOPTIONDOWN && (status & hasSelection))
 					newID = rTPLassoSubtractive;
 				else
 					newID = rTPToolBaseID + toolLasso;
 			else
-				if (ISSHIFTDOWN && (flags & cursorFlagsHasSelection)) // same here
+				if (ISSHIFTDOWN && (status & hasSelection)) // same here
 					newID = rTPLassoPolygonalAdditive;
-				else if (ISOPTIONDOWN && (flags & cursorFlagsHasSelection))
+				else if (ISOPTIONDOWN && (status & hasSelection))
 					newID = rTPLassoPolygonalSubtractive;
 				else
 					newID = rTPToolModesBaseID + toolLasso;
 			break;	
 		case toolMagicWand:
-			if (ISSHIFTDOWN && (flags & cursorFlagsHasSelection)) // and here
+			if (ISSHIFTDOWN && (status & hasSelection)) // and here
 				newID = rTPMagicWandAdditive;
-			else if (ISOPTIONDOWN && (flags & cursorFlagsHasSelection))
+			else if (ISOPTIONDOWN && (status & hasSelection))
 				newID = rTPMagicWandSubtractive;
 			else
 				newID = rTPToolBaseID + toolMagicWand;
@@ -223,12 +212,12 @@ void ToolPalette::ChangeCursor(int flags)
 			break;
 		case toolZoom:
 			if (ISOPTIONDOWN)
-				if (flags & cursorFlagsCanZoomOut)
+				if (status & canZoomOut)
 					newID = rTPZoomOut;
 				else
 					newID = rTPCantZoom;
 			else
-				if (flags & cursorFlagsCanZoomIn)
+				if (status & canZoomIn)
 					newID = rTPToolBaseID + toolZoom;
 				else
 					newID = rTPCantZoom;
@@ -237,6 +226,15 @@ void ToolPalette::ChangeCursor(int flags)
 	}
 	
 	MUtilities::ChangeCursor(newID);
+}
+
+void ToolPalette::UpdateCursor(Point theMouse)
+{
+	if (icnsEditorClass::statics.colorsPalette->IsVisible())
+		if (PtInRect(theMouse, &colorSwatchRects[kTPForeColor]))
+			icnsEditorClass::statics.colorsPalette->UpdateReadout(-1, -1, foreColor);
+		else if (PtInRect(theMouse, &colorSwatchRects[kTPBackColor]))
+			icnsEditorClass::statics.colorsPalette->UpdateReadout(-1, -1, backColor);
 }
 
 void ToolPalette::HandleContentClick(EventRecord* eventPtr)
@@ -273,6 +271,9 @@ void ToolPalette::HandleContentClick(EventRecord* eventPtr)
 					if (controls.tools[i] == clickedControl)
 					{
 						toolClick = true;
+						
+						oldStatus &= ~mouseInEditArea;
+						
 						if (lastToolClick == -1 || i != currentTool)
 							lastToolClick = TickCount();
 						else if (TickCount() - lastToolClick <= GetDblTime())
@@ -346,7 +347,6 @@ void ToolPalette::HandleKeyDown(EventRecord *eventPtr)
 	
 	if (newTool != currentTool)
 		SetCurrentTool(newTool);
-	
 }
 
 #pragma mark -
@@ -371,19 +371,20 @@ bool ToolPalette::InToggleMode()
 
 void ToolPalette::SetCurrentTool(int newTool)
 {
-	//if (newTool != currentTool)
-	//{
-		if (oldTool != toolNone)
-		{
-			SetControlValue(controls.tools[oldTool], 0);
-			oldTool = toolNone;
-		}
-		else
-			SetControlValue(controls.tools[currentTool], 0);
-		SetControlValue(controls.tools[newTool], 1);
-		currentTool = newTool;
+	if (newTool < 0 || newTool >= kToolCount)
+		newTool = toolPen;
+	
+	if (oldTool != toolNone)
+	{
+		SetControlValue(controls.tools[oldTool], 0);
 		oldTool = toolNone;
-	//}
+	}
+	else if (currentTool != toolNone)
+		SetControlValue(controls.tools[currentTool], 0);
+	SetControlValue(controls.tools[newTool], 1);
+	currentTool = newTool;
+	oldTool = toolNone;
+	ChangeCursor(oldStatus);
 }
 
 int ToolPalette::GetToolMode(int tool)
@@ -526,25 +527,21 @@ void ToolPalette::PickColor(RGBColor* color, Point where, Str255 messageString)
 	switch (pixName)
 	{
 		case ich8: case icl8: case ics8:
-		case h8mk: case l8mk: case s8mk:
+		case h8mk: case l8mk: case s8mk: case t8mk:
 		case ich4: case icl4: case ics4:
 		case ichi: case icni: case icsi:
 		case ichm: case icnm: case icsm:
 			PixMapHandle 	pickerPix;
-			GWorldPtr	pickerGW;
-			RgnHandle	pickerRgn;
-	
+			GWorldPtr		pickerGW;
+			RgnHandle		pickerRgn;
+			
 			icnsEditorClass::statics.GetPickerPix(pixName, frontEditor->colors, &pickerPix, &pickerGW, &pickerRgn);
 			
-			PixMapColorPicker(color,
-							  window,
-							  where,
-							  pickerPix,
-							  pickerGW,
-							  pickerRgn,
-							  (**frontEditor->currentPix).pmTable,
-							  SwatchUpdate,
-							  this);
+			colorPicker->SetPicker(pickerPix, pickerGW, pickerRgn, (**frontEditor->currentPix).pmTable);
+			
+			LocalToGlobal(&where);
+			colorPicker->Track(color, where);
+			
 			break;
 		default:
 			if (TrackControl(controls.colorSwatch, where, NULL))
@@ -581,28 +578,25 @@ void ToolPalette::CreateControls()
 	for (int i=0; i < kToolCount; i++)
 		controls.tools[i] = GetNewControl(rTPToolBaseID + i, window);
 	
-	oldTool = toolNone;
-	currentTool = toolPen;
-	SetControlValue(controls.tools[currentTool], 1);
-	
 	lineThicknessMenu = GetMenu(rTPLineThickness);
 	controls.lineThickness = NewEnhancedPlacard(rTPLineThickness, window, enhancedPlacardMenuAtBottom, applFont, 9,
-												"\p", NULL, lineThicknessMenu,
+												"\p", NULL, false, lineThicknessMenu,
 												icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix,
 												LineThicknessUpdate, this);
 	antiAliasingMenu = GetMenu(rTPAntiAliasing);
 	controls.antiAliasing = NewEnhancedPlacard(rTPAntiAliasing, window, enhancedPlacardMenuAtBottom, applFont, 9,
-											   "\p", NULL, antiAliasingMenu,
+											   "\p", NULL, true, antiAliasingMenu,
 											   icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix,
 											   AntiAliasingUpdate, this);										   
 	fillMenu = GetMenu(rTPFill);
 	controls.fill = NewEnhancedPlacard(rTPFill, window, enhancedPlacardMenuAtBottom, applFont, 9,
-									   "\p", NULL, fillMenu,
+									   "\p", NULL, true, fillMenu,
 									   icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix,
 									   FillUpdate, this);
 									   
 	controls.backgroundPane = GetNewControl(rTPBackgroundPane, window);
 	SetControlUserPaneDraw(controls.backgroundPane, BackgroundPaneDraw);
+	SetControlUserPaneHitTest(controls.backgroundPane, GenericHitTest);
 	
 	controls.colorSwatch = GetNewControl(rTPColorSwatch, window);
 	EmbedControl(controls.colorSwatch, controls.backgroundPane);
@@ -626,7 +620,14 @@ void ToolPalette::CreateControls()
 
 void ToolPalette::HandlePatternsClick(Point where)
 {
-	pattern = XYMenu(where,
+	LocalToGlobal(&where);
+	
+	patternPicker->SetPatterns(rDrawingPatterns, 24, 2, 16, 16);
+	patternPicker->Track(&pattern, where);
+	
+	Draw1Control(controls.patterns);
+	Draw1Control(controls.colorSwatch);
+	/*pattern = XYMenu(where,
 					 window,
 					 2, 12,				// rows, cols of slots
 					 16, 16,			// width, height of 1 slot
@@ -637,7 +638,7 @@ void ToolPalette::HandlePatternsClick(Point where)
 					 this)				// client data
 					 - 1;
 	
-	Draw1Control(controls.patterns);
+	Draw1Control(controls.patterns);*/
 }
 
 Pattern ToolPalette::GetPattern()
@@ -679,22 +680,32 @@ pascal void	ToolPalette::ColorSwatchDraw(ControlHandle theControl,SInt16 thePart
 	
 	GetControlBounds(theControl, &controlRect);
 	canvasRect = controlRect;
-	OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top);
 	
-	SetGWorld(icnsEditorClass::statics.canvasGW, NULL);
-
+	if (!parent->IsBuffered())
+	{
+		SetGWorld(icnsEditorClass::statics.canvasGW, NULL);
+		OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top);
+	}
+	else
+	{
+		parent->LockPortBits();
+		parent->SetPort();
+	}
+	
 	tempRect = canvasRect;
 	InsetRect(&tempRect, -3, -3);
-	if (IsControlActive(theControl))
+	/*if (IsControlActive(theControl))
 		DrawThemePlacard(&tempRect, kThemeStateActive);
 	else
-		DrawThemePlacard(&tempRect, kThemeStateInactive);
+		DrawThemePlacard(&tempRect, kThemeStateInactive);*/
+	RESTORECOLORS;
+	EraseRect(&tempRect);
 	
 	parent->GetColors(&foreColor, &backColor);
 	
 	// first we draw the background color swatch (since it must appear underneath)
 	tempRect = parent->colorSwatchRects[kTPBackColor];
-	OffsetRect(&tempRect, -controlRect.left, -controlRect.top);
+	OffsetRect(&tempRect, -(controlRect.left - canvasRect.left), -(controlRect.top - canvasRect.top));
 	DrawImageWell(theControl, tempRect);
 	ForeColor(whiteColor);
 	PaintRect(&tempRect);
@@ -704,7 +715,7 @@ pascal void	ToolPalette::ColorSwatchDraw(ControlHandle theControl,SInt16 thePart
 	
 	// then (partially on top of it) we draw the foreground color swatch
 	tempRect = parent->colorSwatchRects[kTPForeColor];
-	OffsetRect(&tempRect, -controlRect.left, -controlRect.top);
+	OffsetRect(&tempRect, -(controlRect.left - canvasRect.left), -(controlRect.top - canvasRect.top));
 	DrawImageWell(theControl, tempRect);
 	ForeColor(whiteColor);
 	PaintRect(&tempRect);
@@ -723,13 +734,12 @@ pascal void	ToolPalette::ColorSwatchDraw(ControlHandle theControl,SInt16 thePart
 	
 	// now we can draw the swap colors widget
 	tempRect = parent->colorSwatchRects[kTPSwapColors];
-	OffsetRect(&tempRect, -controlRect.left, -controlRect.top);
-	// we clean out the place where we'll be drawing
+	OffsetRect(&tempRect, -(controlRect.left - canvasRect.left), -(controlRect.top - canvasRect.top));
 	PlotCIconWithMode(&tempRect, parent->swapColorsIcon, copyMode);
 	
 	// same as above, except for the reset color widget
 	tempRect = parent->colorSwatchRects[kTPResetColors];
-	OffsetRect(&tempRect, -controlRect.left, -controlRect.top);
+	OffsetRect(&tempRect, -(controlRect.left - canvasRect.left), -(controlRect.top - canvasRect.top));
 	PlotCIconWithMode(&tempRect, parent->resetColorsIcon, copyMode);
 	
 	ForeColor(blackColor);
@@ -742,14 +752,15 @@ pascal void	ToolPalette::ColorSwatchDraw(ControlHandle theControl,SInt16 thePart
 		OpColor(&kWhiteAsRGB);
 	}
 	
-	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
-			 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
-			 &canvasRect,
-			 &controlRect,
-			 srcCopy,
-			 NULL);
-	
-	
+	if (!parent->IsBuffered())
+		CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
+				 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
+				 &canvasRect,
+				 &controlRect,
+				 srcCopy,
+				 NULL);
+	else
+		parent->UnlockPortBits();
 	
 	RESTORECOLORS;
 }
@@ -855,19 +866,29 @@ pascal void	ToolPalette::PatternsDraw(ControlHandle theControl,SInt16 thePart)
 	
 	GetControlBounds(theControl, &controlRect);
 	canvasRect = controlRect;
-	OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top);
 	
 	SAVEGWORLD;
 	SAVECOLORS; // we'll be changing the foreground/background colors
 	
-	SetGWorld(icnsEditorClass::statics.canvasGW, NULL);
+	if (!parent->IsBuffered())
+	{
+		SetGWorld(icnsEditorClass::statics.canvasGW, NULL);
+		OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top);
+	}
+	else
+	{
+		parent->LockPortBits();
+		parent->SetPort();
+	}
 	
 	tempRect = canvasRect;
 	InsetRect(&tempRect, -3, -3);
-	if (IsControlActive(theControl))
+	/*if (IsControlActive(theControl))
 		DrawThemePlacard(&tempRect, kThemeStateActive);
 	else
-		DrawThemePlacard(&tempRect, kThemeStateInactive);
+		DrawThemePlacard(&tempRect, kThemeStateInactive);*/
+	RESTORECOLORS;
+	EraseRect(&tempRect);
 	
 	tempRect = canvasRect;
 	InsetRect(&tempRect, 2, 2);
@@ -886,12 +907,16 @@ pascal void	ToolPalette::PatternsDraw(ControlHandle theControl,SInt16 thePart)
 	BackColor(whiteColor);
 	
 	RESTOREGWORLD;
-	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
-		     GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
-		     &canvasRect,
-		     &controlRect,
-		     srcCopy,
-		     NULL);
+	
+	if (!parent->IsBuffered())
+		CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
+			     GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
+			     &canvasRect,
+			     &controlRect,
+			     srcCopy,
+			     NULL);
+	else
+		parent->UnlockPortBits();
 	
 	RESTORECOLORS;
 }
@@ -908,7 +933,7 @@ pascal ControlPartCode ToolPalette::PatternsHitTest(ControlHandle theControl, Po
 		return kControlNoPart;
 }
 
-pascal void ToolPalette::PatternMenuDraw(int number, int x, int y, int width, int height, void* clientData)
+/*pascal void ToolPalette::PatternMenuDraw(int number, int x, int y, int width, int height, void* clientData)
 {
 	Pattern 		pattern;
 	Rect			patternRect;
@@ -939,7 +964,7 @@ pascal void ToolPalette::PatternMenuUpdate(int selection, void* clientData)
 	parent->pattern = selection - 1;
 	
 	Draw1Control(parent->controls.patterns);
-}
+}*/
 
 #pragma mark -
 

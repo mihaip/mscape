@@ -423,8 +423,6 @@ void icnsClass::SaveICO(void)
 	long writeLength, iconCount, dataOffset;
 	unsigned short	tempShort;
 	
-	RefreshIconMembers();
-	
 	FSpOpenDF(&srcFileSpec, fsRdWrPerm, &file);
 	
 	SetFPos(file, fsFromStart, 0);

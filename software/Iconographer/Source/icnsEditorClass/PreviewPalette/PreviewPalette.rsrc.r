@@ -1,53 +1,4 @@
 /* Resource fork of software/Iconographer/Source/icnsEditorClass/PreviewPalette/PreviewPalette.rsrc */
-resource 'wctb' (500) {
-	{	/* array ColorSpec: 5 elements */
-		/* [1] */
-		wContentColor, 65535, 65535, 65535,
-		/* [2] */
-		wFrameColor, 0, 0, 0,
-		/* [3] */
-		wTextColor, 0, 0, 0,
-		/* [4] */
-		wHiliteColor, 0, 0, 0,
-		/* [5] */
-		wTitleBarColor, 65535, 65535, 65535
-	}
-};
-
-resource 'dctb' (9999) {
-	{	/* array ColorSpec: 5 elements */
-		/* [1] */
-		wContentColor, 65535, 65535, 65535,
-		/* [2] */
-		wFrameColor, 0, 0, 0,
-		/* [3] */
-		wTextColor, 0, 0, 0,
-		/* [4] */
-		wHiliteColor, 0, 0, 0,
-		/* [5] */
-		wTitleBarColor, 65535, 65535, 65535
-	}
-};
-
-resource 'dlgx' (9999) {
-	versionZero {
-		15
-	}
-};
-
-resource 'tab#' (500, "Preview Tabs") {
-	versionZero {
-		{	/* array TabInfo: 2 elements */
-			/* [1] */
-			0,
-			"Thumbnail",
-			/* [2] */
-			0,
-			"Hints"
-		}
-	}
-};
-
 resource 'CNTL' (500, "Preview Background", purgeable) {
 	{4294967295, 4294967295, 176, 151},
 	0,
@@ -70,6 +21,17 @@ resource 'CNTL' (501, "Preview Area", purgeable) {
 	""
 };
 
+resource 'CNTL' (502, "Preview Slider", purgeable) {
+	{7, 6, 23, 116},
+	32,
+	visible,
+	128,
+	12,
+	57,
+	0,
+	""
+};
+
 resource 'CNTL' (503, "Preview Text", purgeable) {
 	{9, 122, 21, 142},
 	0,
@@ -77,17 +39,6 @@ resource 'CNTL' (503, "Preview Text", purgeable) {
 	100,
 	0,
 	280,
-	0,
-	""
-};
-
-resource 'CNTL' (502, "Preview Slider", purgeable) {
-	{7, 6, 23, 116},
-	32,
-	visible,
-	128,
-	0,
-	57,
 	0,
 	""
 };
@@ -101,42 +52,6 @@ resource 'CNTL' (504, "Preview Settings", purgeable) {
 	256,
 	0,
 	""
-};
-
-resource 'WIND' (500, "Preview Palette", purgeable) {
-	{39, 867, 229, 1017},
-	1057,
-	invisible,
-	goAway,
-	0x0,
-	"Preview",
-	noAutoCenter
-};
-
-resource 'cctb' (502) {
-	{	/* array ColorSpec: 4 elements */
-		/* [1] */
-		cFrameColor, 0, 0, 0,
-		/* [2] */
-		cBodyColor, 65535, 65535, 65535,
-		/* [3] */
-		cTextColor, 0, 0, 0,
-		/* [4] */
-		cElevatorColor, 65535, 65535, 65535
-	}
-};
-
-resource 'cctb' (504) {
-	{	/* array ColorSpec: 4 elements */
-		/* [1] */
-		cFrameColor, 0, 0, 0,
-		/* [2] */
-		cBodyColor, 65535, 65535, 65535,
-		/* [3] */
-		cTextColor, 0, 0, 0,
-		/* [4] */
-		cElevatorColor, 65535, 65535, 65535
-	}
 };
 
 resource 'DITL' (9999, purgeable) {
@@ -197,11 +112,6 @@ resource 'DLOG' (9999, purgeable) {
 	noAutoCenter
 };
 
-data 'ictb' (9999) {
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000"                                          /* .... */
-};
-
 resource 'MENU' (500) {
 	500,
 	textMenuProc,
@@ -226,19 +136,6 @@ resource 'MENU' (500) {
 	}
 };
 
-data 'hrct' (500, "Tool Palette Help", purgeable) {
-	$"0002 0000 0000 0000 0000 0003 0014 0003"            /* ................ */
-	$"0000 0000 0006 0007 0017 0090 01F4 0001"            /* ...........ê.Ù.. */
-	$"0014 0003 0000 0000 0020 0006 00AA 0090"            /* ......... ...™.ê */
-	$"01F4 0002 0014 0003 0000 0000 00AF 0000"            /* .Ù...........Ø.. */
-	$"00BE 0096 01F4 0003"                                /* .æ.ñ.Ù.. */
-};
-
-data 'hwin' (500, purgeable) {
-	$"0002 0000 0000 0001 01F4 6872 6374 0007"            /* .........Ùhrct.. */
-	$"0750 7265 7669 6577"                                /* .Preview */
-};
-
 resource 'STR#' (500, "Tool Palette Balloon Help", purgeable) {
 	{	/* array StringArray: 3 elements */
 		/* [1] */
@@ -256,6 +153,109 @@ resource 'STR#' (500, "Tool Palette Balloon Help", purgeable) {
 		"to select the state of the preview icon "
 		"(normal or selected) and the background "
 		"(desktop, list view, white or black)."
+	}
+};
+
+resource 'WIND' (500, "Preview Palette", purgeable) {
+	{39, 867, 229, 1017},
+	1057,
+	invisible,
+	goAway,
+	0x0,
+	"Preview",
+	noAutoCenter
+};
+
+resource 'cctb' (502) {
+	{	/* array ColorSpec: 4 elements */
+		/* [1] */
+		cFrameColor, 0, 0, 0,
+		/* [2] */
+		cBodyColor, 65535, 65535, 65535,
+		/* [3] */
+		cTextColor, 0, 0, 0,
+		/* [4] */
+		cElevatorColor, 65535, 65535, 65535
+	}
+};
+
+resource 'cctb' (504) {
+	{	/* array ColorSpec: 4 elements */
+		/* [1] */
+		cFrameColor, 0, 0, 0,
+		/* [2] */
+		cBodyColor, 65535, 65535, 65535,
+		/* [3] */
+		cTextColor, 0, 0, 0,
+		/* [4] */
+		cElevatorColor, 65535, 65535, 65535
+	}
+};
+
+resource 'dctb' (9999) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
+	}
+};
+
+resource 'dlgx' (9999) {
+	versionZero {
+		15
+	}
+};
+
+data 'hrct' (500, "Tool Palette Help", purgeable) {
+	$"0002 0000 0000 0000 0000 0003 0014 0003"            /* ................ */
+	$"0000 0000 0006 0007 0017 0090 01F4 0001"            /* ...........ê.Ù.. */
+	$"0014 0003 0000 0000 0020 0006 00AA 0090"            /* ......... ...™.ê */
+	$"01F4 0002 0014 0003 0000 0000 00AF 0000"            /* .Ù...........Ø.. */
+	$"00BE 0096 01F4 0003"                                /* .æ.ñ.Ù.. */
+};
+
+data 'hwin' (500, purgeable) {
+	$"0002 0000 0000 0001 01F4 6872 6374 0007"            /* .........Ùhrct.. */
+	$"0750 7265 7669 6577"                                /* .Preview */
+};
+
+data 'ictb' (9999) {
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000"                                          /* .... */
+};
+
+resource 'tab#' (500, "Preview Tabs") {
+	versionZero {
+		{	/* array TabInfo: 2 elements */
+			/* [1] */
+			0,
+			"Thumbnail",
+			/* [2] */
+			0,
+			"Hints"
+		}
+	}
+};
+
+resource 'wctb' (500) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
 	}
 };
 

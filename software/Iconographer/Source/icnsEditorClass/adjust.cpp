@@ -371,7 +371,8 @@ void UpdateEffects(AdjustDialogDataPtr dialogData)
 	else
 		clippingRgn = dialogData->parentEditor->selectionRgn;
 		
-	if (icnsEditorClass::statics.preferences.FeatureEnabled(prefsDither))
+	if (icnsEditorClass::statics.preferences.FeatureEnabled(prefsDither) &&
+		(**dialogData->tempPix2).pixelSize > (**dialogData->parentEditor->currentPix).pixelSize)
 		copyMode = srcCopy + ditherCopy;
 	else
 		copyMode = srcCopy;

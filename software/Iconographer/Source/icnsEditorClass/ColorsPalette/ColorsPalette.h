@@ -19,7 +19,7 @@ enum ColorsPaletteResources
 	rCPSeparator1 = 254,
 	rCPPositionReadoutLabel = 255,
 	rCPPositionReadoutData = 256,
-	rCPSeparator2 = 257,
+	//rCPSeparator2 = 257,
 	rCPColorReadoutLabel = 258,
 	rCPColorReadoutData = 259
 };
@@ -49,8 +49,8 @@ enum CPBalloonHelp
 
 typedef struct
 {
-	ControlHandle backgroundPane,
-				  root,
+	ControlHandle root,
+				  backgroundPane,
 				  swatch,
 				  tabs,
 				  colorPickerArea,
@@ -260,6 +260,12 @@ class SystemColorPicker : public ColorPicker
 	private:
 		static pascal void PaletteDraw(ControlHandle theControl, short thePart);
 		
+		RGBColor		GetColorUnderMouse(Point theMouse, bool* colorChanged);
+		void			WindowToPaletteLocal(Point* theMouse);
+		void			TrackMouseDown(Point* theMouse);
+		void			UpdateColorPicker();
+		
+		bool			tracking;
 		
 		int				previousIconName,
 						previousColors;
@@ -268,15 +274,11 @@ class SystemColorPicker : public ColorPicker
 		PixMapHandle	palettePix;
 		GWorldPtr		paletteGW;
 		RgnHandle		paletteRgn;
-		RgnHandle		paletteTargetRgn;
 		Rect			paletteRect;
-		Rect			paletteTargetRect;
 		
-		RgnHandle		hiliteRgn;
+		RgnHandle		hiliteRgn, updateRgn;
 	
 		ControlHandle	paletteControl;
-		
-		Point			currentPoint;
 };
 
 enum FavoritesColorPickerResources
@@ -383,6 +385,7 @@ class ColorsPalette : public MFloater
 		friend pascal void	CPSwatchDraw(ControlHandle theControl,SInt16 thePart);
 		friend pascal ControlPartCode CPSwatchHitTest(ControlHandle theControl, Point where);
 };
+
 
 pascal void	CPBackgroundPaneDraw(ControlHandle theControl,SInt16 thePart);
 pascal ControlPartCode CPBackgroundPaneHitTest(ControlHandle theControl, Point where);

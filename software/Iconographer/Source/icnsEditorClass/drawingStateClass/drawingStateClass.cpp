@@ -31,7 +31,6 @@ drawingStateClass::drawingStateClass(drawingStatePtr previousLastState, icnsEdit
 	selectionRgn = NULL;
 	drawingData = NULL;
 	selectionData = NULL;
-	selectionColorTable = NULL;
 	
 	if (previousLastState != NULL) // if there was a state before then...
 	{
@@ -69,19 +68,6 @@ drawingStateClass::drawingStateClass(drawingStatePtr previousLastState, icnsEdit
 		// we must save its contents too
 		selectionBounds = (**editor->selectionPix).bounds;
 		selectionDepth = (**editor->selectionPix).pixelSize;
-		if ((editor->currentPixName == h8mk) ||
-			(editor->currentPixName == l8mk) ||
-			(editor->currentPixName == s8mk))
-			{
-				selectionColorTable = GetCTable(40);
-				if (selectionColorTable == NULL)
-				{
-					editor->status |= outOfMemory;
-					return;
-				}
-			}
-		else
-			selectionColorTable = NULL;
 		err = CompressPixMap(editor->selectionPix, &selectionData, &selectionDataSize);
 		if (err != noErr)
 		{
@@ -133,8 +119,6 @@ drawingStateClass::~drawingStateClass(void)
 		// and of the selection contents (if any)
 		if (selectionData != NULL)
 			DisposePtr(selectionData);
-		if (selectionColorTable != NULL)
-			DisposeCTable(selectionColorTable);
 	}
 	
 	if (drawingData != NULL)
@@ -181,7 +165,7 @@ void drawingStateClass::RestoreState(icnsEditorPtr editor)
 		NewGWorldUnpadded(&editor->selectionGW,
 					selectionDepth,	// including depth
 					&selectionBounds,   // dimenions
-					selectionColorTable);	// and color table (if any)
+					(**targetPix).pmTable);	// and color table (if any)
 		editor->selectionPix = GetGWorldPixMap(editor->selectionGW);
 		LockPixels(editor->selectionPix);
 		
@@ -196,7 +180,7 @@ void drawingStateClass::RestoreState(icnsEditorPtr editor)
 	// do this when we the gworld we're restoring to was simply dragged to, and so it wasn't
 	// the current pix).
 	if (!(status & dontRestoreCurrentPix))
-		editor->SetCurrentMember(drawingPixName, false);
+		editor->SetCurrentMember(drawingPixName, 0);
 	
 	// restoring the status
 	editor->status = status;

@@ -17,6 +17,14 @@ bool			gIsDone; // true when the application is ready to quit
 Str255			gAppName; // the name of the application (loaded from a resource)
 MWindowPtr		gLastFrontWindow = (MWindow*)-1;
 Str255			gLastFrontWindowTitle = "\p";
+MenuRef			gWindowMenu = NULL;
+int				gWindowMenuOffset = 0;
+MenuRef			gHelpMenu = NULL;
+int				gHelpMenuOffset = 0;
+int				gPreviousStatus = 0;
+#if TARGET_API_MAC_CARBON
+AboutBoxPtr		gAboutBox = NULL;
+#endif
 
 
 // __________________________________________________________________________________________
@@ -67,19 +75,19 @@ void Initialize()
 	
 #ifdef EXPIRES	
 	GetTime(&theDate); // and if we haven't expired
-	if (theDate.month >= 10 && theDate.day >= 1 && theDate.year >= 2000)
+	if (theDate.month >= 10 && theDate.day >= 1 && theDate.year >= 2001)
 	{
 		DoError(rStdErrors, eExpired);
 		gIsDone = true;
 	}
 #endif
 
-	RegisterAppearanceClient(); // and if we can intialize the appearance manager
-	/*if (err != noErr)
+	err = RegisterAppearanceClient(); // and if we can intialize the appearance manager
+	if (err != noErr && err != themeProcessRegisteredErr)
 	{
 		DoError(rStdErrors, eAppearanceInitProblems);
 		gIsDone = true;
-	}*/
+	}
 
 	LoadPreferences();
 	
@@ -90,6 +98,8 @@ void Initialize()
 		gIsDone = true;
 	}
 	
+	icnsEditorClass::statics.Load();
+	
 	err = AEInit(); // and the AppleEvents
 	if (err != noErr)
 	{
@@ -99,13 +109,11 @@ void Initialize()
 	
 	if (NavServicesAvailable())
 		NavLoad();
-		
-	icnsEditorClass::statics.Load();
 	
 	if (icnsEditorClass::statics.preferences.IsRegistered())
 	{
 		MenuHandle menu;
-		menu = GetMenu(mApple);
+		menu = GetMenuHandle(mApple);
 		DeleteMenuItem(menu, iRegister);
 	}
 	
@@ -115,17 +123,17 @@ void Initialize()
 				 eShowColorsPalette,
 				 eHideColorsPalette);
 				 
-	SetupPalette(icnsEditorClass::statics.membersPalette,
-				 prefsMembersPaletteVisible,
-				 iToggleMembersPalette,
-				 eShowMembersPalette,
-				 eHideMembersPalette);
-	
 	SetupPalette(icnsEditorClass::statics.previewPalette,
 				 prefsPreviewPaletteVisible,
 				 iTogglePreviewPalette,
 				 eShowPreviewPalette,
 				 eHidePreviewPalette);
+				 
+	SetupPalette(icnsEditorClass::statics.membersPalette,
+				 prefsMembersPaletteVisible,
+				 iToggleMembersPalette,
+				 eShowMembersPalette,
+				 eHideMembersPalette);
 	
 	SetupPalette(icnsEditorClass::statics.toolPalette,
 				 prefsToolPaletteVisible,
@@ -134,6 +142,10 @@ void Initialize()
 				 eHideToolPalette);
 	
 	MUtilities::ChangeCursor(rArrow);
+
+#if TARGET_API_MAC_CARBON
+	gAboutBox = new AboutBox;
+#endif
 }
 
 // __________________________________________________________________________________________
@@ -203,8 +215,13 @@ OSErr InitMenuBar()
 	
 	menu = GetMenu(mSelect);
 	if(menu != NULL)
+	{
 		InsertMenu(menu,kInsertHierarchicalMenu); // the select menu is not directly in the menubar,
 							       // rather it is a submenu of the edit menu
+#if TARGET_API_MAC_CARBON
+		SetMenuItemCommandID(menu, iAll, kHICommandSelectAll);
+#endif
+	}
 	else
 		return resNotFound;
 	
@@ -216,13 +233,23 @@ OSErr InitMenuBar()
 		
 	menu = GetMenu(mPaste); // same for the paste menu
 	if(menu != NULL)
+	{
 		InsertMenu(menu,kInsertHierarchicalMenu);
+#if TARGET_API_MAC_CARBON
+		SetMenuItemCommandID(menu, iPasteNormally, kHICommandPaste);
+#endif
+	}
 	else
 		return resNotFound;
 		
 	menu = GetMenu(mCopy); // same for the copy menu
 	if(menu != NULL)
+	{
 		InsertMenu(menu,kInsertHierarchicalMenu);
+#if TARGET_API_MAC_CARBON
+		SetMenuItemCommandID(menu, iCopyNormally, kHICommandCopy);
+#endif
+	}
 	else
 		return resNotFound;
 		
@@ -230,7 +257,9 @@ OSErr InitMenuBar()
 	if(menu != NULL)
 	{
 		InsertMenu(menu,kInsertHierarchicalMenu);
+#if TARGET_API_MAC_CARBON
 		CheckMenuItem(menu, iMacOSColors, true);
+#endif
 	}
 	else
 		return resNotFound;
@@ -259,24 +288,26 @@ OSErr InitMenuBar()
 	
 	// help menu
 #if TARGET_API_MAC_CARBON
-	HMGetHelpMenu(&menu, &menuItemCount);
+	HMGetHelpMenu(&gHelpMenu, &menuItemCount);
 	menuItemCount--;
 #else
-	HMGetHelpMenuHandle(&menu);
-	menuItemCount = CountMenuItems(menu);
+	HMGetHelpMenuHandle(&gHelpMenu);
+	menuItemCount = CountMenuItems(gHelpMenu);
 #endif
 
+	gHelpMenuOffset = menuItemCount;
+
 	GetIndString(menuItemText, rDefaultNames, eIconographerHelp);
-	InsertMenuItem(menu, menuItemText, menuItemCount++);
-	SetItemCmd(menu, menuItemCount, '?');
+	InsertMenuItem(gHelpMenu, menuItemText, menuItemCount++);
+	SetItemCmd(gHelpMenu, menuItemCount, '?');
 	
-	InsertMenuItem(menu, "\p-", menuItemCount++);
+	InsertMenuItem(gHelpMenu, "\p-", menuItemCount++);
 	
 	GetIndString(menuItemText, rDefaultNames, eEmailAuthor);
-	InsertMenuItem(menu, menuItemText, menuItemCount++);
+	InsertMenuItem(gHelpMenu, menuItemText, menuItemCount++);
 	
 	GetIndString(menuItemText, rDefaultNames, eIconographerHomepage);
-	InsertMenuItem(menu, menuItemText, menuItemCount++);
+	InsertMenuItem(gHelpMenu, menuItemText, menuItemCount++);
 
 #if TARGET_API_MAC_CARBON
 	if (MUtilities::GestaltTest(gestaltMenuMgrAttr, gestaltMenuMgrAquaLayoutMask))
@@ -302,9 +333,51 @@ OSErr InitMenuBar()
 		menu = GetMenuHandle(mEdit);
 		DeleteMenuItem(menu, iPreferences);
 		DeleteMenuItem(menu, iPreferences - 1);
-		
-		
 	}
+	
+	MenuRef 		oldMenu;
+	Str255			text;
+	MenuItemIndex	insertionPoint;
+	CharParameter	shortcut;
+	OSStatus		err;
+	
+	CreateStandardWindowMenu(0, &gWindowMenu);
+	
+	err = GetIndMenuItemWithCommandID(gWindowMenu, kHICommandArrangeInFront, 1, &menu, &insertionPoint);
+	if (err != noErr)
+		err = GetIndMenuItemWithCommandID(gWindowMenu, kHICommandMinimizeWindow, 1, &menu, &insertionPoint);
+	if (err != noErr)
+		DisplayValue(err);
+	//else
+	//	insertionPoint = CountMenuItems(gWindowMenu);	
+	InsertMenuItem(gWindowMenu, "\p-", insertionPoint++);
+	
+	gWindowMenuOffset = insertionPoint;
+	
+	oldMenu = GetMenuHandle(mWindows);
+	
+	for (int i=1; i <= kPalettesCount; i++)
+	{
+		GetMenuItemText(oldMenu, i, text);
+		InsertMenuItem(gWindowMenu, text, insertionPoint++);
+		GetItemCmd(oldMenu, i, &shortcut);
+		SetItemCmd(gWindowMenu, insertionPoint, shortcut);
+	}
+	
+	InsertMenu(gWindowMenu, mWindows);
+	DeleteMenu(mWindows);
+	DisposeMenu(oldMenu);
+	
+	menu = GetMenuHandle(mEdit);
+	
+	SetMenuItemCommandID(menu, iUndo, kHICommandUndo);
+	SetMenuItemCommandID(menu, iCut, kHICommandCut);
+	SetMenuItemCommandID(menu, iCopy, kHICommandCopy);
+	SetMenuItemCommandID(menu, iPaste, kHICommandPaste);
+	SetMenuItemCommandID(menu, iClear, kHICommandClear);
+	
+#else
+	gWindowMenu = GetMenuHandle(mWindows);
 #endif
 	
 	DrawMenuBar(); // and draw the menubar
@@ -330,8 +403,8 @@ void LoadPreferences(void)
 		
 	if (err == noErr)
 		preferencesRefNum = FSpOpenResFile(&preferencesFile, fsRdPerm);
-		
-	if ((preferencesRefNum == -1) || (err != noErr))
+	
+	if ((preferencesRefNum < 0) || (err != noErr))
 	{
 		FSpCreate(&preferencesFile, creatorCode, prefFileType, 0); /*smRoman = 0*/
 		FSpCreateResFile(&preferencesFile, creatorCode, prefFileType, 0); /*smRoman = 0*/
@@ -391,7 +464,7 @@ void DoEvent(EventRecord *eventPtr)
 		case activateEvt: DEBUG("\phandling activeate"); HandleActivate(eventPtr); break;
 		case kHighLevelEvent: DEBUG("\papplevent"); AEProcessAppleEvent(eventPtr); break;
 		case osEvt: DEBUG("\posevent"); HandleOSEvent(eventPtr); break;
-		default: DEBUG("\punhandled"); break;
+		default: DEBUG("\punhandled:"); Str255 temp; NumToString(eventPtr->what, temp); DEBUG(temp); break;
 	}
 }
 
@@ -408,51 +481,55 @@ void DoEvent(EventRecord *eventPtr)
 void DoIdle(void)
 {
 	MWindowPtr		currentWindow, frontWindow;
-	icnsEditorPtr	currentEditor, // variable used to go through all the open editors
+	icnsEditorPtr	currentEditor = NULL, // variable used to go through all the open editors
 					frontEditor; // pointer to the editor class belonging to the front most window
-	Handle			pic, // handle the picture in the clipboard (if any)
-					iconFamily;
-	MenuHandle		menu; // handle to various menu resources...
-	long			offset; // used when calling MUtilities::GetScrap, ignored here
+	iconBrowserPtr	frontBrowser;
 	Str255			currentTitle = "\p";
+	int				newStatus;
+	Point 			globalMouse;
+	WindowPtr		windowPtrUnderMouse;
+	MWindowPtr		windowUnderMouse;
 	
+	GetMouse(&globalMouse);
+	LocalToGlobal(&globalMouse);
+	
+	FindWindow(globalMouse, &windowPtrUnderMouse);
+	
+	windowUnderMouse = GetWindow(windowPtrUnderMouse);
+	
+	DEBUG("\pgot window under mouse");
+		
 
 #if !TARGET_API_MAC_CARBON
 	if (HMGetBalloons())
-	{
-		Point globalMouse;
-		WindowPtr	windowPtrUnderMouse;
-		MWindowPtr	windowUnderMouse;
-		
-		GetMouse(&globalMouse);
-		LocalToGlobal(&globalMouse);
-		
-		FindWindow(globalMouse, &windowPtrUnderMouse);
-		
-		windowUnderMouse = GetWindow(windowPtrUnderMouse);
-		
 		if (windowUnderMouse != NULL &&
 			windowUnderMouse->GetType() == kFloaterType &&
 			FrontWindow() != windowPtrUnderMouse)
-		{
 			BringToFront(windowPtrUnderMouse);
-		}	
-	}
+			
+	DEBUG("\pdealt with balloons");
 #endif
-	
+
+
 	frontWindow = MWindow::GetFront();
-	
+
 	if (frontWindow != NULL)
 		frontWindow->GetTitle(currentTitle);
+		
+	DEBUG("\pgot front title");
 	
 	if (gLastFrontWindow != frontWindow || !EqualString(currentTitle, gLastFrontWindowTitle, true, true))
 	{
 		Str255	menuItemText;
 		MenuHandle	iconMenu;
-		
+
+#if !TARGET_API_MAC_CARBON				
 		RebuildWindowsMenu();
 		
-		iconMenu = GetMenu(mIcon);		
+		DEBUG("\prebuilt windows menus");
+#endif
+
+		iconMenu = GetMenuHandle(mIcon);		
 	
 		if (frontWindow == NULL)
 			DisableMenuItem(iconMenu, iInsertIcon);
@@ -466,14 +543,16 @@ void DoIdle(void)
 			GetIndString(menuItemText, rDefaultNames, eInsertIcon);
 			SetMenuItemText(iconMenu, iInsertIcon, menuItemText);	
 		}
-	}
 		
+		DEBUG("\pupdated icon menu");
+	}
 	
 	gLastFrontWindow = frontWindow;
 	CopyString(gLastFrontWindowTitle, currentTitle);
 	
 	currentWindow = MWindow::GetFirst();
-	
+
+#if !TARGET_API_MAC_CARBON
 	while (currentWindow != NULL)
 	// we loop through the editors to make sure that they are all OK
 	{
@@ -497,7 +576,7 @@ void DoIdle(void)
 					// message
 					DoError(rStdErrors, eOutOfMemory);
 					currentEditor->Select();
-					Close(noCancel);
+					Close(currentEditor->GetWindow(), noCancel);
 					icnsEditorClass::statics.AllocateEmergencyMemory();
 					// we take the emergency memory back, so that it can be used in the future
 				}
@@ -505,25 +584,83 @@ void DoIdle(void)
 		currentWindow = currentWindow->GetNext();
 	}
 	
+	DEBUG("\plooped through all the editors");
+#endif
+	
 	frontEditor = GetFrontEditor();
+	frontBrowser = GetFrontBrowser();
 	
 	if (frontEditor != NULL)
 	{
-		pic = NewHandle(0);
-		iconFamily = NewHandle(0);
-		if (MUtilities::GetScrap(pic, 'PICT', &offset) < 0) // if there isn't anything in the clipboard
-			if (MUtilities::GetScrap(iconFamily, 'icns', &offset) < 0)
-				MyDisableMenuItem(mEdit, iPaste); // then we can't paste
-			else
+		newStatus = frontEditor->status;
+		if (frontEditor->CurrentDepthSupportsColors())
+			newStatus |= currentDepthSupportsColors;
+		if (frontEditor->GetColors() == macOSColors)
+			newStatus |= macOSPalette;
+		newStatus |= frontIsEditor;
+	}
+	else if (frontBrowser != NULL)
+	{
+		newStatus = 0;
+		
+		if (frontBrowser->HasSelection())
+			newStatus |= hasSelection;
+		
+		newStatus |= frontIsBrowser;
+	}
+	else
+		newStatus = 0;
+		
+	DEBUG("\pgotnew status");
+	
+	if (newStatus != gPreviousStatus && windowUnderMouse)
+	{
+		SAVEGWORLD;
+		windowUnderMouse->SetPort();
+		GlobalToLocal(&globalMouse);
+		RESTOREGWORLD;
+		
+		windowUnderMouse->UpdateCursor(globalMouse);
+	}
+	
+	DEBUG("\pupdated cursor");
+	
+	if ((newStatus & kMenuIgnoredStates) != (gPreviousStatus & kMenuIgnoredStates))
+		UpdateMenuBar(newStatus);
+	
+	DEBUG("\pupdated menubar");
+		
+	gPreviousStatus = newStatus;
+	
+	currentWindow = MWindow::GetFirst();
+	while (currentWindow != NULL)
+	{
+		if (currentWindow == frontWindow ||
+			currentWindow->GetType() == kFloaterType)
+			currentWindow->DoIdle();
+			
+		currentWindow = currentWindow->GetNext();
+	}
+	
+	DEBUG("\pidled the rest of thw windows");
+}
+
+void UpdateMenuBar(int status)
+{
+	MenuHandle menu;
+	
+	if (status & frontIsEditor)
+	{
+		if (status & canPaste)
+			if (status & canPasteFamily) /* scrap has picture and family */
 			{
 				MyEnableMenuItem(mEdit, iPaste);
-				MyDisableMenuItem(mPaste, iPasteNormally);
-				MyDisableMenuItem(mPaste, iPasteAsIconAndMask);
-				MyDisableMenuItem(mPaste, iPasteIntoSelection);
+				MyEnableMenuItem(mPaste, iPasteNormally);
+				MyEnableMenuItem(mPaste, iPasteAsIconAndMask);
+				MyEnableMenuItem(mPaste, iPasteIntoSelection);
 				MyEnableMenuItem(mPaste, iPasteIconFamily);
 			}
-		else
-			if (MUtilities::GetScrap(iconFamily, 'icns', &offset) < 0)
+			else /* scrap has picture but no family */
 			{
 				MyEnableMenuItem(mEdit, iPaste);
 				MyEnableMenuItem(mPaste, iPasteNormally);
@@ -531,25 +668,24 @@ void DoIdle(void)
 				MyEnableMenuItem(mPaste, iPasteIntoSelection);
 				MyDisableMenuItem(mPaste, iPasteIconFamily);
 			}
-			else
+		else
+			if (status & canPasteFamily) /* scrap has family but no picture */
 			{
 				MyEnableMenuItem(mEdit, iPaste);
-				MyEnableMenuItem(mPaste, iPasteNormally);
-				MyEnableMenuItem(mPaste, iPasteAsIconAndMask);
-				MyEnableMenuItem(mPaste, iPasteIntoSelection);
+				MyDisableMenuItem(mPaste, iPasteNormally);
+				MyDisableMenuItem(mPaste, iPasteAsIconAndMask);
+				MyDisableMenuItem(mPaste, iPasteIntoSelection);
 				MyEnableMenuItem(mPaste, iPasteIconFamily);
 			}
-		DisposeHandle(pic);
-		DisposeHandle(iconFamily);
+			else /* scrap has nothing */
+				MyDisableMenuItem(mEdit, iPaste);
 	
-		if (frontEditor->status & needToSave) // if there are unsaved chages...
+		if (status & needToSave) // if there are unsaved chages...
 			MyEnableMenuItem(mFile, iSave);
 		else
 			MyDisableMenuItem(mFile, iSave);
 			
-		if (frontEditor->status & needToSave &&
-			(frontEditor->srcFileSpec.vRefNum != 0 ||
-			frontEditor->srcFileSpec.parID != 0))
+		if (status & canRevert)
 			MyEnableMenuItem(mFile, iRevert);
 		else
 			MyDisableMenuItem(mFile, iRevert);
@@ -565,7 +701,7 @@ void DoIdle(void)
 		
 		menu = GetMenuHandle(mSelect);
 		EnableMenuItem(menu, 0);
-		if (frontEditor->status & hasSelection) // if there is a selection
+		if (status & hasSelection) // if there is a selection
 		{
 			menu = GetMenuHandle(mEdit); // then we can cut, copy and clear
 			EnableMenuItem(menu, iCut);
@@ -592,12 +728,12 @@ void DoIdle(void)
 			MyDisableMenuItem(mCopy, iCopyNormally);
 		}
 
-		if (frontEditor->status & canUndo) // if we can undo...
+		if (status & canUndo) // if we can undo...
 			MyEnableMenuItem(mEdit, iUndo);
 		else
 			MyDisableMenuItem(mEdit, iUndo);
 			
-		if (frontEditor->status & canRedo) // if we can redo
+		if (status & canRedo) // if we can redo
 			MyEnableMenuItem(mEdit, iRedo);
 		else
 			MyDisableMenuItem(mEdit, iRedo);
@@ -610,12 +746,12 @@ void DoIdle(void)
 		
 		menu = GetMenuHandle(mIcon);
 		
-		if (frontEditor->status & canZoomIn) // if we're not at the max magnification
+		if (status & canZoomIn) // if we're not at the max magnification
 			EnableMenuItem(menu, iZoomIn);
 		else
 			DisableMenuItem(menu, iZoomIn);
 			
-		if (frontEditor->status & canZoomOut) // if we're not zoomed out as far as possible
+		if (status & canZoomOut) // if we're not zoomed out as far as possible
 			EnableMenuItem(menu, iZoomOut);
 		else
 			DisableMenuItem(menu, iZoomOut);
@@ -624,22 +760,21 @@ void DoIdle(void)
 		EnableMenuItem(menu, iIconInfo);
 		EnableMenuItem(menu, iPixelGrid);
 			
-		if (frontEditor->CurrentDepthSupportsColors())
+		if (status & currentDepthSupportsColors)
 		{
 			EnableMenuItem(menu, iColors);
 			
 			menu = GetMenuHandle(mColors);
 			
-			switch (frontEditor->GetColors())
+			if (status & macOSPalette)
 			{
-				case iMacOSColors :
-					CheckMenuItem(menu, iMacOSColors, true);
-					CheckMenuItem(menu, iWinColors, false);
-					break;
-				case iWinColors :
-					CheckMenuItem(menu, iMacOSColors, false);
-					CheckMenuItem(menu, iWinColors, true);
-					break;
+				CheckMenuItem(menu, iMacOSColors, true);
+				CheckMenuItem(menu, iWinColors, false);
+			}
+			else
+			{
+				CheckMenuItem(menu, iMacOSColors, false);
+				CheckMenuItem(menu, iWinColors, true);
 			}
 		}
 		else
@@ -647,10 +782,10 @@ void DoIdle(void)
 	}
 	else
 	{
-		if (GetFrontBrowser() != NULL)
+		if (status & frontIsBrowser)
 		{
 			MyEnableMenuItem(mFile, iClose);
-			if (GetFrontBrowser()->HasSelection())
+			if (status & hasSelection)
 			{
 				MyEnableMenuItem(mEdit, iClear);
 				MyEnableMenuItem(mIcon, iIconInfo);
@@ -667,7 +802,7 @@ void DoIdle(void)
 				DrawMenuBar();
 			}
 			
-			menu = GetMenu(mIcon);
+			menu = GetMenuHandle(mIcon);
 			DisableMenuItem(menu, iZoomIn);
 			DisableMenuItem(menu, iZoomOut);
 			DisableMenuItem(menu, iColors);
@@ -704,21 +839,6 @@ void DoIdle(void)
 		MyDisableMenuItem(mSelect, 0);
 		//DisableMenuItem(mTransform, 0);
 	}
-	//DrawMenuBar(); // and draw the menubar
-	
-	
-	currentWindow = MWindow::GetFirst();
-	while (currentWindow != NULL)
-	{
-		if (currentWindow == frontWindow ||
-			currentWindow->GetType() == kFloaterType)
-			currentWindow->DoIdle();
-			
-		currentWindow = currentWindow->GetNext();
-	}
-	
-	
-		
 }
 
 // __________________________________________________________________________________________
@@ -734,7 +854,7 @@ void HandleMouseDown(EventRecord *eventPtr)
 	WindowPtr		theWindow; // winder where the click occured
 	GDHandle		mainScreen; // the screen in which the window can be moved
 	long			menuChoice; // the selected menu command
-	MWindowPtr	currentWindow; // the editor class beloging to the window that was clicked
+	MWindowPtr		currentWindow; // the editor class beloging to the window that was clicked
 	
 	part = FindWindow(eventPtr->where, &theWindow);
 	currentWindow = GetWindow(theWindow);
@@ -788,7 +908,7 @@ void HandleMouseDown(EventRecord *eventPtr)
 									  eHideMembersPalette);
 					}
 					else
-						Close(0); // we close the icon
+						Close(theWindow, 0); // we close the icon
 			break;
 		case inZoomIn:
 		case inZoomOut:
@@ -845,7 +965,7 @@ void HandleKeyDown(EventRecord *eventPtr)
 		menuEvent = MenuEvent(eventPtr);
 	}
 	
-	if (((menuEvent & 0xFFFF0000) >> 16) != 0)
+	if (menuEvent)
 	{
 		DoMenuCommand(menuEvent);
 	}
@@ -873,11 +993,11 @@ void HandleActivate(EventRecord *eventPtr)
 	 currentWindow = GetWindow(theWindow);
 	 if (currentWindow != NULL)
 	 {
-		 becomingActive = ((eventPtr->modifiers & activeFlag) == activeFlag);
-		 if (becomingActive)
-		 	currentWindow->Activate();
-		 else
-		 	currentWindow->Deactivate();
+		becomingActive = ((eventPtr->modifiers & activeFlag) == activeFlag);
+		if (becomingActive)
+			currentWindow->Activate();
+		else
+			currentWindow->Deactivate();
 	}
 }
 
@@ -950,6 +1070,7 @@ void HandleOSEvent(EventRecord *eventPtr)
 			Point		theMouse;
 			
 			MUtilities::ResetCursorChanged();
+			
 			if (icnsEditorClass::statics.colorsPalette->IsVisible())
 				icnsEditorClass::statics.colorsPalette->readoutChanged = false;
 			
@@ -973,9 +1094,9 @@ void HandleOSEvent(EventRecord *eventPtr)
 			if (!MUtilities::CursorChanged())
 				MUtilities::ChangeCursor(rArrow);
 				
-			if (icnsEditorClass::statics.colorsPalette->IsVisible())
-				if (!icnsEditorClass::statics.colorsPalette->readoutChanged)
-					icnsEditorClass::statics.colorsPalette->UpdateReadout(-1, -1, kPickerNeverUsedColor);
+			if (icnsEditorClass::statics.colorsPalette->IsVisible() &&
+				!icnsEditorClass::statics.colorsPalette->readoutChanged)
+				icnsEditorClass::statics.colorsPalette->UpdateReadout(-1, -1, kPickerNeverUsedColor);
 			break;
 	}
 }
@@ -986,7 +1107,7 @@ void RebuildRecentFilesMenu()
 	FSSpec		file;
 	int			insertionPoint = 0;
 	
-	recentFilesMenu = GetMenu(mOpenRecent);
+	recentFilesMenu = GetMenuHandle(mOpenRecent);
 	
 	for (int i=CountMenuItems(recentFilesMenu); i >= 1; i--)
 		DeleteMenuItem(recentFilesMenu, i);
@@ -1004,6 +1125,7 @@ void RebuildRecentFilesMenu()
 
 void RebuildWindowsMenu()
 {
+#if !TARGET_API_MAC_CARBON
 	MWindowPtr	currentWindow;
 	//int				currentID;
 	MenuHandle		windowsMenu;
@@ -1012,13 +1134,17 @@ void RebuildWindowsMenu()
 					browsersInsertionPoint = iBrowsersInsertionPoint,
 					*insertionPoint;
 	
-	windowsMenu = GetMenu(mWindows);
+	windowsMenu = GetMenuHandle(mWindows);
 	
 	for (int i=CountMenuItems(windowsMenu); i >= iEditorsInsertionPoint; i--)
 		DeleteMenuItem(windowsMenu, i);
 		
+	DEBUG("\pdeleted current contents");
+		
 	InsertMenuItem(windowsMenu, "\p-", iEditorsInsertionPoint - 1);
 	InsertMenuItem(windowsMenu, "\p-", iBrowsersInsertionPoint - 1);
+	
+	DEBUG("\pput in dividers");
 	
 	for (currentWindow = MWindow::GetFirst(); currentWindow != NULL; currentWindow = currentWindow->GetNext())
 	{
@@ -1044,8 +1170,12 @@ void RebuildWindowsMenu()
 		
 		if (insertionPoint)
 		{
-			InsertMenuItem(windowsMenu, "\pscratch", (*insertionPoint)++);
+			DEBUG("\pactually inserting");
+			
+			InsertMenuItemText(windowsMenu, "\pscratch", (*insertionPoint)++);
 			SetMenuItemText(windowsMenu, *insertionPoint, menuTitle);
+			
+			DEBUG("\pset the text");
 			
 			SetMenuItemRefCon(windowsMenu, *insertionPoint, UInt32(currentWindow));
 			
@@ -1055,7 +1185,11 @@ void RebuildWindowsMenu()
 			else
 				CheckMenuItem(windowsMenu, *insertionPoint, false);
 		}
+		
+		DEBUG("\pinserted");
 	}
+	
+	DEBUG("\pdone inserting");
 	
 	if (editorsInsertionPoint == iEditorsInsertionPoint)
 	{
@@ -1066,10 +1200,15 @@ void RebuildWindowsMenu()
 	
 	if (browsersInsertionPoint == iBrowsersInsertionPoint + (editorsInsertionPoint - iEditorsInsertionPoint))
 		DeleteMenuItem(windowsMenu, browsersInsertionPoint);
+		
+	DEBUG("\pdeleted unnnecessary dividers");
 	
 	InsertMenu(windowsMenu, mWindows);
 	
 	DrawMenuBar();
+	
+	DEBUG("\pinserted and drew menu");
+#endif
 }
 
 // __________________________________________________________________________________________
@@ -1104,7 +1243,7 @@ void DoMenuCommand(long menuResult)
 			case mApple :
 				switch (item)
 				{
-					case iAbout : AboutBox(); break;
+					case iAbout : ShowAboutBox(); break;
 					case iRegister : Register(); break;
 #if !TARGET_API_MAC_CARBON
 					default :
@@ -1127,10 +1266,10 @@ void DoMenuCommand(long menuResult)
 				{
 					case iOpenIcon : OpenIcon(NULL); break;
 					case iNewIcon : NewIcon(true); break;
-					case iClose : Close(0); break;
-					case iSave: SaveIcon(0); break;
-					case iSaveAs : SaveIcon(saveAs); break;
-					case iSaveInto : SaveIcon(saveInto); break;
+					case iClose : Close(MWindow::GetFront()->GetWindow(), 0); break;
+					case iSave: SaveIcon(frontEditor, 0); break;
+					case iSaveAs : SaveIcon(frontEditor, saveAs); break;
+					case iSaveInto : SaveIcon(frontEditor, saveInto); break;
 					case iRevert : Revert(); break;
 					case iQuit :gIsDone = true; break;
 				}
@@ -1147,7 +1286,7 @@ void DoMenuCommand(long menuResult)
 					
 					GetIndString(text, rStdErrors, eCantOpenFile);
 					
-					menu = GetMenu(mOpenRecent);
+					menu = GetMenuHandle(mOpenRecent);
 					GetMenuItemText(menu, item, fileName);
 					
 					SubstituteString(text, "\p<file name>", fileName);
@@ -1264,48 +1403,8 @@ void DoMenuCommand(long menuResult)
 					}
 				}
 				break;
-			case mWindows:
-				switch (item)
-				{
-					case iToggleToolPalette:
-						TogglePalette(icnsEditorClass::statics.toolPalette,
-									  iToggleToolPalette,
-									  eShowToolPalette,
-									  eHideToolPalette);
-						break;
-					case iToggleMembersPalette:
-						TogglePalette(icnsEditorClass::statics.membersPalette,
-									  iToggleMembersPalette,
-									  eShowMembersPalette,
-									  eHideMembersPalette);
-						break;
-					case iTogglePreviewPalette:
-						TogglePalette(icnsEditorClass::statics.previewPalette,
-									  iTogglePreviewPalette,
-									  eShowPreviewPalette,
-									  eHidePreviewPalette);
-						break;
-					case iToggleColorsPalette:
-						TogglePalette(icnsEditorClass::statics.colorsPalette,
-									  iToggleColorsPalette,
-									  eShowColorsPalette,
-									  eHideColorsPalette);
-						break;
-					default:
-						MenuHandle		windowsMenu;
-						MWindowPtr		selectedWindow;
-						
-						
-						windowsMenu = GetMenu(mWindows);
-						
-						GetMenuItemRefCon(windowsMenu, item, (UInt32*)&selectedWindow);
-						
-						selectedWindow->Select();
-						break;
-				}	
-				break;
 			case kHMHelpMenuID:
-				switch (item)
+				switch (item - gHelpMenuOffset)
 				{
 					case iIconographerHelp:
 						FSSpec supportFolder;
@@ -1326,6 +1425,7 @@ void DoMenuCommand(long menuResult)
 						break;
 					case iEmailAuthor:
 						Str255	address;
+						
 						GetIndString(address, rDefaultNames, eEmailAddress);
 						if (LaunchURL((ConstStr255Param)address) != noErr)
 							DoError(rStdErrors, eNeedInternetConfig);
@@ -1337,6 +1437,50 @@ void DoMenuCommand(long menuResult)
 						break;
 				}
 				break;
+			default:
+				MenuRef selected;
+
+				selected = GetMenuHandle(menuID);
+				
+				if (selected == gWindowMenu || menuID == 0)
+				{
+					if (item == iToggleToolPalette + gWindowMenuOffset)
+						TogglePalette(icnsEditorClass::statics.toolPalette,
+									  iToggleToolPalette,
+									  eShowToolPalette,
+									  eHideToolPalette);
+					else if (item == iToggleMembersPalette + gWindowMenuOffset)
+						TogglePalette(icnsEditorClass::statics.membersPalette,
+									  iToggleMembersPalette,
+									  eShowMembersPalette,
+									  eHideMembersPalette);
+					else if (item == iTogglePreviewPalette + gWindowMenuOffset)
+						TogglePalette(icnsEditorClass::statics.previewPalette,
+									  iTogglePreviewPalette,
+									  eShowPreviewPalette,
+									  eHidePreviewPalette);
+					else if (item == iToggleColorsPalette + gWindowMenuOffset)
+						TogglePalette(icnsEditorClass::statics.colorsPalette,
+									  iToggleColorsPalette,
+									  eShowColorsPalette,
+									  eHideColorsPalette);
+								
+#if !TARGET_API_MAC_CARBON
+					else
+					{
+						MenuHandle		windowsMenu;
+						MWindowPtr		selectedWindow;
+						
+						
+						windowsMenu = GetMenuHandle(mWindows);
+						
+						GetMenuItemRefCon(windowsMenu, item, (UInt32*)&selectedWindow);
+						
+						selectedWindow->Select();
+					}
+#endif
+				}
+			break;
 		}
 		
 		while (TickCount() < startTicks + 4) {;}
@@ -1363,7 +1507,7 @@ void TogglePixelGrid()
 		GetIndString(menuItemText, rDefaultNames, eHidePixelGrid);
 	}
 	
-	menu = GetMenu(mIcon);
+	menu = GetMenuHandle(mIcon);
 	SetMenuItemText(menu, iPixelGrid, menuItemText);
 }
 
@@ -1377,7 +1521,7 @@ void SetupPixelGrid()
 	else
 		GetIndString(menuItemText, rDefaultNames, eShowPixelGrid);
 	
-	menu = GetMenu(mIcon);
+	menu = GetMenuHandle(mIcon);
 	SetMenuItemText(menu, iPixelGrid, menuItemText);
 }
 
@@ -1385,7 +1529,6 @@ void SetupPixelGrid()
 
 void TogglePalette(MFloaterPtr palette, int menuItem, int showStringIndex, int hideStringIndex)
 {
-	MenuHandle	windowsMenu;
 	Str255 		menuItemText;
 						
 	if (palette->IsVisible())
@@ -1399,13 +1542,12 @@ void TogglePalette(MFloaterPtr palette, int menuItem, int showStringIndex, int h
 		GetIndString(menuItemText, rDefaultNames, hideStringIndex);
 	}
 	
-	windowsMenu = GetMenu(mWindows);
-	SetMenuItemText(windowsMenu, menuItem, menuItemText);
+	SetMenuItemText(gWindowMenu, menuItem + gWindowMenuOffset, menuItemText);
+	icnsEditorClass::statics.preferences.UpdatePaletteStatus();
 }
 
 void SetupPalette(MFloaterPtr palette, int flag, int menuItem, int showStringIndex, int hideStringIndex)
 {
-	MenuHandle	windowsMenu;
 	Str255 		menuItemText;
 	
 	if (icnsEditorClass::statics.preferences.FeatureEnabled(flag))
@@ -1419,11 +1561,32 @@ void SetupPalette(MFloaterPtr palette, int flag, int menuItem, int showStringInd
 		GetIndString(menuItemText, rDefaultNames, showStringIndex);
 	}
 	
-	windowsMenu = GetMenu(mWindows);
-	SetMenuItemText(windowsMenu, menuItem, menuItemText);
+	SetMenuItemText(gWindowMenu, menuItem + gWindowMenuOffset, menuItemText);
 }
 
 #pragma mark -
+
+#if TARGET_API_MAC_CARBON
+
+void ShowAboutBox()
+{
+	Str255 name, company, regCode;
+	
+	if (icnsEditorClass::statics.preferences.IsRegistered())
+		icnsEditorClass::statics.preferences.GetRegistrationInfo(name, company, regCode);
+	else
+	{
+		GetIndString(name, rDefaultNames, eNotRegistered);
+		CopyString(company, "\p");
+		CopyString(regCode, "\p");
+	}
+	
+	gAboutBox->SetRegistrationInfo(name, company, regCode);
+	gAboutBox->Show();
+	gAboutBox->Select();
+}
+
+#else
 
 // __________________________________________________________________________________________
 // Name			: ShowAboutBox
@@ -1435,7 +1598,7 @@ void SetupPalette(MFloaterPtr palette, int flag, int menuItem, int showStringInd
 //				  mail/web app is opened, this is done through InternetConfig, a system on
 //				  the mac getting internet settings (such as which app is the web browser). 
 
-void AboutBox()
+void ShowAboutBox()
 {
 	DialogPtr		aboutBox; // pointer to the dialog we will display
 	bool			dialogDone; // control variable
@@ -1458,7 +1621,7 @@ void AboutBox()
 	ShowWindow(GetDialogWindow(aboutBox)); // we can now show the window
 	
 	eventFilterUPP = NewModalFilterUPP(AboutBoxEventFilter);
-		
+	
 	dialogDone = false;
 	while (!dialogDone)
 	{
@@ -1573,6 +1736,8 @@ pascal Boolean AboutBoxEventFilter(DialogPtr dialog, EventRecord *eventPtr, shor
 	return(handledEvent);
 }
 
+#endif
+
 void Register(void)
 {
 	DialogPtr		registration;
@@ -1597,6 +1762,7 @@ void Register(void)
 	MWindow::DeactivateAll();
 	
 	ShowWindow(GetDialogWindow(registration));
+	DrawDialog(registration);
 	
 	dialogDone = false;
 	
@@ -1708,12 +1874,19 @@ OSErr NewIcon(bool showWindow)
 	{		
 		if (showWindow)
 		{
+			Str255 untitledName;
+			
+			GetIndString(untitledName, rBasicStrings, sUntitledName);
+			icnsEditorClass::statics.MakeIconNameUnique(untitledName);
+			CopyString(newEditor->srcFileSpec.name, untitledName);
+			newEditor->RefreshWindowTitle(); // the window title is updated to reflect the icon name
+	
 			newEditor->SetBestMember();
+			newEditor->Refresh();
 			newEditor->Show();
+			if (icnsEditorClass::statics.firstTime)
+				ShowFirstTimeDialog();
 		}
-		
-		DoIdle();
-		DrawMenuBar();
 		
 		return noErr;
 	}
@@ -1766,14 +1939,15 @@ bool HandleSimpleCases(FSSpec fileSpec, long* ID)
 {
 	Handle			currentIcon;
 	short			file, oldFile;
-	unsigned long	iconTypes[] = {'icns', 'icl8', 'ics8', 'ics4', 'icl4', 'ICN#', 'ics#'};
+	unsigned long	iconTypes[] = {'icns', 'icl8', 'ics8', 'ics4', 'icl4', 'ICN#', 'ics#', 'icm8', 'icm4', 'icm#'};
 	unsigned long	maxCountType = 0;
 	int				count=-1;
 	int				typeCount = sizeof(iconTypes)/sizeof(iconTypes[0]);
-	short			temp;
+	short			temp, countID;
 	bool			simpleCase = false;
 	Str255			name;
 	unsigned char isFolder, ignored;
+	ResType			ignoredType;
 	
 	ResolveAliasFile(&fileSpec,true,&isFolder, &ignored);
 			
@@ -1785,6 +1959,7 @@ bool HandleSimpleCases(FSSpec fileSpec, long* ID)
 		
 	oldFile = CurResFile();
 	file = FSpOpenResFile(&fileSpec, fsRdPerm);
+	
 	if (file == -1 && ResError() == eofErr)
 	{
 		if (FindSubstring(fileSpec.name, "\p.icns") != -1)
@@ -1802,6 +1977,22 @@ bool HandleSimpleCases(FSSpec fileSpec, long* ID)
 		{
 			count = temp;
 			maxCountType = iconTypes[i];
+			currentIcon = Get1IndResource(iconTypes[i], 1);
+			GetResInfo(currentIcon, &countID, &ignoredType, name);
+			ReleaseResource(currentIcon);
+			if (count > 1)
+				break;
+		}
+		else if (temp == count && count == 1)
+		{
+			currentIcon = Get1IndResource(iconTypes[i], 1);
+			GetResInfo(currentIcon, &temp, &ignoredType, name);
+			ReleaseResource(currentIcon);
+			if (temp != countID)
+			{
+				count = 2;
+				break;
+			}
 		}
 	}
 	
@@ -1945,7 +2136,10 @@ void OpenIcon(FSSpec *inFile)
 	}
 	
 	format = GetFileFormat(fileToOpen);
-		
+	
+	icnsEditorClass::statics.preferences.AddRecentFile(fileToOpen);
+	RebuildRecentFilesMenu();
+	
 	if ((format == formatMacOSUniversal ||
 		format == formatMacOSNew ||
 		format == formatMacOSOld) &&
@@ -1987,15 +2181,21 @@ void OpenIcon(FSSpec *inFile)
 		
 		DoIdle();
 		DrawMenuBar();
-			
-		icnsEditorClass::statics.preferences.AddRecentFile(newEditor->srcFileSpec);
-		RebuildRecentFilesMenu();
 	}
 }
 
 void InsertIcon(icnsClassPtr tempIcon)
-{	
-	tempIcon->srcFileSpec = GetFrontBrowser()->srcFileSpec;
+{
+	iconBrowserPtr frontBrowser;
+	
+	frontBrowser = GetFrontBrowser();
+	
+	tempIcon->loadedID = kIDNone;
+	tempIcon->ID = -16455;
+	tempIcon->format = frontBrowser->GetCurrentFormat();
+	tempIcon->usedMembers = kDefaultMembers[tempIcon->format];
+	tempIcon->srcFileSpec = frontBrowser->srcFileSpec;
+	tempIcon->Reset();
 	
 	if (tempIcon->EditIconInfo(kInsertIcon) == iOK)
 	{
@@ -2012,7 +2212,7 @@ void OpenIconFromBrowser(FSSpec *fileToOpen, long ID, long format, long member)
 {
 	icnsEditorPtr newEditor;
 
-	newEditor = GetEmptyEditor(*fileToOpen, ID, format);	
+	newEditor = GetEmptyEditor(*fileToOpen, ID, format);
 
 	if (newEditor != NULL)
 	{		
@@ -2037,7 +2237,7 @@ void OpenIconFromBrowser(FSSpec *fileToOpen, long ID, long format, long member)
 		
 		if (member != -1)
 		{
-			newEditor->SetCurrentMember(member, false);
+			newEditor->SetCurrentMember(member, 0);
 			newEditor->ResetStates();
 		}
 		
@@ -2066,36 +2266,39 @@ void PostOpen()
 	icnsEditorClass::statics.GetSupportFolder(&supportFolder);
 	
 	if (icnsEditorClass::statics.firstTime)
+		ShowFirstTimeDialog();
+}
+
+void ShowFirstTimeDialog()
+{
+	MAlert		firstTime;
+	Str255		text;
+	MString		temp;
+		
+	GetIndString(text, rPrompts, eWelcome); 
+	
+	SubstituteString(text, "\p<app name>", gAppName); // substitute
+	
+	firstTime.SetButtonName(kMAOK, rDefaultNames, eOpenHelp);
+	firstTime.SetButtonName(kMACancel, rDefaultNames, eContinue);
+	
+	temp = text;
+	
+	firstTime.SetError(temp);
+	firstTime.SetBeep(false);
+	firstTime.SetMovable(true);
+	firstTime.SetPosition(kWindowCenterMainScreen);
+		
+	switch (firstTime.Display())
 	{
-		MAlert		firstTime;
-		Str255		text;
-		MString		temp;
-			
-		GetIndString(text, rPrompts, eWelcome); 
-		
-		SubstituteString(text, "\p<app name>", gAppName); // substitute
-		
-		firstTime.SetButtonName(kMAOK, rDefaultNames, eOpenHelp);
-		firstTime.SetButtonName(kMACancel, rDefaultNames, eContinue);
-		
-		temp = text;
-		
-		firstTime.SetError(temp);
-		firstTime.SetBeep(false);
-		firstTime.SetMovable(true);
-		firstTime.SetPosition(kWindowCenterMainScreen);
-			
-		switch (firstTime.Display())
-		{
-			case kMAOK:
-				DoMenuCommand(((kHMHelpMenuID << 16) & 0xFFFF0000) + iIconographerHelp);
-				break;
-			case kMACancel:
-				break;
-		}
-		
-		icnsEditorClass::statics.firstTime = false;
-	}	
+		case kMAOK:
+			DoMenuCommand(((kHMHelpMenuID << 16) & 0xFFFF0000) + iIconographerHelp);
+			break;
+		case kMACancel:
+			break;
+	}
+	
+	icnsEditorClass::statics.firstTime = false;
 }
 
 // __________________________________________________________________________________________
@@ -2109,22 +2312,18 @@ void PostOpen()
 //				  if the user clicks the first or the last, we save the icon (if requested)
 //				  and then close the window. We also update the menus if neccesary.
 
-bool Close(int flags)
+bool Close(WindowPtr windowToClose, int flags)
 {
-	icnsEditorPtr	frontEditor; // pointer to the front most editor (which is the one that is
-								 // going to be closed
 	bool			closed; // true if the user chose to actually close the editor
 	
-	frontEditor = GetFrontEditor(); // we attempt to get the front most editor...
-	
-	if (frontEditor != NULL) // if there is one
+	if (GetEditor(windowToClose)) // if there is one
 	{
-		if (frontEditor->status & needToSave) // and it has unsaved changes
+		if (GetEditor(windowToClose)->status & needToSave) // and it has unsaved changes
 		{
-			switch (WantToSave(frontEditor->srcFileSpec, flags)) // we prompt the user
+			switch (WantToSave(GetEditor(windowToClose)->srcFileSpec, flags)) // we prompt the user
 			{
 				case kAlertStdAlertOKButton: // we save the icon and close it
-					if (SaveIcon(false) == noErr)
+					if (SaveIcon(GetEditor(windowToClose), false) == noErr)
 						closed = true;
 					else
 						closed = false;
@@ -2141,28 +2340,31 @@ bool Close(int flags)
 	
 		if (closed) // if the user chose close
 		{
-			frontEditor->Close();
-			delete frontEditor;
+			GetEditor(windowToClose)->Close();
+			delete GetEditor(windowToClose);
 		}
 	}
 	else
 	{
-		iconBrowserPtr frontBrowser;
+		iconBrowserPtr currentBrowser;
 		
-		frontBrowser = GetFrontBrowser();
+		currentBrowser = GetBrowser(windowToClose);
 		
-		if (frontBrowser != NULL)
+		if (currentBrowser != NULL)
 		{
-			frontBrowser->Close();
-			delete frontBrowser;
+			currentBrowser->Close();
+			delete currentBrowser;
 		}
+#if TARGET_API_MAC_CARBON
+		else if (GetWindow(windowToClose) == gAboutBox)
+			gAboutBox->Hide();
+#endif
 		
 		closed = true;
 	}
 	
 	DoIdle();
 	DrawMenuBar();
-	
 	
 	icnsEditorClass::statics.UpdatePalettes(updateAll);
 		
@@ -2180,15 +2382,11 @@ bool Close(int flags)
 //				  the user for a new location before actually calling the Save command of the
 //				  editor.
 
-OSErr SaveIcon(int flags)
+OSErr SaveIcon(icnsEditorPtr frontEditor, int flags)
 {
-	icnsEditorPtr	frontEditor; // pointer to the front most editor, this is the one that the
-							     // saving will be done on
 	bool			newIcon = false;
 	OSErr			err;
 	int				deletedIcon = kIDNone, deletedIconFormat = -1;
-	
-	frontEditor = GetFrontEditor(); // we get the pointer to it
 	
 	if (frontEditor != NULL) // if there is one
 	{
@@ -2273,7 +2471,9 @@ OSErr SaveIcon(int flags)
 			
 			FSpCreate(&frontEditor->srcFileSpec, creatorCode, fileType, 0); // we create a new file
 			// 0 = roman encoding type 
-			if (!IsICOFile(frontEditor->srcFileSpec.name) && !IsTIFFFile(frontEditor->srcFileSpec.name))
+			if (frontEditor->format == formatMacOSNew ||
+				frontEditor->format == formatMacOSOld ||
+				frontEditor->format == formatMacOSUniversal)
 				FSpCreateResFile(&frontEditor->srcFileSpec, creatorCode, fileType, 0);
 			// and we add a resource fork to it too
 			frontEditor->RefreshWindowTitle(); // must update the title of the window with the
@@ -2294,7 +2494,7 @@ OSErr SaveIcon(int flags)
 			frontEditor->srcFileSpec.vRefNum = 0;
 			frontEditor->srcFileSpec.parID = 0;
 			
-			SaveIcon(flags);
+			SaveIcon(frontEditor, flags);
 		}
 		
 		if (!(icnsEditorClass::statics.preferences.IsRegistered()))
@@ -2502,78 +2702,16 @@ pascal Boolean AlertEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *
 				HandleUpdate(eventPtr);
 				handledEvent = true;
 			}
+			else
+				handledEvent = MWindow::StandardDialogFilter(dialog, eventPtr, itemHit);
 			break;
 		default:
-			// if it's not an event we support, then we let the system take care of it
-			SAVEGWORLD;
-			SetPortDialogPort(dialog);
-
-			handledEvent = StdFilterProc(dialog, eventPtr, itemHit);
-
-			RESTOREGWORLD;
+			handledEvent = MWindow::StandardDialogFilter(dialog, eventPtr, itemHit);
 		break;
 	}
-		 
 
 	return(handledEvent);
 }
-
-
-
-/*pascal Boolean StandardICOFilter(CInfoPBPtr myCInfoPBPtr)
-{
-	bool visibleFlag;
-	StringPtr name;
-	
-	name = myCInfoPBPtr->hFileInfo.ioNamePtr;
-	
-	visibleFlag = IsICOFile(name);
-	
-	// because the semantics of the filter proc are "true means don't show
-	// it" we need to invert the result that we return
-	
-	return !visibleFlag;
-}
-
-pascal Boolean NavTIFFFilter(AEDesc *theItem, void *info, void *callBackUD, NavFilterModes filterMode)
-{
-#pragma unused (callBackUD, filterMode)
-
-	FSSpec	fileSpec;
-	NavFileOrFolderInfo* theInfo = (NavFileOrFolderInfo*)info;
-	
-	if ( theItem->descriptorType == typeFSS )
-		if ( !theInfo->isFolder )
-		{
-			GetFSSpecFromAEDesc(*theItem, fileSpec);
-			FSMakeFSSpec(fileSpec.vRefNum, fileSpec.parID, fileSpec.name, &fileSpec);
-			if (IsTIFFFile(fileSpec.name))
-				return true;
-			else
-				return false;
-		}
-	
-	return true;
-
-}
-
-pascal Boolean StandardTIFFFilter(CInfoPBPtr myCInfoPBPtr)
-{
-	bool visibleFlag;
-	StringPtr name;
-	
-	name = myCInfoPBPtr->hFileInfo.ioNamePtr;
-	
-	visibleFlag = IsTIFFFile(name);
-	
-	// because the semantics of the filter proc are "true means don't show
-	// it" we need to invert the result that we return
-	
-	return !visibleFlag;
-}*/
-
-
-
 
 // __________________________________________________________________________________________
 // Name			: CleanUp
@@ -2588,7 +2726,7 @@ void CleanUp(void)
 	// note that we don't do this by looping through the list since the list order
 	// might not be the order in which the windows are stacked in
 	while (MWindow::GetFront() != NULL)
-		if (!Close(0))
+		if (!Close(MWindow::GetFront()->GetWindow(), 0))
 		{
 			gIsDone = false;
 			EventLoop();
@@ -2610,17 +2748,21 @@ void CleanUp(void)
 	if (err == noErr)
 		err = FSMakeFSSpec(myVRef, myDirID, prefsFileName, &preferencesFile);
 	
-	FSpDelete(&preferencesFile);
-	FSpCreate(&preferencesFile, creatorCode, prefFileType, 0);
-	FSpCreateResFile(&preferencesFile, creatorCode, prefFileType, 0);
+	if (err == noErr)
+		err = FSpDelete(&preferencesFile);
+	
+	if (err == noErr)
+		err = FSpCreate(&preferencesFile, creatorCode, prefFileType, 0);
+	
+	if (err == noErr)
+		FSpCreateResFile(&preferencesFile, creatorCode, prefFileType, 0);
 	
 	oldFile = CurResFile();
 	
 	if (err == noErr)
 		preferencesRefNum = FSpOpenResFile(&preferencesFile, fsRdWrPerm);
 	
-
-	if ((preferencesRefNum != -1) && (err == noErr))
+	if ((preferencesRefNum >= 0) && (err == noErr))
 	{
 		UseResFile(preferencesRefNum);
 		icnsEditorClass::statics.preferences.Save(rPrefs);
@@ -2632,6 +2774,12 @@ void CleanUp(void)
 	{
 		DisplayAlert("Problem saving preferences", "");
 	}
+	
+	icnsEditorClass::statics.Dispose();
+
+#if TARGET_API_MAC_CARBON
+	delete gAboutBox;
+#endif
 	
 	ExitApplication(); // we're done
 }

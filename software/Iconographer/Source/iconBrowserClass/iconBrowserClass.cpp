@@ -94,7 +94,7 @@ OSErr iconBrowserClass::CreateControls()
 	
 	//controls.menu = GetNewControl(rIBMenu, window);
 	controls.typeMenu = NewEnhancedPlacard(rIBTypeMenu, window, enhancedPlacardDrawBorder + enhancedPlacardLargeArrow, 0, 0,
-										   "\p", NULL, icnsEditorClass::statics.browserTypeMenu, icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix,
+										   "\p", NULL, false, icnsEditorClass::statics.browserTypeMenu, icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix,
 										   BrowserMenuUpdate, this);
 	if (controls.typeMenu == NULL) return mFulErr;
 	//SetControlFontStyle(controls.menu, &smallTextStyle); // set the style too
@@ -127,11 +127,15 @@ int iconBrowserClass::BuildIconList()
 	ControlHandle	progressBar, progressText;
 	Str255		dialogTitle;
 	int			format, oldIcons, newIcons;
+	MWindowPtr	progressDialogWindow;
 	
 	theList.SetDisplayFont(applFont, 9);
 	theList.SetCustomAreaWidth(kIBPreviewHeight + kIBExtraHeight);
 	
 	progressDialog = GetNewDialog(rBrowserProgressDialog, NULL, (WindowPtr)-1L);
+	
+	progressDialogWindow = new MWindow(GetDialogWindow(progressDialog), kDialogType);
+	
 	GetDialogItemAsControl(progressDialog, iIBProgressBar, &progressBar);
 	GetDialogItemAsControl(progressDialog, iIBProgressText, &progressText);
 	
@@ -140,7 +144,7 @@ int iconBrowserClass::BuildIconList()
 	UseResFile(file);
 	
 	newIcons = Count1Resources('icns');
-	oldIcons = Count1Resources('ICN#') + Count1Resources('ics#');
+	oldIcons = Count1Resources('ICN#') + Count1Resources('ics#') + Count1Resources('icm#');
 		
 	iconCount = newIcons + oldIcons;
 	
@@ -158,9 +162,10 @@ int iconBrowserClass::BuildIconList()
 	file = FSpOpenResFile(&srcFileSpec, fsRdPerm);
 	UseResFile(file);
 	
-	LoadFamily('icns', true, oldFile, file, progressBar, progressText);
-	LoadFamily('ICN#', false, oldFile, file, progressBar, progressText);
-	LoadFamily('ics#', false, oldFile, file, progressBar, progressText);
+	LoadFamily('icns', true, oldFile, file, progressBar, progressText, progressDialogWindow);
+	LoadFamily('ICN#', false, oldFile, file, progressBar, progressText, progressDialogWindow);
+	LoadFamily('ics#', false, oldFile, file, progressBar, progressText, progressDialogWindow);
+	LoadFamily('icm#', false, oldFile, file, progressBar, progressText, progressDialogWindow);
 	
 	CloseResFile(file);
 	UseResFile(oldFile);
@@ -182,14 +187,14 @@ int iconBrowserClass::BuildIconList()
 	else
 		format = formatMacOSOld;
 	
-	
+	delete progressDialogWindow;
 	
 	scrollingIncrement = 16;
 	
 	return format;
 }
 
-void iconBrowserClass::LoadFamily(OSType type, bool newType, short oldFile, short file, ControlHandle progressBar, ControlHandle progressText)
+void iconBrowserClass::LoadFamily(OSType type, bool newType, short oldFile, short file, ControlHandle progressBar, ControlHandle progressText, MWindowPtr progressDialog)
 {
 	int 				iconCount, cellHeight, counter;
 	long				members;
@@ -232,6 +237,8 @@ void iconBrowserClass::LoadFamily(OSType type, bool newType, short oldFile, shor
 			
 		SetControlText(progressText, progressString);
 		Draw1Control(progressText);
+		
+		progressDialog->Flush();
 		
 		UseResFile(file);
 	}
@@ -499,6 +506,16 @@ void iconBrowserClass::OpenCurrentIcon()
 		Open(&srcFileSpec, ID, formatMacOSOld, -1);
 }
 
+int iconBrowserClass::GetCurrentFormat()
+{
+	switch(GetEnhancedPlacardMenuValue(controls.typeMenu))
+	{
+		case mIBOld: return formatMacOSOld;
+		case mIBNew: return formatMacOSNew;
+		default: return formatMacOSUniversal;
+	}
+}
+
 void iconBrowserClass::BrowserMenuUpdate(struct EnhancedPlacardData* data, int flags)
 {
 	iconBrowserPtr	parent;
@@ -698,21 +715,15 @@ void iconBrowserClass::Clear()
 		}
 		else
 		{
-			iconResource = Get1Resource('icl8', ID);
+			ResType iconResourceTypes[] = {'icl8', 'icl4', 'ICN#', 'ics8', 'ics4', 'ics#', 'icm8', 'icm4', 'icm#'};
+			int		iconResourceTypesCount = sizeof(iconResourceTypes)/sizeof(ResType);
+			
+			for (int i=0; i < iconResourceTypesCount; i++)
+			{
+				iconResource = Get1Resource(iconResourceTypes[i], ID);
 				if (iconResource != NULL)
 					RemoveResource(iconResource);
-			iconResource = Get1Resource('ics8', ID);
-				if (iconResource != NULL)
-					RemoveResource(iconResource);
-			iconResource = Get1Resource('icl4', ID);
-				if (iconResource != NULL)
-					RemoveResource(iconResource);
-			iconResource = Get1Resource('ICN#', ID);
-				if (iconResource != NULL)
-					RemoveResource(iconResource);
-			iconResource = Get1Resource('ics#', ID);
-				if (iconResource != NULL)
-					RemoveResource(iconResource);
+			}
 		}
 		UpdateResFile(srcFile);
 		CloseResFile(srcFile);
@@ -879,9 +890,11 @@ void IconUpdate(MStringPtr cellString, int* height, void* clientData)
 	if (drawingData->ID == kIDUseFileIcon)
 		drawingData->icon->LoadFileIcon();
 	else if (drawingData->newType)
-		drawingData->icon->LoadNew();
+		drawingData->icon->format = formatMacOSNew;
 	else
-		drawingData->icon->LoadOld();
+		drawingData->icon->format = formatMacOSOld;
+		
+	drawingData->icon->Load();
 	
 	if (drawingData->icon->members != drawingData->members &&
 		drawingData->icon->members != 0)
@@ -906,10 +919,15 @@ void IconDraw(Rect targetRect, MStringPtr cellString, bool selected, int part, v
 	drawingData->icon->ID = drawingData->ID;
 	if (drawingData->ID == kIDUseFileIcon)
 		drawingData->icon->LoadFileIcon();
-	else if (drawingData->newType)
-		drawingData->icon->LoadNew();
 	else
-		drawingData->icon->LoadOld();
+	{
+		if (drawingData->newType)
+			drawingData->icon->format = formatMacOSNew;
+		else
+			drawingData->icon->format = formatMacOSOld;
+			
+		drawingData->icon->Load();
+	}
 	
 	drawingData->icon->Display(displayRect, selected);
 }

@@ -41,6 +41,7 @@ typedef struct EnhancedPlacardData
 	int								menuValue;
 	GWorldPtr						canvasGW;
 	PixMapHandle					canvasPix;
+	bool							pictureIsResource;
 	EnhancedPlacardUpdateFuncPtr	updateFunc;
 	void*							clientData;
 } EnhancedPlacardData;
@@ -61,6 +62,7 @@ enum EnhancedPlacardFlags
 };
 
 const static float kEnhancedPlacardMenuArrowBlend = 0.75;
+const static float kEnhancedPlacardMenuArrowInactiveBlend = 0.45;
 
 
 enum {
@@ -284,6 +286,7 @@ extern void SetControlUserPaneDraw(ControlHandle control, ControlUserPaneDrawPro
 extern void SetControlUserPaneHitTest(ControlHandle control, ControlUserPaneHitTestProcPtr function);
 extern void SetControlUserPaneTracking(ControlHandle control, ControlUserPaneTrackingProcPtr function);
 extern pascal short GenericHitTest(ControlHandle control, Point where);
+extern pascal short NoHitTest(ControlHandle control, Point where);
 extern void PointsToRect(Point point1, Point point2, Rect* targetRect);
 extern void PointsToRect(Point point1, Point point2, Point point3, Rect* targetRect);
 
@@ -291,7 +294,7 @@ extern OSErr FSWrite4(short file, long data);
 extern OSErr FSWrite2(short file, short data);
 
 extern ControlHandle NewEnhancedPlacard(short controlID, WindowPtr parentWindow, int flags, short font, short size,
-								 		Str255 title, PicHandle picture, MenuHandle menu, GWorldPtr canvasGW, PixMapHandle canvasPix,
+								 		Str255 title, PicHandle picture, bool pictureIsResource, MenuHandle menu, GWorldPtr canvasGW, PixMapHandle canvasPix,
 								 		EnhancedPlacardUpdateFuncPtr updateFunc, void* clientData);
 extern void DisposeEnhancedPlacard(ControlHandle placard);
 extern pascal void EnhancedPlacardDraw(ControlHandle placard, short partCode);
@@ -299,6 +302,7 @@ extern pascal short EnhancedPlacardHitTest(ControlHandle placard, Point where);
 extern pascal short EnhancedPlacardTracking(ControlHandle placard, Point startPt, ControlActionUPP actionProc);
 extern void EnhancedPlacardHandleClick(ControlHandle placard);
 extern void SetEnhancedPlacardMenuValue(ControlHandle placard, int menuValue);
+extern int GetEnhancedPlacardMenuValue(ControlHandle placard);
 #if TARGET_API_MAC_CARBON
 void MyQDSetPatternOrigin(Point origin);
 #endif

@@ -1,7 +1,13 @@
 #pragma once
 
+class ToolPalette;
+
+typedef ToolPalette* ToolPalettePtr;
+
 #include "MFloater.h"
 #include "icnsClass.h"
+#include "PixMapColorPicker.h"
+#include "PatternPicker.h"
 
 const static OSType kToolPaletteType = 'IcTP';
 
@@ -82,15 +88,6 @@ enum ColorSwatchParts
 	kTPColorSwatchPartCount
 };
 
-enum ToolPaletteCursorFlags
-{
-	cursorFlagsInSelection = 1,
-	cursorFlagsHasSelection = 2,
-	cursorFlagsFloatedSelection = 4,
-	cursorFlagsCanZoomOut = 8,
-	cursorFlagsCanZoomIn = 16
-};
-
 enum ToolPaletteMenuItems
 {
 	iTPAliased = 1,
@@ -143,12 +140,15 @@ class ToolPalette : public MFloater
 		void					SetPatternIndex(int inPattern);
 		
 		void					Update();
-		void					ChangeCursor(int flags);
+		void					ChangeCursor(int status);
+		void					UpdateCursor(Point theMouse);
 		
 	private:
 		int						lastToolClick;
 		int						currentTool, oldTool;
 		int						toolModes[kToolCount];
+		
+		int						oldStatus;
 		
 		CIconHandle				swapColorsIcon, resetColorsIcon;
 		
@@ -156,6 +156,9 @@ class ToolPalette : public MFloater
 		
 		RGBColor				foreColor, backColor;
 		short					pattern;
+		
+		PixMapColorPickerPtr	colorPicker;
+		PatternPickerPtr		patternPicker;
 		
 		MenuHandle				lineThicknessMenu, antiAliasingMenu, fillMenu;
 		
@@ -181,8 +184,8 @@ class ToolPalette : public MFloater
 		
 		static pascal void		PatternsDraw(ControlHandle theControl,SInt16 thePart);
 		static pascal short 	PatternsHitTest(ControlHandle theControl, Point where);
-		static pascal void		PatternMenuDraw(int number, int x, int y, int width, int height, void* clientData);
-		static pascal void		PatternMenuUpdate(int selection, void* clientData);
+		/*static pascal void		PatternMenuDraw(int number, int x, int y, int width, int height, void* clientData);
+		static pascal void		PatternMenuUpdate(int selection, void* clientData);*/
 		
 		// settings functions
 		static void 			LineThicknessUpdate(struct EnhancedPlacardData* data, int flags);
@@ -194,8 +197,6 @@ class ToolPalette : public MFloater
 		
 		static pascal void		BackgroundPaneDraw(ControlHandle theControl,SInt16 thePart);
 
-
+		friend class PatternPicker;
 		
 };
-
-typedef ToolPalette* ToolPalettePtr;

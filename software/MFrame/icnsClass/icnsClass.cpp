@@ -95,10 +95,10 @@ icnsClass::icnsClass()
 	srcFileSpec.parID = 0;
 	CopyString(srcFileSpec.name, "\pUntitled Icon");
 	
+	usedMembers = kDefaultMembers[format];
+	
 	if (err != noErr) 			// if there was a problem in the creation of the icon gworld
 		status |= outOfMemory;  // (most likely a lack of memory) then we must not continue
-		
-	usedMembers = kDefaultMembers[format];
 }
 
 // __________________________________________________________________________________________
@@ -216,6 +216,8 @@ void icnsClass::Reset()
 	SetGWorld(icsiGW, NULL); EraseRect(&smallIconRect);
 	SetGWorld(icsmGW, NULL); EraseRect(&smallIconRect);
 	RESTOREGWORLD;
+	
+	members = 0;
 }
 
 void icnsClass::LoadFromIconFamily(IconFamilyHandle icnsHandle)
@@ -449,6 +451,9 @@ void icnsClass::Load()
 			LoadOld();
 			LoadNew();
 			break;
+		case formatMacOSX:
+			LoadDataFork();
+			break;
 		case formatMacOSOld:
 			LoadOld();
 			break;
@@ -465,6 +470,7 @@ void icnsClass::Load()
 	
 	loadedFormat = format;
 	loadedID = ID;
+	usedMembers = kDefaultMembers[format];
 }
 
 void icnsClass::LoadDataFork()
@@ -501,6 +507,8 @@ void icnsClass::LoadDataFork()
 	LoadFromIconFamily(icnsHandle);
 	
 	DisposeHandle((Handle)icnsHandle);
+	
+	usedMembers = kDefaultMembers[format];
 }
 
 OSErr icnsClass::LoadNew()
@@ -573,13 +581,32 @@ OSErr icnsClass::LoadOld()
 
 void icnsClass::LoadFileIcon()
 {	
-	IconSuiteRef	theIconSuite;
-	
-	Find_icon(&srcFileSpec, NULL, kSelectorAllAvailableData, (Handle*)&theIconSuite);
-	
-	LoadFromIconSuite(theIconSuite);
-	
-	DisposeIconSuite(theIconSuite, true);
+	if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x08, 0x50))
+	{
+		IconRef				fileIconRef;
+		IconFamilyHandle	fileIconFamily;
+		short				label;
+		
+		GetIconRefFromFile(&srcFileSpec, &fileIconRef, &label);
+		IconRefToIconFamily(fileIconRef, kSelectorAllAvailableData, &fileIconFamily);
+		LoadFromIconFamily(fileIconFamily);
+		ReleaseIconRef(fileIconRef);
+	}
+
+#if !TARGET_API_MAC_CARBON
+	else
+	{
+		IconSuiteRef	theIconSuite;
+		
+		Find_icon(&srcFileSpec, NULL, kSelectorAllAvailableData, (Handle*)&theIconSuite);
+		
+		LoadFromIconSuite(theIconSuite);
+		
+		DisposeIconSuite(theIconSuite, true);
+		
+		usedMembers = kDefaultMembers[format];
+	}
+#endif
 }
 
 // __________________________________________________________________________________________
@@ -592,10 +619,22 @@ void icnsClass::LoadFileIcon()
 void icnsClass::Display(Rect targetRect, bool selected)
 {
 	PixMapHandle	iconPix = icniPix, maskPix = icnmPix;
+	GWorldPtr		iconGW = icniGW, maskGW = icnmGW;
 	long			copyStyle;
 	int				size;
 	Rect			displayRect, bounds;
-	
+	int				miniIconMembersPrecedence[] = {icm8, icm4, icmi, is32, ics8, ics4, icsi, il32, icl8, icl4, icni, ih32, ich8, ich4, ichi, it32},
+					miniMaskMembersPrecedence[] = {icmm, s8mk, icsm, l8mk, icnm, h8mk, ichm, t8mk},
+					smallIconMembersPrecedence[] = {is32, ics8, ics4, icsi, il32, icl8, icl4, icni, ih32, ich8, ich4, ichi, it32, icm8, icm4, icmi},
+					smallMaskMembersPrecedence[] = {s8mk, icsm, l8mk, icnm, h8mk, ichm, t8mk, icmm},
+					largeIconMembersPrecedence[] = {il32, icl8, icl4, icni, is32, ics8, ics4, icsi, ih32, ich8, ich4, ichi, it32, icm8, icm4, icmi},
+					largeMaskMembersPrecedence[] = {l8mk, icnm, s8mk, icsm, h8mk, ichm, t8mk, icmm},
+					hugeIconMembersPrecedence[] = {ih32, it32, ich8, ich4, ichi, il32, icl8, icl4, icni, is32, ics8, ics4, icsi, icm8, icm4, icmi},
+					hugeMaskMembersPrecedence[] = {h8mk, ichm, t8mk, l8mk, icnm, s8mk, icsm, icmm},
+					thumbnailIconMembersPrecedence[] = {it32, ih32, ich8, ich4, ichi, il32, icl8, icl4, icni, is32, ics8, ics4, icsi, icm8, icm4, icmi},
+					thumbnailMaskMembersPrecedence[] = {t8mk, h8mk, ichm, l8mk, icnm, s8mk, icsm, icmm};
+	int				*iconMembersPrecedence, *maskMembersPrecedence,
+					iconCount, maskCount;
 	SAVECOLORS;
 	
 	if (!IsPortColor(GetQDGlobalsThePort()))
@@ -608,130 +647,44 @@ void icnsClass::Display(Rect targetRect, bool selected)
 	// if there is no appropriate size then the large one will be scaled (assuming it exists)
 	size = targetRect.bottom - targetRect.top;
 	
-	if (size <= 16)
+	if (size <= 12)
 	{
-		if (members & is32) iconPix = is32Pix;
-		else if (members & ics8) iconPix = ics8Pix;
-		else if (members & ics4) iconPix = ics4Pix;
-		else if (members & icsi) iconPix = icsiPix;
-		
-		else if (members & il32) iconPix = il32Pix;
-		else if (members & icl8) iconPix = icl8Pix;
-		else if (members & icl4) iconPix = icl4Pix;
-		else if (members & icni) iconPix = icniPix;
-		
-		else if (members & ih32) iconPix = ih32Pix;
-		else if (members & ich8) iconPix = ich8Pix;
-		else if (members & ich4) iconPix = ich4Pix;
-		else if (members & ichi) iconPix = ichiPix;
-		
-		else if (members & it32) iconPix = it32Pix;
-		
-		
-		if (members & s8mk) maskPix = s8mkPix;
-		else if (members & icsm) maskPix = icsmPix;
-		
-		else if (members & l8mk) maskPix = l8mkPix;
-		else if (members & icnm) maskPix = icnmPix;
-		
-		else if (members & h8mk) maskPix = h8mkPix;
-		else if (members & ichm) maskPix = ichmPix;
-		
-		else if (members & t8mk) maskPix = t8mkPix;
-	}
-	else if (size <= 32)
+		iconMembersPrecedence = miniIconMembersPrecedence;
+		maskMembersPrecedence = miniMaskMembersPrecedence;
+	} else if (size <= 16)
 	{
-		if (members & il32) iconPix = il32Pix;
-		else if (members & icl8) iconPix = icl8Pix;
-		else if (members & icl4) iconPix = icl4Pix;
-		else if (members & icni) iconPix = icniPix;
-		
-		else if (members & ih32) iconPix = ih32Pix;
-		else if (members & ich8) iconPix = ich8Pix;
-		else if (members & ich4) iconPix = ich4Pix;
-		else if (members & ichi) iconPix = ichiPix;
-		
-		else if (members & is32) iconPix = is32Pix;
-		else if (members & ics8) iconPix = ics8Pix;
-		else if (members & ics4) iconPix = ics4Pix;
-		else if (members & icsi) iconPix = icsiPix;
-		
-		else if (members & it32) iconPix = it32Pix;
-		
-		if (members & l8mk) maskPix = l8mkPix;
-		else if (members & icnm) maskPix = icnmPix;
-		
-		else if (members & h8mk) maskPix = h8mkPix;
-		else if (members & ichm) maskPix = ichmPix;
-		
-		else if (members & s8mk) maskPix = s8mkPix;
-		else if (members & icsm) maskPix = icsmPix;
-		
-		else if (members & t8mk) maskPix = t8mkPix;
-	}
-	else if (size <= 48)
+		iconMembersPrecedence = smallIconMembersPrecedence;
+		maskMembersPrecedence = smallMaskMembersPrecedence;
+	} else if (size <= 32)
 	{
-		if (members & ih32) iconPix = ih32Pix;
-		else if (members & ich8) iconPix = ich8Pix;
-		else if (members & ich4) iconPix = ich4Pix;
-		else if (members & ichi) iconPix = ichiPix;
-		
-		else if (members & il32) iconPix = il32Pix;
-		else if (members & icl8) iconPix = icl8Pix;
-		else if (members & icl4) iconPix = icl4Pix;
-		else if (members & icni) iconPix = icniPix;
-		
-		else if (members & is32) iconPix = is32Pix;
-		else if (members & ics8) iconPix = ics8Pix;
-		else if (members & ics4) iconPix = ics4Pix;
-		else if (members & icsi) iconPix = icsiPix;
-		
-		else if (members & it32) iconPix = it32Pix;
-		
-		if (members & h8mk) maskPix = h8mkPix;
-		else if (members & ichm) maskPix = ichmPix;
-		
-		else if (members & l8mk) maskPix = l8mkPix;
-		else if (members & icnm) maskPix = icnmPix;
-		
-		else if (members & s8mk) maskPix = s8mkPix;
-		else if (members & icsm) maskPix = icsmPix;
-		
-		else if (members & t8mk) maskPix = t8mkPix;
-	}
-#ifdef THUMBNAIL
-	else if (size <= 128)
+		iconMembersPrecedence = largeIconMembersPrecedence;
+		maskMembersPrecedence = largeMaskMembersPrecedence;
+	} else if (size <= 48)
 	{
-		if (members & it32) iconPix = it32Pix;
-		
-		else if (members & ih32) iconPix = ih32Pix;
-		else if (members & ich8) iconPix = ich8Pix;
-		else if (members & ich4) iconPix = ich4Pix;
-		else if (members & ichi) iconPix = ichiPix;
-		
-		else if (members & il32) iconPix = il32Pix;
-		else if (members & icl8) iconPix = icl8Pix;
-		else if (members & icl4) iconPix = icl4Pix;
-		else if (members & icni) iconPix = icniPix;
-		
-		else if (members & is32) iconPix = is32Pix;
-		else if (members & ics8) iconPix = ics8Pix;
-		else if (members & ics4) iconPix = ics4Pix;
-		else if (members & icsi) iconPix = icsiPix;
-		
-		
-		if (members & t8mk) maskPix = t8mkPix;
-		
-		else if (members & h8mk) maskPix = h8mkPix;
-		else if (members & ichm) maskPix = ichmPix;
-		
-		else if (members & l8mk) maskPix = l8mkPix;
-		else if (members & icnm) maskPix = icnmPix;
-		
-		else if (members & s8mk) maskPix = s8mkPix;
-		else if (members & icsm) maskPix = icsmPix;
+		iconMembersPrecedence = hugeIconMembersPrecedence;
+		maskMembersPrecedence = hugeMaskMembersPrecedence;
+	} else
+	{
+		iconMembersPrecedence = thumbnailIconMembersPrecedence;
+		maskMembersPrecedence = thumbnailMaskMembersPrecedence;
 	}
-#endif
+	
+	iconCount = sizeof(thumbnailIconMembersPrecedence)/sizeof(int);
+	maskCount = sizeof(thumbnailMaskMembersPrecedence)/sizeof(int);
+
+	for (int i=0; i < iconCount; i++)
+		if (members & iconMembersPrecedence[i])
+		{
+			GetGWorldAndPix(iconMembersPrecedence[i], &iconGW, &iconPix);
+			break;
+		}
+	
+	for (int i=0; i < maskCount; i++)
+		if (members & maskMembersPrecedence[i])
+		{
+			GetGWorldAndPix(maskMembersPrecedence[i], &maskGW, &maskPix);
+			break;
+		}
 
 	bounds = (**iconPix).bounds;
 
@@ -938,6 +891,8 @@ void icnsClass::RefreshIconMembers(void)
 	if (!IsEmptyPixMap(ichmPix)) members |= ichm;
 	if (!IsEmptyPixMap(icnmPix)) members |= icnm;
 	if (!IsEmptyPixMap(icsmPix)) members |= icsm;
+	
+	members &= usedMembers;
 }
 
 IconFamilyHandle icnsClass::Geticns(void)
@@ -1058,17 +1013,94 @@ IconFamilyHandle icnsClass::Geticns(void)
 	return icnsHandle;
 }
 
-// __________________________________________________________________________________________
-// Name			: icnsClass::Save
-// Input		: flags: options for saving. Possible values are includeOldStyle which
-//				  incorporates old style resources into the icns, and generateOldStyle which
-//				  makes old style resources out of the icns.
-// Output		: None
-// Description	: Saves the current class contents to the srcFileSpec, in the standard 'icns'
-//				   resource format. Has options for dealing with old style icons.
-
-void icnsClass::Save()
+bool icnsClass::HasNonIconDataFork()
 {
+	short	file;
+	long	readLength, iconType;
+	bool	nonIconDataFork;
+	
+	FSpOpenDF(&srcFileSpec, fsRdPerm, &file);
+	
+	SetFPos(file, fsFromStart, 0);
+	
+	GetEOF(file, &readLength);
+	
+	if (readLength == 0)
+		nonIconDataFork = false;
+	else
+	{
+		readLength = sizeof(long);
+		
+		FSRead(file, &readLength, &iconType);
+		
+		if (format == formatMacOSX)
+			nonIconDataFork = (iconType != 'icns');
+		else if (format == formatWindows)
+			nonIconDataFork = (iconType != 0x00000100);
+		else
+			nonIconDataFork = true;
+	}
+	
+	FSClose(file);
+	return nonIconDataFork;
+}
+
+
+OSErr icnsClass::PreFlight()
+{
+	DEBUG("\pstarting preflight");
+	
+	if (format == formatWindows && !IsICOFile(srcFileSpec.name))
+	{
+		SetFileExtension(formatWindows, srcFileSpec.name);
+		return fnOpnErr;
+	}
+	else if (format == formatMacOSX && !IsicnsFile(srcFileSpec.name))
+	{
+		SetFileExtension(formatMacOSX, srcFileSpec.name);
+		return fnOpnErr;
+	}
+	else if (format == formatMacOSXServer && !IsTIFFFile(srcFileSpec.name))
+	{
+		SetFileExtension(formatMacOSXServer, srcFileSpec.name);
+		return fnOpnErr;
+	}
+	else if ((format == formatMacOSUniversal || format == formatMacOSOld || format == formatMacOSNew) &&
+			 (IsICOFile(srcFileSpec.name) || IsTIFFFile(srcFileSpec.name) || IsicnsFile(srcFileSpec.name)))
+	{
+		SetFileExtension(format, srcFileSpec.name);
+		return fnOpnErr;
+	}
+		
+	if (format == formatWindows || format == formatMacOSX)
+	{
+		if (HasNonIconDataFork())
+		{
+			Str255	text, yesButton, noButton, otherButton;
+			short	itemHit;
+			
+			GetIndString(text, rMiscIconStrings, eICNonIconDataFork);
+			GetIndString(yesButton, rMiscIconStrings, eICYesButton);
+			GetIndString(noButton, rMiscIconStrings, eICNoButton);
+			GetIndString(otherButton, rMiscIconStrings, eICChooseAnotherFile);
+			
+			SubstituteString(text, "\p<file name>", srcFileSpec.name);
+			
+			itemHit = MUtilities::DisplayAlert(text, yesButton, noButton, otherButton, kAlertCautionAlert);
+			switch (itemHit)
+			{
+				case 1:
+					break;
+				case 2:
+					return noErr;
+					break;
+				case 3:
+					return fnOpnErr;
+					break;
+			}
+		}
+	}
+	
 	if (IDChanged())
 	{
 		short	oldFile, targetFile;
@@ -1153,26 +1185,58 @@ void icnsClass::Save()
 	loadedID = ID;
 	loadedFormat = format;
 	
-	switch (format)
+	RefreshIconMembers();
+	
+	DEBUG("\pdone pre-flighting");
+	
+	return noErr;
+}
+
+// __________________________________________________________________________________________
+// Name			: icnsClass::Save
+// Input		: flags: options for saving. Possible values are includeOldStyle which
+//				  incorporates old style resources into the icns, and generateOldStyle which
+//				  makes old style resources out of the icns.
+// Output		: None
+// Description	: Saves the current class contents to the srcFileSpec, in the standard 'icns'
+//				   resource format. Has options for dealing with old style icons.
+
+OSErr icnsClass::Save()
+{
+	OSErr err;
+	
+	DEBUG("\pstarting to save");
+	
+	if ((err = PreFlight()) == noErr)
 	{
-		case formatMacOSUniversal:
-			SaveOld();
-			SaveNew();
-			break;
-		case formatMacOSOld:
-			SaveOld();
-			break;
-		case formatMacOSNew:
-			SaveNew();
-			break;
-		case formatWindows:
-			SaveICO();
-			break;
-		case formatMacOSXServer:
-			break;
+		switch (format)
+		{
+			case formatMacOSUniversal:
+				SaveOld();
+				SaveNew();
+				break;
+			case formatMacOSX:
+				SaveDataFork();
+				break;
+			case formatMacOSOld:
+				SaveOld();
+				break;
+			case formatMacOSNew:
+				SaveNew();
+				break;
+			case formatWindows:
+				SaveICO();
+				break;
+			case formatMacOSXServer:
+				break;
+		}
+		
+		MUtilities::AESendFinderUpdate(srcFileSpec);
 	}
 	
-	MUtilities::AESendFinderUpdate(srcFileSpec);
+	DEBUG("\pdone saving");
+	
+	return err;
 }
 
 void icnsClass::SaveUniversal()
@@ -1220,6 +1284,7 @@ void icnsClass::CleanupFileSpec()
 void icnsClass::PreSave()
 {
 	int error;
+	
 	SetupFileSpec(true);
 	
 	oldFile = CurResFile(); // we save the old file that was in use
@@ -1235,6 +1300,7 @@ void icnsClass::PreSave()
 				FSpGetFInfo(&srcFileSpec, &fileInfo);
 				FSpCreateResFile(&srcFileSpec, fileInfo.fdCreator, fileInfo.fdType, 0);
 				targetFile = FSpOpenResFile(&srcFileSpec, fsRdWrPerm); // we open the target file
+				
 				break;
 			default:
 				Str255 errorAsString, errorString = "\pError occured when saving (Type <type>)";
@@ -1291,15 +1357,11 @@ void icnsClass::SaveNew()
 		UpdateResFile(targetFile);
 	}
 	
-	DetachResource((Handle)icnsHandle); // we detach the resource 
 	AddResource((Handle)icnsHandle, 'icns', ID, name);
 	SetResAttrs((Handle)icnsHandle, flags);
 	ChangedResource((Handle)icnsHandle);
-	WriteResource((Handle)icnsHandle);
 	
 	PostSave();
-
-	DisposeHandle((Handle)icnsHandle); // we're done with the resource, and can dispose of it
 }
 
 // __________________________________________________________________________________________
@@ -1312,148 +1374,66 @@ void icnsClass::SaveNew()
 void icnsClass::SaveOld()
 {
 	Handle			iconHandle;
+	bool			addedResource;
+	GWorldPtr		iconGW, maskGW;
+	PixMapHandle 	iconPix, maskPix;
+	int				iconName, maskName;
+	
+	DEBUG("\pstarting to save old format");
 	
 	PreSave();
 	
-	RefreshIconMembers();
+	DEBUG("\pdone presaving");
 	
-	if (members & icl8)
-	{
-		// the 8 bit large icon
-		iconHandle = Get1Resource('icl8', ID);
-		REMOVEICON;
+	for (int i=0; i < kMembersCount; i++)
+		if (kMembers[i].oldResource && (members & kMembers[i].name))
+		{
+			iconHandle = Get1Resource(kMembers[i].resourceName, ID);
+			if (iconHandle)
+				addedResource = false;
+			else
+			{
+				addedResource = true;
+				iconHandle = NewHandleClear(kMembers[i].resourceSize);
+			}
+			
+			GetGWorldAndPix(kMembers[i].name, &iconGW, &iconPix);
+			
+			if (kMembers[i].name & icon1)
+			{
+				maskName = GetPixName(kMembers[i].height, 1, false);
+				GetGWorldAndPix(maskName, &maskGW, &maskPix);
+				BlockMove((**iconPix).baseAddr, *iconHandle, kMembers[i].resourceSize/2);
+				BlockMove((**maskPix).baseAddr, &((*iconHandle)[kMembers[i].resourceSize/2]), kMembers[i].resourceSize/2);
+			}
+			else if (kMembers[i].name & mask1)
+			{
+				maskPix = iconPix;
+				maskGW = iconGW;
+				iconName = GetPixName(kMembers[i].height, 1, true);
+				GetGWorldAndPix(iconName, &iconGW, &iconPix);
+				BlockMove((**iconPix).baseAddr, *iconHandle, kMembers[i].resourceSize/2);
+				BlockMove((**maskPix).baseAddr, &((*iconHandle)[kMembers[i].resourceSize/2]), kMembers[i].resourceSize/2);
+			}
+			else
+				BlockMove((**iconPix).baseAddr, *iconHandle, kMembers[i].resourceSize);
+				
+			if (addedResource)
+				AddResource(iconHandle, kMembers[i].resourceName, ID, name);
+			
+			SetResAttrs(iconHandle, flags);
+			ChangedResource(iconHandle);
+			UpdateResFile(targetFile);
+			ReleaseResource(iconHandle);
+		}
 		
-		iconHandle = NewHandleClear(icl8Size);
-		BlockMove((*icl8Pix)->baseAddr, *iconHandle, icl8Size);
-		DetachResource(iconHandle);
-		AddResource(iconHandle, 'icl8', ID, name);
-		SetResAttrs(iconHandle, flags);
-		ChangedResource(iconHandle);
-	}
-	
-	if (members & icl4)
-	{
-		// the 4 bit large icon
-		iconHandle = Get1Resource('icl4', ID);
-		REMOVEICON;
-		
-		iconHandle = NewHandleClear(icl4Size);
-		BlockMove((*icl4Pix)->baseAddr, *iconHandle, icl4Size);
-		DetachResource(iconHandle);
-		AddResource(iconHandle, 'icl4', ID, name);
-		SetResAttrs(iconHandle, flags);
-		ChangedResource(iconHandle);
-	}
-	
-	if ((members & icni) || (members & icnm))
-	{
-		// the 1 bit large icon
-		iconHandle = Get1Resource('ICN#', ID);
-		REMOVEICON;
-		
-		iconHandle = NewHandleClear(icnSize);
-		BlockMove((*icniPix)->baseAddr, *iconHandle, icnSize/2);
-		BlockMove((*icnmPix)->baseAddr, &((*iconHandle)[icnSize / 2]), icnSize/2);
-		DetachResource(iconHandle);
-		AddResource(iconHandle, 'ICN#', ID, name);
-		SetResAttrs(iconHandle, flags);
-		ChangedResource(iconHandle);
-	}
-	
-	if (members & ics8)
-	{
-		// the 8 bit small icon
-		iconHandle = Get1Resource('ics8', ID);
-		REMOVEICON;
-	
-		iconHandle = NewHandleClear(ics8Size);
-		BlockMove((*ics8Pix)->baseAddr, *iconHandle, ics8Size);
-		DetachResource(iconHandle);
-		AddResource(iconHandle, 'ics8', ID, name);
-		SetResAttrs(iconHandle, flags);
-		ChangedResource(iconHandle);
-	}
-	
-	if (members & ics4)
-	{	
-		// the 4 bit small icon
-		iconHandle = Get1Resource('ics4', ID);
-		REMOVEICON;
-		
-		iconHandle = NewHandleClear(ics4Size);
-		BlockMove((*ics4Pix)->baseAddr, *iconHandle, ics4Size);
-		DetachResource(iconHandle);
-		AddResource(iconHandle, 'ics4', ID, name);
-		SetResAttrs(iconHandle, flags);
-		ChangedResource(iconHandle);
-	}
-	
-	if ((members & icsi) || (members & icsm))
-	{
-		// the 1 bit small icon
-		iconHandle = Get1Resource('ics#', ID);
-		REMOVEICON;
-		
-		iconHandle = NewHandleClear(icsSize);
-		BlockMove((*icsiPix)->baseAddr, *iconHandle, icsSize/2);
-		BlockMove((*icsmPix)->baseAddr, &((*iconHandle)[icsSize / 2]), icsSize/2);
-		DetachResource(iconHandle);
-		AddResource(iconHandle, 'ics#', ID, name);
-		SetResAttrs(iconHandle, flags);
-		ChangedResource(iconHandle);
-	}
-	
-#ifdef MINI
-		
-	if (members & icm8)
-	{
-		// the 8 bit small icon
-		iconHandle = Get1Resource('icm8', ID);
-		REMOVEICON;
-	
-		iconHandle = NewHandleClear(icm8Size);
-		BlockMove((*icm8Pix)->baseAddr, *iconHandle, icm8Size);
-		DetachResource(iconHandle);
-		AddResource(iconHandle, 'icm8', ID, name);
-		SetResAttrs(iconHandle, flags);
-		ChangedResource(iconHandle);
-	}
-	
-	if (members & icm4)
-	{	
-		// the 4 bit small icon
-		iconHandle = Get1Resource('icm4', ID);
-		REMOVEICON;
-		
-		iconHandle = NewHandleClear(icm4Size);
-		BlockMove((*icm4Pix)->baseAddr, *iconHandle, icm4Size);
-		DetachResource(iconHandle);
-		AddResource(iconHandle, 'icm4', ID, name);
-		SetResAttrs(iconHandle, flags);
-		ChangedResource(iconHandle);
-	}
-	
-	if ((members & icmi) || (members & icmm))
-	{
-		// the 1 bit small icon
-		iconHandle = Get1Resource('icm#', ID);
-		REMOVEICON;
-		
-		iconHandle = NewHandleClear(icmSize);
-		BlockMove((*icsiPix)->baseAddr, *iconHandle, icmSize/2);
-		BlockMove((*icmmPix)->baseAddr, &((*iconHandle)[icmSize / 2]), icmSize/2);
-		DetachResource(iconHandle);
-		AddResource(iconHandle, 'icm#', ID, name);
-		SetResAttrs(iconHandle, flags);
-		ChangedResource(iconHandle);
-	}
-
-#endif	
-	
+	DEBUG("\pdone adding resources");
 	
 	PostSave();
 	
-	DisposeHandle(iconHandle);
+	DEBUG("\pdone postsaving");
+	
+	DEBUG("\pdone saving old style");
 }
 
 void icnsClass::SaveDataFork()
@@ -1461,8 +1441,6 @@ void icnsClass::SaveDataFork()
 	short 				file;
 	long 				writeLength;
 	IconFamilyHandle	icnsHandle;
-	
-	RefreshIconMembers();
 	
 	PreSave();
 	
@@ -1614,7 +1592,7 @@ int icnsClass::GetPixName(int height, int depth, bool icon)
 	return -1;
 }
 
-#define HASMEMBER(memberName) ((members & memberName || !strict) && (memberName & kDefaultMembers[format]))
+#define HASMEMBER(memberName) ((members & memberName) || (!strict && memberName & kDefaultMembers[format]))
 
 int icnsClass::GetBestMaskName(int height, int depth, bool strict)
 {
@@ -1838,543 +1816,6 @@ int icnsClass::GetMemberIndex(int name)
 			
 	return -1;
 }
-#pragma mark -
-
-#define SETMEMBERCHECKBOX(itemNo, member) \
-GetDialogItemAsControl(dialog, itemNo, &tempControl);\
-if (kDefaultMembers[format] & member)\
-{\
-	if (!((member & (icon1 + mask1)) == member))\
-		ActivateControl(tempControl);\
-	else\
-		DeactivateControl(tempControl);\
-	if ((usedMembers & member) == (member & kDefaultMembers[format]))\
-		SetControlValue(tempControl, 1);\
-	else if (usedMembers & member)\
-		SetControlValue(tempControl, 2);\
-	else\
-		SetControlValue(tempControl, 0);\
-}\
-else\
-{\
-	SetControlValue(tempControl, 0);\
-	DeactivateControl(tempControl);\
-}
-
-void icnsClass::SetMembersCheckboxes(DialogPtr dialog, long usedMembers, long format)
-{
-	ControlHandle	tempControl;
-	
-	SETMEMBERCHECKBOX(iThumbnailBox, thumbnailSize);
-	
-	SETMEMBERCHECKBOX(iHugeBox, hugeSize);
-	SETMEMBERCHECKBOX(iih32Box, ih32);
-	SETMEMBERCHECKBOX(iich8Box, ich8);
-	SETMEMBERCHECKBOX(iich4Box, ich4);
-	SETMEMBERCHECKBOX(iichiBox, ichi);
-	SETMEMBERCHECKBOX(ih8mkBox, h8mk);
-	SETMEMBERCHECKBOX(iichmBox, ichm);
-	
-	SETMEMBERCHECKBOX(iLargeBox, largeSize);
-	SETMEMBERCHECKBOX(iil32Box, il32);
-	SETMEMBERCHECKBOX(iicl8Box, icl8);
-	SETMEMBERCHECKBOX(iicl4Box, icl4);
-	SETMEMBERCHECKBOX(iicniBox, icni);
-	SETMEMBERCHECKBOX(il8mkBox, l8mk);
-	SETMEMBERCHECKBOX(iicnmBox, icnm);
-	
-	SETMEMBERCHECKBOX(iSmallBox, smallSize);
-	SETMEMBERCHECKBOX(iis32Box, is32);
-	SETMEMBERCHECKBOX(iics8Box, ics8);
-	SETMEMBERCHECKBOX(iics4Box, ics4);
-	SETMEMBERCHECKBOX(iicsiBox, icsi);
-	SETMEMBERCHECKBOX(is8mkBox, s8mk);
-	SETMEMBERCHECKBOX(iicsmBox, icsm);
-	
-	SETMEMBERCHECKBOX(iMiniBox, miniSize);
-	SETMEMBERCHECKBOX(iicm8Box, icm8);
-	SETMEMBERCHECKBOX(iicm4Box, icm4);
-	SETMEMBERCHECKBOX(iicmiBox, icmi);
-	SETMEMBERCHECKBOX(iicmmBox, icmm);
-}
-
-#define GETMEMBERSCHECKBOX(itemNo, member)\
-GetDialogItemAsControl(dialog, itemNo, &tempControl);\
-if (GetControlValue(tempControl))\
-	*usedMembers |= member;\
-else\
-	*usedMembers &= ~member;\
-
-void icnsClass::GetMembersCheckboxes(DialogPtr dialog, long* usedMembers)
-{
-	ControlHandle	tempControl;
-	
-	GETMEMBERSCHECKBOX(iThumbnailBox, thumbnailSize);
-	
-	GETMEMBERSCHECKBOX(iih32Box, ih32);
-	GETMEMBERSCHECKBOX(iich8Box, ich8);
-	GETMEMBERSCHECKBOX(iich4Box, ich4);
-	GETMEMBERSCHECKBOX(iichiBox, ichi);
-	GETMEMBERSCHECKBOX(ih8mkBox, h8mk);
-	GETMEMBERSCHECKBOX(iichmBox, ichm);
-	
-	GETMEMBERSCHECKBOX(iil32Box, il32);
-	GETMEMBERSCHECKBOX(iicl8Box, icl8);
-	GETMEMBERSCHECKBOX(iicl4Box, icl4);
-	GETMEMBERSCHECKBOX(iicniBox, icni);
-	GETMEMBERSCHECKBOX(il8mkBox, l8mk);
-	GETMEMBERSCHECKBOX(iicnmBox, icnm);
-	
-	GETMEMBERSCHECKBOX(iis32Box, is32);
-	GETMEMBERSCHECKBOX(iics8Box, ics8);
-	GETMEMBERSCHECKBOX(iics4Box, ics4);
-	GETMEMBERSCHECKBOX(iicsiBox, icsi);
-	GETMEMBERSCHECKBOX(is8mkBox, s8mk);
-	GETMEMBERSCHECKBOX(iicsmBox, icsm);
-	
-	GETMEMBERSCHECKBOX(iicm8Box, icm8);
-	GETMEMBERSCHECKBOX(iicm4Box, icm4);
-	GETMEMBERSCHECKBOX(iicmiBox, icmi);
-	GETMEMBERSCHECKBOX(iicmmBox, icmm);
-}
-
-void icnsClass::HandleMembersCheckbox(DialogPtr dialog, int itemHit, long *usedMembers, int format)
-{
-	ControlHandle	tempControl;
-	long			temp;
-	
-	GetDialogItemAsControl(dialog, itemHit, &tempControl);
-	ToggleCheckbox(tempControl);
-	temp = GetControlValue(tempControl);
-	
-	switch (itemHit)
-	{
-		case iHugeBox: if (temp) *usedMembers |= hugeSize; else *usedMembers &= ~hugeSize; break;
-		case iLargeBox: if (temp) *usedMembers |= largeSize; else *usedMembers &= ~largeSize; break;
-		case iSmallBox: if (temp) *usedMembers |= smallSize; else *usedMembers &= ~smallSize; break;
-		case iMiniBox: if (temp) *usedMembers |= miniSize; else *usedMembers &= ~miniSize; break;
-		default: GetMembersCheckboxes(dialog, usedMembers); break;
-	}
-	
-	*usedMembers &= kDefaultMembers[format];
-	if (*usedMembers & hugeSize) *usedMembers |= (ichi + ichm); else *usedMembers &= ~(ichi + ichm);
-	if (*usedMembers & largeSize) *usedMembers |= (icni + icnm); else *usedMembers &= ~(icni + icnm);
-	if (*usedMembers & smallSize) *usedMembers |= (icsi + icsm); else *usedMembers &= ~(icsi + icsm);
-	if (*usedMembers & miniSize) *usedMembers |= (icmi + icmm); else *usedMembers &= ~(icmi + icmm);
-	
-	SetMembersCheckboxes(dialog, *usedMembers, format);
-}
-
-// __________________________________________________________________________________________
-// Name			: icnsEditorClass::EditIconInfo
-// Input		: None
-// Output		: None
-// Description	: This function displays a dialog which allows the user to change the icon's
-//				  attributes (ID, name, bits)
-
-int icnsClass::EditIconInfo(int mode)
-{
-	DialogPtr		infoDialog;
-	ModalFilterUPP	eventFilterUPP;
-	bool			dialogDone;
-	short			itemHit;
-	ControlHandle	IDField, IDMenu, nameField, sizeField, formatPopup,
-					sysHeapBox, purgeableBox, lockedBox, protectedBox, preloadBox, currentControl; 
-	Str255			menuTitle, tempString, sizeSuffix;
-	long			temp, oldFormat, oldUsedMembers;
-	int				item;
-	MenuHandle		menu, popupMenu, formatMenu;
-	MWindowPtr		infoDialogWindow;
-#if !TARGET_API_MAC_CARBON
-	int				menuID;
-	long			menuSelection;
-#endif
-	
-	oldFormat = format;
-	oldUsedMembers = usedMembers;
-	
-	infoDialog = GetNewDialog(rIconInfo, NULL, (WindowPtr)-1L);
-	
-	SAVEGWORLD;
-	
-	SetPortDialogPort(infoDialog);
-	TextFont(applFont);
-	TextSize(9);
-	
-	RESTOREGWORLD;
-	
-	if (mode == kInsertIcon)
-	{
-		Str255 windowTitle;
-		
-		GetIndString(windowTitle, rIconInfoStrings, eInsertIconTitle);
-		SetWTitle(GetDialogWindow(infoDialog), windowTitle);
-	}
-	
-	infoDialogWindow = new MWindow(GetDialogWindow(infoDialog), kDialogType);
-	MWindow::CenterOnFront(infoDialogWindow);
-
-	eventFilterUPP = NewModalFilterUPP(IconInfoDialogFilter);
-	
-	SetDialogDefaultItem(infoDialog, iOK);
-	SetDialogCancelItem(infoDialog, iCancel);
-	
-	GetDialogItemAsControl(infoDialog, iIconIDField, &IDField);
-	GetDialogItemAsControl(infoDialog, iIDMenu, &IDMenu);
-	GetDialogItemAsControl(infoDialog, iIconNameField, &nameField);
-	GetDialogItemAsControl(infoDialog, iIconSizeField, &sizeField);
-	GetDialogItemAsControl(infoDialog, iFormatPopup, &formatPopup);
-	
-	GetDialogItemAsControl(infoDialog, iPurgeable, &purgeableBox);
-	GetDialogItemAsControl(infoDialog, iPreload, &preloadBox);
-	GetDialogItemAsControl(infoDialog, iLocked, &lockedBox);
-	GetDialogItemAsControl(infoDialog, iProtected, &protectedBox);
-	GetDialogItemAsControl(infoDialog, iSystemHeap, &sysHeapBox);
-	
-	popupMenu = GetMenu(mBaseIDMenu - 1);
-	
-	for (int i = mBaseIDMenu; i < mBaseIDMenu + mIDMenuCount; i++)
-	{
-		menu = GetMenu(i);
-		if(menu != NULL)
-			InsertMenu(menu,kInsertHierarchicalMenu);
-	}
-	
-	if (mode == kInsertIcon || mode == kIconInfoBrowser)
-	{
-		formatMenu = GetControlPopupMenuHandle(formatPopup);
-		if (formatMenu != NULL)
-		{
-			DisableMenuItem(formatMenu, formatWindows);
-			DisableMenuItem(formatMenu, formatMacOSXServer);
-		}
-	}
-	else
-	{
-		formatMenu = GetControlPopupMenuHandle(formatPopup);
-		if (formatMenu != NULL)
-		{
-			DisableMenuItem(formatMenu, formatMacOSXServer);
-		}
-	}
-	
-	if (mode == kIconInfoBrowser)
-	{
-		GetDialogItemAsControl(infoDialog, iMembersGroupBox, &currentControl);
-		ToggleControl(currentControl);
-	}
-	
-	SetControlText(nameField, name);
-	NumToString(ID, tempString);
-	SetControlText(IDField, tempString);
-	NumToString(GetSize(), tempString);
-	GetIndString(sizeSuffix, rIconInfoStrings, eSizeSuffix);
-	AppendString(tempString, sizeSuffix);
-	SetControlText(sizeField, tempString);
-	SetControlValue(formatPopup, format);
-	
-	
-	SetControlValue(purgeableBox, (flags & resPurgeable) >> resPurgeableBit);
-	SetControlValue(preloadBox, (flags & resPreload) >> resPreloadBit);
-	SetControlValue(lockedBox, (flags & resLocked) >> resLockedBit);
-	SetControlValue(protectedBox, (flags & resProtected) >> resProtectedBit);
-	SetControlValue(sysHeapBox, (flags & resSysHeap) >> resSysHeapBit);
-	
-	SetMembersCheckboxes(infoDialog, usedMembers, format);
-	
-	MWindow::DeactivateAll();
-	
-	ShowWindow(GetDialogWindow(infoDialog));
-	
-	GetIDMenu(ID, &menu, &item, tempString);
-	CheckMenuItem(menu, item, true);
-	SetControlValue(IDMenu, GetMenuID(menu) - mBaseIDMenu + 1);
-	
-	dialogDone = false;
-	
-	if ((format == formatWindows) || (format == formatMacOSXServer))
-		ToggleNonMacOSItems(infoDialog);
-	
-	while (!dialogDone)
-	{
-		ModalDialog(eventFilterUPP, &itemHit);
-		
-		switch (itemHit)
-		{
-			case iOK:
-				dialogDone = true;
-				GetControlText(IDField, tempString);
-				StringToNum(tempString, &temp);
-				if ((temp != ID || mode == kInsertIcon) && (srcFileSpec.vRefNum != 0 || srcFileSpec.parID != 0))
-				{
-					Handle otherIcon = NULL;
-					short	oldFile, targetFile;
-					
-					oldFile = CurResFile();
-					targetFile = FSpOpenResFile(&srcFileSpec, fsRdPerm);
-					if (targetFile != -1)
-					{
-						UseResFile(targetFile);
-						
-						if (GetControlValue(formatPopup) == formatMacOSUniversal)
-						{
-							otherIcon = Get1Resource('icns', temp);
-							if (otherIcon == NULL)
-							{
-								otherIcon = Get1Resource('ICN#', temp);
-								if (otherIcon == NULL)
-									otherIcon = Get1Resource('ics#', temp);
-							}
-						}
-						else if (GetControlValue(formatPopup) == formatMacOSNew)
-						{
-							otherIcon = Get1Resource('icns', temp);
-						}
-						else
-						{
-							otherIcon = Get1Resource('ICN#', temp);
-								if (otherIcon == NULL)
-									otherIcon = Get1Resource('ics#', temp);
-						}
-									
-						CloseResFile(targetFile);
-						UseResFile(oldFile);
-						if (otherIcon != NULL)
-						{
-							Str255 message, overwriteButtonName, cancelButtonName;
-							ReleaseResource(otherIcon);
-							GetIndString(message, rIconInfoStrings, eIDAlreadyExists);
-							SubstituteString(message, "\p<ID>", tempString);
-							GetIndString(overwriteButtonName, rIconInfoStrings, eOverwriteButton);
-							GetIndString(cancelButtonName, rIconInfoStrings, eInfoCancelButton);
-							itemHit = MUtilities::DisplayAlert(message, overwriteButtonName, cancelButtonName, "\p", kAlertCautionAlert);
-							if (itemHit == 2)
-								dialogDone = false;
-						}
-					}
-				}
-				if (dialogDone)
-				{
-					format = GetControlValue(formatPopup);
-					GetControlText(nameField, name);
-					ID = temp;
-					flags = (GetControlValue(purgeableBox) << resPurgeableBit) +
-							(GetControlValue(preloadBox) << resPreloadBit) + 
-							(GetControlValue(lockedBox) << resLockedBit) +
-							(GetControlValue(protectedBox) << resProtectedBit) +
-							(GetControlValue(sysHeapBox) << resSysHeapBit);
-					GetMembersCheckboxes(infoDialog, &usedMembers);
-				}
-				break;
-			case iCancel:
-				format = oldFormat;
-				usedMembers = oldUsedMembers;
-				dialogDone = true;
-				break;
-			case iIconIDField:
-				CheckMenuItem(menu, item, false);
-				GetControlText(IDField, tempString);
-				StringToNum(tempString, &temp);
-				GetIDMenu(temp, &menu, &item, tempString);
-				CheckMenuItem(menu, item, true);
-				SetControlValue(IDMenu, GetMenuID(menu) - mBaseIDMenu + 1);
-				if (tempString[0] != 0)
-				{
-					SetControlText(nameField, tempString);
-					Draw1Control(nameField);
-				}
-				break;
-			case iIDMenu:
-				CheckMenuItem(menu, item, false);
-				
-#if TARGET_API_MAC_CARBON
-				MenuTrackingData	trackingData;
-				
-				GetMenuTrackingData(NULL, &trackingData);
-				
-				item = trackingData.itemSelected;
-				menu = trackingData.menu;
-#else
-				menuSelection = LMGetMenuDisable();
-				
-				menuID = menuSelection >> 16;
-				item = menuSelection & 0x0000FFFF;
-				menu = GetMenu(menuID);
-#endif
-				CheckMenuItem(menu, item, true);
-				
-				GetMenuItemText(menu, item, menuTitle);
-				
-				SplitMenuItem(menuTitle, &temp, tempString);
-				SetControlText(nameField, tempString);
-				NumToString(temp, tempString);
-				SetControlText(IDField, tempString);
-				SelectDialogItemText(infoDialog, iIconIDField, 0, 32767);
-				Draw1Control(IDField);
-				Draw1Control(nameField);
-				
-				break;
-			case iFormatPopup:
-				format = GetControlValue(formatPopup);
-				usedMembers = kDefaultMembers[format];
-				SetMembersCheckboxes(infoDialog, usedMembers, format);
-				if ((format == formatWindows) || (format == formatMacOSXServer))
-				{
-					if (IsControlActive(IDField))
-						ToggleNonMacOSItems(infoDialog);
-				}
-				else if (!IsControlActive(IDField))
-					ToggleNonMacOSItems(infoDialog);
-				break;
-			case iIconNameField:
-				break;
-			default:
-				HandleMembersCheckbox(infoDialog, itemHit, &usedMembers, format);
-				break; 
-		}
-	}
-	
-	DisposeModalFilterUPP(eventFilterUPP);
-	DisposeDialog(infoDialog);
-	
-	delete infoDialogWindow;
-	
-	MWindow::ActivateAll();
-	
-	return itemHit;
-}
-
-void icnsClass::ToggleNonMacOSItems(DialogPtr infoDialog)
-{
-	ControlHandle currentControl;
-	
-	GetDialogItemAsControl(infoDialog, iIconIDLabel, &currentControl); ToggleControl(currentControl);
-	GetDialogItemAsControl(infoDialog, iIconIDField, &currentControl); ToggleControl(currentControl);
-	GetDialogItemAsControl(infoDialog, iIDMenu, &currentControl); ToggleControl(currentControl);
-	GetDialogItemAsControl(infoDialog, iIconNameLabel, &currentControl); ToggleControl(currentControl);
-	GetDialogItemAsControl(infoDialog, iIconNameField, &currentControl); ToggleControl(currentControl);
-	
-	GetDialogItemAsControl(infoDialog, iFlagsGroupBox, &currentControl); ToggleControl(currentControl);
-	/*GetDialogItemAsControl(infoDialog, iPurgeable, &currentControl); ToggleControl(currentControl);
-	GetDialogItemAsControl(infoDialog, iPreload, &currentControl); ToggleControl(currentControl);
-	GetDialogItemAsControl(infoDialog, iLocked, &currentControl); ToggleControl(currentControl);
-	GetDialogItemAsControl(infoDialog, iProtected, &currentControl); ToggleControl(currentControl);
-	GetDialogItemAsControl(infoDialog, iSystemHeap, &currentControl); ToggleControl(currentControl);*/
-}
-
-void icnsClass::SplitMenuItem(Str255 text, long* ID, Str255 iconName)
-{
-	int IDEnd;
-	
-	for (IDEnd=1; text[IDEnd] != ' '; IDEnd++) {;}
-	
-	text[IDEnd] = text[0] - IDEnd;
-	
-	text[0] = IDEnd - 1;
-	if (text[1] == 208)
-		text[1] = '-';
-	else if (text[1] == 0x81 && text[2] == 0x7C)
-	{
-		text[1] = '-';
-		for (int i=2; i < text[0]; i++)
-			text[i] = text[i+1];
-		
-		text[0]--;
-	}
-	
-	StringToNum(text, ID);
-	CopyString(iconName, &text[IDEnd]);
-}
-
-void icnsClass::GetIDMenu(int ID, MenuHandle* menu, int* item, Str255 name)
-{
-	MenuHandle	currentMenu;
-	int			itemCount;
-	long		tempID;
-	Str255		menuItemText, tempName;
-	
-	CopyString(name, "\p");
-	if (menu != NULL)
-		*menu = (MenuHandle)Get1Resource('MENU', mBaseIDMenu + mIDMenuCount - 1);
-	if (item != NULL)
-		*item = CountMenuItems(*menu);
-	
-	for (int i = 0; i < mIDMenuCount; i++)
-	{
-		//currentMenu = (MenuHandle) Get1Resource('MENU', mBaseIDMenu + i);
-		currentMenu = GetMenu(mBaseIDMenu + i);
-		
-		if (currentMenu == NULL)
-			DisplayValue(mBaseIDMenu + i);
-		
-		itemCount = CountMenuItems(currentMenu);
-		
-		for (int j = 1; j <= itemCount; j++)
-		{
-			GetMenuItemText(currentMenu, j, menuItemText);
-			
-			SplitMenuItem(menuItemText, &tempID, tempName);			
-			
-			if (ID == tempID)
-			{
-				CopyString(name, tempName);
-				if (menu != NULL)
-					*menu = currentMenu;
-				if (item != NULL)
-					*item = j;
-				
-				return;
-			}
-		}
-		
-		//ReleaseResource(Handle(currentMenu));
-	}
-
-}
-
-pascal Boolean icnsClass::IconInfoDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit)
-{
-	bool	handledEvent = false;
-	
-	switch (eventPtr->what)
-	{
-		case keyDown:
-		case autoKey:
-			ControlHandle IDField, focusControl;
-			
-			GetDialogItemAsControl(dialog, iIconIDField, &IDField);
-			GetKeyboardFocus(GetDialogWindow(dialog), &focusControl);
-			
-			if (eventPtr->modifiers & cmdKey)
-				handledEvent = StdFilterProc(dialog, eventPtr, itemHit);
-			else if (focusControl == IDField)
-			{
-				char key;
-				key = eventPtr->message & charCodeMask;  
-				if ((key == kReturnCharCode) || (key == kEnterCharCode) ||
-				    (key == kTabCharCode) || (key == kBackspaceCharCode) ||
-				    (key == kEscapeCharCode) || (key == kDeleteCharCode) ||
-				    (key == kRightArrowCharCode) || (key == kLeftArrowCharCode) ||
-				    (key == kUpArrowCharCode) || (key == kDownArrowCharCode) ||
-				    (key == '-') || ((key >= '0') && (key <= '9')))
-				{
-				   handledEvent = StdFilterProc(dialog, eventPtr, itemHit);
-				}
-				else
-				{
-					SysBeep(6);
-					handledEvent = true;
-				}
-			}
-			else
-				handledEvent = StdFilterProc(dialog, eventPtr, itemHit);
-			break;
-		default:
-			handledEvent = MWindow::StandardDialogFilter(dialog, eventPtr, itemHit);
-			break;
-	}
-	return handledEvent;
-}
 
 #pragma mark -
 
@@ -2494,7 +1935,7 @@ void GeticnsInfo(IconFamilyHandle icnsHandle, long* members, int* maxHeight)
 
 void GetICNInfo(short ID, Str255 name, long* members, int *maxHeight)
 {
-	OSType	type, iconTypes[] = {'ICN#', 'ics#', 'icl8', 'ics8', 'icl4', 'ics4'};
+	OSType	type, iconTypes[] = {'ICN#', 'ics#', 'icl8', 'ics8', 'icl4', 'ics4', 'icm8', 'icm4', 'icm#', 'il32', 'ih32', 'is32'};
 	int		typeCount = sizeof(iconTypes)/sizeof(iconTypes[0]);
 	Handle	icon;
 	Str255	tempName;
@@ -2518,14 +1959,17 @@ void GetICNInfo(short ID, Str255 name, long* members, int *maxHeight)
 				case 'ich8': *members |= ich8; if (*maxHeight < 48) *maxHeight = 48; break;
 				case 'icl8': *members |= icl8; if (*maxHeight < 32) *maxHeight = 32; break;
 				case 'ics8': *members |= ics8; if (*maxHeight < 16) *maxHeight = 16; break;
+				case 'icm8': *members |= icm8; if (*maxHeight < 12) *maxHeight = 12; break;
 				
 				case 'ich4': *members |= ich4; if (*maxHeight < 48) *maxHeight = 48; break;
 				case 'icl4': *members |= icl4; if (*maxHeight < 32) *maxHeight = 32; break;
 				case 'ics4': *members |= ics4; if (*maxHeight < 16) *maxHeight = 16; break;
+				case 'icm4': *members |= icm4; if (*maxHeight < 12) *maxHeight = 12; break;
 				
 				case 'ich#': *members |= ichi; if (*maxHeight < 48) *maxHeight = 48; break;
 				case 'ICN#': *members |= icni; if (*maxHeight < 32) *maxHeight = 32; break;
 				case 'ics#': *members |= icsi; if (*maxHeight < 16) *maxHeight = 16; break;
+				case 'icm#': *members |= icmi; if (*maxHeight < 12) *maxHeight = 12; break;
 			}
 			
 			GetResInfo(icon, &ID, &type, tempName);
@@ -2642,6 +2086,8 @@ bool CheckClipboard(bool verbose)
 	return true;
 }
 
+#pragma mark -
+
 bool IsICOFile(Str255 name)
 {
 	return ((name[name[0]    ] == 'o' || name[name[0]    ] == 'O') &&
@@ -2674,10 +2120,14 @@ bool IsicnsFile(Str255 name)
 }
 
 
-bool FilterIconFile(FSSpec file, long format)
+bool FilterIconFile(FSSpec file, long expectedFormat)
 {
-	return (format == formatAll ||
-			format == GetFileFormat(file));
+	int fileFormat = GetFileFormat(file);
+	
+	return (expectedFormat == formatAll ||
+			expectedFormat ==  fileFormat||
+			(expectedFormat == formatMacOSNew && fileFormat == formatMacOSUniversal) ||
+			(expectedFormat == formatMacOSOld && fileFormat == formatMacOSUniversal));
 }
 
 long GetFileFormat(FSSpec file)
@@ -2686,6 +2136,8 @@ long GetFileFormat(FSSpec file)
 		return formatWindows;
 	else if (IsTIFFFile(file.name))
 		return formatMacOSXServer;
+	else if (IsicnsFile(file.name))
+		return formatMacOSX;
 	else
 	{
 		short oldFile, currentFile;
@@ -2694,23 +2146,18 @@ long GetFileFormat(FSSpec file)
 		oldFile = CurResFile();
 		currentFile = FSpOpenResFile(&file, fsRdPerm);
 		
-		if (currentFile == -1)
-			if (IsicnsFile(file.name))
-				return formatMacOSNew;
-			else
-				return formatMacOSUniversal;
+		if (currentFile == -1) // we just want the file's icon
+			return formatMacOSUniversal;
 			
 		UseResFile(currentFile);
 		
-		oldCount = Count1Resources('ICN#') + Count1Resources('ics#');
+		oldCount = Count1Resources('ICN#') + Count1Resources('ics#') + Count1Resources('icm#') + Count1Resources('ich#');
 		newCount = Count1Resources('icns');
 		
 		if (oldCount == 0 && newCount > 0)
 			format = formatMacOSNew;
 		else if (oldCount > 0 && newCount == 0)
 			format = formatMacOSOld;
-		else if (oldCount == 0 && newCount == 0 && IsicnsFile(file.name))
-			format = formatMacOSNew;
 		else
 			format = formatMacOSUniversal;
 	
@@ -2718,5 +2165,75 @@ long GetFileFormat(FSSpec file)
 		UseResFile(oldFile);
 		
 		return format;
+	}
+}
+
+void SetFileExtension(int format, Str255 fileName)
+{
+	switch (format)
+	{
+		case formatMacOSUniversal:
+		case formatMacOSNew:
+		case formatMacOSOld:
+			if (IsICOFile(fileName))
+				fileName[0] -= 4;
+			else if (IsicnsFile(fileName))
+				fileName[0] -= 5;
+			else if (IsTIFFFile(fileName))
+				if (fileName[fileName[0] - 4] == '.')
+					fileName[0] -= 5;
+				else if (fileName[fileName[0] - 3] == '.')
+					fileName[0] -= 4;
+			break;
+		case formatMacOSX:
+			if (!IsicnsFile(fileName))
+			{
+				if (fileName[fileName[0] - 4] == '.')
+					fileName[0] -= 5;
+				else if (fileName[fileName[0] - 3] == '.')
+					fileName[0] -= 4;
+				else if (fileName[fileName[0] - 2] == '.')
+					fileName[0] -= 3;
+				else if (fileName[fileName[0] - 1] == '.')
+					fileName[0] -= 2;
+				else if (fileName[fileName[0]] == '.')
+					fileName[0] -= 1;
+				AppendString(fileName, "\p.icns");	
+			}
+			break;
+		case formatWindows:
+			if (!IsICOFile(fileName))
+			{
+				if (fileName[fileName[0] - 4] == '.')
+					fileName[0] -= 5;
+				else if (fileName[fileName[0] - 3] == '.')
+					fileName[0] -= 4;
+				else if (fileName[fileName[0] - 2] == '.')
+					fileName[0] -= 3;
+				else if (fileName[fileName[0] - 1] == '.')
+					fileName[0] -= 2;
+				else if (fileName[fileName[0]] == '.')
+					fileName[0] -= 1;
+				AppendString(fileName, "\p.ico");	
+			}
+			break;
+		case formatMacOSXServer:
+			if (!IsTIFFFile(fileName))
+			{
+				if (fileName[fileName[0] - 4] == '.')
+					fileName[0] -= 5;
+				else if (fileName[fileName[0] - 3] == '.')
+					fileName[0] -= 4;
+				else if (fileName[fileName[0] - 2] == '.')
+					fileName[0] -= 3;
+				else if (fileName[fileName[0] - 1] == '.')
+					fileName[0] -= 2;
+				else if (fileName[fileName[0]] == '.')
+					fileName[0] -= 1;
+					
+				
+				AppendString(fileName, "\p.tiff");
+			}
+			break;
 	}
 }

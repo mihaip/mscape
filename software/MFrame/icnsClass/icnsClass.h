@@ -9,9 +9,12 @@
 #include "commonfunctions.h"
 #include "compression.h"
 #include "graphicalFunctions.h"
-#include "Find_icon.h"
 #include "MoreFilesExtras.h"
 #include "MString.h"
+#include "MWindow.h"
+#if !TARGET_API_MAC_CARBON
+#include "Find_icon.h"
+#endif
 
 const static int icnsSizePadding = 2; // this should yield 2 for 68K and 4 for PPC
 // this is done because on older, 68K systems the alignemnt was to every short, while
@@ -20,13 +23,6 @@ const static int icnsSizePadding = 2; // this should yield 2 for 68K and 4 for P
 const static int rCustomIcon = -16455; // this ID is a standard used by the Mac OS Finder
 // when determining if an item has a custom icon (if an icon resource with this ID exists
 // within a file, then it does)
-
-#define REMOVEICON\
-	if (iconHandle != NULL)\
-	{\
-		RemoveResource(iconHandle);\
-		UpdateResFile(targetFile);\
-	}
 
 #define THUMBNAIL
 #define MINI
@@ -78,16 +74,17 @@ enum statusTypes
 enum iconFormats
 {
 	formatMacOSUniversal = 1,
-	formatMacOSNew = 2,
-	formatMacOSOld = 3,
-	formatWindows = 4,
-	formatMacOSXServer = 5,
-	formatAll = 7
+	formatMacOSX = 2,
+	formatMacOSNew = 3,
+	formatMacOSOld = 4,
+	formatWindows = 5,
+	formatMacOSXServer = 6,
+	formatAll = 8
 };
 
-const static int kFormatCount = 5;
+const static int kFormatCount = 6;
 
-const OSType iconFormats[] = {0, 'Icon', 'Icon', 'Icon', 'ICO ', 'TIFF'};
+const OSType iconFormats[] = {0, 'Icon', 'IcoX', 'Icon', 'Icon', 'ICO ', 'TIFF'};
 
 enum iconElementNames
 {
@@ -144,6 +141,8 @@ enum icnsClassResources
 {
 	// dialogs
 	rIconInfo = 4000,
+	rIconInfoProperties = 4001,
+	rIconInfoMembers = 4002,
 	
 	// color tables
 	rWindows4BitColors = 4000,
@@ -164,19 +163,7 @@ enum icnsClassResources
 
 enum iconInfoItems
 {
-	iIconIDLabel = 3,
-	iIconIDField = 4,
-	iIconNameLabel = 5,
-	iIconNameField = 6,
-	iFlagsGroupBox = 7,
-	iIconSizeField = 8,
-	iPurgeable = 9,
-	iPreload = 10,
-	iLocked = 11,
-	iProtected = 12,
-	iSystemHeap = 13,
-	iIDMenu = 15,
-	iFormatPopup = 16,
+	iIconInfoTabs = 3,
 	
 	iThumbnailBox = 19,
 	
@@ -220,7 +207,25 @@ enum iconInfoItems
 	i1BitIconLabel = 29,
 	iMaskLabel = 30,
 	i8BitMaskLabel = 31,
-	i1BitMaskLabel = 32
+	i1BitMaskLabel = 32,
+	
+	iIconIDLabel = 55,
+	iIconIDField = 56,
+	iIDMenu = 57,
+	iIconNameLabel = 58,
+	iIconNameField = 59,
+	iFormatLabel = 60, 
+	iFormatPopup = 61,
+	iIconSizeLabel = 62,
+	iIconSizeField = 63,
+	iPropertiesDivider = 64,
+	iFlagsGroupBox = 65,
+	iPurgeable = 66,
+	iPreload = 67,
+	iLocked = 68,
+	iProtected = 69,
+	iSystemHeap = 70
+	
 };
 
 enum formatStrings
@@ -231,13 +236,17 @@ enum formatStrings
 enum miscIconStrings
 {
 	eNone = 1,
-	eFinderIcon = 2
+	eFinderIcon = 2,
+	eICNonIconDataFork = 3,
+	eICYesButton = 4,
+	eICNoButton = 5,
+	eICChooseAnotherFile = 6
 };
 
 enum iconInfoStrings
 {
 	eInsertIconTitle = 1,
-	eSizeSuffix = 2,
+	eSizeFormat = 2,
 	eIDAlreadyExists = 3,
 	eOverwriteButton = 4,
 	eInfoCancelButton = 5
@@ -251,38 +260,40 @@ typedef struct
 	long	name;
 	long	resourceName;
 	bool	icon;
+	int		resourceSize;
+	bool	oldResource;
 } MemberDescription;
 
 const static MemberDescription kMembers[] =
 {
-	{128, 128, 32, it32, 'it32', true},
-	{128, 128, 8, t8mk, 't8mk', false},
+	{128, 128, 32, it32, 'it32', true, it32Size, false},
+	{128, 128, 8, t8mk, 't8mk', false, t8mkSize, false},
 	
-	{48, 48, 32, ih32, 'ih32', true},
-	{48, 48, 8, ich8, 'ich8', true},
-	{48, 48, 4, ich4, 'ich4', true},
-	{48, 48, 1, ichi, 'ichi', true},
-	{48, 48, 8, h8mk, 'h8mk', false},
-	{48, 48, 1, ichm, 'ichm', false},
+	{48, 48, 32, ih32, 'ih32', true, ih32Size, false},
+	{48, 48, 8, ich8, 'ich8', true, ich8Size, false},
+	{48, 48, 4, ich4, 'ich4', true, ich4Size, false},
+	{48, 48, 1, ichi, 'ich#', true, ichSize, false},
+	{48, 48, 8, h8mk, 'h8mk', false, h8mkSize, false},
+	{48, 48, 1, ichm, 'ich#', false, ichSize, false},
 	
-	{32, 32, 32, il32, 'il32', true},
-	{32, 32, 8, icl8, 'icl8', true},
-	{32, 32, 4, icl4, 'icl4', true},
-	{32, 32, 1, icni, 'icni', true},
-	{32, 32, 8, l8mk, 'l8mk', false},
-	{32, 32, 1, icnm, 'icnm', false},
+	{32, 32, 32, il32, 'il32', true, il32Size, false},
+	{32, 32, 8, icl8, 'icl8', true, icl8Size, true},
+	{32, 32, 4, icl4, 'icl4', true, icl4Size, true},
+	{32, 32, 1, icni, 'ICN#', true, icnSize, true},
+	{32, 32, 8, l8mk, 'l8mk', false, l8mkSize, false},
+	{32, 32, 1, icnm, 'ICN#', false, icnSize, true},
 	
-	{16, 16, 32, is32, 'is32', true},
-	{16, 16, 8, ics8, 'ics8', true},
-	{16, 16, 4, ics4, 'ics4', true},
-	{16, 16, 1, icsi, 'icsi', true},
-	{16, 16, 8, s8mk, 's8mk', false},
-	{16, 16, 1, icsm, 'icsm', false},
+	{16, 16, 32, is32, 'is32', true, is32Size, false},
+	{16, 16, 8, ics8, 'ics8', true, ics8Size, true},
+	{16, 16, 4, ics4, 'ics4', true, ics4Size, true},
+	{16, 16, 1, icsi, 'ics#', true, icsSize, true},
+	{16, 16, 8, s8mk, 's8mk', false, s8mkSize, false},
+	{16, 16, 1, icsm, 'ics#', false, icsSize, true},
 	
-	{16, 12, 8, icm8, 'icm8', true},
-	{16, 12, 4, icm4, 'icm4', true},
-	{16, 12, 1, icmi, 'icmi', true},
-	{16, 12, 1, icmm, 'icmm', false}
+	{16, 12, 8, icm8, 'icm8', true, icm8Size, true},
+	{16, 12, 4, icm4, 'icm4', true, icm4Size, true},
+	{16, 12, 1, icmi, 'icm#', true, icmSize, true},
+	{16, 12, 1, icmm, 'icm#', false, icmSize, true}
 };
 
 const static int kMembersCount = sizeof(kMembers)/sizeof(MemberDescription);
@@ -291,6 +302,7 @@ const static long kDefaultMembers[kFormatCount + 1] =
 {
 	0,
 	icon32 | icon8 | icon4 | icon1 | mask8 | mask1, // mac os universal
+	icon32 | icon8 | icon4 | icon1 | mask8 | mask1, // mac os x
 	icon32 | icon8 | icon4 | icon1 | mask8 | mask1, // mac os new
 	(icon8 | icon4 | icon1 | mask1) &~ (thumbnailSize | hugeSize), // mac os old
 	(icon32 | icon8 | icon4 | icon1 | mask1) &~ (thumbnailSize | miniSize), // windows
@@ -303,6 +315,13 @@ enum iconInfoModes
 	kInsertIcon,
 	kIconInfoBrowser
 };
+
+typedef struct
+{
+	ControlHandle	IDMenu;
+	MenuHandle		currentMenu, newMenu;
+	int				currentItem, newItem;
+} EditIconInfoData;
 
 class icnsClass
 {
@@ -406,6 +425,34 @@ class icnsClass
 		FSSpec			savedSpec;
 		unsigned char	isFolder;
 		
+	private:
+		void 			LoadUniversal();
+		OSErr			LoadNew();
+		OSErr			LoadOld();
+		void			LoadICO();
+		void			LoadTIFF();
+		
+		bool			HasNonIconDataFork();
+		OSErr			PreFlight();
+		
+		void			SaveUniversal();
+		void			SaveOld();
+		void			SaveNew();
+		void			SaveICO();
+		void			SaveTIFF();
+		void			SaveDataFork();
+		
+		static DialogPtr			infoDialog;
+		static Handle				propertiesControls, membersControls;
+		static ModalFilterUPP		eventFilterUPP;
+		static ControlHandle		IDField, IDMenu, nameField, sizeField, formatPopup,
+									sysHeapBox, purgeableBox, lockedBox, protectedBox, preloadBox, tabs; 
+		static MenuHandle			popupMenu, formatMenu;
+		static MWindowPtr			infoDialogWindow;
+		static EditIconInfoData		dialogData;
+		static int					currentTab;
+
+		
 	public:
 		short			ID;
 		long			loadedID;
@@ -424,13 +471,10 @@ class icnsClass
 						icnsClass(void);
 						~icnsClass(void);
 		void			Load();
-		void 			LoadUniversal();
-		OSErr			LoadNew();
-		OSErr			LoadOld();
+		
 		void			LoadFileIcon();
 		void			LoadDataFork();
-		void			LoadICO();
-		void			LoadTIFF();
+		
 		
 		void			Reset();
 		
@@ -439,13 +483,8 @@ class icnsClass
 		void 			DrawMember(int member, Rect targetRect);
 		void			ExportToPixMap(PixMapHandle targetPix);
 		void			ImportFromClipboard(bool dither);
-		void 			Save();
-		void			SaveUniversal();
-		void			SaveOld();
-		void			SaveNew();
-		void			SaveICO();
-		void			SaveTIFF();
-		void			SaveDataFork();
+		OSErr 			Save();
+		
 		long			GetSize();
 		long			GetLargestSize();
 		
@@ -463,8 +502,12 @@ class icnsClass
 		
 		int				GetMemberIndex(int name);
 		
+		static void		LoadInfoDialog();
+		static void		DisposeInfoDialog();
+		
 		static void		SetCanvas(GWorldPtr inCanvasGW, PixMapHandle inCanvasPix);
 		
+		static void		SetMinimumMembers(long* usedMembers, int format);
 		int				EditIconInfo(int mode);
 		static void		SetMembersCheckboxes(DialogPtr dialog, long usedMembers, long format);
 		static void		GetMembersCheckboxes(DialogPtr dialog, long* usedMembers);
@@ -500,4 +543,5 @@ bool		IsICOFile(Str255 name);
 bool		IsTIFFFile(Str255 name);
 bool		IsicnsFile(Str255 name);
 bool FilterIconFile(FSSpec file, long format);
+void SetFileExtension(int format, Str255 fileName);
 long GetFileFormat(FSSpec file);

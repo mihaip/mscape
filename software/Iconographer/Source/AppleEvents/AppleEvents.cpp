@@ -10,15 +10,18 @@
 OSErr AEInit()
 {
 	OSErr err = noErr;
-	AEEventHandlerUPP openAppUPP, openDocUPP, printDocUPP, quitAppUPP, preferencesUPP;
+	AEEventHandlerUPP openAppUPP, openDocUPP, printDocUPP, quitAppUPP, preferencesUPP, reopenAppUPP;
 	
 	openAppUPP = NewAEEventHandlerUPP(AEOpenApp);
+	reopenAppUPP = NewAEEventHandlerUPP(AEReopenApp);
 	openDocUPP = NewAEEventHandlerUPP(AEOpenDoc);
 	printDocUPP = NewAEEventHandlerUPP(AEPrintDoc);
 	quitAppUPP = NewAEEventHandlerUPP(AEQuitApp);
 	preferencesUPP = NewAEEventHandlerUPP(AEPreferences);
 	
 	err = AEInstallEventHandler(kCoreEventClass, kAEOpenApplication, openAppUPP, 0L, false);
+	if (err == noErr)
+		err = AEInstallEventHandler(kCoreEventClass, kAEReopenApplication, reopenAppUPP, 0L, false);
 	if (err == noErr)
 		err = AEInstallEventHandler(kCoreEventClass, kAEOpenDocuments, openDocUPP, 0L, false);
 	if (err == noErr)
@@ -67,6 +70,17 @@ pascal OSErr AEOpenApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long 
 	
 	return AEGotRequiredParams(theAppleEvent);
 }
+
+pascal OSErr AEReopenApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
+{
+#pragma unused(reply,refCon)
+	
+	if (MWindow::GetFront() == NULL)
+		NewIcon(true);
+
+	return AEGotRequiredParams(theAppleEvent);
+}
+
 
 pascal OSErr AEOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
 {

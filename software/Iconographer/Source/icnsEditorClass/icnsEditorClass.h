@@ -113,14 +113,14 @@ enum basicStrings
 	eNoMask = 6,
 	eGenerateButton = 7,
 	
-	eNonIconDataFork = 8,
-	eChooseAnotherFile = 9,
-	eClickToChooseAShortcut = 10,
-	eClickToChooseAnEditor = 11,
-	eIconographerSupportFolder = 12,
-	eIconographerSupportFolderError = 13,
-	eExternalEditorError = 14,
-	eOpenPreferences = 15
+	eClickToChooseAShortcut = 8,
+	eClickToChooseAnEditor = 9,
+	eIconographerSupportFolder = 10,
+	eIconographerSupportFolderError = 11,
+	eExternalEditorError = 12,
+	eOpenPreferences = 13,
+	
+	eIconClippingName = 14
 };
 
 enum labelStrings
@@ -200,19 +200,31 @@ enum insertionFlags
 enum additionalStatusTypes
 {
 	// 1 is already used for out of memory
-	resized = 2,
-	needsUpdate = 4,
-	saveState = 8,
-	canUndo = 16,
-	canRedo = 32,
-	canZoomIn = 64,
-	canZoomOut = 128,
-	hasSelection = 256,
-	selectionFloated = 512,
-	needToSave = 1024,
-	dontRestoreCurrentPix = 2048,
-	skipState = 4096
+	resized = 1 << 1,
+	needsUpdate = 1 << 2,
+	saveState = 1 << 3,
+	canUndo = 1 << 4,
+	canRedo = 1<< 5,
+	canZoomIn = 1 << 6,
+	canZoomOut = 1 << 7,
+	hasSelection = 1 << 8,
+	selectionFloated = 1 << 9,
+	needToSave = 1 << 10,
+	dontRestoreCurrentPix = 1 << 11,
+	skipState = 1 << 12,
+	mouseInSelection = 1 << 13,
+	canPaste = 1 << 14,
+	canPasteFamily = 1 << 15,
+	canRevert = 1 << 16,
+	currentDepthSupportsColors = 1 << 17,
+	macOSPalette = 1 << 18,
+	mouseInEditArea = 1 << 19,
+	isOptionDown = 1 << 20,
+	isShiftDown = 1 << 21,
+	isCommandDown = 1 << 22
 };
+
+const static int kMenuIgnoredStates = ~(resized | needsUpdate | dontRestoreCurrentPix | mouseInSelection | mouseInEditArea | isShiftDown | isCommandDown | isOptionDown);
 
 enum colors
 {
@@ -279,7 +291,7 @@ class icnsEditorClass : public icnsClass, public MDocumentWindow
 										   PixMapHandle* maskPix, GWorldPtr* maskGW, long* maskName,
 										   bool strict);
 		void			ToggleIconMask(void);
-		void			CheckMaskSync(PixMapHandle basePix, PixMapHandle maskPix, int size);
+		void			CheckMaskSync(PixMapHandle basePix, PixMapHandle maskPix, int maskName, int size);
 		void			GenerateMask(int mask);
 		void			ChangeColorsIconSet(long name, GWorldPtr* gWorld, PixMapHandle* pix, CTabHandle colorTable, bool saveState);
 		
@@ -315,7 +327,9 @@ class icnsEditorClass : public icnsClass, public MDocumentWindow
 		void			UpdateEditArea(Rect rect1, Rect rect2, int flags);
 		
 		void			PaintEditAreaRect(Rect targetRect);
+#if !TARGET_API_MAC_CARBON
 		void			AddPanUpdateRect(Rect updateRect);
+#endif
 		void			StartPan();
 		void			PanEditArea(int dH, int dV);
 		void			FinishPan();
@@ -379,9 +393,13 @@ class icnsEditorClass : public icnsClass, public MDocumentWindow
 		
 		int				hScrollbarValue;
 		int				vScrollbarValue;
-		
+
+#if TARGET_API_MAC_CARBON
+		RgnHandle		scrollUpdateRgn, savedClipRgn;
+#else
 		Rect			panUpdateRects[kMaxPanUpdateRects];
 		int				panUpdateRectsCount;
+#endif
 		
 		bool			exportMode;
 		unsigned long	exportDate;
@@ -416,7 +434,7 @@ class icnsEditorClass : public icnsClass, public MDocumentWindow
 		void			Show();
 		void			Hide();
 		
-		void			SetCurrentMember(long member, bool fancy);
+		void			SetCurrentMember(long member, int facinessLevel);
 		void 			SetBestMember();
 		
 		void			ResetStates();

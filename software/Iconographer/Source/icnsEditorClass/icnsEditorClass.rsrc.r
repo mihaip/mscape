@@ -43,193 +43,6 @@ resource 'CNTL' (203, "Horizontal Scrollbar", purgeable) {
 	""
 };
 
-resource 'CNTL' (1000, "Zoom Level Arrows", purgeable) {
-	{40, 366, 64, 379},
-	0,
-	visible,
-	100,
-	0,
-	96,
-	0,
-	""
-};
-
-resource 'CNTL' (1003, "Startup Options Group Box", purgeable) {
-	{92, 9, 160, 189},
-	0,
-	visible,
-	120,
-	0,
-	160,
-	0,
-	"Startup Options:"
-};
-
-resource 'CNTL' (1004, "Default Format", purgeable) {
-	{74, 10, 94, 378},
-	0,
-	visible,
-	-1,
-	4000,
-	401,
-	0,
-	"Default icon format:"
-};
-
-resource 'CNTL' (1007, "Preferences Tabs", purgeable) {
-	{8, 0, 252, 390},
-	1007,
-	visible,
-	100,
-	0,
-	128,
-	0,
-	""
-};
-
-resource 'CNTL' (1008, "Default Members Group Box", purgeable) {
-	{99, 9, 241, 381},
-	0,
-	visible,
-	100,
-	0,
-	160,
-	0,
-	"Default Members"
-};
-
-resource 'CNTL' (1009, "Saving Options Group Box", purgeable) {
-	{92, 198, 160, 378},
-	0,
-	visible,
-	120,
-	0,
-	160,
-	0,
-	"Mac OS Icon Saving:"
-};
-
-resource 'CNTL' (1010, "Adjust Tabs", purgeable) {
-	{8, 0, 141, 367},
-	1010,
-	visible,
-	100,
-	0,
-	128,
-	0,
-	""
-};
-
-resource 'CNTL' (1011, "Hue Slider", purgeable) {
-	{47, 83, 78, 303},
-	5,
-	visible,
-	180,
-	-180,
-	51,
-	0,
-	"Hue:"
-};
-
-resource 'CNTL' (1012, "Saturation Slider", purgeable) {
-	{85, 83, 116, 303},
-	5,
-	visible,
-	100,
-	-100,
-	51,
-	0,
-	"Saturation:"
-};
-
-resource 'CNTL' (1013, "Lightness Slider", purgeable) {
-	{124, 92, 155, 312},
-	6,
-	visible,
-	100,
-	-100,
-	51,
-	0,
-	"Lightness:"
-};
-
-resource 'CNTL' (1014, "Brightness Slider", purgeable) {
-	{47, 83, 78, 303},
-	5,
-	visible,
-	100,
-	-100,
-	51,
-	0,
-	"Brightness:"
-};
-
-resource 'CNTL' (1015, "Contrast Slider", purgeable) {
-	{85, 83, 116, 303},
-	5,
-	visible,
-	100,
-	-100,
-	51,
-	0,
-	"Contrast:"
-};
-
-resource 'CNTL' (1016, "External Format", purgeable) {
-	{95, 7, 115, 379},
-	0,
-	visible,
-	172,
-	1016,
-	401,
-	0,
-	"Export format:"
-};
-
-resource 'CNTL' (1017, "External Editor App", purgeable) {
-	{41, 179, 62, 379},
-	0,
-	visible,
-	100,
-	0,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (1018, "External Editor Shortcut", purgeable) {
-	{68, 179, 89, 379},
-	0,
-	visible,
-	100,
-	0,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (1019, "Members Palette Box", purgeable) {
-	{162, 9, 215, 378},
-	0,
-	visible,
-	100,
-	0,
-	160,
-	0,
-	"Members Palette Display:"
-};
-
-resource 'CNTL' (1020, "Members Palette Display Slider", purgeable) {
-	{187, 222, 203, 340},
-	64,
-	visible,
-	64,
-	16,
-	57,
-	0,
-	""
-};
-
 resource 'CNTL' (1120, "Add Member Type Menu", purgeable) {
 	{56, 4, 76, 338},
 	0,
@@ -285,425 +98,6 @@ resource 'CNTL' (1412, "Size Popup", purgeable) {
 	"Style:"
 };
 
-resource 'DITL' (1000, "Preferences", purgeable) {
-	{	/* array DITLarray: 69 elements */
-		/* [1] */
-		{261, 306, 281, 374},
-		Button {
-			enabled,
-			"OK"
-		},
-		/* [2] */
-		{261, 226, 281, 290},
-		Button {
-			enabled,
-			"Cancel"
-		},
-		/* [3] */
-		{39, 8, 55, 313},
-		CheckBox {
-			enabled,
-			"Show only loaded members"
-		},
-		/* [4] */
-		{46, 320, 57, 360},
-		EditText {
-			disabled,
-			"1000%"
-		},
-		/* [5] */
-		{40, 366, 64, 379},
-		Control {
-			enabled,
-			1000
-		},
-		/* [6] */
-		{107, 16, 123, 181},
-		RadioButton {
-			enabled,
-			"Create a new icon"
-		},
-		/* [7] */
-		{123, 16, 139, 181},
-		RadioButton {
-			enabled,
-			"Open an existing icon"
-		},
-		/* [8] */
-		{139, 16, 155, 181},
-		RadioButton {
-			enabled,
-			"Do nothing"
-		},
-		/* [9] */
-		{56, 8, 72, 313},
-		CheckBox {
-			enabled,
-			"Check masks when saving"
-		},
-		/* [10] */
-		{73, 8, 89, 313},
-		CheckBox {
-			enabled,
-			"Dither when working with lower depths"
-		},
-		/* [11] */
-		{162, 9, 215, 378},
-		Control {
-			enabled,
-			1019
-		},
-		/* [12] */
-		{44, 10, 62, 309},
-		StaticText {
-			disabled,
-			"Default zoom level:"
-		},
-		/* [13] */
-		{74, 10, 94, 378},
-		Control {
-			enabled,
-			1004
-		},
-		/* [14] */
-		{92, 9, 160, 189},
-		Control {
-			enabled,
-			1003
-		},
-		/* [15] */
-		{8, 0, 252, 390},
-		Control {
-			enabled,
-			1007
-		},
-		/* [16] */
-		{92, 198, 160, 378},
-		Control {
-			enabled,
-			1009
-		},
-		/* [17] */
-		{99, 9, 241, 381},
-		Control {
-			enabled,
-			1008
-		},
-		/* [18] */
-		{220, 13, 236, 153},
-		Control {
-			enabled,
-			1104
-		},
-		/* [19] */
-		{121, 13, 137, 153},
-		Control {
-			enabled,
-			1100
-		},
-		/* [20] */
-		{165, 13, 181, 153},
-		Control {
-			enabled,
-			1101
-		},
-		/* [21] */
-		{184, 13, 200, 153},
-		Control {
-			enabled,
-			1102
-		},
-		/* [22] */
-		{202, 13, 218, 153},
-		Control {
-			enabled,
-			1103
-		},
-		/* [23] */
-		{159, 15, 162, 373},
-		Control {
-			enabled,
-			1105
-		},
-		/* [24] */
-		{142, 15, 156, 53},
-		StaticText {
-			disabled,
-			"Hints"
-		},
-		/* [25] */
-		{142, 112, 154, 141},
-		StaticText {
-			disabled,
-			"Icon:"
-		},
-		/* [26] */
-		{142, 148, 154, 179},
-		StaticText {
-			disabled,
-			"32-bit"
-		},
-		/* [27] */
-		{142, 180, 154, 211},
-		StaticText {
-			disabled,
-			"8-bit"
-		},
-		/* [28] */
-		{142, 212, 154, 243},
-		StaticText {
-			disabled,
-			"4-bit"
-		},
-		/* [29] */
-		{142, 244, 154, 275},
-		StaticText {
-			disabled,
-			"1-bit"
-		},
-		/* [30] */
-		{142, 281, 154, 316},
-		StaticText {
-			disabled,
-			"Mask:"
-		},
-		/* [31] */
-		{142, 315, 154, 346},
-		StaticText {
-			disabled,
-			"8-bit"
-		},
-		/* [32] */
-		{142, 347, 154, 378},
-		StaticText {
-			disabled,
-			"1-bit"
-		},
-		/* [33] */
-		{165, 154, 181, 171},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [34] */
-		{184, 154, 200, 171},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [35] */
-		{202, 154, 218, 171},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [36] */
-		{165, 182, 181, 199},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [37] */
-		{184, 182, 200, 199},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [38] */
-		{202, 182, 218, 199},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [39] */
-		{220, 182, 236, 199},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [40] */
-		{165, 214, 181, 231},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [41] */
-		{184, 214, 200, 231},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [42] */
-		{202, 214, 218, 231},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [43] */
-		{220, 214, 236, 231},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [44] */
-		{165, 246, 181, 263},
-		CheckBox {
-			disabled,
-			""
-		},
-		/* [45] */
-		{184, 246, 200, 263},
-		CheckBox {
-			disabled,
-			""
-		},
-		/* [46] */
-		{202, 246, 218, 263},
-		CheckBox {
-			disabled,
-			""
-		},
-		/* [47] */
-		{220, 246, 236, 263},
-		CheckBox {
-			disabled,
-			""
-		},
-		/* [48] */
-		{165, 318, 181, 335},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [49] */
-		{184, 318, 200, 335},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [50] */
-		{202, 318, 218, 335},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [51] */
-		{165, 350, 181, 367},
-		CheckBox {
-			disabled,
-			""
-		},
-		/* [52] */
-		{184, 350, 200, 367},
-		CheckBox {
-			disabled,
-			""
-		},
-		/* [53] */
-		{202, 350, 218, 367},
-		CheckBox {
-			disabled,
-			""
-		},
-		/* [54] */
-		{220, 350, 236, 367},
-		CheckBox {
-			disabled,
-			""
-		},
-		/* [55] */
-		{107, 202, 123, 367},
-		RadioButton {
-			enabled,
-			"Data & resource forks"
-		},
-		/* [56] */
-		{123, 202, 139, 367},
-		RadioButton {
-			enabled,
-			"Resource fork only"
-		},
-		/* [57] */
-		{139, 202, 155, 367},
-		RadioButton {
-			enabled,
-			"Data fork only"
-		},
-		/* [58] */
-		{222, 99, 242, 277},
-		Button {
-			enabled,
-			"Reset Palette Locations"
-		},
-		/* [59] */
-		{95, 7, 115, 379},
-		Control {
-			enabled,
-			1016
-		},
-		/* [60] */
-		{119, 9, 135, 169},
-		CheckBox {
-			enabled,
-			"Export icon and mask"
-		},
-		/* [61] */
-		{41, 179, 62, 379},
-		Control {
-			enabled,
-			1017
-		},
-		/* [62] */
-		{68, 179, 89, 379},
-		Control {
-			enabled,
-			1018
-		},
-		/* [63] */
-		{44, 10, 61, 119},
-		StaticText {
-			disabled,
-			"External editor: "
-		},
-		/* [64] */
-		{71, 10, 88, 149},
-		StaticText {
-			disabled,
-			"Editor key shortcut:"
-		},
-		/* [65] */
-		{177, 16, 193, 176},
-		RadioButton {
-			enabled,
-			"Full size"
-		},
-		/* [66] */
-		{193, 16, 209, 176},
-		RadioButton {
-			enabled,
-			"Scaled"
-		},
-		/* [67] */
-		{187, 222, 203, 340},
-		Control {
-			enabled,
-			1020
-		},
-		/* [68] */
-		{189, 347, 201, 363},
-		EditText {
-			enabled,
-			"64"
-		},
-		/* [69] */
-		{187, 187, 203, 220},
-		StaticText {
-			disabled,
-			"Size:"
-		}
-	}
-};
-
 resource 'DITL' (1002, purgeable) {
 	{	/* array DITLarray: 2 elements */
 		/* [1] */
@@ -756,123 +150,6 @@ resource 'DITL' (1003, purgeable) {
 		Control {
 			enabled,
 			1121
-		}
-	}
-};
-
-resource 'DITL' (1010, "Adjust", purgeable) {
-	{	/* array DITLarray: 4 elements */
-		/* [1] */
-		{153, 285, 173, 353},
-		Button {
-			enabled,
-			"OK"
-		},
-		/* [2] */
-		{153, 205, 173, 269},
-		Button {
-			enabled,
-			"Cancel"
-		},
-		/* [3] */
-		{153, 5, 173, 165},
-		CheckBox {
-			enabled,
-			"Real-time preview"
-		},
-		/* [4] */
-		{8, 0, 141, 367},
-		Control {
-			enabled,
-			1010
-		}
-	}
-};
-
-resource 'DITL' (1011, "Adjust: Hue & Saturation Pane", purgeable) {
-	{	/* array DITLarray: 7 elements */
-		/* [1] */
-		{47, 83, 78, 303},
-		Control {
-			enabled,
-			1011
-		},
-		/* [2] */
-		{85, 83, 116, 303},
-		Control {
-			enabled,
-			1012
-		},
-		/* [3] */
-		{50, 316, 66, 352},
-		EditText {
-			enabled,
-			"0"
-		},
-		/* [4] */
-		{87, 316, 103, 352},
-		EditText {
-			enabled,
-			"0"
-		},
-		/* [5] */
-		{116, 6, 132, 166},
-		CheckBox {
-			enabled,
-			"Colorize"
-		},
-		/* [6] */
-		{47, 5, 68, 80},
-		StaticText {
-			disabled,
-			"Hue:"
-		},
-		/* [7] */
-		{85, 5, 106, 80},
-		StaticText {
-			disabled,
-			"Saturation:"
-		}
-	}
-};
-
-resource 'DITL' (1012, "Adjust: Brightness & Saturation Pane", purgeable) {
-	{	/* array DITLarray: 6 elements */
-		/* [1] */
-		{47, 83, 78, 303},
-		Control {
-			enabled,
-			1014
-		},
-		/* [2] */
-		{85, 83, 116, 303},
-		Control {
-			enabled,
-			1015
-		},
-		/* [3] */
-		{50, 316, 66, 352},
-		EditText {
-			enabled,
-			"0"
-		},
-		/* [4] */
-		{87, 316, 103, 352},
-		EditText {
-			enabled,
-			"0"
-		},
-		/* [5] */
-		{47, 5, 67, 84},
-		StaticText {
-			disabled,
-			"Brightness:"
-		},
-		/* [6] */
-		{85, 5, 105, 84},
-		StaticText {
-			disabled,
-			"Contrast:"
 		}
 	}
 };
@@ -965,66 +242,6 @@ resource 'DITL' (9999) {
 	}
 };
 
-data 'DLGX' (1000) {
-	$"0647 656E 6576 6100 0000 0000 0000 0000"            /* .Geneva......... */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0009 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
-	$"0045 0000 0000 0000 0000 0000 0000 0001"            /* .E.............. */
-	$"0000 0000 0000 0000 0000 0003 0000 0000"            /* ................ */
-	$"0000 0000 0000 0007 0000 0000 0000 0000"            /* ................ */
-	$"0000 0005 0000 0000 0000 0000 0000 0004"            /* ................ */
-	$"0000 0001 0000 0000 0000 0004 0000 0001"            /* ................ */
-	$"0000 0000 0000 0004 0000 0001 0000 0000"            /* ................ */
-	$"0000 0003 0000 0000 0000 0000 0000 0003"            /* ................ */
-	$"0000 0000 0000 0000 0000 0005 0000 0000"            /* ................ */
-	$"0000 0000 0000 0006 0000 0000 0000 0000"            /* ................ */
-	$"0000 0005 0000 0000 0000 0000 0000 0005"            /* ................ */
-	$"0000 0000 0000 0000 0000 0005 0000 0000"            /* ................ */
-	$"0000 0000 0000 0005 0000 0000 0000 0000"            /* ................ */
-	$"0000 0005 0000 0000 0000 0000 0000 0005"            /* ................ */
-	$"0000 0000 0000 0000 0000 0005 0000 0000"            /* ................ */
-	$"0000 0000 0000 0005 0000 0000 0000 0000"            /* ................ */
-	$"0000 0005 0000 0000 0000 0000 0000 0005"            /* ................ */
-	$"0000 0000 0000 0000 0000 0005 0000 0000"            /* ................ */
-	$"0000 0000 0000 0006 0000 0000 0000 0000"            /* ................ */
-	$"0000 0006 0000 0000 0000 0000 0000 0006"            /* ................ */
-	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
-	$"0000 0000 0000 0006 0000 0000 0000 0000"            /* ................ */
-	$"0000 0006 0000 0000 0000 0000 0000 0006"            /* ................ */
-	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
-	$"0000 0000 0000 0006 0000 0000 0000 0000"            /* ................ */
-	$"0000 0003 0000 0000 0000 0000 0000 0003"            /* ................ */
-	$"0000 0000 0000 0000 0000 0003 0000 0000"            /* ................ */
-	$"0000 0000 0000 0003 0000 0000 0000 0000"            /* ................ */
-	$"0000 0003 0000 0000 0000 0000 0000 0003"            /* ................ */
-	$"0000 0000 0000 0000 0000 0003 0000 0000"            /* ................ */
-	$"0000 0000 0000 0003 0000 0000 0000 0000"            /* ................ */
-	$"0000 0003 0000 0000 0000 0000 0000 0003"            /* ................ */
-	$"0000 0000 0000 0000 0000 0003 0000 0000"            /* ................ */
-	$"0000 0000 0000 0003 0000 0000 0000 0000"            /* ................ */
-	$"0000 0003 0000 0000 0000 0000 0000 0003"            /* ................ */
-	$"0000 0000 0000 0000 0000 0003 0000 0000"            /* ................ */
-	$"0000 0000 0000 0003 0000 0000 0000 0000"            /* ................ */
-	$"0000 0003 0000 0000 0000 0000 0000 0003"            /* ................ */
-	$"0000 0000 0000 0000 0000 0003 0000 0000"            /* ................ */
-	$"0000 0000 0000 0003 0000 0000 0000 0000"            /* ................ */
-	$"0000 0003 0000 0000 0000 0000 0000 0003"            /* ................ */
-	$"0000 0000 0000 0000 0000 0004 0000 0001"            /* ................ */
-	$"0000 0000 0000 0004 0000 0001 0000 0000"            /* ................ */
-	$"0000 0004 0000 0001 0000 0000 0000 0002"            /* ................ */
-	$"0000 0000 0000 0000 0000 0005 0000 0000"            /* ................ */
-	$"0000 0000 0000 0003 0000 0000 0000 0000"            /* ................ */
-	$"0000 0005 0000 0000 0000 0000 0000 0005"            /* ................ */
-	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
-	$"0000 0000 0000 0006 0000 0000 0000 0000"            /* ................ */
-	$"0000 0004 0000 0001 0000 0000 0000 0004"            /* ................ */
-	$"0000 0001 0000 0000 0000 0005 0000 0000"            /* ................ */
-	$"0000 0000 0000 0007 0000 0000 0000 0000"            /* ................ */
-	$"0000 0006 0000 0000 0000 0000 0000"                 /* .............. */
-};
-
 data 'DLGX' (1002) {
 	$"0654 6563 686E 6F00 0000 0000 0000 0000"            /* .Techno......... */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
@@ -1045,45 +262,6 @@ data 'DLGX' (1003) {
 	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
 	$"0000 0000 0000 0005 0000 0000 0000 0000"            /* ................ */
 	$"0000 0005 0000 0000 0000 0000 0000"                 /* .............. */
-};
-
-data 'DLGX' (1010) {
-	$"0743 6869 6361 676F 0000 0000 0000 0000"            /* .Chicago........ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
-	$"0004 0000 0000 0000 0000 0000 0000 0001"            /* ................ */
-	$"0000 0000 0000 0000 0000 0003 0000 0000"            /* ................ */
-	$"0000 0000 0000 0005 0000 0000 0000 0000"            /* ................ */
-	$"0000"                                               /* .. */
-};
-
-data 'DLGX' (1011) {
-	$"0743 6869 6361 676F 0000 0000 0000 0000"            /* .Chicago........ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
-	$"0007 0005 0000 0000 0000 0000 0000 0005"            /* ................ */
-	$"0000 0000 0000 0000 0000 0007 0000 0000"            /* ................ */
-	$"0000 0000 0000 0007 0000 0000 0000 0000"            /* ................ */
-	$"0000 0003 0000 0000 0000 0000 0000 0006"            /* ................ */
-	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
-	$"0000 0000 0000"                                     /* ...... */
-};
-
-data 'DLGX' (1012) {
-	$"0743 6869 6361 676F 0000 0000 0000 0000"            /* .Chicago........ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
-	$"0006 0005 0000 0000 0000 0000 0000 0005"            /* ................ */
-	$"0000 0000 0000 0000 0000 0007 0000 0000"            /* ................ */
-	$"0000 0000 0000 0007 0000 0000 0000 0000"            /* ................ */
-	$"0000 0006 0000 0000 0000 0000 0000 0006"            /* ................ */
-	$"0000 0000 0000 0000 0000"                           /* .......... */
 };
 
 data 'DLGX' (1410) {
@@ -1113,17 +291,6 @@ data 'DLGX' (9999) {
 	$"0000"                                               /* .. */
 };
 
-resource 'DLOG' (1000, "Preferences", purgeable) {
-	{285, 148, 577, 545},
-	1043,
-	invisible,
-	goAway,
-	0x0,
-	1000,
-	"Preferences",
-	centerMainScreen
-};
-
 resource 'DLOG' (1002, "Set External Editor Shortcut", purgeable) {
 	{259, 337, 318, 687},
 	dBoxProc,
@@ -1143,40 +310,6 @@ resource 'DLOG' (1003, "Add Member", purgeable) {
 	0x0,
 	1003,
 	"Add Member...",
-	noAutoCenter
-};
-
-resource 'DLOG' (1010, "Adjust", purgeable) {
-	{259, 337, 443, 704},
-	1043,
-	invisible,
-	noGoAway,
-	0x0,
-	1010,
-	"Adjust…",
-	centerParentWindowScreen
-};
-
-resource 'DLOG' (1011, purgeable) {
-	{341, 144, 561, 519},
-	1024,
-	visible,
-	goAway,
-	0x0,
-	1011,
-	"DITL 1011 “Adjust: Pane 1” from icnsEdit"
-	"orClass.rsrc",
-	noAutoCenter
-};
-
-resource 'DLOG' (1012, purgeable) {
-	{337, 600, 549, 1015},
-	1024,
-	visible,
-	goAway,
-	0x0,
-	1012,
-	"",
 	noAutoCenter
 };
 
@@ -1332,32 +465,6 @@ resource 'MENU' (1412) {
 	}
 };
 
-data 'Mcmd' (202) {
-	$"0000"                                               /* .. */
-};
-
-data 'Mcmd' (203) {
-	$"0000"                                               /* .. */
-};
-
-data 'Mcmd' (1021) {
-	$"0003 0000 0000 0000 0000 0000 0000"                 /* .............. */
-};
-
-data 'Mcmd' (1410) {
-	$"0000"                                               /* .. */
-};
-
-data 'Mcmd' (1411) {
-	$"000B 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000"                 /* .............. */
-};
-
-data 'Mcmd' (1412) {
-	$"0000"                                               /* .. */
-};
-
 data 'PAT#' (1000, purgeable) {
 	$"0008 F0E1 C387 0F1E 3C78 78F0 E1C3 870F"            /* ..·√á..<xx·√á. */
 	$"1E3C 3C78 F0E1 C387 0F1E 1E3C 78F0 E1C3"            /* .<<x·√á...<x·√ */
@@ -1383,1801 +490,1866 @@ data 'PAT#' (1001, preload) {
 };
 
 resource 'PICT' (2050, "System Palette Picker") {
-	28688,
-	{0, 0, 129, 185},
+	29726,
+	{0, 0, 169, 137},
 	$"0011 02FF 0C00 FFFE 0000 0048 0000 0048"
-	$"0000 0000 0000 0081 00B9 0000 0000 00A1"
-	$"01F2 0016 3842 494D 0000 0000 0000 0081"
-	$"00B9 4772 8970 68AF 626A 0001 000A 0000"
-	$"0000 0081 00B9 8201 0000 0D3C 0000 0001"
+	$"0000 0000 0000 00A9 0089 0000 0000 00A1"
+	$"01F2 0016 3842 494D 0000 0000 0000 00A9"
+	$"0089 4772 8970 68AF 626A 0001 000A 0000"
+	$"0000 00A9 0089 8201 0000 0FBE 0000 0001"
 	$"0000 0000 0000 0000 0000 0000 0000 0001"
 	$"0000 0000 0000 0000 0000 0000 0000 4000"
-	$"0000 0000 0D09 0000 0000 0081 00B9 0000"
+	$"0000 0000 0F8C 0000 0000 00A9 0089 0000"
 	$"0056 726C 6520 0000 0000 0000 0000 0001"
-	$"0001 6170 706C 0000 0000 0000 0400 00B9"
-	$"0081 0048 0000 0048 0000 0000 0CB3 0001"
+	$"0001 6170 706C 0000 0000 0000 0400 0089"
+	$"00A9 0048 0000 0048 0000 0000 0F36 0001"
 	$"0941 6E69 6D61 7469 6F6E 0000 0000 0000"
 	$"0000 0000 0000 0000 0000 0000 0000 0000"
-	$"0028 0028 4000 0CB3 0008 0000 0000 0081"
-	$"0000 01F8 FFFF FFFF 02FF 0000 0000 0000"
-	$"00DC FFFF FFFF 01FF 0000 00FF 01F8 FFFF"
-	$"FFFF 02FF 0000 0000 0000 00DC FFFF FFFF"
-	$"01FF 0000 00FF 01F8 FFFF FFFF 02FF 0000"
-	$"0000 0000 00DC FFFF FFFF 01FF 0000 00FF"
-	$"01F8 FFFF FFFF 02FF 0000 0000 0000 00DC"
-	$"FFFF FFFF 01FF 0000 00FF 01F8 FFFF FFFF"
-	$"02FF 0000 0000 0000 00DC FFFF FFFF 01FF"
-	$"0000 00FF 01F8 FFFF FFFF 02FF 0000 0000"
-	$"0000 00DC FFFF FFFF 01FF 0000 00FF 01F8"
-	$"FFFF FFFF 02FF 0000 0000 0000 00DC FFFF"
-	$"FFFF 01FF 0000 00FF 01F8 FFFF FFFF 02FF"
-	$"0000 0000 0000 00DC FFFF FFFF 01FF 0000"
-	$"00FF 01F8 FFFF FFFF 02FF 0000 0000 0000"
-	$"00DC FFFF FFFF 01FF 0000 00FF 01F8 FFFF"
-	$"FFFF 02FF 0000 0000 0000 00DC FFFF FFFF"
-	$"01FF 0000 00FF 01F8 FFFF FFFF 02FF 0000"
-	$"0000 0000 00DC FFFF FFFF 01FF 0000 00FF"
-	$"01F8 FFFF FFFF 02FF 0000 0000 0000 00DC"
-	$"FFFF FFFF 01FF 0000 00FF 01F8 FFFF FFFF"
-	$"02FF 0000 0000 0000 00DC FFFF FFFF 01FF"
-	$"0000 00FF 01F8 FFFF FFFF 02FF 0000 0000"
-	$"0000 00DC FFFF FFFF 01FF 0000 00FF 01F8"
-	$"FFFF FFFF 02FF 0000 0000 0000 00DC FFFF"
-	$"FFFF 01FF 0000 00FF 01F8 FFFF FFFF 02FF"
-	$"0000 0000 0000 00DC FFFF FFFF 01FF 0000"
-	$"00FF 01F8 FFFF FFFF 02FF 0000 0000 0000"
-	$"00DC FFFF FFFF 01FF 0000 00FF 01F8 FFFF"
-	$"FFFF 02FF 0000 0000 0000 00DC FFFF FFFF"
-	$"01FF 0000 00FF 01F8 FFFF FFFF 02FF 0000"
-	$"0000 0000 00DC FFFF FFFF 01FF 0000 00FF"
-	$"01F8 FFFF FFFF 02FF 0000 0000 0000 00DC"
-	$"FFFF FFFF 01FF 0000 00FF 01F8 FFFF FFFF"
-	$"02FF 0000 0000 0000 00DC FFFF FFFF 01FF"
-	$"0000 00FF 01F8 FFFF FFFF 02FF 0000 0000"
-	$"0000 00DC FFFF FFFF 01FF 0000 00FF 01F8"
-	$"FFFF FFFF 02FF 0000 0000 0000 00DC FFFF"
-	$"FFFF 01FF 0000 00FF 01F8 FFFF FFFF 02FF"
-	$"0000 0000 0000 00DC FFFF FFFF 01FF 0000"
-	$"00FF 01F8 FFFF FFFF 02FF 0000 0000 0000"
-	$"00DC FFFF FFFF 01FF 0000 00FF 01F8 FFFF"
-	$"FFFF 02FF 0000 0000 0000 00DC FFFF FFFF"
-	$"01FF 0000 00FF 01F8 FFFF FFFF 02FF 0000"
-	$"0000 0000 00DC FFFF FFFF 01FF 0000 00FF"
-	$"01F8 FFFF FFFF 02FF 0000 0000 0000 00DC"
-	$"FFFF FFFF 01FF 0000 00FF 01F8 FFFF FFFF"
-	$"02FF 0000 0000 0000 00DC FFFF FFFF 01FF"
-	$"0000 00FF 01F8 FFFF FFFF 02FF 0000 0000"
-	$"0000 00DC FFFF FFFF 01FF 0000 00FF 01F8"
-	$"FFFF FFFF 02FF 0000 0000 0000 00DC FFFF"
-	$"FFFF 01FF 0000 00FF 01F8 FFFF FFFF 02FF"
-	$"0000 0000 0000 00DC FFFF FFFF 01FF 0000"
-	$"00FF 01F8 FFFF FFFF 02FF 0000 0000 0000"
-	$"00DC FFFF FFFF 01FF 0000 00FF 01F8 FFFF"
-	$"FFFF 02FF 0000 0000 0000 00DC FFFF FFFF"
-	$"01FF 0000 00FF 01F8 FFFF FFFF 02FF 0000"
-	$"0000 0000 00DC FFFF FFFF 01FF 0000 00FF"
-	$"01F8 FFFF FFFF 02FF 0000 0000 0000 00DC"
-	$"FFFF FFFF 01FF 0000 00FF 01F8 FFFF FFFF"
-	$"02FF 0000 0000 0000 00DC FFFF FFFF 01FF"
-	$"0000 00FF 01F8 FFFF FFFF 02FF 0000 0000"
-	$"0000 00DC FFFF FFFF 01FF 0000 00FF 01F8"
-	$"FFFF FFFF 02FF 0000 0000 0000 00DC FFFF"
-	$"FFFF 01FF 0000 00FF 01F8 FFFF FFFF 02FF"
-	$"0000 0000 0000 00DC FFFF FFFF 01FF 0000"
-	$"00FF 01F8 FFFF FFFF 02FF 0000 0000 0000"
-	$"00DC FFFF FFFF 01FF 0000 00FF 01F8 FFFF"
-	$"FFFF 02FF 0000 0000 0000 00DC FFFF FFFF"
-	$"01FF 0000 00FF 01F8 FFFF FFFF 02FF 0000"
-	$"0000 0000 00DC FFFF FFFF 01FF 0000 00FF"
-	$"01F8 FFFF FFFF 02FF 0000 0000 0000 00DC"
-	$"FFFF FFFF 01FF 0000 00FF 01F8 FFFF FFFF"
-	$"02FF 0000 0000 0000 00DC FFFF FFFF 01FF"
-	$"0000 00FF 01F8 FFFF FFFF 02FF 0000 0000"
-	$"0000 00DC FFFF FFFF 01FF 0000 00FF 01F8"
-	$"FFFF FFFF 02FF 0000 0000 0000 00DC FFFF"
-	$"FFFF 01FF 0000 00FF 01F8 FFFF FFFF 02FF"
-	$"0000 0000 0000 00DC FFFF FFFF 01FF 0000"
-	$"00FF 01F8 FFFF FFFF 02FF 0000 0000 0000"
-	$"00DC FFFF FFFF 01FF 0000 00FF 01F8 FFFF"
-	$"FFFF 02FF 0000 0000 0000 00DC FFFF FFFF"
-	$"01FF 0000 00FF 01F8 FFFF FFFF 02FF 0000"
-	$"0000 0000 00DC FFFF FFFF 01FF 0000 00FF"
-	$"01F8 FFFF FFFF 02FF 0000 0000 0000 00DC"
-	$"FFFF FFFF 01FF 0000 00FF 01F8 FFFF FFFF"
-	$"02FF 0000 0000 0000 00DC FFFF FFFF 01FF"
-	$"0000 00FF 01F8 FFFF FFFF 02FF 0000 0000"
-	$"0000 00DC FFFF FFFF 01FF 0000 00FF 01F8"
-	$"FFFF FFFF 02FF 0000 0000 0000 00DC FFFF"
-	$"FFFF 01FF 0000 00FF 01F8 FFFF FFFF 02FF"
-	$"0000 0000 0000 00DC FFFF FFFF 01FF 0000"
-	$"00FF 01F8 FFFF FFFF 02FF 0000 0000 0000"
-	$"00DC FFFF FFFF 01FF 0000 00FF 01F8 FFFF"
-	$"FFFF 02FF 0000 0000 0000 00DC FFFF FFFF"
-	$"01FF 0000 00FF 01F8 FFFF FFFF 02FF 0000"
-	$"0000 0000 00DC FFFF FFFF 01FF 0000 00FF"
-	$"01F8 FFFF FFFF 02FF 0000 0000 0000 00DC"
-	$"FFFF FFFF 01FF 0000 00FF 01F8 FFFF FFFF"
-	$"02FF 0000 0000 0000 00DC FFFF FFFF 01FF"
-	$"0000 00FF 01F8 FFFF FFFF 02FF 0000 0000"
-	$"0000 00DC FFFF FFFF 01FF 0000 00FF 01F8"
-	$"FFFF FFFF 02FF 0000 0000 0000 00DC FFFF"
-	$"FFFF 01FF 0000 00FF 01F8 FFFF FFFF 02FF"
-	$"0000 0000 0000 00DC FFFF FFFF 01FF 0000"
-	$"00FF 01F8 FFFF FFFF 02FF 0000 0000 0000"
-	$"00DC FFFF FFFF 01FF 0000 00FF 01F8 FFFF"
-	$"FFFF 02FF 0000 0000 0000 00DC FFFF FFFF"
-	$"01FF 0000 00FF 01F8 FFFF FFFF 02FF 0000"
-	$"0000 0000 00DC FFFF FFFF 01FF 0000 00FF"
-	$"01F8 FFFF FFFF 02FF 0000 0000 0000 00DC"
-	$"FFFF FFFF 01FF 0000 00FF 01F8 FFFF FFFF"
-	$"02FF 0000 0000 0000 00DC FFFF FFFF 01FF"
-	$"0000 00FF 01F8 FFFF FFFF 02FF 0000 0000"
-	$"0000 00DC FFFF FFFF 01FF 0000 00FF 01F8"
-	$"FFFF FFFF 02FF 0000 0000 0000 00DC FFFF"
-	$"FFFF 01FF 0000 00FF 01F8 FFFF FFFF 02FF"
-	$"0000 0000 0000 00DC FFFF FFFF 01FF 0000"
-	$"00FF 01F8 FFFF FFFF 02FF 0000 0000 0000"
-	$"00DC FFFF FFFF 01FF 0000 00FF 01F8 FFFF"
-	$"FFFF 02FF 0000 0000 0000 00DC FFFF FFFF"
-	$"01FF 0000 00FF 01F8 FFFF FFFF 02FF 0000"
-	$"0000 0000 00DC FFFF FFFF 01FF 0000 00FF"
-	$"01F8 FFFF FFFF 02FF 0000 0000 0000 00DC"
-	$"FFFF FFFF 01FF 0000 00FF 01F8 FFFF FFFF"
-	$"02FF 0000 0000 0000 00DC FFFF FFFF 01FF"
-	$"0000 00FF 01F8 FFFF FFFF 02FF 0000 0000"
-	$"0000 00DC FFFF FFFF 01FF 0000 00FF 01F8"
-	$"FFFF FFFF 02FF 0000 0000 0000 00DC FFFF"
-	$"FFFF 01FF 0000 00FF 01F8 FFFF FFFF 02FF"
-	$"0000 0000 0000 00DC FFFF FFFF 01FF 0000"
-	$"00FF 01F8 FFFF FFFF 02FF 0000 0000 0000"
-	$"00DC FFFF FFFF 01FF 0000 00FF 01F8 FFFF"
-	$"FFFF 02FF 0000 0000 0000 00DC FFFF FFFF"
-	$"01FF 0000 00FF 01F8 FFFF FFFF 02FF 0000"
-	$"0000 0000 00DC FFFF FFFF 01FF 0000 00FF"
-	$"01F8 FFFF FFFF 02FF 0000 0000 0000 00DC"
-	$"FFFF FFFF 01FF 0000 00FF 01F8 FFFF FFFF"
-	$"02FF 0000 0000 0000 00DC FFFF FFFF 01FF"
-	$"0000 00FF 01F8 FFFF FFFF 02FF 0000 0000"
-	$"0000 00DC FFFF FFFF 01FF 0000 00FF 01F8"
-	$"FFFF FFFF 02FF 0000 0000 0000 00DC FFFF"
-	$"FFFF 01FF 0000 00FF 01F8 FFFF FFFF 02FF"
-	$"0000 0000 0000 00DC FFFF FFFF 01FF 0000"
-	$"00FF 01F8 FFFF FFFF 02FF 0000 0000 0000"
-	$"00DC FFFF FFFF 01FF 0000 00FF 01F8 FFFF"
-	$"FFFF 02FF 0000 0000 0000 00DC FFFF FFFF"
-	$"01FF 0000 00FF 01F8 FFFF FFFF 02FF 0000"
-	$"0000 0000 00DC FFFF FFFF 01FF 0000 00FF"
-	$"01F8 FFFF FFFF 02FF 0000 0000 0000 00DC"
-	$"FFFF FFFF 01FF 0000 00FF 01F8 FFFF FFFF"
-	$"02FF 0000 0000 0000 00DC FFFF FFFF 01FF"
-	$"0000 00FF 01F8 FFFF FFFF 02FF 0000 0000"
-	$"0000 00DC FFFF FFFF 01FF 0000 00FF 01F8"
-	$"FFFF FFFF 02FF 0000 0000 0000 00DC FFFF"
-	$"FFFF 01FF 0000 00FF 01F8 FFFF FFFF 02FF"
-	$"0000 0000 0000 00DC FFFF FFFF 01FF 0000"
-	$"00FF 01F8 FFFF FFFF 02FF 0000 0000 0000"
-	$"00DC FFFF FFFF 01FF 0000 00FF 01F8 FFFF"
-	$"FFFF 01FF 0000 00DA 0000 0000 FF01 F8FF"
-	$"FFFF FF01 FF00 0000 DA00 0000 00FF 01F8"
-	$"FFFF FFFF 01FF 0000 00DA 0000 0000 FF01"
-	$"F8FF FFFF FF01 FF00 0000 DA00 0000 00FF"
-	$"01F8 FFFF FFFF 01FF 0000 00DA 0000 0000"
-	$"FF01 F8FF FFFF FF01 FF00 0000 DA00 0000"
-	$"00FF 01F8 FFFF FFFF 01FF 0000 00DA 0000"
-	$"0000 FF01 F8FF FFFF FF01 FF00 0000 DA00"
-	$"0000 00FF 01F8 FFFF FFFF 01FF 0000 00DA"
-	$"0000 0000 FF01 F8FF FFFF FF01 FF00 0000"
-	$"DA00 0000 00FF 01F8 FFFF FFFF 01FF 0000"
-	$"00DA 0000 0000 FF01 F8FF FFFF FF01 FF00"
-	$"0000 DA00 0000 00FF 01F8 FFFF FFFF 01FF"
-	$"0000 00DA 0000 0000 FF01 F8FF FFFF FF01"
-	$"FF00 0000 DA00 0000 00FF 01F8 FFFF FFFF"
-	$"01FF 0000 00DA 0000 0000 FF01 F8FF FFFF"
-	$"FF01 FF00 0000 FD00 0000 00DE FFFF FFFF"
-	$"01FF 0000 00FF 01F8 FFFF FFFF 01FF 0000"
-	$"00FD 0000 0000 DEFF FFFF FF01 FF00 0000"
-	$"FF01 F8FF FFFF FF01 FF00 0000 FD00 0000"
-	$"00DE FFFF FFFF 01FF 0000 00FF 01F8 FFFF"
-	$"FFFF 01FF 0000 00FD 0000 0000 DEFF FFFF"
-	$"FF01 FF00 0000 FF01 F8FF FFFF FF01 FF00"
-	$"0000 FD00 0000 00DE FFFF FFFF 01FF 0000"
-	$"00FF 01F8 FFFF FFFF 01FF 0000 00FD 0000"
-	$"0000 DEFF FFFF FF01 FF00 0000 FF01 F8FF"
-	$"FFFF FF01 FF00 0000 FD00 0000 00DE FFFF"
-	$"FFFF 01FF 0000 00FF 01F8 FFFF FFFF 01FF"
-	$"0000 00FD 0000 0000 DEFF FFFF FF01 FF00"
-	$"0000 FF01 F8FF FFFF FF01 FF00 0000 FD00"
-	$"0000 00DE FFFF FFFF 01FF 0000 00FF 01F8"
-	$"FFFF FFFF 01FF 0000 00FD 0000 0000 DEFF"
-	$"FFFF FF01 FF00 0000 FF01 F8FF FFFF FF01"
-	$"FF00 0000 FD00 0000 00DE FFFF FFFF 01FF"
-	$"0000 00FF 01F8 FFFF FFFF 01FF 0000 00FD"
-	$"0000 0000 DEFF FFFF FF01 FF00 0000 FF01"
-	$"F8FF FFFF FF01 FF00 0000 FD00 0000 00DE"
-	$"FFFF FFFF 01FF 0000 00FF 01F8 FFFF FFFF"
-	$"01FF 0000 00FD 0000 0000 DEFF FFFF FF01"
-	$"FF00 0000 FF01 F8FF FFFF FF01 FF00 0000"
-	$"FD00 0000 00DE FFFF FFFF 01FF 0000 00FF"
-	$"01F8 FFFF FFFF 01FF 0000 00FD 0000 0000"
-	$"DEFF FFFF FF01 FF00 0000 FF01 F8FF FFFF"
-	$"FF01 FF00 0000 FD00 0000 00DE FFFF FFFF"
-	$"01FF 0000 00FF 0000 009A 0000 00FF 82E4"
-	$"0000 0000 0081 00B9 0000 0004 0000 0000"
-	$"0048 0000 0048 0000 0010 0020 0003 0008"
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-	$"0081 00B9 0000 0000 0081 00B9 0040 0018"
-	$"E001 FAFF A901 C801 E000 FAFF E200 8100"
-	$"EE00 FAFF 9B00 D600 0100 0001 FAFF 0001"
-	$"FA00 0001 FA00 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0101 00FA FFF8 00FA FFF8"
+	$"0028 0028 4000 0F36 0008 0000 0000 00A9"
+	$"0000 01E8 FFFF FFFF 02FF 0000 0000 0000"
+	$"00F8 FFFF FFFF 01FF 0000 00FF 01E8 FFFF"
+	$"FFFF 02FF 0000 0000 0000 00F8 FFFF FFFF"
+	$"01FF 0000 00FF 01E8 FFFF FFFF 02FF 0000"
+	$"0000 0000 00F8 FFFF FFFF 01FF 0000 00FF"
+	$"01E8 FFFF FFFF 02FF 0000 0000 0000 00F8"
+	$"FFFF FFFF 01FF 0000 00FF 01E8 FFFF FFFF"
+	$"02FF 0000 0000 0000 00F8 FFFF FFFF 01FF"
+	$"0000 00FF 01E8 FFFF FFFF 02FF 0000 0000"
+	$"0000 00F8 FFFF FFFF 01FF 0000 00FF 01E8"
+	$"FFFF FFFF 02FF 0000 0000 0000 00F8 FFFF"
+	$"FFFF 01FF 0000 00FF 01E8 FFFF FFFF 02FF"
+	$"0000 0000 0000 00F8 FFFF FFFF 01FF 0000"
+	$"00FF 01E8 FFFF FFFF 02FF 0000 0000 0000"
+	$"00F8 FFFF FFFF 01FF 0000 00FF 01E8 FFFF"
+	$"FFFF 02FF 0000 0000 0000 00F8 FFFF FFFF"
+	$"01FF 0000 00FF 01E8 FFFF FFFF 02FF 0000"
+	$"0000 0000 00F8 FFFF FFFF 01FF 0000 00FF"
+	$"01E8 FFFF FFFF 02FF 0000 0000 0000 00F8"
+	$"FFFF FFFF 01FF 0000 00FF 01E8 FFFF FFFF"
+	$"02FF 0000 0000 0000 00F8 FFFF FFFF 01FF"
+	$"0000 00FF 01E8 FFFF FFFF 02FF 0000 0000"
+	$"0000 00F8 FFFF FFFF 01FF 0000 00FF 01E8"
+	$"FFFF FFFF 02FF 0000 0000 0000 00F8 FFFF"
+	$"FFFF 01FF 0000 00FF 01E8 FFFF FFFF 02FF"
+	$"0000 0000 0000 00F8 FFFF FFFF 01FF 0000"
+	$"00FF 01E8 FFFF FFFF 02FF 0000 0000 0000"
+	$"00F8 FFFF FFFF 01FF 0000 00FF 01E8 FFFF"
+	$"FFFF 02FF 0000 0000 0000 00F8 FFFF FFFF"
+	$"01FF 0000 00FF 01E8 FFFF FFFF 02FF 0000"
+	$"0000 0000 00F8 FFFF FFFF 01FF 0000 00FF"
+	$"01E8 FFFF FFFF 02FF 0000 0000 0000 00F8"
+	$"FFFF FFFF 01FF 0000 00FF 01E8 FFFF FFFF"
+	$"02FF 0000 0000 0000 00F8 FFFF FFFF 01FF"
+	$"0000 00FF 01E8 FFFF FFFF 02FF 0000 0000"
+	$"0000 00F8 FFFF FFFF 01FF 0000 00FF 01E8"
+	$"FFFF FFFF 02FF 0000 0000 0000 00F8 FFFF"
+	$"FFFF 01FF 0000 00FF 01E8 FFFF FFFF 02FF"
+	$"0000 0000 0000 00F8 FFFF FFFF 01FF 0000"
+	$"00FF 01E8 FFFF FFFF 02FF 0000 0000 0000"
+	$"00F8 FFFF FFFF 01FF 0000 00FF 01E8 FFFF"
+	$"FFFF 02FF 0000 0000 0000 00F8 FFFF FFFF"
+	$"01FF 0000 00FF 01E8 FFFF FFFF 02FF 0000"
+	$"0000 0000 00F8 FFFF FFFF 01FF 0000 00FF"
+	$"01E8 FFFF FFFF 02FF 0000 0000 0000 00F8"
+	$"FFFF FFFF 01FF 0000 00FF 01E8 FFFF FFFF"
+	$"02FF 0000 0000 0000 00F8 FFFF FFFF 01FF"
+	$"0000 00FF 01E8 FFFF FFFF 02FF 0000 0000"
+	$"0000 00F8 FFFF FFFF 01FF 0000 00FF 01E8"
+	$"FFFF FFFF 02FF 0000 0000 0000 00F8 FFFF"
+	$"FFFF 01FF 0000 00FF 01E8 FFFF FFFF 02FF"
+	$"0000 0000 0000 00F8 FFFF FFFF 01FF 0000"
+	$"00FF 01E8 FFFF FFFF 02FF 0000 0000 0000"
+	$"00F8 FFFF FFFF 01FF 0000 00FF 01E8 FFFF"
+	$"FFFF 02FF 0000 0000 0000 00F8 FFFF FFFF"
+	$"01FF 0000 00FF 01E8 FFFF FFFF 02FF 0000"
+	$"0000 0000 00F8 FFFF FFFF 01FF 0000 00FF"
+	$"01E8 FFFF FFFF 02FF 0000 0000 0000 00F8"
+	$"FFFF FFFF 01FF 0000 00FF 01E8 FFFF FFFF"
+	$"02FF 0000 0000 0000 00F8 FFFF FFFF 01FF"
+	$"0000 00FF 01E8 FFFF FFFF 02FF 0000 0000"
+	$"0000 00F8 FFFF FFFF 01FF 0000 00FF 01E8"
+	$"FFFF FFFF 02FF 0000 0000 0000 00F8 FFFF"
+	$"FFFF 01FF 0000 00FF 01E8 FFFF FFFF 02FF"
+	$"0000 0000 0000 00F8 FFFF FFFF 01FF 0000"
+	$"00FF 01E8 FFFF FFFF 02FF 0000 0000 0000"
+	$"00F8 FFFF FFFF 01FF 0000 00FF 01E8 FFFF"
+	$"FFFF 02FF 0000 0000 0000 00F8 FFFF FFFF"
+	$"01FF 0000 00FF 01E8 FFFF FFFF 02FF 0000"
+	$"0000 0000 00F8 FFFF FFFF 01FF 0000 00FF"
+	$"01E8 FFFF FFFF 02FF 0000 0000 0000 00F8"
+	$"FFFF FFFF 01FF 0000 00FF 01E8 FFFF FFFF"
+	$"02FF 0000 0000 0000 00F8 FFFF FFFF 01FF"
+	$"0000 00FF 01E8 FFFF FFFF 02FF 0000 0000"
+	$"0000 00F8 FFFF FFFF 01FF 0000 00FF 01E8"
+	$"FFFF FFFF 02FF 0000 0000 0000 00F8 FFFF"
+	$"FFFF 01FF 0000 00FF 01E8 FFFF FFFF 02FF"
+	$"0000 0000 0000 00F8 FFFF FFFF 01FF 0000"
+	$"00FF 01E8 FFFF FFFF 02FF 0000 0000 0000"
+	$"00F8 FFFF FFFF 01FF 0000 00FF 01E8 FFFF"
+	$"FFFF 02FF 0000 0000 0000 00F8 FFFF FFFF"
+	$"01FF 0000 00FF 01E8 FFFF FFFF 02FF 0000"
+	$"0000 0000 00F8 FFFF FFFF 01FF 0000 00FF"
+	$"01E8 FFFF FFFF 02FF 0000 0000 0000 00F8"
+	$"FFFF FFFF 01FF 0000 00FF 01E8 FFFF FFFF"
+	$"02FF 0000 0000 0000 00F8 FFFF FFFF 01FF"
+	$"0000 00FF 01E8 FFFF FFFF 02FF 0000 0000"
+	$"0000 00F8 FFFF FFFF 01FF 0000 00FF 01E8"
+	$"FFFF FFFF 02FF 0000 0000 0000 00F8 FFFF"
+	$"FFFF 01FF 0000 00FF 01E8 FFFF FFFF 02FF"
+	$"0000 0000 0000 00F8 FFFF FFFF 01FF 0000"
+	$"00FF 01E8 FFFF FFFF 02FF 0000 0000 0000"
+	$"00F8 FFFF FFFF 01FF 0000 00FF 01E8 FFFF"
+	$"FFFF 02FF 0000 0000 0000 00F8 FFFF FFFF"
+	$"01FF 0000 00FF 01E8 FFFF FFFF 02FF 0000"
+	$"0000 0000 00F8 FFFF FFFF 01FF 0000 00FF"
+	$"01E8 FFFF FFFF 02FF 0000 0000 0000 00F8"
+	$"FFFF FFFF 01FF 0000 00FF 01E8 FFFF FFFF"
+	$"02FF 0000 0000 0000 00F8 FFFF FFFF 01FF"
+	$"0000 00FF 01E8 FFFF FFFF 02FF 0000 0000"
+	$"0000 00F8 FFFF FFFF 01FF 0000 00FF 01E8"
+	$"FFFF FFFF 02FF 0000 0000 0000 00F8 FFFF"
+	$"FFFF 01FF 0000 00FF 01E8 FFFF FFFF 02FF"
+	$"0000 0000 0000 00F8 FFFF FFFF 01FF 0000"
+	$"00FF 01E8 FFFF FFFF 02FF 0000 0000 0000"
+	$"00F8 FFFF FFFF 01FF 0000 00FF 01E8 FFFF"
+	$"FFFF 02FF 0000 0000 0000 00F8 FFFF FFFF"
+	$"01FF 0000 00FF 01E8 FFFF FFFF 02FF 0000"
+	$"0000 0000 00F8 FFFF FFFF 01FF 0000 00FF"
+	$"01E8 FFFF FFFF 02FF 0000 0000 0000 00F8"
+	$"FFFF FFFF 01FF 0000 00FF 01E8 FFFF FFFF"
+	$"02FF 0000 0000 0000 00F8 FFFF FFFF 01FF"
+	$"0000 00FF 01E8 FFFF FFFF 02FF 0000 0000"
+	$"0000 00F8 FFFF FFFF 01FF 0000 00FF 01E8"
+	$"FFFF FFFF 02FF 0000 0000 0000 00F8 FFFF"
+	$"FFFF 01FF 0000 00FF 01E8 FFFF FFFF 02FF"
+	$"0000 0000 0000 00F8 FFFF FFFF 01FF 0000"
+	$"00FF 01E8 FFFF FFFF 02FF 0000 0000 0000"
+	$"00F8 FFFF FFFF 01FF 0000 00FF 01E8 FFFF"
+	$"FFFF 02FF 0000 0000 0000 00F8 FFFF FFFF"
+	$"01FF 0000 00FF 01E8 FFFF FFFF 02FF 0000"
+	$"0000 0000 00F8 FFFF FFFF 01FF 0000 00FF"
+	$"01E8 FFFF FFFF 02FF 0000 0000 0000 00F8"
+	$"FFFF FFFF 01FF 0000 00FF 01E8 FFFF FFFF"
+	$"02FF 0000 0000 0000 00F8 FFFF FFFF 01FF"
+	$"0000 00FF 01E8 FFFF FFFF 02FF 0000 0000"
+	$"0000 00F8 FFFF FFFF 01FF 0000 00FF 01E8"
+	$"FFFF FFFF 02FF 0000 0000 0000 00F8 FFFF"
+	$"FFFF 01FF 0000 00FF 01E8 FFFF FFFF 02FF"
+	$"0000 0000 0000 00F8 FFFF FFFF 01FF 0000"
+	$"00FF 01E8 FFFF FFFF 02FF 0000 0000 0000"
+	$"00F8 FFFF FFFF 01FF 0000 00FF 01E8 FFFF"
+	$"FFFF 02FF 0000 0000 0000 00F8 FFFF FFFF"
+	$"01FF 0000 00FF 01E8 FFFF FFFF 02FF 0000"
+	$"0000 0000 00F8 FFFF FFFF 01FF 0000 00FF"
+	$"01E8 FFFF FFFF 02FF 0000 0000 0000 00F8"
+	$"FFFF FFFF 01FF 0000 00FF 01E8 FFFF FFFF"
+	$"02FF 0000 0000 0000 00F8 FFFF FFFF 01FF"
+	$"0000 00FF 01E8 FFFF FFFF 02FF 0000 0000"
+	$"0000 00F8 FFFF FFFF 01FF 0000 00FF 01E8"
+	$"FFFF FFFF 02FF 0000 0000 0000 00F8 FFFF"
+	$"FFFF 01FF 0000 00FF 01E8 FFFF FFFF 02FF"
+	$"0000 0000 0000 00F8 FFFF FFFF 01FF 0000"
+	$"00FF 01E8 FFFF FFFF 02FF 0000 0000 0000"
+	$"00F8 FFFF FFFF 01FF 0000 00FF 01E8 FFFF"
+	$"FFFF 02FF 0000 0000 0000 00F8 FFFF FFFF"
+	$"01FF 0000 00FF 01E8 FFFF FFFF 02FF 0000"
+	$"0000 0000 00F8 FFFF FFFF 01FF 0000 00FF"
+	$"01E8 FFFF FFFF 02FF 0000 0000 0000 00F8"
+	$"FFFF FFFF 01FF 0000 00FF 01E8 FFFF FFFF"
+	$"02FF 0000 0000 0000 00F8 FFFF FFFF 01FF"
+	$"0000 00FF 01E8 FFFF FFFF 02FF 0000 0000"
+	$"0000 00F8 FFFF FFFF 01FF 0000 00FF 01E8"
+	$"FFFF FFFF 02FF 0000 0000 0000 00F8 FFFF"
+	$"FFFF 01FF 0000 00FF 01E8 FFFF FFFF 02FF"
+	$"0000 0000 0000 00F8 FFFF FFFF 01FF 0000"
+	$"00FF 01E8 FFFF FFFF 02FF 0000 0000 0000"
+	$"00F8 FFFF FFFF 01FF 0000 00FF 01E8 FFFF"
+	$"FFFF 02FF 0000 0000 0000 00F8 FFFF FFFF"
+	$"01FF 0000 00FF 01E8 FFFF FFFF 02FF 0000"
+	$"0000 0000 00F8 FFFF FFFF 01FF 0000 00FF"
+	$"01E8 FFFF FFFF 02FF 0000 0000 0000 00F8"
+	$"FFFF FFFF 01FF 0000 00FF 01E8 FFFF FFFF"
+	$"02FF 0000 0000 0000 00F8 FFFF FFFF 01FF"
+	$"0000 00FF 01E8 FFFF FFFF 02FF 0000 0000"
+	$"0000 00F8 FFFF FFFF 01FF 0000 00FF 01E8"
+	$"FFFF FFFF 02FF 0000 0000 0000 00F8 FFFF"
+	$"FFFF 01FF 0000 00FF 01E8 FFFF FFFF 02FF"
+	$"0000 0000 0000 00F8 FFFF FFFF 01FF 0000"
+	$"00FF 01E8 FFFF FFFF 02FF 0000 0000 0000"
+	$"00F8 FFFF FFFF 01FF 0000 00FF 01E8 FFFF"
+	$"FFFF 02FF 0000 0000 0000 00F8 FFFF FFFF"
+	$"01FF 0000 00FF 01E8 FFFF FFFF 02FF 0000"
+	$"0000 0000 00F8 FFFF FFFF 01FF 0000 00FF"
+	$"01E8 FFFF FFFF 02FF 0000 0000 0000 00F8"
+	$"FFFF FFFF 01FF 0000 00FF 01E8 FFFF FFFF"
+	$"02FF 0000 0000 0000 00F8 FFFF FFFF 01FF"
+	$"0000 00FF 01E8 FFFF FFFF 02FF 0000 0000"
+	$"0000 00F8 FFFF FFFF 01FF 0000 00FF 01E8"
+	$"FFFF FFFF 02FF 0000 0000 0000 00F8 FFFF"
+	$"FFFF 01FF 0000 00FF 01E8 FFFF FFFF 02FF"
+	$"0000 0000 0000 00F8 FFFF FFFF 01FF 0000"
+	$"00FF 01E8 FFFF FFFF 02FF 0000 0000 0000"
+	$"00F8 FFFF FFFF 01FF 0000 00FF 01E8 FFFF"
+	$"FFFF 02FF 0000 0000 0000 00F8 FFFF FFFF"
+	$"01FF 0000 00FF 01E8 FFFF FFFF 02FF 0000"
+	$"0000 0000 00F8 FFFF FFFF 01FF 0000 00FF"
+	$"01E8 FFFF FFFF 02FF 0000 0000 0000 00F8"
+	$"FFFF FFFF 01FF 0000 00FF 01E8 FFFF FFFF"
+	$"02FF 0000 0000 0000 00F8 FFFF FFFF 01FF"
+	$"0000 00FF 01E8 FFFF FFFF 02FF 0000 0000"
+	$"0000 00F8 FFFF FFFF 01FF 0000 00FF 01E8"
+	$"FFFF FFFF 02FF 0000 0000 0000 00F8 FFFF"
+	$"FFFF 01FF 0000 00FF 01E8 FFFF FFFF 02FF"
+	$"0000 0000 0000 00F8 FFFF FFFF 01FF 0000"
+	$"00FF 01E8 FFFF FFFF 02FF 0000 0000 0000"
+	$"00F8 FFFF FFFF 01FF 0000 00FF 01E8 FFFF"
+	$"FFFF 02FF 0000 0000 0000 00F8 FFFF FFFF"
+	$"01FF 0000 00FF 01E8 FFFF FFFF 02FF 0000"
+	$"0000 0000 00F8 FFFF FFFF 01FF 0000 00FF"
+	$"01E8 FFFF FFFF 02FF 0000 0000 0000 00F8"
+	$"FFFF FFFF 01FF 0000 00FF 01E8 FFFF FFFF"
+	$"02FF 0000 0000 0000 00F8 FFFF FFFF 01FF"
+	$"0000 00FF 01E8 FFFF FFFF 02FF 0000 0000"
+	$"0000 00F8 FFFF FFFF 01FF 0000 00FF 01E8"
+	$"FFFF FFFF 02FF 0000 0000 0000 00F8 FFFF"
+	$"FFFF 01FF 0000 00FF 01E8 FFFF FFFF 02FF"
+	$"0000 0000 0000 00F8 FFFF FFFF 01FF 0000"
+	$"00FF 01E8 FFFF FFFF 02FF 0000 0000 0000"
+	$"00F8 FFFF FFFF 01FF 0000 00FF 01E8 FFFF"
+	$"FFFF 01FF 0000 00F6 0000 0000 FF01 E8FF"
+	$"FFFF FF01 FF00 0000 F600 0000 00FF 01E8"
+	$"FFFF FFFF 01FF 0000 00F6 0000 0000 FF01"
+	$"E8FF FFFF FF01 FF00 0000 F600 0000 00FF"
+	$"01E8 FFFF FFFF 01FF 0000 00F6 0000 0000"
+	$"FF01 E8FF FFFF FF01 FF00 0000 F600 0000"
+	$"00FF 01E8 FFFF FFFF 01FF 0000 00F6 0000"
+	$"0000 FF01 E8FF FFFF FF01 FF00 0000 F600"
+	$"0000 00FF 01E8 FFFF FFFF 01FF 0000 00F6"
+	$"0000 0000 FF01 E8FF FFFF FF01 FF00 0000"
+	$"F600 0000 00FF 01E8 FFFF FFFF 01FF 0000"
+	$"00F6 0000 0000 FF01 E8FF FFFF FF01 FF00"
+	$"0000 F600 0000 00FF 01E8 FFFF FFFF 01FF"
+	$"0000 00F6 0000 0000 FF01 E8FF FFFF FF01"
+	$"FF00 0000 F600 0000 00FF 01E8 FFFF FFFF"
+	$"01FF 0000 00F6 0000 0000 FF01 E8FF FFFF"
+	$"FF01 FF00 0000 F600 0000 00FF 01DD 0000"
+	$"0000 FF01 DD00 0000 00FF 01DD 0000 0000"
+	$"FF01 DD00 0000 00FF 01DD 0000 0000 FF01"
+	$"DD00 0000 00FF 01DD 0000 0000 FF01 DEFF"
+	$"FFFF FF01 FF00 0000 FF01 DEFF FFFF FF01"
+	$"FF00 0000 FF01 DEFF FFFF FF01 FF00 0000"
+	$"FF01 DEFF FFFF FF01 FF00 0000 FF01 DEFF"
+	$"FFFF FF01 FF00 0000 FF01 DEFF FFFF FF01"
+	$"FF00 0000 FF01 DEFF FFFF FF01 FF00 0000"
+	$"FF01 DEFF FFFF FF01 FF00 0000 FF01 DEFF"
+	$"FFFF FF01 FF00 0000 FF01 DEFF FFFF FF01"
+	$"FF00 0000 FF01 DEFF FFFF FF01 FF00 0000"
+	$"FF01 DEFF FFFF FF01 FF00 0000 FF01 DEFF"
+	$"FFFF FF01 FF00 0000 FF01 DEFF FFFF FF01"
+	$"FF00 0000 FF01 DEFF FFFF FF01 FF00 0000"
+	$"FF01 DEFF FFFF FF01 FF00 0000 FF01 DEFF"
+	$"FFFF FF01 FF00 0000 FF00 009A 0000 00FF"
+	$"8224 0000 0000 00A9 0089 0000 0004 0000"
+	$"0000 0048 0000 0048 0000 0010 0020 0003"
+	$"0008 0000 0000 0000 0000 0000 0000 0000"
+	$"0000 00A9 0089 0000 0000 00A9 0089 0040"
+	$"0016 A001 FAFF E901 F801 A000 FAFF F200"
+	$"8E00 FAFF FB00 E600 007B 0001 FAFF 0001"
+	$"FACC 0001 FA99 0001 FA66 0001 FA33 0001"
+	$"FA00 0001 FAFF 0001 FACC 0001 FA99 0001"
+	$"FA66 0001 FA33 0001 FA00 0001 FAFF 0001"
+	$"FAFF 0001 FA00 0001 FA00 0001 FAFF 0101"
+	$"00FA 9900 00FA 9900 00FA 9900 00FA 9900"
+	$"00FA 9900 00FA 99D0 00FA FF00 00FA FFFA"
+	$"00FF 00FA FF97 00FA FF00 00FC FFFF FF00"
+	$"00FA FFF0 0000 7B00 01FA FF00 01FA CC00"
+	$"01FA 9900 01FA 6600 01FA 3300 01FA 0000"
+	$"01FA FF00 01FA CC00 01FA 9900 01FA 6600"
+	$"01FA 3300 01FA 0000 01FA FF00 01FA FF00"
+	$"01FA 0000 01FA 0000 01FA FF01 0100 FA99"
+	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"0000 FA99 D000 FAFF 0000 FAFF FA00 FF00"
+	$"FAFF 9700 FAFF 0000 FCFF FFFF 0000 FAFF"
+	$"F000 007B 0001 FAFF 0001 FACC 0001 FA99"
+	$"0001 FA66 0001 FA33 0001 FA00 0001 FAFF"
+	$"0001 FACC 0001 FA99 0001 FA66 0001 FA33"
+	$"0001 FA00 0001 FAFF 0001 FAFF 0001 FA00"
+	$"0001 FA00 0001 FAFF 0101 00FA 9900 00FA"
+	$"9900 00FA 9900 00FA 9900 00FA 9900 00FA"
+	$"99D0 00FA FF00 00FA FFFA 00FF 00FA FF97"
+	$"00FA FF00 00FC FFFF FF00 00FA FFF0 0000"
+	$"7B00 01FA FF00 01FA CC00 01FA 9900 01FA"
+	$"6600 01FA 3300 01FA 0000 01FA FF00 01FA"
+	$"CC00 01FA 9900 01FA 6600 01FA 3300 01FA"
+	$"0000 01FA FF00 01FA FF00 01FA 0000 01FA"
+	$"0000 01FA FF01 0100 FA99 0000 FA99 0000"
+	$"FA99 0000 FA99 0000 FA99 0000 FA99 D000"
+	$"FAFF 0000 FAFF FA00 FF00 FAFF 9700 FAFF"
+	$"0000 FCFF FFFF 0000 FAFF F000 007B 0001"
+	$"FAFF 0001 FACC 0001 FA99 0001 FA66 0001"
+	$"FA33 0001 FA00 0001 FAFF 0001 FACC 0001"
+	$"FA99 0001 FA66 0001 FA33 0001 FA00 0001"
+	$"FAFF 0001 FAFF 0001 FA00 0001 FA00 0001"
+	$"FAFF 0101 00FA 9900 00FA 9900 00FA 9900"
+	$"00FA 9900 00FA 9900 00FA 99D0 00FA FF00"
+	$"00FA FFFA 00FF 00FA FF97 00FA FF00 00FC"
+	$"FFFF FF00 00FA FFF0 0000 7B00 01FA FF00"
+	$"01FA CC00 01FA 9900 01FA 6600 01FA 3300"
+	$"01FA 0000 01FA FF00 01FA CC00 01FA 9900"
+	$"01FA 6600 01FA 3300 01FA 0000 01FA FF00"
+	$"01FA FF00 01FA 0000 01FA 0000 01FA FF01"
+	$"0100 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"0000 FA99 0000 FA99 D000 FAFF 0000 FAFF"
+	$"FA00 FF00 FAFF 9700 FAFF 0000 FCFF FFFF"
+	$"0000 FAFF F000 007B 0001 FAFF 0001 FACC"
+	$"0001 FA99 0001 FA66 0001 FA33 0001 FA00"
+	$"0001 FAFF 0001 FACC 0001 FA99 0001 FA66"
+	$"0001 FA33 0001 FA00 0001 FAFF 0001 FAFF"
+	$"0001 FA00 0001 FA00 0001 FAFF 0101 00FA"
+	$"9900 00FA 9900 00FA 9900 00FA 9900 00FA"
+	$"9900 00FA 99D0 00FA FF00 00FA FFFA 00FF"
+	$"00FA FF97 00FA FF00 00FC FFFF FF00 00FA"
+	$"FFF0 0000 16A0 01FA FFE9 01F8 01A0 00FA"
+	$"FFF2 008E 00FA FFFB 00E6 0000 AB00 01FA"
+	$"FF00 01FA CC00 01FA 9900 01FA 6600 01FA"
+	$"3300 01FA 0000 01FA FF00 01FA CC00 01FA"
+	$"9900 01FA 6600 01FA 3300 01FA 0000 01FA"
+	$"FF00 01FA EE00 01FA 0000 01FA 0000 01FA"
+	$"EE01 0100 FA99 0000 FA99 0000 FA99 0000"
+	$"FA99 0000 FA99 0000 FA99 D000 FAFF 0000"
+	$"FAEE FA00 FF00 FAEE F700 FA33 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FAFF 0000 FCEE"
+	$"FFEE 0000 FAEE F000 00AB 0001 FAFF 0001"
+	$"FACC 0001 FA99 0001 FA66 0001 FA33 0001"
+	$"FA00 0001 FAFF 0001 FACC 0001 FA99 0001"
+	$"FA66 0001 FA33 0001 FA00 0001 FAFF 0001"
+	$"FAEE 0001 FA00 0001 FA00 0001 FAEE 0101"
+	$"00FA 9900 00FA 9900 00FA 9900 00FA 9900"
+	$"00FA 9900 00FA 99D0 00FA FF00 00FA EEFA"
+	$"00FF 00FA EEF7 00FA 3300 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA FF00 00FC EEFF EE00"
+	$"00FA EEF0 0000 AB00 01FA FF00 01FA CC00"
+	$"01FA 9900 01FA 6600 01FA 3300 01FA 0000"
+	$"01FA FF00 01FA CC00 01FA 9900 01FA 6600"
+	$"01FA 3300 01FA 0000 01FA FF00 01FA EE00"
+	$"01FA 0000 01FA 0000 01FA EE01 0100 FA99"
+	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"0000 FA99 D000 FAFF 0000 FAEE FA00 FF00"
+	$"FAEE F700 FA33 0000 FA33 0000 FA33 0000"
+	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
+	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
+	$"FA33 0000 FAFF 0000 FCEE FFEE 0000 FAEE"
+	$"F000 00AB 0001 FAFF 0001 FACC 0001 FA99"
+	$"0001 FA66 0001 FA33 0001 FA00 0001 FAFF"
+	$"0001 FACC 0001 FA99 0001 FA66 0001 FA33"
+	$"0001 FA00 0001 FAFF 0001 FAEE 0001 FA00"
+	$"0001 FA00 0001 FAEE 0101 00FA 9900 00FA"
+	$"9900 00FA 9900 00FA 9900 00FA 9900 00FA"
+	$"99D0 00FA FF00 00FA EEFA 00FF 00FA EEF7"
+	$"00FA 3300 00FA 3300 00FA 3300 00FA 3300"
+	$"00FA 3300 00FA 3300 00FA 3300 00FA 3300"
+	$"00FA 3300 00FA 3300 00FA 3300 00FA 3300"
+	$"00FA FF00 00FC EEFF EE00 00FA EEF0 0000"
+	$"AB00 01FA FF00 01FA CC00 01FA 9900 01FA"
+	$"6600 01FA 3300 01FA 0000 01FA FF00 01FA"
+	$"CC00 01FA 9900 01FA 6600 01FA 3300 01FA"
+	$"0000 01FA FF00 01FA EE00 01FA 0000 01FA"
+	$"0000 01FA EE01 0100 FA99 0000 FA99 0000"
+	$"FA99 0000 FA99 0000 FA99 0000 FA99 D000"
+	$"FAFF 0000 FAEE FA00 FF00 FAEE F700 FA33"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FAFF"
+	$"0000 FCEE FFEE 0000 FAEE F000 00AB 0001"
+	$"FAFF 0001 FACC 0001 FA99 0001 FA66 0001"
+	$"FA33 0001 FA00 0001 FAFF 0001 FACC 0001"
+	$"FA99 0001 FA66 0001 FA33 0001 FA00 0001"
+	$"FAFF 0001 FAEE 0001 FA00 0001 FA00 0001"
+	$"FAEE 0101 00FA 9900 00FA 9900 00FA 9900"
+	$"00FA 9900 00FA 9900 00FA 99D0 00FA FF00"
+	$"00FA EEFA 00FF 00FA EEF7 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA FF00 00FC"
+	$"EEFF EE00 00FA EEF0 0000 AB00 01FA FF00"
+	$"01FA CC00 01FA 9900 01FA 6600 01FA 3300"
+	$"01FA 0000 01FA FF00 01FA CC00 01FA 9900"
+	$"01FA 6600 01FA 3300 01FA 0000 01FA FF00"
+	$"01FA EE00 01FA 0000 01FA 0000 01FA EE01"
+	$"0100 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"0000 FA99 0000 FA99 D000 FAFF 0000 FAEE"
+	$"FA00 FF00 FAEE F700 FA33 0000 FA33 0000"
+	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
+	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
+	$"FA33 0000 FA33 0000 FAFF 0000 FCEE FFEE"
+	$"0000 FAEE F000 0016 A001 FAFF E901 F801"
+	$"A000 FAFF F200 8E00 FAFF FB00 E600 00AB"
+	$"0001 FAFF 0001 FACC 0001 FA99 0001 FA66"
+	$"0001 FA33 0001 FA00 0001 FAFF 0001 FACC"
+	$"0001 FA99 0001 FA66 0001 FA33 0001 FA00"
+	$"0001 FAFF 0001 FADD 0001 FA00 0001 FA00"
+	$"0001 FADD 0101 00FA 9900 00FA 9900 00FA"
+	$"9900 00FA 9900 00FA 9900 00FA 99D0 00FA"
+	$"FF00 00FA DDFA 00FF 00FA DDF7 00FA 6600"
+	$"00FA 6600 00FA 6600 00FA 6600 00FA 6600"
+	$"00FA 6600 00FA 6600 00FA 6600 00FA 6600"
+	$"00FA 6600 00FA 6600 00FA 6600 00FA FF00"
+	$"00FC DDFF DD00 00FA DDF0 0000 AB00 01FA"
+	$"FF00 01FA CC00 01FA 9900 01FA 6600 01FA"
+	$"3300 01FA 0000 01FA FF00 01FA CC00 01FA"
+	$"9900 01FA 6600 01FA 3300 01FA 0000 01FA"
+	$"FF00 01FA DD00 01FA 0000 01FA 0000 01FA"
+	$"DD01 0100 FA99 0000 FA99 0000 FA99 0000"
+	$"FA99 0000 FA99 0000 FA99 D000 FAFF 0000"
+	$"FADD FA00 FF00 FADD F700 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FAFF 0000 FCDD"
+	$"FFDD 0000 FADD F000 00AB 0001 FAFF 0001"
+	$"FACC 0001 FA99 0001 FA66 0001 FA33 0001"
+	$"FA00 0001 FAFF 0001 FACC 0001 FA99 0001"
+	$"FA66 0001 FA33 0001 FA00 0001 FAFF 0001"
+	$"FADD 0001 FA00 0001 FA00 0001 FADD 0101"
+	$"00FA 9900 00FA 9900 00FA 9900 00FA 9900"
+	$"00FA 9900 00FA 99D0 00FA FF00 00FA DDFA"
+	$"00FF 00FA DDF7 00FA 6600 00FA 6600 00FA"
+	$"6600 00FA 6600 00FA 6600 00FA 6600 00FA"
+	$"6600 00FA 6600 00FA 6600 00FA 6600 00FA"
+	$"6600 00FA 6600 00FA FF00 00FC DDFF DD00"
+	$"00FA DDF0 0000 AB00 01FA FF00 01FA CC00"
+	$"01FA 9900 01FA 6600 01FA 3300 01FA 0000"
+	$"01FA FF00 01FA CC00 01FA 9900 01FA 6600"
+	$"01FA 3300 01FA 0000 01FA FF00 01FA DD00"
+	$"01FA 0000 01FA 0000 01FA DD01 0100 FA99"
+	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"0000 FA99 D000 FAFF 0000 FADD FA00 FF00"
+	$"FADD F700 FA66 0000 FA66 0000 FA66 0000"
+	$"FA66 0000 FA66 0000 FA66 0000 FA66 0000"
+	$"FA66 0000 FA66 0000 FA66 0000 FA66 0000"
+	$"FA66 0000 FAFF 0000 FCDD FFDD 0000 FADD"
+	$"F000 00AB 0001 FAFF 0001 FACC 0001 FA99"
+	$"0001 FA66 0001 FA33 0001 FA00 0001 FAFF"
+	$"0001 FACC 0001 FA99 0001 FA66 0001 FA33"
+	$"0001 FA00 0001 FAFF 0001 FADD 0001 FA00"
+	$"0001 FA00 0001 FADD 0101 00FA 9900 00FA"
+	$"9900 00FA 9900 00FA 9900 00FA 9900 00FA"
+	$"99D0 00FA FF00 00FA DDFA 00FF 00FA DDF7"
+	$"00FA 6600 00FA 6600 00FA 6600 00FA 6600"
+	$"00FA 6600 00FA 6600 00FA 6600 00FA 6600"
+	$"00FA 6600 00FA 6600 00FA 6600 00FA 6600"
+	$"00FA FF00 00FC DDFF DD00 00FA DDF0 0000"
+	$"AB00 01FA FF00 01FA CC00 01FA 9900 01FA"
+	$"6600 01FA 3300 01FA 0000 01FA FF00 01FA"
+	$"CC00 01FA 9900 01FA 6600 01FA 3300 01FA"
+	$"0000 01FA FF00 01FA DD00 01FA 0000 01FA"
+	$"0000 01FA DD01 0100 FA99 0000 FA99 0000"
+	$"FA99 0000 FA99 0000 FA99 0000 FA99 D000"
+	$"FAFF 0000 FADD FA00 FF00 FADD F700 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FAFF"
+	$"0000 FCDD FFDD 0000 FADD F000 00AB 0001"
+	$"FAFF 0001 FACC 0001 FA99 0001 FA66 0001"
+	$"FA33 0001 FA00 0001 FAFF 0001 FACC 0001"
+	$"FA99 0001 FA66 0001 FA33 0001 FA00 0001"
+	$"FAFF 0001 FADD 0001 FA00 0001 FA00 0001"
+	$"FADD 0101 00FA 9900 00FA 9900 00FA 9900"
+	$"00FA 9900 00FA 9900 00FA 99D0 00FA FF00"
+	$"00FA DDFA 00FF 00FA DDF7 00FA 6600 00FA"
+	$"6600 00FA 6600 00FA 6600 00FA 6600 00FA"
+	$"6600 00FA 6600 00FA 6600 00FA 6600 00FA"
+	$"6600 00FA 6600 00FA 6600 00FA FF00 00FC"
+	$"DDFF DD00 00FA DDF0 0000 16A0 01FA FFE9"
+	$"01F8 01A0 00FA FFF2 008E 00FA FFFB 00E6"
+	$"0000 AB00 01FA FF00 01FA CC00 01FA 9900"
+	$"01FA 6600 01FA 3300 01FA 0000 01FA FF00"
+	$"01FA CC00 01FA 9900 01FA 6600 01FA 3300"
+	$"01FA 0000 01FA FF00 01FA CC00 01FA 0000"
+	$"01FA 0000 01FA CC01 0100 FA99 0000 FA99"
+	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"D000 FAFF 0000 FACC FA00 FF00 FACC F700"
+	$"FA99 0000 FA99 0000 FA99 0000 FA99 0000"
+	$"FA99 0000 FA99 0000 FA99 0000 FA99 0000"
+	$"FA99 0000 FA99 0000 FA99 0000 FA99 0000"
+	$"FAFF 0000 FCCC FFCC 0000 FACC F000 00AB"
+	$"0001 FAFF 0001 FACC 0001 FA99 0001 FA66"
+	$"0001 FA33 0001 FA00 0001 FAFF 0001 FACC"
+	$"0001 FA99 0001 FA66 0001 FA33 0001 FA00"
+	$"0001 FAFF 0001 FACC 0001 FA00 0001 FA00"
+	$"0001 FACC 0101 00FA 9900 00FA 9900 00FA"
+	$"9900 00FA 9900 00FA 9900 00FA 99D0 00FA"
+	$"FF00 00FA CCFA 00FF 00FA CCF7 00FA 9900"
+	$"00FA 9900 00FA 9900 00FA 9900 00FA 9900"
+	$"00FA 9900 00FA 9900 00FA 9900 00FA 9900"
+	$"00FA 9900 00FA 9900 00FA 9900 00FA FF00"
+	$"00FC CCFF CC00 00FA CCF0 0000 AB00 01FA"
+	$"FF00 01FA CC00 01FA 9900 01FA 6600 01FA"
+	$"3300 01FA 0000 01FA FF00 01FA CC00 01FA"
+	$"9900 01FA 6600 01FA 3300 01FA 0000 01FA"
+	$"FF00 01FA CC00 01FA 0000 01FA 0000 01FA"
+	$"CC01 0100 FA99 0000 FA99 0000 FA99 0000"
+	$"FA99 0000 FA99 0000 FA99 D000 FAFF 0000"
+	$"FACC FA00 FF00 FACC F700 FA99 0000 FA99"
+	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"0000 FA99 0000 FA99 0000 FAFF 0000 FCCC"
+	$"FFCC 0000 FACC F000 00AB 0001 FAFF 0001"
+	$"FACC 0001 FA99 0001 FA66 0001 FA33 0001"
+	$"FA00 0001 FAFF 0001 FACC 0001 FA99 0001"
+	$"FA66 0001 FA33 0001 FA00 0001 FAFF 0001"
+	$"FACC 0001 FA00 0001 FA00 0001 FACC 0101"
+	$"00FA 9900 00FA 9900 00FA 9900 00FA 9900"
+	$"00FA 9900 00FA 99D0 00FA FF00 00FA CCFA"
+	$"00FF 00FA CCF7 00FA 9900 00FA 9900 00FA"
+	$"9900 00FA 9900 00FA 9900 00FA 9900 00FA"
+	$"9900 00FA 9900 00FA 9900 00FA 9900 00FA"
+	$"9900 00FA 9900 00FA FF00 00FC CCFF CC00"
+	$"00FA CCF0 0000 AB00 01FA FF00 01FA CC00"
+	$"01FA 9900 01FA 6600 01FA 3300 01FA 0000"
+	$"01FA FF00 01FA CC00 01FA 9900 01FA 6600"
+	$"01FA 3300 01FA 0000 01FA FF00 01FA CC00"
+	$"01FA 0000 01FA 0000 01FA CC01 0100 FA99"
+	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"0000 FA99 D000 FAFF 0000 FACC FA00 FF00"
+	$"FACC F700 FA99 0000 FA99 0000 FA99 0000"
+	$"FA99 0000 FA99 0000 FA99 0000 FA99 0000"
+	$"FA99 0000 FA99 0000 FA99 0000 FA99 0000"
+	$"FA99 0000 FAFF 0000 FCCC FFCC 0000 FACC"
+	$"F000 00AB 0001 FAFF 0001 FACC 0001 FA99"
+	$"0001 FA66 0001 FA33 0001 FA00 0001 FAFF"
+	$"0001 FACC 0001 FA99 0001 FA66 0001 FA33"
+	$"0001 FA00 0001 FAFF 0001 FACC 0001 FA00"
+	$"0001 FA00 0001 FACC 0101 00FA 9900 00FA"
+	$"9900 00FA 9900 00FA 9900 00FA 9900 00FA"
+	$"99D0 00FA FF00 00FA CCFA 00FF 00FA CCF7"
+	$"00FA 9900 00FA 9900 00FA 9900 00FA 9900"
+	$"00FA 9900 00FA 9900 00FA 9900 00FA 9900"
+	$"00FA 9900 00FA 9900 00FA 9900 00FA 9900"
+	$"00FA FF00 00FC CCFF CC00 00FA CCF0 0000"
+	$"AB00 01FA FF00 01FA CC00 01FA 9900 01FA"
+	$"6600 01FA 3300 01FA 0000 01FA FF00 01FA"
+	$"CC00 01FA 9900 01FA 6600 01FA 3300 01FA"
+	$"0000 01FA FF00 01FA CC00 01FA 0000 01FA"
+	$"0000 01FA CC01 0100 FA99 0000 FA99 0000"
+	$"FA99 0000 FA99 0000 FA99 0000 FA99 D000"
+	$"FAFF 0000 FACC FA00 FF00 FACC F700 FA99"
+	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"0000 FA99 0000 FA99 0000 FA99 0000 FAFF"
+	$"0000 FCCC FFCC 0000 FACC F000 0016 A001"
+	$"FAFF E901 F801 A000 FAFF F200 8E00 FAFF"
+	$"FB00 E600 00AB 0001 FAFF 0001 FACC 0001"
+	$"FA99 0001 FA66 0001 FA33 0001 FA00 0001"
+	$"FAFF 0001 FACC 0001 FA99 0001 FA66 0001"
+	$"FA33 0001 FA00 0001 FAFF 0001 FABB 0001"
+	$"FA00 0001 FA00 0001 FABB 0101 00FA 9900"
+	$"00FA 9900 00FA 9900 00FA 9900 00FA 9900"
+	$"00FA 99D0 00FA FF00 00FA BBFA 00FF 00FA"
+	$"BBF7 00FA CC00 00FA CC00 00FA CC00 00FA"
+	$"CC00 00FA CC00 00FA CC00 00FA CC00 00FA"
+	$"CC00 00FA CC00 00FA CC00 00FA CC00 00FA"
+	$"CC00 00FA FF00 00FC BBFF BB00 00FA BBF0"
+	$"0000 AB00 01FA FF00 01FA CC00 01FA 9900"
+	$"01FA 6600 01FA 3300 01FA 0000 01FA FF00"
+	$"01FA CC00 01FA 9900 01FA 6600 01FA 3300"
+	$"01FA 0000 01FA FF00 01FA BB00 01FA 0000"
+	$"01FA 0000 01FA BB01 0100 FA99 0000 FA99"
+	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"D000 FAFF 0000 FABB FA00 FF00 FABB F700"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FAFF 0000 FCBB FFBB 0000 FABB F000 00AB"
+	$"0001 FAFF 0001 FACC 0001 FA99 0001 FA66"
+	$"0001 FA33 0001 FA00 0001 FAFF 0001 FACC"
+	$"0001 FA99 0001 FA66 0001 FA33 0001 FA00"
+	$"0001 FAFF 0001 FABB 0001 FA00 0001 FA00"
+	$"0001 FABB 0101 00FA 9900 00FA 9900 00FA"
+	$"9900 00FA 9900 00FA 9900 00FA 99D0 00FA"
+	$"FF00 00FA BBFA 00FF 00FA BBF7 00FA CC00"
+	$"00FA CC00 00FA CC00 00FA CC00 00FA CC00"
+	$"00FA CC00 00FA CC00 00FA CC00 00FA CC00"
+	$"00FA CC00 00FA CC00 00FA CC00 00FA FF00"
+	$"00FC BBFF BB00 00FA BBF0 0000 AB00 01FA"
+	$"FF00 01FA CC00 01FA 9900 01FA 6600 01FA"
+	$"3300 01FA 0000 01FA FF00 01FA CC00 01FA"
+	$"9900 01FA 6600 01FA 3300 01FA 0000 01FA"
+	$"FF00 01FA BB00 01FA 0000 01FA 0000 01FA"
+	$"BB01 0100 FA99 0000 FA99 0000 FA99 0000"
+	$"FA99 0000 FA99 0000 FA99 D000 FAFF 0000"
+	$"FABB FA00 FF00 FABB F700 FACC 0000 FACC"
+	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
+	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
+	$"0000 FACC 0000 FACC 0000 FAFF 0000 FCBB"
+	$"FFBB 0000 FABB F000 00AB 0001 FAFF 0001"
+	$"FACC 0001 FA99 0001 FA66 0001 FA33 0001"
+	$"FA00 0001 FAFF 0001 FACC 0001 FA99 0001"
+	$"FA66 0001 FA33 0001 FA00 0001 FAFF 0001"
+	$"FABB 0001 FA00 0001 FA00 0001 FABB 0101"
+	$"00FA 9900 00FA 9900 00FA 9900 00FA 9900"
+	$"00FA 9900 00FA 99D0 00FA FF00 00FA BBFA"
+	$"00FF 00FA BBF7 00FA CC00 00FA CC00 00FA"
+	$"CC00 00FA CC00 00FA CC00 00FA CC00 00FA"
+	$"CC00 00FA CC00 00FA CC00 00FA CC00 00FA"
+	$"CC00 00FA CC00 00FA FF00 00FC BBFF BB00"
+	$"00FA BBF0 0000 AB00 01FA FF00 01FA CC00"
+	$"01FA 9900 01FA 6600 01FA 3300 01FA 0000"
+	$"01FA FF00 01FA CC00 01FA 9900 01FA 6600"
+	$"01FA 3300 01FA 0000 01FA FF00 01FA BB00"
+	$"01FA 0000 01FA 0000 01FA BB01 0100 FA99"
+	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"0000 FA99 D000 FAFF 0000 FABB FA00 FF00"
+	$"FABB F700 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FAFF 0000 FCBB FFBB 0000 FABB"
+	$"F000 00AB 0001 FAFF 0001 FACC 0001 FA99"
+	$"0001 FA66 0001 FA33 0001 FA00 0001 FAFF"
+	$"0001 FACC 0001 FA99 0001 FA66 0001 FA33"
+	$"0001 FA00 0001 FAFF 0001 FABB 0001 FA00"
+	$"0001 FA00 0001 FABB 0101 00FA 9900 00FA"
+	$"9900 00FA 9900 00FA 9900 00FA 9900 00FA"
+	$"99D0 00FA FF00 00FA BBFA 00FF 00FA BBF7"
+	$"00FA CC00 00FA CC00 00FA CC00 00FA CC00"
+	$"00FA CC00 00FA CC00 00FA CC00 00FA CC00"
+	$"00FA CC00 00FA CC00 00FA CC00 00FA CC00"
+	$"00FA FF00 00FC BBFF BB00 00FA BBF0 0000"
+	$"16A0 01FA FFE9 01F8 01A0 00FA FFF2 008E"
+	$"00FA FFFB 00E6 0000 AB00 01FA FF00 01FA"
+	$"CC00 01FA 9900 01FA 6600 01FA 3300 01FA"
+	$"0000 01FA FF00 01FA CC00 01FA 9900 01FA"
+	$"6600 01FA 3300 01FA 0000 01FA FF00 01FA"
+	$"AA00 01FA 0000 01FA 0000 01FA AA01 0100"
+	$"FA99 0000 FA99 0000 FA99 0000 FA99 0000"
+	$"FA99 0000 FA99 D000 FAFF 0000 FAAA FA00"
+	$"FF00 FAAA F700 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FCAA FFAA 0000"
+	$"FAAA F000 00AB 0001 FAFF 0001 FACC 0001"
+	$"FA99 0001 FA66 0001 FA33 0001 FA00 0001"
+	$"FAFF 0001 FACC 0001 FA99 0001 FA66 0001"
+	$"FA33 0001 FA00 0001 FAFF 0001 FAAA 0001"
+	$"FA00 0001 FA00 0001 FAAA 0101 00FA 9900"
+	$"00FA 9900 00FA 9900 00FA 9900 00FA 9900"
+	$"00FA 99D0 00FA FF00 00FA AAFA 00FF 00FA"
+	$"AAF7 00FA FF00 00FA FF00 00FA FF00 00FA"
+	$"FF00 00FA FF00 00FA FF00 00FA FF00 00FA"
+	$"FF00 00FA FF00 00FA FF00 00FA FF00 00FA"
+	$"FF00 00FA FF00 00FC AAFF AA00 00FA AAF0"
+	$"0000 AB00 01FA FF00 01FA CC00 01FA 9900"
+	$"01FA 6600 01FA 3300 01FA 0000 01FA FF00"
+	$"01FA CC00 01FA 9900 01FA 6600 01FA 3300"
+	$"01FA 0000 01FA FF00 01FA AA00 01FA 0000"
+	$"01FA 0000 01FA AA01 0100 FA99 0000 FA99"
+	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"D000 FAFF 0000 FAAA FA00 FF00 FAAA F700"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FCAA FFAA 0000 FAAA F000 00AB"
+	$"0001 FAFF 0001 FACC 0001 FA99 0001 FA66"
+	$"0001 FA33 0001 FA00 0001 FAFF 0001 FACC"
+	$"0001 FA99 0001 FA66 0001 FA33 0001 FA00"
+	$"0001 FAFF 0001 FAAA 0001 FA00 0001 FA00"
+	$"0001 FAAA 0101 00FA 9900 00FA 9900 00FA"
+	$"9900 00FA 9900 00FA 9900 00FA 99D0 00FA"
+	$"FF00 00FA AAFA 00FF 00FA AAF7 00FA FF00"
 	$"00FA FF00 00FA FF00 00FA FF00 00FA FF00"
-	$"00FB FF01 FF00 FAFF 0000 FAFF 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FA99 0000 FA99 0000 FA99"
-	$"0000 FA99 0000 FA99 0000 FA99 FF00 FAFF"
-	$"0000 FCFF FFFF F000 FAFF 0000 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FCFF FFFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 0100 0001 FAFF"
-	$"0001 FA00 0001 FA00 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0101 00FA FFF8 00FA"
-	$"FFF8 00FA FF00 00FA FF00 00FA FF00 00FA"
-	$"FF00 00FB FF01 FF00 FAFF 0000 FAFF 0000"
-	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
-	$"FACC 0000 FACC 0000 FA99 0000 FA99 0000"
-	$"FA99 0000 FA99 0000 FA99 0000 FA99 FF00"
-	$"FAFF 0000 FCFF FFFF F000 FAFF 0000 FAFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 FAFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 FCFF FFFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 0100 0001"
-	$"FAFF 0001 FA00 0001 FA00 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0101 00FA FFF8"
-	$"00FA FFF8 00FA FF00 00FA FF00 00FA FF00"
-	$"00FA FF00 00FB FF01 FF00 FAFF 0000 FAFF"
-	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FA99 0000 FA99"
-	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
-	$"FF00 FAFF 0000 FCFF FFFF F000 FAFF 0000"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FCFF FFFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 0100"
-	$"0001 FAFF 0001 FA00 0001 FA00 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0101 00FA"
-	$"FFF8 00FA FFF8 00FA FF00 00FA FF00 00FA"
-	$"FF00 00FA FF00 00FB FF01 FF00 FAFF 0000"
-	$"FAFF 0000 FACC 0000 FACC 0000 FACC 0000"
-	$"FACC 0000 FACC 0000 FACC 0000 FA99 0000"
-	$"FA99 0000 FA99 0000 FA99 0000 FA99 0000"
-	$"FA99 FF00 FAFF 0000 FCFF FFFF F000 FAFF"
-	$"0000 FAFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 FAFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 FCFF FFFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"0100 0001 FAFF 0001 FA00 0001 FA00 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0101"
-	$"00FA FFF8 00FA FFF8 00FA FF00 00FA FF00"
-	$"00FA FF00 00FA FF00 00FB FF01 FF00 FAFF"
-	$"0000 FAFF 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FACC 0000 FA99"
-	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
-	$"0000 FA99 FF00 FAFF 0000 FCFF FFFF F000"
-	$"FAFF 0000 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FCFF FFFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 0100 0001 FAFF 0001 FA00 0001 FA00"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0101 00FA FFF8 00FA FFF8 00FA FF00 00FA"
-	$"FF00 00FA FF00 00FA FF00 00FB FF01 FF00"
-	$"FAFF 0000 FAFF 0000 FACC 0000 FACC 0000"
-	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
-	$"FA99 0000 FA99 0000 FA99 0000 FA99 0000"
-	$"FA99 0000 FA99 FF00 FAFF 0000 FCFF FFFF"
-	$"F000 FAFF 0000 FAFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 FAFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 FCFF"
-	$"FFFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 0100 0001 FAFF 0001 FA00 0001"
-	$"FA00 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0101 00FA FFF8 00FA FFF8 00FA FF00"
-	$"00FA FF00 00FA FF00 00FA FF00 00FB FF01"
-	$"FF00 FAFF 0000 FAFF 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
-	$"0000 FA99 0000 FA99 FF00 FAFF 0000 FCFF"
-	$"FFFF F000 FAFF 0000 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FCFF FFFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 0018 E001 FAFF A901 C801"
-	$"E000 FAFF E200 8100 EE00 FAFF 9B00 D600"
-	$"0100 0001 FAEE 0001 FA00 0001 FA00 0001"
-	$"FAEE 0001 FAFF 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0101"
-	$"00FA EEF8 00FA EEF8 00FA FF00 00FA FF00"
-	$"00FA FF00 00FA FF00 00FB FF01 FF00 FAFF"
-	$"0000 FAFF 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FACC 0000 FA99"
-	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
-	$"0000 FA99 FF00 FAEE 0000 FCEE FFEE F000"
-	$"FAFF 0000 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FCFF FFFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 0100 0001 FAEE 0001 FA00 0001 FA00"
-	$"0001 FAEE 0001 FAFF 0001 FACC 0001 FACC"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0101 00FA EEF8 00FA EEF8 00FA FF00 00FA"
-	$"FF00 00FA FF00 00FA FF00 00FB FF01 FF00"
-	$"FAFF 0000 FAFF 0000 FACC 0000 FACC 0000"
-	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
-	$"FA99 0000 FA99 0000 FA99 0000 FA99 0000"
-	$"FA99 0000 FA99 FF00 FAEE 0000 FCEE FFEE"
-	$"F000 FAFF 0000 FAFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 FAFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 FCFF"
-	$"FFFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 0100 0001 FAEE 0001 FA00 0001"
-	$"FA00 0001 FAEE 0001 FAFF 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0101 00FA EEF8 00FA EEF8 00FA FF00"
-	$"00FA FF00 00FA FF00 00FA FF00 00FB FF01"
-	$"FF00 FAFF 0000 FAFF 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
-	$"0000 FA99 0000 FA99 FF00 FAEE 0000 FCEE"
-	$"FFEE F000 FAFF 0000 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FCFF FFFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 0100 0001 FAEE 0001 FA00"
-	$"0001 FA00 0001 FAEE 0001 FAFF 0001 FACC"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0001 FACC 0101 00FA EEF8 00FA EEF8 00FA"
-	$"FF00 00FA FF00 00FA FF00 00FA FF00 00FB"
-	$"FF01 FF00 FAFF 0000 FAFF 0000 FACC 0000"
-	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
-	$"FACC 0000 FA99 0000 FA99 0000 FA99 0000"
-	$"FA99 0000 FA99 0000 FA99 FF00 FAEE 0000"
-	$"FCEE FFEE F000 FAFF 0000 FAFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 FAFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 FCFF FFFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 0100 0001 FAEE 0001"
-	$"FA00 0001 FA00 0001 FAEE 0001 FAFF 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0101 00FA EEF8 00FA EEF8"
 	$"00FA FF00 00FA FF00 00FA FF00 00FA FF00"
-	$"00FB FF01 FF00 FAFF 0000 FAFF 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FA99 0000 FA99 0000 FA99"
-	$"0000 FA99 0000 FA99 0000 FA99 FF00 FAEE"
-	$"0000 FCEE FFEE F000 FAFF 0000 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FCFF FFFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 0100 0001 FAEE"
-	$"0001 FA00 0001 FA00 0001 FAEE 0001 FAFF"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0001 FACC 0001 FACC 0101 00FA EEF8 00FA"
-	$"EEF8 00FA FF00 00FA FF00 00FA FF00 00FA"
-	$"FF00 00FB FF01 FF00 FAFF 0000 FAFF 0000"
-	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
-	$"FACC 0000 FACC 0000 FA99 0000 FA99 0000"
-	$"FA99 0000 FA99 0000 FA99 0000 FA99 FF00"
-	$"FAEE 0000 FCEE FFEE F000 FAFF 0000 FAFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 FAFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 FCFF FFFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 0100 0001"
-	$"FAEE 0001 FA00 0001 FA00 0001 FAEE 0001"
-	$"FAFF 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0101 00FA EEF8"
-	$"00FA EEF8 00FA FF00 00FA FF00 00FA FF00"
-	$"00FA FF00 00FB FF01 FF00 FAFF 0000 FAFF"
-	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FA99 0000 FA99"
-	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
-	$"FF00 FAEE 0000 FCEE FFEE F000 FAFF 0000"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FCFF FFFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 0018"
-	$"E001 FAFF A901 C801 E000 FAFF E200 8100"
-	$"EE00 FAFF 9B00 D600 0100 0001 FADD 0001"
-	$"FA00 0001 FA00 0001 FADD 0001 FAFF 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0101 00FA DDF8 00FA DDF8"
 	$"00FA FF00 00FA FF00 00FA FF00 00FA FF00"
-	$"00FB FF01 FF00 FAFF 0000 FAFF 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FA99 0000 FA99 0000 FA99"
-	$"0000 FA99 0000 FA99 0000 FA99 FF00 FADD"
-	$"0000 FCDD FFDD F000 FAFF 0000 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FCFF FFFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 0100 0001 FADD"
-	$"0001 FA00 0001 FA00 0001 FADD 0001 FAFF"
-	$"0001 FA99 0001 FA99 0001 FA99 0001 FA99"
-	$"0001 FA99 0001 FA99 0001 FA99 0001 FA99"
-	$"0001 FA99 0001 FA99 0001 FA99 0001 FA99"
-	$"0001 FA99 0001 FA99 0001 FA99 0001 FA99"
-	$"0001 FA99 0001 FA99 0101 00FA DDF8 00FA"
-	$"DDF8 00FA FF00 00FA FF00 00FA FF00 00FA"
-	$"FF00 00FB FF01 FF00 FAFF 0000 FAFF 0000"
-	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
-	$"FACC 0000 FACC 0000 FA99 0000 FA99 0000"
-	$"FA99 0000 FA99 0000 FA99 0000 FA99 FF00"
-	$"FADD 0000 FCDD FFDD F000 FAFF 0000 FAFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 FAFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 FCFF FFFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 0100 0001"
-	$"FADD 0001 FA00 0001 FA00 0001 FADD 0001"
-	$"FAFF 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0101 00FA DDF8"
-	$"00FA DDF8 00FA FF00 00FA FF00 00FA FF00"
-	$"00FA FF00 00FB FF01 FF00 FAFF 0000 FAFF"
-	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FA99 0000 FA99"
+	$"00FC AAFF AA00 00FA AAF0 0000 AB00 01FA"
+	$"FF00 01FA CC00 01FA 9900 01FA 6600 01FA"
+	$"3300 01FA 0000 01FA FF00 01FA CC00 01FA"
+	$"9900 01FA 6600 01FA 3300 01FA 0000 01FA"
+	$"FF00 01FA AA00 01FA 0000 01FA 0000 01FA"
+	$"AA01 0100 FA99 0000 FA99 0000 FA99 0000"
+	$"FA99 0000 FA99 0000 FA99 D000 FAFF 0000"
+	$"FAAA FA00 FF00 FAAA F700 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FCAA"
+	$"FFAA 0000 FAAA F000 00AB 0001 FAFF 0001"
+	$"FACC 0001 FA99 0001 FA66 0001 FA33 0001"
+	$"FA00 0001 FAFF 0001 FACC 0001 FA99 0001"
+	$"FA66 0001 FA33 0001 FA00 0001 FAFF 0001"
+	$"FAAA 0001 FA00 0001 FA00 0001 FAAA 0101"
+	$"00FA 9900 00FA 9900 00FA 9900 00FA 9900"
+	$"00FA 9900 00FA 99D0 00FA FF00 00FA AAFA"
+	$"00FF 00FA AAF7 00FA FF00 00FA FF00 00FA"
+	$"FF00 00FA FF00 00FA FF00 00FA FF00 00FA"
+	$"FF00 00FA FF00 00FA FF00 00FA FF00 00FA"
+	$"FF00 00FA FF00 00FA FF00 00FC AAFF AA00"
+	$"00FA AAF0 0000 AB00 01FA FF00 01FA CC00"
+	$"01FA 9900 01FA 6600 01FA 3300 01FA 0000"
+	$"01FA FF00 01FA CC00 01FA 9900 01FA 6600"
+	$"01FA 3300 01FA 0000 01FA FF00 01FA AA00"
+	$"01FA 0000 01FA 0000 01FA AA01 0100 FA99"
 	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
-	$"FF00 FADD 0000 FCDD FFDD F000 FAFF 0000"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FCFF FFFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 0100"
-	$"0001 FADD 0001 FA00 0001 FA00 0001 FADD"
-	$"0001 FAFF 0001 FA99 0001 FA99 0001 FA99"
-	$"0001 FA99 0001 FA99 0001 FA99 0001 FA99"
-	$"0001 FA99 0001 FA99 0001 FA99 0001 FA99"
-	$"0001 FA99 0001 FA99 0001 FA99 0001 FA99"
-	$"0001 FA99 0001 FA99 0001 FA99 0101 00FA"
-	$"DDF8 00FA DDF8 00FA FF00 00FA FF00 00FA"
-	$"FF00 00FA FF00 00FB FF01 FF00 FAFF 0000"
-	$"FAFF 0000 FACC 0000 FACC 0000 FACC 0000"
-	$"FACC 0000 FACC 0000 FACC 0000 FA99 0000"
+	$"0000 FA99 D000 FAFF 0000 FAAA FA00 FF00"
+	$"FAAA F700 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FCAA FFAA 0000 FAAA"
+	$"F000 0016 A001 FAFF E901 F801 A000 FAFF"
+	$"F200 8E00 FAFF FB00 E600 0093 0001 FAFF"
+	$"0001 FACC 0001 FA99 0001 FA66 0001 FA33"
+	$"0001 FA00 0001 FAFF 0001 FACC 0001 FA99"
+	$"0001 FA66 0001 FA33 0001 FA00 0001 FAFF"
+	$"0001 FA99 0001 FA00 0001 FA00 0001 FA99"
+	$"0101 00FA CC00 00FA CC00 00FA CC00 00FA"
+	$"CC00 00FA CC00 00FA CC00 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA 3300 00FA"
+	$"3300 00FA FF00 00FA 99FA 00FF 00FA 9997"
+	$"00FA FF00 00FC 99FF 9900 00FA 99F0 0000"
+	$"9300 01FA FF00 01FA CC00 01FA 9900 01FA"
+	$"6600 01FA 3300 01FA 0000 01FA FF00 01FA"
+	$"CC00 01FA 9900 01FA 6600 01FA 3300 01FA"
+	$"0000 01FA FF00 01FA 9900 01FA 0000 01FA"
+	$"0000 01FA 9901 0100 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
+	$"FA33 0000 FA33 0000 FAFF 0000 FA99 FA00"
+	$"FF00 FA99 9700 FAFF 0000 FC99 FF99 0000"
+	$"FA99 F000 0093 0001 FAFF 0001 FACC 0001"
+	$"FA99 0001 FA66 0001 FA33 0001 FA00 0001"
+	$"FAFF 0001 FACC 0001 FA99 0001 FA66 0001"
+	$"FA33 0001 FA00 0001 FAFF 0001 FA99 0001"
+	$"FA00 0001 FA00 0001 FA99 0101 00FA CC00"
+	$"00FA CC00 00FA CC00 00FA CC00 00FA CC00"
+	$"00FA CC00 00FA 3300 00FA 3300 00FA 3300"
+	$"00FA 3300 00FA 3300 00FA 3300 00FA FF00"
+	$"00FA 99FA 00FF 00FA 9997 00FA FF00 00FC"
+	$"99FF 9900 00FA 99F0 0000 9300 01FA FF00"
+	$"01FA CC00 01FA 9900 01FA 6600 01FA 3300"
+	$"01FA 0000 01FA FF00 01FA CC00 01FA 9900"
+	$"01FA 6600 01FA 3300 01FA 0000 01FA FF00"
+	$"01FA 9900 01FA 0000 01FA 0000 01FA 9901"
+	$"0100 FACC 0000 FACC 0000 FACC 0000 FACC"
+	$"0000 FACC 0000 FACC 0000 FA33 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
+	$"0000 FAFF 0000 FA99 FA00 FF00 FA99 9700"
+	$"FAFF 0000 FC99 FF99 0000 FA99 F000 0093"
+	$"0001 FAFF 0001 FACC 0001 FA99 0001 FA66"
+	$"0001 FA33 0001 FA00 0001 FAFF 0001 FACC"
+	$"0001 FA99 0001 FA66 0001 FA33 0001 FA00"
+	$"0001 FAFF 0001 FA99 0001 FA00 0001 FA00"
+	$"0001 FA99 0101 00FA CC00 00FA CC00 00FA"
+	$"CC00 00FA CC00 00FA CC00 00FA CC00 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA FF00 00FA 99FA 00FF"
+	$"00FA 9997 00FA FF00 00FC 99FF 9900 00FA"
+	$"99F0 0000 9300 01FA FF00 01FA CC00 01FA"
+	$"9900 01FA 6600 01FA 3300 01FA 0000 01FA"
+	$"FF00 01FA CC00 01FA 9900 01FA 6600 01FA"
+	$"3300 01FA 0000 01FA FF00 01FA 9900 01FA"
+	$"0000 01FA 0000 01FA 9901 0100 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FA33 0000 FA33 0000 FA33 0000"
+	$"FA33 0000 FA33 0000 FA33 0000 FAFF 0000"
+	$"FA99 FA00 FF00 FA99 9700 FAFF 0000 FC99"
+	$"FF99 0000 FA99 F000 0093 0001 FAFF 0001"
+	$"FACC 0001 FA99 0001 FA66 0001 FA33 0001"
+	$"FA00 0001 FAFF 0001 FACC 0001 FA99 0001"
+	$"FA66 0001 FA33 0001 FA00 0001 FAFF 0001"
+	$"FA99 0001 FA00 0001 FA00 0001 FA99 0101"
+	$"00FA CC00 00FA CC00 00FA CC00 00FA CC00"
+	$"00FA CC00 00FA CC00 00FA 3300 00FA 3300"
+	$"00FA 3300 00FA 3300 00FA 3300 00FA 3300"
+	$"00FA FF00 00FA 99FA 00FF 00FA 9997 00FA"
+	$"FF00 00FC 99FF 9900 00FA 99F0 0000 16A0"
+	$"01FA FFE9 01F8 01A0 00FA FFF2 008E 00FA"
+	$"FFFB 00E6 0000 C300 01FA FF00 01FA CC00"
+	$"01FA 9900 01FA 6600 01FA 3300 01FA 0000"
+	$"01FA FF00 01FA CC00 01FA 9900 01FA 6600"
+	$"01FA 3300 01FA 0000 01FA FF00 01FA 8800"
+	$"01FA 0000 01FA 0000 01FA 8801 0100 FACC"
+	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
+	$"0000 FACC 0000 FA33 0000 FA33 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FAFF"
+	$"0000 FA88 FA00 FF00 FA88 F700 FA33 0000"
+	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
+	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
+	$"FA33 0000 FA33 0000 FA33 0000 FAFF 0000"
+	$"FC88 FF88 0000 FA88 F000 00C3 0001 FAFF"
+	$"0001 FACC 0001 FA99 0001 FA66 0001 FA33"
+	$"0001 FA00 0001 FAFF 0001 FACC 0001 FA99"
+	$"0001 FA66 0001 FA33 0001 FA00 0001 FAFF"
+	$"0001 FA88 0001 FA00 0001 FA00 0001 FA88"
+	$"0101 00FA CC00 00FA CC00 00FA CC00 00FA"
+	$"CC00 00FA CC00 00FA CC00 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA 3300 00FA"
+	$"3300 00FA FF00 00FA 88FA 00FF 00FA 88F7"
+	$"00FA 3300 00FA 3300 00FA 3300 00FA 3300"
+	$"00FA 3300 00FA 3300 00FA 3300 00FA 3300"
+	$"00FA 3300 00FA 3300 00FA 3300 00FA 3300"
+	$"00FA FF00 00FC 88FF 8800 00FA 88F0 0000"
+	$"C300 01FA FF00 01FA CC00 01FA 9900 01FA"
+	$"6600 01FA 3300 01FA 0000 01FA FF00 01FA"
+	$"CC00 01FA 9900 01FA 6600 01FA 3300 01FA"
+	$"0000 01FA FF00 01FA 8800 01FA 0000 01FA"
+	$"0000 01FA 8801 0100 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
+	$"FA33 0000 FA33 0000 FAFF 0000 FA88 FA00"
+	$"FF00 FA88 F700 FA33 0000 FA33 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
+	$"0000 FA33 0000 FAFF 0000 FC88 FF88 0000"
+	$"FA88 F000 00C3 0001 FAFF 0001 FACC 0001"
+	$"FA99 0001 FA66 0001 FA33 0001 FA00 0001"
+	$"FAFF 0001 FACC 0001 FA99 0001 FA66 0001"
+	$"FA33 0001 FA00 0001 FAFF 0001 FA88 0001"
+	$"FA00 0001 FA00 0001 FA88 0101 00FA CC00"
+	$"00FA CC00 00FA CC00 00FA CC00 00FA CC00"
+	$"00FA CC00 00FA 3300 00FA 3300 00FA 3300"
+	$"00FA 3300 00FA 3300 00FA 3300 00FA FF00"
+	$"00FA 88FA 00FF 00FA 88F7 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA FF00 00FC"
+	$"88FF 8800 00FA 88F0 0000 C300 01FA FF00"
+	$"01FA CC00 01FA 9900 01FA 6600 01FA 3300"
+	$"01FA 0000 01FA FF00 01FA CC00 01FA 9900"
+	$"01FA 6600 01FA 3300 01FA 0000 01FA FF00"
+	$"01FA 8800 01FA 0000 01FA 0000 01FA 8801"
+	$"0100 FACC 0000 FACC 0000 FACC 0000 FACC"
+	$"0000 FACC 0000 FACC 0000 FA33 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
+	$"0000 FAFF 0000 FA88 FA00 FF00 FA88 F700"
+	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
+	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
+	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
+	$"FAFF 0000 FC88 FF88 0000 FA88 F000 00C3"
+	$"0001 FAFF 0001 FACC 0001 FA99 0001 FA66"
+	$"0001 FA33 0001 FA00 0001 FAFF 0001 FACC"
+	$"0001 FA99 0001 FA66 0001 FA33 0001 FA00"
+	$"0001 FAFF 0001 FA88 0001 FA00 0001 FA00"
+	$"0001 FA88 0101 00FA CC00 00FA CC00 00FA"
+	$"CC00 00FA CC00 00FA CC00 00FA CC00 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA FF00 00FA 88FA 00FF"
+	$"00FA 88F7 00FA 3300 00FA 3300 00FA 3300"
+	$"00FA 3300 00FA 3300 00FA 3300 00FA 3300"
+	$"00FA 3300 00FA 3300 00FA 3300 00FA 3300"
+	$"00FA 3300 00FA FF00 00FC 88FF 8800 00FA"
+	$"88F0 0000 C300 01FA FF00 01FA CC00 01FA"
+	$"9900 01FA 6600 01FA 3300 01FA 0000 01FA"
+	$"FF00 01FA CC00 01FA 9900 01FA 6600 01FA"
+	$"3300 01FA 0000 01FA FF00 01FA 8800 01FA"
+	$"0000 01FA 0000 01FA 8801 0100 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FA33 0000 FA33 0000 FA33 0000"
+	$"FA33 0000 FA33 0000 FA33 0000 FAFF 0000"
+	$"FA88 FA00 FF00 FA88 F700 FA33 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FAFF 0000 FC88"
+	$"FF88 0000 FA88 F000 0016 A001 FAFF E901"
+	$"F801 A000 FAFF F200 8E00 FAFF FB00 E600"
+	$"00C3 0001 FAFF 0001 FACC 0001 FA99 0001"
+	$"FA66 0001 FA33 0001 FA00 0001 FAFF 0001"
+	$"FACC 0001 FA99 0001 FA66 0001 FA33 0001"
+	$"FA00 0001 FAFF 0001 FA77 0001 FA00 0001"
+	$"FA00 0001 FA77 0101 00FA CC00 00FA CC00"
+	$"00FA CC00 00FA CC00 00FA CC00 00FA CC00"
+	$"00FA 3300 00FA 3300 00FA 3300 00FA 3300"
+	$"00FA 3300 00FA 3300 00FA FF00 00FA 77FA"
+	$"00FF 00FA 77F7 00FA 6600 00FA 6600 00FA"
+	$"6600 00FA 6600 00FA 6600 00FA 6600 00FA"
+	$"6600 00FA 6600 00FA 6600 00FA 6600 00FA"
+	$"6600 00FA 6600 00FA FF00 00FC 77FF 7700"
+	$"00FA 77F0 0000 C300 01FA FF00 01FA CC00"
+	$"01FA 9900 01FA 6600 01FA 3300 01FA 0000"
+	$"01FA FF00 01FA CC00 01FA 9900 01FA 6600"
+	$"01FA 3300 01FA 0000 01FA FF00 01FA 7700"
+	$"01FA 0000 01FA 0000 01FA 7701 0100 FACC"
+	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
+	$"0000 FACC 0000 FA33 0000 FA33 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FAFF"
+	$"0000 FA77 FA00 FF00 FA77 F700 FA66 0000"
+	$"FA66 0000 FA66 0000 FA66 0000 FA66 0000"
+	$"FA66 0000 FA66 0000 FA66 0000 FA66 0000"
+	$"FA66 0000 FA66 0000 FA66 0000 FAFF 0000"
+	$"FC77 FF77 0000 FA77 F000 00C3 0001 FAFF"
+	$"0001 FACC 0001 FA99 0001 FA66 0001 FA33"
+	$"0001 FA00 0001 FAFF 0001 FACC 0001 FA99"
+	$"0001 FA66 0001 FA33 0001 FA00 0001 FAFF"
+	$"0001 FA77 0001 FA00 0001 FA00 0001 FA77"
+	$"0101 00FA CC00 00FA CC00 00FA CC00 00FA"
+	$"CC00 00FA CC00 00FA CC00 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA 3300 00FA"
+	$"3300 00FA FF00 00FA 77FA 00FF 00FA 77F7"
+	$"00FA 6600 00FA 6600 00FA 6600 00FA 6600"
+	$"00FA 6600 00FA 6600 00FA 6600 00FA 6600"
+	$"00FA 6600 00FA 6600 00FA 6600 00FA 6600"
+	$"00FA FF00 00FC 77FF 7700 00FA 77F0 0000"
+	$"C300 01FA FF00 01FA CC00 01FA 9900 01FA"
+	$"6600 01FA 3300 01FA 0000 01FA FF00 01FA"
+	$"CC00 01FA 9900 01FA 6600 01FA 3300 01FA"
+	$"0000 01FA FF00 01FA 7700 01FA 0000 01FA"
+	$"0000 01FA 7701 0100 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
+	$"FA33 0000 FA33 0000 FAFF 0000 FA77 FA00"
+	$"FF00 FA77 F700 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FAFF 0000 FC77 FF77 0000"
+	$"FA77 F000 00C3 0001 FAFF 0001 FACC 0001"
+	$"FA99 0001 FA66 0001 FA33 0001 FA00 0001"
+	$"FAFF 0001 FACC 0001 FA99 0001 FA66 0001"
+	$"FA33 0001 FA00 0001 FAFF 0001 FA77 0001"
+	$"FA00 0001 FA00 0001 FA77 0101 00FA CC00"
+	$"00FA CC00 00FA CC00 00FA CC00 00FA CC00"
+	$"00FA CC00 00FA 3300 00FA 3300 00FA 3300"
+	$"00FA 3300 00FA 3300 00FA 3300 00FA FF00"
+	$"00FA 77FA 00FF 00FA 77F7 00FA 6600 00FA"
+	$"6600 00FA 6600 00FA 6600 00FA 6600 00FA"
+	$"6600 00FA 6600 00FA 6600 00FA 6600 00FA"
+	$"6600 00FA 6600 00FA 6600 00FA FF00 00FC"
+	$"77FF 7700 00FA 77F0 0000 C300 01FA FF00"
+	$"01FA CC00 01FA 9900 01FA 6600 01FA 3300"
+	$"01FA 0000 01FA FF00 01FA CC00 01FA 9900"
+	$"01FA 6600 01FA 3300 01FA 0000 01FA FF00"
+	$"01FA 7700 01FA 0000 01FA 0000 01FA 7701"
+	$"0100 FACC 0000 FACC 0000 FACC 0000 FACC"
+	$"0000 FACC 0000 FACC 0000 FA33 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
+	$"0000 FAFF 0000 FA77 FA00 FF00 FA77 F700"
+	$"FA66 0000 FA66 0000 FA66 0000 FA66 0000"
+	$"FA66 0000 FA66 0000 FA66 0000 FA66 0000"
+	$"FA66 0000 FA66 0000 FA66 0000 FA66 0000"
+	$"FAFF 0000 FC77 FF77 0000 FA77 F000 00C3"
+	$"0001 FAFF 0001 FACC 0001 FA99 0001 FA66"
+	$"0001 FA33 0001 FA00 0001 FAFF 0001 FACC"
+	$"0001 FA99 0001 FA66 0001 FA33 0001 FA00"
+	$"0001 FAFF 0001 FA77 0001 FA00 0001 FA00"
+	$"0001 FA77 0101 00FA CC00 00FA CC00 00FA"
+	$"CC00 00FA CC00 00FA CC00 00FA CC00 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA FF00 00FA 77FA 00FF"
+	$"00FA 77F7 00FA 6600 00FA 6600 00FA 6600"
+	$"00FA 6600 00FA 6600 00FA 6600 00FA 6600"
+	$"00FA 6600 00FA 6600 00FA 6600 00FA 6600"
+	$"00FA 6600 00FA FF00 00FC 77FF 7700 00FA"
+	$"77F0 0000 16A0 01FA FFE9 01F8 01A0 00FA"
+	$"FFF2 008E 00FA FFFB 00E6 0000 C700 01FA"
+	$"FF00 01FA CC00 01FA 9900 01FA 6600 01FA"
+	$"3300 01FA 0000 01FA FF00 01FA CC00 01FA"
+	$"9900 01FA 6600 01FA 3300 01FA 0000 01FA"
+	$"FF00 01FA 6600 01FA 0000 01FA 0000 01FA"
+	$"6601 0100 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FA33 0000"
+	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
+	$"FA33 0000 FAFF 0000 FA66 FA00 FF00 FA66"
+	$"F700 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"0000 FAFF 0000 FC66 FF66 0000 FA66 0000"
+	$"FA33 F800 00C7 0001 FAFF 0001 FACC 0001"
+	$"FA99 0001 FA66 0001 FA33 0001 FA00 0001"
+	$"FAFF 0001 FACC 0001 FA99 0001 FA66 0001"
+	$"FA33 0001 FA00 0001 FAFF 0001 FA66 0001"
+	$"FA00 0001 FA00 0001 FA66 0101 00FA CC00"
+	$"00FA CC00 00FA CC00 00FA CC00 00FA CC00"
+	$"00FA CC00 00FA 3300 00FA 3300 00FA 3300"
+	$"00FA 3300 00FA 3300 00FA 3300 00FA FF00"
+	$"00FA 66FA 00FF 00FA 66F7 00FA 9900 00FA"
+	$"9900 00FA 9900 00FA 9900 00FA 9900 00FA"
+	$"9900 00FA 9900 00FA 9900 00FA 9900 00FA"
+	$"9900 00FA 9900 00FA 9900 00FA FF00 00FC"
+	$"66FF 6600 00FA 6600 00FA 33F8 0000 C700"
+	$"01FA FF00 01FA CC00 01FA 9900 01FA 6600"
+	$"01FA 3300 01FA 0000 01FA FF00 01FA CC00"
+	$"01FA 9900 01FA 6600 01FA 3300 01FA 0000"
+	$"01FA FF00 01FA 6600 01FA 0000 01FA 0000"
+	$"01FA 6601 0100 FACC 0000 FACC 0000 FACC"
+	$"0000 FACC 0000 FACC 0000 FACC 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
+	$"0000 FA33 0000 FAFF 0000 FA66 FA00 FF00"
+	$"FA66 F700 FA99 0000 FA99 0000 FA99 0000"
 	$"FA99 0000 FA99 0000 FA99 0000 FA99 0000"
-	$"FA99 FF00 FADD 0000 FCDD FFDD F000 FAFF"
-	$"0000 FAFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 FAFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 FCFF FFFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"0100 0001 FADD 0001 FA00 0001 FA00 0001"
-	$"FADD 0001 FAFF 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0101"
-	$"00FA DDF8 00FA DDF8 00FA FF00 00FA FF00"
-	$"00FA FF00 00FA FF00 00FB FF01 FF00 FAFF"
-	$"0000 FAFF 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FACC 0000 FA99"
-	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
-	$"0000 FA99 FF00 FADD 0000 FCDD FFDD F000"
-	$"FAFF 0000 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FCFF FFFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 0100 0001 FADD 0001 FA00 0001 FA00"
-	$"0001 FADD 0001 FAFF 0001 FA99 0001 FA99"
-	$"0001 FA99 0001 FA99 0001 FA99 0001 FA99"
-	$"0001 FA99 0001 FA99 0001 FA99 0001 FA99"
-	$"0001 FA99 0001 FA99 0001 FA99 0001 FA99"
-	$"0001 FA99 0001 FA99 0001 FA99 0001 FA99"
-	$"0101 00FA DDF8 00FA DDF8 00FA FF00 00FA"
-	$"FF00 00FA FF00 00FA FF00 00FB FF01 FF00"
-	$"FAFF 0000 FAFF 0000 FACC 0000 FACC 0000"
-	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
 	$"FA99 0000 FA99 0000 FA99 0000 FA99 0000"
-	$"FA99 0000 FA99 FF00 FADD 0000 FCDD FFDD"
-	$"F000 FAFF 0000 FAFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 FAFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 FCFF"
-	$"FFFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 0100 0001 FADD 0001 FA00 0001"
-	$"FA00 0001 FADD 0001 FAFF 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0101 00FA DDF8 00FA DDF8 00FA FF00"
-	$"00FA FF00 00FA FF00 00FA FF00 00FB FF01"
-	$"FF00 FAFF 0000 FAFF 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
-	$"0000 FA99 0000 FA99 FF00 FADD 0000 FCDD"
-	$"FFDD F000 FAFF 0000 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FCFF FFFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 0018 E001 FAFF A901 C801"
-	$"E000 FAFF E200 8100 EE00 FAFF 9B00 D600"
-	$"0100 0001 FACC 0001 FA00 0001 FA00 0001"
-	$"FACC 0001 FAFF 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0101"
-	$"00FA CCF8 00FA CCF8 00FA FF00 00FA FF00"
-	$"00FA FF00 00FA FF00 00FB FF01 FF00 FAFF"
-	$"0000 FAFF 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FACC 0000 FA99"
-	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
-	$"0000 FA99 FF00 FACC 0000 FCCC FFCC F000"
-	$"FAFF 0000 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FCFF FFFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 0100 0001 FACC 0001 FA00 0001 FA00"
-	$"0001 FACC 0001 FAFF 0001 FA66 0001 FA66"
-	$"0001 FA66 0001 FA66 0001 FA66 0001 FA66"
-	$"0001 FA66 0001 FA66 0001 FA66 0001 FA66"
-	$"0001 FA66 0001 FA66 0001 FA66 0001 FA66"
-	$"0001 FA66 0001 FA66 0001 FA66 0001 FA66"
-	$"0101 00FA CCF8 00FA CCF8 00FA FF00 00FA"
-	$"FF00 00FA FF00 00FA FF00 00FB FF01 FF00"
-	$"FAFF 0000 FAFF 0000 FACC 0000 FACC 0000"
+	$"FA99 0000 FAFF 0000 FC66 FF66 0000 FA66"
+	$"0000 FA33 F800 00C7 0001 FAFF 0001 FACC"
+	$"0001 FA99 0001 FA66 0001 FA33 0001 FA00"
+	$"0001 FAFF 0001 FACC 0001 FA99 0001 FA66"
+	$"0001 FA33 0001 FA00 0001 FAFF 0001 FA66"
+	$"0001 FA00 0001 FA00 0001 FA66 0101 00FA"
+	$"CC00 00FA CC00 00FA CC00 00FA CC00 00FA"
+	$"CC00 00FA CC00 00FA 3300 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA 3300 00FA"
+	$"FF00 00FA 66FA 00FF 00FA 66F7 00FA 9900"
+	$"00FA 9900 00FA 9900 00FA 9900 00FA 9900"
+	$"00FA 9900 00FA 9900 00FA 9900 00FA 9900"
+	$"00FA 9900 00FA 9900 00FA 9900 00FA FF00"
+	$"00FC 66FF 6600 00FA 6600 00FA 33F8 0000"
+	$"C700 01FA FF00 01FA CC00 01FA 9900 01FA"
+	$"6600 01FA 3300 01FA 0000 01FA FF00 01FA"
+	$"CC00 01FA 9900 01FA 6600 01FA 3300 01FA"
+	$"0000 01FA FF00 01FA 6600 01FA 0000 01FA"
+	$"0000 01FA 6601 0100 FACC 0000 FACC 0000"
 	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
+	$"FA33 0000 FA33 0000 FAFF 0000 FA66 FA00"
+	$"FF00 FA66 F700 FA99 0000 FA99 0000 FA99"
+	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"0000 FA99 0000 FAFF 0000 FC66 FF66 0000"
+	$"FA66 0000 FA33 F800 00C7 0001 FAFF 0001"
+	$"FACC 0001 FA99 0001 FA66 0001 FA33 0001"
+	$"FA00 0001 FAFF 0001 FACC 0001 FA99 0001"
+	$"FA66 0001 FA33 0001 FA00 0001 FAFF 0001"
+	$"FA66 0001 FA00 0001 FA00 0001 FA66 0101"
+	$"00FA CC00 00FA CC00 00FA CC00 00FA CC00"
+	$"00FA CC00 00FA CC00 00FA 3300 00FA 3300"
+	$"00FA 3300 00FA 3300 00FA 3300 00FA 3300"
+	$"00FA FF00 00FA 66FA 00FF 00FA 66F7 00FA"
+	$"9900 00FA 9900 00FA 9900 00FA 9900 00FA"
+	$"9900 00FA 9900 00FA 9900 00FA 9900 00FA"
+	$"9900 00FA 9900 00FA 9900 00FA 9900 00FA"
+	$"FF00 00FC 66FF 6600 00FA 6600 00FA 33F8"
+	$"0000 C700 01FA FF00 01FA CC00 01FA 9900"
+	$"01FA 6600 01FA 3300 01FA 0000 01FA FF00"
+	$"01FA CC00 01FA 9900 01FA 6600 01FA 3300"
+	$"01FA 0000 01FA FF00 01FA 6600 01FA 0000"
+	$"01FA 0000 01FA 6601 0100 FACC 0000 FACC"
+	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FAFF 0000 FA66"
+	$"FA00 FF00 FA66 F700 FA99 0000 FA99 0000"
 	$"FA99 0000 FA99 0000 FA99 0000 FA99 0000"
-	$"FA99 0000 FA99 FF00 FACC 0000 FCCC FFCC"
-	$"F000 FAFF 0000 FAFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 FAFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 FCFF"
-	$"FFFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 0100 0001 FACC 0001 FA00 0001"
-	$"FA00 0001 FACC 0001 FAFF 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0101 00FA CCF8 00FA CCF8 00FA FF00"
-	$"00FA FF00 00FA FF00 00FA FF00 00FB FF01"
-	$"FF00 FAFF 0000 FAFF 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
-	$"0000 FA99 0000 FA99 FF00 FACC 0000 FCCC"
-	$"FFCC F000 FAFF 0000 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FCFF FFFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 0100 0001 FACC 0001 FA00"
-	$"0001 FA00 0001 FACC 0001 FAFF 0001 FA66"
-	$"0001 FA66 0001 FA66 0001 FA66 0001 FA66"
-	$"0001 FA66 0001 FA66 0001 FA66 0001 FA66"
-	$"0001 FA66 0001 FA66 0001 FA66 0001 FA66"
-	$"0001 FA66 0001 FA66 0001 FA66 0001 FA66"
-	$"0001 FA66 0101 00FA CCF8 00FA CCF8 00FA"
-	$"FF00 00FA FF00 00FA FF00 00FA FF00 00FB"
-	$"FF01 FF00 FAFF 0000 FAFF 0000 FACC 0000"
+	$"FA99 0000 FA99 0000 FA99 0000 FA99 0000"
+	$"FA99 0000 FA99 0000 FAFF 0000 FC66 FF66"
+	$"0000 FA66 0000 FA33 F800 0016 A001 FAFF"
+	$"E901 F801 A000 FAFF F200 8E00 FAFF FB00"
+	$"E600 00C3 0001 FAFF 0001 FACC 0001 FA99"
+	$"0001 FA66 0001 FA33 0001 FA00 0001 FAFF"
+	$"0001 FACC 0001 FA99 0001 FA66 0001 FA33"
+	$"0001 FA00 0001 FAFF 0001 FA55 0001 FA00"
+	$"0001 FA00 0001 FA55 0101 00FA CC00 00FA"
+	$"CC00 00FA CC00 00FA CC00 00FA CC00 00FA"
+	$"CC00 00FA 3300 00FA 3300 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA FF00 00FA"
+	$"55FA 00FF 00FA 55F7 00FA CC00 00FA CC00"
+	$"00FA CC00 00FA CC00 00FA CC00 00FA CC00"
+	$"00FA CC00 00FA CC00 00FA CC00 00FA CC00"
+	$"00FA CC00 00FA CC00 00FA FF00 00FC 55FF"
+	$"5500 00FA 55F0 0000 C300 01FA FF00 01FA"
+	$"CC00 01FA 9900 01FA 6600 01FA 3300 01FA"
+	$"0000 01FA FF00 01FA CC00 01FA 9900 01FA"
+	$"6600 01FA 3300 01FA 0000 01FA FF00 01FA"
+	$"5500 01FA 0000 01FA 0000 01FA 5501 0100"
 	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
-	$"FACC 0000 FA99 0000 FA99 0000 FA99 0000"
-	$"FA99 0000 FA99 0000 FA99 FF00 FACC 0000"
-	$"FCCC FFCC F000 FAFF 0000 FAFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 FAFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 FCFF FFFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 0100 0001 FACC 0001"
-	$"FA00 0001 FA00 0001 FACC 0001 FAFF 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0101 00FA CCF8 00FA CCF8"
+	$"FACC 0000 FACC 0000 FA33 0000 FA33 0000"
+	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
+	$"FAFF 0000 FA55 FA00 FF00 FA55 F700 FACC"
+	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
+	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
+	$"0000 FACC 0000 FACC 0000 FACC 0000 FAFF"
+	$"0000 FC55 FF55 0000 FA55 F000 00C3 0001"
+	$"FAFF 0001 FACC 0001 FA99 0001 FA66 0001"
+	$"FA33 0001 FA00 0001 FAFF 0001 FACC 0001"
+	$"FA99 0001 FA66 0001 FA33 0001 FA00 0001"
+	$"FAFF 0001 FA55 0001 FA00 0001 FA00 0001"
+	$"FA55 0101 00FA CC00 00FA CC00 00FA CC00"
+	$"00FA CC00 00FA CC00 00FA CC00 00FA 3300"
+	$"00FA 3300 00FA 3300 00FA 3300 00FA 3300"
+	$"00FA 3300 00FA FF00 00FA 55FA 00FF 00FA"
+	$"55F7 00FA CC00 00FA CC00 00FA CC00 00FA"
+	$"CC00 00FA CC00 00FA CC00 00FA CC00 00FA"
+	$"CC00 00FA CC00 00FA CC00 00FA CC00 00FA"
+	$"CC00 00FA FF00 00FC 55FF 5500 00FA 55F0"
+	$"0000 C300 01FA FF00 01FA CC00 01FA 9900"
+	$"01FA 6600 01FA 3300 01FA 0000 01FA FF00"
+	$"01FA CC00 01FA 9900 01FA 6600 01FA 3300"
+	$"01FA 0000 01FA FF00 01FA 5500 01FA 0000"
+	$"01FA 0000 01FA 5501 0100 FACC 0000 FACC"
+	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FAFF 0000 FA55"
+	$"FA00 FF00 FA55 F700 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FAFF 0000 FC55 FF55"
+	$"0000 FA55 F000 00C3 0001 FAFF 0001 FACC"
+	$"0001 FA99 0001 FA66 0001 FA33 0001 FA00"
+	$"0001 FAFF 0001 FACC 0001 FA99 0001 FA66"
+	$"0001 FA33 0001 FA00 0001 FAFF 0001 FA55"
+	$"0001 FA00 0001 FA00 0001 FA55 0101 00FA"
+	$"CC00 00FA CC00 00FA CC00 00FA CC00 00FA"
+	$"CC00 00FA CC00 00FA 3300 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA 3300 00FA"
+	$"FF00 00FA 55FA 00FF 00FA 55F7 00FA CC00"
+	$"00FA CC00 00FA CC00 00FA CC00 00FA CC00"
+	$"00FA CC00 00FA CC00 00FA CC00 00FA CC00"
+	$"00FA CC00 00FA CC00 00FA CC00 00FA FF00"
+	$"00FC 55FF 5500 00FA 55F0 0000 C300 01FA"
+	$"FF00 01FA CC00 01FA 9900 01FA 6600 01FA"
+	$"3300 01FA 0000 01FA FF00 01FA CC00 01FA"
+	$"9900 01FA 6600 01FA 3300 01FA 0000 01FA"
+	$"FF00 01FA 5500 01FA 0000 01FA 0000 01FA"
+	$"5501 0100 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FA33 0000"
+	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
+	$"FA33 0000 FAFF 0000 FA55 FA00 FF00 FA55"
+	$"F700 FACC 0000 FACC 0000 FACC 0000 FACC"
+	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
+	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
+	$"0000 FAFF 0000 FC55 FF55 0000 FA55 F000"
+	$"00C3 0001 FAFF 0001 FACC 0001 FA99 0001"
+	$"FA66 0001 FA33 0001 FA00 0001 FAFF 0001"
+	$"FACC 0001 FA99 0001 FA66 0001 FA33 0001"
+	$"FA00 0001 FAFF 0001 FA55 0001 FA00 0001"
+	$"FA00 0001 FA55 0101 00FA CC00 00FA CC00"
+	$"00FA CC00 00FA CC00 00FA CC00 00FA CC00"
+	$"00FA 3300 00FA 3300 00FA 3300 00FA 3300"
+	$"00FA 3300 00FA 3300 00FA FF00 00FA 55FA"
+	$"00FF 00FA 55F7 00FA CC00 00FA CC00 00FA"
+	$"CC00 00FA CC00 00FA CC00 00FA CC00 00FA"
+	$"CC00 00FA CC00 00FA CC00 00FA CC00 00FA"
+	$"CC00 00FA CC00 00FA FF00 00FC 55FF 5500"
+	$"00FA 55F0 0000 16A0 01FA FFE9 01F8 01A0"
+	$"00FA FFF2 008E 00FA FFFB 00E6 0000 C300"
+	$"01FA FF00 01FA CC00 01FA 9900 01FA 6600"
+	$"01FA 3300 01FA 0000 01FA FF00 01FA CC00"
+	$"01FA 9900 01FA 6600 01FA 3300 01FA 0000"
+	$"01FA FF00 01FA 4400 01FA 0000 01FA 0000"
+	$"01FA 4401 0100 FACC 0000 FACC 0000 FACC"
+	$"0000 FACC 0000 FACC 0000 FACC 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
+	$"0000 FA33 0000 FAFF 0000 FA44 FA00 FF00"
+	$"FA44 F700 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FC44 FF44 0000 FA44"
+	$"F000 00C3 0001 FAFF 0001 FACC 0001 FA99"
+	$"0001 FA66 0001 FA33 0001 FA00 0001 FAFF"
+	$"0001 FACC 0001 FA99 0001 FA66 0001 FA33"
+	$"0001 FA00 0001 FAFF 0001 FA44 0001 FA00"
+	$"0001 FA00 0001 FA44 0101 00FA CC00 00FA"
+	$"CC00 00FA CC00 00FA CC00 00FA CC00 00FA"
+	$"CC00 00FA 3300 00FA 3300 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA FF00 00FA"
+	$"44FA 00FF 00FA 44F7 00FA FF00 00FA FF00"
 	$"00FA FF00 00FA FF00 00FA FF00 00FA FF00"
-	$"00FB FF01 FF00 FAFF 0000 FAFF 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FA99 0000 FA99 0000 FA99"
-	$"0000 FA99 0000 FA99 0000 FA99 FF00 FACC"
-	$"0000 FCCC FFCC F000 FAFF 0000 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FCFF FFFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 0100 0001 FACC"
-	$"0001 FA00 0001 FA00 0001 FACC 0001 FAFF"
-	$"0001 FA66 0001 FA66 0001 FA66 0001 FA66"
-	$"0001 FA66 0001 FA66 0001 FA66 0001 FA66"
-	$"0001 FA66 0001 FA66 0001 FA66 0001 FA66"
-	$"0001 FA66 0001 FA66 0001 FA66 0001 FA66"
-	$"0001 FA66 0001 FA66 0101 00FA CCF8 00FA"
-	$"CCF8 00FA FF00 00FA FF00 00FA FF00 00FA"
-	$"FF00 00FB FF01 FF00 FAFF 0000 FAFF 0000"
-	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
-	$"FACC 0000 FACC 0000 FA99 0000 FA99 0000"
-	$"FA99 0000 FA99 0000 FA99 0000 FA99 FF00"
-	$"FACC 0000 FCCC FFCC F000 FAFF 0000 FAFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 FAFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 FCFF FFFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 0100 0001"
-	$"FACC 0001 FA00 0001 FA00 0001 FACC 0001"
-	$"FAFF 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0101 00FA CCF8"
-	$"00FA CCF8 00FA FF00 00FA FF00 00FA FF00"
-	$"00FA FF00 00FB FF01 FF00 FAFF 0000 FAFF"
-	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FA99 0000 FA99"
-	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
-	$"FF00 FACC 0000 FCCC FFCC F000 FAFF 0000"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FCFF FFFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 0018"
-	$"E001 FAFF A901 C801 E000 FAFF E200 8100"
-	$"EE00 FAFF 9B00 D600 0100 0001 FABB 0001"
-	$"FA00 0001 FA00 0001 FABB 0001 FAFF 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0101 00FA BBF8 00FA BBF8"
 	$"00FA FF00 00FA FF00 00FA FF00 00FA FF00"
-	$"00FB FF01 FF00 FAFF 0000 FAFF 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FA99 0000 FA99 0000 FA99"
-	$"0000 FA99 0000 FA99 0000 FA99 FF00 FABB"
-	$"0000 FCBB FFBB F000 FAFF 0000 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FCFF FFFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 0100 0001 FABB"
-	$"0001 FA00 0001 FA00 0001 FABB 0001 FAFF"
-	$"0001 FA33 0001 FA33 0001 FA33 0001 FA33"
-	$"0001 FA33 0001 FA33 0001 FA33 0001 FA33"
-	$"0001 FA33 0001 FA33 0001 FA33 0001 FA33"
-	$"0001 FA33 0001 FA33 0001 FA33 0001 FA33"
-	$"0001 FA33 0001 FA33 0101 00FA BBF8 00FA"
-	$"BBF8 00FA FF00 00FA FF00 00FA FF00 00FA"
-	$"FF00 00FB FF01 FF00 FAFF 0000 FAFF 0000"
+	$"00FA FF00 00FA FF00 00FA FF00 00FC 44FF"
+	$"4400 00FA 44F0 0000 C300 01FA FF00 01FA"
+	$"CC00 01FA 9900 01FA 6600 01FA 3300 01FA"
+	$"0000 01FA FF00 01FA CC00 01FA 9900 01FA"
+	$"6600 01FA 3300 01FA 0000 01FA FF00 01FA"
+	$"4400 01FA 0000 01FA 0000 01FA 4401 0100"
 	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
-	$"FACC 0000 FACC 0000 FA99 0000 FA99 0000"
-	$"FA99 0000 FA99 0000 FA99 0000 FA99 FF00"
-	$"FABB 0000 FCBB FFBB F000 FAFF 0000 FAFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 FAFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 FCFF FFFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 0100 0001"
-	$"FABB 0001 FA00 0001 FA00 0001 FABB 0001"
-	$"FAFF 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0101 00FA BBF8"
-	$"00FA BBF8 00FA FF00 00FA FF00 00FA FF00"
-	$"00FA FF00 00FB FF01 FF00 FAFF 0000 FAFF"
+	$"FACC 0000 FACC 0000 FA33 0000 FA33 0000"
+	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
+	$"FAFF 0000 FA44 FA00 FF00 FA44 F700 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FC44 FF44 0000 FA44 F000 00C3 0001"
+	$"FAFF 0001 FACC 0001 FA99 0001 FA66 0001"
+	$"FA33 0001 FA00 0001 FAFF 0001 FACC 0001"
+	$"FA99 0001 FA66 0001 FA33 0001 FA00 0001"
+	$"FAFF 0001 FA44 0001 FA00 0001 FA00 0001"
+	$"FA44 0101 00FA CC00 00FA CC00 00FA CC00"
+	$"00FA CC00 00FA CC00 00FA CC00 00FA 3300"
+	$"00FA 3300 00FA 3300 00FA 3300 00FA 3300"
+	$"00FA 3300 00FA FF00 00FA 44FA 00FF 00FA"
+	$"44F7 00FA FF00 00FA FF00 00FA FF00 00FA"
+	$"FF00 00FA FF00 00FA FF00 00FA FF00 00FA"
+	$"FF00 00FA FF00 00FA FF00 00FA FF00 00FA"
+	$"FF00 00FA FF00 00FC 44FF 4400 00FA 44F0"
+	$"0000 C300 01FA FF00 01FA CC00 01FA 9900"
+	$"01FA 6600 01FA 3300 01FA 0000 01FA FF00"
+	$"01FA CC00 01FA 9900 01FA 6600 01FA 3300"
+	$"01FA 0000 01FA FF00 01FA 4400 01FA 0000"
+	$"01FA 0000 01FA 4401 0100 FACC 0000 FACC"
 	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FA99 0000 FA99"
-	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
-	$"FF00 FABB 0000 FCBB FFBB F000 FAFF 0000"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FCFF FFFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 0100"
-	$"0001 FABB 0001 FA00 0001 FA00 0001 FABB"
-	$"0001 FAFF 0001 FA33 0001 FA33 0001 FA33"
-	$"0001 FA33 0001 FA33 0001 FA33 0001 FA33"
-	$"0001 FA33 0001 FA33 0001 FA33 0001 FA33"
-	$"0001 FA33 0001 FA33 0001 FA33 0001 FA33"
-	$"0001 FA33 0001 FA33 0001 FA33 0101 00FA"
-	$"BBF8 00FA BBF8 00FA FF00 00FA FF00 00FA"
-	$"FF00 00FA FF00 00FB FF01 FF00 FAFF 0000"
-	$"FAFF 0000 FACC 0000 FACC 0000 FACC 0000"
-	$"FACC 0000 FACC 0000 FACC 0000 FA99 0000"
-	$"FA99 0000 FA99 0000 FA99 0000 FA99 0000"
-	$"FA99 FF00 FABB 0000 FCBB FFBB F000 FAFF"
-	$"0000 FAFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 FAFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 FCFF FFFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"0100 0001 FABB 0001 FA00 0001 FA00 0001"
-	$"FABB 0001 FAFF 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0101"
-	$"00FA BBF8 00FA BBF8 00FA FF00 00FA FF00"
-	$"00FA FF00 00FA FF00 00FB FF01 FF00 FAFF"
-	$"0000 FAFF 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FACC 0000 FA99"
-	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
-	$"0000 FA99 FF00 FABB 0000 FCBB FFBB F000"
-	$"FAFF 0000 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FCFF FFFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 0100 0001 FABB 0001 FA00 0001 FA00"
-	$"0001 FABB 0001 FAFF 0001 FA33 0001 FA33"
-	$"0001 FA33 0001 FA33 0001 FA33 0001 FA33"
-	$"0001 FA33 0001 FA33 0001 FA33 0001 FA33"
-	$"0001 FA33 0001 FA33 0001 FA33 0001 FA33"
-	$"0001 FA33 0001 FA33 0001 FA33 0001 FA33"
-	$"0101 00FA BBF8 00FA BBF8 00FA FF00 00FA"
-	$"FF00 00FA FF00 00FA FF00 00FB FF01 FF00"
-	$"FAFF 0000 FAFF 0000 FACC 0000 FACC 0000"
-	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
-	$"FA99 0000 FA99 0000 FA99 0000 FA99 0000"
-	$"FA99 0000 FA99 FF00 FABB 0000 FCBB FFBB"
-	$"F000 FAFF 0000 FAFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 FAFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 FCFF"
-	$"FFFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 0100 0001 FABB 0001 FA00 0001"
-	$"FA00 0001 FABB 0001 FAFF 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0101 00FA BBF8 00FA BBF8 00FA FF00"
-	$"00FA FF00 00FA FF00 00FA FF00 00FB FF01"
-	$"FF00 FAFF 0000 FAFF 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
-	$"0000 FA99 0000 FA99 FF00 FABB 0000 FCBB"
-	$"FFBB F000 FAFF 0000 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FCFF FFFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 0018 E001 FAFF A901 C801"
-	$"E000 FAFF E200 8100 EE00 FAFF 9B00 D600"
-	$"0100 0001 FAAA 0001 FA00 0001 FA00 0001"
-	$"FAAA 0001 FAFF 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0101"
-	$"00FA AAF8 00FA AAF8 00FA FF00 00FA FF00"
-	$"00FA FF00 00FA FF00 00FB FF01 FF00 FAFF"
-	$"0000 FAFF 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FACC 0000 FA99"
-	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
-	$"0000 FA99 FF00 FAAA 0000 FCAA FFAA F000"
-	$"FAFF 0000 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FCFF FFFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 0100 0001 FAAA 0001 FA00 0001 FA00"
-	$"0001 FAAA 0001 FAFF 0001 FA00 0001 FA00"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0101 00FA AAF8 00FA AAF8 00FA FF00 00FA"
-	$"FF00 00FA FF00 00FA FF00 00FB FF01 FF00"
-	$"FAFF 0000 FAFF 0000 FACC 0000 FACC 0000"
-	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
-	$"FA99 0000 FA99 0000 FA99 0000 FA99 0000"
-	$"FA99 0000 FA99 FF00 FAAA 0000 FCAA FFAA"
-	$"F000 FAFF 0000 FAFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 FAFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 FCFF"
-	$"FFFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 0100 0001 FAAA 0001 FA00 0001"
-	$"FA00 0001 FAAA 0001 FAFF 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0101 00FA AAF8 00FA AAF8 00FA FF00"
-	$"00FA FF00 00FA FF00 00FA FF00 00FB FF01"
-	$"FF00 FAFF 0000 FAFF 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
-	$"0000 FA99 0000 FA99 FF00 FAAA 0000 FCAA"
-	$"FFAA F000 FAFF 0000 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FCFF FFFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 0100 0001 FAAA 0001 FA00"
-	$"0001 FA00 0001 FAAA 0001 FAFF 0001 FA00"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 FA00 0101 00FA AAF8 00FA AAF8 00FA"
-	$"FF00 00FA FF00 00FA FF00 00FA FF00 00FB"
-	$"FF01 FF00 FAFF 0000 FAFF 0000 FACC 0000"
-	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
-	$"FACC 0000 FA99 0000 FA99 0000 FA99 0000"
-	$"FA99 0000 FA99 0000 FA99 FF00 FAAA 0000"
-	$"FCAA FFAA F000 FAFF 0000 FAFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 FAFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 FCFF FFFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 0100 0001 FAAA 0001"
-	$"FA00 0001 FA00 0001 FAAA 0001 FAFF 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0101 00FA AAF8 00FA AAF8"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FAFF 0000 FA44"
+	$"FA00 FF00 FA44 F700 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FC44 FF44"
+	$"0000 FA44 F000 00C3 0001 FAFF 0001 FACC"
+	$"0001 FA99 0001 FA66 0001 FA33 0001 FA00"
+	$"0001 FAFF 0001 FACC 0001 FA99 0001 FA66"
+	$"0001 FA33 0001 FA00 0001 FAFF 0001 FA44"
+	$"0001 FA00 0001 FA00 0001 FA44 0101 00FA"
+	$"CC00 00FA CC00 00FA CC00 00FA CC00 00FA"
+	$"CC00 00FA CC00 00FA 3300 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA 3300 00FA"
+	$"FF00 00FA 44FA 00FF 00FA 44F7 00FA FF00"
 	$"00FA FF00 00FA FF00 00FA FF00 00FA FF00"
-	$"00FB FF01 FF00 FAFF 0000 FAFF 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FA99 0000 FA99 0000 FA99"
-	$"0000 FA99 0000 FA99 0000 FA99 FF00 FAAA"
-	$"0000 FCAA FFAA F000 FAFF 0000 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FCFF FFFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 0100 0001 FAAA"
-	$"0001 FA00 0001 FA00 0001 FAAA 0001 FAFF"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 FA00 0001 FA00 0101 00FA AAF8 00FA"
-	$"AAF8 00FA FF00 00FA FF00 00FA FF00 00FA"
-	$"FF00 00FB FF01 FF00 FAFF 0000 FAFF 0000"
-	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
-	$"FACC 0000 FACC 0000 FA99 0000 FA99 0000"
-	$"FA99 0000 FA99 0000 FA99 0000 FA99 FF00"
-	$"FAAA 0000 FCAA FFAA F000 FAFF 0000 FAFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 FAFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 FCFF FFFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 0100 0001"
-	$"FAAA 0001 FA00 0001 FA00 0001 FAAA 0001"
-	$"FAFF 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0101 00FA AAF8"
-	$"00FA AAF8 00FA FF00 00FA FF00 00FA FF00"
-	$"00FA FF00 00FB FF01 FF00 FAFF 0000 FAFF"
-	$"0000 FACC 0000 FACC 0000 FACC 0000 FACC"
-	$"0000 FACC 0000 FACC 0000 FA99 0000 FA99"
-	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
-	$"FF00 FAAA 0000 FCAA FFAA F000 FAFF 0000"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FCFF FFFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 0018"
-	$"E001 FAFF A901 C801 E000 FAFF E200 8100"
-	$"EE00 FAFF 9B00 D600 00E8 0001 FA99 0001"
-	$"FA00 0001 FA00 0001 FA99 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0101 00FA 99F8 00FA 99F8"
-	$"00FA FF00 00FA 6600 00FA 6600 00FA 6600"
-	$"00FB 6601 6600 FA66 0000 FA66 0000 FA33"
-	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
-	$"0000 FA33 CF00 FA99 0000 FC99 FF99 F000"
-	$"FAFF 0000 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FCFF FFFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 00E8 0001 FA99 0001 FA00 0001 FA00"
-	$"0001 FA99 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0101 00FA 99F8 00FA 99F8 00FA FF00 00FA"
-	$"6600 00FA 6600 00FA 6600 00FB 6601 6600"
-	$"FA66 0000 FA66 0000 FA33 0000 FA33 0000"
-	$"FA33 0000 FA33 0000 FA33 0000 FA33 CF00"
-	$"FA99 0000 FC99 FF99 F000 FAFF 0000 FAFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 FAFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 FCFF FFFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 00E8 0001"
-	$"FA99 0001 FA00 0001 FA00 0001 FA99 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0101 00FA 99F8"
-	$"00FA 99F8 00FA FF00 00FA 6600 00FA 6600"
-	$"00FA 6600 00FB 6601 6600 FA66 0000 FA66"
-	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
-	$"0000 FA33 0000 FA33 CF00 FA99 0000 FC99"
-	$"FF99 F000 FAFF 0000 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FCFF FFFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 00E8 0001 FA99 0001 FA00"
-	$"0001 FA00 0001 FA99 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0101 00FA 99F8 00FA 99F8 00FA"
-	$"FF00 00FA 6600 00FA 6600 00FA 6600 00FB"
-	$"6601 6600 FA66 0000 FA66 0000 FA33 0000"
+	$"00FA FF00 00FA FF00 00FA FF00 00FA FF00"
+	$"00FA FF00 00FA FF00 00FA FF00 00FA FF00"
+	$"00FC 44FF 4400 00FA 44F0 0000 C300 01FA"
+	$"FF00 01FA CC00 01FA 9900 01FA 6600 01FA"
+	$"3300 01FA 0000 01FA FF00 01FA CC00 01FA"
+	$"9900 01FA 6600 01FA 3300 01FA 0000 01FA"
+	$"FF00 01FA 4400 01FA 0000 01FA 0000 01FA"
+	$"4401 0100 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FA33 0000"
 	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
-	$"FA33 CF00 FA99 0000 FC99 FF99 F000 FAFF"
-	$"0000 FAFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 FAFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 FCFF FFFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"00E8 0001 FA99 0001 FA00 0001 FA00 0001"
-	$"FA99 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0101"
-	$"00FA 99F8 00FA 99F8 00FA FF00 00FA 6600"
-	$"00FA 6600 00FA 6600 00FB 6601 6600 FA66"
-	$"0000 FA66 0000 FA33 0000 FA33 0000 FA33"
-	$"0000 FA33 0000 FA33 0000 FA33 CF00 FA99"
-	$"0000 FC99 FF99 F000 FAFF 0000 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FCFF FFFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 00E8 0001 FA99"
-	$"0001 FA00 0001 FA00 0001 FA99 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0101 00FA 99F8 00FA"
-	$"99F8 00FA FF00 00FA 6600 00FA 6600 00FA"
-	$"6600 00FB 6601 6600 FA66 0000 FA66 0000"
+	$"FA33 0000 FAFF 0000 FA44 FA00 FF00 FA44"
+	$"F700 FAFF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FC44 FF44 0000 FA44 F000"
+	$"0016 A001 FAFF E901 F801 A000 FAFF F200"
+	$"8E00 FAFF FB00 E600 0093 0001 FAFF 0001"
+	$"FACC 0001 FA99 0001 FA66 0001 FA33 0001"
+	$"FA00 0001 FAFF 0001 FACC 0001 FA99 0001"
+	$"FA66 0001 FA33 0001 FA00 0001 FAFF 0001"
+	$"FA33 0001 FA00 0001 FA00 0001 FA33 0101"
+	$"00FA FF00 00FA FF00 00FA FF00 00FA FF00"
+	$"00FA FF00 00FA FF00 00FA 6600 00FA 6600"
+	$"00FA 6600 00FA 6600 00FA 6600 00FA 6600"
+	$"00FA FF00 00FA 33FA 00FF 00FA 3397 00FA"
+	$"FF00 00FC 33FF 3300 00FA 33F0 0000 9300"
+	$"01FA FF00 01FA CC00 01FA 9900 01FA 6600"
+	$"01FA 3300 01FA 0000 01FA FF00 01FA CC00"
+	$"01FA 9900 01FA 6600 01FA 3300 01FA 0000"
+	$"01FA FF00 01FA 3300 01FA 0000 01FA 0000"
+	$"01FA 3301 0100 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FAFF 0000 FA33 FA00 FF00"
+	$"FA33 9700 FAFF 0000 FC33 FF33 0000 FA33"
+	$"F000 0093 0001 FAFF 0001 FACC 0001 FA99"
+	$"0001 FA66 0001 FA33 0001 FA00 0001 FAFF"
+	$"0001 FACC 0001 FA99 0001 FA66 0001 FA33"
+	$"0001 FA00 0001 FAFF 0001 FA33 0001 FA00"
+	$"0001 FA00 0001 FA33 0101 00FA FF00 00FA"
+	$"FF00 00FA FF00 00FA FF00 00FA FF00 00FA"
+	$"FF00 00FA 6600 00FA 6600 00FA 6600 00FA"
+	$"6600 00FA 6600 00FA 6600 00FA FF00 00FA"
+	$"33FA 00FF 00FA 3397 00FA FF00 00FC 33FF"
+	$"3300 00FA 33F0 0000 9300 01FA FF00 01FA"
+	$"CC00 01FA 9900 01FA 6600 01FA 3300 01FA"
+	$"0000 01FA FF00 01FA CC00 01FA 9900 01FA"
+	$"6600 01FA 3300 01FA 0000 01FA FF00 01FA"
+	$"3300 01FA 0000 01FA 0000 01FA 3301 0100"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FA66 0000 FA66 0000"
+	$"FA66 0000 FA66 0000 FA66 0000 FA66 0000"
+	$"FAFF 0000 FA33 FA00 FF00 FA33 9700 FAFF"
+	$"0000 FC33 FF33 0000 FA33 F000 0093 0001"
+	$"FAFF 0001 FACC 0001 FA99 0001 FA66 0001"
+	$"FA33 0001 FA00 0001 FAFF 0001 FACC 0001"
+	$"FA99 0001 FA66 0001 FA33 0001 FA00 0001"
+	$"FAFF 0001 FA33 0001 FA00 0001 FA00 0001"
+	$"FA33 0101 00FA FF00 00FA FF00 00FA FF00"
+	$"00FA FF00 00FA FF00 00FA FF00 00FA 6600"
+	$"00FA 6600 00FA 6600 00FA 6600 00FA 6600"
+	$"00FA 6600 00FA FF00 00FA 33FA 00FF 00FA"
+	$"3397 00FA FF00 00FC 33FF 3300 00FA 33F0"
+	$"0000 9300 01FA FF00 01FA CC00 01FA 9900"
+	$"01FA 6600 01FA 3300 01FA 0000 01FA FF00"
+	$"01FA CC00 01FA 9900 01FA 6600 01FA 3300"
+	$"01FA 0000 01FA FF00 01FA 3300 01FA 0000"
+	$"01FA 0000 01FA 3301 0100 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FAFF 0000 FA33"
+	$"FA00 FF00 FA33 9700 FAFF 0000 FC33 FF33"
+	$"0000 FA33 F000 0093 0001 FAFF 0001 FACC"
+	$"0001 FA99 0001 FA66 0001 FA33 0001 FA00"
+	$"0001 FAFF 0001 FACC 0001 FA99 0001 FA66"
+	$"0001 FA33 0001 FA00 0001 FAFF 0001 FA33"
+	$"0001 FA00 0001 FA00 0001 FA33 0101 00FA"
+	$"FF00 00FA FF00 00FA FF00 00FA FF00 00FA"
+	$"FF00 00FA FF00 00FA 6600 00FA 6600 00FA"
+	$"6600 00FA 6600 00FA 6600 00FA 6600 00FA"
+	$"FF00 00FA 33FA 00FF 00FA 3397 00FA FF00"
+	$"00FC 33FF 3300 00FA 33F0 0000 16A0 01FA"
+	$"FFE9 01F8 01A0 00FA FFF2 008E 00FA FFFB"
+	$"00E6 0000 C300 01FA FF00 01FA CC00 01FA"
+	$"9900 01FA 6600 01FA 3300 01FA 0000 01FA"
+	$"FF00 01FA CC00 01FA 9900 01FA 6600 01FA"
+	$"3300 01FA 0000 01FA FF00 01FA 2200 01FA"
+	$"0000 01FA 0000 01FA 2201 0100 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FA66 0000 FA66 0000 FA66 0000"
+	$"FA66 0000 FA66 0000 FA66 0000 FAFF 0000"
+	$"FA22 FA00 FF00 FA22 F700 FA33 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FAFF 0000 FC22"
+	$"FF22 0000 FA22 F000 00C3 0001 FAFF 0001"
+	$"FACC 0001 FA99 0001 FA66 0001 FA33 0001"
+	$"FA00 0001 FAFF 0001 FACC 0001 FA99 0001"
+	$"FA66 0001 FA33 0001 FA00 0001 FAFF 0001"
+	$"FA22 0001 FA00 0001 FA00 0001 FA22 0101"
+	$"00FA FF00 00FA FF00 00FA FF00 00FA FF00"
+	$"00FA FF00 00FA FF00 00FA 6600 00FA 6600"
+	$"00FA 6600 00FA 6600 00FA 6600 00FA 6600"
+	$"00FA FF00 00FA 22FA 00FF 00FA 22F7 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA 3300 00FA"
+	$"FF00 00FC 22FF 2200 00FA 22F0 0000 C300"
+	$"01FA FF00 01FA CC00 01FA 9900 01FA 6600"
+	$"01FA 3300 01FA 0000 01FA FF00 01FA CC00"
+	$"01FA 9900 01FA 6600 01FA 3300 01FA 0000"
+	$"01FA FF00 01FA 2200 01FA 0000 01FA 0000"
+	$"01FA 2201 0100 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FAFF 0000 FA22 FA00 FF00"
+	$"FA22 F700 FA33 0000 FA33 0000 FA33 0000"
 	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
-	$"FA33 0000 FA33 CF00 FA99 0000 FC99 FF99"
-	$"F000 FAFF 0000 FAFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 FAFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 FCFF"
-	$"FFFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 00E8 0001 FA99 0001 FA00 0001"
-	$"FA00 0001 FA99 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0101 00FA 99F8 00FA 99F8 00FA FF00"
-	$"00FA 6600 00FA 6600 00FA 6600 00FB 6601"
-	$"6600 FA66 0000 FA66 0000 FA33 0000 FA33"
-	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
-	$"CF00 FA99 0000 FC99 FF99 F000 FAFF 0000"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FCFF FFFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 0018"
-	$"E001 FAFF A901 C801 E000 FAFF E200 8100"
-	$"EE00 FAFF 9B00 D600 00E8 0001 FA88 0001"
-	$"FA00 0001 FA00 0001 FA88 0001 FAFF 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0101 00FA 88F8 00FA 88F8"
-	$"00FA FF00 00FA 6600 00FA 6600 00FA 6600"
-	$"00FB 6601 6600 FA66 0000 FA66 0000 FA33"
-	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
-	$"0000 FA33 CF00 FA88 0000 FC88 FF88 F000"
-	$"FAFF 0000 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FCFF FFFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 00E8 0001 FA88 0001 FA00 0001 FA00"
-	$"0001 FA88 0001 FAFF 0001 FACC 0001 FACC"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0101 00FA 88F8 00FA 88F8 00FA FF00 00FA"
-	$"6600 00FA 6600 00FA 6600 00FB 6601 6600"
-	$"FA66 0000 FA66 0000 FA33 0000 FA33 0000"
-	$"FA33 0000 FA33 0000 FA33 0000 FA33 CF00"
-	$"FA88 0000 FC88 FF88 F000 FAFF 0000 FAFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 FAFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 FCFF FFFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 00E8 0001"
-	$"FA88 0001 FA00 0001 FA00 0001 FA88 0001"
-	$"FAFF 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0101 00FA 88F8"
-	$"00FA 88F8 00FA FF00 00FA 6600 00FA 6600"
-	$"00FA 6600 00FB 6601 6600 FA66 0000 FA66"
-	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
-	$"0000 FA33 0000 FA33 CF00 FA88 0000 FC88"
-	$"FF88 F000 FAFF 0000 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FCFF FFFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 00E8 0001 FA88 0001 FA00"
-	$"0001 FA00 0001 FA88 0001 FAFF 0001 FACC"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0001 FACC 0101 00FA 88F8 00FA 88F8 00FA"
-	$"FF00 00FA 6600 00FA 6600 00FA 6600 00FB"
-	$"6601 6600 FA66 0000 FA66 0000 FA33 0000"
 	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
-	$"FA33 CF00 FA88 0000 FC88 FF88 F000 FAFF"
-	$"0000 FAFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 FAFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 FCFF FFFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"00E8 0001 FA88 0001 FA00 0001 FA00 0001"
-	$"FA88 0001 FAFF 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0101"
-	$"00FA 88F8 00FA 88F8 00FA FF00 00FA 6600"
-	$"00FA 6600 00FA 6600 00FB 6601 6600 FA66"
-	$"0000 FA66 0000 FA33 0000 FA33 0000 FA33"
-	$"0000 FA33 0000 FA33 0000 FA33 CF00 FA88"
-	$"0000 FC88 FF88 F000 FAFF 0000 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FCFF FFFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 00E8 0001 FA88"
-	$"0001 FA00 0001 FA00 0001 FA88 0001 FAFF"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0001 FACC 0001 FACC 0001 FACC 0001 FACC"
-	$"0001 FACC 0001 FACC 0101 00FA 88F8 00FA"
-	$"88F8 00FA FF00 00FA 6600 00FA 6600 00FA"
-	$"6600 00FB 6601 6600 FA66 0000 FA66 0000"
+	$"FA33 0000 FAFF 0000 FC22 FF22 0000 FA22"
+	$"F000 00C3 0001 FAFF 0001 FACC 0001 FA99"
+	$"0001 FA66 0001 FA33 0001 FA00 0001 FAFF"
+	$"0001 FACC 0001 FA99 0001 FA66 0001 FA33"
+	$"0001 FA00 0001 FAFF 0001 FA22 0001 FA00"
+	$"0001 FA00 0001 FA22 0101 00FA FF00 00FA"
+	$"FF00 00FA FF00 00FA FF00 00FA FF00 00FA"
+	$"FF00 00FA 6600 00FA 6600 00FA 6600 00FA"
+	$"6600 00FA 6600 00FA 6600 00FA FF00 00FA"
+	$"22FA 00FF 00FA 22F7 00FA 3300 00FA 3300"
+	$"00FA 3300 00FA 3300 00FA 3300 00FA 3300"
+	$"00FA 3300 00FA 3300 00FA 3300 00FA 3300"
+	$"00FA 3300 00FA 3300 00FA FF00 00FC 22FF"
+	$"2200 00FA 22F0 0000 C300 01FA FF00 01FA"
+	$"CC00 01FA 9900 01FA 6600 01FA 3300 01FA"
+	$"0000 01FA FF00 01FA CC00 01FA 9900 01FA"
+	$"6600 01FA 3300 01FA 0000 01FA FF00 01FA"
+	$"2200 01FA 0000 01FA 0000 01FA 2201 0100"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FA66 0000 FA66 0000"
+	$"FA66 0000 FA66 0000 FA66 0000 FA66 0000"
+	$"FAFF 0000 FA22 FA00 FF00 FA22 F700 FA33"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
+	$"0000 FA33 0000 FA33 0000 FA33 0000 FAFF"
+	$"0000 FC22 FF22 0000 FA22 F000 00C3 0001"
+	$"FAFF 0001 FACC 0001 FA99 0001 FA66 0001"
+	$"FA33 0001 FA00 0001 FAFF 0001 FACC 0001"
+	$"FA99 0001 FA66 0001 FA33 0001 FA00 0001"
+	$"FAFF 0001 FA22 0001 FA00 0001 FA00 0001"
+	$"FA22 0101 00FA FF00 00FA FF00 00FA FF00"
+	$"00FA FF00 00FA FF00 00FA FF00 00FA 6600"
+	$"00FA 6600 00FA 6600 00FA 6600 00FA 6600"
+	$"00FA 6600 00FA FF00 00FA 22FA 00FF 00FA"
+	$"22F7 00FA 3300 00FA 3300 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA 3300 00FA"
+	$"3300 00FA 3300 00FA 3300 00FA 3300 00FA"
+	$"3300 00FA FF00 00FC 22FF 2200 00FA 22F0"
+	$"0000 C300 01FA FF00 01FA CC00 01FA 9900"
+	$"01FA 6600 01FA 3300 01FA 0000 01FA FF00"
+	$"01FA CC00 01FA 9900 01FA 6600 01FA 3300"
+	$"01FA 0000 01FA FF00 01FA 2200 01FA 0000"
+	$"01FA 0000 01FA 2201 0100 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FAFF 0000 FA22"
+	$"FA00 FF00 FA22 F700 FA33 0000 FA33 0000"
 	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
-	$"FA33 0000 FA33 CF00 FA88 0000 FC88 FF88"
-	$"F000 FAFF 0000 FAFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 FAFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 FCFF"
-	$"FFFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 00E8 0001 FA88 0001 FA00 0001"
-	$"FA00 0001 FA88 0001 FAFF 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0001 FACC 0001 FACC 0001 FACC 0001"
-	$"FACC 0101 00FA 88F8 00FA 88F8 00FA FF00"
-	$"00FA 6600 00FA 6600 00FA 6600 00FB 6601"
-	$"6600 FA66 0000 FA66 0000 FA33 0000 FA33"
-	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
-	$"CF00 FA88 0000 FC88 FF88 F000 FAFF 0000"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FCFF FFFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 0018"
-	$"E001 FAFF A901 C801 E000 FAFF E200 8100"
-	$"EE00 FAFF 9B00 D600 00E8 0001 FA77 0001"
-	$"FA00 0001 FA00 0001 FA77 0001 FAFF 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0101 00FA 77F8 00FA 77F8"
-	$"00FA FF00 00FA 6600 00FA 6600 00FA 6600"
-	$"00FB 6601 6600 FA66 0000 FA66 0000 FA33"
-	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
-	$"0000 FA33 CF00 FA77 0000 FC77 FF77 F000"
-	$"FAFF 0000 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FCFF FFFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 00E8 0001 FA77 0001 FA00 0001 FA00"
-	$"0001 FA77 0001 FAFF 0001 FA99 0001 FA99"
-	$"0001 FA99 0001 FA99 0001 FA99 0001 FA99"
-	$"0001 FA99 0001 FA99 0001 FA99 0001 FA99"
-	$"0001 FA99 0001 FA99 0001 FA99 0001 FA99"
-	$"0001 FA99 0001 FA99 0001 FA99 0001 FA99"
-	$"0101 00FA 77F8 00FA 77F8 00FA FF00 00FA"
-	$"6600 00FA 6600 00FA 6600 00FB 6601 6600"
-	$"FA66 0000 FA66 0000 FA33 0000 FA33 0000"
-	$"FA33 0000 FA33 0000 FA33 0000 FA33 CF00"
-	$"FA77 0000 FC77 FF77 F000 FAFF 0000 FAFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 FAFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 FCFF FFFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 00E8 0001"
-	$"FA77 0001 FA00 0001 FA00 0001 FA77 0001"
-	$"FAFF 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0101 00FA 77F8"
-	$"00FA 77F8 00FA FF00 00FA 6600 00FA 6600"
-	$"00FA 6600 00FB 6601 6600 FA66 0000 FA66"
-	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
-	$"0000 FA33 0000 FA33 CF00 FA77 0000 FC77"
-	$"FF77 F000 FAFF 0000 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FCFF FFFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 00E8 0001 FA77 0001 FA00"
-	$"0001 FA00 0001 FA77 0001 FAFF 0001 FA99"
-	$"0001 FA99 0001 FA99 0001 FA99 0001 FA99"
-	$"0001 FA99 0001 FA99 0001 FA99 0001 FA99"
-	$"0001 FA99 0001 FA99 0001 FA99 0001 FA99"
-	$"0001 FA99 0001 FA99 0001 FA99 0001 FA99"
-	$"0001 FA99 0101 00FA 77F8 00FA 77F8 00FA"
-	$"FF00 00FA 6600 00FA 6600 00FA 6600 00FB"
-	$"6601 6600 FA66 0000 FA66 0000 FA33 0000"
 	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
-	$"FA33 CF00 FA77 0000 FC77 FF77 F000 FAFF"
-	$"0000 FAFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 FAFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 FCFF FFFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"00E8 0001 FA77 0001 FA00 0001 FA00 0001"
-	$"FA77 0001 FAFF 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0101"
-	$"00FA 77F8 00FA 77F8 00FA FF00 00FA 6600"
-	$"00FA 6600 00FA 6600 00FB 6601 6600 FA66"
-	$"0000 FA66 0000 FA33 0000 FA33 0000 FA33"
-	$"0000 FA33 0000 FA33 0000 FA33 CF00 FA77"
-	$"0000 FC77 FF77 F000 FAFF 0000 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FCFF FFFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 00E8 0001 FA77"
-	$"0001 FA00 0001 FA00 0001 FA77 0001 FAFF"
-	$"0001 FA99 0001 FA99 0001 FA99 0001 FA99"
-	$"0001 FA99 0001 FA99 0001 FA99 0001 FA99"
-	$"0001 FA99 0001 FA99 0001 FA99 0001 FA99"
-	$"0001 FA99 0001 FA99 0001 FA99 0001 FA99"
-	$"0001 FA99 0001 FA99 0101 00FA 77F8 00FA"
-	$"77F8 00FA FF00 00FA 6600 00FA 6600 00FA"
-	$"6600 00FB 6601 6600 FA66 0000 FA66 0000"
-	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
-	$"FA33 0000 FA33 CF00 FA77 0000 FC77 FF77"
-	$"F000 FAFF 0000 FAFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 FAFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 FCFF"
-	$"FFFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 00E8 0001 FA77 0001 FA00 0001"
-	$"FA00 0001 FA77 0001 FAFF 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0001 FA99 0001 FA99 0001 FA99 0001"
-	$"FA99 0101 00FA 77F8 00FA 77F8 00FA FF00"
-	$"00FA 6600 00FA 6600 00FA 6600 00FB 6601"
-	$"6600 FA66 0000 FA66 0000 FA33 0000 FA33"
-	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
-	$"CF00 FA77 0000 FC77 FF77 F000 FAFF 0000"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FCFF FFFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 0018"
-	$"E001 FAFF A901 C801 E000 FAFF E200 8100"
-	$"EE00 FAFF 9B00 D600 00EC 0001 FA66 0001"
-	$"FA00 0001 FA00 0001 FA66 0001 FAFF 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0101 00FA 66F8 00FA 66F8"
-	$"00FA FF00 00FA 6600 00FA 6600 00FA 6600"
-	$"00FB 6601 6600 FA66 0000 FA66 0000 FA33"
-	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
-	$"0000 FA33 CF00 FA66 0000 FC66 FF66 0000"
-	$"FA33 F800 FAFF 0000 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FCFF FFFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 00EC 0001 FA66 0001 FA00"
-	$"0001 FA00 0001 FA66 0001 FAFF 0001 FA66"
-	$"0001 FA66 0001 FA66 0001 FA66 0001 FA66"
-	$"0001 FA66 0001 FA66 0001 FA66 0001 FA66"
-	$"0001 FA66 0001 FA66 0001 FA66 0001 FA66"
-	$"0001 FA66 0001 FA66 0001 FA66 0001 FA66"
-	$"0001 FA66 0101 00FA 66F8 00FA 66F8 00FA"
-	$"FF00 00FA 6600 00FA 6600 00FA 6600 00FB"
-	$"6601 6600 FA66 0000 FA66 0000 FA33 0000"
-	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
-	$"FA33 CF00 FA66 0000 FC66 FF66 0000 FA33"
-	$"F800 FAFF 0000 FAFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 FAFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 FCFF"
-	$"FFFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 00EC 0001 FA66 0001 FA00 0001"
-	$"FA00 0001 FA66 0001 FAFF 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0101 00FA 66F8 00FA 66F8 00FA FF00"
-	$"00FA 6600 00FA 6600 00FA 6600 00FB 6601"
-	$"6600 FA66 0000 FA66 0000 FA33 0000 FA33"
-	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
-	$"CF00 FA66 0000 FC66 FF66 0000 FA33 F800"
-	$"FAFF 0000 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FCFF FFFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 00EC 0001 FA66 0001 FA00 0001 FA00"
-	$"0001 FA66 0001 FAFF 0001 FA66 0001 FA66"
-	$"0001 FA66 0001 FA66 0001 FA66 0001 FA66"
-	$"0001 FA66 0001 FA66 0001 FA66 0001 FA66"
-	$"0001 FA66 0001 FA66 0001 FA66 0001 FA66"
-	$"0001 FA66 0001 FA66 0001 FA66 0001 FA66"
-	$"0101 00FA 66F8 00FA 66F8 00FA FF00 00FA"
-	$"6600 00FA 6600 00FA 6600 00FB 6601 6600"
-	$"FA66 0000 FA66 0000 FA33 0000 FA33 0000"
-	$"FA33 0000 FA33 0000 FA33 0000 FA33 CF00"
-	$"FA66 0000 FC66 FF66 0000 FA33 F800 FAFF"
-	$"0000 FAFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 FAFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 FCFF FFFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"00EC 0001 FA66 0001 FA00 0001 FA00 0001"
-	$"FA66 0001 FAFF 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0101"
-	$"00FA 66F8 00FA 66F8 00FA FF00 00FA 6600"
-	$"00FA 6600 00FA 6600 00FB 6601 6600 FA66"
-	$"0000 FA66 0000 FA33 0000 FA33 0000 FA33"
-	$"0000 FA33 0000 FA33 0000 FA33 CF00 FA66"
-	$"0000 FC66 FF66 0000 FA33 F800 FAFF 0000"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FCFF FFFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 00EC"
-	$"0001 FA66 0001 FA00 0001 FA00 0001 FA66"
-	$"0001 FAFF 0001 FA66 0001 FA66 0001 FA66"
-	$"0001 FA66 0001 FA66 0001 FA66 0001 FA66"
-	$"0001 FA66 0001 FA66 0001 FA66 0001 FA66"
-	$"0001 FA66 0001 FA66 0001 FA66 0001 FA66"
-	$"0001 FA66 0001 FA66 0001 FA66 0101 00FA"
-	$"66F8 00FA 66F8 00FA FF00 00FA 6600 00FA"
-	$"6600 00FA 6600 00FB 6601 6600 FA66 0000"
-	$"FA66 0000 FA33 0000 FA33 0000 FA33 0000"
-	$"FA33 0000 FA33 0000 FA33 CF00 FA66 0000"
-	$"FC66 FF66 0000 FA33 F800 FAFF 0000 FAFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 FAFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 FCFF FFFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 00EC 0001"
-	$"FA66 0001 FA00 0001 FA00 0001 FA66 0001"
-	$"FAFF 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0001 FA66 0001"
-	$"FA66 0001 FA66 0001 FA66 0101 00FA 66F8"
-	$"00FA 66F8 00FA FF00 00FA 6600 00FA 6600"
-	$"00FA 6600 00FB 6601 6600 FA66 0000 FA66"
-	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
-	$"0000 FA33 0000 FA33 CF00 FA66 0000 FC66"
-	$"FF66 0000 FA33 F800 FAFF 0000 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FCFF FFFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 0018 E001 FAFF"
-	$"A901 C801 E000 FAFF E200 8100 EE00 FAFF"
-	$"9B00 D600 00E8 0001 FA55 0001 FA00 0001"
-	$"FA00 0001 FA55 0001 FAFF 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0101 00FA 55F8 00FA 55F8 00FA FF00"
-	$"00FA 6600 00FA 6600 00FA 6600 00FB 6601"
-	$"6600 FA66 0000 FA66 0000 FA33 0000 FA33"
-	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
-	$"CF00 FA55 0000 FC55 FF55 F000 FAFF 0000"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FCFF FFFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 00E8"
-	$"0001 FA55 0001 FA00 0001 FA00 0001 FA55"
-	$"0001 FAFF 0001 FA33 0001 FA33 0001 FA33"
-	$"0001 FA33 0001 FA33 0001 FA33 0001 FA33"
-	$"0001 FA33 0001 FA33 0001 FA33 0001 FA33"
-	$"0001 FA33 0001 FA33 0001 FA33 0001 FA33"
-	$"0001 FA33 0001 FA33 0001 FA33 0101 00FA"
-	$"55F8 00FA 55F8 00FA FF00 00FA 6600 00FA"
-	$"6600 00FA 6600 00FB 6601 6600 FA66 0000"
-	$"FA66 0000 FA33 0000 FA33 0000 FA33 0000"
-	$"FA33 0000 FA33 0000 FA33 CF00 FA55 0000"
-	$"FC55 FF55 F000 FAFF 0000 FAFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 FAFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 FCFF FFFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 00E8 0001 FA55 0001"
-	$"FA00 0001 FA00 0001 FA55 0001 FAFF 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0101 00FA 55F8 00FA 55F8"
-	$"00FA FF00 00FA 6600 00FA 6600 00FA 6600"
-	$"00FB 6601 6600 FA66 0000 FA66 0000 FA33"
-	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
-	$"0000 FA33 CF00 FA55 0000 FC55 FF55 F000"
-	$"FAFF 0000 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FCFF FFFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 00E8 0001 FA55 0001 FA00 0001 FA00"
-	$"0001 FA55 0001 FAFF 0001 FA33 0001 FA33"
-	$"0001 FA33 0001 FA33 0001 FA33 0001 FA33"
-	$"0001 FA33 0001 FA33 0001 FA33 0001 FA33"
-	$"0001 FA33 0001 FA33 0001 FA33 0001 FA33"
-	$"0001 FA33 0001 FA33 0001 FA33 0001 FA33"
-	$"0101 00FA 55F8 00FA 55F8 00FA FF00 00FA"
-	$"6600 00FA 6600 00FA 6600 00FB 6601 6600"
-	$"FA66 0000 FA66 0000 FA33 0000 FA33 0000"
-	$"FA33 0000 FA33 0000 FA33 0000 FA33 CF00"
-	$"FA55 0000 FC55 FF55 F000 FAFF 0000 FAFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 FAFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 FCFF FFFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 00E8 0001"
-	$"FA55 0001 FA00 0001 FA00 0001 FA55 0001"
-	$"FAFF 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0101 00FA 55F8"
-	$"00FA 55F8 00FA FF00 00FA 6600 00FA 6600"
-	$"00FA 6600 00FB 6601 6600 FA66 0000 FA66"
-	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
-	$"0000 FA33 0000 FA33 CF00 FA55 0000 FC55"
-	$"FF55 F000 FAFF 0000 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FCFF FFFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 00E8 0001 FA55 0001 FA00"
-	$"0001 FA00 0001 FA55 0001 FAFF 0001 FA33"
-	$"0001 FA33 0001 FA33 0001 FA33 0001 FA33"
-	$"0001 FA33 0001 FA33 0001 FA33 0001 FA33"
-	$"0001 FA33 0001 FA33 0001 FA33 0001 FA33"
-	$"0001 FA33 0001 FA33 0001 FA33 0001 FA33"
-	$"0001 FA33 0101 00FA 55F8 00FA 55F8 00FA"
-	$"FF00 00FA 6600 00FA 6600 00FA 6600 00FB"
-	$"6601 6600 FA66 0000 FA66 0000 FA33 0000"
-	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
-	$"FA33 CF00 FA55 0000 FC55 FF55 F000 FAFF"
-	$"0000 FAFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 FAFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 FCFF FFFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"00E8 0001 FA55 0001 FA00 0001 FA00 0001"
-	$"FA55 0001 FAFF 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0001"
-	$"FA33 0001 FA33 0001 FA33 0001 FA33 0101"
-	$"00FA 55F8 00FA 55F8 00FA FF00 00FA 6600"
-	$"00FA 6600 00FA 6600 00FB 6601 6600 FA66"
-	$"0000 FA66 0000 FA33 0000 FA33 0000 FA33"
-	$"0000 FA33 0000 FA33 0000 FA33 CF00 FA55"
-	$"0000 FC55 FF55 F000 FAFF 0000 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FCFF FFFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 0018 E001 FAFF"
-	$"A901 C801 E000 FAFF E200 8100 EE00 FAFF"
-	$"9B00 D600 00E8 0001 FA44 0001 FA00 0001"
-	$"FA00 0001 FA44 0001 FAFF 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0101 00FA 44F8 00FA 44F8 00FA FF00"
-	$"00FA 6600 00FA 6600 00FA 6600 00FB 6601"
-	$"6600 FA66 0000 FA66 0000 FA33 0000 FA33"
-	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
-	$"CF00 FA44 0000 FC44 FF44 F000 FAFF 0000"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FCFF FFFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 00E8"
-	$"0001 FA44 0001 FA00 0001 FA00 0001 FA44"
+	$"FA33 0000 FA33 0000 FAFF 0000 FC22 FF22"
+	$"0000 FA22 F000 0016 A001 FAFF E901 F801"
+	$"A000 FAFF F200 8E00 FAFF FB00 E600 00C3"
+	$"0001 FAFF 0001 FACC 0001 FA99 0001 FA66"
+	$"0001 FA33 0001 FA00 0001 FAFF 0001 FACC"
+	$"0001 FA99 0001 FA66 0001 FA33 0001 FA00"
+	$"0001 FAFF 0001 FA11 0001 FA00 0001 FA00"
+	$"0001 FA11 0101 00FA FF00 00FA FF00 00FA"
+	$"FF00 00FA FF00 00FA FF00 00FA FF00 00FA"
+	$"6600 00FA 6600 00FA 6600 00FA 6600 00FA"
+	$"6600 00FA 6600 00FA FF00 00FA 11FA 00FF"
+	$"00FA 11F7 00FA 6600 00FA 6600 00FA 6600"
+	$"00FA 6600 00FA 6600 00FA 6600 00FA 6600"
+	$"00FA 6600 00FA 6600 00FA 6600 00FA 6600"
+	$"00FA 6600 00FA FF00 00FC 11FF 1100 00FA"
+	$"11F0 0000 C300 01FA FF00 01FA CC00 01FA"
+	$"9900 01FA 6600 01FA 3300 01FA 0000 01FA"
+	$"FF00 01FA CC00 01FA 9900 01FA 6600 01FA"
+	$"3300 01FA 0000 01FA FF00 01FA 1100 01FA"
+	$"0000 01FA 0000 01FA 1101 0100 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FA66 0000 FA66 0000 FA66 0000"
+	$"FA66 0000 FA66 0000 FA66 0000 FAFF 0000"
+	$"FA11 FA00 FF00 FA11 F700 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FAFF 0000 FC11"
+	$"FF11 0000 FA11 F000 00C3 0001 FAFF 0001"
+	$"FACC 0001 FA99 0001 FA66 0001 FA33 0001"
+	$"FA00 0001 FAFF 0001 FACC 0001 FA99 0001"
+	$"FA66 0001 FA33 0001 FA00 0001 FAFF 0001"
+	$"FA11 0001 FA00 0001 FA00 0001 FA11 0101"
+	$"00FA FF00 00FA FF00 00FA FF00 00FA FF00"
+	$"00FA FF00 00FA FF00 00FA 6600 00FA 6600"
+	$"00FA 6600 00FA 6600 00FA 6600 00FA 6600"
+	$"00FA FF00 00FA 11FA 00FF 00FA 11F7 00FA"
+	$"6600 00FA 6600 00FA 6600 00FA 6600 00FA"
+	$"6600 00FA 6600 00FA 6600 00FA 6600 00FA"
+	$"6600 00FA 6600 00FA 6600 00FA 6600 00FA"
+	$"FF00 00FC 11FF 1100 00FA 11F0 0000 C300"
+	$"01FA FF00 01FA CC00 01FA 9900 01FA 6600"
+	$"01FA 3300 01FA 0000 01FA FF00 01FA CC00"
+	$"01FA 9900 01FA 6600 01FA 3300 01FA 0000"
+	$"01FA FF00 01FA 1100 01FA 0000 01FA 0000"
+	$"01FA 1101 0100 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FAFF 0000 FA11 FA00 FF00"
+	$"FA11 F700 FA66 0000 FA66 0000 FA66 0000"
+	$"FA66 0000 FA66 0000 FA66 0000 FA66 0000"
+	$"FA66 0000 FA66 0000 FA66 0000 FA66 0000"
+	$"FA66 0000 FAFF 0000 FC11 FF11 0000 FA11"
+	$"F000 00C3 0001 FAFF 0001 FACC 0001 FA99"
+	$"0001 FA66 0001 FA33 0001 FA00 0001 FAFF"
+	$"0001 FACC 0001 FA99 0001 FA66 0001 FA33"
+	$"0001 FA00 0001 FAFF 0001 FA11 0001 FA00"
+	$"0001 FA00 0001 FA11 0101 00FA FF00 00FA"
+	$"FF00 00FA FF00 00FA FF00 00FA FF00 00FA"
+	$"FF00 00FA 6600 00FA 6600 00FA 6600 00FA"
+	$"6600 00FA 6600 00FA 6600 00FA FF00 00FA"
+	$"11FA 00FF 00FA 11F7 00FA 6600 00FA 6600"
+	$"00FA 6600 00FA 6600 00FA 6600 00FA 6600"
+	$"00FA 6600 00FA 6600 00FA 6600 00FA 6600"
+	$"00FA 6600 00FA 6600 00FA FF00 00FC 11FF"
+	$"1100 00FA 11F0 0000 C300 01FA FF00 01FA"
+	$"CC00 01FA 9900 01FA 6600 01FA 3300 01FA"
+	$"0000 01FA FF00 01FA CC00 01FA 9900 01FA"
+	$"6600 01FA 3300 01FA 0000 01FA FF00 01FA"
+	$"1100 01FA 0000 01FA 0000 01FA 1101 0100"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FA66 0000 FA66 0000"
+	$"FA66 0000 FA66 0000 FA66 0000 FA66 0000"
+	$"FAFF 0000 FA11 FA00 FF00 FA11 F700 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FAFF"
+	$"0000 FC11 FF11 0000 FA11 F000 00C3 0001"
+	$"FAFF 0001 FACC 0001 FA99 0001 FA66 0001"
+	$"FA33 0001 FA00 0001 FAFF 0001 FACC 0001"
+	$"FA99 0001 FA66 0001 FA33 0001 FA00 0001"
+	$"FAFF 0001 FA11 0001 FA00 0001 FA00 0001"
+	$"FA11 0101 00FA FF00 00FA FF00 00FA FF00"
+	$"00FA FF00 00FA FF00 00FA FF00 00FA 6600"
+	$"00FA 6600 00FA 6600 00FA 6600 00FA 6600"
+	$"00FA 6600 00FA FF00 00FA 11FA 00FF 00FA"
+	$"11F7 00FA 6600 00FA 6600 00FA 6600 00FA"
+	$"6600 00FA 6600 00FA 6600 00FA 6600 00FA"
+	$"6600 00FA 6600 00FA 6600 00FA 6600 00FA"
+	$"6600 00FA FF00 00FC 11FF 1100 00FA 11F0"
+	$"0000 16A0 01FA FFE9 01F8 01A0 00FA FFF2"
+	$"008E 00FA FFFB 00E6 0000 B300 01FA FF00"
+	$"01FA CC00 01FA 9900 01FA 6600 01FA 3300"
+	$"01FA 0000 01FA FF00 01FA CC00 01FA 9900"
+	$"01FA 6600 01FA 3300 01FA 0000 01FA FF00"
+	$"01FA 0000 01FA 0000 01FA 0000 01FA 0001"
+	$"0100 FAFF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FAFF F200 EE00 FA99 0000 FA99 0000"
+	$"FA99 0000 FA99 0000 FA99 0000 FA99 0000"
+	$"FA99 0000 FA99 0000 FA99 0000 FA99 0000"
+	$"FA99 0000 FA99 0000 FAFF FB00 E600 00B3"
+	$"0001 FAFF 0001 FACC 0001 FA99 0001 FA66"
+	$"0001 FA33 0001 FA00 0001 FAFF 0001 FACC"
+	$"0001 FA99 0001 FA66 0001 FA33 0001 FA00"
 	$"0001 FAFF 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 FA00 0001 FA00 0001 FA00 0101 00FA"
-	$"44F8 00FA 44F8 00FA FF00 00FA 6600 00FA"
-	$"6600 00FA 6600 00FB 6601 6600 FA66 0000"
-	$"FA66 0000 FA33 0000 FA33 0000 FA33 0000"
-	$"FA33 0000 FA33 0000 FA33 CF00 FA44 0000"
-	$"FC44 FF44 F000 FAFF 0000 FAFF 0000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 F800 FAFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 FCFF FFFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 00E8 0001 FA44 0001"
-	$"FA00 0001 FA00 0001 FA44 0001 FAFF 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0101 00FA 44F8 00FA 44F8"
-	$"00FA FF00 00FA 6600 00FA 6600 00FA 6600"
-	$"00FB 6601 6600 FA66 0000 FA66 0000 FA33"
-	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
-	$"0000 FA33 CF00 FA44 0000 FC44 FF44 F000"
-	$"FAFF 0000 FAFF 0000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 F800 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FCFF FFFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 00E8 0001 FA44 0001 FA00 0001 FA00"
-	$"0001 FA44 0001 FAFF 0001 FA00 0001 FA00"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0101 00FA 44F8 00FA 44F8 00FA FF00 00FA"
-	$"6600 00FA 6600 00FA 6600 00FB 6601 6600"
-	$"FA66 0000 FA66 0000 FA33 0000 FA33 0000"
-	$"FA33 0000 FA33 0000 FA33 0000 FA33 CF00"
-	$"FA44 0000 FC44 FF44 F000 FAFF 0000 FAFF"
-	$"0000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"F800 FAFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 FCFF FFFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 00E8 0001"
-	$"FA44 0001 FA00 0001 FA00 0001 FA44 0001"
-	$"FAFF 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0101 00FA 44F8"
-	$"00FA 44F8 00FA FF00 00FA 6600 00FA 6600"
-	$"00FA 6600 00FB 6601 6600 FA66 0000 FA66"
-	$"0000 FA33 0000 FA33 0000 FA33 0000 FA33"
-	$"0000 FA33 0000 FA33 CF00 FA44 0000 FC44"
-	$"FF44 F000 FAFF 0000 FAFF 0000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 F800 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FCFF FFFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 00E8 0001 FA44 0001 FA00"
-	$"0001 FA00 0001 FA44 0001 FAFF 0001 FA00"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 FA00 0101 00FA 44F8 00FA 44F8 00FA"
-	$"FF00 00FA 6600 00FA 6600 00FA 6600 00FB"
-	$"6601 6600 FA66 0000 FA66 0000 FA33 0000"
-	$"FA33 0000 FA33 0000 FA33 0000 FA33 0000"
-	$"FA33 CF00 FA44 0000 FC44 FF44 F000 FAFF"
-	$"0000 FAFF 0000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 F800 FAFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 FCFF FFFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"00E8 0001 FA44 0001 FA00 0001 FA00 0001"
-	$"FA44 0001 FAFF 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
+	$"0001 FA00 0101 00FA FF00 00FA FF00 00FA"
+	$"FF00 00FA FF00 00FA FF00 00FA FF00 00FA"
+	$"6600 00FA 6600 00FA 6600 00FA 6600 00FA"
+	$"6600 00FA 6600 00FA FFF2 00EE 00FA 9900"
+	$"00FA 9900 00FA 9900 00FA 9900 00FA 9900"
+	$"00FA 9900 00FA 9900 00FA 9900 00FA 9900"
+	$"00FA 9900 00FA 9900 00FA 9900 00FA FFFB"
+	$"00E6 0000 B300 01FA FF00 01FA CC00 01FA"
+	$"9900 01FA 6600 01FA 3300 01FA 0000 01FA"
+	$"FF00 01FA CC00 01FA 9900 01FA 6600 01FA"
+	$"3300 01FA 0000 01FA FF00 01FA 0000 01FA"
+	$"0000 01FA 0000 01FA 0001 0100 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FA66 0000 FA66 0000 FA66 0000"
+	$"FA66 0000 FA66 0000 FA66 0000 FAFF F200"
+	$"EE00 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"0000 FAFF FB00 E600 00B3 0001 FAFF 0001"
+	$"FACC 0001 FA99 0001 FA66 0001 FA33 0001"
+	$"FA00 0001 FAFF 0001 FACC 0001 FA99 0001"
+	$"FA66 0001 FA33 0001 FA00 0001 FAFF 0001"
 	$"FA00 0001 FA00 0001 FA00 0001 FA00 0101"
-	$"00FA 44F8 00FA 44F8 00FA FF00 00FA 6600"
-	$"00FA 6600 00FA 6600 00FB 6601 6600 FA66"
-	$"0000 FA66 0000 FA33 0000 FA33 0000 FA33"
-	$"0000 FA33 0000 FA33 0000 FA33 CF00 FA44"
-	$"0000 FC44 FF44 F000 FAFF 0000 FAFF 0000"
-	$"FACC 0000 FA99 0000 FA66 0000 FA33 F800"
-	$"FAFF 0000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 F800 FCFF FFFF 0000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 F800 0018 E001 FAFF"
-	$"A901 C801 E000 FAFF E200 8100 EE00 FAFF"
-	$"9B00 D600 0034 0001 FA33 0001 FA00 0001"
-	$"FA00 0001 FA33 0001 A2FF C8FF 0000 FA33"
-	$"F800 FA33 F800 DBFF 8FFF 0000 FA33 0000"
-	$"FC33 FF33 F000 94FF D6FF 0034 0001 FA33"
-	$"0001 FA00 0001 FA00 0001 FA33 0001 A2FF"
-	$"C8FF 0000 FA33 F800 FA33 F800 DBFF 8FFF"
-	$"0000 FA33 0000 FC33 FF33 F000 94FF D6FF"
-	$"0034 0001 FA33 0001 FA00 0001 FA00 0001"
-	$"FA33 0001 A2FF C8FF 0000 FA33 F800 FA33"
-	$"F800 DBFF 8FFF 0000 FA33 0000 FC33 FF33"
-	$"F000 94FF D6FF 0034 0001 FA33 0001 FA00"
-	$"0001 FA00 0001 FA33 0001 A2FF C8FF 0000"
-	$"FA33 F800 FA33 F800 DBFF 8FFF 0000 FA33"
-	$"0000 FC33 FF33 F000 94FF D6FF 0034 0001"
-	$"FA33 0001 FA00 0001 FA00 0001 FA33 0001"
-	$"A2FF C8FF 0000 FA33 F800 FA33 F800 DBFF"
-	$"8FFF 0000 FA33 0000 FC33 FF33 F000 94FF"
-	$"D6FF 0034 0001 FA33 0001 FA00 0001 FA00"
-	$"0001 FA33 0001 A2FF C8FF 0000 FA33 F800"
-	$"FA33 F800 DBFF 8FFF 0000 FA33 0000 FC33"
-	$"FF33 F000 94FF D6FF 0034 0001 FA33 0001"
-	$"FA00 0001 FA00 0001 FA33 0001 A2FF C8FF"
-	$"0000 FA33 F800 FA33 F800 DBFF 8FFF 0000"
-	$"FA33 0000 FC33 FF33 F000 94FF D6FF 0014"
-	$"E001 A2FF C8FF E000 DBFF 8FFF F300 EE00"
-	$"94FF D6FF 0034 0001 FA22 0001 FA00 0001"
-	$"FA00 0001 FA22 0001 A2FF C8FF 0000 FA22"
-	$"F800 FA22 F800 DBFF 8FFF 0000 FA22 0000"
-	$"FC22 FF22 F000 94FF D6FF 0034 0001 FA22"
-	$"0001 FA00 0001 FA00 0001 FA22 0001 A2FF"
-	$"C8FF 0000 FA22 F800 FA22 F800 DBFF 8FFF"
-	$"0000 FA22 0000 FC22 FF22 F000 94FF D6FF"
-	$"0034 0001 FA22 0001 FA00 0001 FA00 0001"
-	$"FA22 0001 A2FF C8FF 0000 FA22 F800 FA22"
-	$"F800 DBFF 8FFF 0000 FA22 0000 FC22 FF22"
-	$"F000 94FF D6FF 0034 0001 FA22 0001 FA00"
-	$"0001 FA00 0001 FA22 0001 A2FF C8FF 0000"
-	$"FA22 F800 FA22 F800 DBFF 8FFF 0000 FA22"
-	$"0000 FC22 FF22 F000 94FF D6FF 0034 0001"
-	$"FA22 0001 FA00 0001 FA00 0001 FA22 0001"
-	$"A2FF C8FF 0000 FA22 F800 FA22 F800 DBFF"
-	$"8FFF 0000 FA22 0000 FC22 FF22 F000 94FF"
-	$"D6FF 0034 0001 FA22 0001 FA00 0001 FA00"
-	$"0001 FA22 0001 A2FF C8FF 0000 FA22 F800"
-	$"FA22 F800 DBFF 8FFF 0000 FA22 0000 FC22"
-	$"FF22 F000 94FF D6FF 0034 0001 FA22 0001"
-	$"FA00 0001 FA00 0001 FA22 0001 A2FF C8FF"
-	$"0000 FA22 F800 FA22 F800 DBFF 8FFF 0000"
-	$"FA22 0000 FC22 FF22 F000 94FF D6FF 0018"
-	$"E001 F2FF B101 C801 E000 F2FF EA00 8100"
-	$"EE00 F2FF A300 D600 00E4 0001 FA11 0001"
-	$"FA00 0001 FA00 0001 FA11 0001 F2FF 0001"
-	$"FADD 0001 FA99 0001 FAFF 0001 FA99 0001"
-	$"FAFF 0001 FA33 0001 FA00 0001 FA33 0001"
-	$"FA33 0001 FA99 0001 FA00 0001 FA00 0001"
-	$"FA33 0001 FACC 0001 FA99 0001 FA66 0001"
-	$"FA33 0101 00FA 11F8 00FA 11F8 00F2 FFF0"
-	$"00FB 6601 6600 FA66 0000 FAFF 0000 FAFF"
-	$"0000 FABB 0000 FA99 0000 FA66 0000 FAFF"
-	$"0000 FA99 F000 FACC 0000 FA99 0000 FA66"
-	$"0000 FA33 FF00 FA11 0000 FC11 FF11 F000"
-	$"F2FF F800 FA66 0000 FACC 0000 FA99 F800"
-	$"FA99 F800 FA66 0000 FA66 0000 FAFF 0000"
-	$"FAFF 0000 FCDD FFDD 0000 FA99 0000 FAFF"
-	$"0000 FAFF 0000 FACC 0000 FA66 0000 00E4"
-	$"0001 FA11 0001 FA00 0001 FA00 0001 FA11"
-	$"0001 F2FF 0001 FADD 0001 FA99 0001 FAFF"
-	$"0001 FA99 0001 FAFF 0001 FA33 0001 FA00"
-	$"0001 FA33 0001 FA33 0001 FA99 0001 FA00"
-	$"0001 FA00 0001 FA33 0001 FACC 0001 FA99"
-	$"0001 FA66 0001 FA33 0101 00FA 11F8 00FA"
-	$"11F8 00F2 FFF0 00FB 6601 6600 FA66 0000"
-	$"FAFF 0000 FAFF 0000 FABB 0000 FA99 0000"
-	$"FA66 0000 FAFF 0000 FA99 F000 FACC 0000"
-	$"FA99 0000 FA66 0000 FA33 FF00 FA11 0000"
-	$"FC11 FF11 F000 F2FF F800 FA66 0000 FACC"
-	$"0000 FA99 F800 FA99 F800 FA66 0000 FA66"
-	$"0000 FAFF 0000 FAFF 0000 FCDD FFDD 0000"
-	$"FA99 0000 FAFF 0000 FAFF 0000 FACC 0000"
-	$"FA66 0000 00E4 0001 FA11 0001 FA00 0001"
-	$"FA00 0001 FA11 0001 F2FF 0001 FADD 0001"
+	$"00FA FF00 00FA FF00 00FA FF00 00FA FF00"
+	$"00FA FF00 00FA FF00 00FA 6600 00FA 6600"
+	$"00FA 6600 00FA 6600 00FA 6600 00FA 6600"
+	$"00FA FFF2 00EE 00FA 9900 00FA 9900 00FA"
+	$"9900 00FA 9900 00FA 9900 00FA 9900 00FA"
+	$"9900 00FA 9900 00FA 9900 00FA 9900 00FA"
+	$"9900 00FA 9900 00FA FFFB 00E6 0000 B300"
+	$"01FA FF00 01FA CC00 01FA 9900 01FA 6600"
+	$"01FA 3300 01FA 0000 01FA FF00 01FA CC00"
+	$"01FA 9900 01FA 6600 01FA 3300 01FA 0000"
+	$"01FA FF00 01FA 0000 01FA 0000 01FA 0000"
+	$"01FA 0001 0100 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FAFF F200 EE00 FA99 0000"
+	$"FA99 0000 FA99 0000 FA99 0000 FA99 0000"
+	$"FA99 0000 FA99 0000 FA99 0000 FA99 0000"
+	$"FA99 0000 FA99 0000 FA99 0000 FAFF FB00"
+	$"E600 00B3 0001 FAFF 0001 FACC 0001 FA99"
+	$"0001 FA66 0001 FA33 0001 FA00 0001 FAFF"
+	$"0001 FACC 0001 FA99 0001 FA66 0001 FA33"
+	$"0001 FA00 0001 FAFF 0001 FA00 0001 FA00"
+	$"0001 FA00 0001 FA00 0101 00FA FF00 00FA"
+	$"FF00 00FA FF00 00FA FF00 00FA FF00 00FA"
+	$"FF00 00FA 6600 00FA 6600 00FA 6600 00FA"
+	$"6600 00FA 6600 00FA 6600 00FA FFF2 00EE"
+	$"00FA 9900 00FA 9900 00FA 9900 00FA 9900"
+	$"00FA 9900 00FA 9900 00FA 9900 00FA 9900"
+	$"00FA 9900 00FA 9900 00FA 9900 00FA 9900"
+	$"00FA FFFB 00E6 0000 B300 01FA FF00 01FA"
+	$"CC00 01FA 9900 01FA 6600 01FA 3300 01FA"
+	$"0000 01FA FF00 01FA CC00 01FA 9900 01FA"
+	$"6600 01FA 3300 01FA 0000 01FA FF00 01FA"
+	$"0000 01FA 0000 01FA 0000 01FA 0001 0100"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FA66 0000 FA66 0000"
+	$"FA66 0000 FA66 0000 FA66 0000 FA66 0000"
+	$"FAFF F200 EE00 FA99 0000 FA99 0000 FA99"
+	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"0000 FA99 0000 FA99 0000 FA99 0000 FA99"
+	$"0000 FA99 0000 FAFF FB00 E600 0016 A001"
+	$"FAFF E901 F801 A000 FAFF F200 8E00 FAFF"
+	$"FB00 E600 00A2 0001 FAFF 0001 FACC 0001"
+	$"FA99 0001 FA66 0001 FA33 0001 FA00 0001"
+	$"FAFF 0001 FACC 0001 FA99 0001 FA66 0001"
+	$"FA33 0001 FA00 0001 E2FF F8FF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 EBFF"
+	$"EFFF 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 F4FF E6FF 00A2 0001 FAFF 0001"
+	$"FACC 0001 FA99 0001 FA66 0001 FA33 0001"
+	$"FA00 0001 FAFF 0001 FACC 0001 FA99 0001"
+	$"FA66 0001 FA33 0001 FA00 0001 E2FF F8FF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 EBFF EFFF 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 F4FF E6FF 00A2 0001"
+	$"FAFF 0001 FACC 0001 FA99 0001 FA66 0001"
+	$"FA33 0001 FA00 0001 FAFF 0001 FACC 0001"
+	$"FA99 0001 FA66 0001 FA33 0001 FA00 0001"
+	$"E2FF F8FF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 EBFF EFFF 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 F4FF E6FF"
+	$"00A2 0001 FAFF 0001 FACC 0001 FA99 0001"
+	$"FA66 0001 FA33 0001 FA00 0001 FAFF 0001"
+	$"FACC 0001 FA99 0001 FA66 0001 FA33 0001"
+	$"FA00 0001 E2FF F8FF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 EBFF EFFF 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"F4FF E6FF 00A2 0001 FAFF 0001 FACC 0001"
+	$"FA99 0001 FA66 0001 FA33 0001 FA00 0001"
+	$"FAFF 0001 FACC 0001 FA99 0001 FA66 0001"
+	$"FA33 0001 FA00 0001 E2FF F8FF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 EBFF"
+	$"EFFF 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 F4FF E6FF 00A2 0001 FAFF 0001"
+	$"FACC 0001 FA99 0001 FA66 0001 FA33 0001"
+	$"FA00 0001 FAFF 0001 FACC 0001 FA99 0001"
+	$"FA66 0001 FA33 0001 FA00 0001 E2FF F8FF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 EBFF EFFF 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 F4FF E6FF 00A2 0001"
+	$"FAFF 0001 FACC 0001 FA99 0001 FA66 0001"
+	$"FA33 0001 FA00 0001 FAFF 0001 FACC 0001"
+	$"FA99 0001 FA66 0001 FA33 0001 FA00 0001"
+	$"E2FF F8FF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 EBFF EFFF 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 FACC 0000"
+	$"FACC 0000 FACC 0000 FACC 0000 F4FF E6FF"
+	$"0012 A001 E2FF F8FF A000 EBFF EFFF A000"
+	$"F4FF E6FF 00A2 0001 FAFF 0001 FACC 0001"
+	$"FA99 0001 FA66 0001 FA33 0001 FA00 0001"
+	$"FAFF 0001 FACC 0001 FA99 0001 FA66 0001"
+	$"FA33 0001 FA00 0001 E2FF F8FF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 EBFF"
+	$"EFFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 F4FF E6FF 00A2 0001 FAFF 0001"
+	$"FACC 0001 FA99 0001 FA66 0001 FA33 0001"
+	$"FA00 0001 FAFF 0001 FACC 0001 FA99 0001"
+	$"FA66 0001 FA33 0001 FA00 0001 E2FF F8FF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 EBFF EFFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 F4FF E6FF 00A2 0001"
+	$"FAFF 0001 FACC 0001 FA99 0001 FA66 0001"
+	$"FA33 0001 FA00 0001 FAFF 0001 FACC 0001"
+	$"FA99 0001 FA66 0001 FA33 0001 FA00 0001"
+	$"E2FF F8FF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 EBFF EFFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 F4FF E6FF"
+	$"00A2 0001 FAFF 0001 FACC 0001 FA99 0001"
+	$"FA66 0001 FA33 0001 FA00 0001 FAFF 0001"
+	$"FACC 0001 FA99 0001 FA66 0001 FA33 0001"
+	$"FA00 0001 E2FF F8FF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 EBFF EFFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"F4FF E6FF 00A2 0001 FAFF 0001 FACC 0001"
+	$"FA99 0001 FA66 0001 FA33 0001 FA00 0001"
+	$"FAFF 0001 FACC 0001 FA99 0001 FA66 0001"
+	$"FA33 0001 FA00 0001 E2FF F8FF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 EBFF"
+	$"EFFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 F4FF E6FF 00A2 0001 FAFF 0001"
+	$"FACC 0001 FA99 0001 FA66 0001 FA33 0001"
+	$"FA00 0001 FAFF 0001 FACC 0001 FA99 0001"
+	$"FA66 0001 FA33 0001 FA00 0001 E2FF F8FF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 EBFF EFFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 F4FF E6FF 00A2 0001"
+	$"FAFF 0001 FACC 0001 FA99 0001 FA66 0001"
+	$"FA33 0001 FA00 0001 FAFF 0001 FACC 0001"
+	$"FA99 0001 FA66 0001 FA33 0001 FA00 0001"
+	$"E2FF F8FF 0000 FAFF 0000 FAFF 0000 FAFF"
+	$"0000 FAFF 0000 FAFF 0000 FAFF 0000 FA66"
+	$"0000 FA66 0000 FA66 0000 FA66 0000 FA66"
+	$"0000 FA66 0000 EBFF EFFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 FAFF 0000"
+	$"FAFF 0000 FAFF 0000 FAFF 0000 F4FF E6FF"
+	$"0012 A001 E2FF F8FF A000 EBFF EFFF A000"
+	$"F4FF E6FF 0008 81FF 81FF 81FF E6FF 0008"
+	$"81FF 81FF 81FF E6FF 0008 81FF 81FF 81FF"
+	$"E6FF 0008 81FF 81FF 81FF E6FF 0008 81FF"
+	$"81FF 81FF E6FF 0008 81FF 81FF 81FF E6FF"
+	$"0008 81FF 81FF 81FF E6FF 000A 8101 F801"
+	$"8A00 8100 E600 00B7 0001 FADD 0001 FA99"
+	$"0001 FAFF 0001 FA99 0001 FAFF 0001 FA33"
+	$"0001 FA00 0001 FA33 0001 FA33 0001 FA99"
+	$"0001 FA00 0001 FA00 0001 FA33 0001 FACC"
+	$"0001 FA99 0001 FA66 0001 FA33 0001 F000"
+	$"FA66 0000 FA66 0000 FAFF 0000 FAFF 0000"
+	$"FABB 0000 FA99 0000 FA66 0000 FAFF 0000"
+	$"FA99 F000 FACC 0000 FB99 0199 00FA 6600"
+	$"00FA 33F7 00FA 6600 00FA CC00 00FA 99F8"
+	$"00FA 99F8 00FA 6600 00FA 6600 00FA FF00"
+	$"00FA FF00 00FA DD00 00FA 9900 00FC FFFF"
+	$"FF00 00FA FF00 00FA CC00 00FA 6600 0000"
+	$"B700 01FA DD00 01FA 9900 01FA FF00 01FA"
+	$"9900 01FA FF00 01FA 3300 01FA 0000 01FA"
+	$"3300 01FA 3300 01FA 9900 01FA 0000 01FA"
+	$"0000 01FA 3300 01FA CC00 01FA 9900 01FA"
+	$"6600 01FA 3300 01F0 00FA 6600 00FA 6600"
+	$"00FA FF00 00FA FF00 00FA BB00 00FA 9900"
+	$"00FA 6600 00FA FF00 00FA 99F0 00FA CC00"
+	$"00FB 9901 9900 FA66 0000 FA33 F700 FA66"
+	$"0000 FACC 0000 FA99 F800 FA99 F800 FA66"
+	$"0000 FA66 0000 FAFF 0000 FAFF 0000 FADD"
+	$"0000 FA99 0000 FCFF FFFF 0000 FAFF 0000"
+	$"FACC 0000 FA66 0000 00B7 0001 FADD 0001"
 	$"FA99 0001 FAFF 0001 FA99 0001 FAFF 0001"
 	$"FA33 0001 FA00 0001 FA33 0001 FA33 0001"
 	$"FA99 0001 FA00 0001 FA00 0001 FA33 0001"
-	$"FACC 0001 FA99 0001 FA66 0001 FA33 0101"
-	$"00FA 11F8 00FA 11F8 00F2 FFF0 00FB 6601"
-	$"6600 FA66 0000 FAFF 0000 FAFF 0000 FABB"
-	$"0000 FA99 0000 FA66 0000 FAFF 0000 FA99"
-	$"F000 FACC 0000 FA99 0000 FA66 0000 FA33"
-	$"FF00 FA11 0000 FC11 FF11 F000 F2FF F800"
+	$"FACC 0001 FA99 0001 FA66 0001 FA33 0001"
+	$"F000 FA66 0000 FA66 0000 FAFF 0000 FAFF"
+	$"0000 FABB 0000 FA99 0000 FA66 0000 FAFF"
+	$"0000 FA99 F000 FACC 0000 FB99 0199 00FA"
+	$"6600 00FA 33F7 00FA 6600 00FA CC00 00FA"
+	$"99F8 00FA 99F8 00FA 6600 00FA 6600 00FA"
+	$"FF00 00FA FF00 00FA DD00 00FA 9900 00FC"
+	$"FFFF FF00 00FA FF00 00FA CC00 00FA 6600"
+	$"0000 B700 01FA DD00 01FA 9900 01FA FF00"
+	$"01FA 9900 01FA FF00 01FA 3300 01FA 0000"
+	$"01FA 3300 01FA 3300 01FA 9900 01FA 0000"
+	$"01FA 0000 01FA 3300 01FA CC00 01FA 9900"
+	$"01FA 6600 01FA 3300 01F0 00FA 6600 00FA"
+	$"6600 00FA FF00 00FA FF00 00FA BB00 00FA"
+	$"9900 00FA 6600 00FA FF00 00FA 99F0 00FA"
+	$"CC00 00FB 9901 9900 FA66 0000 FA33 F700"
 	$"FA66 0000 FACC 0000 FA99 F800 FA99 F800"
 	$"FA66 0000 FA66 0000 FAFF 0000 FAFF 0000"
-	$"FCDD FFDD 0000 FA99 0000 FAFF 0000 FAFF"
-	$"0000 FACC 0000 FA66 0000 00E4 0001 FA11"
-	$"0001 FA00 0001 FA00 0001 FA11 0001 F2FF"
-	$"0001 FADD 0001 FA99 0001 FAFF 0001 FA99"
-	$"0001 FAFF 0001 FA33 0001 FA00 0001 FA33"
-	$"0001 FA33 0001 FA99 0001 FA00 0001 FA00"
-	$"0001 FA33 0001 FACC 0001 FA99 0001 FA66"
-	$"0001 FA33 0101 00FA 11F8 00FA 11F8 00F2"
-	$"FFF0 00FB 6601 6600 FA66 0000 FAFF 0000"
-	$"FAFF 0000 FABB 0000 FA99 0000 FA66 0000"
-	$"FAFF 0000 FA99 F000 FACC 0000 FA99 0000"
-	$"FA66 0000 FA33 FF00 FA11 0000 FC11 FF11"
-	$"F000 F2FF F800 FA66 0000 FACC 0000 FA99"
-	$"F800 FA99 F800 FA66 0000 FA66 0000 FAFF"
-	$"0000 FAFF 0000 FCDD FFDD 0000 FA99 0000"
-	$"FAFF 0000 FAFF 0000 FACC 0000 FA66 0000"
-	$"00E4 0001 FA11 0001 FA00 0001 FA00 0001"
-	$"FA11 0001 F2FF 0001 FADD 0001 FA99 0001"
-	$"FAFF 0001 FA99 0001 FAFF 0001 FA33 0001"
-	$"FA00 0001 FA33 0001 FA33 0001 FA99 0001"
-	$"FA00 0001 FA00 0001 FA33 0001 FACC 0001"
-	$"FA99 0001 FA66 0001 FA33 0101 00FA 11F8"
-	$"00FA 11F8 00F2 FFF0 00FB 6601 6600 FA66"
-	$"0000 FAFF 0000 FAFF 0000 FABB 0000 FA99"
-	$"0000 FA66 0000 FAFF 0000 FA99 F000 FACC"
-	$"0000 FA99 0000 FA66 0000 FA33 FF00 FA11"
-	$"0000 FC11 FF11 F000 F2FF F800 FA66 0000"
-	$"FACC 0000 FA99 F800 FA99 F800 FA66 0000"
-	$"FA66 0000 FAFF 0000 FAFF 0000 FCDD FFDD"
-	$"0000 FA99 0000 FAFF 0000 FAFF 0000 FACC"
-	$"0000 FA66 0000 00E4 0001 FA11 0001 FA00"
-	$"0001 FA00 0001 FA11 0001 F2FF 0001 FADD"
+	$"FADD 0000 FA99 0000 FCFF FFFF 0000 FAFF"
+	$"0000 FACC 0000 FA66 0000 00B7 0001 FADD"
 	$"0001 FA99 0001 FAFF 0001 FA99 0001 FAFF"
 	$"0001 FA33 0001 FA00 0001 FA33 0001 FA33"
 	$"0001 FA99 0001 FA00 0001 FA00 0001 FA33"
 	$"0001 FACC 0001 FA99 0001 FA66 0001 FA33"
-	$"0101 00FA 11F8 00FA 11F8 00F2 FFF0 00FB"
-	$"6601 6600 FA66 0000 FAFF 0000 FAFF 0000"
-	$"FABB 0000 FA99 0000 FA66 0000 FAFF 0000"
-	$"FA99 F000 FACC 0000 FA99 0000 FA66 0000"
-	$"FA33 FF00 FA11 0000 FC11 FF11 F000 F2FF"
-	$"F800 FA66 0000 FACC 0000 FA99 F800 FA99"
+	$"0001 F000 FA66 0000 FA66 0000 FAFF 0000"
+	$"FAFF 0000 FABB 0000 FA99 0000 FA66 0000"
+	$"FAFF 0000 FA99 F000 FACC 0000 FB99 0199"
+	$"00FA 6600 00FA 33F7 00FA 6600 00FA CC00"
+	$"00FA 99F8 00FA 99F8 00FA 6600 00FA 6600"
+	$"00FA FF00 00FA FF00 00FA DD00 00FA 9900"
+	$"00FC FFFF FF00 00FA FF00 00FA CC00 00FA"
+	$"6600 0000 B700 01FA DD00 01FA 9900 01FA"
+	$"FF00 01FA 9900 01FA FF00 01FA 3300 01FA"
+	$"0000 01FA 3300 01FA 3300 01FA 9900 01FA"
+	$"0000 01FA 0000 01FA 3300 01FA CC00 01FA"
+	$"9900 01FA 6600 01FA 3300 01F0 00FA 6600"
+	$"00FA 6600 00FA FF00 00FA FF00 00FA BB00"
+	$"00FA 9900 00FA 6600 00FA FF00 00FA 99F0"
+	$"00FA CC00 00FB 9901 9900 FA66 0000 FA33"
+	$"F700 FA66 0000 FACC 0000 FA99 F800 FA99"
 	$"F800 FA66 0000 FA66 0000 FAFF 0000 FAFF"
-	$"0000 FCDD FFDD 0000 FA99 0000 FAFF 0000"
-	$"FAFF 0000 FACC 0000 FA66 0000 00E4 0001"
-	$"FA11 0001 FA00 0001 FA00 0001 FA11 0001"
-	$"F2FF 0001 FADD 0001 FA99 0001 FAFF 0001"
-	$"FA99 0001 FAFF 0001 FA33 0001 FA00 0001"
-	$"FA33 0001 FA33 0001 FA99 0001 FA00 0001"
-	$"FA00 0001 FA33 0001 FACC 0001 FA99 0001"
-	$"FA66 0001 FA33 0101 00FA 11F8 00FA 11F8"
-	$"00F2 FFF0 00FB 6601 6600 FA66 0000 FAFF"
+	$"0000 FADD 0000 FA99 0000 FCFF FFFF 0000"
+	$"FAFF 0000 FACC 0000 FA66 0000 00B7 0001"
+	$"FADD 0001 FA99 0001 FAFF 0001 FA99 0001"
+	$"FAFF 0001 FA33 0001 FA00 0001 FA33 0001"
+	$"FA33 0001 FA99 0001 FA00 0001 FA00 0001"
+	$"FA33 0001 FACC 0001 FA99 0001 FA66 0001"
+	$"FA33 0001 F000 FA66 0000 FA66 0000 FAFF"
 	$"0000 FAFF 0000 FABB 0000 FA99 0000 FA66"
-	$"0000 FAFF 0000 FA99 F000 FACC 0000 FA99"
-	$"0000 FA66 0000 FA33 FF00 FA11 0000 FC11"
-	$"FF11 F000 F2FF F800 FA66 0000 FACC 0000"
-	$"FA99 F800 FA99 F800 FA66 0000 FA66 0000"
-	$"FAFF 0000 FAFF 0000 FCDD FFDD 0000 FA99"
-	$"0000 FAFF 0000 FAFF 0000 FACC 0000 FA66"
-	$"0000 0018 E001 F2FF B101 C801 E000 F2FF"
-	$"EA00 8100 EE00 F2FF A300 D600 00E9 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 FA00 0001"
-	$"F2FF 0001 FAFF 0001 FACC 0001 FAFF 0001"
-	$"FAFF 0001 FAFF 0001 FAEE 0001 FADD 0001"
-	$"FACC 0001 FABB 0001 FAAA 0001 FA88 0001"
-	$"FA77 0001 FA55 0001 FA44 0001 FA22 0001"
-	$"FA11 0001 FA00 0001 E000 F2FF 0000 FA66"
-	$"0000 FA99 0000 FBCC 01CC 00FA FF00 00FA"
-	$"FF00 00FA EE00 00FA DD00 00FA CC00 00FA"
-	$"BB00 00FA AA00 00FA 8800 00FA 7700 00FA"
-	$"5500 00FA 4400 00FA 2200 00FA 11EA 00EE"
-	$"00F2 FF00 00FA 3300 00FA 6600 00FA 9900"
-	$"00FA CC00 00FA FF00 00FA EE00 00FA DD00"
-	$"00FA CC00 00FA BB00 00FA AA00 00FA 8800"
-	$"00FC 77FF 7700 00FA 5500 00FA 4400 00FA"
-	$"2200 00FA 11F8 0000 E900 01FA 0000 01FA"
-	$"0000 01FA 0000 01FA 0000 01F2 FF00 01FA"
-	$"FF00 01FA CC00 01FA FF00 01FA FF00 01FA"
-	$"FF00 01FA EE00 01FA DD00 01FA CC00 01FA"
-	$"BB00 01FA AA00 01FA 8800 01FA 7700 01FA"
-	$"5500 01FA 4400 01FA 2200 01FA 1100 01FA"
-	$"0000 01E0 00F2 FF00 00FA 6600 00FA 9900"
-	$"00FB CC01 CC00 FAFF 0000 FAFF 0000 FAEE"
-	$"0000 FADD 0000 FACC 0000 FABB 0000 FAAA"
-	$"0000 FA88 0000 FA77 0000 FA55 0000 FA44"
-	$"0000 FA22 0000 FA11 EA00 EE00 F2FF 0000"
-	$"FA33 0000 FA66 0000 FA99 0000 FACC 0000"
-	$"FAFF 0000 FAEE 0000 FADD 0000 FACC 0000"
-	$"FABB 0000 FAAA 0000 FA88 0000 FC77 FF77"
-	$"0000 FA55 0000 FA44 0000 FA22 0000 FA11"
-	$"F800 00E9 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 FA00 0001 F2FF 0001 FAFF 0001 FACC"
-	$"0001 FAFF 0001 FAFF 0001 FAFF 0001 FAEE"
-	$"0001 FADD 0001 FACC 0001 FABB 0001 FAAA"
-	$"0001 FA88 0001 FA77 0001 FA55 0001 FA44"
-	$"0001 FA22 0001 FA11 0001 FA00 0001 E000"
-	$"F2FF 0000 FA66 0000 FA99 0000 FBCC 01CC"
-	$"00FA FF00 00FA FF00 00FA EE00 00FA DD00"
-	$"00FA CC00 00FA BB00 00FA AA00 00FA 8800"
-	$"00FA 7700 00FA 5500 00FA 4400 00FA 2200"
-	$"00FA 11EA 00EE 00F2 FF00 00FA 3300 00FA"
-	$"6600 00FA 9900 00FA CC00 00FA FF00 00FA"
-	$"EE00 00FA DD00 00FA CC00 00FA BB00 00FA"
-	$"AA00 00FA 8800 00FC 77FF 7700 00FA 5500"
-	$"00FA 4400 00FA 2200 00FA 11F8 0000 E900"
-	$"01FA 0000 01FA 0000 01FA 0000 01FA 0000"
-	$"01F2 FF00 01FA FF00 01FA CC00 01FA FF00"
+	$"0000 FAFF 0000 FA99 F000 FACC 0000 FB99"
+	$"0199 00FA 6600 00FA 33F7 00FA 6600 00FA"
+	$"CC00 00FA 99F8 00FA 99F8 00FA 6600 00FA"
+	$"6600 00FA FF00 00FA FF00 00FA DD00 00FA"
+	$"9900 00FC FFFF FF00 00FA FF00 00FA CC00"
+	$"00FA 6600 0000 0A81 01F8 018A 0081 00E6"
+	$"0000 CA00 01FA FF00 01FA CC00 01FA FF00"
 	$"01FA FF00 01FA FF00 01FA EE00 01FA DD00"
 	$"01FA CC00 01FA BB00 01FA AA00 01FA 8800"
 	$"01FA 7700 01FA 5500 01FA 4400 01FA 2200"
-	$"01FA 1100 01FA 0000 01E0 00F2 FF00 00FA"
-	$"6600 00FA 9900 00FB CC01 CC00 FAFF 0000"
-	$"FAFF 0000 FAEE 0000 FADD 0000 FACC 0000"
-	$"FABB 0000 FAAA 0000 FA88 0000 FA77 0000"
-	$"FA55 0000 FA44 0000 FA22 0000 FA11 EA00"
-	$"EE00 F2FF 0000 FA33 0000 FA66 0000 FA99"
-	$"0000 FACC 0000 FAFF 0000 FAEE 0000 FADD"
-	$"0000 FACC 0000 FABB 0000 FAAA 0000 FA88"
-	$"0000 FC77 FF77 0000 FA55 0000 FA44 0000"
-	$"FA22 0000 FA11 F800 00E9 0001 FA00 0001"
-	$"FA00 0001 FA00 0001 FA00 0001 F2FF 0001"
-	$"FAFF 0001 FACC 0001 FAFF 0001 FAFF 0001"
-	$"FAFF 0001 FAEE 0001 FADD 0001 FACC 0001"
-	$"FABB 0001 FAAA 0001 FA88 0001 FA77 0001"
-	$"FA55 0001 FA44 0001 FA22 0001 FA11 0001"
-	$"FA00 0001 E000 F2FF 0000 FA66 0000 FA99"
-	$"0000 FBCC 01CC 00FA FF00 00FA FF00 00FA"
+	$"01FA 1100 01FA 0001 0100 FA66 0000 FA99"
+	$"0000 FACC 0000 FAFF 0000 FAFF 0000 FAEE"
+	$"0000 FADD 0000 FACC 0000 FABB 0000 FAAA"
+	$"0000 FA88 0000 FA77 0000 FA55 0000 FA44"
+	$"0000 FB22 0122 00FA 11F7 00FA 3300 00FA"
+	$"6600 00FA 9900 00FA CC00 00FA FF00 00FA"
 	$"EE00 00FA DD00 00FA CC00 00FA BB00 00FA"
-	$"AA00 00FA 8800 00FA 7700 00FA 5500 00FA"
-	$"4400 00FA 2200 00FA 11EA 00EE 00F2 FF00"
-	$"00FA 3300 00FA 6600 00FA 9900 00FA CC00"
-	$"00FA FF00 00FA EE00 00FA DD00 00FA CC00"
-	$"00FA BB00 00FA AA00 00FA 8800 00FC 77FF"
-	$"7700 00FA 5500 00FA 4400 00FA 2200 00FA"
-	$"11F8 0000 E900 01FA 0000 01FA 0000 01FA"
-	$"0000 01FA 0000 01F2 FF00 01FA FF00 01FA"
-	$"CC00 01FA FF00 01FA FF00 01FA FF00 01FA"
-	$"EE00 01FA DD00 01FA CC00 01FA BB00 01FA"
-	$"AA00 01FA 8800 01FA 7700 01FA 5500 01FA"
-	$"4400 01FA 2200 01FA 1100 01FA 0000 01E0"
-	$"00F2 FF00 00FA 6600 00FA 9900 00FB CC01"
-	$"CC00 FAFF 0000 FAFF 0000 FAEE 0000 FADD"
+	$"AA00 00FA 8800 00FA 7700 00FA 5500 00FC"
+	$"44FF 4400 00FA 2200 00FA 11F8 0000 CA00"
+	$"01FA FF00 01FA CC00 01FA FF00 01FA FF00"
+	$"01FA FF00 01FA EE00 01FA DD00 01FA CC00"
+	$"01FA BB00 01FA AA00 01FA 8800 01FA 7700"
+	$"01FA 5500 01FA 4400 01FA 2200 01FA 1100"
+	$"01FA 0001 0100 FA66 0000 FA99 0000 FACC"
+	$"0000 FAFF 0000 FAFF 0000 FAEE 0000 FADD"
 	$"0000 FACC 0000 FABB 0000 FAAA 0000 FA88"
-	$"0000 FA77 0000 FA55 0000 FA44 0000 FA22"
-	$"0000 FA11 EA00 EE00 F2FF 0000 FA33 0000"
-	$"FA66 0000 FA99 0000 FACC 0000 FAFF 0000"
-	$"FAEE 0000 FADD 0000 FACC 0000 FABB 0000"
-	$"FAAA 0000 FA88 0000 FC77 FF77 0000 FA55"
-	$"0000 FA44 0000 FA22 0000 FA11 F800 00E9"
-	$"0001 FA00 0001 FA00 0001 FA00 0001 FA00"
-	$"0001 F2FF 0001 FAFF 0001 FACC 0001 FAFF"
-	$"0001 FAFF 0001 FAFF 0001 FAEE 0001 FADD"
-	$"0001 FACC 0001 FABB 0001 FAAA 0001 FA88"
-	$"0001 FA77 0001 FA55 0001 FA44 0001 FA22"
-	$"0001 FA11 0001 FA00 0001 E000 F2FF 0000"
-	$"FA66 0000 FA99 0000 FBCC 01CC 00FA FF00"
-	$"00FA FF00 00FA EE00 00FA DD00 00FA CC00"
-	$"00FA BB00 00FA AA00 00FA 8800 00FA 7700"
-	$"00FA 5500 00FA 4400 00FA 2200 00FA 11EA"
-	$"00EE 00F2 FF00 00FA 3300 00FA 6600 00FA"
+	$"0000 FA77 0000 FA55 0000 FA44 0000 FB22"
+	$"0122 00FA 11F7 00FA 3300 00FA 6600 00FA"
 	$"9900 00FA CC00 00FA FF00 00FA EE00 00FA"
 	$"DD00 00FA CC00 00FA BB00 00FA AA00 00FA"
-	$"8800 00FC 77FF 7700 00FA 5500 00FA 4400"
-	$"00FA 2200 00FA 11F8 0000 18E0 01F2 FFB1"
-	$"01C8 01E0 00F2 FFEA 0081 00EE 00F2 FFA3"
-	$"00D6 0000 00FF"
+	$"8800 00FA 7700 00FA 5500 00FC 44FF 4400"
+	$"00FA 2200 00FA 11F8 0000 CA00 01FA FF00"
+	$"01FA CC00 01FA FF00 01FA FF00 01FA FF00"
+	$"01FA EE00 01FA DD00 01FA CC00 01FA BB00"
+	$"01FA AA00 01FA 8800 01FA 7700 01FA 5500"
+	$"01FA 4400 01FA 2200 01FA 1100 01FA 0001"
+	$"0100 FA66 0000 FA99 0000 FACC 0000 FAFF"
+	$"0000 FAFF 0000 FAEE 0000 FADD 0000 FACC"
+	$"0000 FABB 0000 FAAA 0000 FA88 0000 FA77"
+	$"0000 FA55 0000 FA44 0000 FB22 0122 00FA"
+	$"11F7 00FA 3300 00FA 6600 00FA 9900 00FA"
+	$"CC00 00FA FF00 00FA EE00 00FA DD00 00FA"
+	$"CC00 00FA BB00 00FA AA00 00FA 8800 00FA"
+	$"7700 00FA 5500 00FC 44FF 4400 00FA 2200"
+	$"00FA 11F8 0000 CA00 01FA FF00 01FA CC00"
+	$"01FA FF00 01FA FF00 01FA FF00 01FA EE00"
+	$"01FA DD00 01FA CC00 01FA BB00 01FA AA00"
+	$"01FA 8800 01FA 7700 01FA 5500 01FA 4400"
+	$"01FA 2200 01FA 1100 01FA 0001 0100 FA66"
+	$"0000 FA99 0000 FACC 0000 FAFF 0000 FAFF"
+	$"0000 FAEE 0000 FADD 0000 FACC 0000 FABB"
+	$"0000 FAAA 0000 FA88 0000 FA77 0000 FA55"
+	$"0000 FA44 0000 FB22 0122 00FA 11F7 00FA"
+	$"3300 00FA 6600 00FA 9900 00FA CC00 00FA"
+	$"FF00 00FA EE00 00FA DD00 00FA CC00 00FA"
+	$"BB00 00FA AA00 00FA 8800 00FA 7700 00FA"
+	$"5500 00FC 44FF 4400 00FA 2200 00FA 11F8"
+	$"0000 CA00 01FA FF00 01FA CC00 01FA FF00"
+	$"01FA FF00 01FA FF00 01FA EE00 01FA DD00"
+	$"01FA CC00 01FA BB00 01FA AA00 01FA 8800"
+	$"01FA 7700 01FA 5500 01FA 4400 01FA 2200"
+	$"01FA 1100 01FA 0001 0100 FA66 0000 FA99"
+	$"0000 FACC 0000 FAFF 0000 FAFF 0000 FAEE"
+	$"0000 FADD 0000 FACC 0000 FABB 0000 FAAA"
+	$"0000 FA88 0000 FA77 0000 FA55 0000 FA44"
+	$"0000 FB22 0122 00FA 11F7 00FA 3300 00FA"
+	$"6600 00FA 9900 00FA CC00 00FA FF00 00FA"
+	$"EE00 00FA DD00 00FA CC00 00FA BB00 00FA"
+	$"AA00 00FA 8800 00FA 7700 00FA 5500 00FC"
+	$"44FF 4400 00FA 2200 00FA 11F8 0000 CA00"
+	$"01FA FF00 01FA CC00 01FA FF00 01FA FF00"
+	$"01FA FF00 01FA EE00 01FA DD00 01FA CC00"
+	$"01FA BB00 01FA AA00 01FA 8800 01FA 7700"
+	$"01FA 5500 01FA 4400 01FA 2200 01FA 1100"
+	$"01FA 0001 0100 FA66 0000 FA99 0000 FACC"
+	$"0000 FAFF 0000 FAFF 0000 FAEE 0000 FADD"
+	$"0000 FACC 0000 FABB 0000 FAAA 0000 FA88"
+	$"0000 FA77 0000 FA55 0000 FA44 0000 FB22"
+	$"0122 00FA 11F7 00FA 3300 00FA 6600 00FA"
+	$"9900 00FA CC00 00FA FF00 00FA EE00 00FA"
+	$"DD00 00FA CC00 00FA BB00 00FA AA00 00FA"
+	$"8800 00FA 7700 00FA 5500 00FC 44FF 4400"
+	$"00FA 2200 00FA 11F8 0000 CA00 01FA FF00"
+	$"01FA CC00 01FA FF00 01FA FF00 01FA FF00"
+	$"01FA EE00 01FA DD00 01FA CC00 01FA BB00"
+	$"01FA AA00 01FA 8800 01FA 7700 01FA 5500"
+	$"01FA 4400 01FA 2200 01FA 1100 01FA 0001"
+	$"0100 FA66 0000 FA99 0000 FACC 0000 FAFF"
+	$"0000 FAFF 0000 FAEE 0000 FADD 0000 FACC"
+	$"0000 FABB 0000 FAAA 0000 FA88 0000 FA77"
+	$"0000 FA55 0000 FA44 0000 FB22 0122 00FA"
+	$"11F7 00FA 3300 00FA 6600 00FA 9900 00FA"
+	$"CC00 00FA FF00 00FA EE00 00FA DD00 00FA"
+	$"CC00 00FA BB00 00FA AA00 00FA 8800 00FA"
+	$"7700 00FA 5500 00FC 44FF 4400 00FA 2200"
+	$"00FA 11F8 0000 0A81 01F8 018A 0081 00E6"
+	$"0000 00FF"
 };
 
 resource 'PICT' (2051, "Graycale Picker") {
@@ -6191,7 +5363,7 @@ resource 'PICT' (2055, "Windows 8-bit Picker") {
 };
 
 resource 'STR#' (200, "Basic Strings", purgeable) {
-	{	/* array StringArray: 15 elements */
+	{	/* array StringArray: 14 elements */
 		/* [1] */
 		"Untitled",
 		/* [2] */
@@ -6213,31 +5385,25 @@ resource 'STR#' (200, "Basic Strings", purgeable) {
 		/* [7] */
 		"Generate Mask",
 		/* [8] */
-		"The file <file name> already has informa"
-		"tion in its data fork. Saving an icon in"
-		"to it will overwrite it. Do you wish to "
-		"continue or to select another file to sa"
-		"ve into?",
-		/* [9] */
-		"Choose Another File",
-		/* [10] */
 		"Click to choose a shortcut",
-		/* [11] */
+		/* [9] */
 		"Click to choose an external editor",
-		/* [12] */
+		/* [10] */
 		"Iconographer Support",
-		/* [13] */
+		/* [11] */
 		"The folder “Iconographer Support” could "
 		"not be found. It has been recreated, but"
 		" certain features such as the help will "
 		"not be available until Iconographer is r"
 		"einstalled.",
-		/* [14] */
+		/* [12] */
 		"An external edtor has not been selected."
 		" Please choose one in the preferences di"
 		"alog.",
-		/* [15] */
-		"Open Preferences"
+		/* [13] */
+		"Open Preferences",
+		/* [14] */
+		"icon"
 	}
 };
 
@@ -6284,288 +5450,6 @@ resource 'WIND' (200, purgeable) {
 	noAutoCenter
 };
 
-resource 'cctb' (200) {
-	{	/* array ColorSpec: 4 elements */
-		/* [1] */
-		cFrameColor, 0, 0, 0,
-		/* [2] */
-		cBodyColor, 65535, 65535, 65535,
-		/* [3] */
-		cTextColor, 0, 0, 0,
-		/* [4] */
-		cElevatorColor, 65535, 65535, 65535
-	}
-};
-
-resource 'cctb' (201) {
-	{	/* array ColorSpec: 4 elements */
-		/* [1] */
-		cFrameColor, 0, 0, 0,
-		/* [2] */
-		cBodyColor, 65535, 65535, 65535,
-		/* [3] */
-		cTextColor, 0, 0, 0,
-		/* [4] */
-		cElevatorColor, 65535, 65535, 65535
-	}
-};
-
-resource 'cctb' (202) {
-	{	/* array ColorSpec: 4 elements */
-		/* [1] */
-		cFrameColor, 0, 0, 0,
-		/* [2] */
-		cBodyColor, 65535, 65535, 65535,
-		/* [3] */
-		cTextColor, 0, 0, 0,
-		/* [4] */
-		cElevatorColor, 65535, 65535, 65535
-	}
-};
-
-resource 'cctb' (203) {
-	{	/* array ColorSpec: 4 elements */
-		/* [1] */
-		cFrameColor, 0, 0, 0,
-		/* [2] */
-		cBodyColor, 65535, 65535, 65535,
-		/* [3] */
-		cTextColor, 0, 0, 0,
-		/* [4] */
-		cElevatorColor, 65535, 65535, 65535
-	}
-};
-
-resource 'cctb' (1003) {
-	{	/* array ColorSpec: 4 elements */
-		/* [1] */
-		cFrameColor, 0, 0, 0,
-		/* [2] */
-		cBodyColor, 65535, 65535, 65535,
-		/* [3] */
-		cTextColor, 0, 0, 0,
-		/* [4] */
-		cElevatorColor, 65535, 65535, 65535
-	}
-};
-
-resource 'cctb' (1008) {
-	{	/* array ColorSpec: 4 elements */
-		/* [1] */
-		cFrameColor, 0, 0, 0,
-		/* [2] */
-		cBodyColor, 65535, 65535, 65535,
-		/* [3] */
-		cTextColor, 0, 0, 0,
-		/* [4] */
-		cElevatorColor, 65535, 65535, 65535
-	}
-};
-
-resource 'cctb' (1009) {
-	{	/* array ColorSpec: 4 elements */
-		/* [1] */
-		cFrameColor, 0, 0, 0,
-		/* [2] */
-		cBodyColor, 65535, 65535, 65535,
-		/* [3] */
-		cTextColor, 0, 0, 0,
-		/* [4] */
-		cElevatorColor, 65535, 65535, 65535
-	}
-};
-
-resource 'cctb' (1011) {
-	{	/* array ColorSpec: 4 elements */
-		/* [1] */
-		cFrameColor, 0, 0, 0,
-		/* [2] */
-		cBodyColor, 65535, 65535, 65535,
-		/* [3] */
-		cTextColor, 0, 0, 0,
-		/* [4] */
-		cElevatorColor, 65535, 65535, 65535
-	}
-};
-
-resource 'cctb' (1012) {
-	{	/* array ColorSpec: 4 elements */
-		/* [1] */
-		cFrameColor, 0, 0, 0,
-		/* [2] */
-		cBodyColor, 65535, 65535, 65535,
-		/* [3] */
-		cTextColor, 0, 0, 0,
-		/* [4] */
-		cElevatorColor, 65535, 65535, 65535
-	}
-};
-
-resource 'cctb' (1013) {
-	{	/* array ColorSpec: 4 elements */
-		/* [1] */
-		cFrameColor, 0, 0, 0,
-		/* [2] */
-		cBodyColor, 65535, 65535, 65535,
-		/* [3] */
-		cTextColor, 0, 0, 0,
-		/* [4] */
-		cElevatorColor, 65535, 65535, 65535
-	}
-};
-
-resource 'cctb' (1019) {
-	{	/* array ColorSpec: 4 elements */
-		/* [1] */
-		cFrameColor, 0, 0, 0,
-		/* [2] */
-		cBodyColor, 65535, 65535, 65535,
-		/* [3] */
-		cTextColor, 0, 0, 0,
-		/* [4] */
-		cElevatorColor, 65535, 65535, 65535
-	}
-};
-
-resource 'cctb' (1410) {
-	{	/* array ColorSpec: 4 elements */
-		/* [1] */
-		cFrameColor, 0, 0, 0,
-		/* [2] */
-		cBodyColor, 65535, 65535, 65535,
-		/* [3] */
-		cTextColor, 0, 0, 0,
-		/* [4] */
-		cElevatorColor, 65535, 65535, 65535
-	}
-};
-
-resource 'dctb' (1000) {
-	{	/* array ColorSpec: 5 elements */
-		/* [1] */
-		wContentColor, 65535, 65535, 65535,
-		/* [2] */
-		wFrameColor, 0, 0, 0,
-		/* [3] */
-		wTextColor, 0, 0, 0,
-		/* [4] */
-		wHiliteColor, 0, 0, 0,
-		/* [5] */
-		wTitleBarColor, 65535, 65535, 65535
-	}
-};
-
-resource 'dctb' (1002) {
-	{	/* array ColorSpec: 5 elements */
-		/* [1] */
-		wContentColor, 65535, 65535, 65535,
-		/* [2] */
-		wFrameColor, 0, 0, 0,
-		/* [3] */
-		wTextColor, 0, 0, 0,
-		/* [4] */
-		wHiliteColor, 0, 0, 0,
-		/* [5] */
-		wTitleBarColor, 65535, 65535, 65535
-	}
-};
-
-resource 'dctb' (1003) {
-	{	/* array ColorSpec: 5 elements */
-		/* [1] */
-		wContentColor, 65535, 65535, 65535,
-		/* [2] */
-		wFrameColor, 0, 0, 0,
-		/* [3] */
-		wTextColor, 0, 0, 0,
-		/* [4] */
-		wHiliteColor, 0, 0, 0,
-		/* [5] */
-		wTitleBarColor, 65535, 65535, 65535
-	}
-};
-
-resource 'dctb' (1010) {
-	{	/* array ColorSpec: 5 elements */
-		/* [1] */
-		wContentColor, 65535, 65535, 65535,
-		/* [2] */
-		wFrameColor, 0, 0, 0,
-		/* [3] */
-		wTextColor, 0, 0, 0,
-		/* [4] */
-		wHiliteColor, 0, 0, 0,
-		/* [5] */
-		wTitleBarColor, 65535, 65535, 65535
-	}
-};
-
-resource 'dctb' (1011) {
-	{	/* array ColorSpec: 5 elements */
-		/* [1] */
-		wContentColor, 65535, 65535, 65535,
-		/* [2] */
-		wFrameColor, 0, 0, 0,
-		/* [3] */
-		wTextColor, 0, 0, 0,
-		/* [4] */
-		wHiliteColor, 0, 0, 0,
-		/* [5] */
-		wTitleBarColor, 65535, 65535, 65535
-	}
-};
-
-resource 'dctb' (1012) {
-	{	/* array ColorSpec: 5 elements */
-		/* [1] */
-		wContentColor, 65535, 65535, 65535,
-		/* [2] */
-		wFrameColor, 0, 0, 0,
-		/* [3] */
-		wTextColor, 0, 0, 0,
-		/* [4] */
-		wHiliteColor, 0, 0, 0,
-		/* [5] */
-		wTitleBarColor, 65535, 65535, 65535
-	}
-};
-
-resource 'dctb' (1410) {
-	{	/* array ColorSpec: 5 elements */
-		/* [1] */
-		wContentColor, 65535, 65535, 65535,
-		/* [2] */
-		wFrameColor, 0, 0, 0,
-		/* [3] */
-		wTextColor, 0, 0, 0,
-		/* [4] */
-		wHiliteColor, 0, 0, 0,
-		/* [5] */
-		wTitleBarColor, 65535, 65535, 65535
-	}
-};
-
-resource 'dctb' (9999) {
-	{	/* array ColorSpec: 5 elements */
-		/* [1] */
-		wContentColor, 65535, 65535, 65535,
-		/* [2] */
-		wFrameColor, 0, 0, 0,
-		/* [3] */
-		wTextColor, 0, 0, 0,
-		/* [4] */
-		wHiliteColor, 0, 0, 0,
-		/* [5] */
-		wTitleBarColor, 65535, 65535, 65535
-	}
-};
-
-resource 'dlgx' (1000) {
-	versionZero {
-		15
-	}
-};
-
 resource 'dlgx' (1002) {
 	versionZero {
 		15
@@ -6573,12 +5457,6 @@ resource 'dlgx' (1002) {
 };
 
 resource 'dlgx' (1003) {
-	versionZero {
-		15
-	}
-};
-
-resource 'dlgx' (1010) {
 	versionZero {
 		15
 	}
@@ -6596,59 +5474,6 @@ resource 'dlgx' (9999) {
 	}
 };
 
-data 'ictb' (1000) {
-	$"0000 0000 0000 0000 0028 0114 0007 013C"            /* .........(.....< */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0007 0150"            /* ...............P */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0028 0164 0028 018C 0028 01B4"            /* .....(.d.(.å.(.¥ */
-	$"0028 01DC 0028 0204 0000 0000 0007 022C"            /* .(.‹.(........., */
-	$"0007 0240 0005 0254 0005 0268 0005 027C"            /* ...@...T...h...| */
-	$"0005 0290 0007 02A4 0005 02B8 0005 02CC"            /* ...ê...§...∏...Ã */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0007 02E0 0007 02F4"            /* ...........‡...Ù */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0007 0308 0000 0000 000C 0000 0000 0000"            /* ................ */
-	$"FFFF FFFF FFFF 0000 0001 0000 0009 0000"            /* ˇˇˇˇˇˇ.......... */
-	$"0000 0000 FFFF FFFF FFFF 0000 0001 0000"            /* ....ˇˇˇˇˇˇ...... */
-	$"0009 0000 0000 0000 FFFF FFFF FFFF 0000"            /* ........ˇˇˇˇˇˇ.. */
-	$"0000 0000 0000 0000 0000 0000 FFFF FFFF"            /* ............ˇˇˇˇ */
-	$"FFFF 0000 0000 0000 0000 0003 0000 0000"            /* ˇˇ.............. */
-	$"0000 0000 0001 FFFF FFFF FFFF 0002 0000"            /* ......ˇˇˇˇˇˇ.... */
-	$"0000 0000 0003 FFFF FFFF FFFF 0000 0000"            /* ......ˇˇˇˇˇˇ.... */
-	$"0000 0003 0000 0000 0000 0000 0001 FFFF"            /* ..............ˇˇ */
-	$"FFFF FFFF 0002 0000 0000 0000 0003 FFFF"            /* ˇˇˇˇ..........ˇˇ */
-	$"FFFF FFFF 0000 0000 0000 0003 0000 0000"            /* ˇˇˇˇ............ */
-	$"0000 0000 0001 FFFF FFFF FFFF 0002 0000"            /* ......ˇˇˇˇˇˇ.... */
-	$"0000 0000 0003 FFFF FFFF FFFF 0000 0000"            /* ......ˇˇˇˇˇˇ.... */
-	$"0000 0003 0000 0000 0000 0000 0001 FFFF"            /* ..............ˇˇ */
-	$"FFFF FFFF 0002 0000 0000 0000 0003 FFFF"            /* ˇˇˇˇ..........ˇˇ */
-	$"FFFF FFFF 0000 0000 0000 0003 0000 0000"            /* ˇˇˇˇ............ */
-	$"0000 0000 0001 FFFF FFFF FFFF 0002 0000"            /* ......ˇˇˇˇˇˇ.... */
-	$"0000 0000 0003 FFFF FFFF FFFF 0001 0100"            /* ......ˇˇˇˇˇˇ.... */
-	$"0009 0000 0000 0000 FFFF FFFF FFFF 0000"            /* ........ˇˇˇˇˇˇ.. */
-	$"0001 0100 0009 0000 0000 0000 FFFF FFFF"            /* ............ˇˇˇˇ */
-	$"FFFF 0000 0001 0100 0009 0000 0000 0000"            /* ˇˇ.............. */
-	$"FFFF FFFF FFFF 0000 0001 0100 0009 0000"            /* ˇˇˇˇˇˇ.......... */
-	$"0000 0000 FFFF FFFF FFFF 0000 0001 0100"            /* ....ˇˇˇˇˇˇ...... */
-	$"0009 0000 0000 0000 FFFF FFFF FFFF 0000"            /* ........ˇˇˇˇˇˇ.. */
-	$"0001 0100 0009 0000 0000 0000 FFFF FFFF"            /* ............ˇˇˇˇ */
-	$"FFFF 0000 0001 0100 0009 0000 0000 0000"            /* ˇˇ.............. */
-	$"FFFF FFFF FFFF 0000 0001 0100 0009 0000"            /* ˇˇˇˇˇˇ.......... */
-	$"0000 0000 FFFF FFFF FFFF 0000 0001 0100"            /* ....ˇˇˇˇˇˇ...... */
-	$"0009 0000 0000 0000 FFFF FFFF FFFF 0000"            /* ........ˇˇˇˇˇˇ.. */
-	$"0000 0000 0000 0000 0000 0000 FFFF FFFF"            /* ............ˇˇˇˇ */
-	$"FFFF 0000 0000 0000 0000 0000 0000 0000"            /* ˇˇ.............. */
-	$"FFFF FFFF FFFF 0000 0000 0000 0000 0000"            /* ˇˇˇˇˇˇ.......... */
-	$"0000 0000 FFFF FFFF FFFF 0000"                      /* ....ˇˇˇˇˇˇ.. */
-};
-
 data 'ictb' (1002) {
 	$"0000 0000 0000 0000"                                /* ........ */
 };
@@ -6659,21 +5484,6 @@ data 'ictb' (1003) {
 	$"FFFF FFFF FFFF 0000"                                /* ˇˇˇˇˇˇ.. */
 };
 
-data 'ictb' (1010) {
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-};
-
-data 'ictb' (1011) {
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000"                      /* ............ */
-};
-
-data 'ictb' (1012) {
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000"                      /* ............ */
-};
-
 data 'ictb' (1410) {
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
@@ -6682,117 +5492,5 @@ data 'ictb' (1410) {
 
 data 'ictb' (9999) {
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-};
-
-resource 'mctb' (201) {
-	{	/* array MCTBArray: 1 elements */
-		/* [1] */
-		mctbLast, 0,
-		{	/* array: 4 elements */
-			/* [1] */
-			0, 0, 0,
-			/* [2] */
-			0, 0, 0,
-			/* [3] */
-			0, 0, 0,
-			/* [4] */
-			0, 0, 0
-		}
-	}
-};
-
-resource 'mctb' (1121) {
-	{	/* array MCTBArray: 1 elements */
-		/* [1] */
-		mctbLast, 0,
-		{	/* array: 4 elements */
-			/* [1] */
-			0, 0, 0,
-			/* [2] */
-			0, 0, 0,
-			/* [3] */
-			0, 0, 0,
-			/* [4] */
-			0, 0, 0
-		}
-	}
-};
-
-resource 'mctb' (1411) {
-	{	/* array MCTBArray: 1 elements */
-		/* [1] */
-		mctbLast, 0,
-		{	/* array: 4 elements */
-			/* [1] */
-			0, 0, 0,
-			/* [2] */
-			0, 0, 0,
-			/* [3] */
-			0, 0, 0,
-			/* [4] */
-			0, 0, 0
-		}
-	}
-};
-
-resource 'mctb' (1412) {
-	{	/* array MCTBArray: 1 elements */
-		/* [1] */
-		mctbLast, 0,
-		{	/* array: 4 elements */
-			/* [1] */
-			0, 0, 0,
-			/* [2] */
-			0, 0, 0,
-			/* [3] */
-			0, 0, 0,
-			/* [4] */
-			0, 0, 0
-		}
-	}
-};
-
-resource 'tab#' (1007, "Preferences Tabs") {
-	versionZero {
-		{	/* array TabInfo: 3 elements */
-			/* [1] */
-			0,
-			"General",
-			/* [2] */
-			0,
-			"Defaults",
-			/* [3] */
-			0,
-			"External Editing"
-		}
-	}
-};
-
-resource 'tab#' (1010, "Hue & Saturation Tabs") {
-	versionZero {
-		{	/* array TabInfo: 2 elements */
-			/* [1] */
-			0,
-			"Hue & Saturation",
-			/* [2] */
-			0,
-			"Brightness & Contrast"
-		}
-	}
-};
-
-resource 'wctb' (200) {
-	{	/* array ColorSpec: 5 elements */
-		/* [1] */
-		wContentColor, 65535, 65535, 65535,
-		/* [2] */
-		wFrameColor, 0, 0, 0,
-		/* [3] */
-		wTextColor, 0, 0, 0,
-		/* [4] */
-		wHiliteColor, 0, 0, 0,
-		/* [5] */
-		wTitleBarColor, 65535, 65535, 65535
-	}
 };
 

@@ -350,6 +350,7 @@ void DragPixMap(Rect dragSourceRect,
 	RgnHandle		dragRgn, tempRgn, maskRgn;
 	PicHandle		dragPic;
 	Point			offsetPt;
+	Str255			clippingName;
 	
 	NewDrag(&dragRef);
 	
@@ -376,8 +377,11 @@ void DragPixMap(Rect dragSourceRect,
 	
 	PixMapToPicture(dragContentsPix, dragRgn, &dragPic);
 	
+	GetIndString(clippingName, rBasicStrings, eIconClippingName);
+	
 	AddDragItemFlavor(dragRef, 0, 'PICT', *dragPic,  GetHandleSize((Handle)dragPic), 0);
 	AddDragItemFlavor(dragRef, 0, 'Icon', &dragType, sizeof(long), 0);
+	AddDragItemFlavor(dragRef, 0, kFlavorTypeClippingName, clippingName, clippingName[0] + 1, 0);
 	
 	offsetPt.h = dragSourceRect.left;
 	offsetPt.v = dragSourceRect.top;

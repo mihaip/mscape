@@ -2,18 +2,19 @@
 #include "icnsEditorClass.h"
 #include "MAlert.h"
 #include "iconBrowserClass.h"
+#include "AboutBox.h"
 
 const static int kPrefsSettingsPaneItems[] = {
 	iShowOnlyLoadedMembers, iCheckSync, iDither,
-	iStartupGroupBox, iStartupCreateNewEditor, iStartupOpenIcon, iStartupDoNothing,
-	iSaveGroupBox, iSaveDataAndResource, iSaveResource, iSaveData,
+	iStartupDivider, iStartupCreateNewEditor, iStartupOpenIcon, iStartupDoNothing,
 	iResetPaletteLocations,
-	iMembersPaletteBox, iPreviewFullSize, iPreviewScaled, iPreviewSizeSlider, iPreviewSizeField, iPreviewSizeLabel};
+	iMembersPaletteDivider, iPreviewFullSize, iPreviewScaled, iPreviewSizeSlider, iPreviewSizeField, iPreviewSizeLabel,
+	iMembersPaletteLabel, iStartupLabel, iSettingsLabel};
 const static int kPrefsSettingsPaneItemsCount = sizeof(kPrefsSettingsPaneItems)/sizeof(int);
 
 const static int kPrefsDefaultsPaneItems[] = {
 	iDefaultZoomLevelLabel, iDefaultZoomLevelField, iDefaultZoomLevelArrows,
-	iDefaultIconFormat,
+	iDefaultIconFormat, iDefaultIconFormatLabel,
 	
 	iMembersGroupBox,
 	iThumbnailBox,
@@ -22,17 +23,18 @@ const static int kPrefsDefaultsPaneItems[] = {
 	iSmallBox, iis32Box, iics8Box, iics4Box, iicsiBox, is8mkBox, iicsmBox,
 	iMiniBox, iicm8Box, iicm4Box, iicmiBox, iicmmBox,
 	
-	 iMembersDivider,
+	iMembersDivider,
 	iHintsLabel,
 	iIconLabel, i32BitIconLabel, i8BitIconLabel, i4BitIconLabel, i1BitIconLabel,
 	iMaskLabel, i8BitMaskLabel, i1BitMaskLabel};
 const static int kPrefsDefaultsPaneItemsCount = sizeof(kPrefsDefaultsPaneItems)/sizeof(int);
+const static int kPrefsDefaultsPaneItemsMembersGroupBoxIndex = 5;
 
 const static int kPrefsExternalEditorPaneItems[] = {
 	iExternalEditorLabel, iExternalEditorButton,
 	iEditorShortcutLabel, iEditorShortcutButton,
 	iExportIconAndMask,
-	iExportFormat};
+	iExportFormat, iExportFormatLabel};
 const static int kPrefsExternalEditorPaneItemsCount = sizeof(kPrefsExternalEditorPaneItems)/sizeof(int);
 
 
@@ -46,13 +48,22 @@ const static int kPrefsExternalEditorPaneItemsCount = sizeof(kPrefsExternalEdito
 
 editorStaticsClass::editorStaticsClass(void)
 {
-	;
+	loaded = false;
+	
+	firstTime = false;
 }
 
 void editorStaticsClass::Load()
 {	
+	if (loaded)
+		return;
+		
+	loaded = true;
+	
 	GetGWorld(&startupPort, &startupDevice); // these are the GWorld & GDevice for the
 											 // screen we start up with
+	
+	untitledCount = 0;
 
 	for (int i=0; i < kNoOfSelectionPatterns; i++)
 		GetIndPattern(&selectionPatterns[i], rSelectionPatterns, i+1);
@@ -96,16 +107,18 @@ void editorStaticsClass::Load()
 	
 	currentBalloon = -1;
 
-	colorsPalette = new ColorsPalette();
 	membersPalette = new MembersPalette();
+	colorsPalette = new ColorsPalette();
 	previewPalette = new PreviewPalette();
 	toolPalette = new ToolPalette();
 	
 	zoomMenu = GetMenu(mZoom);
 	browserTypeMenu = GetMenu(rIBTypeMenu);
-	
-	firstTime = false;
-	
+
+#if TARGET_API_MAC_CARBON
+	icnsClass::LoadInfoDialog();
+#endif
+	preferences.Setup();
 	preferences.SetupPalettes();
 }
 
@@ -155,6 +168,16 @@ void editorStaticsClass::LoadPicker(int ID,
 
 editorStaticsClass::~editorStaticsClass(void)
 {
+	Dispose();
+}
+
+void editorStaticsClass::Dispose()
+{
+	if (!loaded)
+		return;
+		
+	loaded = false;
+	
 	UnlockPixels(canvasPix); // we're done with the canvas GWorld/PixMap
 	DisposeGWorld(canvasGW);
 	
@@ -177,6 +200,17 @@ editorStaticsClass::~editorStaticsClass(void)
 	delete membersPalette;
 	delete previewPalette;
 	delete toolPalette;
+	
+	ReleaseResource(Handle(aliasedPic));
+	ReleaseResource(Handle(antiAliasedPic));
+	ReleaseResource(Handle(unfilledPic));
+	ReleaseResource(Handle(filledPic));
+	
+	ReclaimEmergencyMemory();
+
+#if TARGET_API_MAC_CARBON
+	icnsClass::DisposeInfoDialog();
+#endif
 }
 
 // __________________________________________________________________________________________
@@ -207,7 +241,7 @@ void editorStaticsClass::GetPickerPix(long iconName, long colors, PixMapHandle* 
 {
 	switch (iconName)
 	{
-		case h8mk: case l8mk: case s8mk:
+		case h8mk: case l8mk: case s8mk: case t8mk:
 			*pix = gray8PickerPix; *gW = gray8PickerGW; *shapeRgn = gray8PickerRgn;
 			break;
 		case ich4: case icl4: case ics4:
@@ -240,41 +274,43 @@ void editorStaticsClass::GetPickerPix(long iconName, long colors, PixMapHandle* 
 Point editorStaticsClass::GetDefaultPalettePosition(MFloaterPtr palette)
 {
 	Point			position, dimensions;
-	GDHandle		mainScreen;
-	Rect			screenRect;
+	Rect			usableRect;
 	
-	mainScreen = GetMainDevice();
-	screenRect = (**mainScreen).gdRect;
+	usableRect = MUtilities::GetUsableScreenRect();
 	
 	dimensions = palette->GetPhysicalDimensions();
 	
 	if (palette == previewPalette)
 	{
-		position.v = GetMBarHeight() + previewPalette->GetBorderThickness(borderTop) + kDefaultWindowSeparation;
-		position.h = screenRect.right - dimensions.h + previewPalette->GetBorderThickness(borderLeft) - kDefaultWindowSeparation;
+		position.v = usableRect.top + previewPalette->GetBorderThickness(borderTop) + kDefaultWindowSeparation;
+		position.h = usableRect.right - dimensions.h + previewPalette->GetBorderThickness(borderLeft) - kDefaultWindowSeparation;
 	}
 	else if (palette == toolPalette)
 	{
-		position.v = GetMBarHeight() + toolPalette->GetBorderThickness(borderTop) + kDefaultWindowSeparation;
-		position.h = toolPalette->GetBorderThickness(borderLeft) + kDefaultWindowSeparation;
+		position.v = usableRect.top + toolPalette->GetBorderThickness(borderTop) + kDefaultWindowSeparation;
+		position.h = usableRect.left + toolPalette->GetBorderThickness(borderLeft) + kDefaultWindowSeparation;
 	}
 	else if (palette == membersPalette)
 	{
-		Point	previewDimensions;
-		
-		previewDimensions = previewPalette->GetPhysicalDimensions();
-		
-		position.v = GetMBarHeight() + previewDimensions.v + membersPalette->GetBorderThickness(borderTop) + 2 * kDefaultWindowSeparation;
-		position.h = screenRect.right - dimensions.h + membersPalette->GetBorderThickness(borderLeft) - kDefaultWindowSeparation;
+		if (preferences.FeatureEnabled(prefsPreviewPaletteVisible))
+		{
+			Point	previewDimensions;
+			
+			previewDimensions = previewPalette->GetPhysicalDimensions();
+			
+			position.v = usableRect.top + previewDimensions.v + membersPalette->GetBorderThickness(borderTop) + 2 * kDefaultWindowSeparation;
+			position.h = usableRect.right - dimensions.h + membersPalette->GetBorderThickness(borderLeft) - kDefaultWindowSeparation;
+		}
+		else
+		{
+			position.v = usableRect.top + membersPalette->GetBorderThickness(borderTop) + kDefaultWindowSeparation;
+			position.h = usableRect.right - dimensions.h + membersPalette->GetBorderThickness(borderLeft) - kDefaultWindowSeparation;
+		}
 	}
 	else if (palette == colorsPalette)
 	{
-		Point membersDimensions;
-		
-		membersDimensions = membersPalette->GetPhysicalDimensions();
-		
-		position.v = screenRect.bottom - dimensions.v + colorsPalette->GetBorderThickness(borderTop) - kDefaultWindowSeparation;
-		position.h = screenRect.right - dimensions.h + colorsPalette->GetBorderThickness(borderLeft) - membersDimensions.h - 2 * kDefaultWindowSeparation;
+		position.v = usableRect.bottom - dimensions.v + colorsPalette->GetBorderThickness(borderTop) - kDefaultWindowSeparation;
+		position.h = usableRect.right - dimensions.h + colorsPalette->GetBorderThickness(borderLeft) - kDefaultWindowSeparation;
 	}
 	
 	return position;
@@ -282,22 +318,31 @@ Point editorStaticsClass::GetDefaultPalettePosition(MFloaterPtr palette)
 
 Point editorStaticsClass::GetDefaultMembersPaletteDimensions()
 {
-	Point			dimensions, previewDimensions;
-	GDHandle		mainScreen;
-	Rect			screenRect;
+	Point	dimensions, previewDimensions = {0, 0}, colorsDimensions = {0, 0};
+	Rect	usableRect;
+	int		separationCount = 2;
 	
-	mainScreen = GetMainDevice();
-	screenRect = (**mainScreen).gdRect;
+	usableRect = MUtilities::GetUsableScreenRect();
 	
-	previewDimensions = previewPalette->GetPhysicalDimensions();
+	if (preferences.FeatureEnabled(prefsPreviewPaletteVisible))
+	{
+		previewDimensions = previewPalette->GetPhysicalDimensions();
+		separationCount++;
+	}
+	
+	if (preferences.FeatureEnabled(prefsColorsPaletteVisible))
+	{
+		colorsDimensions = colorsPalette->GetPhysicalDimensions();
+		separationCount++;
+	}
 	
 	dimensions.h = kMPDefaultWidth;
-	dimensions.v = (screenRect.bottom - screenRect.top) - 
-				   (GetMBarHeight() +
-				    membersPalette->GetBorderThickness(borderTop) +
+	dimensions.v = (usableRect.bottom - usableRect.top) - 
+				   (membersPalette->GetBorderThickness(borderTop) +
 				    membersPalette->GetBorderThickness(borderBottom) +
 				    previewDimensions.v +
-				    3 * kDefaultWindowSeparation);
+				    colorsDimensions.v +
+				    separationCount * kDefaultWindowSeparation);
 				   
 	return dimensions;
 }
@@ -308,30 +353,39 @@ Point editorStaticsClass::GetDefaultWindowPosition()
 		
 	position = toolPalette->GetPosition();
 	defaultPosition = GetDefaultPalettePosition(toolPalette);
-		
-	if (toolPalette->IsVisible() &&
+	
+	if (preferences.FeatureEnabled(prefsToolPaletteVisible) &&
 		abs(position.h - defaultPosition.h) < 5 &&
 		abs(position.v - defaultPosition.v) < 5)
 	{
 		returnPosition.h = position.h - toolPalette->GetBorderThickness(borderLeft);
 		returnPosition.v = position.v - toolPalette->GetBorderThickness(borderTop);
-		position = toolPalette->GetPhysicalDimensions();
 		
+		position = toolPalette->GetPhysicalDimensions();
 		returnPosition.h += position.h;
 	}
 	else
 	{
-		returnPosition.h = 0;
-		returnPosition.v = GetMBarHeight();
+		Rect usableRect;
+		
+		usableRect = MUtilities::GetUsableScreenRect();
+		returnPosition.h = usableRect.left;
+		returnPosition.v = usableRect.top;
 	}
+	
+	returnPosition.h += kDefaultWindowSeparation;
 	
 	return returnPosition;
 }
 
 void editorStaticsClass::Stagger(MWindowPtr window)
 {
-	Point previousWindowLocation, newLocation;
+	Point		previousWindowLocation, newLocation;
 	MWindowPtr	currentWindow;
+	int			leftBorderThickness, topBorderThickness;
+	
+	leftBorderThickness = window->GetBorderThickness(borderLeft);
+	topBorderThickness = window->GetBorderThickness(borderTop);
 	
 	currentWindow = MWindow::GetLast();
 	if (currentWindow == window)
@@ -339,7 +393,9 @@ void editorStaticsClass::Stagger(MWindowPtr window)
 	
 	while (currentWindow != NULL)
 	{
-		if (currentWindow->GetType() != kFloaterType)
+		if (currentWindow->GetType() != kFloaterType &&
+			currentWindow->GetType() != kAboutBoxType &&
+			currentWindow->GetType() != kDialogType)
 		{
 			previousWindowLocation = currentWindow->GetPosition();
 			break;
@@ -351,13 +407,16 @@ void editorStaticsClass::Stagger(MWindowPtr window)
 		previousWindowLocation = GetDefaultWindowPosition();
 	
 	newLocation = previousWindowLocation;
-	newLocation.h += window->GetBorderThickness(borderLeft);
-	newLocation.v += window->GetBorderThickness(borderTop);
+	newLocation.h += leftBorderThickness;
+	newLocation.v += topBorderThickness;
 	
 	if (currentWindow)
 	{
-		newLocation.h--;
-		newLocation.v--;
+		if (leftBorderThickness > 1)
+			newLocation.h--;
+		
+		if (topBorderThickness > 1)
+			newLocation.v--;
 	}
 	else
 	{
@@ -366,13 +425,25 @@ void editorStaticsClass::Stagger(MWindowPtr window)
 		position = toolPalette->GetPosition();
 		defaultPosition = GetDefaultPalettePosition(toolPalette);
 			
-		if (toolPalette->IsVisible() &&
+		if (preferences.FeatureEnabled(prefsToolPaletteVisible) &&
 			abs(position.h - defaultPosition.h) < 5 &&
 			abs(position.v - defaultPosition.v) < 5)
 			newLocation.h += kDefaultWindowSeparation;
 	}
 	
 	window->SetPosition(newLocation);
+}
+
+void editorStaticsClass::MakeIconNameUnique(Str255 name)
+{
+	if (untitledCount != 0)
+	{
+		Str255 temp = "\p ";
+		AppendString(name, temp);
+		NumToString(untitledCount + 1, temp);
+		AppendString(name, temp);
+	}
+	untitledCount++;
 }
 
 void editorStaticsClass::UpdatePalettes(int flags)
@@ -430,9 +501,212 @@ editorPreferencesClass::editorPreferencesClass()
 	data = NULL;
 }
 
+editorPreferencesClass::~editorPreferencesClass()
+{
+#if TARGET_API_MAC_CARBON
+	DisposeDialog();
+#endif
+}
+
+void editorPreferencesClass::LoadDialog()
+{	
+	ControlFontStyleRec	smallTextStyle, boldTextStyle; // text style used for the controls
+	ControlHandle		groupBox, tempControl, label;
+	
+	smallTextStyle.flags = kControlUseFontMask | kControlUseSizeMask;
+	smallTextStyle.font = kThemeSmallSystemFont; // this font is installed on all systems
+	smallTextStyle.size = 9;
+	
+	preferencesDialog = GetNewDialog(rPreferencesDialog, NULL, (WindowPtr)-1L);
+	
+	defaultsControls = Get1Resource('DITL', rPreferencesDefaultsPane);
+	AppendDITL(preferencesDialog, defaultsControls, overlayDITL);
+	
+	externalEditorControls = Get1Resource('DITL', rPreferencesExternalEditorPane);
+	AppendDITL(preferencesDialog, externalEditorControls, overlayDITL);
+	
+	generalControls = Get1Resource('DITL', rPreferencesGeneralPane);
+	AppendDITL(preferencesDialog, generalControls, overlayDITL);
+	
+#if TARGET_API_MAC_CARBON
+	ControlFontStyleRec	alignedTextStyle;
+	
+	alignedTextStyle.flags = kControlUseJustMask;
+	alignedTextStyle.just = teFlushRight;
+	
+	GetDialogItemAsControl(preferencesDialog, iMembersPaletteLabel, &label);
+	SetControlFontStyle(label, &alignedTextStyle);
+	GetDialogItemAsControl(preferencesDialog, iStartupLabel, &label);
+	SetControlFontStyle(label, &alignedTextStyle);
+	GetDialogItemAsControl(preferencesDialog, iSettingsLabel, &label);
+	SetControlFontStyle(label, &alignedTextStyle);
+	
+	GetDialogItemAsControl(preferencesDialog, iExternalEditorLabel, &label);
+	SetControlFontStyle(label, &alignedTextStyle);
+	GetDialogItemAsControl(preferencesDialog, iEditorShortcutLabel, &label);
+	SetControlFontStyle(label, &alignedTextStyle);
+	GetDialogItemAsControl(preferencesDialog, iExportFormatLabel, &label);
+	SetControlFontStyle(label, &alignedTextStyle);
+	
+	GetDialogItemAsControl(preferencesDialog, iDefaultZoomLevelLabel, &label);
+	SetControlFontStyle(label, &alignedTextStyle);
+	GetDialogItemAsControl(preferencesDialog, iDefaultIconFormatLabel, &label);
+	SetControlFontStyle(label, &alignedTextStyle);
+	
+	alignedTextStyle.just = teCenter;
+	GetDialogItemAsControl(preferencesDialog, i32BitIconLabel, &label);
+	SetControlFontStyle(label, &alignedTextStyle);
+	GetDialogItemAsControl(preferencesDialog, i8BitIconLabel, &label);
+	SetControlFontStyle(label, &alignedTextStyle);
+	GetDialogItemAsControl(preferencesDialog, i4BitIconLabel, &label);
+	SetControlFontStyle(label, &alignedTextStyle);
+	GetDialogItemAsControl(preferencesDialog, i1BitIconLabel, &label);
+	SetControlFontStyle(label, &alignedTextStyle);
+	GetDialogItemAsControl(preferencesDialog, i8BitMaskLabel, &label);
+	SetControlFontStyle(label, &alignedTextStyle);
+	GetDialogItemAsControl(preferencesDialog, i1BitMaskLabel, &label);
+	SetControlFontStyle(label, &alignedTextStyle);
+#endif
+	
+	boldTextStyle.flags = kControlUseFaceMask;
+	boldTextStyle.style = bold;
+	GetDialogItemAsControl(preferencesDialog, iHintsLabel, &label);
+	SetControlFontStyle(label, &boldTextStyle);
+	GetDialogItemAsControl(preferencesDialog, iIconLabel, &label);
+	SetControlFontStyle(label, &boldTextStyle);
+	GetDialogItemAsControl(preferencesDialog, iMaskLabel, &label);
+	SetControlFontStyle(label, &boldTextStyle);
+
+	
+	eventFilterUPP = NewModalFilterUPP(editorPreferencesClass::PreferencesDialogFilter);
+	
+	SetDialogDefaultItem(preferencesDialog, iOK);
+	SetDialogCancelItem(preferencesDialog, iCancel);
+	
+	GetDialogItemAsControl(preferencesDialog, iDefaultZoomLevelField, &defaultZoomLevelField);
+	
+	GetDialogItemAsControl(preferencesDialog, iDefaultZoomLevelArrows, &defaultZoomLevelArrows);
+	SetControlMinimum(defaultZoomLevelArrows, kMinMagnification);
+	SetControlMaximum(defaultZoomLevelArrows, kMaxMagnification);
+	
+	GetDialogItemAsControl(preferencesDialog, iShowOnlyLoadedMembers, &showOnlyLoadedMembers);
+	GetDialogItemAsControl(preferencesDialog, iCheckSync, &checkSync);
+	GetDialogItemAsControl(preferencesDialog, iDither, &dither);
+	GetDialogItemAsControl(preferencesDialog, iDefaultIconFormat, &defaultFormat);
+	typesMenu = GetControlPopupMenuHandle(defaultFormat);
+	DisableMenuItem(typesMenu, formatMacOSXServer);
+	
+	GetDialogItemAsControl(preferencesDialog, iStartupCreateNewEditor, &newEditor);
+	GetDialogItemAsControl(preferencesDialog, iStartupOpenIcon, &openIcon);
+	GetDialogItemAsControl(preferencesDialog, iStartupDoNothing, &doNothing);						   
+	
+	GetDialogItemAsControl(preferencesDialog, iExternalEditorButton, &externalEditor);
+	GetDialogItemAsControl(preferencesDialog, iEditorShortcutButton, &editorShortcut);
+#if !TARGET_API_MAC_CARBON
+	SetControlFontStyle(defaultZoomLevelField, &smallTextStyle); // set the style too
+	Draw1Control(defaultZoomLevelField);
+	
+	SetControlFontStyle(editorShortcut, &smallTextStyle);
+	SetControlFontStyle(externalEditor, &smallTextStyle);
+#endif
+	
+	GetDialogItemAsControl(preferencesDialog, iExportIconAndMask, &exportIconAndMask);
+	GetDialogItemAsControl(preferencesDialog, iExportFormat, &exportFormat);
+	GetDialogItemAsControl(preferencesDialog, iPreviewFullSize, &previewFullSize);
+	GetDialogItemAsControl(preferencesDialog, iPreviewScaled, &previewScaled);
+	
+	GetDialogItemAsControl(preferencesDialog, iPreviewSizeLabel, &previewSizeLabel);
+	GetDialogItemAsControl(preferencesDialog, iPreviewSizeSlider, &previewSizeSlider);
+	SetControlReference(previewSizeSlider, long(preferencesDialog));
+	
+	GetDialogItemAsControl(preferencesDialog, iPreviewSizeField, &previewSizeField);
+#if !TARGET_API_MAC_CARBON
+	SetControlFontStyle(previewSizeField, &smallTextStyle);
+#endif
+	
+	GetDialogItemAsControl(preferencesDialog, iPreferencesTabs, &tabs);
+	
+	currentPane = kPrefsSettingsPane;
+	
+	// embed the default members controls
+	GetDialogItemAsControl(preferencesDialog, iMembersGroupBox, &groupBox);
+	for (int i=kPrefsDefaultsPaneItemsMembersGroupBoxIndex + 1; i < kPrefsDefaultsPaneItemsCount; i++)
+	{
+		GetDialogItemAsControl(preferencesDialog, kPrefsDefaultsPaneItems[i], &tempControl);	
+		EmbedControl(tempControl, groupBox);
+	}
+	
+	for (int i=0; i < kPrefsDefaultsPaneItemsMembersGroupBoxIndex + 1; i++)
+	{
+		GetDialogItemAsControl(preferencesDialog, kPrefsDefaultsPaneItems[i], &tempControl);
+		EmbedControl(tempControl, tabs);
+		HideControl(tempControl);
+	}
+	
+	for (int i=0; i < kPrefsExternalEditorPaneItemsCount; i++)
+	{
+		GetDialogItemAsControl(preferencesDialog, kPrefsExternalEditorPaneItems[i], &tempControl);
+		EmbedControl(tempControl, tabs);
+		HideControl(tempControl);
+	}
+	
+	for (int i=0; i < kPrefsSettingsPaneItemsCount; i++)
+	{
+		GetDialogItemAsControl(preferencesDialog, kPrefsSettingsPaneItems[i], &tempControl);
+		EmbedControl(tempControl, tabs);
+		Draw1Control(tempControl);
+	}
+	
+#if !TARGET_API_MAC_CARBON
+	AutoEmbedControl(newEditor, GetDialogWindow(preferencesDialog));
+	AutoEmbedControl(openIcon, GetDialogWindow(preferencesDialog));
+	AutoEmbedControl(doNothing, GetDialogWindow(preferencesDialog));
+	
+	AutoEmbedControl(previewFullSize, GetDialogWindow(preferencesDialog));
+	AutoEmbedControl(previewScaled, GetDialogWindow(preferencesDialog));
+
+	SAVEGWORLD;
+	SetPortDialogPort(preferencesDialog);
+	TextFont(applFont);
+	TextSize(9);
+	RESTOREGWORLD;
+	
+	ControlFontStyleRec	labelStyle; // text style used for the controls
+	
+	labelStyle.flags = kControlUseFontMask | kControlUseSizeMask;
+	labelStyle.font = kThemeSystemFont; // this font is installed on all systems
+	labelStyle.size = 12;
+	
+	GetDialogItemAsControl(preferencesDialog, iDefaultZoomLevelLabel, &label);
+	SetControlFontStyle(label, &labelStyle);
+	GetDialogItemAsControl(preferencesDialog, iExternalEditorLabel, &label);
+	SetControlFontStyle(label, &labelStyle);
+	GetDialogItemAsControl(preferencesDialog, iEditorShortcutLabel, &label);
+	SetControlFontStyle(label, &labelStyle);
+	GetDialogItemAsControl(preferencesDialog, iPreviewSizeLabel, &label);
+	SetControlFontStyle(label, &labelStyle);
+#endif
+
+	ClearKeyboardFocus(GetDialogWindow(preferencesDialog));
+}
+
+
+void editorPreferencesClass::DisposeDialog()
+{
+	ReleaseResource(generalControls);
+	ReleaseResource(defaultsControls);
+	ReleaseResource(externalEditorControls);
+	
+	DisposeModalFilterUPP(eventFilterUPP);
+	HUnlock((Handle)preferencesDialog);
+	::DisposeDialog(preferencesDialog);
+}
+
 void editorPreferencesClass::Setup()
 {
-	Load(rDefaultPrefID);
+#if TARGET_API_MAC_CARBON
+	LoadDialog();
+#endif
 }
 
 void editorPreferencesClass::Load(int ID)
@@ -496,7 +770,7 @@ void editorPreferencesClass::Load(int ID)
 				(**data).defaultZoomLevel = 8;
 				
 			(**data).defaultUsedMembers = kDefaultMembers[(**data).defaultFormat];
-			(**data).saveFork = resourceFork;
+			//(**data).saveFork = resourceFork;
 			
 			(**data).flags |= prefsExportIconAndMask;
 			(**data).externalEditorAlias = NULL;
@@ -520,8 +794,15 @@ void editorPreferencesClass::Load(int ID)
 			
 			icnsEditorClass::statics.firstTime = true;
 		}
+		case 0x20:
+			(**data).colorsPaletteLocation.h = (**data).colorsPaletteLocation.v = -1;
+			(**data).membersPaletteLocation.h = (**data).membersPaletteLocation.v = -1;
+			(**data).membersPaletteDimensions.h = (**data).membersPaletteDimensions.v = -1;
+			
+			if ((**data).currentColorPicker == kFavoritesPane)
+				(**data).currentColorPicker = kRGBPane;
 		default:
-			(**data).version = 0x20;
+			(**data).version = 0x21;
 	}	
 	
 	(**data).externalEditorAlias = AliasHandle(Get1Resource('Alis', 128));
@@ -775,163 +1056,58 @@ pascal Boolean editorPreferencesClass::PreferencesDialogFilter(DialogPtr dialog,
 
 void editorPreferencesClass::Edit(int pane)
 {
-	DialogPtr			preferencesDialog;
-	ModalFilterUPP		eventFilterUPP;
-	ControlHandle		defaultZoomLevelField,
-						defaultZoomLevelArrows,
-						showOnlyLoadedMembers,
-						checkSync,
-						dither,
-						newEditor,
-						openIcon,
-						doNothing,
-						defaultFormat,
-						tabs,
-						saveDataAndResource,
-						saveData,
-						saveResource,
-						externalEditor,
-						editorShortcut,
-						exportIconAndMask,
-						exportFormat,
-						previewFullSize,
-						previewScaled,
-						previewSizeLabel,
-						previewSizeSlider,
-						previewSizeField,
-						tempControl;
-	Str255				tempString, editorShortcutTitle;
-	short				itemHit, currentTab;
+	short				itemHit = -1;
 	bool				dialogDone;
-	MenuHandle			typesMenu;
-	ControlFontStyleRec	smallTextStyle; // text style used for the controls
+	Str255				tempString, editorShortcutTitle;
 	long				oldFormat, oldUsedMembers, previewSize;
 	unsigned char		oldShortcut[kMaxExternalEditorShortcutKeys + 1];
 	FSSpec				oldEditorSpec, newEditorSpec;
+	ControlHandle		tempControl;
+	
+#if !TARGET_API_MAC_CARBON
+	LoadDialog();
+#endif
 	
 	oldFormat = (**data).defaultFormat;
 	oldUsedMembers = (**data).defaultUsedMembers;
 	oldEditorSpec = GetExternalEditor();
 	newEditorSpec = oldEditorSpec;
-
-	smallTextStyle.flags = kControlUseFontMask | kControlUseSizeMask;
-	smallTextStyle.font = kThemeSmallSystemFont; // this font is installed on all systems
-	smallTextStyle.size = 9;
-	
-	preferencesDialog = GetNewDialog(rPreferencesDialog, NULL, (WindowPtr)-1L);
+	for (int i=0; i < kMaxExternalEditorShortcutKeys + 1; i++)
+		oldShortcut[i] = (**data).externalEditorShortcut[i];
 	
 	MWindow::DeactivateAll();
 	
-	eventFilterUPP = NewModalFilterUPP(editorPreferencesClass::PreferencesDialogFilter);
-	
-	SetDialogDefaultItem(preferencesDialog, iOK);
-	SetDialogCancelItem(preferencesDialog, iCancel);
-	
-	GetDialogItemAsControl(preferencesDialog, iDefaultZoomLevelField, &defaultZoomLevelField);
 	NumToString((**data).defaultZoomLevel, tempString);
 	AppendString(tempString, "\p00%");
 	SetControlText(defaultZoomLevelField, tempString);
-	SetControlFontStyle(defaultZoomLevelField, &smallTextStyle); // set the style too
 	Draw1Control(defaultZoomLevelField);
 	
-	GetDialogItemAsControl(preferencesDialog, iDefaultZoomLevelArrows, &defaultZoomLevelArrows);
-	SetControlMinimum(defaultZoomLevelArrows, kMinMagnification);
-	SetControlMaximum(defaultZoomLevelArrows, kMaxMagnification);
 	SetControlValue(defaultZoomLevelArrows, (**data).defaultZoomLevel);
-	
-	GetDialogItemAsControl(preferencesDialog, iShowOnlyLoadedMembers, &showOnlyLoadedMembers);
 	SetControlValue(showOnlyLoadedMembers, bool((**data).flags & prefsShowOnlyLoadedMembers));
-	
-	GetDialogItemAsControl(preferencesDialog, iCheckSync, &checkSync);
 	SetControlValue(checkSync, !bool((**data).flags & prefsDontCheckMasks));
-	
-	GetDialogItemAsControl(preferencesDialog, iDither, &dither);
 	SetControlValue(dither, bool((**data).flags & prefsDither));
-	
-	GetDialogItemAsControl(preferencesDialog, iDefaultIconFormat, &defaultFormat);
 	SetControlValue(defaultFormat, (**data).defaultFormat);
-	typesMenu = GetControlPopupMenuHandle(defaultFormat);
-	DisableMenuItem(typesMenu, formatMacOSXServer);
-	
-	GetDialogItemAsControl(preferencesDialog, iStartupCreateNewEditor, &newEditor);
 	SetControlValue(newEditor, bool(!((**data).flags & prefsDontMakeNewEditor)));
-	
-	GetDialogItemAsControl(preferencesDialog, iStartupOpenIcon, &openIcon);
 	SetControlValue(openIcon, bool((**data).flags & prefsOpenIcon));
-	
-	GetDialogItemAsControl(preferencesDialog, iStartupDoNothing, &doNothing);
 	SetControlValue(doNothing, bool((**data).flags & prefsDontMakeNewEditor) &&
 							   bool(!((**data).flags & prefsOpenIcon)));
-							   
-	GetDialogItemAsControl(preferencesDialog, iSaveDataAndResource, &saveDataAndResource);
-	if ((**data).saveFork == dataAndResourceForks) SetControlValue(saveDataAndResource, 1);
-	GetDialogItemAsControl(preferencesDialog, iSaveData, &saveData);
-	if ((**data).saveFork == dataFork) SetControlValue(saveData, 1);
-	GetDialogItemAsControl(preferencesDialog, iSaveResource, &saveResource);
-	if ((**data).saveFork == resourceFork) SetControlValue(saveResource, 1);
 	
-	GetDialogItemAsControl(preferencesDialog, iExternalEditorButton, &externalEditor);
 	SetControlTitle(externalEditor, oldEditorSpec.name);
-	SetControlFontStyle(externalEditor, &smallTextStyle);
-	
-	GetDialogItemAsControl(preferencesDialog, iEditorShortcutButton, &editorShortcut);
 	GetEditorShortcutString(editorShortcutTitle);
 	SetControlTitle(editorShortcut, editorShortcutTitle);
-	SetControlFontStyle(editorShortcut, &smallTextStyle);
 	
-	GetDialogItemAsControl(preferencesDialog, iExportIconAndMask, &exportIconAndMask);
 	SetControlValue(exportIconAndMask, bool((**data).flags & prefsExportIconAndMask));
-	
-	GetDialogItemAsControl(preferencesDialog, iExportFormat, &exportFormat);
 	SetControlValue(exportFormat, (**data).externalEditorFormat);
-	
-	GetDialogItemAsControl(preferencesDialog, iPreviewFullSize, &previewFullSize);
-	GetDialogItemAsControl(preferencesDialog, iPreviewScaled, &previewScaled);
-	
-	GetDialogItemAsControl(preferencesDialog, iPreviewSizeLabel, &previewSizeLabel);
-	
-	GetDialogItemAsControl(preferencesDialog, iPreviewSizeSlider, &previewSizeSlider);
 	SetControlValue(previewSizeSlider, (**data).previewSize);
-	SetControlReference(previewSizeSlider, long(preferencesDialog));
 	
-	GetDialogItemAsControl(preferencesDialog, iPreviewSizeField, &previewSizeField);
-	SetControlFontStyle(previewSizeField, &smallTextStyle);
 	NumToString((**data).previewSize, tempString);
 	SetControlText(previewSizeField, tempString);
 	
-	GetDialogItemAsControl(preferencesDialog, iPreferencesTabs, &tabs);
-	
-	SetControlValue(tabs, pane);
-	Draw1Control(tabs);
-	
-	for (int i=0; i < kPrefsDefaultsPaneItemsCount; i++)
+	if (pane != currentPane)
 	{
-		GetDialogItemAsControl(preferencesDialog, kPrefsDefaultsPaneItems[i], &tempControl);
-		EmbedControl(tempControl, tabs);
-		if (pane == kPrefsDefaultsPane)
-			Draw1Control(tempControl);
-		else
-			HideControl(tempControl);
-	}
-	
-	for (int i=0; i < kPrefsExternalEditorPaneItemsCount; i++)
-	{
-		GetDialogItemAsControl(preferencesDialog, kPrefsExternalEditorPaneItems[i], &tempControl);
-		EmbedControl(tempControl, tabs);
-		if (pane == kPrefsExternalEditorPane)
-			Draw1Control(tempControl);
-		else
-			HideControl(tempControl);
-	}
-	
-	for (int i=0; i < kPrefsSettingsPaneItemsCount; i++)
-	{
-		GetDialogItemAsControl(preferencesDialog, kPrefsSettingsPaneItems[i], &tempControl);
-		EmbedControl(tempControl, tabs);
-		if (pane == kPrefsSettingsPane)
-			Draw1Control(tempControl);
-		else
-			HideControl(tempControl);
+		SetControlValue(tabs, pane);
+		Draw1Control(tabs);
+		SetPane(pane);
 	}
 	
 	if ((**data).flags & prefsPreviewScaled)
@@ -951,33 +1127,11 @@ void editorPreferencesClass::Edit(int pane)
 		DeactivateControl(previewSizeField);
 	}
 	
-	AutoEmbedControl(newEditor, GetDialogWindow(preferencesDialog));
-	AutoEmbedControl(openIcon, GetDialogWindow(preferencesDialog));
-	AutoEmbedControl(doNothing, GetDialogWindow(preferencesDialog));
-	
-	AutoEmbedControl(saveDataAndResource, GetDialogWindow(preferencesDialog));
-	AutoEmbedControl(saveData, GetDialogWindow(preferencesDialog));
-	AutoEmbedControl(saveResource, GetDialogWindow(preferencesDialog));
-	
-	AutoEmbedControl(previewFullSize, GetDialogWindow(preferencesDialog));
-	AutoEmbedControl(previewScaled, GetDialogWindow(preferencesDialog));
-	
-	ClearKeyboardFocus(GetDialogWindow(preferencesDialog));
-	
-	SAVEGWORLD;
-	SetPortDialogPort(preferencesDialog);
-	TextFont(applFont);
-	TextSize(9);
-	RESTOREGWORLD;
-	
 	icnsEditorClass::SetMembersCheckboxes(preferencesDialog, (**data).defaultUsedMembers, (**data).defaultFormat);
 	
 	ShowWindow(GetDialogWindow(preferencesDialog));
 	
 	dialogDone = false;
-	
-	for (int i=0; i < kMaxExternalEditorShortcutKeys + 1; i++)
-		oldShortcut[i] = (**data).externalEditorShortcut[i];
 	
 	while (!dialogDone)
 	{
@@ -1016,10 +1170,6 @@ void editorPreferencesClass::Edit(int pane)
 					(**data).flags |= prefsOpenIcon;
 				} 
 				
-				if (GetControlValue(saveDataAndResource)) (**data).saveFork = dataAndResourceForks;
-				if (GetControlValue(saveResource)) (**data).saveFork = resourceFork;
-				if (GetControlValue(saveData)) (**data).saveFork = dataFork;
-				
 				icnsEditorClass::GetMembersCheckboxes(preferencesDialog, &(**data).defaultUsedMembers);
 				
 				(**data).previewSize = GetControlValue(previewSizeSlider);
@@ -1054,80 +1204,8 @@ void editorPreferencesClass::Edit(int pane)
 				SetControlValue(openIcon, 0);
 				SetControlValue(doNothing, 1);
 				break;
-				
-			case iSaveDataAndResource:
-				SetControlValue(saveDataAndResource, 1);
-				SetControlValue(saveResource, 0);
-				SetControlValue(saveData, 0);
-				break;
-			case iSaveData:
-				SetControlValue(saveDataAndResource, 0);
-				SetControlValue(saveResource, 0);
-				SetControlValue(saveData, 1);
-				break;
-			case iSaveResource:
-				SetControlValue(saveDataAndResource, 0);
-				SetControlValue(saveResource, 1);
-				SetControlValue(saveData, 0);
-				break;
 			case iPreferencesTabs:
-				ClearKeyboardFocus(GetDialogWindow(preferencesDialog));
-				currentTab = GetControlValue(tabs);
-				
-				switch (currentTab)
-				{
-					case kPrefsSettingsPane:
-						for (int i=0; i < kPrefsDefaultsPaneItemsCount; i++)
-						{
-							GetDialogItemAsControl(preferencesDialog, kPrefsDefaultsPaneItems[i], &tempControl);
-							HideControl(tempControl);
-						}
-						for (int i=0; i < kPrefsExternalEditorPaneItemsCount; i++)
-						{
-							GetDialogItemAsControl(preferencesDialog, kPrefsExternalEditorPaneItems[i], &tempControl);
-							HideControl(tempControl);
-						}
-						for (int i=0; i < kPrefsSettingsPaneItemsCount; i++)
-						{
-							GetDialogItemAsControl(preferencesDialog, kPrefsSettingsPaneItems[i], &tempControl);
-							ShowControl(tempControl);
-						}
-						break;
-					case kPrefsDefaultsPane:
-						for (int i=0; i < kPrefsSettingsPaneItemsCount; i++)
-						{
-							GetDialogItemAsControl(preferencesDialog, kPrefsSettingsPaneItems[i], &tempControl);
-							HideControl(tempControl);
-						}
-						for (int i=0; i < kPrefsExternalEditorPaneItemsCount; i++)
-						{
-							GetDialogItemAsControl(preferencesDialog, kPrefsExternalEditorPaneItems[i], &tempControl);
-							HideControl(tempControl);
-						}
-						for (int i=0; i < kPrefsDefaultsPaneItemsCount; i++)
-						{
-							GetDialogItemAsControl(preferencesDialog, kPrefsDefaultsPaneItems[i], &tempControl);
-							ShowControl(tempControl);
-						}
-						break;
-					case kPrefsExternalEditorPane:
-						for (int i=0; i < kPrefsSettingsPaneItemsCount; i++)
-						{
-							GetDialogItemAsControl(preferencesDialog, kPrefsSettingsPaneItems[i], &tempControl);
-							HideControl(tempControl);
-						}
-						for (int i=0; i < kPrefsDefaultsPaneItemsCount; i++)
-						{
-							GetDialogItemAsControl(preferencesDialog, kPrefsDefaultsPaneItems[i], &tempControl);
-							HideControl(tempControl);
-						}
-						for (int i=0; i < kPrefsExternalEditorPaneItemsCount; i++)
-						{
-							GetDialogItemAsControl(preferencesDialog, kPrefsExternalEditorPaneItems[i], &tempControl);
-							ShowControl(tempControl);
-						}
-						break;
-				}
+				SetPane(GetControlValue(tabs));
 				break;
 			case iDefaultIconFormat:
 				(**data).defaultFormat = GetControlValue(defaultFormat);
@@ -1205,33 +1283,58 @@ void editorPreferencesClass::Edit(int pane)
 		}
 	}
 	
-	DisposeModalFilterUPP(eventFilterUPP);
-	DisposeDialog(preferencesDialog);
-	
+	HideWindow(GetDialogWindow(preferencesDialog));
+
+#if !TARGET_API_MAC_CARBON
+	DisposeDialog();
+#endif
+
 	MWindow::ActivateAll();
+}
+
+void editorPreferencesClass::SetPane(int pane)
+{
+	ControlHandle tempControl;
+	
+	if (pane != currentPane)
+	{
+		int *itemsToHide = NULL, itemsToHideCount = -1, *itemsToShow = NULL, itemsToShowCount = -1;
+		
+		switch(currentPane)
+		{
+			case kPrefsDefaultsPane: itemsToHide = (int*)kPrefsDefaultsPaneItems; itemsToHideCount = kPrefsDefaultsPaneItemsMembersGroupBoxIndex + 1; break;
+			case kPrefsExternalEditorPane: itemsToHide = (int*)kPrefsExternalEditorPaneItems; itemsToHideCount = kPrefsExternalEditorPaneItemsCount; break;
+			case kPrefsSettingsPane: itemsToHide = (int*)kPrefsSettingsPaneItems; itemsToHideCount = kPrefsSettingsPaneItemsCount; break;
+		}
+		
+		switch(pane)
+		{
+			case kPrefsDefaultsPane: itemsToShow = (int*)kPrefsDefaultsPaneItems; itemsToShowCount = kPrefsDefaultsPaneItemsMembersGroupBoxIndex + 1; break;
+			case kPrefsExternalEditorPane: itemsToShow = (int*)kPrefsExternalEditorPaneItems; itemsToShowCount = kPrefsExternalEditorPaneItemsCount; break;
+			case kPrefsSettingsPane: itemsToShow = (int*)kPrefsSettingsPaneItems; itemsToShowCount = kPrefsSettingsPaneItemsCount; break;
+		}
+		
+		ClearKeyboardFocus(GetDialogWindow(preferencesDialog));
+		
+		for (int i=0; i < itemsToHideCount; i++)
+		{
+			GetDialogItemAsControl(preferencesDialog, itemsToHide[i], &tempControl);
+			HideControl(tempControl);
+		}
+		
+		for (int i=0; i < itemsToShowCount; i++)
+		{
+			GetDialogItemAsControl(preferencesDialog, itemsToShow[i], &tempControl);
+			ShowControl(tempControl);
+		}
+		
+		currentPane = pane;
+	}
 }
 
 void editorPreferencesClass::Save(int ID)
 {
-	if (icnsEditorClass::statics.colorsPalette->IsVisible())
-		(**data).flags |= prefsColorsPaletteVisible;
-	else
-		(**data).flags &= ~prefsColorsPaletteVisible;
-		
-	if (icnsEditorClass::statics.membersPalette->IsVisible())
-		(**data).flags |= prefsMembersPaletteVisible;
-	else
-		(**data).flags &= ~prefsMembersPaletteVisible;
-		
-	if (icnsEditorClass::statics.previewPalette->IsVisible())
-		(**data).flags |= prefsPreviewPaletteVisible;
-	else
-		(**data).flags &= ~prefsPreviewPaletteVisible;
-		
-	if (icnsEditorClass::statics.toolPalette->IsVisible())
-		(**data).flags |= prefsToolPaletteVisible;
-	else
-		(**data).flags &= ~prefsToolPaletteVisible;
+	UpdatePaletteStatus();
 	
 	(**data).colorsPaletteLocation = icnsEditorClass::statics.colorsPalette->GetPosition();
 	(**data).membersPaletteLocation = icnsEditorClass::statics.membersPalette->GetPosition();
@@ -1253,12 +1356,36 @@ void editorPreferencesClass::Save(int ID)
 	ChangedResource((Handle)(**data).externalEditorAlias);
 	WriteResource((Handle)(**data).externalEditorAlias);
 	
-	for (int i=0; i < kMaxRecentFiles; i++)
-	{
-		AddResource((Handle)(**data).recentFiles[i], 'Alis', kRecentFilesBaseID + i, "\p");
-		ChangedResource((Handle)(**data).recentFiles[i]);
-		WriteResource((Handle)(**data).recentFiles[i]);
-	}
+	for (int i=0; i < (**data).recentFilesCount; i++)
+		if ((**data).recentFiles[i] != NULL)
+		{
+			AddResource((Handle)(**data).recentFiles[i], 'Alis', kRecentFilesBaseID + i, "\p");
+			ChangedResource((Handle)(**data).recentFiles[i]);
+			WriteResource((Handle)(**data).recentFiles[i]);
+		}
+}
+
+void editorPreferencesClass::UpdatePaletteStatus()
+{
+	if (icnsEditorClass::statics.colorsPalette->IsVisible())
+		(**data).flags |= prefsColorsPaletteVisible;
+	else
+		(**data).flags &= ~prefsColorsPaletteVisible;
+		
+	if (icnsEditorClass::statics.membersPalette->IsVisible())
+		(**data).flags |= prefsMembersPaletteVisible;
+	else
+		(**data).flags &= ~prefsMembersPaletteVisible;
+		
+	if (icnsEditorClass::statics.previewPalette->IsVisible())
+		(**data).flags |= prefsPreviewPaletteVisible;
+	else
+		(**data).flags &= ~prefsPreviewPaletteVisible;
+		
+	if (icnsEditorClass::statics.toolPalette->IsVisible())
+		(**data).flags |= prefsToolPaletteVisible;
+	else
+		(**data).flags &= ~prefsToolPaletteVisible;
 }
 
 #pragma mark -
@@ -1311,10 +1438,10 @@ int editorPreferencesClass::GetDefaultZoomLevel()
 	return (**data).defaultZoomLevel;
 }
 
-int editorPreferencesClass::GetSaveFork()
+/*int editorPreferencesClass::GetSaveFork()
 {
 	return (**data).saveFork;
-}
+}*/
 
 int editorPreferencesClass::GetPreviewSize()
 {
@@ -1409,7 +1536,7 @@ void editorPreferencesClass::GetNewEditorShortcut()
 		} while (currentKey != -1);
 	}
 	
-	DisposeDialog(dialog);
+	::DisposeDialog(dialog);
 	
 	FlushEvents(everyEvent, 0);
 	

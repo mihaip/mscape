@@ -15,6 +15,9 @@
 #include "iconBrowserClass.h"
 #include "AppleEvents.h"
 #include "MAlert.h"
+#if TARGET_API_MAC_CARBON
+#include "AboutBox.h"
+#endif
 
 // file types
 
@@ -22,6 +25,12 @@ const static long creatorCode = 'Mngl';
 const static long prefFileType = 'pref';
 
 // --- Constants --- //
+
+enum moreStatus
+{
+	frontIsBrowser = 1 << 30,
+	frontIsEditor = 1 << 31
+};
 
 // app resource IDs
 enum errorResources
@@ -67,7 +76,8 @@ enum defaultNames
 	eAddMember = 31,
 	eInsertIcon = 32,
 	eOpenHelp = 33,
-	eContinue = 34
+	eContinue = 34,
+	eRegisteredTo = 35
 };
 
 enum stdErrors
@@ -241,14 +251,16 @@ enum windowsMenu
 	iTogglePreviewPalette = 3,
 	iToggleColorsPalette = 4,
 	iEditorsInsertionPoint = 5,
-	iBrowsersInsertionPoint = 6
+	iBrowsersInsertionPoint = 6,
+	
+	kPalettesCount = 4
 };
 
 enum helpMenu
 {
-	iIconographerHelp = 5,
-	iEmailAuthor = 7,
-	iVisitHomepage = 8
+	iIconographerHelp = 1,
+	iEmailAuthor = 3,
+	iVisitHomepage = 4
 };
 
 // dialog items
@@ -300,13 +312,15 @@ void		LoadPreferences(void);
 void		EventLoop(void);
 void		DoEvent(EventRecord *eventPtr);
 void		DoIdle(void);
+void		UpdateMenuBar(int status);
 void		HandleMouseDown(EventRecord *eventPtr);
 void		HandleKeyDown(EventRecord *eventPtr);
 void		HandleUpdate(EventRecord *eventPtr);
 void		HandleActivate(EventRecord *eventStrucPtr);
 void		HandleOSEvent(EventRecord *eventPtr);
 void		DoMenuCommand(long menuResult);
-void		AboutBox(void);
+void		ShowAboutBox(void);
+void		ShowFirstTimeDialog(void);
 pascal Boolean AboutBoxEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *itemHit);
 void		Register(void);
 void		ChooseRegistrationMethod();
@@ -316,11 +330,11 @@ OSErr		NewBrowser(FSSpec file, int format);
 OSErr 		GetIcon(FSSpec* fileSpec);
 void		OpenIcon(FSSpec *fileToOpen);
 void		PostOpen();
-bool		Close(int flags);
+bool		Close(WindowPtr windowToClose, int flags);
 int			WantToSave(FSSpec fileSpec, int flags);
 void		Nag(bool startup);
 pascal Boolean	AlertEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *itemHit);
-OSErr		SaveIcon(int flags);
+OSErr		SaveIcon(icnsEditorPtr frontEditor, int flags);
 void		Revert();
 void 		RefreshIconBrowser(bool newIcon, int deletedIcon, int deletedIconFormat);
 void		CleanUp(void);
@@ -347,7 +361,6 @@ pascal void NavOpenEventFilter(NavEventCallbackMessage callBackSelector,
 pascal void NavSaveEventFilter(NavEventCallbackMessage callBackSelector, 
 							   NavCBRecPtr callBackParms, 
 							   NavCallBackUserData callBackUD);
-void		SetFileName(ControlHandle formatPopup, Str255 fileName);
 pascal Boolean NavOpenFileFilter(AEDesc *theItem, void *info, void *callBackUD, NavFilterModes filterMode);
 OSErr		SaveFile(FSSpec* fileSpec, long* format);
 pascal Boolean SaveEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short *item, void* dataPtr);
@@ -361,5 +374,6 @@ pascal Boolean OpenFileFilter(CInfoPBPtr myCInfoPBPtr, void* dataPtr);
 // --- Globals --- //
 extern bool				gIsDone;
 extern Str255			gAppName;
-
-
+#if TARGET_API_MAC_CARBON
+extern AboutBoxPtr		gAboutBox;
+#endif

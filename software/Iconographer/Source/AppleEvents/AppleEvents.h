@@ -11,6 +11,7 @@
 OSErr			AEInit(void);
 OSErr			AEGotRequiredParams(const AppleEvent *theAppleEvent);
 pascal OSErr	AEOpenApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon);
+pascal OSErr	AEReopenApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon);
 pascal OSErr	AEOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon);
 pascal OSErr	AEPrintDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon);
 pascal OSErr	AEQuitApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon);

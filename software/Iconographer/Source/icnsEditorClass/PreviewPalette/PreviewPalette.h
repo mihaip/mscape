@@ -43,7 +43,11 @@ typedef icnsEditorClass* icnsEditorPtr;
 
 typedef struct
 {
-	ControlHandle	root, background, preview, slider, text, settings;
+	ControlHandle	root,
+#if !TARGET_API_MAC_CARBON
+					background,
+#endif
+					preview, slider, text, settings;
 } PreviewPaletteControls;
 
 class PreviewPalette : public MFloater
@@ -76,6 +80,8 @@ class PreviewPalette : public MFloater
 		icnsEditorPtr			parentEditor;
 		
 		MenuHandle				settingsMenu;
+		
+		static ControlActionUPP sliderActionUPP;
 		
 		void					CreateControls();
 		

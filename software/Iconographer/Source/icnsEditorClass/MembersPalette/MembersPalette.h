@@ -102,6 +102,9 @@ class MembersPalette : public MFloater
 		
 		PicHandle				infoButtonPicture,
 								addMemberButtonPicture;
+								
+		ControlHandle			lastClickedPane;
+		int						lastPaneClick;
 		
 				
 		static pascal short		MemberPaneHitTest(ControlHandle theControl, Point where);
@@ -121,6 +124,8 @@ class MembersPalette : public MFloater
 		void					RefreshMemberPanes(icnsEditorPtr frontEditor);
 		int						GetTotalMembersHeight();
 		int						GetTotalMembersHeight(icnsEditorPtr	frontEditor);
+		
+		bool					IsMemberObscured(int index);
 		
 		void					StartClipping();
 		void					EndClipping();

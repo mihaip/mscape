@@ -13,7 +13,11 @@ const static int kMaxIconSize = 128; // thumbnail (the biggest size) is 128 x 12
 const static int kMaxMagnification = 16;
 const static int kMinMagnification = 1;
 
+#if TARGET_API_MAC_CARBON
+const static int kDefaultWindowSeparation = 3;
+#else
 const static int kDefaultWindowSeparation = 2;
+#endif
 
 const static int kCanvasWidth = 512 + 2 * 8 * 4; //kMaxIconSize * kMaxMagnification;
 const static int kCanvasHeight = 512 + 2 * 8 * 4;
@@ -42,6 +46,9 @@ enum staticsResources
 	
 	// dialogs
 	rPreferencesDialog = 1000,
+	rPreferencesGeneralPane = 1100,
+	rPreferencesDefaultsPane = 1101,
+	rPreferencesExternalEditorPane = 1102,
 	rSetExternalEditorShortcut = 1002,
 	
 	// others
@@ -51,37 +58,44 @@ enum staticsResources
 
 enum preferencesDialogItems
 {
-	iShowOnlyLoadedMembers = 3,
-	iDefaultZoomLevelField = 4,
-	iDefaultZoomLevelArrows = 5,
-	iStartupCreateNewEditor = 6,
-	iStartupOpenIcon = 7,
-	iStartupDoNothing = 8,
-	iCheckSync = 9,
-	iDither = 10,
-	iMembersPaletteBox = 11,
-	iPreviewFullSize = 65,
-	iPreviewScaled = 66,
-	iPreviewSizeSlider = 67,
-	iPreviewSizeField = 68,
-	iPreviewSizeLabel = 69,
+	iPreferencesTabs = 3,
 	
-	iDefaultZoomLevelLabel = 12,
-	iDefaultIconFormat = 13,
-	iStartupGroupBox = 14,
-	iPreferencesTabs = 15,
-	iSaveGroupBox = 16,
-	iSaveDataAndResource = 55,
-	iSaveResource = 56,
-	iSaveData = 57,
-	iResetPaletteLocations = 58,
+	// defaults pane
+	iDefaultZoomLevelLabel = 4,
+	iDefaultZoomLevelField = 5,
+	iDefaultZoomLevelArrows = 6,
+	iDefaultIconFormat = 7,
+	iDefaultIconFormatLabel = 8,
+	// default members stuff goes here, constants are in icnsClass.h
 	
-	iExternalEditorLabel = 63,
-	iExternalEditorButton = 61,
-	iEditorShortcutLabel = 64,
-	iEditorShortcutButton = 62,
+	
+	// external editor pane	
+	iExternalEditorLabel = 55,
+	iExternalEditorButton = 56,
+	iEditorShortcutLabel = 57,
+	iEditorShortcutButton = 58,
+	iExportFormat = 59,
 	iExportIconAndMask = 60,
-	iExportFormat = 59
+	iExportFormatLabel = 61,
+	
+	// general pane
+	iShowOnlyLoadedMembers = 62,
+	iCheckSync = 63,
+	iDither = 64,
+	iStartupDivider = 65,
+	iStartupCreateNewEditor = 66,
+	iStartupOpenIcon = 67,
+	iStartupDoNothing = 68,
+	iMembersPaletteDivider = 69,
+	iPreviewFullSize = 70,
+	iPreviewScaled = 71,
+	iPreviewSizeLabel = 72,
+	iPreviewSizeSlider = 73,
+	iPreviewSizeField = 74,
+	iResetPaletteLocations = 75,
+	iMembersPaletteLabel = 76,
+	iStartupLabel = 77,
+	iSettingsLabel = 78
 };
 
 enum preferencesTabs
@@ -91,12 +105,12 @@ enum preferencesTabs
 	kPrefsExternalEditorPane = 3
 };
 
-enum prefsSaveForks
+/*enum prefsSaveForks
 {
 	dataAndResourceForks,
 	dataFork,
 	resourceFork
-};
+};*/
 
 enum prefsExternalEditorFormat
 {
@@ -130,7 +144,7 @@ typedef struct preferencesStruct
 	RGBColor	foreColor, backColor;
 	int			currentTool;
 	long		defaultUsedMembers;
-	long		saveFork;
+	long		saveForkIgnored;
 	AliasHandle	externalEditorAlias;
 	unsigned char externalEditorShortcut[kMaxExternalEditorShortcutKeys + 1];
 	long		externalEditorFormat;
@@ -152,6 +166,34 @@ class editorPreferencesClass
 		void				GenerateRegCode(Str255 name, Str255 regCode);
 		PreferencesHandle	data;
 		
+		void				LoadDialog();
+		void				DisposeDialog();
+		void				SetPane(int pane);
+		DialogPtr			preferencesDialog;
+		ModalFilterUPP		eventFilterUPP;
+		ControlHandle		defaultZoomLevelField,
+							defaultZoomLevelArrows,
+							showOnlyLoadedMembers,
+							checkSync,
+							dither,
+							newEditor,
+							openIcon,
+							doNothing,
+							defaultFormat,
+							tabs,
+							externalEditor,
+							editorShortcut,
+							exportIconAndMask,
+							exportFormat,
+							previewFullSize,
+							previewScaled,
+							previewSizeLabel,
+							previewSizeSlider,
+							previewSizeField;
+		Handle				generalControls, defaultsControls, externalEditorControls;
+		MenuHandle			typesMenu;
+		int					currentPane;
+		
 		static pascal Boolean	PreferencesDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit);
 		
 		static pascal void 	ZoomArrowsAction(ControlHandle controlHdl,SInt16 partCode);
@@ -159,11 +201,13 @@ class editorPreferencesClass
 		
 	public:
 							editorPreferencesClass();
+							~editorPreferencesClass();
 							
 		void				Setup();
 		void				Load(int ID);
 		
 		void				SetupPalettes();
+		void				UpdatePaletteStatus();
 		
 		void				Edit(int pane);
 		void				Save(int ID);
@@ -179,7 +223,7 @@ class editorPreferencesClass
 		int					GetDefaultFormat();
 		long				GetDefaultUsedMembers();
 		int					GetDefaultZoomLevel();
-		int					GetSaveFork();
+		/*int					GetSaveFork();*/
 		int					GetPreviewSize();
 		
 		void				GetEditorShortcutString(Str255 string);
@@ -282,15 +326,21 @@ class editorStaticsClass
 		GWorldPtr		win4PickerGW;
 		RgnHandle		win4PickerRgn;
 		
+		int				untitledCount;
+		
 		void 			LoadPicker(int ID,
 								   PixMapHandle* pickerPix,
 								   GWorldPtr* pickerGW,
 								   RgnHandle* pickerRgn);
+								   
+		bool			loaded;
+		
 	public:
 						editorStaticsClass(void);
 						~editorStaticsClass(void);
 						
 		void			Load();
+		void			Dispose();
 		
 		CGrafPtr		startupPort;
 		GDHandle		startupDevice;
@@ -327,6 +377,7 @@ class editorStaticsClass
 		
 		void			Stagger(MWindowPtr window);
 		Point			GetDefaultWindowPosition();
+		void			MakeIconNameUnique(Str255 name);
 		
 		void			UpdatePalettes(int flags);
 		void			UpdatePalettes(icnsEditorPtr frontEditor, int flags);

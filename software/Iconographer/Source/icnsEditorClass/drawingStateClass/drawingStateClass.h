@@ -20,7 +20,6 @@ class drawingStateClass
 		long			drawingDataSize, selectionDataSize;
 		Rect			selectionBounds;
 		short			selectionDepth;
-		CTabHandle		selectionColorTable;
 		long			status;
 		long			members, usedMembers;
 		long			colors;

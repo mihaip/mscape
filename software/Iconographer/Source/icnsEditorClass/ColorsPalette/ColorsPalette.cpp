@@ -21,16 +21,16 @@ ColorsPalette::ColorsPalette()
 	
 	CreateControls();
 
-	rgb.SetDisplayArea(this, controls.tabs);
+	rgb.SetDisplayArea(this, controls.colorPickerArea);
 	rgb.CreateControls();
 	
-	hsv.SetDisplayArea(this, controls.tabs);
+	hsv.SetDisplayArea(this, controls.colorPickerArea);
 	hsv.CreateControls();
 	
-	system.SetDisplayArea(this, controls.tabs);
+	system.SetDisplayArea(this, controls.colorPickerArea);
 	system.CreateControls();
 	
-	favorites.SetDisplayArea(this, controls.tabs);
+	favorites.SetDisplayArea(this, controls.colorPickerArea);
 	favorites.CreateControls();
 	
 	rgb.Show();
@@ -121,6 +121,8 @@ void ColorsPalette::HandleContentClick(EventRecord* eventPtr)
 	ControlHandle	clickedControl;
 	short			part;
 	
+	DEBUG("\pgot to colors palette");
+	
 	where = eventPtr->where;
 	
 	SAVEGWORLD;
@@ -136,6 +138,7 @@ void ColorsPalette::HandleContentClick(EventRecord* eventPtr)
 	else if ((part = FindControl(where, window, &clickedControl)) &&
 			 (part != kControlNoPart))
 	{
+		DEBUG("\phandling palette click");
 		if (TrackControl(clickedControl, where, NULL))
 		{
 			if (clickedControl == controls.tabs)
@@ -147,6 +150,8 @@ void ColorsPalette::HandleContentClick(EventRecord* eventPtr)
 					currentColorPicker->SetColor(fore);
 				else
 					currentColorPicker->SetColor(back);
+					
+				Draw1Control(controls.swatch);
 			}
 		}
 	}
@@ -188,8 +193,9 @@ void ColorsPalette::SetCurrentPicker(int picker)
 	if (GetControlValue(controls.tabs) != picker)
 	{
 		SetControlValue(controls.tabs, picker);
-		Draw1Control(controls.tabs);
+		
 	}
+	Draw1Control(controls.tabs);
 }
 
 int ColorsPalette::GetCurrentPicker()
@@ -256,6 +262,7 @@ void ColorsPalette::UpdateColors()
 void ColorsPalette::Update()
 {
 	UpdateColors();
+	currentColorPicker->SetColor(currentColorPicker->GetColor());
 }
 
 void ColorsPalette::UpdateReadout(int x, int y, RGBColor color)
@@ -304,7 +311,7 @@ void ColorsPalette::UpdateReadout(int x, int y, RGBColor color)
 
 void ColorsPalette::CreateControls()
 {
-	Rect						backgroundPaneRect, tempRect;
+	Rect						tempRect, backgroundPaneRect;
 	ControlFontStyleRec			readoutStyle;
 	
 	readoutStyle.flags = kControlUseJustMask;
@@ -326,6 +333,7 @@ void ColorsPalette::CreateControls()
 	SetControlUserPaneHitTest(controls.backgroundPane, CPBackgroundPaneHitTest);
 				   
 	controls.swatch = GetNewControl(rCPSwatch, window);
+	EmbedControl(controls.swatch, controls.backgroundPane);
 	SetControlUserPaneDraw(controls.swatch, CPSwatchDraw);
 	SetControlUserPaneHitTest(controls.swatch, CPSwatchHitTest);
 	SetControlBalloonHelp(controls.swatch, hCPSwatch);
@@ -345,10 +353,10 @@ void ColorsPalette::CreateControls()
 	DiffRgn(backColorRgn, foreColorRgn, backColorRgn);
 	
 	InsetRgn(foreColorRgn, 3, 3);
-	InsetRgn(backColorRgn, 3, 3);	
-	
+	InsetRgn(backColorRgn, 3, 3);
 	
 	controls.tabs = GetNewControl(rCPTabs, window);
+	EmbedControl(controls.tabs, controls.backgroundPane);
 	SetControlBalloonHelp(controls.tabs, hCPTabs);
 	
 	controls.separator1 = GetNewControl(rCPSeparator1, window);
@@ -358,7 +366,7 @@ void ColorsPalette::CreateControls()
 	SetControlFontStyle(controls.positionReadoutData, &readoutStyle);
 	SetControlBalloonHelp(controls.positionReadoutData, hCPPosReadout);
 	
-	controls.separator2 = GetNewControl(rCPSeparator2, window);
+	//controls.separator2 = GetNewControl(rCPSeparator2, window);
 	controls.colorReadoutLabel = GetNewControl(rCPColorReadoutLabel, window);
 	ResetStaticTextTitle(controls.colorReadoutLabel);
 	controls.colorReadoutData = GetNewControl(rCPColorReadoutData, window);
@@ -367,6 +375,7 @@ void ColorsPalette::CreateControls()
 	
 	controls.colorPickerArea = GetNewControl(rCPColorPickerArea, window);
 	EmbedControl(controls.colorPickerArea, controls.tabs);
+	SetControlUserPaneHitTest(controls.colorPickerArea, GenericHitTest);
 }
 
 #pragma mark -
@@ -413,6 +422,7 @@ RGBColorPicker::~RGBColorPicker()
 void RGBColorPicker::CreateControls()
 {
 	parentControl = GetNewControl(rRGBCPBaseControl, parentWindow->GetWindow());
+	SetControlUserPaneHitTest(parentControl, GenericHitTest);
 	EmbedControl(parentControl, displayAreaControl);
 	
 	redSlider = GetNewControl(rRGBCPRedSlider, parentWindow->GetWindow());
@@ -446,7 +456,33 @@ void RGBColorPicker::CreateControls()
 	EmbedControl(bluePreview, parentControl);
 	SetControlUserPaneDraw(bluePreview, RGBColorPicker::PreviewDraw);
 	SetControlUserPaneHitTest(bluePreview, GenericHitTest);
-	
+
+#if TARGET_API_MAC_CARBON
+	if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x10, 0x00))
+	{
+		long		sliderWidth;
+		ControlSize	smallSize;
+		Rect		sliderBounds;
+		
+		GetThemeMetric(kThemeMetricSmallVSliderWidth, &sliderWidth);
+		smallSize = kControlSizeSmall;
+		
+		GetControlBounds(redSlider, &sliderBounds);
+		sliderBounds.right = sliderBounds.left + sliderWidth;
+		SetControlBounds(redSlider, &sliderBounds);
+		SetControlData(redSlider, kControlNoPart, kControlSizeTag, sizeof(ControlSize), &smallSize);
+		
+		GetControlBounds(greenSlider, &sliderBounds);
+		sliderBounds.right = sliderBounds.left + sliderWidth;
+		SetControlBounds(greenSlider, &sliderBounds);
+		SetControlData(greenSlider, kControlNoPart, kControlSizeTag, sizeof(ControlSize), &smallSize);
+		
+		GetControlBounds(blueSlider, &sliderBounds);
+		sliderBounds.right = sliderBounds.left + sliderWidth;
+		SetControlBounds(blueSlider, &sliderBounds);
+		SetControlData(blueSlider, kControlNoPart, kControlSizeTag, sizeof(ControlSize), &smallSize);
+	}
+#endif
 	
 	SetControlBalloonHelp(redSlider, hRGBCPRedSlider);
 	SetControlBalloonHelp(redPreview, hRGBCPRedPreview);
@@ -491,6 +527,7 @@ void RGBColorPicker::Show()
 
 void RGBColorPicker::UpdateCursor(Point theMouse)
 {
+#pragma unused (theMouse)
 #if !TARGET_API_MAC_CARBON
 	if (HMGetBalloons())
 		if (HandleBalloon(rRGBCPBalloonHelp, redSlider, theMouse) ||
@@ -582,33 +619,34 @@ void RGBColorPicker::DrawGradient(Rect targetRect, RGBColor color,
 	Rect			tempRect;
 	unsigned char*			baseAddr;
 	unsigned char			colorAsChar[4];
-	int				width;
+	int				height, rowBytes;
 	
-	width = targetRect.right - targetRect.left;
+	height = targetRect.bottom - targetRect.top;
 	
 	tempRect = targetRect;
-	tempRect.bottom = tempRect.top + 1;
+	tempRect.right = tempRect.left + 1;
 	
 	NewGWorld(&tempGW, 32, &tempRect, NULL, NULL, 0);
 	tempPix = GetGWorldPixMap(tempGW);
 	LockPixels(tempPix);
 	
 	baseAddr = (unsigned char*)(**tempPix).baseAddr;
+	rowBytes = (**tempPix).rowBytes & 0x3FFF;
 	
 	*(long*)colorAsChar = RGBToLong(color);
 	
-	for (int i=0; i < width; i++)
+	for (int i=height - 1; i >= 0; i--)
 	{
 		if (rIncrement == 1)
-			colorAsChar[1] = 0xFF * float(i)/float(width);
+			colorAsChar[1] = 0xFF * float(i)/float(height);
 		else if (gIncrement == 1)
-			colorAsChar[2] = 0xFF * float(i)/float(width);
+			colorAsChar[2] = 0xFF * float(i)/float(height);
 		else if (bIncrement == 1)
-			colorAsChar[3] = 0xFF * float(i)/float(width);
+			colorAsChar[3] = 0xFF * float(i)/float(height);
 		
 		BlockMoveData(colorAsChar, baseAddr, 4);
 		
-		baseAddr += 4;
+		baseAddr += rowBytes;
 	}
 	
 	SAVECOLORS;
@@ -677,7 +715,6 @@ void HSVColorPicker::CreateControls()
 	SetControlUserPaneDraw(huePreview, HSVColorPicker::PreviewDraw);
 	SetControlUserPaneHitTest(huePreview, GenericHitTest);
 	
-	
 	saturationSlider = GetNewControl(rHSVCPSaturationSlider, parentWindow->GetWindow());
 	EmbedControl(saturationSlider, parentControl);
 	saturationLabel = GetNewControl(rHSVCPSaturationLabel, parentWindow->GetWindow());
@@ -697,6 +734,33 @@ void HSVColorPicker::CreateControls()
 	EmbedControl(valuePreview, parentControl);
 	SetControlUserPaneDraw(valuePreview, HSVColorPicker::PreviewDraw);
 	SetControlUserPaneHitTest(valuePreview, GenericHitTest);
+
+#if TARGET_API_MAC_CARBON	
+	if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x10, 0x00))
+	{
+		long		sliderWidth;
+		ControlSize	smallSize;
+		Rect		sliderBounds;
+		
+		GetThemeMetric(kThemeMetricSmallVSliderWidth, &sliderWidth);
+		smallSize = kControlSizeSmall;
+		
+		GetControlBounds(hueSlider, &sliderBounds);
+		sliderBounds.right = sliderBounds.left + sliderWidth;
+		SetControlBounds(hueSlider, &sliderBounds);
+		SetControlData(hueSlider, kControlNoPart, kControlSizeTag, sizeof(ControlSize), &smallSize);
+		
+		GetControlBounds(saturationSlider, &sliderBounds);
+		sliderBounds.right = sliderBounds.left + sliderWidth;
+		SetControlBounds(saturationSlider, &sliderBounds);
+		SetControlData(saturationSlider, kControlNoPart, kControlSizeTag, sizeof(ControlSize), &smallSize);
+		
+		GetControlBounds(valueSlider, &sliderBounds);
+		sliderBounds.right = sliderBounds.left + sliderWidth;
+		SetControlBounds(valueSlider, &sliderBounds);
+		SetControlData(valueSlider, kControlNoPart, kControlSizeTag, sizeof(ControlSize), &smallSize);
+	}
+#endif
 				   
 	SetControlBalloonHelp(hueSlider, hHSVCPHueSlider);
 	SetControlBalloonHelp(huePreview, hHSVCPValuePreview);
@@ -760,6 +824,7 @@ void HSVColorPicker::Show()
 
 void HSVColorPicker::UpdateCursor(Point theMouse)
 {
+#pragma unused (theMouse)
 #if !TARGET_API_MAC_CARBON
 	if (HMGetBalloons())
 		if (HandleBalloon(rHSVCPBalloonHelp, hueSlider, theMouse) ||
@@ -849,13 +914,13 @@ void HSVColorPicker::DrawGradient(Rect targetRect, HSVColor color,
 	PixMapHandle	tempPix;
 	Rect			tempRect;
 	unsigned char*	baseAddr;
-	int				width;
+	int				height, rowBytes;
 	float			h, s, v;
 
-	width = targetRect.right - targetRect.left;
+	height = targetRect.bottom - targetRect.top;
 	
 	tempRect = targetRect;
-	tempRect.bottom = tempRect.top + 1;
+	tempRect.right = tempRect.left + 1;
 	
 	NewGWorld(&tempGW, 32, &tempRect, NULL, NULL, 0);
 	tempPix = GetGWorldPixMap(tempGW);
@@ -866,19 +931,20 @@ void HSVColorPicker::DrawGradient(Rect targetRect, HSVColor color,
 	v = float(color.value) / 65535.0;
 	
 	baseAddr = (unsigned char*)(**tempPix).baseAddr;
+	rowBytes = (**tempPix).rowBytes & 0x3FFF;
 	
-	for (int i=0; i < width; i++)
+	for (int i=height - 1; i >= 0; i--)
 	{
 		if (hIncrement == 1)
-			h = float(i)/float(width) * 360;
+			h = float(i)/float(height) * 360;
 		else if (sIncrement == 1)
-			s = float(i)/float(width);
+			s = float(i)/float(height);
 		else if (vIncrement == 1)
-			v = float(i)/float(width);
+			v = float(i)/float(height);
 			
 		HSV2RGBfc(h, s, v, &baseAddr[1], &baseAddr[2], &baseAddr[3]);
 		
-		baseAddr += 4;
+		baseAddr += rowBytes;
 	}
 	
 	SAVECOLORS;
@@ -933,10 +999,13 @@ SystemColorPicker::SystemColorPicker()
 	previousHoverColor = kPickerNeverUsedColor;
 	
 	hiliteRgn = NULL;
+	updateRgn = NULL;
 	
-	paletteTargetRgn = NULL;
+	paletteRgn = NULL;
+	palettePix = NULL;
+	paletteGW = NULL;
 	
-	currentPoint.h = currentPoint.v = -1;
+	tracking = false;
 }
 
 SystemColorPicker::~SystemColorPicker()
@@ -944,8 +1013,8 @@ SystemColorPicker::~SystemColorPicker()
 	if (hiliteRgn != NULL)
 		DisposeRgn(hiliteRgn);
 		
-	if (paletteRgn != NULL)
-		DisposeRgn(paletteRgn);
+	if (updateRgn != NULL)
+		DisposeRgn(updateRgn);
 }
 
 void SystemColorPicker::CreateControls()
@@ -965,9 +1034,16 @@ void SystemColorPicker::Hide()
 
 void SystemColorPicker::SetColor(RGBColor inColor)
 {
-	color = inColor;
-	
-	Draw1Control(paletteControl);
+	if (!tracking)
+	{
+		DEBUG("\pset color");
+		previousColor = color;
+		color = inColor;
+		
+		UpdateColorPicker();
+		TrackMouseDown(NULL);
+		Draw1Control(paletteControl);
+	}
 }
 
 RGBColor SystemColorPicker::GetColor()
@@ -983,38 +1059,69 @@ void SystemColorPicker::Show()
 
 void SystemColorPicker::UpdateCursor(Point theMouse)
 {
-	Rect	controlRect;
+	bool changed;
+	
 #if !TARGET_API_MAC_CARBON
 	if (HMGetBalloons())
 		HandleBalloons(theMouse, parentWindow->GetWindow(), rSystemCPBalloonHelp);
 #endif
 
-	GetControlBounds(paletteControl, &controlRect);
+	parentWindow->UpdateReadout(-1, -1, GetColorUnderMouse(theMouse, &changed));
+}
+
+void SystemColorPicker::WindowToPaletteLocal(Point* theMouse)
+{
+	Rect paletteControlRect;
 	
-	theMouse.h -= controlRect.left;
-	theMouse.v -= controlRect.top;
+	GetControlBounds(paletteControl, &paletteControlRect);
 	
-	if (PtInRgn(theMouse, paletteTargetRgn))
+	// first the control within the window
+	theMouse->h -= paletteControlRect.left;
+	theMouse->v -= paletteControlRect.top;
+	
+	// then the border of the image well
+	theMouse->h -= 1;
+	theMouse->v -= 1;
+	
+	// finally the offset of the palette we are drawing within the control
+	theMouse->h -= ((paletteControlRect.right - paletteControlRect.left) -
+					(paletteRect.right - paletteRect.left))/2;
+	theMouse->v -= ((paletteControlRect.bottom - paletteControlRect.top) -
+					(paletteRect.bottom - paletteRect.top))/2;
+}
+
+RGBColor SystemColorPicker::GetColorUnderMouse(Point theMouse, bool* changed)
+{
+	*changed = !AreEqualRGB(kPickerNeverUsedColor, previousHoverColor);
+	
+	if (palettePix == NULL || paletteGW == NULL)
+		return kPickerNeverUsedColor;
+		
+	WindowToPaletteLocal(&theMouse);
+	
+	if (PtInRgn(theMouse, paletteRgn))
 	{
 		RGBColor	tempColor;
 		
-		theMouse.h -= paletteTargetRect.left;
-		theMouse.v -= paletteTargetRect.top;
-		
 		SAVEGWORLD;
-		
 		SetGWorld(paletteGW, NULL);
-		
 		GetCPixel(theMouse.h, theMouse.v, &tempColor);
-		if (AreEqualRGB(tempColor, kPickerNeverUsedColor))
-			tempColor = previousHoverColor;
-		else
-			previousHoverColor = tempColor; 
-		
 		RESTOREGWORLD;
 		
-		parentWindow->UpdateReadout(-1, -1, tempColor);
+		if (AreEqualRGB(tempColor, kPickerNeverUsedColor))
+		{
+			*changed = false;
+			return previousHoverColor;
+		}
+		else
+		{
+			*changed = !AreEqualRGB(tempColor, previousHoverColor);
+			previousHoverColor = tempColor;
+			return tempColor;
+		}
 	}
+	
+	return kPickerNeverUsedColor;
 }
 
 void SystemColorPicker::HandleContentClick(EventRecord* eventPtr)
@@ -1023,8 +1130,6 @@ void SystemColorPicker::HandleContentClick(EventRecord* eventPtr)
 	Point			where;
 	ControlHandle	clickedControl;
 	short			controlPart;
-	Rect			controlRect;
-	RGBColor		temp;
 	
 	where = eventPtr->where;
 	
@@ -1034,97 +1139,133 @@ void SystemColorPicker::HandleContentClick(EventRecord* eventPtr)
 	
 	GlobalToLocal(&where);
 	
-	
 	controlPart = FindControl(where, parentWindow->GetWindow(), &clickedControl);
 	
 	if (clickedControl == paletteControl)
 	{
-		GetControlBounds(paletteControl, &controlRect);
-		
+		tracking = true;
+		previousHoverColor = color;
 		do
 		{
-			GetMouse(&currentPoint);
-			currentPoint.h -= controlRect.left;
-			currentPoint.v -= controlRect.top;
-			temp = color;
-			color = previousColor;
-			Draw1Control(clickedControl);
+			TrackMouseDown(&where);
+			Draw1Control(paletteControl);
 			parentWindow->UpdateColors();
-			color = temp;
+			MUtilities::GetMouseLocation(GetWindowPort(parentWindow->GetWindow()), &where);
 		} while (Button());
-		
-		currentPoint.h = currentPoint.v = -1;
-		
-		color = previousColor;
-			
-		parentWindow->UpdateColors();
+		tracking = false;
+		previousColor = color;
 	}
 	
 	RESTOREGWORLD;
 }
 
+void SystemColorPicker::UpdateColorPicker()
+{
+	icnsEditorPtr	frontEditor;
+	int				currentColors, currentIconName;
+	
+	frontEditor = GetFrontEditor();
+	
+	if (frontEditor)
+	{
+		currentColors = frontEditor->colors;
+		currentIconName = frontEditor->currentPixName;
+	}
+	else
+	{
+		currentColors = macOSColors;
+		currentIconName = il32;
+	}
+	
+	if (currentColors != previousColors || currentIconName != previousIconName)
+	{	
+		previousIconName = previousIconName;
+		previousColors = currentColors;
+		previousHoverColor = kPickerNeverUsedColor;
+		
+		icnsEditorClass::statics.GetPickerPix(currentIconName, currentColors, &palettePix, &paletteGW, &paletteRgn);
+		paletteRect = (**palettePix).bounds;
+
+	}
+}
+
+void SystemColorPicker::TrackMouseDown(Point* theMouse)
+{
+	bool			colorChanged;
+	
+	if (theMouse)
+		color = GetColorUnderMouse(*theMouse, &colorChanged);
+	else
+		colorChanged = !AreEqualRGB(color, previousColor);
+	
+	if (AreEqualRGB(color, kPickerNeverUsedColor))
+	{
+		color = previousColor;
+		DEBUG("\prestored previous color");
+	}
+
+	DEBUG("\pgot an actual color");
+	if (colorChanged || !tracking) 
+	{
+		DEBUG("\pcolor changed");
+		
+		if (tracking)
+		{
+			if (updateRgn)
+				DisposeRgn(updateRgn);
+			updateRgn = NewRgn();
+			CopyRgn(hiliteRgn, updateRgn);
+		}	
+		
+		if (hiliteRgn)
+			DisposeRgn(hiliteRgn);
+		hiliteRgn = NewRgn();
+		GetSimilarColors(&color, 1, palettePix, paletteRgn, hiliteRgn);
+		InsetRgn(hiliteRgn, -1, -1);
+		
+		if (tracking)
+		{
+			UnionRgn(hiliteRgn, updateRgn, updateRgn);
+			ThemeSoundPlay(kThemeSoundMenuItemHilite);
+		}
+		
+		parentWindow->UpdateReadout(-1, -1, color);
+		parentWindow->Flush();
+	}
+}
+
 pascal void SystemColorPicker::PaletteDraw(ControlHandle theControl, short thePart)
 {
 #pragma unused (thePart)
-	Rect				controlRect, canvasRect;
+	Rect				controlRect, canvasRect, paletteTargetRect;
 	SystemColorPicker*	picker;
-	icnsEditorPtr		frontEditor;
-	int					newColors, newIconName;
-	RGBColor			newColor;
+	Point				paletteOffset;
+	RgnHandle			clippingRgn;
 	
 	picker = &ColorsPalettePtr(GetWindow(GetControlOwner(theControl)))->system;
 	
 	GetControlBounds(theControl, &controlRect);
 	
 	canvasRect = controlRect;
-	OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top);
 	
+	SAVEGWORLD;
+	picker->parentWindow->SetPort();
+	SAVECOLORS;
 	
-	frontEditor = GetFrontEditor();
-	if (frontEditor == NULL)
+	paletteOffset.h = 1 + ((controlRect.right - controlRect.left) - (picker->paletteRect.right - picker->paletteRect.left))/2;
+	paletteOffset.v = 1 + ((controlRect.bottom - controlRect.top) - (picker->paletteRect.bottom - picker->paletteRect.top))/2;
+	
+	if (!picker->parentWindow->IsBuffered())
 	{
-		newIconName = il32;
-		newColors = macOSColors;
+		OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top);
+		SetGWorld(icnsEditorClass::statics.canvasGW, NULL);
 	}
 	else
 	{
-		newIconName = frontEditor->currentPixName;
-		newColors = frontEditor->colors;
+		paletteOffset.h += controlRect.left;
+		paletteOffset.v += controlRect.top;
+		picker->parentWindow->LockPortBits();
 	}
-	
-	if (newIconName != picker->previousIconName || newColors != picker->previousColors)
-	{
-		int					hOffset, vOffset;
-		
-		picker->previousIconName = newIconName;
-		picker->previousColors = newColors;
-		picker->previousColor = kPickerNeverUsedColor;
-		
-		icnsEditorClass::statics.GetPickerPix(newIconName, newColors, &picker->palettePix, &picker->paletteGW, &picker->paletteRgn);
-		
-		picker->paletteRect = (**picker->palettePix).bounds;
-	
-		hOffset = -picker->paletteRect.left +
-				  ((canvasRect.right - canvasRect.left) - (picker->paletteRect.right - picker->paletteRect.left))/2;
-		vOffset = -picker->paletteRect.top +
-				  ((canvasRect.bottom - canvasRect.top) - (picker->paletteRect.bottom - picker->paletteRect.top))/2;
-	
-		picker->paletteTargetRect = picker->paletteRect;
-		OffsetRect(&picker->paletteTargetRect, hOffset, vOffset);
-		
-		if (picker->paletteTargetRgn != NULL)
-			DisposeRgn(picker->paletteTargetRgn);
-			
-		picker->paletteTargetRgn = NewRgn();
-		CopyRgn(picker->paletteRgn, picker->paletteTargetRgn);
-		OffsetRgn(picker->paletteTargetRgn, hOffset, vOffset);
-	}
-	
-	
-	SAVEGWORLD;
-	SAVECOLORS;
-	
-	SetGWorld(icnsEditorClass::statics.canvasGW, NULL);
 	
 	RESTORECOLORS;
 	
@@ -1133,71 +1274,70 @@ pascal void SystemColorPicker::PaletteDraw(ControlHandle theControl, short thePa
 	ForeColor(blackColor);
 	BackColor(whiteColor);
 	
-	CopyPixMap(picker->palettePix,
-			   icnsEditorClass::statics.canvasPix,
-			   &picker->paletteRect,
-			   &picker->paletteTargetRect,
-			   srcCopy,
-			   picker->paletteTargetRgn);
+	paletteTargetRect = picker->paletteRect;
+	OffsetRect(&paletteTargetRect, paletteOffset.h, paletteOffset.v);
+	OffsetRgn(picker->paletteRgn, paletteOffset.h, paletteOffset.v);
 	
-	if (picker->currentPoint.h == -1 || !PtInRgn(picker->currentPoint, picker->paletteTargetRgn))
-		newColor = picker->GetColor();
-	else
-	{
-		GetCPixel(picker->currentPoint.h, picker->currentPoint.v, &newColor);
-	}
+	CopyBits((BitMap*)*picker->palettePix,
+			 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
+			 &picker->paletteRect,
+			 &paletteTargetRect,
+			 srcCopy,
+			 picker->paletteRgn);
 	
-	if (AreEqualRGB(newColor, kPickerNeverUsedColor))
-		newColor = picker->previousColor;
-	
-	if (!AreEqualRGB(newColor, picker->previousColor))
-	{
-		int					hOffset, vOffset;
-		
-		
-		if (picker->hiliteRgn != NULL)
-			DisposeRgn(picker->hiliteRgn);
-		
-		picker->hiliteRgn = NewRgn();
-		hOffset = picker->paletteRect.left;
-		vOffset = picker->paletteRect.top;
-		
-		//OffsetRgn(picker->paletteRgn, -hOffset, -vOffset);
-		
-		GetSimilarColors(&newColor, 1, icnsEditorClass::statics.canvasPix, picker->paletteTargetRgn, picker->hiliteRgn);
-		//OffsetRgn(picker->paletteRgn, hOffset, vOffset);
-		//OffsetRgn(picker->hiliteRgn, hOffset, vOffset);
-		InsetRgn(picker->hiliteRgn, -1, -1);
-		
-		picker->previousColor = newColor;
-		
-		if (picker->currentPoint.h != -1)
-			ThemeSoundPlay(kThemeSoundMenuItemHilite);
-	}
-	
-	InsetRgn(picker->paletteTargetRgn, 1, 1);
+	InsetRgn(picker->paletteRgn, 1, 1);
 	
 	if (IsControlActive(theControl))
-		DrawImageWell(picker->paletteTargetRgn, kThemeStateActive, false);
+		DrawImageWell(picker->paletteRgn, kThemeStateActive, false);
 	else
-		DrawImageWell(picker->paletteTargetRgn, kThemeStateInactive, false);
+		DrawImageWell(picker->paletteRgn, kThemeStateInactive, false);
 		
-	InsetRgn(picker->paletteTargetRgn, -1, -1);	
+	InsetRgn(picker->paletteRgn, -1, -1);
+	OffsetRgn(picker->paletteRgn, -paletteOffset.h, -paletteOffset.v);	
 	
 	ForeColor(whiteColor);
+	OffsetRgn(picker->hiliteRgn, paletteOffset.h, paletteOffset.v);
 	FrameRgn(picker->hiliteRgn);
+	OffsetRgn(picker->hiliteRgn, -paletteOffset.h, -paletteOffset.v);
 	ForeColor(blackColor);
 	
 	RESTOREGWORLD;
+		
+	if (picker->tracking && picker->updateRgn)
+		clippingRgn = picker->updateRgn;
+	else
+		clippingRgn = NULL;
 	
-	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
-			 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
-			 &canvasRect,
-			 &controlRect,
-			 srcCopy,
-			 NULL);
+	if (!picker->parentWindow->IsBuffered())
+	{
+		if (clippingRgn)
+			OffsetRgn(clippingRgn, paletteOffset.h + controlRect.left, paletteOffset.v + controlRect.top);
+			
+		CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
+				 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
+				 &canvasRect,
+				 &controlRect,
+				 srcCopy,
+				 clippingRgn);
+		
+		if (clippingRgn)
+			OffsetRgn(clippingRgn, -(paletteOffset.h + controlRect.left), -(paletteOffset.v + controlRect.top));
+	}
+	else
+	{
+		picker->parentWindow->UnlockPortBits();
+#if TARGET_API_MAC_CARBON
+		if (clippingRgn)
+		{
+			OffsetRgn(clippingRgn, paletteOffset.h, paletteOffset.v);
+			QDSetDirtyRegion(GetWindowPort(picker->parentWindow->GetWindow()), clippingRgn);
+			QDFlushPortBuffer(GetWindowPort(picker->parentWindow->GetWindow()), NULL);
+			OffsetRgn(clippingRgn, -paletteOffset.h, -paletteOffset.v);
+		}
+#endif
+	}
 	
-	RESTORECOLORS; // we're done with the color changing*/
+	RESTORECOLORS; // we're done with the color changing
 }
 
 #pragma mark -
@@ -1379,13 +1519,20 @@ pascal void FavoritesColorPicker::PaletteDraw(ControlHandle theControl, short th
 	
 	GetControlBounds(theControl, &controlRect);
 	canvasRect = controlRect;
-	OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top);
 	
 	SAVEGWORLD;
 	SAVECOLORS;
 	
-	SetGWorld(icnsEditorClass::statics.canvasGW, NULL);
-	
+	if (!GetWindow(GetControlOwner(theControl))->IsBuffered())
+	{
+		SetGWorld(icnsEditorClass::statics.canvasGW, NULL);
+		OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top);
+	}
+	else
+	{
+		GetWindow(GetControlOwner(theControl))->LockPortBits();
+		SetPortWindowPort(GetControlOwner(theControl));
+	}
 	RESTORECOLORS;
 	
 	EraseRect(&canvasRect);
@@ -1393,16 +1540,17 @@ pascal void FavoritesColorPicker::PaletteDraw(ControlHandle theControl, short th
 	ForeColor(blackColor);
 	BackColor(whiteColor);
 	
+	
 	imageWellRect.top = imageWellRect.left = kFavoritesCPSampleSpacing;
 	imageWellRect.bottom = imageWellRect.right = imageWellRect.top + kFavoritesCPSampleHeight;
 	
 	for (int y=0, i=0;
 		 y < kFavoritesCPSampleYCount;
 		 y++, SetRect(&imageWellRect,
-					  kFavoritesCPSampleSpacing,
-					  imageWellRect.top + kFavoritesCPSampleSpacing + kFavoritesCPSampleHeight,
-					  kFavoritesCPSampleSpacing + kFavoritesCPSampleWidth,
-					  imageWellRect.bottom + kFavoritesCPSampleSpacing + kFavoritesCPSampleHeight))
+					  canvasRect.left + kFavoritesCPSampleSpacing,
+					  canvasRect.top + kFavoritesCPSampleSpacing + y * (kFavoritesCPSampleSpacing + kFavoritesCPSampleHeight),
+					  canvasRect.left + kFavoritesCPSampleSpacing + kFavoritesCPSampleWidth,
+					  canvasRect.top + kFavoritesCPSampleSpacing + (y + 1) * (kFavoritesCPSampleSpacing + kFavoritesCPSampleHeight)))
 		for (int x=0;
 			 x < kFavoritesCPSampleXCount;
 			 x++, i++, OffsetRect(&imageWellRect,
@@ -1421,12 +1569,15 @@ pascal void FavoritesColorPicker::PaletteDraw(ControlHandle theControl, short th
 	ForeColor(blackColor);
 	RESTOREGWORLD;
 	
-	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
-			  GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
-			  &canvasRect,
-			  &controlRect,
-			  srcCopy,
-			  NULL);
+	if (!GetWindow(GetControlOwner(theControl))->IsBuffered())
+		CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
+				  GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
+				  &canvasRect,
+				  &controlRect,
+				  srcCopy,
+				  NULL);
+	else
+		GetWindow(GetControlOwner(theControl))->UnlockPortBits();
 			  
 	RESTORECOLORS;
 }
@@ -1449,6 +1600,13 @@ pascal void	CPBackgroundPaneDraw(ControlHandle theControl,SInt16 thePart)
 		DrawThemeModelessDialogFrame(&controlRect,true);
 	else
 		DrawThemeModelessDialogFrame(&controlRect,false);
+}
+
+pascal ControlPartCode CPBackgroundPaneHitTest(ControlHandle theControl, Point where)
+{
+#pragma unused (theControl, where)
+	
+	return kControlNoPart;
 }
 
 pascal void	CPSwatchDraw(ControlHandle theControl,SInt16 thePart)
@@ -1480,37 +1638,28 @@ pascal void	CPSwatchDraw(ControlHandle theControl,SInt16 thePart)
 	
 	GetControlBounds(theControl, &controlRect);
 	canvasRect = controlRect;
-	OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top);
 	
-	SetGWorld(icnsEditorClass::statics.canvasGW, NULL);
-
-#if TARGET_API_MAC_CARBON
-	Point patternOrigin;
-	
-	patternOrigin.h = -controlRect.left;
-	patternOrigin.v = -controlRect.top;
-	
-	//MyQDSetPatternOrigin(patternOrigin);
-	
-	InsetRect(&canvasRect, -1, -1);
-	
-	if (IsControlActive(theControl))
-		DrawThemePlacard(&canvasRect, kThemeStateActive);
+	if (!parentPalette->IsBuffered())
+	{
+		SetGWorld(icnsEditorClass::statics.canvasGW, NULL);
+		OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top);
+	}
 	else
-		DrawThemePlacard(&canvasRect, kThemeStateInactive);
-		
-	InsetRect(&canvasRect, 1, 1);
-#else
+	{
+		parentPalette->LockPortBits();
+		parentPalette->SetPort();
+	}
+	
 	RESTORECOLORS;
 	
 	EraseRect(&canvasRect);
-#endif
+	
 	ForeColor(blackColor);
 	BackColor(whiteColor);
 	
 	
-	OffsetRgn(parentPalette->backColorRgn, -controlRect.left, -controlRect.top);
-	OffsetRgn(parentPalette->foreColorRgn, -controlRect.left, -controlRect.top);
+	OffsetRgn(parentPalette->backColorRgn, -(controlRect.left - canvasRect.left), -(controlRect.top - canvasRect.top));
+	OffsetRgn(parentPalette->foreColorRgn, -(controlRect.left - canvasRect.left), -(controlRect.top - canvasRect.top));
 	
 	// first we draw the background color swatch (since it must appear underneath)
 	if (IsControlActive(theControl))
@@ -1545,25 +1694,23 @@ pascal void	CPSwatchDraw(ControlHandle theControl,SInt16 thePart)
 
 	RESTOREGWORLD;
 	
-	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
-			 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
-			 &canvasRect,
-			 &controlRect,
-			 srcCopy,
-			 NULL);
+	if (!parentPalette->IsBuffered())
+		CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
+				 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
+				 &canvasRect,
+				 &controlRect,
+				 srcCopy,
+				 NULL);
+	else
+		parentPalette->UnlockPortBits();
 	
 	RESTORECOLORS; // we're done with the color changing
 	
-	OffsetRgn(parentPalette->backColorRgn, controlRect.left, controlRect.top);
-	OffsetRgn(parentPalette->foreColorRgn, controlRect.left, controlRect.top);
+	OffsetRgn(parentPalette->backColorRgn, (controlRect.left - canvasRect.left), (controlRect.top - canvasRect.top));
+	OffsetRgn(parentPalette->foreColorRgn, (controlRect.left - canvasRect.left), (controlRect.top - canvasRect.top));
 }
 
-pascal ControlPartCode CPBackgroundPaneHitTest(ControlHandle theControl, Point where)
-{
-#pragma unused (theControl, where)
-	
-	return kControlNoPart;
-}
+
 
 // __________________________________________________________________________________________
 // Name			: ColorSwatchHitTest
@@ -1581,9 +1728,18 @@ pascal ControlPartCode CPSwatchHitTest(ControlHandle theControl, Point where)
 	
 	// going through all of the rectangles which make up the control..
 	if (PtInRgn(where, parentPalette->backColorRgn))
+	{
+		DEBUG("\pbackground");
 		return kCPBack;
+	}
 	if (PtInRgn(where, parentPalette->foreColorRgn))
+	{
+		DEBUG("\pforeground");
 		return kCPFore;
+	}
 	else
+	{
+		DEBUG("\pno part");
 		return kControlNoPart;
+	}
 }

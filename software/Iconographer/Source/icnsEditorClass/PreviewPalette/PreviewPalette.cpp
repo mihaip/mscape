@@ -1,6 +1,8 @@
 #include "PreviewPalette.h"
 #include "icnsEditorClass.h"
 
+ControlActionUPP PreviewPalette::sliderActionUPP = NewControlActionUPP(PreviewPalette::SliderAction);
+
 PreviewPalette::PreviewPalette()
 			   :MFloater(rPPWindow, kPreviewPaletteType)
 {
@@ -21,7 +23,9 @@ PreviewPalette::PreviewPalette()
 
 PreviewPalette::~PreviewPalette()
 {
+#if !TARGET_API_MAC_CARBON
 	DisposeEnhancedPlacard(controls.background);
+#endif
 	DisposeEnhancedPlacard(controls.settings);
 }
 
@@ -94,7 +98,7 @@ void PreviewPalette::HandleContentClick(EventRecord* eventPtr)
 	if ((part = FindControl(where, window, &clickedControl)) &&
 		 (part != kControlNoPart))
 	{
-		if (TrackControl(clickedControl, where, (ControlActionUPP) -1))
+		if (TrackControl(clickedControl, where, sliderActionUPP))
 		{
 			if (clickedControl == controls.text)
 				SetKeyboardFocus(window, controls.text, kControlFocusNextPart);
@@ -179,30 +183,65 @@ void PreviewPalette::HandleKeyDown(EventRecord* eventPtr)
 
 void PreviewPalette::CreateControls()
 {
-	ControlActionUPP	sliderActionUPP;
-	
+	ControlFontStyleRec			controlStyle;
 	SAVEGWORLD;
 	
 	SetPort();
 	TextFont(applFont);
 	TextSize(9);
 	
+	controlStyle.flags = kControlUseFontMask;
+	controlStyle.font = kControlFontSmallSystemFont;
+	
 	CreateRootControl(window, &controls.root);
 	
-	controls.background = NewEnhancedPlacard(rPPBackground, window, enhancedPlacardDrawBorder + enhancedPlacardNoHitTest + enhancedPlacardDrawDialogFrame, 0, 0, "\p", NULL, NULL, icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix, NULL, NULL);
+#if !TARGET_API_MAC_CARBON
+	controls.background = NewEnhancedPlacard(rPPBackground, window,
+											 enhancedPlacardDrawBorder + enhancedPlacardNoHitTest + enhancedPlacardDrawDialogFrame,
+											 0, 0, "\p",
+											 NULL, false,
+											 NULL,
+											 icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix,
+											 NULL, NULL);
+#endif
 	
 	controls.preview = GetNewControl(rPPPreview, window);
 	SetControlUserPaneDraw(controls.preview, PreviewPalette::PreviewDraw);
 	SetControlUserPaneHitTest(controls.preview, GenericHitTest);
 	
-	controls.slider = GetNewControl(rPPSlider, window);
-	sliderActionUPP = NewControlActionUPP(PreviewPalette::SliderAction);
-	SetControlAction(controls.slider, sliderActionUPP);
-	
 	controls.text = GetNewControl(rPPText, window);
 	SetControlKeyFilter(controls.text, PreviewPalette::KeyFilter);
+	SetControlFontStyle(controls.text, &controlStyle);
 	
-	controls.settings = NewEnhancedPlacard(rPPSettings, window, enhancedPlacardDrawBorder + enhancedPlacardLargeArrow, 0, 0, "\p", NULL, settingsMenu, icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix, PreviewPalette::SettingsUpdate, this);
+	controls.slider = GetNewControl(rPPSlider, window);
+#if TARGET_API_MAC_CARBON
+	if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x10, 0x00))
+	{
+		long		sliderHeight;
+		ControlSize	smallSize;
+		Rect		controlBounds;
+		
+		GetThemeMetric(kThemeMetricHSliderHeight, &sliderHeight);
+		smallSize = kControlSizeSmall;
+		
+		GetControlBounds(controls.slider, &controlBounds);
+		SizeControl(controls.slider, controlBounds.right - controlBounds.left - 7, sliderHeight);
+		SetControlData(controls.slider, kControlNoPart, kControlSizeTag, sizeof(ControlSize), &smallSize);
+		
+		GetControlBounds(controls.text, &controlBounds);
+		controlBounds.left -= 3;
+		SetControlBounds(controls.text, &controlBounds);
+	}
+#endif
+	
+	
+	
+	controls.settings = NewEnhancedPlacard(rPPSettings, window,
+										   enhancedPlacardDrawBorder + enhancedPlacardLargeArrow, 0, 0, "\p",
+										   NULL, false,
+										   settingsMenu,
+										   icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix,
+										   PreviewPalette::SettingsUpdate, this);
 
 	RESTOREGWORLD;
 }
@@ -333,53 +372,78 @@ pascal void PreviewPalette::SliderAction(ControlHandle theControl, SInt16 thePar
 {
 #pragma unused (thePart)
 	PreviewPalettePtr	parent;
-	int					initialValue, currentValue, min, max, length;
-	Str255				sizeAsString;
-	Rect 				controlBounds;
-	Point				where;
-	float				percentageValue;
-	
+		
 	parent = icnsEditorClass::statics.previewPalette;
-	
-	initialValue = GetControlValue(theControl);
-	GetControlBounds(theControl, &controlBounds);
-	min = GetControlMinimum(theControl);
-	max = GetControlMaximum(theControl);
-	length = max - min;
-	
-	
-	ThemeSoundStart(kThemeDragSoundSliderThumb);
-	
-	while (Button())
+		
+	if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x10, 0x00))
 	{
-		GetMouse(&where);
+		int currentSize;
+		Str255 sizeAsString;
 		
-		where.h -= 3;
-		
-		where.h = constrain(where.h, controlBounds.left + kSliderEndcap, controlBounds.right - kSliderEndcap);
-		
-		if (where.v - controlBounds.bottom > 20 ||
-			controlBounds.top - where.v > 20)
-			currentValue = initialValue;
-		else
+		currentSize = GetControlValue(theControl);
+		if (currentSize >= 125)
 		{
-			percentageValue = float(where.h - (controlBounds.left + kSliderEndcap))/float(controlBounds.right - controlBounds.left - kSliderEndcap * 2);
-			currentValue = min + percentageValue * length;
+			currentSize = 128;
+			SetControlValue(theControl, currentSize);
+		}
+		NumToString(currentSize, sizeAsString);
+		SetControlText(parent->controls.text, sizeAsString);
+		
+		Draw1Control(parent->controls.text);
+		Draw1Control(parent->controls.preview);
+			
+		parent->Flush();
+	}
+	else
+	{
+		int					initialValue, currentValue, min, max, length;
+		Str255				sizeAsString;
+		Rect 				controlBounds;
+		Point				where;
+		float				percentageValue;
+		
+		initialValue = GetControlValue(theControl);
+		GetControlBounds(theControl, &controlBounds);
+		min = GetControlMinimum(theControl);
+		max = GetControlMaximum(theControl);
+		length = max - min;
+		
+		
+		ThemeSoundStart(kThemeDragSoundSliderThumb);
+		
+		while (Button())
+		{
+			MUtilities::GetMouseLocation(GetWindowPort(parent->GetWindow()), &where);
+			
+			where.h -= 3;
+			
+			where.h = constrain(where.h, controlBounds.left + kSliderEndcap, controlBounds.right - kSliderEndcap);
+			
+			if (where.v - controlBounds.bottom > 20 ||
+				controlBounds.top - where.v > 20)
+				currentValue = initialValue;
+			else
+			{
+				percentageValue = float(where.h - (controlBounds.left + kSliderEndcap))/float(controlBounds.right - controlBounds.left - kSliderEndcap * 2);
+				currentValue = min + percentageValue * length;
+			}
+			
+			SnapPreviewSize(&currentValue);
+			
+			SetControlValue(theControl, currentValue);
+			
+			NumToString(currentValue, sizeAsString);
+		
+			SetControlText(parent->controls.text, sizeAsString);
+			Draw1Control(parent->controls.text);
+			
+			Draw1Control(parent->controls.preview);
+			
+			parent->Flush();
 		}
 		
-		SnapPreviewSize(&currentValue);
-		
-		SetControlValue(theControl, currentValue);
-		
-		NumToString(currentValue, sizeAsString);
-	
-		SetControlText(parent->controls.text, sizeAsString);
-		Draw1Control(parent->controls.text);
-		
-		Draw1Control(parent->controls.preview);
+		ThemeSoundEnd();
 	}
-	
-	ThemeSoundEnd();
 }
 
 void PreviewPalette::SnapPreviewSize(int* value)
@@ -426,18 +490,27 @@ pascal void PreviewPalette::PreviewDraw(ControlHandle theControl, short thePart)
 		return;
 	
 	GetControlBounds(theControl, &controlRect);
-	
 	canvasRect = controlRect;
-	OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top + 128);
 	
 	SAVEGWORLD;
 	SAVECOLORS;
 	
-	SetGWorld(icnsEditorClass::statics.canvasGW, NULL);
+	if (!parent->IsBuffered())
+	{
+		SetGWorld(icnsEditorClass::statics.canvasGW, NULL);
+		OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top + 128);
+	}
+	else
+	{
+		parent->LockPortBits();
+		parent->SetPort();
+	}
+	
 	RESTORECOLORS;
 	EraseRect(&canvasRect);
 	ForeColor(blackColor);
 	BackColor(whiteColor);
+	
 	tempRect = canvasRect;
 	InsetRect(&tempRect, 2, 2);
 	DrawImageWell(theControl, tempRect);
@@ -537,19 +610,29 @@ pascal void PreviewPalette::PreviewDraw(ControlHandle theControl, short thePart)
 		parent->parentEditor->PreviewDisplay(previewSize, previewDepth, maskDepth, tempRect, icnsEditorClass::statics.preferences.FeatureEnabled(prefsPreviewSelected));  
 	}
 	RESTOREGWORLD;
+	parent->UnlockPortBits();
 	
-	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
-			 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
-			 &canvasRect,
-			 &controlRect,
-			 srcCopy,
-			 NULL);
-	
+	if (!parent->IsBuffered())
+		CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
+				 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
+				 &canvasRect,
+				 &controlRect,
+				 srcCopy,
+				 NULL);
+		
 	RESTORECOLORS;
 }
 
 void PreviewPalette::FillRectWithPreviewBackground(Rect targetRect)
 {
+	ThemeDrawingState previousState;
+	
+	if (MUtilities::GestaltVersion(gestaltAppearanceVersion, 0x01, 0x10))
+	{
+		GetThemeDrawingState(&previousState);
+		NormalizeThemeDrawingState();
+	}
+	
 	SAVECOLORS;
 	
 	switch (icnsEditorClass::statics.preferences.GetPreviewBackground())
@@ -559,11 +642,13 @@ void PreviewPalette::FillRectWithPreviewBackground(Rect targetRect)
 			EraseRect(&targetRect);
 			break;
 		case iPPWhite:
-			SetThemeBackground(kThemeBrushWhite, 32, true);
+			BackColor(whiteColor);
+			//SetThemeBackground(kThemeBrushWhite, 32, true);
 			EraseRect(&targetRect);
 			break;
 		case iPPBlack:
-			SetThemeBackground(kThemeBrushBlack, 32, true);
+			BackColor(blackColor);
+			//SetThemeBackground(kThemeBrushBlack, 32, true);
 			EraseRect(&targetRect);
 			break;
 		default:
@@ -581,4 +666,7 @@ void PreviewPalette::FillRectWithPreviewBackground(Rect targetRect)
 	}
 	
 	RESTORECOLORS;
+	
+	if (MUtilities::GestaltVersion(gestaltAppearanceVersion, 0x01, 0x10))
+		SetThemeDrawingState(previousState, true);
 }

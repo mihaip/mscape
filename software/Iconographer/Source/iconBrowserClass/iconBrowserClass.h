@@ -113,12 +113,13 @@ class iconBrowserClass : public MDocumentWindow
 		void	HandleGrow(Point where);
 		void	HandleKeyDown(EventRecord* eventPtr);
 		
-		bool	HasSelection();
-		void	EditIconInfo();
+		bool				HasSelection();
+		void				EditIconInfo();
+		int					GetCurrentFormat();
 		
 		icnsClassPtr		GetBrowserTempIcon();
 		
-		long	status;
+		long				status;
 		
 		FSSpec				srcFileSpec;
 		
@@ -131,7 +132,7 @@ class iconBrowserClass : public MDocumentWindow
 		bool				SizeSupported(int width, int height);
 		
 		int					BuildIconList();
-		void				LoadFamily(OSType type, bool newType, short oldFile, short file, ControlHandle progressBar, ControlHandle progressText);
+		void				LoadFamily(OSType type, bool newType, short oldFile, short file, ControlHandle progressBar, ControlHandle progressText, MWindowPtr progressDialog);
 		void 				AddIcon(int ID, Str255 name, long members, bool newType);
 		void				RemoveIcon(int ID, bool newType);
 		void				RefreshIconTypes();

@@ -6,10 +6,11 @@ MembersPalette::MembersPalette()
 			   :MFloater(rMPWindow, kMembersPaletteType)
 {
 	dragHiliteRgn = NULL;
-	
 	scrollValue = 0;
-	
 	parentEditor = NULL;
+	
+	lastClickedPane = NULL;
+	lastPaneClick = 0;
 	
 	infoButtonPicture = GetPicture(rMPInfoButtonPicture);
 	addMemberButtonPicture = GetPicture(rMPAddMemberButtonPicture);
@@ -24,13 +25,16 @@ MembersPalette::~MembersPalette()
 	DisposeEnhancedPlacard(controls.fillerPlacard);
 	DisposeEnhancedPlacard(controls.infoButton);
 	DisposeEnhancedPlacard(controls.addMemberButton);
+	
+	ReleaseResource(Handle(infoButtonPicture));
+	ReleaseResource(Handle(addMemberButtonPicture));
 }
 
 void MembersPalette::Activate()
 {
 	ResizeMemberPanes();
 	
-	Update(updateAll);
+	Update(true);
 	RefreshMemberPanes();
 }
 
@@ -241,9 +245,18 @@ void MembersPalette::HandleMemberPaneClick(ControlHandle pane, short controlPart
 		// if it's a different size/depth than the current one
 		{
 			// and finally we can set the new size/depth as the current one	
-			frontEditor->SetCurrentMember(srcPixName, true);	
+			frontEditor->SetCurrentMember(srcPixName, 2);
+		}
+		else if ((lastClickedPane == pane &&
+				 TickCount() - lastPaneClick <= GetDblTime()) ||
+				 ISCOMMANDDOWN)
+		{
+			frontEditor->HandleToolDoubleClick(toolLasso);
 		}
 	}
+	
+	lastClickedPane = pane;
+	lastPaneClick = TickCount();
 	
 	RESTOREGWORLD;
 	//RESTORECOLORS;
@@ -280,17 +293,17 @@ void MembersPalette::CreateControls()
 	
 	ResizeMemberPanes();
 	
-	controls.fillerPlacard = NewEnhancedPlacard(rMPSFillerPlacard, window, enhancedPlacardDrawBorder + enhancedPlacardNoHitTest, 0, 0, "\p", NULL, NULL, icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix, NULL, NULL);
+	controls.fillerPlacard = NewEnhancedPlacard(rMPSFillerPlacard, window, enhancedPlacardDrawBorder + enhancedPlacardNoHitTest, 0, 0, "\p", NULL, false, NULL, icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix, NULL, NULL);
 	
 	GetIndString(controlTitle, rMPNames, eMPInfo);
 	controls.infoButton = NewEnhancedPlacard(rMPInfoButton, window, enhancedPlacardDrawBorder,
-										  	 0, 0, controlTitle, infoButtonPicture, NULL,
+										  	 0, 0, controlTitle, infoButtonPicture, true, NULL,
 										  	 icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix,
 										  	 InfoButtonUpdate, this);
 										  	 
 	GetIndString(controlTitle, rMPNames, eMPAddMember);
 	controls.addMemberButton = NewEnhancedPlacard(rMPAddMemberButton, window, enhancedPlacardDrawBorder,
-												  0, 0, controlTitle, addMemberButtonPicture, NULL,
+												  0, 0, controlTitle, addMemberButtonPicture, true, NULL,
 												  icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix,
 												  AddMemberButtonUpdate, this);
 	
@@ -631,24 +644,79 @@ void MembersPalette::ScrollToCurrentMember(icnsEditorPtr frontEditor)
 	
 	SetPort();
 	
+	RefreshMemberPanes(frontEditor);
+	
 	for (int i=0; i < kMembersCount; i++)
 		if (kMembers[i].name & frontEditor->usedMembers &&
 			kMembers[i].name == frontEditor->currentPixName &&
-			!IsControlVisible(controls.members[i]))
+			IsMemberObscured(i))
 		{
 			Rect controlBounds;
-			
+			int target;
+				
 			GetControlBounds(controls.members[i], &controlBounds);
-			
 			OffsetRect(&controlBounds, 0, scrollValue);
+			if (controlBounds.top + 1 < scrollValue)
+				target = controlBounds.top + 1;
+			else
+				target = controlBounds.top + 1 - pageSize + (controlBounds.bottom - controlBounds.top);
+				
+			if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x10, 0x00))
+			{
+				int current = scrollValue,
+					increment = (target - current)/10;
+					
+				if (increment < 5 && increment > 0)
+					increment = 5;
+				else if (increment > -5 && increment < 0)
+					increment = -5;
+				
+				while (current != target)
+				{
+					current += increment;
+					
+					if (increment < 0 && current < target)
+						current = target;
+					else if (increment > 0 && current > target)
+						current = target;
+						
+					SetControlValue(controls.scrollbar, current);
+					scrollValue = GetControlValue(controls.scrollbar);
 			
-			SetControlValue(controls.scrollbar, controlBounds.top + 1);
-			scrollValue = GetControlValue(controls.scrollbar);
-	
-			RefreshMemberPanes();
+					RefreshMemberPanes(frontEditor);
+					
+					Flush();
+				}
+			}
+			else
+			{	
+				SetControlValue(controls.scrollbar, target);
+				scrollValue = GetControlValue(controls.scrollbar);
+		
+				RefreshMemberPanes(frontEditor);
+			}
+			break;
 		}
 	
 	RESTOREGWORLD;
+}
+
+bool MembersPalette::IsMemberObscured(int index)
+{
+	 if (!IsControlVisible(controls.members[index]))
+	 	return true;
+	 else
+	 {
+	 	Rect memberBounds;
+	 	
+	 	GetControlBounds(controls.members[index], &memberBounds);
+	 	
+	 	if (memberBounds.top < -1 ||
+	 		memberBounds.bottom > pageSize)
+	 		return true;
+	 	else
+	 		return false;
+	 }
 }
 
 #pragma mark -
@@ -845,10 +913,16 @@ void MembersPalette::HiliteRegion(RgnHandle inHiliteRgn)
 	SAVEGWORLD;
 	SetPort();
 	
+	DEBUG("\pgetting color");
+	
 	GetDragHiliteColor(window, &dragHiliteColor);
+	
+	DEBUG("\pcreating region");
 	
 	hiliteRgn = NewRgn();
 	CopyRgn(inHiliteRgn, hiliteRgn);
+	
+	DEBUG("\pcreating region some more");
 	
 	tempRgn = NewRgn();
 	CopyRgn(hiliteRgn, tempRgn);
@@ -859,7 +933,8 @@ void MembersPalette::HiliteRegion(RgnHandle inHiliteRgn)
 	RGBForeColor(&dragHiliteColor);
 	
 	if (dragHiliteRgn == NULL)
-	{			 
+	{
+		DEBUG("\pdrawing region with no previous one");			 
 		dragHiliteRgn = hiliteRgn;
 		
 		if (!EmptyRgn(inHiliteRgn))
@@ -869,13 +944,18 @@ void MembersPalette::HiliteRegion(RgnHandle inHiliteRgn)
 	}
 	else if (!EqualRgn(hiliteRgn, dragHiliteRgn))
 	{
+		DEBUG("\prefreshing old region");
 		InvalWindowRgn(window, dragHiliteRgn);
+		DEBUG("\pwindow invalidated");
 		if (!EmptyRgn(dragHiliteRgn))
 			ThemeSoundPlay(kThemeSoundDragTargetUnhilite);
+		DEBUG("\psound played");
 		Refresh();
+		DEBUG("\prefreshed");
 		
 		DisposeRgn(dragHiliteRgn);
 		
+		DEBUG("\pdrawing new region");
 		if (!EmptyRgn(inHiliteRgn))
 			ThemeSoundPlay(kThemeSoundDragTargetHilite);
 		
@@ -886,6 +966,7 @@ void MembersPalette::HiliteRegion(RgnHandle inHiliteRgn)
 	else
 		DisposeRgn(hiliteRgn);
 	
+	DEBUG("\pall done");
 	RESTOREGWORLD;
 	RESTORECOLORS;
 }
@@ -963,7 +1044,6 @@ pascal void MembersPalette::MemberPaneDraw(ControlHandle theControl, short thePa
 	MembersPalettePtr	parent;
 	Rect			labelRect;
 	MString			label;
-	RgnHandle		clipRegion = NewRgn();
 	
 	parent = icnsEditorClass::statics.membersPalette;
 	if (parent == NULL)
@@ -974,12 +1054,15 @@ pascal void MembersPalette::MemberPaneDraw(ControlHandle theControl, short thePa
 	SAVECOLORS;
 	SAVEGWORLD;
 	
-	
 	GetControlBounds(theControl, &controlRect);
 	canvasRect = controlRect;
-	OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top + 128);
 	
-	SetGWorld(icnsEditorClass::statics.canvasGW, NULL);
+	if (!parent->IsBuffered())
+	{
+		OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top + 128);
+	
+		SetGWorld(icnsEditorClass::statics.canvasGW, NULL);
+	}
 	
 	if (IsControlActive(theControl))
 		DrawThemePlacard(&canvasRect, kThemeStateActive);
@@ -1049,15 +1132,19 @@ pascal void MembersPalette::MemberPaneDraw(ControlHandle theControl, short thePa
 		
 	RESTOREGWORLD;
 	
-	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
-			 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
-			 &canvasRect,
-			 &controlRect,
-			 srcCopy,
-			 GetPortClipRegion(GetWindowPort(parent->window), clipRegion));
-	
-	DisposeRgn(clipRegion);
-	
+	if (!parent->IsBuffered())
+	{
+		RgnHandle		clipRegion = NewRgn();
+		
+		CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
+				 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
+				 &canvasRect,
+				 &controlRect,
+				 srcCopy,
+				 GetPortClipRegion(GetWindowPort(parent->window), clipRegion));
+		
+		DisposeRgn(clipRegion);
+	}
 	RESTORECOLORS;
 }
 

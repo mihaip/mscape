@@ -785,15 +785,17 @@ OSStatus LaunchURL(ConstStr255Param urlStr)
 	long endSel;
 	
 	err = ICStart(&inst, '????');			// Use your creator code if you have one!
-	if (err == noErr) {
+	if (err == noErr)
+	{
 #if !TARGET_API_MAC_CARBON
 		err = ICFindConfigFile(inst, 0, nil);
 #endif
-			if (err == noErr) {
-				startSel = 0;
-				endSel = urlStr[0];
-				err = ICLaunchURL(inst, "\p", (char *) &urlStr[1], urlStr[0], &startSel, &endSel);
-			}
+		if (err == noErr)
+		{
+			startSel = 0;
+			endSel = urlStr[0];
+			err = ICLaunchURL(inst, "\p", (char *) &urlStr[1], urlStr[0], &startSel, &endSel);
+		}
 		(void) ICStop(inst);
 	}
 	return (err);
@@ -2497,7 +2499,7 @@ int XYMenu(Point where,
 }
 
 ControlHandle NewEnhancedPlacard(short controlID, WindowPtr parentWindow, int flags, short font, short size,
-								 Str255 title, PicHandle picture, MenuHandle menu, GWorldPtr canvasGW, PixMapHandle canvasPix,
+								 Str255 title, PicHandle picture, bool pictureIsResource, MenuHandle menu, GWorldPtr canvasGW, PixMapHandle canvasPix,
 								 EnhancedPlacardUpdateFuncPtr updateFunc, void* clientData)
 {
 	ControlHandle	placard;
@@ -2514,6 +2516,7 @@ ControlHandle NewEnhancedPlacard(short controlID, WindowPtr parentWindow, int fl
 	data->size = size;
 	CopyString(data->title, title);
 	data->picture = picture;
+	data->pictureIsResource = pictureIsResource;
 	data->menu = menu;	
 	data->menuValue = 1;
 	data->canvasGW = canvasGW;
@@ -2531,7 +2534,8 @@ void DisposeEnhancedPlacard(ControlHandle placard)
 	EnhancedPlacardDataPtr placardData;
 	
 	placardData = EnhancedPlacardDataPtr(GetControlReference(placard));
-	if (placardData->picture != NULL)
+	if (placardData->picture != NULL &&
+		!placardData->pictureIsResource)
 		KillPicture(placardData->picture);
 		
 	DisposePtr(Ptr(placardData));
@@ -2556,16 +2560,29 @@ pascal void EnhancedPlacardDraw(ControlHandle placard, short partCode)
 	
 	SAVEGWORLD;
 	
-	SetGWorld(data->canvasGW, NULL);
 	GetControlBounds(placard, &bounds);
 	canvasBounds = bounds;
-	OffsetRect(&canvasBounds, -canvasBounds.left, -canvasBounds.top);
+
+#if TARGET_API_MAC_CARBON	
+	if (!QDIsPortBuffered(GetWindowPort(GetControlOwner(placard))))
+#endif
+	{
+		SetGWorld(data->canvasGW, NULL);
+		OffsetRect(&canvasBounds, -canvasBounds.left, -canvasBounds.top);
+	}
+#if TARGET_API_MAC_CARBON
+	else
+	{
+		LockPortBits((GrafPtr)GetWindowPort(GetControlOwner(placard)));
+		SetPortWindowPort(GetControlOwner(placard));
+	}
+#endif
+	
 	placardBounds = canvasBounds;
 	
 	if (!(data->flags & enhancedPlacardDrawBorder))
 		InsetRect(&placardBounds, -1, -1);
 		
-	
 	if (data->flags & enhancedPlacardDrawDialogFrame)
 	{
 		DrawThemeModelessDialogFrame(&placardBounds, IsControlActive(placard));
@@ -2600,8 +2617,13 @@ pascal void EnhancedPlacardDraw(ControlHandle placard, short partCode)
 			else
 				SetThemeTextColor(kThemeTextColorPlacardActive, 32, true);
 		else
-			SetThemeTextColor(kThemeTextColorPlacardActive, 32, true); // still active since we do blending...
-		
+#if TARGET_API_MAC_CARBON
+			if (!QDIsPortBuffered(GetWindowPort(GetControlOwner(placard))))
+				SetThemeTextColor(kThemeTextColorPlacardActive, 32, true); // still active since we do blending...
+			else
+#endif
+				SetThemeTextColor(kThemeTextColorPlacardInactive, 32, true);
+				
 		titleWidth = StringWidth(data->title);
 		
 		h = placardBounds.left + (placardBounds.right - placardBounds.left - titleWidth)/2;
@@ -2620,25 +2642,35 @@ pascal void EnhancedPlacardDraw(ControlHandle placard, short partCode)
 	if (data->menu != NULL)
 	{
 		int hOffset, vOffset;
+		float blendFactor;
 		
 		hOffset = -2;
 		vOffset = -2;
 		
+		if (IsControlActive(placard)
+#if TARGET_API_MAC_CARBON
+			|| !QDIsPortBuffered(GetWindowPort(GetControlOwner(placard)))
+#endif
+			)
+			blendFactor = kEnhancedPlacardMenuArrowBlend;
+		else
+			blendFactor = kEnhancedPlacardMenuArrowInactiveBlend;
+		
 		if (data->flags & enhancedPlacardLargeArrow)
 		{
 			hOffset--;
-			SetPixelBlended(placardBounds.right - 5 + hOffset, placardBounds.bottom - 4 + vOffset, kBlackAsRGB, kEnhancedPlacardMenuArrowBlend);
-			SetPixelBlended(placardBounds.right - 4 + hOffset, placardBounds.bottom - 4 + vOffset, kBlackAsRGB, kEnhancedPlacardMenuArrowBlend);
-			SetPixelBlended(placardBounds.right - 3 + hOffset, placardBounds.bottom - 4 + vOffset, kBlackAsRGB, kEnhancedPlacardMenuArrowBlend);
-			SetPixelBlended(placardBounds.right - 2 + hOffset, placardBounds.bottom - 4 + vOffset, kBlackAsRGB, kEnhancedPlacardMenuArrowBlend);
-			SetPixelBlended(placardBounds.right - 1 + hOffset, placardBounds.bottom - 4 + vOffset, kBlackAsRGB, kEnhancedPlacardMenuArrowBlend);
+			SetPixelBlended(placardBounds.right - 5 + hOffset, placardBounds.bottom - 4 + vOffset, kBlackAsRGB, blendFactor);
+			SetPixelBlended(placardBounds.right - 4 + hOffset, placardBounds.bottom - 4 + vOffset, kBlackAsRGB, blendFactor);
+			SetPixelBlended(placardBounds.right - 3 + hOffset, placardBounds.bottom - 4 + vOffset, kBlackAsRGB, blendFactor);
+			SetPixelBlended(placardBounds.right - 2 + hOffset, placardBounds.bottom - 4 + vOffset, kBlackAsRGB, blendFactor);
+			SetPixelBlended(placardBounds.right - 1 + hOffset, placardBounds.bottom - 4 + vOffset, kBlackAsRGB, blendFactor);
 		}
 		
-		SetPixelBlended(placardBounds.right - 4 + hOffset, placardBounds.bottom - 3 + vOffset, kBlackAsRGB, kEnhancedPlacardMenuArrowBlend);
-		SetPixelBlended(placardBounds.right - 3 + hOffset, placardBounds.bottom - 3 + vOffset, kBlackAsRGB, kEnhancedPlacardMenuArrowBlend);
-		SetPixelBlended(placardBounds.right - 2 + hOffset, placardBounds.bottom - 3 + vOffset, kBlackAsRGB, kEnhancedPlacardMenuArrowBlend);
+		SetPixelBlended(placardBounds.right - 4 + hOffset, placardBounds.bottom - 3 + vOffset, kBlackAsRGB, blendFactor);
+		SetPixelBlended(placardBounds.right - 3 + hOffset, placardBounds.bottom - 3 + vOffset, kBlackAsRGB, blendFactor);
+		SetPixelBlended(placardBounds.right - 2 + hOffset, placardBounds.bottom - 3 + vOffset, kBlackAsRGB, blendFactor);
 		
-		SetPixelBlended(placardBounds.right - 3 + hOffset, placardBounds.bottom - 2 + vOffset, kBlackAsRGB, kEnhancedPlacardMenuArrowBlend);
+		SetPixelBlended(placardBounds.right - 3 + hOffset, placardBounds.bottom - 2 + vOffset, kBlackAsRGB, blendFactor);
 	}
 	
 	if (data->picture != NULL)
@@ -2653,7 +2685,11 @@ pascal void EnhancedPlacardDraw(ControlHandle placard, short partCode)
 		DrawPicture(data->picture, &pictureRect);
 	}
 	
-	if (!IsControlActive(placard))
+	if (!IsControlActive(placard)
+#if TARGET_API_MAC_CARBON
+	    && !QDIsPortBuffered(GetWindowPort(GetControlOwner(placard)))
+#endif
+	    )
 	{
 		RGBColor opColor = {0xFFFF/2, 0xFFFF/2, 0xFFFF/2};
 		Rect	newPlacardRect, contentRect;
@@ -2695,17 +2731,23 @@ pascal void EnhancedPlacardDraw(ControlHandle placard, short partCode)
 	}
 	
 	RESTOREGWORLD;
-	
+
+#if TARGET_API_MAC_CARBON
+	UnlockPortBits((GrafPtr)GetWindowPort(GetControlOwner(placard)));
+#endif
+
 	SAVECOLORS;
 	
-	
-	CopyBits((BitMap*)*data->canvasPix,
-			 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
-			 &canvasBounds,
-			 &bounds,
-			 srcCopy,
-			 NULL);
-	
+#if TARGET_API_MAC_CARBON
+	if (!QDIsPortBuffered(GetWindowPort(GetControlOwner(placard))))
+#endif
+		CopyBits((BitMap*)*data->canvasPix,
+				 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
+				 &canvasBounds,
+				 &bounds,
+				 srcCopy,
+				 NULL);
+		
 	RESTORECOLORS;
 }
 
@@ -2873,6 +2915,14 @@ void SetEnhancedPlacardMenuValue(ControlHandle placard, int menuValue)
 	data->menuValue = menuValue;
 	
 	CheckMenuItem(data->menu, data->menuValue, true);
+}
+
+int GetEnhancedPlacardMenuValue(ControlHandle placard)
+{
+	EnhancedPlacardDataPtr data;
+	data = EnhancedPlacardDataPtr(GetControlReference(placard));
+	
+	return data->menuValue;
 }
 
 #pragma mark -
@@ -3258,7 +3308,14 @@ pascal short GenericHitTest(ControlHandle control, Point where)
 {
 	Rect	controlBounds;
 	
-	return (PtInRect(where, GetControlBounds(control, &controlBounds)));
+	return PtInRect(where, GetControlBounds(control, &controlBounds));
+}
+
+pascal short NoHitTest(ControlHandle control, Point where)
+{
+#pragma unused(control, where)
+	
+	return kControlNoPart;
 }
 
 void PointsToRect(Point point1, Point point2, Rect* targetRect)
