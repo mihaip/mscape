@@ -1,206 +1,4 @@
-/* Resource fork of software/clip2icns/clip2icns 1.0d4 */
-resource 'DITL' (3000, "Basic Alert") {
-	{	/* array DITLarray: 2 elements */
-		/* [1] */
-		{66, 318, 86, 376},
-		Button {
-			enabled,
-			"OK"
-		},
-		/* [2] */
-		{8, 58, 60, 376},
-		StaticText {
-			disabled,
-			"^0 ^1."
-		}
-	}
-};
-
-resource 'DITL' (129) {
-	{	/* array DITLarray: 11 elements */
-		/* [1] */
-		{180, 205, 200, 263},
-		Button {
-			enabled,
-			"Insert"
-		},
-		/* [2] */
-		{180, 135, 200, 193},
-		Button {
-			enabled,
-			"Cancel"
-		},
-		/* [3] */
-		{74, 9, 94, 259},
-		Control {
-			enabled,
-			200
-		},
-		/* [4] */
-		{100, 9, 120, 259},
-		Control {
-			enabled,
-			201
-		},
-		/* [5] */
-		{131, 209, 147, 259},
-		EditText {
-			enabled,
-			"-16455"
-		},
-		/* [6] */
-		{152, 9, 173, 260},
-		CheckBox {
-			enabled,
-			"Include old-style resources (if any)"
-		},
-		/* [7] */
-		{130, 29, 145, 47},
-		StaticText {
-			disabled,
-			"ID:"
-		},
-		/* [8] */
-		{8, 33, 56, 129},
-		UserItem {
-			enabled
-		},
-		/* [9] */
-		{9, 141, 57, 237},
-		UserItem {
-			enabled
-		},
-		/* [10] */
-		{58, 60, 70, 103},
-		StaticText {
-			disabled,
-			"clipboard"
-		},
-		/* [11] */
-		{59, 151, 71, 228},
-		StaticText {
-			disabled,
-			"current contents"
-		}
-	}
-};
-
-resource 'DITL' (130) {
-	{	/* array DITLarray: 9 elements */
-		/* [1] */
-		{102, 270, 122, 338},
-		Button {
-			enabled,
-			"OK"
-		},
-		/* [2] */
-		{102, 190, 121, 254},
-		Button {
-			enabled,
-			"Cancel"
-		},
-		/* [3] */
-		{102, 7, 122, 158},
-		Button {
-			enabled,
-			"Launch Register App"
-		},
-		/* [4] */
-		{12, 136, 28, 336},
-		EditText {
-			enabled,
-			""
-		},
-		/* [5] */
-		{40, 136, 56, 336},
-		EditText {
-			enabled,
-			""
-		},
-		/* [6] */
-		{68, 136, 84, 336},
-		EditText {
-			enabled,
-			""
-		},
-		/* [7] */
-		{12, 8, 28, 51},
-		StaticText {
-			disabled,
-			"Name:"
-		},
-		/* [8] */
-		{40, 8, 56, 98},
-		StaticText {
-			disabled,
-			"Organization:"
-		},
-		/* [9] */
-		{68, 8, 84, 131},
-		StaticText {
-			disabled,
-			"Registration Code:"
-		}
-	}
-};
-
-resource 'DITL' (128) {
-	{	/* array DITLarray: 6 elements */
-		/* [1] */
-		{180, 210, 200, 268},
-		Button {
-			enabled,
-			"OK"
-		},
-		/* [2] */
-		{10, 10, 125, 270},
-		UserItem {
-			disabled
-		},
-		/* [3] */
-		{76, 144, 89, 226},
-		StaticText {
-			disabled,
-			"Registered to:"
-		},
-		/* [4] */
-		{90, 152, 104, 269},
-		StaticText {
-			disabled,
-			"Not registered"
-		},
-		/* [5] */
-		{104, 152, 118, 269},
-		StaticText {
-			disabled,
-			""
-		},
-		/* [6] */
-		{125, 10, 175, 289},
-		StaticText {
-			disabled,
-			"by Mihai Parparita\nmihai@mscape.com\nhttp"
-			"://cafe.ambrosiasw.com/gui-central/"
-		}
-	}
-};
-
-resource 'ALRT' (3000) {
-	{40, 40, 138, 421},
-	3000,
-	{	/* array: 4 elements */
-		/* [1] */
-		OK, visible, sound1,
-		/* [2] */
-		OK, visible, sound1,
-		/* [3] */
-		OK, visible, sound1,
-		/* [4] */
-		OK, visible, sound1
-	},
-	alertPositionMainScreen
-};
-
+/* Resource fork of software/clip2icns/clip2icns 1.0b1 */
 resource 'MENU' (130) {
 	130,
 	textMenuProc,
@@ -222,24 +20,6 @@ resource 'MENU' (130) {
 		"Clear", noIcon, noKey, noMark, plain,
 		/* [7] */
 		"Select All", noIcon, "A", noMark, plain
-	}
-};
-
-resource 'MENU' (129) {
-	129,
-	textMenuProc,
-	0x7FFFFFFB,
-	enabled,
-	"File",
-	{	/* array: 4 elements */
-		/* [1] */
-		"New icon from clipboard…", noIcon, "N", noMark, plain,
-		/* [2] */
-		"Insert icon into file…", noIcon, "I", noMark, plain,
-		/* [3] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [4] */
-		"Quit", noIcon, "Q", noMark, plain
 	}
 };
 
@@ -691,6 +471,24 @@ resource 'MENU' (207) {
 	}
 };
 
+resource 'MENU' (129) {
+	129,
+	textMenuProc,
+	0x7FFFFFFB,
+	enabled,
+	"File",
+	{	/* array: 4 elements */
+		/* [1] */
+		"New Icon From Clipboard…", noIcon, "N", noMark, plain,
+		/* [2] */
+		"Insert Icon Into File…", noIcon, "I", noMark, plain,
+		/* [3] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"Quit", noIcon, "Q", noMark, plain
+	}
+};
+
 resource 'DLOG' (129) {
 	{54, 42, 260, 315},
 	dBoxProc,
@@ -1088,21 +886,21 @@ resource 'MBAR' (128) {
 resource 'vers' (1) {
 	0x1,
 	0x0,
-	development,
-	0x4,
+	beta,
+	0x0,
 	14,
-	"1.0d4",
+	"1.0b1",
 	"©1998 Mihai Parparita"
 };
 
 resource 'vers' (2) {
 	0x1,
 	0x0,
-	development,
-	0x4,
+	beta,
+	0x0,
 	14,
-	"1.0d4",
-	"clip2icns 1.0d4"
+	"1.0b1",
+	"clip2icns 1.0b1"
 };
 
 resource 'dlgx' (-6043) {
@@ -2252,6 +2050,192 @@ data 'c2ic' (0) {
 	$"7270 6172 6974 61"                                  /* rparita */
 };
 
+resource 'DITL' (129) {
+	{	/* array DITLarray: 11 elements */
+		/* [1] */
+		{180, 205, 200, 263},
+		Button {
+			enabled,
+			"Insert"
+		},
+		/* [2] */
+		{180, 135, 200, 193},
+		Button {
+			enabled,
+			"Cancel"
+		},
+		/* [3] */
+		{74, 9, 94, 259},
+		Control {
+			enabled,
+			200
+		},
+		/* [4] */
+		{100, 9, 120, 259},
+		Control {
+			enabled,
+			201
+		},
+		/* [5] */
+		{131, 209, 147, 259},
+		EditText {
+			enabled,
+			"-16455"
+		},
+		/* [6] */
+		{152, 9, 173, 260},
+		CheckBox {
+			enabled,
+			"Include old-style resources (if any)"
+		},
+		/* [7] */
+		{130, 29, 145, 47},
+		StaticText {
+			disabled,
+			"ID:"
+		},
+		/* [8] */
+		{8, 33, 56, 129},
+		UserItem {
+			enabled
+		},
+		/* [9] */
+		{9, 141, 57, 237},
+		UserItem {
+			enabled
+		},
+		/* [10] */
+		{58, 60, 70, 103},
+		StaticText {
+			disabled,
+			"clipboard"
+		},
+		/* [11] */
+		{59, 151, 71, 228},
+		StaticText {
+			disabled,
+			"current contents"
+		}
+	}
+};
+
+resource 'DITL' (130) {
+	{	/* array DITLarray: 9 elements */
+		/* [1] */
+		{102, 270, 122, 338},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{102, 190, 121, 254},
+		Button {
+			enabled,
+			"Cancel"
+		},
+		/* [3] */
+		{102, 7, 122, 158},
+		Button {
+			enabled,
+			"Launch Register App"
+		},
+		/* [4] */
+		{12, 136, 28, 336},
+		EditText {
+			enabled,
+			""
+		},
+		/* [5] */
+		{40, 136, 56, 336},
+		EditText {
+			enabled,
+			""
+		},
+		/* [6] */
+		{68, 136, 84, 336},
+		EditText {
+			enabled,
+			""
+		},
+		/* [7] */
+		{12, 8, 28, 51},
+		StaticText {
+			disabled,
+			"Name:"
+		},
+		/* [8] */
+		{40, 8, 56, 98},
+		StaticText {
+			disabled,
+			"Organization:"
+		},
+		/* [9] */
+		{68, 8, 84, 131},
+		StaticText {
+			disabled,
+			"Registration Code:"
+		}
+	}
+};
+
+resource 'DITL' (128) {
+	{	/* array DITLarray: 6 elements */
+		/* [1] */
+		{180, 210, 200, 268},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{10, 10, 125, 270},
+		UserItem {
+			disabled
+		},
+		/* [3] */
+		{76, 144, 89, 226},
+		StaticText {
+			disabled,
+			"Registered to:"
+		},
+		/* [4] */
+		{90, 152, 104, 269},
+		StaticText {
+			disabled,
+			"Not registered"
+		},
+		/* [5] */
+		{104, 152, 118, 269},
+		StaticText {
+			disabled,
+			""
+		},
+		/* [6] */
+		{125, 10, 175, 289},
+		StaticText {
+			disabled,
+			"by Mihai Parparita\nmihai@mscape.com\nhttp"
+			"://cafe.ambrosiasw.com/gui-central/"
+		}
+	}
+};
+
+resource 'DITL' (3000, "Basic Alert") {
+	{	/* array DITLarray: 2 elements */
+		/* [1] */
+		{66, 318, 86, 376},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{8, 58, 60, 376},
+		StaticText {
+			disabled,
+			"^0 ^1."
+		}
+	}
+};
+
 resource 'icns' (128, "created with clip2icns") {
 	{	/* array elementArray: 4 elements */
 		/* [1] */
@@ -3270,6 +3254,23 @@ resource 'mctb' (205) {
 	}
 };
 
+resource 'mctb' (129) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
 resource 'dctb' (128) {
 	{	/* array ColorSpec: 5 elements */
 		/* [1] */
@@ -3285,6 +3286,22 @@ resource 'dctb' (128) {
 	}
 };
 
+resource 'ALRT' (3000) {
+	{40, 40, 138, 421},
+	3000,
+	{	/* array: 4 elements */
+		/* [1] */
+		OK, visible, sound1,
+		/* [2] */
+		OK, visible, sound1,
+		/* [3] */
+		OK, visible, sound1,
+		/* [4] */
+		OK, visible, sound1
+	},
+	alertPositionMainScreen
+};
+
 resource 'cfrg' (0) {
 	{	/* array memberArray: 1 elements */
 		/* [1] */
@@ -3298,7 +3315,7 @@ resource 'cfrg' (0) {
 		kDataForkCFragLocator,
 		kZeroOffset,
 		kSegIDZero,
-		"clip2icns 1.0d4"
+		"clip2icns 1.0b1"
 	}
 };
 

@@ -23,9 +23,9 @@ void Initialize()
 	doesExpire = GetString( 128 );
 	if (EqualString(*doesExpire, "\p1", true, true))
 	{
-		if (theDate.month >= 10 && theDate.day >= 1 && theDate.year >= 1998)
+		if (theDate.month >= 11 && theDate.day >= 1 && theDate.year >= 1998)
 		{
-			DisplayAlert("This beta of clip2icns expired on October 1, 1998.", "Please go to http://cafe.ambrosiasw.com/gui-central/clip2cicn.html to get a new version");
+			DisplayAlert("This beta of clip2icns expired on November 1, 1998.", "Please go to http://cafe.ambrosiasw.com/gui-central/clip2cicn.html to get a new version");
 			ExitApplication();
 		}
 	}
@@ -167,8 +167,6 @@ OSErr DoOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
 	FSSpec		desc;
 	AEKeyword	keyword;
 	DescType	type;
-	Handle		pic;
-	long		offset;
 
 	reply;
 	refCon;
@@ -181,12 +179,7 @@ OSErr DoOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
 		err = AEGetNthPtr(&fileSpecList, i, typeFSS, &keyword, &type, (Ptr)&desc, sizeof(FSSpec), &actual);
 		if (err == noErr)
 		{
-			pic = NewHandle (0);
-			if (GetScrap( pic, 'PICT', &offset ) < 0)
-			{
-				DisplayAlert("", "The clipboard is either empty or doesn't contain a picture");
-			}
-			else
+			if (CheckClipboard())
 			{
 				schemeSpec = desc;
 				GeticnsID(false);	
@@ -472,10 +465,10 @@ void GenerateRegNo(Str255 name, Str255 regNo)
 		regNo[i] = ((regNo[i] + name[i+18]) % 10);
 	
 	regNo[1] = ((regNo[1] + 2) % 10) + '0';
-	regNo[2] = ((regNo[2] + 5) % 10) + '0';
-	regNo[3] = ((regNo[3] + 7) % 10) + '0';
-	regNo[4] = ((regNo[4] + 4) % 10) + '0';
-	regNo[5] = ((regNo[5] + 5) % 10) + '0';
+	regNo[2] = ((regNo[2] + 4) % 10) + '0';
+	regNo[3] = ((regNo[3] + 0) % 10) + '0';
+	regNo[4] = ((regNo[4] + 9) % 10) + '0';
+	regNo[5] = ((regNo[5] + 9) % 10) + '0';
 	regNo[6] = ((regNo[6] + 8) % 10) + '0';	
 }
 
@@ -489,6 +482,7 @@ void Register()
 	Rect			itemRect;
 	Str255			name, regNo, enteredRegNo, company;
 	FSSpec			registerSpec;
+	MenuHandle		menu;
 	
 	registration = GetNewDialog (registrationID, nil, (WindowPtr)-1L);
 	SetPort( registration);
@@ -523,6 +517,8 @@ void Register()
 					DisposeDialog(registration);
 					SetGWorld(startupPort, startupDevice);
 					DisplayAlert("","Thank you for registering clip2icns");
+					menu = GetMenuHandle(mApple);
+					DisableItem(menu, iRegister);
 					return;
 				}
 				else
@@ -1619,7 +1615,7 @@ void clip2icns(short icnsID, Str255 icnsName, int flags)
 	DisposeHandle((Handle)icnsHandle);
 	
 	(**preferences).timesUsed++;
-	if (((**preferences).timesUsed % 10 == 0) && (EqualString((**preferences).name, "\pNot Registered", true, true)))
+	if ((((**preferences).timesUsed % 10 == 0) || ((**preferences).timesUsed >= 50)) && (EqualString((**preferences).name, "\pNot Registered", true, true)))
 	{
 		char	buff[255];
 		sprintf(buff, "You've used clip2icns %d times.", (**preferences).timesUsed);

@@ -23,24 +23,6 @@ resource 'MENU' (130) {
 	}
 };
 
-resource 'MENU' (129) {
-	129,
-	textMenuProc,
-	0x7FFFFFFB,
-	enabled,
-	"File",
-	{	/* array: 4 elements */
-		/* [1] */
-		"New icon from clipboard…", noIcon, "N", noMark, plain,
-		/* [2] */
-		"Insert icon into file…", noIcon, "I", noMark, plain,
-		/* [3] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [4] */
-		"Quit", noIcon, "Q", noMark, plain
-	}
-};
-
 resource 'MENU' (201) {
 	201,
 	textMenuProc,
@@ -489,6 +471,24 @@ resource 'MENU' (207) {
 	}
 };
 
+resource 'MENU' (129) {
+	129,
+	textMenuProc,
+	0x7FFFFFFB,
+	enabled,
+	"File",
+	{	/* array: 4 elements */
+		/* [1] */
+		"New Icon From Clipboard…", noIcon, "N", noMark, plain,
+		/* [2] */
+		"Insert Icon Into File…", noIcon, "I", noMark, plain,
+		/* [3] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"Quit", noIcon, "Q", noMark, plain
+	}
+};
+
 resource 'DLOG' (129) {
 	{54, 42, 260, 315},
 	dBoxProc,
@@ -886,21 +886,21 @@ resource 'MBAR' (128) {
 resource 'vers' (1) {
 	0x1,
 	0x0,
-	development,
-	0x4,
+	beta,
+	0x0,
 	14,
-	"1.0d4",
+	"1.0b1",
 	"©1998 Mihai Parparita"
 };
 
 resource 'vers' (2) {
 	0x1,
 	0x0,
-	development,
-	0x4,
+	beta,
+	0x0,
 	14,
-	"1.0d4",
-	"clip2icns 1.0d4"
+	"1.0b1",
+	"clip2icns 1.0b1"
 };
 
 resource 'dlgx' (-6043) {
@@ -3221,6 +3221,23 @@ resource 'mctb' (202) {
 };
 
 resource 'mctb' (205) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (129) {
 	{	/* array MCTBArray: 1 elements */
 		/* [1] */
 		mctbLast, 0,
