@@ -356,7 +356,7 @@ void icnsEditorClass::HandleText(Point theMouse)
 	
 	UnlockPixels(selectionPix);
 	DisposeGWorld(selectionGW);
-	NewGWorldUnpadded(&selectionGW, (**currentPix).pixelSize, &tempRect, (**currentPix).pmTable);
+	NewGWorld(&selectionGW, (**currentPix).pixelSize, &tempRect, (**currentPix).pmTable, NULL, 0);
 	selectionPix = GetGWorldPixMap(selectionGW);
 	LockPixels(selectionPix);
 	SetGWorld(selectionGW, NULL);
@@ -436,7 +436,7 @@ void icnsEditorClass::HandleRectangle(Point startMouse)
 	if (err != noErr) {status |= outOfMemory; return; }
 	HLock(Handle(overlayCTab));
 	
-	err = NewGWorldUnpadded(&overlayGW, 4, &currentBounds, overlayCTab); // and allocate the space for the overlay
+	err = NewGWorld(&overlayGW, 4, &currentBounds, overlayCTab, NULL, 0); // and allocate the space for the overlay
 	if (err != noErr) {status |= outOfMemory; return; }
 	overlayPix = GetGWorldPixMap(overlayGW);
 	LockPixels(overlayPix);
@@ -1584,7 +1584,7 @@ bool icnsEditorClass::HandleMove(Point startMouse)
 			
 			if (RectArea(bounds) <= kMaximumTranslucentArea)
 			{ 
-				NewGWorldUnpadded(&dragGW, (**selectionPix).pixelSize, &bounds, (**selectionPix).pmTable);
+				NewGWorld(&dragGW, (**selectionPix).pixelSize, &bounds, (**selectionPix).pmTable, NULL, 0);
 				dragPix = GetGWorldPixMap(dragGW);
 				LockPixels(dragPix);
 				SAVECOLORS;
@@ -1681,10 +1681,12 @@ void icnsEditorClass::FloatSelection(void)
 	// we need to update the selection contents with the new dimensions
 	UnlockPixels(selectionPix);
 	DisposeGWorld(selectionGW);
-	NewGWorldUnpadded(&selectionGW,
-					  (**currentPix).pixelSize,
-					  &regionBounds,
-					  (**currentPix).pmTable);
+	NewGWorld(&selectionGW,
+			  (**currentPix).pixelSize,
+			  &regionBounds,
+			  (**currentPix).pmTable,
+			  NULL,
+			  0);
 	selectionPix = GetGWorldPixMap(selectionGW);
 	LockPixels(selectionPix);
 	
@@ -1721,23 +1723,20 @@ void icnsEditorClass::DefloatSelection(bool trueDefloat)
 		return;
 		
 	SAVEGWORLD;
+	
+	SetGWorld(currentGW, NULL);
 	SAVECOLORS;
-	
-	SetGWorld(selectionGW, NULL);
-	
-	ForeColor(blackColor);
-	BackColor(whiteColor);
 	
 	// we copy the contents back into the drawing
 	CopyPixMap(selectionPix,
 			   currentPix,
-			   &(**currentPix).bounds,
-			   &(**currentPix).bounds,
+			   &(**selectionPix).bounds,
+			   &(**selectionPix).bounds,
 			   srcCopy,
 			   selectionRgn);
-				
+	
+	RESTORECOLORS;		   
 	RESTOREGWORLD;
-	RESTORECOLORS;
 	
 	if (trueDefloat)
 	{

@@ -30,6 +30,7 @@ MAlert::MAlert(void)
 	explanation = "";
 	
 	beep = false;
+	hasCheckbox = checkboxState = false;
 	movable = true;
 	position = kWindowAlertPositionParentWindow;
 	type = kAlertNoteAlert;
@@ -90,6 +91,16 @@ void MAlert::SetExplanation(MString alertExplanation)
 void MAlert::SetExplanation(int stringResID, int stringNo)
 {
 	explanation.LoadFromResource(stringResID, stringNo); 
+}
+
+void MAlert::MakeOtherIntoCheckbox()
+{
+	hasCheckbox = true;
+}
+
+bool MAlert::GetCheckboxState()
+{
+	return checkboxState;
 }
 
 int MAlert::Display(void)
@@ -296,7 +307,16 @@ int MAlert::Display(void)
 	itemRect.left = itemRect.right - newButtonWidth;
 	SetControlBounds(cancelButton, &itemRect);
 	
-	GetDialogItemAsControl(alert, kMAOther, &otherButton);
+	if (hasCheckbox)
+	{
+		HideDialogItem(alert, kMAOther);
+		GetDialogItemAsControl(alert, kMACheckbox, &otherButton);
+	}
+	else
+	{
+		HideDialogItem(alert, kMACheckbox);
+		GetDialogItemAsControl(alert, kMAOther, &otherButton);
+	}
 	GetControlBounds(otherButton, &itemRect);
 	OffsetRect(&itemRect, 0, delta);
 	newButtonWidth = StringWidth(otherStr) + kButtonEndcapWidth * 2;
@@ -393,6 +413,10 @@ int MAlert::Display(void)
 			case kMACancel:
 			case kMAOther:
 				dialogDone = true;
+				break;
+			case kMACheckbox:
+				checkboxState = !checkboxState;
+				ToggleCheckbox(otherButton);
 				break;
 		}
 	}

@@ -1,10 +1,3 @@
-// __________________________________________________________________________________________
-// Program		: Icon Mangler
-// Filename		: compression.c (C)
-// Author		: Mihai Parparita (St. Mary's International School)
-// Last modified: April 1, 1999
-// Description	: This file contains some compression and decompression functions.
-
 #include "compression.h"
 
 // __________________________________________________________________________________________

@@ -7,7 +7,7 @@
 
 #include "MWindow.h"
 #include "MFloater.h"
-#include "MApplication.h"
+#include "MHelp.h"
 
 int*		MWindow::IDs = NULL;
 int			MWindow::IDCount = 0;
@@ -17,7 +17,9 @@ bool		MWindow::floatersVisible = true;
 int			MWindow::savedCursor = rArrow;
 
 MWindow::MWindow(short resID, OSType inType)
+#if MCONTROL
 		:controls(this)
+#endif
 {	
 	CreateMWindow(GetNewCWindow(resID, NULL, (WindowPtr)-1L), inType);
 }
@@ -54,11 +56,13 @@ void MWindow::CreateMWindow(WindowPtr inWindow, OSType inType)
 	type = inType;
 	
 	SetWRefCon(window, (long)this);
-	// the refCon of a window is a number (a long) that is associated with it, and is put
-	// there so that applications can identify the windows. In our case we use it to see
-	// which editor class instance owns this window. To access it we simply use the
-	// GetWRefCon function, and cast the result to a MWindowPtr. 
+
+#if TARGET_API_MAC_CARBON
+	InstallEventHandlers();
 	
+	//ChangeWindowAttributes(window, kWindowLiveResizeAttribute, 0);
+#endif
+
 	windowID = GetNewWindowID();
 	
 	if (type != kDialogType)
@@ -66,7 +70,9 @@ void MWindow::CreateMWindow(WindowPtr inWindow, OSType inType)
 }
 
 MWindow::MWindow(WindowPtr inWindow, OSType inType)
+#if MCONTROL
 		:controls(this)
+#endif
 {
 	CreateMWindow(inWindow, inType);
 }
@@ -89,6 +95,10 @@ MWindow::~MWindow(void)
 		lastWindow = previousWindow;
 		
 	ReleaseWindowID(windowID);
+	
+#if TARGET_API_MAC_CARBON
+	RemoveEventHandlers();
+#endif
 }
 
 MWindowPtr MWindow::GetNext()
@@ -814,7 +824,7 @@ void MWindow::Select()
 		
 		currentFrontWindow = GetFront();
 		
-		if (MApplication::IsFrontProcess() && (currentFrontWindow != NULL))
+		if (MUtilities::IsFrontProcess() && (currentFrontWindow != NULL))
 		{
 			HiliteWindow(currentFrontWindow->GetWindow(), false);
 			currentFrontWindow->Deactivate();
@@ -833,7 +843,7 @@ void MWindow::Select()
 		if (::GetWindow(FrontWindow())->GetType() == kFloaterType)
 			MUtilities::sounds.Play(kThemeSoundWindowActivate);
 		
-		if (MApplication::IsFrontProcess())
+		if (MUtilities::IsFrontProcess())
 		{
 			Activate();
 			HiliteWindow(window, true);
@@ -1016,12 +1026,16 @@ void MWindow::Close(void)
 
 void MWindow::Activate(void)
 {
+#if MCONTROL
 	controls.ActivateAll();
+#endif
 }
 
 void MWindow::Deactivate(void)
 {
+#if MCONTROL
 	controls.DeactivateAll();
+#endif
 }
 
 bool MWindow::IsActive()
@@ -1065,6 +1079,7 @@ void MWindow::Refresh()
 
 void MWindow::HandleContentClick(EventRecord* eventPtr)
 {
+#if MCONTROL
 	Point			where;
 	ControlHandle	clickedControl;
 	short			part;
@@ -1089,6 +1104,9 @@ void MWindow::HandleContentClick(EventRecord* eventPtr)
 	}
 	
 	RESTOREGWORLD;
+#else
+#pragma unused(eventPtr)
+#endif
 }
 
 void MWindow::HandleGrow(Point where)
@@ -1143,6 +1161,101 @@ void MWindow::HandleKeyDown(EventRecord* eventPtr)
 #pragma unused (eventPtr)
 }
 
+void MWindow::HandleWheelMove(Point location, int modifiers, EventMouseWheelAxis axis, long delta)
+{
+#pragma unused(location, modifiers, axis, delta)
+}
+
+bool MWindow::HandleBoundsChange(int attributes, Rect* originalBounds, Rect* previousBounds, Rect* currentBounds)
+{
+#pragma unused(attributes, originalBounds, previousBounds, currentBounds)
+
+	return false;
+}
+
+#pragma mark -
+
+#if TARGET_API_MAC_CARBON
+void MWindow::InstallEventHandlers()
+{
+	EventTargetRef	eventTarget;
+	EventTypeSpec	wheelEvents[] = {kEventClassMouse, kEventMouseWheelMoved},
+					resizeEvents[] = {kEventClassWindow, kEventWindowBoundsChanging};
+	OSErr			err;
+	
+	eventTarget = GetWindowEventTarget(window);
+	
+	wheelHandlerUPP = NewEventHandlerUPP(MWindow::WheelEventHandler);
+	resizeHandlerUPP = NewEventHandlerUPP(MWindow::ResizeEventHandler);
+	
+	err = InstallEventHandler(eventTarget,
+							  wheelHandlerUPP,
+							  1,
+							  wheelEvents,
+							  this,
+							  &wheelHandlerRef);
+	
+	err = InstallEventHandler(eventTarget,
+							  resizeHandlerUPP,
+							  1,
+							  resizeEvents,
+							  this,
+							  &resizeHandlerRef);
+}
+
+void MWindow::RemoveEventHandlers()
+{
+	RemoveEventHandler(wheelHandlerRef);
+	DisposeEventHandlerUPP(wheelHandlerUPP);
+
+	// resize	
+	RemoveEventHandler(resizeHandlerRef);
+	DisposeEventHandlerUPP(resizeHandlerUPP);
+
+}
+
+pascal OSStatus MWindow::WheelEventHandler(EventHandlerCallRef handlerCallRef, EventRef event, void *userData)
+{
+#pragma unused (handlerCallRef)
+	Point				location;
+	int					modifiers;
+	EventMouseWheelAxis	axis;
+	long				delta;
+	MWindowPtr			parent;
+	
+	parent = MWindowPtr(userData);
+	
+	GetEventParameter(event, kEventParamMouseLocation, typeQDPoint, NULL, sizeof(Point), NULL, &location);
+	GetEventParameter(event, kEventParamKeyModifiers, typeUInt32, NULL, sizeof(int), NULL, &modifiers);
+	GetEventParameter(event, kEventParamMouseWheelAxis, typeMouseWheelAxis, NULL, sizeof(EventMouseWheelAxis), NULL, &axis);
+	GetEventParameter(event, kEventParamMouseWheelDelta, typeLongInteger, NULL, sizeof(long), NULL, &delta);
+	
+	parent->HandleWheelMove(location, modifiers, axis, delta);
+	
+	return noErr;
+}
+
+pascal OSStatus MWindow::ResizeEventHandler(EventHandlerCallRef handlerCallRef, EventRef event, void *userData)
+{
+#pragma unused (handlerCallRef)
+	int			attributes;
+	Rect		originalBounds, previousBounds, currentBounds;
+	MWindowPtr	parent;
+	
+	parent = MWindowPtr(userData);
+	
+	GetEventParameter(event, kEventParamAttributes, typeUInt32, NULL, sizeof(int), NULL, &attributes);
+	GetEventParameter(event, kEventParamOriginalBounds, typeQDRectangle, NULL, sizeof(Rect), NULL, &originalBounds);
+	GetEventParameter(event, kEventParamPreviousBounds, typeQDRectangle, NULL, sizeof(Rect), NULL, &previousBounds);
+	GetEventParameter(event, kEventParamCurrentBounds, typeQDRectangle, NULL, sizeof(Rect), NULL, &currentBounds);
+	
+	if (parent->HandleBoundsChange(attributes, &originalBounds, &previousBounds, &currentBounds))
+		SetEventParameter(event, kEventParamCurrentBounds, typeQDRectangle, sizeof(Rect), &currentBounds);
+	
+	return noErr;
+}
+
+#endif
 #pragma mark -
 
 
@@ -1151,6 +1264,8 @@ pascal Boolean MWindow::StandardDialogFilter(DialogPtr dialog, EventRecord* even
 	bool	handledEvent = false;
 	GrafPtr	oldPort;
 	MWindowPtr window;
+	
+	MHelp::HandleHelp(dialog, eventPtr);
 	
 	switch (eventPtr->what)
 	{

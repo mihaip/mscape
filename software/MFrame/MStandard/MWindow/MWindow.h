@@ -7,8 +7,12 @@
 
 #pragma once
 
+#define MCONTROL 0
+
 #include "MUtilities.h"
+#if MCONTROL
 #include "MControl.h"
+#endif
 
 enum MWindowBorderTypes
 {
@@ -87,6 +91,8 @@ class MWindow
 		virtual void		ToggleZoom();
 		virtual void		HandleKeyDown(EventRecord* eventPtr);
 		
+		virtual void		HandleWheelMove(Point location, int modifiers, EventMouseWheelAxis axis, long delta);
+		virtual bool		HandleBoundsChange(int attributes, Rect* originalBounds, Rect* previousBounds, Rect* currentBounds);
 		virtual void		RepositionControls();
 		
 		static int			GetWindowCount(void);
@@ -123,8 +129,10 @@ class MWindow
 	protected:
 	
 		void				CreateMWindow(WindowPtr inWindow, OSType inType);
-	
+
+#if MCONTROL
 		MControlList		controls;
+#endif
 	
 		WindowPtr			window;
 		OSType				type;
@@ -144,6 +152,16 @@ class MWindow
 		static bool			floatersVisible;
 		
 		static int			savedCursor;
+		
+#if TARGET_API_MAC_CARBON
+		EventHandlerRef		wheelHandlerRef, resizeHandlerRef;
+		EventHandlerUPP		wheelHandlerUPP, resizeHandlerUPP;
+		
+		void				InstallEventHandlers();
+		void 				RemoveEventHandlers();
+		static pascal OSStatus WheelEventHandler(EventHandlerCallRef handlerCallRef, EventRef event, void *userData);
+		static pascal OSStatus ResizeEventHandler(EventHandlerCallRef handlerCallRef, EventRef event, void *userData);
+#endif
 		
 		static int			GetNewWindowID();
 		static void			ReleaseWindowID(int ID);

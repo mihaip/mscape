@@ -285,7 +285,7 @@ bool MList::HandleEvent(EventRecord* eventPtr)
 							if (CellFilter == NULL || CellFilter(data[i], cellClientData[i]))
 								height += rowHeights[i];
 						
-						if (height < vOffset)
+						if (height < vOffset || height > vOffset + (listRect.bottom - listRect.top))
 							newVOffset = height;
 					}
 					break;
@@ -315,8 +315,9 @@ bool MList::HandleEvent(EventRecord* eventPtr)
 							if (CellFilter == NULL || CellFilter(data[i], cellClientData[i]))
 								height += rowHeights[i];
 						
-						if (height > vOffset + (listRect.bottom - listRect.top))
-							newVOffset = vOffset + rowHeights[newSelection];
+						if (height > vOffset + (listRect.bottom - listRect.top) ||
+							height < vOffset)
+							newVOffset = height + (listRect.bottom - listRect.top) - rowHeights[newSelection];
 					}
 					break;
 				default:

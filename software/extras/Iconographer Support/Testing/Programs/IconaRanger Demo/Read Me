@@ -1,0 +1,157 @@
+What is the IconaRanger?
+
+Did you ever insert a CD and watch an image automatically appear on your
+screen? Well, the "image" that appears is an array of individual file icons
+assembled like a puzzle. That's pretty hard to do by hand. But the
+IconaRanger makes the job easy. All you do is create the images that you want
+to appear and then the IconaRanger program automatically transforms the images
+into an array of Finder icons.
+
+Unlike shareware offerings, the IconaRanger creates windows of multiple
+color depths: black and white, 16 color, 256 color, and millions of colors
+(for OS 8.5 and newer systems). Since the IconaRanger supports multiple color
+depths, the same CD mounted on older Macs (and sytems supporting less than 256
+colors) will also look good.
+
+The IconaRanger was created "in house" at Leister Productions, Inc., in
+November 1998 in order to provide attractive opening images for our new
+Reunion 6 CD.
+
+---------------------------------------------------------------------------------
+System Requirements
+
+¥ System Software version 7.5 or newer. OS 8.5 is not required to create
+32-bit images, however only OS 8.5 and newer will display these images.
+
+¥ 68030 processor or better.
+
+¥ 2 MB of free RAM.
+
+¥ Image editing software such as Color It! or PhotoShop is required to create
+image files in the PICT file format.
+
+---------------------------------------------------------------------------------
+Instructions
+
+1. Using your favorite painting program, create a 32 bit color image and save
+it as a PICT file in a new folder.
+
+Since the PICT file will be converted to an array of icons (each icon is
+32x32 pixels) you can make the best use of the icon space by making the
+height and width of your image multiples of 32. For example, 320 by 160.
+
+2. Using the painting program, convert and save the same image to 8, 4, and 1
+bit-color versions.
+
+Name each PICT file so that it will be easy to remember the color depth of
+each image. For example: "My Picture (256 Color)"
+
+When creating 256 and 16 color images, be sure that you are using the
+"System" color palette. Otherwise these images will look "blurry" when displayed.
+
+The Black & White image is optional, however, if you do not create one,
+IconaRanger will create one for you by converting another image file to Black
+& White. For best results create your own Black & White image.
+
+3. Start the IconaRanger program.
+
+4. Create an IconaRanger project by choosing File -> New.
+
+5. Decide what operating systems you would like to support.
+
+* All - Use this option if you would like OS 8.5 users to see a nice "Millions
+of Colors" image, and users of older systems to see a 256, 16, or black and
+white image. This option is recommended (but uses the most disk space).
+
+* Before OS 8.5 - This option doesn't support "Millions of Colors" images.
+Since OS 8.5 is backward compatible with older systems, IconaRanger images
+made with this option will appear correctly on all systems old and new, but
+will be limited to 256-color depth. You may also want to use this option if
+you do not require "Millions of Colors" support but you would like to support
+all systems. This option uses the least amount of disk space.
+
+* 8.5 and Above - Use this option if you never want to support systems older
+than 8.5. IconaRanger images made with this option will not appear on systems
+older than 8.5. This option will also use minimal disk space. Images will
+display quicker than images made using the above option.
+
+6. Choose the image files. Click the "Choose..." button to assign your images
+to their respective color modes.
+
+7. Build the Image. Click "Build..." and specify the name for a new folder.
+The created image will be placed in this empty folder. Double-clicking the
+folder, in the Finder, will display the image in the window.
+
+---------------------------------------------------------------------------------
+Notes
+
+¥ If you will be using more than one image file to support multiple color
+depths, make sure the images all have the same width and height.
+
+¥ You do not need to create a mask file. IconaRanger will create a solid mask
+to match your images. Only create a mask image if you wish to have a custom
+mask.
+
+¥ Option-click a Choose button to remove a file and uncheck its respective
+check-box button.
+
+¥ When you open an existing project, IconaRanger will check to make sure all
+the selected image files are present and valid PICT files. If any problems
+are found, a red message will appear after the file name.
+
+¥ When copying image folders from one volume (Disk/Drive) to another you may
+discover that the Macintosh operating system has decided to "Clean Up" your
+icons for you thereby distorting your image. There are two ways to handle
+this...
+-1. either have the IconaRanger build the image on the desired destination
+volume or...
+-2. use a compression program, like Stuffit, and compress an archive of the
+image on the destination volume.
+
+Window images will not become distorted when moving from one folder to
+another on the same volume.
+
+---------------------------------------------------------------------------------
+What is the "First File Name" option?
+
+IconaRanger can create multiple images that can coexist in the same folder.
+Each icon created by the IconaRanger must have a unique invisible name. This
+unique name is drawn from a bank of thousands of invisible file names. If you
+want to place two or more images in the same folder you must instruct
+IconaRanger to draw from different indexes within the bank. This is where the
+"First File Name" option comes into play.
+
+If, for example, you have created one image that contains 120 icons and you
+want to place a second image in that folder, you should create the second
+image with a First File Name of 150. This will skip the first 150 file names
+in the bank and ensure that this new image will not have any names in common
+with the first image and thus allow both images to exist in the same folder.
+
+---------------------------------------------------------------------------------
+What does it cost? Where can I buy it?
+
+You may order IconaRanger directly from Leister Productions for $39.95. Upon
+receipt of payment, we will e-mail the complete package to you.
+
+We accept orders by phone, mail, e-mail, or fax. Payment must accompany your
+order. Approved payment methods are VISA/MasterCard (include expiration date),
+a personal check, or money order payable to Leister Productions.
+
+By purchasing the full version of IconaRanger, you are free to create images
+for Macintosh volumes, such as CDs and CDRs, for private and/or comercial use
+without limitation.
+
+---------------------------------------------------------------------------------
+How to contact us:
+
+Phone:       717-697-1378, 12 Noon to 5 PM, EST, Monday - Friday 
+Fax:         717-697-4373
+Web Site:           www.LeisterPro.com
+Technical Support:  help@LeisterPro.com 
+Information:        info@LeisterPro.com 
+Sales:              sales@LeisterPro.com 
+Mailing Address:    PO Box 289, Mechanicsburg, PA 17055 USA 
+
+©1999, Leister Productions, Inc.
+This document was revised 5/3/99.
+IconaRanger is a trademark of Leister Productions, Inc.

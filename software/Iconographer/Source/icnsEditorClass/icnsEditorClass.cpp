@@ -78,7 +78,7 @@ icnsEditorClass::icnsEditorClass(void) :
 	// we step through the animations every few ticks (controlled by a constant), and this
 	// variable is used to see when the last update was, and when we need a new one
 	
-	err = NewGWorldUnpadded(&selectionGW, 32, &largeIconRect, NULL);
+	err = NewGWorld(&selectionGW, 32, &largeIconRect, NULL, NULL, 0);
 	if (err != noErr)
 	{
 		status |= outOfMemory;
@@ -3217,7 +3217,6 @@ void icnsEditorClass::Paste(int pasteType)
 			clipPicture = (PicHandle)NewHandle(picSize);
 			HLock((Handle)clipPicture);
 			
-			
 			picSize = MUtilities::GetScrap((Handle)clipPicture,'PICT',&offset); // we import it
 			
 			switch (pasteType)
@@ -3329,10 +3328,13 @@ void icnsEditorClass::InsertPictureIntoMember(PicHandle srcPic, int targetName, 
 			UnlockPixels(selectionPix);
 			DisposeGWorld(selectionGW);
 		}
-		NewGWorldUnpadded(&selectionGW,
-						 (**currentPix).pixelSize,
-						 &destRect,
-						 (**currentPix).pmTable);
+		
+		NewGWorld(&selectionGW,
+				  (**currentPix).pixelSize,
+				  &destRect,
+				  (**currentPix).pmTable,
+				  NULL,
+				  0);
 		selectionPix = GetGWorldPixMap(selectionGW);
 		LockPixels(selectionPix);
 		

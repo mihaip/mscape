@@ -13,7 +13,7 @@
 enum MAItems
 {
 #if TARGET_API_MAC_CARBON
-	kMAApplicationIcon = 9,
+	kMAApplicationIcon = 10,
 #endif
 	kMAOK = 1,
 	kMACancel = 2,
@@ -22,7 +22,8 @@ enum MAItems
 	kMAError = 5,
 	kMAExplanation = 6,
 	kMAStopIcon = 7,
-	kMANoteIcon = 8
+	kMANoteIcon = 8,
+	kMACheckbox = 9
 };
 
 enum MAResources
@@ -39,6 +40,10 @@ class MAlert
 		
 		void	SetButtonName(int buttonNo, int stringResID, int stringNo);
 		void	SetButtonName(int buttonNo, MString buttonName);
+		
+		void	MakeOtherIntoCheckbox();
+		bool	GetCheckboxState();
+		
 		void	SetMovable(bool isMovable);
 		void	SetBeep(bool alertBeeps);
 		void	SetPosition(int alertPosition);
@@ -51,7 +56,6 @@ class MAlert
 		void	SetExplanation(int stringResID, int stringNo);
 		
 		int		Display();
-		
 	private:
 		
 		static pascal Boolean EventFilter(DialogPtr alert, EventRecord* eventPtr, short* itemHit);
@@ -66,6 +70,8 @@ class MAlert
 		
 		bool	beep;
 		bool	movable;
+		bool	hasCheckbox;
+		bool	checkboxState;
 		int		position;
 		int		type;
 };

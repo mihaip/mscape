@@ -1,5 +1,12 @@
 TODO
 2.6
+- improved (resorcerer-like) scaling
+- update docs (with tutorial)
+- fix third mask bug
+- clean up format confusion (.icns vs. resource based)
+- add FAQ about VolumeIcon.icns (or just implement it properly)
+- too eager to scrol members palette (when switching from another app - don't scroll if current member is what is being set)
+- can't open some windows icons (see desktop)
 - rotate can crash
 - close/command-W still enabled even when all windows are closed
 - pressing command-W twice in quick succession causes a crash

@@ -163,10 +163,12 @@ void drawingStateClass::RestoreState(icnsEditorPtr editor)
 		UnlockPixels(editor->selectionPix);
 		DisposeGWorld(editor->selectionGW);
 		// we're restoring the attributes of the saved selection
-		NewGWorldUnpadded(&editor->selectionGW,
-					selectionDepth,	// including depth
-					&selectionBounds,   // dimenions
-					(**targetPix).pmTable);	// and color table (if any)
+		NewGWorld(&editor->selectionGW,
+				  selectionDepth,	// including depth
+			      &selectionBounds,   // dimenions
+				  (**targetPix).pmTable, // and color table (if any)
+				  NULL,
+				  0);	
 		editor->selectionPix = GetGWorldPixMap(editor->selectionGW);
 		LockPixels(editor->selectionPix);
 		

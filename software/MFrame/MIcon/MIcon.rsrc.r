@@ -5,7 +5,7 @@ resource 'MENU' (202) {
 	allEnabled,
 	enabled,
 	"IDs",
-	{	/* array: 7 elements */
+	{	/* array: 9 elements */
 		/* [1] */
 		"Item Icon", noIcon, hierarchicalMenu, "Ë", plain,
 		/* [2] */
@@ -19,11 +19,15 @@ resource 'MENU' (202) {
 		/* [6] */
 		"Badges", noIcon, hierarchicalMenu, "Ð", plain,
 		/* [7] */
-		"Others", noIcon, hierarchicalMenu, "Ñ", plain
+		"Toolbar Icons", noIcon, hierarchicalMenu, "Ñ", plain,
+		/* [8] */
+		"Dock Icons", noIcon, hierarchicalMenu, "Ò", plain,
+		/* [9] */
+		"Others", noIcon, hierarchicalMenu, "Ó", plain
 	}
 };
 
-resource 'MENU' (203) {
+resource 'MENU' (203, "Item Icon") {
 	203,
 	textMenuProc,
 	allEnabled,
@@ -35,247 +39,331 @@ resource 'MENU' (203) {
 	}
 };
 
-resource 'MENU' (204) {
+resource 'MENU' (204, "System Folders") {
 	204,
 	textMenuProc,
-	allEnabled,
+	0x7FFDBEFF,
 	enabled,
 	"System Folders",
-	{	/* array: 56 elements */
+	{	/* array: 75 elements */
 		/* [1] */
-		"Ð20803 Language & Region Support", noIcon, noKey, noMark, plain,
+		"Ð21653 Sites", noIcon, noKey, noMark, plain,
 		/* [2] */
-		"Ð20801 Internet Search Sites", noIcon, noKey, noMark, plain,
+		"Ð21645 Pictures", noIcon, noKey, noMark, plain,
 		/* [3] */
-		"Ð20797 Scripts", noIcon, noKey, noMark, plain,
+		"Ð21644 Music", noIcon, noKey, noMark, plain,
 		/* [4] */
-		"Ð20792 ColorSync Profiles", noIcon, noKey, noMark, plain,
+		"Ð21643 Movies", noIcon, noKey, noMark, plain,
 		/* [5] */
-		"Ð20744 Internet", noIcon, noKey, noMark, plain,
+		"Ð21642 Library", noIcon, noKey, noMark, plain,
 		/* [6] */
-		"Ð20729 Favorites", noIcon, noKey, noMark, plain,
+		"Ð21641 Favorites", noIcon, noKey, noMark, plain,
 		/* [7] */
-		"Ð20724 Speakable Items", noIcon, noKey, noMark, plain,
+		"Ð21640 Documents", noIcon, noKey, noMark, plain,
 		/* [8] */
-		"Ð20723 Appearance", noIcon, noKey, noMark, plain,
+		"Ð21639 Desktop", noIcon, noKey, noMark, plain,
 		/* [9] */
-		"Ð3999 Generic Folder", noIcon, noKey, noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [10] */
-		"Ð3997 Open Folder", noIcon, noKey, noMark, plain,
+		"Ð21646 System", noIcon, noKey, noMark, plain,
 		/* [11] */
-		"Ð3994 Private Folder", noIcon, noKey, noMark, plain,
+		"Ð21638 Applications", noIcon, noKey, noMark, plain,
 		/* [12] */
-		"Ð3993 Trash Empty", noIcon, noKey, noMark, plain,
+		"Ð21637 Maintenance", noIcon, noKey, noMark, plain,
 		/* [13] */
-		"Ð3992 Desktop", noIcon, noKey, noMark, plain,
+		"Ð21636 Classic System", noIcon, noKey, noMark, plain,
 		/* [14] */
-		"Ð3984 Trash Full", noIcon, noKey, noMark, plain,
+		"Ð20805 Users", noIcon, noKey, noMark, plain,
 		/* [15] */
-		"Ð3983 System Folder", noIcon, noKey, noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [16] */
-		"Ð3982 Apple Menu Items", noIcon, noKey, noMark, plain,
+		"Ð21635 iDisk Maintenance", noIcon, noKey, noMark, plain,
 		/* [17] */
-		"Ð3981 Startup Items", noIcon, noKey, noMark, plain,
+		"Ð21634 iDisk", noIcon, noKey, noMark, plain,
 		/* [18] */
-		"Ð3980 Shared Folder", noIcon, noKey, noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [19] */
-		"Ð3979 Drop Folder", noIcon, noKey, noMark, plain,
+		"Ð20803 Language & Region Support", noIcon, noKey, noMark, plain,
 		/* [20] */
-		"Ð3978 Share Point", noIcon, noKey, noMark, plain,
+		"Ð20801 Internet Search Sites", noIcon, noKey, noMark, plain,
 		/* [21] */
-		"Ð3977 Mounted Folder", noIcon, noKey, noMark, plain,
+		"Ð20797 Scripts", noIcon, noKey, noMark, plain,
 		/* [22] */
-		"Ð3976 Control Panels", noIcon, noKey, noMark, plain,
+		"Ð20792 ColorSync Profiles", noIcon, noKey, noMark, plain,
 		/* [23] */
-		"Ð3975 Print Spool", noIcon, noKey, noMark, plain,
+		"Ð20744 Internet", noIcon, noKey, noMark, plain,
 		/* [24] */
-		"Ð3974 Preferences", noIcon, noKey, noMark, plain,
+		"Ð20729 Favorites", noIcon, noKey, noMark, plain,
 		/* [25] */
-		"Ð3973 Extensions", noIcon, noKey, noMark, plain,
+		"Ð20724 Speakable Items", noIcon, noKey, noMark, plain,
 		/* [26] */
-		"Ð3972 File Server", noIcon, noKey, noMark, plain,
+		"Ð20723 Appearance", noIcon, noKey, noMark, plain,
 		/* [27] */
-		"Ð3968 Fonts", noIcon, noKey, noMark, plain,
+		"Ð20720 Write Protected Folder", noIcon, noKey, noMark, plain,
 		/* [28] */
-		"Ð3966 Recent Documents", noIcon, noKey, noMark, plain,
+		"Ð3999 Generic Folder", noIcon, noKey, noMark, plain,
 		/* [29] */
-		"Ð3965 Recent Applications", noIcon, noKey, noMark, plain,
+		"Ð3997 Open Folder", noIcon, noKey, noMark, plain,
 		/* [30] */
-		"Ð3964 Recent Servers", noIcon, noKey, noMark, plain,
+		"Ð3994 Private Folder", noIcon, noKey, noMark, plain,
 		/* [31] */
-		"Ð3963 MacOS Read Me Files", noIcon, noKey, noMark, plain,
+		"Ð3993 Trash Empty", noIcon, noKey, noMark, plain,
 		/* [32] */
-		"Ð3962 Control Strip Modules", noIcon, noKey, noMark, plain,
+		"Ð3992 Desktop", noIcon, noKey, noMark, plain,
 		/* [33] */
-		"Ð3961 Sounds", noIcon, noKey, noMark, plain,
+		"Ð3984 Trash Full", noIcon, noKey, noMark, plain,
 		/* [34] */
-		"Ð3960 Help", noIcon, noKey, noMark, plain,
+		"Ð3983 System Folder", noIcon, noKey, noMark, plain,
 		/* [35] */
-		"Ð3959 Scripting Additions", noIcon, noKey, noMark, plain,
+		"Ð3982 Apple Menu Items", noIcon, noKey, noMark, plain,
 		/* [36] */
-		"Ð3958 Internet Plug-ins", noIcon, noKey, noMark, plain,
+		"Ð3981 Startup Items", noIcon, noKey, noMark, plain,
 		/* [37] */
-		"Ð3957 Language Support", noIcon, noKey, noMark, plain,
+		"Ð3980 Shared Folder", noIcon, noKey, noMark, plain,
 		/* [38] */
-		"Ð3956 Shared Libraries", noIcon, noKey, noMark, plain,
+		"Ð3979 Drop Folder", noIcon, noKey, noMark, plain,
 		/* [39] */
-		"Ð3955 Text Encodings", noIcon, noKey, noMark, plain,
+		"Ð3978 Share Point", noIcon, noKey, noMark, plain,
 		/* [40] */
-		"Ð3954 Printer Drivers", noIcon, noKey, noMark, plain,
+		"Ð3977 Mounted Folder", noIcon, noKey, noMark, plain,
 		/* [41] */
-		"Ð3953 Printer Descriptions", noIcon, noKey, noMark, plain,
+		"Ð3976 Control Panels", noIcon, noKey, noMark, plain,
 		/* [42] */
-		"Ð3952 Voices", noIcon, noKey, noMark, plain,
+		"Ð3975 Print Spool", noIcon, noKey, noMark, plain,
 		/* [43] */
-		"Ð3951 Control Panels (Disabled)", noIcon, noKey, noMark, plain,
+		"Ð3974 Preferences", noIcon, noKey, noMark, plain,
 		/* [44] */
-		"Ð3950 Extensions (Disabled)", noIcon, noKey, noMark, plain,
+		"Ð3973 Extensions", noIcon, noKey, noMark, plain,
 		/* [45] */
-		"Ð3949 Startup Items (Disabled)", noIcon, noKey, noMark, plain,
+		"Ð3972 File Server", noIcon, noKey, noMark, plain,
 		/* [46] */
-		"Ð3948 Shutdown Items (Disabled)", noIcon, noKey, noMark, plain,
+		"Ð3968 Fonts", noIcon, noKey, noMark, plain,
 		/* [47] */
-		"Ð3947 System Extensions (Disabled)", noIcon, noKey, noMark, plain,
+		"Ð3966 Recent Documents", noIcon, noKey, noMark, plain,
 		/* [48] */
-		"Ð3946 Assistants", noIcon, noKey, noMark, plain,
+		"Ð3965 Recent Applications", noIcon, noKey, noMark, plain,
 		/* [49] */
-		"Ð3945 Utilities", noIcon, noKey, noMark, plain,
+		"Ð3964 Recent Servers", noIcon, noKey, noMark, plain,
 		/* [50] */
-		"Ð3944 Application Support", noIcon, noKey, noMark, plain,
+		"Ð3963 MacOS Read Me Files", noIcon, noKey, noMark, plain,
 		/* [51] */
-		"Ð3943 Apple Extras", noIcon, noKey, noMark, plain,
+		"Ð3962 Control Strip Modules", noIcon, noKey, noMark, plain,
 		/* [52] */
-		"Ð3942 Contextual Menu Items", noIcon, noKey, noMark, plain,
+		"Ð3961 Sounds", noIcon, noKey, noMark, plain,
 		/* [53] */
-		"Ð3812 Workgroup", noIcon, noKey, noMark, plain,
+		"Ð3960 Help", noIcon, noKey, noMark, plain,
 		/* [54] */
-		"Ð3811 User", noIcon, noKey, noMark, plain,
+		"Ð3959 Scripting Additions", noIcon, noKey, noMark, plain,
 		/* [55] */
-		"Ð3774 System Folder (protected)", noIcon, noKey, noMark, plain,
+		"Ð3958 Internet Plug-ins", noIcon, noKey, noMark, plain,
 		/* [56] */
+		"Ð3957 Language Support", noIcon, noKey, noMark, plain,
+		/* [57] */
+		"Ð3956 Shared Libraries", noIcon, noKey, noMark, plain,
+		/* [58] */
+		"Ð3955 Text Encodings", noIcon, noKey, noMark, plain,
+		/* [59] */
+		"Ð3954 Printer Drivers", noIcon, noKey, noMark, plain,
+		/* [60] */
+		"Ð3953 Printer Descriptions", noIcon, noKey, noMark, plain,
+		/* [61] */
+		"Ð3952 Voices", noIcon, noKey, noMark, plain,
+		/* [62] */
+		"Ð3951 Control Panels (Disabled)", noIcon, noKey, noMark, plain,
+		/* [63] */
+		"Ð3950 Extensions (Disabled)", noIcon, noKey, noMark, plain,
+		/* [64] */
+		"Ð3949 Startup Items (Disabled)", noIcon, noKey, noMark, plain,
+		/* [65] */
+		"Ð3948 Shutdown Items (Disabled)", noIcon, noKey, noMark, plain,
+		/* [66] */
+		"Ð3947 System Extensions (Disabled)", noIcon, noKey, noMark, plain,
+		/* [67] */
+		"Ð3946 Assistants", noIcon, noKey, noMark, plain,
+		/* [68] */
+		"Ð3945 Utilities", noIcon, noKey, noMark, plain,
+		/* [69] */
+		"Ð3944 Application Support", noIcon, noKey, noMark, plain,
+		/* [70] */
+		"Ð3943 Apple Extras", noIcon, noKey, noMark, plain,
+		/* [71] */
+		"Ð3942 Contextual Menu Items", noIcon, noKey, noMark, plain,
+		/* [72] */
+		"Ð3812 Workgroup", noIcon, noKey, noMark, plain,
+		/* [73] */
+		"Ð3811 User", noIcon, noKey, noMark, plain,
+		/* [74] */
+		"Ð3774 System Folder (protected)", noIcon, noKey, noMark, plain,
+		/* [75] */
 		"Ð3773 Applications Folder (protected)", noIcon, noKey, noMark, plain
 	}
 };
 
-resource 'MENU' (205) {
+resource 'MENU' (205, "Generic") {
 	205,
 	textMenuProc,
-	allEnabled,
+	0x7FFF7FBF,
 	enabled,
 	"Generic Icons",
-	{	/* array: 37 elements */
+	{	/* array: 56 elements */
 		/* [1] */
-		"Ð20800 Disk Image", noIcon, noKey, noMark, plain,
+		"Ð21701 CD-RW", noIcon, noKey, noMark, plain,
 		/* [2] */
-		"Ð20799 Generic PC Card", noIcon, noKey, noMark, plain,
+		"Ð21700 CD-R", noIcon, noKey, noMark, plain,
 		/* [3] */
-		"Ð20794 TrueType Multi Flat Font", noIcon, noKey, noMark, plain,
+		"Ð21669 Audio CD", noIcon, noKey, noMark, plain,
 		/* [4] */
-		"Ð20752 Generic Font Scaler", noIcon, noKey, noMark, plain,
+		"Ð21668 DVD", noIcon, noKey, noMark, plain,
 		/* [5] */
-		"Ð20743 LaserWriter", noIcon, noKey, noMark, plain,
+		"Ð21667 DVD-ROM", noIcon, noKey, noMark, plain,
 		/* [6] */
-		"Ð20732 TrueType Flat Font", noIcon, noKey, noMark, plain,
+		"Ð21647 DVD-Video", noIcon, noKey, noMark, plain,
 		/* [7] */
-		"Ð16415 Generic Extension", noIcon, noKey, noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [8] */
-		"Ð4000 Generic Document", noIcon, noKey, noMark, plain,
+		"Ð21800 File Icon Placeholder", noIcon, noKey, noMark, plain,
 		/* [9] */
-		"Ð3998 Floppy", noIcon, noKey, noMark, plain,
+		"Ð21674 Window", noIcon, noKey, noMark, plain,
 		/* [10] */
-		"Ð3996 Generic App", noIcon, noKey, noMark, plain,
+		"Ð21672 Mounted Disk Image", noIcon, noKey, noMark, plain,
 		/* [11] */
-		"Ð3995 Apple HD", noIcon, noKey, noMark, plain,
+		"Ð20800 Disk Image", noIcon, noKey, noMark, plain,
 		/* [12] */
-		"Ð3991 Generic DA", noIcon, noKey, noMark, plain,
+		"Ð21651 Jaz Disk", noIcon, noKey, noMark, plain,
 		/* [13] */
-		"Ð3989 Edition File", noIcon, noKey, noMark, plain,
+		"Ð21650 FireWire Drive", noIcon, noKey, noMark, plain,
 		/* [14] */
-		"Ð3988 RAM Disk", noIcon, noKey, noMark, plain,
+		"Ð21649 SCSI Drive", noIcon, noKey, noMark, plain,
 		/* [15] */
-		"Ð3987 CD", noIcon, noKey, noMark, plain,
+		"Ð21648 Hard Drive", noIcon, noKey, noMark, plain,
 		/* [16] */
-		"Ð3985 Stationery", noIcon, noKey, noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [17] */
-		"Ð3971 Generic Preferences", noIcon, noKey, noMark, plain,
+		"Ð21671 Font", noIcon, noKey, noMark, plain,
 		/* [18] */
-		"Ð3970 Generic Suitcase", noIcon, noKey, noMark, plain,
+		"Ð21670 Clipping", noIcon, noKey, noMark, plain,
 		/* [19] */
-		"Ð3969 Generic DA Document", noIcon, noKey, noMark, plain,
+		"Ð21666 Home", noIcon, noKey, noMark, plain,
 		/* [20] */
-		"Ð3967 Shared Library", noIcon, noKey, noMark, plain,
+		"Ð20799 PC Card", noIcon, noKey, noMark, plain,
 		/* [21] */
-		"Ð3851 Generic Control Strip Module", noIcon, noKey, noMark, plain,
+		"Ð20794 TrueType Multi Flat Font", noIcon, noKey, noMark, plain,
 		/* [22] */
-		"Ð3850 Generic Codec", noIcon, noKey, noMark, plain,
+		"Ð20752 Font Scaler", noIcon, noKey, noMark, plain,
 		/* [23] */
-		"Ð3832 PC Disk", noIcon, noKey, noMark, plain,
+		"Ð20743 LaserWriter", noIcon, noKey, noMark, plain,
 		/* [24] */
-		"Ð3831 Apple II Disk", noIcon, noKey, noMark, plain,
+		"Ð20732 TrueType Flat Font", noIcon, noKey, noMark, plain,
 		/* [25] */
-		"Ð3824 Generic Control Panel", noIcon, noKey, noMark, plain,
+		"Ð16415 Extension", noIcon, noKey, noMark, plain,
 		/* [26] */
-		"Ð3817 Removable Disk", noIcon, noKey, noMark, plain,
+		"Ð4000 Document", noIcon, noKey, noMark, plain,
 		/* [27] */
-		"Ð3810 Sound", noIcon, noKey, noMark, plain,
+		"Ð3998 Floppy", noIcon, noKey, noMark, plain,
 		/* [28] */
-		"Ð3809 International Script", noIcon, noKey, noMark, plain,
+		"Ð3996 Application", noIcon, noKey, noMark, plain,
 		/* [29] */
-		"Ð3808 TrueType Font", noIcon, noKey, noMark, plain,
+		"Ð3995 Apple HD", noIcon, noKey, noMark, plain,
 		/* [30] */
-		"Ð3807 Bitmap Font", noIcon, noKey, noMark, plain,
+		"Ð3991 Generic DA", noIcon, noKey, noMark, plain,
 		/* [31] */
-		"Ð3806 Keyboard Layout", noIcon, noKey, noMark, plain,
+		"Ð3989 Edition File", noIcon, noKey, noMark, plain,
 		/* [32] */
-		"Ð3805 DA Suitcase", noIcon, noKey, noMark, plain,
+		"Ð3988 RAM Disk", noIcon, noKey, noMark, plain,
 		/* [33] */
-		"Ð3804 Font Suitcase", noIcon, noKey, noMark, plain,
+		"Ð3987 CD", noIcon, noKey, noMark, plain,
 		/* [34] */
-		"Ð3803 Sound Clipping", noIcon, noKey, noMark, plain,
+		"Ð3985 Stationery", noIcon, noKey, noMark, plain,
 		/* [35] */
-		"Ð3802 Text Clipping", noIcon, noKey, noMark, plain,
+		"Ð3971 Preferences", noIcon, noKey, noMark, plain,
 		/* [36] */
-		"Ð3801 Picture Clipping", noIcon, noKey, noMark, plain,
+		"Ð3970 Suitcase", noIcon, noKey, noMark, plain,
 		/* [37] */
-		"Ð3800 Generic Clipping", noIcon, noKey, noMark, plain
+		"Ð3969 DA Document", noIcon, noKey, noMark, plain,
+		/* [38] */
+		"Ð3967 Shared Library", noIcon, noKey, noMark, plain,
+		/* [39] */
+		"Ð3851 Control Strip Module", noIcon, noKey, noMark, plain,
+		/* [40] */
+		"Ð3850 QuickTime Codec", noIcon, noKey, noMark, plain,
+		/* [41] */
+		"Ð3832 PC Disk", noIcon, noKey, noMark, plain,
+		/* [42] */
+		"Ð3831 Apple II Disk", noIcon, noKey, noMark, plain,
+		/* [43] */
+		"Ð3824 Control Panel", noIcon, noKey, noMark, plain,
+		/* [44] */
+		"Ð3817 Removable Disk", noIcon, noKey, noMark, plain,
+		/* [45] */
+		"Ð3810 Sound", noIcon, noKey, noMark, plain,
+		/* [46] */
+		"Ð3809 International Script", noIcon, noKey, noMark, plain,
+		/* [47] */
+		"Ð3808 TrueType Font", noIcon, noKey, noMark, plain,
+		/* [48] */
+		"Ð3807 Bitmap Font", noIcon, noKey, noMark, plain,
+		/* [49] */
+		"Ð3806 Keyboard Layout", noIcon, noKey, noMark, plain,
+		/* [50] */
+		"Ð3805 DA Suitcase", noIcon, noKey, noMark, plain,
+		/* [51] */
+		"Ð3804 Font Suitcase", noIcon, noKey, noMark, plain,
+		/* [52] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [53] */
+		"Ð3803 Sound Clipping", noIcon, noKey, noMark, plain,
+		/* [54] */
+		"Ð3802 Text Clipping", noIcon, noKey, noMark, plain,
+		/* [55] */
+		"Ð3801 Picture Clipping", noIcon, noKey, noMark, plain,
+		/* [56] */
+		"Ð3800 Other Clipping", noIcon, noKey, noMark, plain
 	}
 };
 
-resource 'MENU' (206) {
+resource 'MENU' (206, "Internet") {
 	206,
 	textMenuProc,
 	allEnabled,
 	enabled,
 	"Internet Icons",
-	{	/* array: 12 elements */
+	{	/* array: 16 elements */
 		/* [1] */
-		"Ð20796 AppleTalk Zone", noIcon, noKey, noMark, plain,
+		"Ð20804 Web Share", noIcon, noKey, noMark, plain,
 		/* [2] */
-		"Ð20795 FTP Server", noIcon, noKey, noMark, plain,
+		"Ð20802 Unknown Network", noIcon, noKey, noMark, plain,
 		/* [3] */
-		"Ð20793 AppleShare Server", noIcon, noKey, noMark, plain,
+		"Ð20796 AppleTalk Zone", noIcon, noKey, noMark, plain,
 		/* [4] */
-		"Ð20739 Generic Location", noIcon, noKey, noMark, plain,
+		"Ð20795 FTP Server", noIcon, noKey, noMark, plain,
 		/* [5] */
-		"Ð20738 Newsgroup Location", noIcon, noKey, noMark, plain,
+		"Ð20793 AppleShare Server", noIcon, noKey, noMark, plain,
 		/* [6] */
-		"Ð20737 E-mail Location", noIcon, noKey, noMark, plain,
+		"Ð20785 Network", noIcon, noKey, noMark, plain,
 		/* [7] */
-		"Ð20736 File Location", noIcon, noKey, noMark, plain,
+		"Ð20739 Generic Location", noIcon, noKey, noMark, plain,
 		/* [8] */
-		"Ð20735 AppleShare Location", noIcon, noKey, noMark, plain,
+		"Ð20738 Newsgroup Location", noIcon, noKey, noMark, plain,
 		/* [9] */
-		"Ð20734 FTP Location", noIcon, noKey, noMark, plain,
+		"Ð20737 E-mail Location", noIcon, noKey, noMark, plain,
 		/* [10] */
-		"Ð20733 HTTP Location", noIcon, noKey, noMark, plain,
+		"Ð20736 File Location", noIcon, noKey, noMark, plain,
 		/* [11] */
-		"Ð20731 IP File Server", noIcon, noKey, noMark, plain,
+		"Ð20735 AppleShare Location", noIcon, noKey, noMark, plain,
 		/* [12] */
+		"Ð20734 FTP Location", noIcon, noKey, noMark, plain,
+		/* [13] */
+		"Ð20733 HTTP Location", noIcon, noKey, noMark, plain,
+		/* [14] */
+		"Ð20731 IP File Server", noIcon, noKey, noMark, plain,
+		/* [15] */
+		"Ð20727 Network Browser", noIcon, noKey, noMark, plain,
+		/* [16] */
 		"Ð20726 AppleTalk", noIcon, noKey, noMark, plain
 	}
 };
 
-resource 'MENU' (207) {
+resource 'MENU' (207, "Battery Status") {
 	207,
 	textMenuProc,
 	0x7FFFFEFF,
@@ -323,7 +411,7 @@ resource 'MENU' (207) {
 	}
 };
 
-resource 'MENU' (208) {
+resource 'MENU' (208, "Badges") {
 	208,
 	textMenuProc,
 	allEnabled,
@@ -343,13 +431,53 @@ resource 'MENU' (208) {
 	}
 };
 
-resource 'MENU' (209) {
+resource 'MENU' (209, "Toolbar Icons") {
 	209,
 	textMenuProc,
-	0x75F6FF6D,
+	allEnabled,
+	enabled,
+	"Toolbar Icons",
+	{	/* array: 5 elements */
+		/* [1] */
+		"Ð21684 Home", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Ð21683 Favorites", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Ð21682 Delete", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"Ð21681 Customize Toolbar", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"Ð21673 Computer", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (210, "Dock Icons") {
+	210,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Title",
+	{	/* array: 5 elements */
+		/* [1] */
+		"Ð21679 Internet Shortcut", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Ð21678 Burn", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Ð21677 Eject", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"Ð21676 Delete Alias", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"Ð21675 Unknown Item", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (211, "Others") {
+	211,
+	textMenuProc,
+	0x2FF6FF6D,
 	enabled,
 	"Others",
-	{	/* array: 43 elements */
+	{	/* array: 46 elements */
 		/* [1] */
 		"Ð16386 Apple Menu Icon", noIcon, noKey, noMark, plain,
 		/* [2] */
@@ -401,40 +529,46 @@ resource 'MENU' (209) {
 		/* [25] */
 		"Ð20728 Shortcut Icon", noIcon, noKey, noMark, plain,
 		/* [26] */
-		"-", noIcon, noKey, noMark, plain,
+		"Ð20722 Backwards Arrow (OS X)", noIcon, noKey, noMark, plain,
 		/* [27] */
-		"Ð20271 Help Icon", noIcon, noKey, noMark, plain,
+		"Ð20721 Forwards Arrow (OS X)", noIcon, noKey, noMark, plain,
 		/* [28] */
-		"-", noIcon, noKey, noMark, plain,
+		"Ð21720 Column View Arrow", noIcon, noKey, noMark, plain,
 		/* [29] */
-		"Ð16509 Clipboard", noIcon, noKey, noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [30] */
-		"Ð16494 System Suitcase", noIcon, noKey, noMark, plain,
+		"Ð20271 Help Icon", noIcon, noKey, noMark, plain,
 		/* [31] */
-		"Ð16482 Finder", noIcon, noKey, noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [32] */
-		"Ð3828 MacOS Logo", noIcon, noKey, noMark, plain,
+		"Ð16509 Clipboard", noIcon, noKey, noMark, plain,
 		/* [33] */
-		"-", noIcon, noKey, noMark, plain,
+		"Ð16494 System Suitcase", noIcon, noKey, noMark, plain,
 		/* [34] */
-		"Ð3822 Stop Icon", noIcon, noKey, noMark, plain,
+		"Ð16482 Finder", noIcon, noKey, noMark, plain,
 		/* [35] */
-		"Ð3821 Caution Icon", noIcon, noKey, noMark, plain,
+		"Ð3828 MacOS Logo", noIcon, noKey, noMark, plain,
 		/* [36] */
-		"Ð3820 Note Icon", noIcon, noKey, noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [37] */
-		"-", noIcon, noKey, noMark, plain,
+		"Ð3822 Stop Icon", noIcon, noKey, noMark, plain,
 		/* [38] */
-		"Ð3816 Group", noIcon, noKey, noMark, plain,
+		"Ð3821 Caution Icon", noIcon, noKey, noMark, plain,
 		/* [39] */
-		"Ð3815 Owner", noIcon, noKey, noMark, plain,
+		"Ð3820 Note Icon", noIcon, noKey, noMark, plain,
 		/* [40] */
-		"Ð3813 Guest User", noIcon, noKey, noMark, plain,
-		/* [41] */
-		"Ð3814 User", noIcon, noKey, noMark, plain,
-		/* [42] */
 		"-", noIcon, noKey, noMark, plain,
+		/* [41] */
+		"Ð3816 Group", noIcon, noKey, noMark, plain,
+		/* [42] */
+		"Ð3815 Owner", noIcon, noKey, noMark, plain,
 		/* [43] */
+		"Ð3813 Guest User", noIcon, noKey, noMark, plain,
+		/* [44] */
+		"Ð3814 User", noIcon, noKey, noMark, plain,
+		/* [45] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [46] */
 		"Custom ID", noIcon, noKey, noMark, 2
 	}
 };
@@ -465,6 +599,38 @@ resource 'MENU' (4000, "Icon Formats") {
 		/* [9] */
 		"Mac OS X Server 1.x (.tiff file)", noIcon, noKey, noMark, plain
 	}
+};
+
+data 'Mcmd' (202) {
+	$"0009 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000"                                     /* ...... */
+};
+
+data 'Mcmd' (205) {
+	$"0038 0000 0000 0000 0000 0000 0000 0000"            /* .8.............. */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000"                                               /* .. */
+};
+
+data 'Mcmd' (206) {
+	$"0000"                                               /* .. */
+};
+
+data 'Mcmd' (211) {
+	$"0000"                                               /* .. */
 };
 
 resource 'STR#' (4000, "Format Names", purgeable) {
@@ -528,7 +694,7 @@ resource 'STR#' (4001, "Icon Part Names", purgeable) {
 };
 
 resource 'STR#' (4002, "Misc. Icon Strings", purgeable) {
-	{	/* array StringArray: 6 elements */
+	{	/* array StringArray: 8 elements */
 		/* [1] */
 		"<I>None</I>",
 		/* [2] */
@@ -544,12 +710,16 @@ resource 'STR#' (4002, "Misc. Icon Strings", purgeable) {
 		/* [5] */
 		"No",
 		/* [6] */
-		"Choose Another File"
+		"Choose Another File",
+		/* [7] */
+		"Icon",
+		/* [8] */
+		"Mask"
 	}
 };
 
-resource 'STR#' (4003, "Icon Info Balloon Help", purgeable) {
-	{	/* array StringArray: 13 elements */
+resource 'STR#' (4003, "Icon Info Help", purgeable) {
+	{	/* array StringArray: 70 elements */
 		/* [1] */
 		"Sets the selected attributes and closes "
 		"this dialog.",
@@ -557,45 +727,152 @@ resource 'STR#' (4003, "Icon Info Balloon Help", purgeable) {
 		"Closes this dialog without making any ch"
 		"anges.",
 		/* [3] */
+		"",
+		/* [4] */
+		"",
+		/* [5] */
+		"",
+		/* [6] */
+		"",
+		/* [7] */
+		"",
+		/* [8] */
+		"",
+		/* [9] */
+		"",
+		/* [10] */
+		"",
+		/* [11] */
+		"",
+		/* [12] */
+		"",
+		/* [13] */
+		"",
+		/* [14] */
+		"",
+		/* [15] */
+		"",
+		/* [16] */
+		"",
+		/* [17] */
+		"",
+		/* [18] */
+		"16 x 12 pixel size",
+		/* [19] */
+		"128 x 128 pixel size",
+		/* [20] */
+		"48 x 48 pixel size",
+		/* [21] */
+		"32 x 32 pixel size",
+		/* [22] */
+		"16 x 16 pixel size",
+		/* [23] */
+		"",
+		/* [24] */
+		"",
+		/* [25] */
+		"",
+		/* [26] */
+		"",
+		/* [27] */
+		"",
+		/* [28] */
+		"",
+		/* [29] */
+		"",
+		/* [30] */
+		"",
+		/* [31] */
+		"",
+		/* [32] */
+		"",
+		/* [33] */
+		"",
+		/* [34] */
+		"",
+		/* [35] */
+		"",
+		/* [36] */
+		"",
+		/* [37] */
+		"",
+		/* [38] */
+		"",
+		/* [39] */
+		"",
+		/* [40] */
+		"",
+		/* [41] */
+		"",
+		/* [42] */
+		"",
+		/* [43] */
+		"",
+		/* [44] */
+		"",
+		/* [45] */
+		"",
+		/* [46] */
+		"",
+		/* [47] */
+		"",
+		/* [48] */
+		"",
+		/* [49] */
+		"",
+		/* [50] */
+		"",
+		/* [51] */
+		"",
+		/* [52] */
+		"",
+		/* [53] */
+		"",
+		/* [54] */
+		"",
+		/* [55] */
+		"",
+		/* [56] */
 		"Each icon within a file must have an uni"
 		"que ID.",
-		/* [4] */
-		"This is the size of the final icon resou"
-		"rce.",
-		/* [5] */
+		/* [57] */
+		"Pop-up menu containing commonly used ico"
+		"n IDs.",
+		/* [58] */
+		"",
+		/* [59] */
 		"Names are optional, but they can help yo"
 		"u identify icon resources quickly.",
-		/* [6] */
-		"If an icon is purgeable, it will be unlo"
-		"aded from memory is space is short.",
-		/* [7] */
-		"If an icon is preloaded, it will be load"
-		"ed automatically once a file is opened.",
-		/* [8] */
-		"If an icon is locked, then it cannot be "
-		"moved while loaded in memory.",
-		/* [9] */
-		"If an icon is protected, then it cannot "
-		"be modified.",
-		/* [10] */
-		"If an icon is part of the system heap, t"
-		"hen it will be placed in the area of mem"
-		"ory that is used by the system.",
-		/* [11] */
-		"This pop-up menu can be used to select c"
-		"ommonly used icon IDs.",
-		/* [12] */
-		"This pop-up menu can be used to select v"
-		"arious icon formats. Note that some of t"
-		"hem do not support all options (e.g. Win"
-		"dows does not allow 8-bit masks).",
-		/* [13] */
-		"These checkboxes are used to select the "
-		"possible members that the icon can have."
-		" Only the checked members will appear in"
-		" the members palette. Some checkboxes ma"
-		"ybe be disabled if the current format do"
-		"es not support them."
+		/* [60] */
+		"",
+		/* [61] */
+		"Note that some formats do not support al"
+		"l options (e.g. Windows does not allow 8"
+		"-bit masks or resource flags).",
+		/* [62] */
+		"",
+		/* [63] */
+		"Size of the final icon resource.",
+		/* [64] */
+		"",
+		/* [65] */
+		"",
+		/* [66] */
+		"Purgeable resources will be unloaded fro"
+		"m memory if space is short.",
+		/* [67] */
+		"Preloaded resources will be placed in me"
+		"mory automatically once a file is opened"
+		".",
+		/* [68] */
+		"Locked resources cannot be moved while l"
+		"oaded in memory.",
+		/* [69] */
+		"Protected resources cannot be modified.",
+		/* [70] */
+		"System heap resources will be placed in "
+		"the area of memory that is used by the s"
+		"ystem."
 	}
 };
 
@@ -761,88 +1038,7 @@ data 'clut' (4001, "Windows 8-bit Colors") {
 	$"0000 0000 0000 0000"                                /* ........ */
 };
 
-data 'hrct' (4000, "Icon Info", purgeable) {
-	$"0002 0000 0000 0000 0000 000D 0014 0003"            /* ................ */
-	$"0000 0000 013E 0132 0152 0176 0FA3 0001"            /* .....>.2.R.v.£.. */
-	$"0014 0003 0000 0000 013E 00E4 0152 0124"            /* .........>.ä.R.$ */
-	$"0FA3 0002 0014 0003 0000 0000 000D 0040"            /* .£.............@ */
-	$"001D 007C 0FA3 0003 0014 0003 0000 0000"            /* ...|.£.......... */
-	$"000D 00A5 001D 0178 0FA3 0004 0014 0003"            /* ...¥...x.£...... */
-	$"0000 0000 0046 0040 0056 0177 0FA3 0005"            /* .....F.@.V.w.£.. */
-	$"0014 0003 0000 0000 0108 000E 0118 007C"            /* ...............| */
-	$"0FA3 0006 0014 0003 0000 0000 011A 000E"            /* .£.............. */
-	$"012A 007C 0FA3 0007 0014 0003 0000 0000"            /* .*.|.£.......... */
-	$"0108 0108 0118 0176 0FA3 0008 0014 0003"            /* .......v.£...... */
-	$"0000 0000 0108 0086 0118 00F4 0FA3 0009"            /* .......†...ô.£.. */
-	$"0014 0003 0000 0000 011A 0086 012A 00F4"            /* ...........†.*.ô */
-	$"0FA3 000A 0014 0003 0000 0000 000B 0082"            /* .£.............‚ */
-	$"001F 0098 0FA3 000B 0014 0003 0000 0000"            /* ...˜.£.......... */
-	$"0028 000A 003C 017A 0FA3 000C 0014 0003"            /* .(...<.z.£...... */
-	$"0000 0000 0063 0009 00F1 017D 0FA3 000D"            /* .....c...ñ.}.£.. */
-};
-
-data 'hwin' (4000, "Icon Info", purgeable) {
-	$"0002 0000 0000 0001 0FA0 6872 6374 0009"            /* ......... hrct.. */
-	$"0949 636F 6E20 496E 666F"                           /* .Icon Info */
-};
-
-data 'hwin' (4001, "Insert Icon", purgeable) {
-	$"0002 0000 0000 0001 0FA0 6872 6374 000B"            /* ......... hrct.. */
-	$"0B49 6E73 6572 7420 4963 6F6E"                      /* .Insert Icon */
-};
-
 resource 'mctb' (202) {
-	{	/* array MCTBArray: 1 elements */
-		/* [1] */
-		mctbLast, 0,
-		{	/* array: 4 elements */
-			/* [1] */
-			0, 0, 0,
-			/* [2] */
-			0, 0, 0,
-			/* [3] */
-			0, 0, 0,
-			/* [4] */
-			0, 0, 0
-		}
-	}
-};
-
-resource 'mctb' (203) {
-	{	/* array MCTBArray: 1 elements */
-		/* [1] */
-		mctbLast, 0,
-		{	/* array: 4 elements */
-			/* [1] */
-			0, 0, 0,
-			/* [2] */
-			0, 0, 0,
-			/* [3] */
-			0, 0, 0,
-			/* [4] */
-			0, 0, 0
-		}
-	}
-};
-
-resource 'mctb' (204) {
-	{	/* array MCTBArray: 1 elements */
-		/* [1] */
-		mctbLast, 0,
-		{	/* array: 4 elements */
-			/* [1] */
-			0, 0, 0,
-			/* [2] */
-			0, 0, 0,
-			/* [3] */
-			0, 0, 0,
-			/* [4] */
-			0, 0, 0
-		}
-	}
-};
-
-resource 'mctb' (205) {
 	{	/* array MCTBArray: 1 elements */
 		/* [1] */
 		mctbLast, 0,
@@ -876,41 +1072,7 @@ resource 'mctb' (206) {
 	}
 };
 
-resource 'mctb' (207) {
-	{	/* array MCTBArray: 1 elements */
-		/* [1] */
-		mctbLast, 0,
-		{	/* array: 4 elements */
-			/* [1] */
-			0, 0, 0,
-			/* [2] */
-			0, 0, 0,
-			/* [3] */
-			0, 0, 0,
-			/* [4] */
-			0, 0, 0
-		}
-	}
-};
-
-resource 'mctb' (208) {
-	{	/* array MCTBArray: 1 elements */
-		/* [1] */
-		mctbLast, 0,
-		{	/* array: 4 elements */
-			/* [1] */
-			0, 0, 0,
-			/* [2] */
-			0, 0, 0,
-			/* [3] */
-			0, 0, 0,
-			/* [4] */
-			0, 0, 0
-		}
-	}
-};
-
-resource 'mctb' (4000) {
+resource 'mctb' (211) {
 	{	/* array MCTBArray: 1 elements */
 		/* [1] */
 		mctbLast, 0,

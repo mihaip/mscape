@@ -89,8 +89,6 @@ MString& MString::Assign(const char* contents, int contentsLength)
 	
 	
 	data = new char[contentsLength + 2];
-	if (data == NULL)
-		MThrow(memFullErr);
 	
 	data[0] = contentsLength;
 	length = contentsLength;
@@ -270,7 +268,7 @@ void MString::LoadFromResource(short resID, short index)
 	Str255 temp;
 	
 	GetIndString(temp, resID, index);
-	
+
 	Assign((char *)&temp[1], temp[0]);
 }
 
@@ -281,6 +279,21 @@ void MString::Draw(void)
 
 void MString::Draw(Rect targetRect)
 {
+#if TARGET_API_MAC_CARBON
+	CFStringRef cfString;
+	
+	cfString = CFStringCreateWithCString(NULL, &data[1], kCFStringEncodingMacRoman);
+	
+	DrawThemeTextBox(cfString,
+					 kThemeCurrentPortFont,
+					 kThemeStateActive,
+					 true,
+					 &targetRect,
+					 teFlushLeft,
+					 NULL);
+					 
+	CFRelease(cfString);
+#else
 	int		rowHeight = RowHeight(),
 			descenderHeight = DescenderHeight();
 	
@@ -316,6 +329,7 @@ void MString::Draw(Rect targetRect)
 			}
 		}
 	}
+#endif
 }
 
 void MString::DrawHTML(Rect targetRect)

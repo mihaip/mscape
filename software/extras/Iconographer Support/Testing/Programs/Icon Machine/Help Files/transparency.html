@@ -1,0 +1,46 @@
+<HTML>  
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0 Mac">
+  <TITLE>Transparency</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><FONT COLOR="#1e2866" FACE="Charcoal">32-Bit Transparency</FONT></P>
+
+<UL>
+  <P><FONT SIZE="-1" FACE="Geneva">32-bit icons have 8-bit masks,
+  which allow 256 levels of transparency. This requires a slightly
+  different approach than the traditional 1-bit, black-and-white
+  masks. To examine how 8-bit masks work, take a look at how the
+  standard Mac OS 8.5 folder icon looks in the Icon Machine window.</FONT>
+  <P><CENTER><FONT SIZE="-1" FACE="Geneva"><IMG SRC="images/folder.gif"
+  WIDTH="259" HEIGHT="259" ALIGN="BOTTOM" NATURALSIZEFLAG="3"></FONT></CENTER>
+  <P><FONT SIZE="-1" FACE="Geneva">Notice how the shadow looks
+  solid black, but the mask dots show that those pixels are partially
+  transparent. The more visible the dot is, the more transparent
+  the pixel is. So when the icon is drawn, those black pixels are
+  only partially drawn, darkening whatever color is underneath.</FONT>
+  <P><FONT SIZE="-1" FACE="Geneva">You can experiment with this
+  transparency effect by selecting the shadow with the marquee
+  tool and dragging it over other parts of the icon. When you drag
+  it over the middle of the icon, it acts like a shadow because
+  the transparent pixels are being drawn over a solid background.
+  When you drag it back out over the transparent part of the icon,
+  the pixels revert to their raw state of partially transparent
+  black.</FONT>
+  <P><CENTER><TABLE WIDTH="300" BORDER="0" CELLSPACING="0" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="33%">
+        <P><CENTER><IMG SRC="images/shadow1.gif" WIDTH="88" HEIGHT="128"
+        ALIGN="MIDDLE" NATURALSIZEFLAG="3"></CENTER></TD>
+      <TD WIDTH="33%">
+        <P><CENTER><IMG SRC="images/shadow2.gif" WIDTH="88" HEIGHT="128"
+        ALIGN="MIDDLE" NATURALSIZEFLAG="3"></CENTER></TD>
+    </TR>
+  </TABLE></CENTER>
+  <P><CENTER><HR><FONT SIZE="-1" FACE="Geneva"><A HREF="../Icon%20Machine%20Help.html">Table
+  of contents</A></FONT></CENTER>
+</UL>
+
+</BODY>
+</HTML>

@@ -1,4 +1,4 @@
-/* Resource fork of software/Iconographer/Testing/Icon->.ICO source/resources/PPStarterResources.rsrc */
+/* Resource fork of software/extras/Iconographer Support/Testing/Icon->.ICO source/resources/PPStarterResources.rsrc */
 resource 'aete' (0, "English") {
 	0x1,
 	0x0,

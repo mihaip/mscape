@@ -110,7 +110,7 @@ resource 'CNTL' (1105, "Members Divider", purgeable) {
 };
 
 resource 'CNTL' (1106, purgeable) {
-	{70, 352, 92, 462},
+	{73, 352, 95, 462},
 	0,
 	visible,
 	100,
@@ -121,7 +121,7 @@ resource 'CNTL' (1106, purgeable) {
 };
 
 resource 'CNTL' (1107, purgeable) {
-	{91, 352, 113, 462},
+	{94, 352, 116, 462},
 	0,
 	visible,
 	100,
@@ -132,7 +132,7 @@ resource 'CNTL' (1107, purgeable) {
 };
 
 resource 'CNTL' (1108, purgeable) {
-	{133, 352, 155, 462},
+	{136, 352, 158, 462},
 	0,
 	visible,
 	100,
@@ -143,7 +143,7 @@ resource 'CNTL' (1108, purgeable) {
 };
 
 resource 'CNTL' (1109, purgeable) {
-	{154, 352, 176, 462},
+	{157, 352, 179, 462},
 	0,
 	visible,
 	100,
@@ -154,7 +154,7 @@ resource 'CNTL' (1109, purgeable) {
 };
 
 resource 'CNTL' (1110, purgeable) {
-	{112, 352, 134, 462},
+	{115, 352, 137, 462},
 	0,
 	visible,
 	100,
@@ -165,7 +165,7 @@ resource 'CNTL' (1110, purgeable) {
 };
 
 resource 'CNTL' (1111, "Info Tabs", purgeable) {
-	{12, 18, 212, 480},
+	{12, 20, 212, 482},
 	1111,
 	visible,
 	100,
@@ -272,37 +272,37 @@ resource 'DITL' (4001, purgeable) {
 			1112
 		},
 		/* [11] */
-		{55, 330, 71, 470},
+		{57, 330, 74, 468},
 		StaticText {
 			enabled,
 			"Resource Flags:"
 		},
 		/* [12] */
-		{70, 352, 92, 462},
+		{73, 352, 95, 462},
 		Control {
 			enabled,
 			1106
 		},
 		/* [13] */
-		{91, 352, 113, 462},
+		{94, 352, 116, 462},
 		Control {
 			enabled,
 			1107
 		},
 		/* [14] */
-		{112, 352, 134, 462},
+		{115, 352, 137, 462},
 		Control {
 			enabled,
 			1110
 		},
 		/* [15] */
-		{133, 352, 155, 462},
+		{136, 352, 158, 462},
 		Control {
 			enabled,
 			1108
 		},
 		/* [16] */
-		{154, 352, 176, 462},
+		{157, 352, 179, 462},
 		Control {
 			enabled,
 			1109
@@ -698,7 +698,7 @@ resource 'DLOG' (4000, "Icon Info", purgeable) {
 };
 
 resource 'DLOG' (4001, "Icon Info: Properties", purgeable) {
-	{596, 334, 916, 930},
+	{221, 259, 541, 855},
 	dBoxProc,
 	visible,
 	goAway,

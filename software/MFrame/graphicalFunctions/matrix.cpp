@@ -319,31 +319,146 @@ void XFormPoint(RGBMatrix matrix, float x, float y, float z, float* tx, float* t
 
 void ApplyMatrix(RGBMatrix matrix, PixMapHandle pix)
 {
-	unsigned char* pixelData;
-	int			numberOfBytes;
-	int ir, ig, ib, r, g, b;
-	
-	pixelData = (unsigned char*)(**pix).baseAddr;
-	
-	numberOfBytes = ((**pix).bounds.bottom - (**pix).bounds.top) * ((**pix).rowBytes & 0x3FFF);
-	
-	for (int i=0; i < numberOfBytes; i+=4)
+#if 0
+	if MUtilities::GestaltTest(gestaltPowerPCProcessorFeatures, gestaltPowerPCHasVectorInstructions))
 	{
-		ir = pixelData[1];
-		ig = pixelData[2];
-		ib = pixelData[3];
-		r = ir*matrix[0][0] + ig*matrix[1][0] + ib*matrix[2][0] + matrix[3][0];
-		g = ir*matrix[0][1] + ig*matrix[1][1] + ib*matrix[2][1] + matrix[3][1];
-		b = ir*matrix[0][2] + ig*matrix[1][2] + ib*matrix[2][2] + matrix[3][2];
-		if(r<0) r = 0;
-		if(r>255) r = 255;
-		if(g<0) g = 0;
-		if(g>255) g = 255;
-		if(b<0) b = 0;
-		if(b>255) b = 255;
-		pixelData[1] = r;
-		pixelData[2] = g;
-		pixelData[3] = b;
-		pixelData += 4;
+		signed char*			pixelData;
+		vector float			vecMatrix[4];
+		vector signed char	pChar;
+		vector signed short	pShort[2];
+		vector signed int		pLong[4];
+		vector float			pFloat[4], result[4];
+		int						numberOfBytes;
+		
+		pixelData = (signed char*)(**pix).baseAddr;
+		
+		numberOfBytes = ((**pix).bounds.bottom - (**pix).bounds.top) * ((**pix).rowBytes & 0x3FFF);
+		
+		vecMatrix[0] = vec_ld(0, matrix[0]);
+		vecMatrix[1] = vec_ld(0, matrix[1]);
+		vecMatrix[2] = vec_ld(0, matrix[2]);
+		vecMatrix[3] = vec_ld(0, matrix[3]);
+		
+		for (int i=0; i < numberOfBytes; i+=16)
+		{
+			pChar = vec_ld(0, pixelData);
+			
+			pShort[0] = vec_unpackh(pChar);
+			pShort[1] = vec_unpackl(pChar);
+			
+			pLong[0] = vec_unpackh(pShort[0]);
+			pLong[1] = vec_unpackl(pShort[0]);
+			pLong[2] = vec_unpackh(pShort[1]);
+			pLong[3] = vec_unpackl(pShort[1]);
+			
+			pFloat[0] = vec_ctf(pLong[0], 0);
+			pFloat[1] = vec_ctf(pLong[1], 0);
+			pFloat[2] = vec_ctf(pLong[2], 0);
+			pFloat[3] = vec_ctf(pLong[3], 0);	
+			
+			vSgemul(1, 4, 4, &pFloat[0], 'n', vecMatrix, 'n', &result[0]);
+			vSgemul(1, 4, 4, &pFloat[1], 'n', vecMatrix, 'n', &result[1]);
+			vSgemul(1, 4, 4, &pFloat[2], 'n', vecMatrix, 'n', &result[2]);
+			vSgemul(1, 4, 4, &pFloat[3], 'n', vecMatrix, 'n', &result[3]);
+			
+			pLong[0] = vec_cts(result[0], 0);
+			pLong[1] = vec_cts(result[1], 0);
+			pLong[2] = vec_cts(result[2], 0);
+			pLong[3] = vec_cts(result[3], 0);
+			
+			pShort[0] = vec_pack(pLong[0], pLong[1]);
+			pShort[1] = vec_pack(pLong[2], pLong[3]);
+			
+			pChar = vec_pack(pShort[0], pShort[1]);
+			
+			vec_st(pChar, 0, pixelData);
+			
+			pixelData += 16;
+/*
+		signed char*			pixelData;
+		vector float			vecMatrix[4];
+		vector signed char	pChar;
+		vector signed short	pShort[2];
+		vector signed int		pLong[4];
+		vector float			pFloat[4], result[4];
+		int						numberOfBytes;
+		
+		pixelData = (signed char*)(**pix).baseAddr;
+		
+		numberOfBytes = ((**pix).bounds.bottom - (**pix).bounds.top) * ((**pix).rowBytes & 0x3FFF);
+		
+		vecMatrix[0] = vec_ld(0, matrix[0]);
+		vecMatrix[1] = vec_ld(1, matrix[1]);
+		vecMatrix[2] = vec_ld(2, matrix[2]);
+		vecMatrix[3] = vec_ld(3, matrix[3]);
+		
+		for (int i=0; i < numberOfBytes; i+=16)
+		{
+			pChar = vec_ld(0, pixelData);
+			
+			pShort[0] = vec_unpackh(pChar);
+			pShort[1] = vec_unpackl(pChar);
+			
+			pLong[0] = vec_unpackh(pShort[0]);
+			pLong[1] = vec_unpackl(pShort[0]);
+			pLong[2] = vec_unpackh(pShort[1]);
+			pLong[3] = vec_unpackl(pShort[1]);
+			
+			pFloat[0] = vec_ctf(pLong[0], 0);
+			pFloat[1] = vec_ctf(pLong[1], 0);
+			pFloat[2] = vec_ctf(pLong[2], 0);
+			pFloat[3] = vec_ctf(pLong[3], 0);	
+			
+			vSgemul(1, 4, 4, &pFloat[0], 'n', vecMatrix, 'n', &result[0]);
+			vSgemul(1, 4, 4, &pFloat[1], 'n', vecMatrix, 'n', &result[1]);
+			vSgemul(1, 4, 4, &pFloat[2], 'n', vecMatrix, 'n', &result[2]);
+			vSgemul(1, 4, 4, &pFloat[3], 'n', vecMatrix, 'n', &result[3]);
+			
+			pLong[0] = vec_cts(result[0], 0);
+			pLong[1] = vec_cts(result[1], 0);
+			pLong[2] = vec_cts(result[2], 0);
+			pLong[3] = vec_cts(result[3], 0);
+			
+			pShort[0] = vec_pack(pLong[0], pLong[1]);
+			pShort[1] = vec_pack(pLong[2], pLong[3]);
+			
+			pChar = vec_pack(pShort[0], pShort[1]);
+			
+			vec_st(pChar, 0, pixelData);
+			
+			pixelData += 16;
+*/
+		}
+	}
+	else
+#endif
+	{
+		unsigned char* pixelData;
+		int			numberOfBytes;
+		int ir, ig, ib, r, g, b;
+		
+		pixelData = (unsigned char*)(**pix).baseAddr;
+		
+		numberOfBytes = ((**pix).bounds.bottom - (**pix).bounds.top) * ((**pix).rowBytes & 0x3FFF);
+		
+		for (int i=0; i < numberOfBytes; i+=4)
+		{
+			ir = pixelData[1];
+			ig = pixelData[2];
+			ib = pixelData[3];
+			
+			r = int(ir*matrix[0][0] + ig*matrix[1][0] + ib*matrix[2][0] + matrix[3][0]);
+			g = int(ir*matrix[0][1] + ig*matrix[1][1] + ib*matrix[2][1] + matrix[3][1]);
+			b = int(ir*matrix[0][2] + ig*matrix[1][2] + ib*matrix[2][2] + matrix[3][2]);
+			
+			if(r<0) r = 0; else if(r>255) r = 255;
+			if(g<0) g = 0; else if(g>255) g = 255;
+			if(b<0) b = 0; else if(b>255) b = 255;
+			
+			pixelData[1] = r;
+			pixelData[2] = g;
+			pixelData[3] = b;
+			pixelData += 4;
+		}
 	}
 }

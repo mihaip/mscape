@@ -1,4 +1,4 @@
-/* Resource fork of software/Iconographer/Testing/Icon->.ICO source/app/CPPStarterApp.h */
+/* Resource fork of software/extras/Iconographer Support/Testing/Icon->.ICO source/app/CPPStarterApp.h */
 data 'MPSR' (1005) {
 	$"0009 5072 6F46 6F6E 7400 0000 0000 0000"            /* ..ProFont....... */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */

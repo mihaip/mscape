@@ -1,5 +1,6 @@
 #include "MIcon.h"
 #include "MWindow.h"
+#include "MHelp.h"
 
 const static int kIconInfoPropertiesItems[] = {iIconIDLabel, iIconIDField,
 	iIDMenu, iIconNameLabel, iIconNameField, iFormatLabel, iFormatPopup,
@@ -39,6 +40,7 @@ MenuHandle			MIcon::formatMenu = NULL;
 MWindowPtr			MIcon::infoDialogWindow = NULL;
 EditIconInfoData	MIcon::dialogData;
 int					MIcon::currentTab = -1;
+bool				MIcon::resourceItemsEnabled = true;
 
 enum IconInfoTabs
 {
@@ -321,6 +323,8 @@ void MIcon::LoadInfoDialog()
 			InsertMenu(currentMenu, kInsertHierarchicalMenu);
 	}
 	
+	resourceItemsEnabled = true;
+	
 	infoDialogWindow->SetRefCon((int)&dialogData);
 }
 
@@ -342,10 +346,16 @@ int MIcon::EditIconInfo(int mode)
 	Str255				menuTitle, tempString, sizeFormat;
 	long				temp, oldFormat, oldUsedMembers;
 	ControlHandle		tempControl;
-	
-#if !TARGET_API_MAC_CARBON
+
+#if TARGET_API_MAC_CARBON	
+	if (!dialogLoaded)
+	{
+		dialogLoaded = true;
+		LoadInfoDialog();
+	}
+#else
 	LoadInfoDialog();
-#endif	
+#endif
 	
 	oldFormat = format;
 	oldUsedMembers = usedMembers;
@@ -402,8 +412,12 @@ int MIcon::EditIconInfo(int mode)
 	if (mode == kIconInfoBrowser)
 		SetTabEnabled(tabs, kIconInfoMembersTab, false);
 	
-	if ((format == formatWindows) || (format == formatMacOSXServer) || (format == formatMacOSX) || (format == formatWindowsXP))
-		ToggleNonMacOSItems(infoDialog);
+	if ((format == formatWindows ||
+		format == formatMacOSXServer ||
+		format == formatMacOSX ||
+		format == formatWindowsXP) &&
+		resourceItemsEnabled)
+		ToggleResourceItems(infoDialog);
 	
 	SetControlText(nameField, name);
 	NumToString(ID, tempString);
@@ -435,6 +449,8 @@ int MIcon::EditIconInfo(int mode)
 	SetControlValue(IDMenu, GetMenuID(dialogData.currentMenu) - mBaseIDMenu + 1);
 	
 	dialogDone = false;
+	
+	MHelp::SetupDialogHelp(infoDialog, rIconInfoHelp);
 	
 	while (!dialogDone)
 	{
@@ -608,13 +624,16 @@ int MIcon::EditIconInfo(int mode)
 				format = GetControlValue(formatPopup);
 				usedMembers &= kDefaultMembers[format];
 				SetMembersCheckboxes(infoDialog, usedMembers, format);
-				if ((format == formatWindows) || (format == formatMacOSXServer) || (format == formatMacOSX) || (format == formatWindowsXP))
+				if ((format == formatWindows ||
+					 format == formatMacOSXServer ||
+					 format == formatMacOSX || 
+					 format == formatWindowsXP))
 				{
-					if (IsControlActive(IDField))
-						ToggleNonMacOSItems(infoDialog);
+					if (resourceItemsEnabled)
+						ToggleResourceItems(infoDialog);
 				}
-				else if (!IsControlActive(IDField))
-					ToggleNonMacOSItems(infoDialog);
+				else if (!resourceItemsEnabled)
+					ToggleResourceItems(infoDialog);
 				break;
 			case iPurgeable: ToggleCheckbox(purgeableBox); break;
 			case iProtected: ToggleCheckbox(protectedBox); break;
@@ -628,7 +647,7 @@ int MIcon::EditIconInfo(int mode)
 		}
 	}
 	
-	HideWindow(GetDialogWindow(infoDialog));
+	HideWindow(GetDialogWindow(infoDialog));	
 	
 #if !TARGET_API_MAC_CARBON
 	DisposeInfoDialog();
@@ -636,12 +655,16 @@ int MIcon::EditIconInfo(int mode)
 	
 	MWindow::ActivateAll();
 	
+	MHelp::CleanupDialogHelp();
+	
 	return itemHit;
 }
 
-void MIcon::ToggleNonMacOSItems(DialogPtr infoDialog)
+void MIcon::ToggleResourceItems(DialogPtr infoDialog)
 {
 	ControlHandle currentControl;
+	
+	resourceItemsEnabled = !resourceItemsEnabled;
 	
 	GetDialogItemAsControl(infoDialog, iIconIDLabel, &currentControl); ToggleControl(currentControl);
 	GetDialogItemAsControl(infoDialog, iIconIDField, &currentControl); ToggleControl(currentControl);
@@ -661,6 +684,12 @@ void MIcon::ToggleNonMacOSItems(DialogPtr infoDialog)
 
 void MIcon::SplitMenuItem(Str255 text, long* ID, Str255 iconName)
 {
+	if (text[0] == 1)
+	{
+		*ID = 1 << 31;
+		return;
+	}
+	
 	int IDEnd;
 	
 	for (IDEnd=1; text[IDEnd] != ' '; IDEnd++) {;}
@@ -703,7 +732,6 @@ void MIcon::GetIDMenu(int ID, MenuHandle* menu, int* item, Str255 name)
 	
 	for (int i = 0; i < mIDMenuCount; i++)
 	{
-		//currentMenu = (MenuHandle) Get1Resource('MENU', mBaseIDMenu + i);
 		currentMenu = GetMenuHandle(mBaseIDMenu + i);
 		if (currentMenu == NULL)
 		{
@@ -737,7 +765,7 @@ void MIcon::GetIDMenu(int ID, MenuHandle* menu, int* item, Str255 name)
 			}
 		}
 		
-		if (loaded && (i != mIDMenuCount - 1))
+		if (loaded && (menu == NULL || i != mIDMenuCount - 1))
 			DisposeMenu(currentMenu);
 	}
 
@@ -746,6 +774,8 @@ void MIcon::GetIDMenu(int ID, MenuHandle* menu, int* item, Str255 name)
 pascal Boolean MIcon::IconInfoDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit)
 {
 	bool	handledEvent = false;
+	
+	MHelp::HandleHelp(dialog, eventPtr);
 	
 	switch (eventPtr->what)
 	{

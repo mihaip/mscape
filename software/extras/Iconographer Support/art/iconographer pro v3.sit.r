@@ -1,5 +1,0 @@
-/* Resource fork of software/extras/Iconographer Support/art/iconographer pro v3.sit */
-data 'IOAh' (128) {
-	$"0000 0001 0000 0072"                                /* .......r */
-};
-

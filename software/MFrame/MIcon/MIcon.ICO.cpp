@@ -41,6 +41,8 @@ void MIcon::LoadICO()
 	
 	LoadIconDirFromFile(&iconDir, file.GetAssociatedFile());
 	
+	DumpIconDir(iconDir);
+	
 	members = 0;
 	
 	SAVECOLORS;
@@ -51,7 +53,10 @@ void MIcon::LoadICO()
 	{
 		width = iconDir.idEntries[i].iconImage->icHeader.biWidth;
 		height = iconDir.idEntries[i].iconImage->icHeader.biHeight/2;
-		bitCount = iconDir.idEntries[i].iconImage->icHeader.biBitCount; 
+		bitCount = iconDir.idEntries[i].iconImage->icHeader.biBitCount;
+		
+		if (width == 24 || height == 24)
+			continue;
 		
 		SetRect(&iconRect, 0, 0, width, height);
 		
@@ -66,12 +71,12 @@ void MIcon::LoadICO()
 			colorTable = CreateColorTable(iconDir.idEntries[i].iconImage->icColors, iconDir.idEntries[i].iconImage->icHeader.biClrUsed, bitCount);
 		}
 		
-		NewGWorldUnpadded(&iconGW, targetIconBitCount, &iconRect, colorTable);
+		NewGWorld(&iconGW, targetIconBitCount, &iconRect, colorTable, NULL, 0);
 		iconPix = GetGWorldPixMap(iconGW);
 		LockPixels(iconPix);
 		iconCursor = (unsigned char*)(**iconPix).baseAddr;
 		
-		NewGWorldUnpadded(&maskGW, 1, &iconRect, NULL);
+		NewGWorld(&maskGW, 1, &iconRect, NULL, NULL, 0);
 		maskPix = GetGWorldPixMap(maskGW);
 		LockPixels(maskPix);
 		maskCursor = (unsigned char*)(**maskPix).baseAddr;
@@ -140,6 +145,7 @@ void MIcon::LoadICO()
 				break;
 		}
 		
+		DebugNValues("\pcopying 1-bit mask for n x n @ bps: ", 3, width, height, bitCount);
 		ReverseCopy(iconDir.idEntries[i].iconImage->icAND, maskSize,
 					maskCursor, ((**maskPix).rowBytes & 0x3FFF) * height,
 					width, height, 1,
@@ -181,9 +187,9 @@ void MIcon::LoadICO()
 			PixMapHandle newIconPix;
 			
 			if (bitCount == 8)
-				NewIconSet(&newIconGW, &newIconPix, (**iconPix).bounds, 8, windows8Colors);
+				NewIconSet(&newIconGW, &newIconPix, (**targetIconPix).bounds, 8, windows8Colors);
 			else
-				NewIconSet(&newIconGW, &newIconPix, (**iconPix).bounds, 4, windows4Colors);
+				NewIconSet(&newIconGW, &newIconPix, (**targetIconPix).bounds, 4, windows4Colors);
 				
 			ReplaceMember(iconName, newIconGW, newIconPix);
 			
@@ -199,7 +205,7 @@ void MIcon::LoadICO()
 			CopyPixMap(iconPix, targetIconPix, &iconRect, &(**targetIconPix).bounds, srcCopy, NULL);
 			CopyPixMap(maskPix, targetMaskPix, &iconRect, &(**targetIconPix).bounds, srcCopy, NULL);
 			
-			CopyPixMap(targetMaskPix, targetIconPix, &(**targetMaskPix).bounds, &(**targetIconPix).bounds, notSrcBic, NULL);
+			//CopyPixMap(targetMaskPix, targetIconPix, &(**targetMaskPix).bounds, &(**targetIconPix).bounds, notSrcBic, NULL);
 			
 			//DebugStr("\pabout to dispose tempPix");		
 			UnlockPixels(iconPix);
@@ -231,7 +237,7 @@ void MIcon::SaveICO(void)
 	long writeLength, iconCount, dataOffset;
 	unsigned short	tempShort;
 	
-	dataFork = file.OpenResourceFork(fsRdWrPerm);
+	dataFork = file.OpenDataFork(fsRdWrPerm);
 	
 	SetFPos(dataFork, fsFromStart, 0);
 	
@@ -316,9 +322,9 @@ void AddIndexedICOMember(short file, PixMapHandle iconPix, GWorldPtr iconGW, Pix
 	(**colorTable).ctFlags = 0;
 	(**colorTable).ctSize = 255;
 	
-	if (noOfColors > 256)
+	if (noOfColors > 254)
 	{
-		int	filledColors = 0, threshold = 8;
+		int	filledColors = 2, threshold = 8;
 		
 		while (filledColors < 256)
 		{
@@ -348,7 +354,7 @@ void AddIndexedICOMember(short file, PixMapHandle iconPix, GWorldPtr iconGW, Pix
 	}
 	else
 	{
-		for (int i=0; i < 256; i++)
+		for (int i=2; i < 256; i++)
 		{
 			(**colorTable).ctTable[i].value = i;
 			
@@ -367,7 +373,18 @@ void AddIndexedICOMember(short file, PixMapHandle iconPix, GWorldPtr iconGW, Pix
 		}
 	}
 	
-	NewGWorldUnpadded(&tempGW, 8, &(**iconPix).bounds, colorTable);
+	// always need at least black and white
+	(**colorTable).ctTable[0].value = 0;
+	(**colorTable).ctTable[0].rgb.red = 0xFFFF;
+	(**colorTable).ctTable[0].rgb.green = 0xFFFF;
+	(**colorTable).ctTable[0].rgb.blue = 0xFFFF;
+
+	(**colorTable).ctTable[0].value = 1;
+	(**colorTable).ctTable[0].rgb.red = 0x0000;
+	(**colorTable).ctTable[0].rgb.green = 0x0000;
+	(**colorTable).ctTable[0].rgb.blue = 0x0000;
+	
+	NewGWorld(&tempGW, 8, &(**iconPix).bounds, colorTable, NULL, 0);
 	tempPix = GetGWorldPixMap(tempGW);
 	LockPixels(tempPix);
 	
@@ -378,7 +395,7 @@ void AddIndexedICOMember(short file, PixMapHandle iconPix, GWorldPtr iconGW, Pix
 	
 	CopyPixMap(iconPix, tempPix, &(**iconPix).bounds, &(**iconPix).bounds, srcCopy + ditherCopy, NULL);
 
-	AddICOMember(file, (**iconPix).bounds.right, (**iconPix).bounds.bottom, 0, dataOffset, 8, colorTable, tempPix, maskPix);
+	AddICOMember(file, (**iconPix).bounds.right, (**iconPix).bounds.bottom, 0, dataOffset, 8, (**tempPix).pmTable, tempPix, maskPix);
 
 	UnlockPixels(tempPix);
 	DisposeGWorld(tempGW);
@@ -430,7 +447,11 @@ void AddICOMember(short file, int width,int height, int colorCount, long* dataOf
 	SAVEGWORLD;
 	SAVECOLORS;
 	
-	NewGWorldUnpadded(&tempGW, bps, &bounds, colorTable);
+	if (bps == 24)
+		NewGWorld(&tempGW, 32, &bounds, colorTable, NULL, 0);
+	else
+		NewGWorld(&tempGW, bps, &bounds, colorTable, NULL, 0);
+		
 	tempPix = GetGWorldPixMap(tempGW);
 	LockPixels(tempPix);
 	SetGWorld(tempGW, NULL);
@@ -665,8 +686,8 @@ void LoadIconDirFromFile(ICONDIR* iconDir, FSSpec srcFileSpec)
 		if (width * bps % 32 != 0)
 			readLength += (iconSize = (width/32 + 1) * 32 * height * bps / 8);
 		else
-			readLength += (iconSize = width * height * bps / 8);	
-		
+			readLength += (iconSize = width * height * bps / 8);
+			
 		if (width % 32 != 0)
 			readLength += (width/32 + 1) * 32 * height / 8;
 		else
@@ -742,6 +763,13 @@ void ReverseCopy(unsigned char* source, int sourceSize,
 	
 	sourcePadding = sourceSize/height - width * depth/8;
 	targetPadding = targetSize/height - width * depth/8;
+	if (width == 48 && height == 48 && depth == 1)
+	{
+		targetPadding = 0;
+		sourcePadding = 0;
+	}
+	
+	DebugNValues("\psource/target padding: ", 2, sourcePadding, targetPadding);
 
 	for (int sourcePosition=0, targetPosition = targetSize - targetPadding - 1;
 	     sourcePosition < sourceSize;
@@ -753,6 +781,9 @@ void ReverseCopy(unsigned char* source, int sourceSize,
 			else
 				target[targetPosition - i] = Swap(source[sourcePosition + i]);
 		}
+		
+	//for (int i=0; i < targetSize; i++)
+	//	target[i] = 0xFF;
 }
 
 int GetICODataSize(int width, int height, int bps)

@@ -9,7 +9,9 @@
 #include "MWindow.h"
 #include "MAlert.h"
 #include "MIcon.h"
+#if !PROJECTBUILDER
 #include <CFBundle.h>
+#endif
 
 MIcon* MUtilities::applicationIcon = NULL;
 bool MUtilities::toolboxInited = false;
@@ -17,6 +19,8 @@ short MUtilities::currentCursor = rArrow;
 bool MUtilities::cursorChanged = false;
 
 MSounds MUtilities::sounds;
+
+const static int rNavFormatCustomItems = 6000;
 
 void MUtilities::InitToolbox()
 {
@@ -103,6 +107,18 @@ bool MUtilities::GestaltTest(MType gestaltCode, MType gestaltMask)
 		return result & gestaltMask;
 	else
 		return 0;
+}
+
+bool MUtilities::GestaltQTVersion(int major, int revision)
+{
+	char			quickTimeVersion[4];
+	
+	if (Gestalt(gestaltQuickTimeVersion, (long *)quickTimeVersion) != noErr ||
+		quickTimeVersion[0] < major ||
+		(quickTimeVersion[0] == major && quickTimeVersion[1] < revision))
+		return false;
+	else
+		return true;
 }
 
 bool MUtilities::IsKeyPressed(short keyCode)
@@ -364,79 +380,53 @@ OSErr MUtilities::AESendFinderOpen(FSSpec inFile)
 
 OSErr MUtilities::AESendFinderUpdate(FSSpec inFile)
 {
-	/*if (GestaltVersion(gestaltSystemVersion, 0x10, 0x00))
-	{
-		FSRef fileRef, parentRef;
-		OSErr	err;
-		Str255	errAsString;
-		FSCatalogInfo	parentInfo;
-		HFSUniStr255	parentName;
-		
-		DebugStr("\phere");
-		
-		err = FSpMakeFSRef(&inFile, &fileRef);
-		if (err != noErr) {NumToString(err, errAsString); DebugStr(errAsString);}
-		
-		err = FSGetCatalogInfo(&fileRef, kFSCatInfoParentDirID, NULL, NULL, NULL, &parentRef);
-		if (err != noErr) {NumToString(err, errAsString); DebugStr(errAsString);}
-		
-		err = FSGetCatalogInfo(&parentRef, kFSCatInfoSettableInfo, &parentInfo, &parentName, NULL, NULL);
-		if (err != noErr) {NumToString(err, errAsString); DebugStr(errAsString);}
-		
-		UnicodeToTextInfo	conversionInfo;
-		CreateUnicodeToTextInfoByEncoding(kTextEncodingMacRoman, &conversionInfo);
-		ConvertFromUnicodeToPString(conversionInfo, parentName.length, parentName.unicode, errAsString);
-		DebugStr(errAsString);
-		
-		err = GetUTCDateTime(&parentInfo.contentModDate, kUTCDefaultOptions);
-		if (err != noErr) {NumToString(err, errAsString); DebugStr(errAsString);}
-		
-		err = GetUTCDateTime(&parentInfo.attributeModDate, kUTCDefaultOptions);
-		if (err != noErr) {NumToString(err, errAsString); DebugStr(errAsString);}
-		
-		err = GetUTCDateTime(&parentInfo.accessDate, kUTCDefaultOptions);
-		if (err != noErr) {NumToString(err, errAsString); DebugStr(errAsString);}
-		
-		err = FSSetCatalogInfo(&parentRef, kFSCatInfoSettableInfo, &parentInfo);
-		if (err != noErr) {NumToString(err, errAsString); DebugStr(errAsString);}
-		
-		err = FNNotify(&parentRef, kFNDirectoryModifiedMessage, kNilOptions);
-		if (err != noErr) {NumToString(err, errAsString); DebugStr(errAsString);}
-		
-		return err;
-	}
-	else*/
-	{
-		OSErr    err = noErr;
-		AEDesc      processDesc;
-		AppleEvent     ae, aeReply;
-		DescType finderType = 'MACS';
-		
-		ae.descriptorType = aeReply.descriptorType = processDesc.descriptorType = typeNull;
-		ae.dataHandle = aeReply.dataHandle = processDesc.dataHandle = nil;
-	         
-		err = AECreateDesc(typeApplSignature,&finderType,sizeof(DescType),&processDesc); if (err != noErr) goto bail;
-		
-		err = AECreateAppleEvent(kAEFinderSuite, kAESync,&processDesc, kAutoGenerateReturnID,kAnyTransactionID,&ae); if (err != noErr) goto bail;
-	           
-		err = AEPutParamPtr(&ae,keyDirectObject,typeFSS,&inFile,sizeof(inFile)); if (err != noErr) goto bail;
+	OSErr    	err = noErr;
+	AEDesc      processDesc;
+	AppleEvent  ae, aeReply;
+	DescType	finderCreator = 'MACS';
+	
+	ae.descriptorType = aeReply.descriptorType = processDesc.descriptorType = typeNull;
+	ae.dataHandle = aeReply.dataHandle = processDesc.dataHandle = nil;
+         
+	err = AECreateDesc(typeApplSignature, &finderCreator,sizeof(DescType),&processDesc); if (err != noErr) goto bail;
+	
+	err = AECreateAppleEvent(kAEFinderSuite, kAESync,&processDesc, kAutoGenerateReturnID,kAnyTransactionID,&ae); if (err != noErr) goto bail;
 
-		err  = AESend(&ae,&aeReply, kAENoReply | kAENeverInteract, kAENormalPriority, kAEDefaultTimeout,nil,nil); if (err != noErr) goto bail;
+#if TARGET_API_MAC_CARBON
+	AliasHandle		alias = NULL;
+	
+	err = NewAlias(NULL, &inFile, &alias); if (err != noErr) goto bail;
+	
+	HLock(Handle(alias));
+	
+	err = AEPutParamPtr(&ae,keyDirectObject,typeAlias,*alias,GetHandleSize(Handle(alias))); if (err != noErr) goto bail;
 
-	bail:
-		if (processDesc.descriptorType != typeNull) AEDisposeDesc(&processDesc);
-		if (ae.descriptorType != typeNull) AEDisposeDesc(&ae);
-		if (aeReply.descriptorType != typeNull) AEDisposeDesc(&aeReply);
-		
-		return err;
-	}
+	HUnlock(Handle(alias));
+#else	           
+	err = AEPutParamPtr(&ae,keyDirectObject,typeFSS,&inFile,sizeof(inFile)); if (err != noErr) goto bail;
+#endif
+
+	err  = AESend(&ae,&aeReply, kAENoReply, kAENormalPriority, kAEDefaultTimeout,nil,nil); if (err != noErr) goto bail;
+
+bail:
+	if (processDesc.descriptorType != typeNull) AEDisposeDesc(&processDesc);
+	if (ae.descriptorType != typeNull) AEDisposeDesc(&ae);
+	if (aeReply.descriptorType != typeNull) AEDisposeDesc(&aeReply);
+#if TARGET_API_MAC_CARBON
+	if (alias) DisposeHandle(Handle(alias));
+#endif
+	
+	return err;
 }
 
 
 OSErr MUtilities::AESendOpenDocEventToApp(ProcessSerialNumber *targetPSN, const FSSpec * documentFSSpecPtr)
 {
 	if (GestaltVersion(gestaltSystemVersion, 0x10, 0x00))
+	{
+		DisplayPAlert("\pThis function is not yet implemented on Mac OS X", "\pPlease contact Mihai.");
 		return noErr;
+	}
 	else
 	{
 		OSErr retCode;
@@ -609,12 +599,11 @@ OSErr MUtilities::AELaunchAppWithDoc(const FSSpec * applicationFSSpecPtr,	const 
 
 bool MUtilities::IsValidFileSpec(FSSpec* spec)
 {
-	FInfo tempFileInfo;
+	//FInfo tempFileInfo;
 	
 	return !((spec->name[0] == 0 &&
 			 spec->vRefNum == 0 &&
-			 spec->parID == 0) ||
-			FSpGetFInfo(spec, &tempFileInfo) != noErr);
+			 spec->parID == 0));
 }
 
 void MUtilities::ResetFileSpec(FSSpec* spec)
@@ -687,9 +676,9 @@ FSSpec MUtilities::GetFSSpecFromAEDesc(AEDesc desc)
 	return result;
 }
 
-bool MUtilities::GetFileSpec(MType creator, MType fileType, Str255 message, FileFilterProcPtr filterFunction, FSSpec* spec)
+bool MUtilities::GetFileSpec(Str255 message, FileFilterProcPtr filterFunction, FSSpec* spec, MType creator, int fileTypeCount, const OSType fileTypes[])
 {	
-#if TARGET_API_MAC_CARBON
+	#if TARGET_API_MAC_CARBON
 #pragma unused (filterFunction)
 #endif
 	if (NavServicesAvailable())
@@ -707,17 +696,22 @@ bool MUtilities::GetFileSpec(MType creator, MType fileType, Str255 message, File
 		dialogOptions.dialogOptionFlags -= kNavAllowPreviews;
 		BlockMoveData(message, dialogOptions.message, 256);
 		
-		if (creator == '****' && fileType == '****')
+		if (creator == '****' && fileTypes[0] == '****')
 		{
 			typeList = NULL;
 			dialogOptions.dialogOptionFlags += kNavAllowInvisibleFiles;
 		}
 		else
 		{
-			typeList = (NavTypeListHandle)NewHandleClear(sizeof(NavTypeList));
+			typeList = (NavTypeListHandle)NewHandleClear(sizeof(NavTypeList) + sizeof(OSType) * (fileTypeCount - 1));
 			(**typeList).componentSignature = creator;
-			(**typeList).osTypeCount = 1;
-			(**typeList).osType[0] = fileType;
+			(**typeList).osTypeCount = fileTypeCount;
+			for (int i=0; i < fileTypeCount; i++)
+			{
+				(**typeList).osType[i] = fileTypes[i];
+				if (fileTypes[i] == 'APPL')
+					dialogOptions.dialogOptionFlags |= kNavSupportPackages;
+			}
 		}
 		
 		eventUPP = NewNavEventUPP(MUtilities::NavEventHandler);
@@ -753,21 +747,17 @@ bool MUtilities::GetFileSpec(MType creator, MType fileType, Str255 message, File
 	else
 	{
 		StandardFileReply	reply;
-		SFTypeList			typeList;
-		FileFilterUPP fileFilter;
+		FileFilterUPP		fileFilter;
 	
 		if (filterFunction != NULL)
 			fileFilter = NewFileFilterProc(filterFunction);
 		else
 			fileFilter = NULL;
 		
-		typeList[0] = fileType;
-		
-		if (fileType != '****')
-			StandardGetFile(fileFilter, 1, typeList, &reply);
+		if (fileTypes[0] != '****')
+			StandardGetFile(fileFilter, fileTypeCount, fileTypes, &reply);
 		else
-			StandardGetFile(fileFilter, -1, typeList, &reply);
-		
+			StandardGetFile(fileFilter, -1, fileTypes, &reply);
 		
 		if (fileFilter != NULL)
 			DisposeRoutineDescriptor(fileFilter);
@@ -781,6 +771,101 @@ bool MUtilities::GetFileSpec(MType creator, MType fileType, Str255 message, File
 	}
 #endif
 	return false;
+}
+
+bool MUtilities::GetFileSpec(MType creator, MType fileType, Str255 message, FileFilterProcPtr filterFunction, FSSpec* spec)
+{
+	return GetFileSpec(message, filterFunction, spec, creator, 1, &fileType);
+}
+
+#pragma mark -
+
+typedef struct
+{
+	int		fileTypeCount;
+	MType	*fileTypes;
+} ChooseObjectsData;
+
+bool MUtilities::GetObjects(Str255 prompt, FSSpec** specs, long *specCount, int fileTypeCount, const OSType fileTypes[])
+{
+	ChooseObjectsData	data;
+	
+	data.fileTypes = (unsigned long *)fileTypes;
+	data.fileTypeCount = fileTypeCount;
+	
+	if (NavServicesAvailable())
+	{
+		NavDialogOptions	dialogOptions;
+		NavReplyRecord		reply;
+		AEDesc				resultDesc;
+		OSErr				err;
+		NavEventUPP			eventUPP;
+		NavObjectFilterUPP	filterUPP;
+		
+		NavGetDefaultDialogOptions (&dialogOptions);
+		dialogOptions.dialogOptionFlags += kNavNoTypePopup;
+		dialogOptions.dialogOptionFlags -= kNavAllowPreviews;
+		BlockMoveData(prompt, dialogOptions.message, 256);
+		
+		eventUPP = NewNavEventUPP(MUtilities::NavEventHandler);
+		filterUPP = NewNavObjectFilterUPP(MUtilities::NavObjectsFileFilter);
+		
+		err = NavChooseObject(NULL,
+							  &reply,
+							  &dialogOptions,
+							  eventUPP,
+							  filterUPP,
+							  &data);
+							  
+		DisposeNavEventUPP(eventUPP);
+		DisposeNavObjectFilterUPP(filterUPP);
+		
+		if (reply.validRecord)
+		{
+			AECountItems(&reply.selection, specCount);
+			
+			*specs = new FSSpec[*specCount];
+			
+			for (int i=0; i < *specCount; i++)
+			{
+				AEGetNthDesc(&reply.selection, i + 1, typeFSS, NULL, &resultDesc);
+			
+				(*specs)[i] = GetFSSpecFromAEDesc(resultDesc);
+				
+				AEDisposeDesc(&resultDesc);
+			}
+			
+			NavDisposeReply(&reply);
+			return IsValidFileSpec(&(*specs)[0]);
+		}
+		else
+		{
+			NavDisposeReply(&reply);
+			return false;
+		}
+	}
+	else
+		return false;
+}
+
+pascal Boolean MUtilities::NavObjectsFileFilter(AEDesc *theItem, void *info, void *callBackUD, NavFilterModes filterMode)
+{
+#pragma unused (filterMode)
+	NavFileOrFolderInfo*	theInfo = (NavFileOrFolderInfo*)info;
+	ChooseObjectsData*		data;
+	
+	data = (ChooseObjectsData*)callBackUD;
+	
+	if (theItem->descriptorType == typeFSS && !theInfo->isFolder)
+	{
+		for (int i=0; i < data->fileTypeCount; i++)
+			if (theInfo->fileAndFolder.fileInfo.finderInfo.fdType == data->fileTypes[i])
+				return true;
+				
+		return false;
+	}
+	
+	return true;
 }
 
 bool MUtilities::NewFileSpec(FSSpec* spec)
@@ -839,6 +924,254 @@ bool MUtilities::NewFileSpec(FSSpec* spec)
 	}
 #endif
 	return false;
+}
+
+
+#pragma mark -
+
+bool MUtilities::NewFileSpecWithFormats(Str255 prompt, Str255 currentName, Str255 formatPopupLabel,
+										int formatCount, Str255 formats[], Str255 extensions[], int options,
+										FSSpec* spec, int* format)
+{
+	if (NavServicesAvailable())
+	{
+		NavDialogOptions	dialogOptions;
+		NavReplyRecord		reply;
+		AEDesc				resultDesc;
+		NavEventUPP			eventUPP = NewNavEventUPP(MUtilities::NavFormatsEventHandler);
+		FormatsSaveData		saveData;
+		OSErr				err;
+		
+		saveData.formatsCount = formatCount;
+		saveData.formats = formats;
+		saveData.extensions = extensions;
+		saveData.chosenFormat = *format;
+		saveData.formatPopup = NULL;
+		CopyString(saveData.formatPopupLabel, formatPopupLabel);
+		saveData.customItems = NULL;
+		saveData.forceExtension = options & kForceExtension;
+		
+		NavGetDefaultDialogOptions(&dialogOptions );
+		dialogOptions.dialogOptionFlags &= ~(kNavAllowMultipleFiles | kNavAllowPreviews);
+		dialogOptions.dialogOptionFlags |= (kNavNoTypePopup | kNavSupportPackages | kNavAllowOpenPackages);
+		CopyString(dialogOptions.savedFileName, currentName);
+		CopyString(dialogOptions.message, prompt);
+		
+		if (options & kNewFolder)
+			dialogOptions.dialogOptionFlags |= kNavDontConfirmReplacement;
+		
+		/*if (options & kPutFile)*/
+			err = NavPutFile(NULL,
+					   		 &reply,
+					   		 &dialogOptions,
+					   		 eventUPP,
+					   		 '****',
+					   		 '****',
+					   		 &saveData);
+		/*else if (options & kNewFolder)
+			err = NavNewFolder(NULL,
+							   &reply,
+							   &dialogOptions,
+							   eventUPP,
+							   &saveData);*/
+		
+		DisposeNavEventUPP(eventUPP);
+		
+		if (err == noErr)
+		{	
+			if (reply.validRecord)
+			{
+				*format = saveData.chosenFormat;
+				
+				AEGetNthDesc( &(reply.selection), 1, typeFSS, NULL, &resultDesc );
+
+				*spec = GetFSSpecFromAEDesc(resultDesc);
+				
+				NavDisposeReply(&reply);
+				AEDisposeDesc(&resultDesc);
+				
+				return true;
+			}
+			else
+			{
+				NavDisposeReply(&reply);
+				return false;
+			}
+		}
+		else
+			return false;
+	}
+	else
+		return false;
+}
+
+pascal void MUtilities::NavFormatsEventHandler(NavEventCallbackMessage callBackSelector, 
+											   NavCBRecPtr callBackParms, 
+											   NavCallBackUserData callBackUD)
+{
+	OSErr				theErr = noErr;
+	FormatsSaveData*	saveData;
+	DialogPtr			navDialog;
+	
+	saveData = (FormatsSaveData*)callBackUD;
+	navDialog = GetDialogFromWindow(callBackParms->window);
+
+	switch (callBackSelector)
+	{
+		case kNavCBEvent:
+			switch (callBackParms->eventData.eventDataParms.event->what)
+			{
+				case mouseDown:
+					Point 			where;
+					short 			partCode;
+					ControlHandle	clickedControl;
+					
+					where = callBackParms->eventData.eventDataParms.event->where;
+					
+					GlobalToLocal(&where);
+					partCode = FindControl(where, callBackParms->window, &clickedControl);	// get the control itself
+					
+					if (clickedControl == saveData->formatPopup && clickedControl != NULL)
+						SyncNameToFormatPopup(callBackParms, saveData);
+					break;
+				case keyUp: // keyUp seems to be required for OS X, keyDown isn't passed on
+				case keyDown: // on the other hand, OS 9's Nav. Services only give us keyDown
+					SyncFormatPopupToName(callBackParms, saveData);
+					break;
+				default:
+					NavEventHandler(callBackSelector, callBackParms, callBackUD);
+					break;
+			}
+			break;
+		case kNavCBCustomize:
+							
+			// here are the desired dimensions for our custom area:
+			short neededWidth = callBackParms->customRect.left + 260;
+			short neededHeight = callBackParms->customRect.top + 30;
+			
+			// check to see if this is the first round of negotiations:
+			if ((callBackParms->customRect.right == 0) && (callBackParms->customRect.bottom == 0))
+			{
+				// it is, so tell NavServices what dimensions we want:
+				callBackParms->customRect.right = neededWidth;
+				callBackParms->customRect.bottom = neededHeight;
+			}
+			else
+			{
+				if (callBackParms->customRect.right < neededWidth)	// is NavServices width too small for us?
+					callBackParms->customRect.right = neededWidth;
+
+				if (callBackParms->customRect.bottom < neededHeight)
+					callBackParms->customRect.bottom = neededHeight;
+			}
+			break;
+			
+		case kNavCBStart:
+			// add the rest of the custom controls via the DITL resource list:
+			saveData->customItems = GetResource('DITL', rNavFormatCustomItems);
+			if (saveData->customItems != NULL &&
+				ResError() == noErr &&
+				NavCustomControl(callBackParms->context, kNavCtlAddControlList, saveData->customItems) == noErr)
+			{
+				UInt16	firstItem = 0;
+				
+				theErr = NavCustomControl(callBackParms->context, kNavCtlGetFirstControlID, &firstItem);
+				GetDialogItemAsControl(navDialog, firstItem + 1, &saveData->formatPopup);
+				
+				InitializeFormatPopup(saveData);
+				SyncNameToFormatPopup(callBackParms, saveData);
+			}			
+			break;
+			
+		case kNavCBTerminate:
+			saveData->chosenFormat = GetControlValue(saveData->formatPopup) - 1;
+			if (saveData->customItems)
+				ReleaseResource(saveData->customItems);
+			break;
+	}
+}
+
+void MUtilities::InitializeFormatPopup(FormatsSaveData* saveData)
+{
+	MenuHandle typesMenu;
+	
+	typesMenu = GetControlPopupMenuHandle(saveData->formatPopup);
+	
+	for (int i=0; i < saveData->formatsCount; i++)
+		InsertMenuItem(typesMenu, saveData->formats[i], i);
+	
+	SetControlTitle(saveData->formatPopup, saveData->formatPopupLabel);
+	SetControlMaximum(saveData->formatPopup, saveData->formatsCount);
+	SetControlValue(saveData->formatPopup, saveData->chosenFormat + 1);
+}
+
+void MUtilities::SyncNameToFormatPopup(NavCBRecPtr callBackParms, FormatsSaveData* saveData)
+{
+	if (saveData->forceExtension && saveData->formatPopup != NULL)
+	{
+		Str255 fileName;
+		
+		NavCustomControl(callBackParms->context, kNavCtlGetEditFileName, &fileName);
+		
+		SetFileExtension(fileName, saveData->extensions[GetControlValue(saveData->formatPopup) - 1]);
+		
+		NavCustomControl(callBackParms->context, kNavCtlSetEditFileName, &fileName);
+	}
+}
+
+void MUtilities::SyncFormatPopupToName(NavCBRecPtr callBackParms, FormatsSaveData* saveData)
+{
+	if (saveData->forceExtension && saveData->formatPopup != NULL)
+	{
+		Str255 fileName;
+		
+		NavCustomControl(callBackParms->context, kNavCtlGetEditFileName, &fileName);
+		
+		for (int i=0; i < saveData->formatsCount; i++)
+			if (FileHasExtension(fileName, saveData->extensions[i]))
+			{
+				SetControlValue(saveData->formatPopup, i + 1);
+				Draw1Control(saveData->formatPopup);
+				break;
+			}
+	}
+}
+
+#pragma mark -
+
+bool MUtilities::FileHasExtension(Str255 name, const Str255 extension)
+{
+	int i, j;
+	Str255 fullExtension = "\p.";
+	
+	AppendString(fullExtension, (unsigned char*)(extension));
+	
+	for (i=name[0], j=fullExtension[0]; i > 0 && j > 0; i--, j--)
+		if (name[i] != fullExtension[j] &&
+			abs(name[i] - fullExtension[j]) != abs('A' - 'a'))
+			return false;
+			
+	return (j==0);
+}
+
+void MUtilities::StripExtension(Str255 name)
+{
+	for (int i=name[0]; i > 0 && name[i] != ' '; i--)
+		if (name[i] == '.')
+		{
+			name[0] = i - 1;
+			break;
+		}
+}
+
+void MUtilities::SetFileExtension(Str255 name, const Str255 extension)
+{
+	// strip the current extension, if any
+	StripExtension(name);
+		
+	// append the new one
+	AppendString(name, "\p.");
+	AppendString(name, (unsigned char*)(extension));
 }
 
 #pragma mark -
@@ -1117,8 +1450,22 @@ void MUtilities::GetMouseLocation(CGrafPtr port, Point* location)
 {
 #if TARGET_API_MAC_CARBON
 	MouseTrackingResult result;
+	UInt32				modifiers;
 	
-	TrackMouseLocation(port, location, &result);
+	TrackMouseLocationWithOptions(port, 0, kEventDurationMillisecond * 200, location, &modifiers, &result);	
+	/*
+	switch(result)
+	{
+		case kMouseTrackingMousePressed: DebugStr("\pkMouseTrackingMousePressed"); break;
+  		case kMouseTrackingMouseReleased: DebugStr("\pkMouseTrackingMouseReleased"); break;
+  		case kMouseTrackingMouseExited: DebugStr("\pkMouseTrackingMouseExited"); break;
+  		case kMouseTrackingMouseEntered: DebugStr("\pkMouseTrackingMouseEntered"); break;
+  		case kMouseTrackingMouseMoved: DebugStr("\pkMouseTrackingMouseMoved"); break;
+  		case kMouseTrackingKeyModifiersChanged: DebugStr("\pkMouseTrackingKeyModifiersChanged"); break;
+ 		case kMouseTrackingUserCancelled: DebugStr("\pkMouseTrackingUserCancelled"); break;
+ 		case kMouseTrackingTimedOut: DebugStr("\pkMouseTrackingTimedOut"); break;
+	}
+	*/
 #else
 	SAVEGWORLD; // we'll be changing the port
 		
@@ -1172,6 +1519,26 @@ Rect MUtilities::GetUsableScreenRect()
 }
 
 #pragma mark -
+
+/*OSErr Mutilities::QTCopyAtomContainer(QTAtomContainer source, QTAtomContainer* dest)
+{
+	short		childrenCount;
+	QTAtomType	currentChildType = ;
+	QTAtomID	currentChildID;
+	
+	QTNewAtomContainer(dest);
+	
+	while (currentChildType = QTGetNextChildType(source, kParentAtomIsContainer, currentChildType))
+	{
+		childrenCount = QTCountChildrenOfType(source, kParentAtomIsContainer, currentChildType);
+		
+		for (int i=1; i <= childrenCount; i++)
+		{
+			QTFindChildByIndex(source, kParentAtomIsContainer, currentChildType, i, &currentChildID);
+			QTCopyAtom(source, 	
+		}
+	}
+}*/
 
 pascal void MUtilities::ApplicationIconDraw(ControlHandle iconControl, SInt16 controlPart)
 {

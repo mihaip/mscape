@@ -27,6 +27,8 @@ class MFloater: public MWindow
 		
 		bool	originallyVisible;
 		
+		bool	IsVisible();
+		
 	private:
 	
 		OSType	floaterType;

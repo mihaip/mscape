@@ -10,6 +10,9 @@
 MFloater::MFloater(short resID, OSType type)
 		 :MWindow(resID, kFloaterType)
 {
+#if TARGET_API_MAC_CARBON
+	ChangeWindowAttributes(window, 0, kWindowHideOnSuspendAttribute);
+#endif
 	floaterType = type;
 }
 
@@ -43,6 +46,14 @@ void MFloater::Hide()
 			::SendBehind(window, MWindow::GetFront()->GetWindow());
 		::HiliteWindow(window, false);
 	}
+}
+
+bool MFloater::IsVisible()
+{
+	if (!MWindow::floatersVisible)
+		return originallyVisible;
+	else
+		return MWindow::IsVisible();
 }
 
 void MFloater::Close()

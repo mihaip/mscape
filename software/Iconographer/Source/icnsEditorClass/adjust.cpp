@@ -1,5 +1,6 @@
 #include "icnsEditorClass.h"
 #include "drawingStateClass.h"
+#include "matrix.h"
 
 void icnsEditorClass::Adjust(void)
 {

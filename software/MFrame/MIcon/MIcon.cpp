@@ -97,6 +97,10 @@ MIcon::MIcon()
 	
 	if (err != noErr) 			// if there was a problem in the creation of the icon gworld
 		status |= outOfMemory;  // (most likely a lack of memory) then we must not continue
+
+#if TARGET_API_MAC_CARBON
+	dialogLoaded = false;
+#endif
 }
 
 // __________________________________________________________________________________________
@@ -174,34 +178,16 @@ void MIcon::Reset()
 {
 	SAVEGWORLD;
 	
-	SetGWorld(it32GW, NULL); EraseRect(&thumbnailIconRect);
-	SetGWorld(t8mkGW, NULL); EraseRect(&thumbnailIconRect);
-
-	SetGWorld(icm8GW, NULL); EraseRect(&miniIconRect);
-	SetGWorld(icm4GW, NULL); EraseRect(&miniIconRect);
-	SetGWorld(icmiGW, NULL); EraseRect(&miniIconRect);
-	SetGWorld(icmmGW, NULL); EraseRect(&miniIconRect);
+	PixMapHandle	currentPix;
+	GWorldPtr		currentGW;
 	
-	SetGWorld(il32GW, NULL); EraseRect(&largeIconRect);
-	SetGWorld(l8mkGW, NULL); EraseRect(&largeIconRect);
-	SetGWorld(icl8GW, NULL); EraseRect(&largeIconRect);
-	SetGWorld(icl4GW, NULL); EraseRect(&largeIconRect);
-	SetGWorld(icniGW, NULL); EraseRect(&largeIconRect);
-	SetGWorld(icnmGW, NULL); EraseRect(&largeIconRect);
+	for (int i=0; i < kMembersCount; i++)
+	{
+		GetGWorldAndPix(kMembers[i].name, &currentGW, &currentPix);
+		SetGWorld(currentGW, NULL);
+		EraseRect(&(**currentPix).bounds);
+	}	
 	
-	SetGWorld(ih32GW, NULL); EraseRect(&hugeIconRect);
-	SetGWorld(h8mkGW, NULL); EraseRect(&hugeIconRect);
-	SetGWorld(ich8GW, NULL); EraseRect(&hugeIconRect);
-	SetGWorld(ich4GW, NULL); EraseRect(&hugeIconRect);
-	SetGWorld(ichiGW, NULL); EraseRect(&hugeIconRect);
-	SetGWorld(ichmGW, NULL); EraseRect(&hugeIconRect);
-	
-	SetGWorld(is32GW, NULL); EraseRect(&smallIconRect);
-	SetGWorld(s8mkGW, NULL); EraseRect(&smallIconRect);
-	SetGWorld(ics8GW, NULL); EraseRect(&smallIconRect);
-	SetGWorld(ics4GW, NULL); EraseRect(&smallIconRect);
-	SetGWorld(icsiGW, NULL); EraseRect(&smallIconRect);
-	SetGWorld(icsmGW, NULL); EraseRect(&smallIconRect);
 	RESTOREGWORLD;
 	
 	members = 0;
@@ -426,7 +412,7 @@ pascal OSErr IconExtractor(ResType iconType, Handle *theIcon, void *dataPtr)
 //				  MIcon. If it can't find a new style resource ('icns' type) it calls the
 //				  LoadOldStyle class function, which loads the icon from old-type resources
 
-void MIcon::Load()
+void MIcon::Load(bool simple)
 {
 	switch (format)
 	{
@@ -452,9 +438,17 @@ void MIcon::Load()
 			break;
 	}
 	
-	loadedFormat = format;
-	loadedID = ID;
-	usedMembers = kDefaultMembers[format];
+	if (!simple)
+	{
+		loadedFormat = format;
+		loadedID = ID;
+		usedMembers = kDefaultMembers[format];
+	}
+}
+
+void MIcon::Load()
+{
+	Load(false);
 }
 
 void MIcon::LoadDataFork()
@@ -564,7 +558,7 @@ OSErr MIcon::LoadOld()
 }
 
 void MIcon::LoadFileIcon()
-{	
+{
 	if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x08, 0x50))
 	{
 		IconRef				fileIconRef;
@@ -662,17 +656,26 @@ void MIcon::Display(Rect targetRect, bool selected)
 	for (int i=0; i < iconCount; i++)
 		if (members & iconMembersPrecedence[i])
 		{
+			bool maskFound = false;
 			GetGWorldAndPix(iconMembersPrecedence[i], &iconGW, &iconPix);
-			break;
+			
+			for (int j=0; j < maskCount; j++)
+			if (members & maskMembersPrecedence[j])
+			{
+				GetGWorldAndPix(maskMembersPrecedence[j], &maskGW, &maskPix);
+				
+				if (EqualRect(&(**iconPix).bounds, &(**maskPix).bounds) &&
+					!IsEmptyPixMap(maskPix))
+				{
+					maskFound = true;
+					break;
+				}
+			}
+			
+			if (maskFound)
+				break;
 		}
-	
-	for (int i=0; i < maskCount; i++)
-		if (members & maskMembersPrecedence[i])
-		{
-			GetGWorldAndPix(maskMembersPrecedence[i], &maskGW, &maskPix);
-			break;
-		}
-
+		
 	bounds = (**iconPix).bounds;
 
 	if (selected)
@@ -780,7 +783,7 @@ void MIcon::DisplayMember(int member, Rect targetRect, bool selected)
 		
 		iconRect = (**iconPix).bounds;
 		
-		NewGWorldUnpadded(&selectedGW, 32, &iconRect, NULL);
+		NewGWorld(&selectedGW, 32, &iconRect, NULL, NULL, 0);
 		selectedPix = GetGWorldPixMap(selectedGW);
 		LockPixels(selectedPix);
 		
@@ -835,41 +838,18 @@ void MIcon::DrawMember(int member, Rect targetRect)
 
 void MIcon::RefreshIconMembers(void)
 {
+	PixMapHandle	currentPix;
+	GWorldPtr		currentGW;
+	
 	members = 0;
-	if (!IsEmptyPixMap(it32Pix)) members |= it32;
-	if (!IsEmptyPixMap(t8mkPix)) members |= t8mk;
-
-	if (!IsEmptyPixMap(icm8Pix)) members |= icm8;
-	if (!IsEmptyPixMap(icm4Pix)) members |= icm4;
-	if (!IsEmptyPixMap(icmiPix)) members |= icmi;
-	if (!IsEmptyPixMap(icmmPix)) members |= icmm;
-
-	if (!IsEmptyPixMap(ih32Pix)) members |= ih32;
-	if (!IsEmptyPixMap(il32Pix)) members |= il32;
-	if (!IsEmptyPixMap(is32Pix)) members |= is32;
 	
-	
-	if (!IsEmptyPixMap(h8mkPix)) members |= h8mk;
-	if (!IsEmptyPixMap(l8mkPix)) members |= l8mk;
-	if (!IsEmptyPixMap(s8mkPix)) members |= s8mk;
-	
-	if (!IsEmptyPixMap(ich8Pix)) members |= ich8;
-	if (!IsEmptyPixMap(icl8Pix)) members |= icl8;
-	if (!IsEmptyPixMap(ics8Pix)) members |= ics8;
-	
-	if (!IsEmptyPixMap(ich4Pix)) members |= ich4;
-	if (!IsEmptyPixMap(icl4Pix)) members |= icl4;
-	if (!IsEmptyPixMap(ics4Pix)) members |= ics4;
-	
-	if (!IsEmptyPixMap(ichiPix)) members |= ichi;
-	if (!IsEmptyPixMap(icniPix)) members |= icni;
-	if (!IsEmptyPixMap(icsiPix)) members |= icsi;
-	
-	if (!IsEmptyPixMap(ichmPix)) members |= ichm;
-	if (!IsEmptyPixMap(icnmPix)) members |= icnm;
-	if (!IsEmptyPixMap(icsmPix)) members |= icsm;
-	
-	members &= usedMembers;
+	for (int i=0; i < kMembersCount; i++)
+		if (kMembers[i].name & usedMembers)
+		{
+			GetGWorldAndPix(kMembers[i].name, &currentGW, &currentPix);
+			if (!IsEmptyPixMap(currentPix))
+				members |= kMembers[i].name;
+		}
 }
 
 IconFamilyHandle MIcon::Geticns(void)
@@ -1109,76 +1089,17 @@ OSErr MIcon::PreFlight()
 		
 		oldFile = CurResFile();
 		targetFile = file.OpenResourceFork(fsRdWrPerm);
-			
-		if (loadedFormat == formatMacOSUniversal ||
-			loadedFormat == formatMacOSNew)
-		{
-			oldIcon = Get1Resource('icns', loadedID);
-			if (oldIcon != NULL)
-			{
-				RemoveResource(oldIcon);
-				UpdateResFile(targetFile);
-			}
-		}
 		
-		if (loadedFormat == formatMacOSUniversal ||
-			loadedFormat == formatMacOSOld)
-		{
-			oldIcon = Get1Resource('ICN#', loadedID);
-			if (oldIcon != NULL)
+		for (int i=0; i < kMembersCount; i++)
+			if (kMembers[i].name & kDefaultMembers[loadedFormat])
 			{
-				RemoveResource(oldIcon);
-				UpdateResFile(targetFile);
+				oldIcon = Get1Resource(kMembers[i].resourceName, loadedID);
+				if (oldIcon != NULL)
+				{
+					RemoveResource(oldIcon);
+					UpdateResFile(targetFile);
+				}
 			}
-			oldIcon = Get1Resource('icl4', loadedID);
-			if (oldIcon != NULL)
-			{
-				RemoveResource(oldIcon);
-				UpdateResFile(targetFile);
-			}
-			oldIcon = Get1Resource('icl8', loadedID);
-			if (oldIcon != NULL)
-			{
-				RemoveResource(oldIcon);
-				UpdateResFile(targetFile);
-			}
-			oldIcon = Get1Resource('ics#', loadedID);
-			if (oldIcon != NULL)
-			{
-				RemoveResource(oldIcon);
-				UpdateResFile(targetFile);
-			}
-			oldIcon = Get1Resource('ics4', loadedID);
-			if (oldIcon != NULL)
-			{
-				RemoveResource(oldIcon);
-				UpdateResFile(targetFile);
-			}
-			oldIcon = Get1Resource('ics8', loadedID);
-			if (oldIcon != NULL)
-			{
-				RemoveResource(oldIcon);
-				UpdateResFile(targetFile);
-			}
-			oldIcon = Get1Resource('icm#', loadedID);
-			if (oldIcon != NULL)
-			{
-				RemoveResource(oldIcon);
-				UpdateResFile(targetFile);
-			}
-			oldIcon = Get1Resource('icm4', loadedID);
-			if (oldIcon != NULL)
-			{
-				RemoveResource(oldIcon);
-				UpdateResFile(targetFile);
-			}
-			oldIcon = Get1Resource('icm8', loadedID);
-			if (oldIcon != NULL)
-			{
-				RemoveResource(oldIcon);
-				UpdateResFile(targetFile);
-			}
-		}
 		
 		CloseResFile(targetFile);
 		UseResFile(oldFile);
@@ -1204,14 +1125,23 @@ OSErr MIcon::PreFlight()
 
 OSErr MIcon::Save()
 {
+	return Save(false);
+}
+
+OSErr MIcon::Save(bool simple)
+{
 	OSErr err;
 	
 	DEBUG("\pstarting to save");
 	
-	SetupFileSpec(true);
+	SetupFileSpec();
 	
-	if ((err = PreFlight()) == noErr)
+	DEBUG("\pset up file spec");
+	DEBUG(file.GetAssociatedFile().name);
+	
+	if (simple || (err = PreFlight()) == noErr)
 	{
+		DEBUG("\ppassed preflight");
 		switch (format)
 		{
 			case formatMacOSUniversal:
@@ -1234,15 +1164,40 @@ OSErr MIcon::Save()
 			case formatMacOSXServer:
 				break;
 		}
-		
-		MUtilities::AESendFinderUpdate(file.GetAssociatedFile());
 	}
-	
-	CleanupFileSpec();
 	
 	DEBUG("\pdone saving");
 	
+	CleanupFileSpec();
+	
+	if (!simple)
+	{
+		MUtilities::TouchFile(file.GetAssociatedFile());
+		RefreshIcon();
+		MUtilities::AESendFinderUpdate(file.GetAssociatedFile());
+		MUtilities::AESendFinderUpdate(file.GetAssociatedFile());
+		RefreshIcon();
+	}
+	
+	DEBUG("\pclean up file spec");
+	
 	return err;
+}
+
+void MIcon::RefreshIcon()
+{
+#if TARGET_API_MAC_CARBON
+	FSSpec	tempSpec;
+	IconRef	iconRef;
+	short	ignored;
+	
+	tempSpec = file.GetAssociatedFile();
+	GetIconRefFromFile(&tempSpec, &iconRef, &ignored);
+	
+	UpdateIconRef(iconRef);
+	
+	while (ReleaseIconRef(iconRef) == noErr) {;}
+#endif
 }
 
 void MIcon::SaveUniversal()
@@ -1251,50 +1206,24 @@ void MIcon::SaveUniversal()
 	SaveNew();
 }
 
-void MIcon::SetupFileSpec(bool erase)
+void MIcon::SetupFileSpec()
 {
 	isFolder = file.IsFolder();
 	if (isFolder)
-	{	
-		Str255	targetName = "\p:";
-		FInfo	fileInfo;
-		FSSpec	targetFile;
+	{
+		FSSpec realFile;
 		
-		targetFile = file.GetAssociatedFile();
-		FSpSetFinderFlags(&targetFile, kHasCustomIcon, true);
-		
-		savedSpec = targetFile;
 		savedFormat = format;
+		savedSpec = file.GetAssociatedFile();
+		MIcon::GetActualIconSpec(savedSpec, &realFile);
 		
-		if (file.IsVolume() && MUtilities::GestaltVersion(gestaltSystemVersion, 0x10, 0x00))
-		{
-			AppendString(targetName, targetFile.name);
-			AppendString(targetName, (unsigned char*)"\p:.VolumeIcon.icns");
+		file.SetAssociatedFile(realFile);
+		
+		// set the custom icon flag
+		FSpSetFinderFlags(&savedSpec, kHasCustomIcon, true);
+		
+		if (MUtilities::FileHasExtension(realFile.name, "\p.icns"))
 			format = formatMacOSX;
-		}
-		else
-		{
-			AppendString(targetName, targetFile.name);
-			AppendString(targetName, (unsigned char*)"\p:Icon\r");
-		}		
-		
-		FSMakeFSSpec(targetFile.vRefNum, targetFile.parID, targetName, &targetFile);
-		
-		if (erase)
-		{
-			FSpDelete(&targetFile);
-			FSpCreate(&targetFile, 'icon', 'MACS', 0);
-			FSpCreateResFile(&targetFile, 'icon', 'MACS', 0);
-			file.SetAssociatedFile(targetFile);
-			
-			FSpGetFInfo(&targetFile, &fileInfo);
-			
-			fileInfo.fdFlags |= kIsInvisible;
-		
-			FSpSetFInfo(&targetFile, &fileInfo);
-		}
-		
-		file.SetAssociatedFile(targetFile);
 	}
 }
 
@@ -1575,6 +1504,75 @@ bool MIcon::IDChanged()
 			(format != loadedFormat)));
 }
 
+int MIcon::CountMembers()
+{
+	int				count = 0;
+	PixMapHandle	currentPix;
+	GWorldPtr		currentGW;
+	
+	for (int i=0; i < kMembersCount; i++)
+		if (kMembers[i].name & usedMembers)
+		{
+			GetGWorldAndPix(kMembers[i].name, &currentGW, &currentPix);
+			if (!IsEmptyPixMap(currentPix))
+				count++;
+		}
+		
+	return count;
+}
+
+void MIcon::TransformWithColor(RGBColor transformColor)
+{
+	HSVColor	transformHSV;
+	
+	/*DebugNValues("\ptransforming with color: ", 3,
+				 transformColor.red,
+				 transformColor.green,
+				 transformColor.blue);*/
+	
+	RGB2HSV(&transformColor, &transformHSV);
+	
+	for (int i=0; i < kMembersCount; i++)
+		if ((members & kMembers[i].name) && !(kMembers[i].name & masks))
+		{
+			GWorldPtr		memberGW;
+			PixMapHandle	memberPix;
+			
+			GetGWorldAndPix(kMembers[i].name, &memberGW, &memberPix);
+			
+			//DebugNValues("\ptransforming member: ", 3,
+			//			 (**memberPix).bounds.right, (**memberPix).bounds.bottom, kMembers[i].depth);
+			
+			SAVEGWORLD;
+			
+			SetGWorld(memberGW, NULL);
+			
+			for (int x=0; x < (**memberPix).bounds.right; x++)
+				for (int y=0; y < (**memberPix).bounds.bottom; y++)
+				{
+					RGBColor	oldColor, newColor;
+					HSVColor	transformedColor;
+					
+					GetCPixel(x, y, &oldColor);
+					
+					RGB2HSV(&oldColor, &transformedColor);
+					
+					transformedColor.hue = transformHSV.hue;
+					transformedColor.saturation = (transformHSV.saturation + transformedColor.saturation)/2;
+					
+					HSV2RGB(&transformedColor, &newColor);
+					
+					/*newColor.red = (newColor.red + oldColor.red)/2;
+					newColor.green = (newColor.green + oldColor.green)/2;
+					newColor.blue = (newColor.blue + oldColor.blue)/2;*/
+					
+					SetCPixel(x, y, &newColor);
+				}
+			
+			RESTOREGWORLD;
+		}
+}
+
 #pragma mark -
 
 int MIcon::GetPixName(int height, int depth, bool icon)
@@ -1691,7 +1689,7 @@ void MIcon::GetGWorldAndPixPointers(long pixName, GWorldPtr** gW, PixMapHandle**
 		case icsm: *gW = &icsmGW; *pix = &icsmPix; break;
 		case icmm: *gW = &icmmGW; *pix = &icmmPix; break;
 		
-		default: DisplayAlert("bad pixmap name", "");
+		default: DisplayAlert("bad pixmap name", ""); DebugValue("\pBad pixmap name: ", pixName); break;
 	}
 }
 
@@ -1876,13 +1874,30 @@ OSStatus NewIconSet(GWorldPtr *gWorld, PixMapHandle *pixMap, Rect bounds, int de
 	
 	err = noErr;
 	
-	err = NewGWorldUnpadded(gWorld, depth, &bounds, cTable);
+	err = NewGWorld(gWorld, depth, &bounds, cTable, NULL, 0);
 	if (err != noErr) return err;
 	*pixMap = GetGWorldPixMap(*gWorld);
 	LockPixels(*pixMap);
 	SetGWorld(*gWorld, NULL);
+	BackColor(whiteColor);
 	EraseRect(&bounds);
-	CropPixMap(*pixMap, (bounds.right - bounds.left) * depth / 8);
+	
+	/*int		idealRowBits = (bounds.right - bounds.left) * depth;
+	
+	if (idealRowBits % 8 != 0)
+		idealRowBits += 8 - (idealRowBits % 8);
+			
+	int rowBytes = idealRowBits / 8;
+	
+	QTSetPixMapHandleRowBytes(*pixMap, rowBytes);
+	int flags = (***pixMap).rowBytes & 0xC000;
+	(***pixMap).rowBytes = rowBytes | flags;	
+	if ((***pixMap).pmExt)
+	{
+		PixMapExtension** ext = (PixMapExtension**)(***pixMap).pmExt;
+		(**ext).longRowBytes = rowBytes;
+	}*/
+	//CropPixMap(*pixMap, (bounds.right - bounds.left) * depth / 8);
 
 	RESTOREGWORLD;
 	RESTORECOLORS;
@@ -1968,7 +1983,7 @@ void GeticnsInfo(IconFamilyHandle icnsHandle, long* members, int* maxHeight)
 	}
 }
 
-void GetICNInfo(short ID, Str255 name, long* members, int *maxHeight)
+void GetICNInfo(short ID, Str255 name, long* members, int *maxHeight, OSType alreadyLoadedType)
 {
 	OSType	type, iconTypes[] = {'ICN#', 'ics#', 'icl8', 'ics8', 'icl4', 'ics4', 'icm8', 'icm4', 'icm#', 'il32', 'ih32', 'is32'};
 	int		typeCount = sizeof(iconTypes)/sizeof(iconTypes[0]);
@@ -2010,8 +2025,9 @@ void GetICNInfo(short ID, Str255 name, long* members, int *maxHeight)
 			GetResInfo(icon, &ID, &type, tempName);
 			if (tempName[0] > name[0])
 				CopyString(name, tempName);
-				
-			ReleaseResource(icon);
+			
+			if (type != alreadyLoadedType)
+				ReleaseResource(icon);
 		} 
 	}
 }
@@ -2123,17 +2139,125 @@ bool CheckClipboard(bool verbose)
 
 #pragma mark -
 
-bool FileHasExtension(Str255 name, const Str255 extension)
+bool MIcon::FileHasIcon(MFile *file, short ID, int format)
 {
-	int i, j;
+	short	newFile, oldFile;
+	int		membersCount = 0;
+	Handle	icon;
 	
-	for (i=name[0], j=extension[0]; i > 0 && j > 0; i--, j--)
-		if (name[i] != extension[j] &&
-			abs(name[i] - extension[j]) != abs('A' - 'a'))
-			return false;
-			
-	return (j==0);
+	oldFile = CurResFile();
+	newFile = file->OpenResourceFork(fsRdPerm);
+	UseResFile(newFile);
+	
+	if (format == formatMacOSNew || format == formatMacOSUniversal)
+	{
+		icon = Get1Resource('icns', ID);
+		if (icon)
+		{
+			membersCount++;
+			ReleaseResource(icon);
+		}
+	}
+	
+	if (format == formatMacOSOld || format == formatMacOSUniversal)
+		for (int i=0; i < kMembersCount; i++)
+			if (kDefaultMembers[format] & kMembers[i].name)
+			{
+				icon = Get1Resource(kMembers[i].resourceName, ID);
+				if (icon)
+				{
+					membersCount++;
+					ReleaseResource(icon);
+				}
+			}
+	
+	CloseResFile(newFile);
+	UseResFile(oldFile);
+	
+	return membersCount > 0;
 }
+
+void MIcon::DeleteIcon(MFile *file, short ID, int format)
+{
+	short	newFile, oldFile;
+	Handle	icon;
+	
+	oldFile = CurResFile();
+	newFile = file->OpenResourceFork(fsRdWrPerm);
+	UseResFile(newFile);
+	
+	if (format == formatMacOSNew || format == formatMacOSUniversal)
+	{
+		icon = Get1Resource('icns', ID);
+		if (icon)
+			RemoveResource(icon);
+	}
+	
+	if (format == formatMacOSOld || format == formatMacOSUniversal)
+		for (int i=0; i < kMembersCount; i++)
+			if (kDefaultMembers[format] & kMembers[i].name)
+			{
+				icon = Get1Resource(kMembers[i].resourceName, ID);
+				if (icon)
+					RemoveResource(icon);
+			}
+			
+	UpdateResFile(newFile);
+	CloseResFile(newFile);
+	UseResFile(oldFile);
+}
+
+void MIcon::GetActualIconSpec(FSSpec currentSpec, FSSpec* iconSpec)
+{
+	MFile	file;
+	
+	file.SetAssociatedFile(currentSpec);
+	
+	if (file.IsFolder())
+	{
+		short	oldFile, iconFile;
+		Str255	iconSpecName = "\p:";
+			
+		if (file.IsVolume() && MUtilities::GestaltVersion(gestaltSystemVersion, 0x10, 0x00))
+		{
+			AppendString(iconSpecName, currentSpec.name);
+			AppendString(iconSpecName, (unsigned char*)"\p:.VolumeIcon.icns");
+		}
+		else
+		{
+			AppendString(iconSpecName, currentSpec.name);
+			AppendString(iconSpecName, (unsigned char*)"\p:Icon\r");
+		}
+		
+		FSMakeFSSpec(currentSpec.vRefNum, currentSpec.parID, iconSpecName, iconSpec);
+		
+		oldFile = CurResFile();
+		iconFile = FSpOpenResFile(iconSpec, fsRdWrPerm);
+	
+		if (iconFile == -1)
+		{
+			FInfo	fileInfo;
+			
+			FSpCreate(iconSpec, 'MACS', 'icon', 0);
+			FSpCreateResFile(iconSpec, 'MACS', 'icon', 0);
+			
+			FSpGetFInfo(iconSpec, &fileInfo);
+			
+			fileInfo.fdFlags |= kIsInvisible;
+		
+			FSpSetFInfo(iconSpec, &fileInfo);
+		}
+		else
+		{
+			CloseResFile(iconFile);
+			UseResFile(oldFile);
+		}
+	}
+	else
+		*iconSpec = currentSpec;
+}
+
+#pragma mark -
 
 bool FilterIconFile(FSSpec file, long expectedFormat)
 {
@@ -2148,7 +2272,7 @@ bool FilterIconFile(FSSpec file, long expectedFormat)
 
 long GetFileFormat(FSSpec file)
 {
-	if (FileHasExtension(file.name, "\p.ico"))
+	if (MUtilities::FileHasExtension(file.name, "\pico"))
 	{
 		MIcon icon;
 			
@@ -2175,9 +2299,9 @@ long GetFileFormat(FSSpec file)
 			return formatWindows;
 		}
 	}
-	else if (FileHasExtension(file.name, "\p.tif") || FileHasExtension(file.name, "\p.tiff"))
+	else if (MUtilities::FileHasExtension(file.name, "\ptif") || MUtilities::FileHasExtension(file.name, "\ptiff"))
 		return formatMacOSXServer;
-	else if (FileHasExtension(file.name, "\p.icns"))
+	else if (MUtilities::FileHasExtension(file.name, "\picns"))
 	{
 		MIcon icon;
 			
@@ -2224,8 +2348,8 @@ long GetFileFormat(FSSpec file)
 
 void SetFileExtension(int format, Str255 fileName)
 {
-	if (FileHasExtension(fileName, "\p.ico") || FileHasExtension(fileName, "\p.tif")) fileName[0] -= 4;
-	if (FileHasExtension(fileName, "\p.icns") || FileHasExtension(fileName, "\p.tiff")) fileName[0] -= 5;
+	if (MUtilities::FileHasExtension(fileName, "\pico") || MUtilities::FileHasExtension(fileName, "\ptif")) fileName[0] -= 4;
+	if (MUtilities::FileHasExtension(fileName, "\picns") || MUtilities::FileHasExtension(fileName, "\ptiff")) fileName[0] -= 5;
 	 
 	switch (format)
 	{

@@ -1,10 +1,10 @@
-/* Resource fork of software/Iconographer/Testing/Icon->.ICO source/Read Me */
+/* Resource fork of software/extras/Iconographer Support/Testing/Icon->.ICO source/Read Me */
 data 'MPSR' (1005) {
 	$"0009 4D6F 6E61 636F 0000 0000 0000 0000"            /* ..Monaco........ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0002 0004 002C 0008 02E8 025E 002C"            /* .......,...Ë.^., */
-	$"0008 02E8 025E B37A DCB0 0000 076D 0000"            /* ...Ë.^≥z‹∞...m.. */
-	$"076D 0000 0000 0100"                                /* .m...... */
+	$"0000 0002 0004 002E 000A 02EA 0260 002E"            /* ...........Í.`.. */
+	$"000A 02EA 0260 B37A 25E0 0000 079C 0000"            /* ...Í.`≥z%‡...ú.. */
+	$"079C 0000 0000 0100"                                /* .ú...... */
 };
 
 data 'MWBB' (1008) {

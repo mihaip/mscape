@@ -6,6 +6,7 @@
 // Description	: this file contains graphical functions, such as flips, rotates and fills
 
 #include "graphicalFunctions.h"
+#include "MUtilities.h"
 
 pascal OSErr QTDataUnloadProc(Ptr imageData, long bytesNeeded, long refCon);
 
@@ -387,11 +388,9 @@ void Rotate(int angle, GWorldPtr *srcGW, PixMapHandle *srcPix)
 	savedOffset.h = (***srcPix).bounds.left;
 	savedOffset.v = (***srcPix).bounds.top;
 	
-	// move the bounds to 0, 0
-	OffsetRect(&(***srcPix).bounds, -savedOffset.h, -savedOffset.v);
-	
 	// set up the variables
 	bounds = (***srcPix).bounds;
+	OffsetRect(&bounds, -savedOffset.h, -savedOffset.v);
 	height = bounds.bottom - bounds.top;
 	width = bounds.right - bounds.left;
 
@@ -421,37 +420,23 @@ void Rotate(int angle, GWorldPtr *srcGW, PixMapHandle *srcPix)
 		case 90:
 			for(int y= 0; y < height; y++)
 				for (int x = 0; x < width; x++)
-					SetPixel(height - y - 1, x, GetPixel(x, y, *srcPix), tempPix);
+					SetPixel(height - y - 1, x, GetPixel(x + savedOffset.h, y + savedOffset.v, *srcPix), tempPix);
 			break;
 		case -90:
 			for(int y= 0; y < height; y++)
 				for (int x = 0; x < width; x++)
-					SetPixel(y, width - x - 1, GetPixel(x, y, *srcPix), tempPix);
+					SetPixel(y, width - x - 1, GetPixel(x + savedOffset.h, y + savedOffset.v, *srcPix), tempPix);
 			break;
 	}
 	
-	// now that we've rotated the pixmap we must copy the results back into the original GWorld
-	SAVECOLORS;
+	bounds = rotatedBounds;
+	OffsetRect(&(**tempPix).bounds, savedOffset.h, savedOffset.v);
+	
 	UnlockPixels(*srcPix);
-	UpdateGWorld(srcGW, // first we must resize it
-				(***srcPix).pixelSize,
-				&rotatedBounds,
-				(***srcPix).pmTable,
-				NULL,
-				0);
-	*srcPix = GetGWorldPixMap(*srcGW);
-	LockPixels(*srcPix);
-	
-	// then we can copy
-	CopyPixMap(tempPix,*srcPix,&rotatedBounds,&rotatedBounds,srcCopy, NULL);
-	RESTORECOLORS;
-	
-	// and restore the offset of the rectangle
-	OffsetRect(&(***srcPix).bounds, savedOffset.h, savedOffset.v);
-	
-	// we're done with these
-	UnlockPixels(tempPix);
-	DisposeGWorld(tempGW);
+	DisposeGWorld(*srcGW);
+
+	*srcPix = tempPix;
+	*srcGW = tempGW;
 }
 
 // __________________________________________________________________________________________
@@ -762,7 +747,7 @@ void GetSimilarColors(RGBColor* colorList, int noOfColors, PixMapHandle pix, Rgn
 	
 	if ((**pix).pixelSize != 32)
 	{
-		NewGWorldUnpadded(&picGW, 32, &(**pix).bounds, NULL);
+		NewGWorld(&picGW, 32, &(**pix).bounds, NULL, NULL, 0);
 		picPix = GetGWorldPixMap(picGW);
 		LockPixels(picPix);
 		SetGWorld(picGW, NULL);
@@ -1053,8 +1038,40 @@ void MergePix(PixMapHandle basePicPix,
 	RESTORECOLORS;
 }
 
-OSErr NewGWorldUnpadded(GWorldPtr* gWorld, short depth, const Rect* bounds, CTabHandle colorTable)
+/*OSErr NewGWorldUnpadded(GWorldPtr* gWorld, short depth, const Rect* bounds, CTabHandle colorTable)
 {
+	int		idealRowBits = (bounds->right - bounds->left) * depth;
+	
+	if (idealRowBits % 8 != 0)
+		idealRowBits += 8 - (idealRowBits % 8);
+			
+	int rowBytes = idealRowBits / 8;
+	
+	
+	Ptr storage = NewPtrClear(rowBytes * (bounds->bottom - bounds->top));
+	
+	long format;
+	
+	switch (depth)
+	{
+		case 1: format = k1MonochromePixelFormat; break;
+		case 4: format = k4IndexedPixelFormat; break;
+		case 8: format = k8IndexedPixelFormat; break;
+		case 32: format = k32ARGBPixelFormat; break;
+		default: DisplayAlert("unknown format in NewGWorldUnpadded", ""); DisplayValue(depth); break;
+	}
+	
+	OSErr err = NewGWorldFromPtr(gWorld,
+							format,
+							bounds,
+							colorTable,
+							NULL,
+							keepLocal,
+							storage,
+							rowBytes);					
+							
+	return err;
+
 	PixMapHandle	tempPix;
 	long 			realRowBytes, currentRowBytes;
 	Rect			tempBounds;
@@ -1093,30 +1110,28 @@ OSErr NewGWorldUnpadded(GWorldPtr* gWorld, short depth, const Rect* bounds, CTab
 	UnlockPixels(tempPix);
 	
 	return noErr;
-}
+}*/
 
 bool IsEmptyPixMap(PixMapHandle srcPix)
 {
 	Rect bounds;
 	int rowBytes, rowWidth;
 	unsigned char *cursor, *baseAddr;
+	unsigned long *longCursor;
 	
 	bounds = (**srcPix).bounds;
 	baseAddr = (unsigned char*)(**srcPix).baseAddr;
 	rowBytes = (**srcPix).rowBytes & 0x3FFF;
 	rowWidth = (bounds.right - bounds.left) * (**srcPix).pixelSize/8;
 	
-	
 	switch ((**srcPix).pixelSize)
 	{
 		case 32:
 			for (int i=0; i < bounds.bottom - bounds.top; i++)
 			{
-				cursor = i * rowBytes + baseAddr;
-				for (int j=0; j < rowWidth; j+=4)
-					if (cursor[j + 1] != 0xFF ||
-					    cursor[j + 2] != 0xFF ||
-					    cursor[j + 3] != 0xFF)
+				longCursor = (unsigned long*)(i * rowBytes + baseAddr);
+				for (int j=0; j < rowWidth/4; j++)
+					if ((longCursor[j] & 0x00FFFFFF) != 0x00FFFFFF)
 						return false;
 			}
 		break;
@@ -1151,6 +1166,7 @@ bool SamePixMap(PixMapHandle pix1, PixMapHandle pix2)
 	Rect bounds;
 	int rowBytes1, rowBytes2, rowWidth;
 	unsigned char *cursor1, *cursor2, *baseAddr1, *baseAddr2;
+	unsigned long *longCursor1, *longCursor2;
 	
 	// need to add obvious checks (bounds, pixel size, etc.)
 	
@@ -1161,18 +1177,15 @@ bool SamePixMap(PixMapHandle pix1, PixMapHandle pix2)
 	rowBytes2 = (**pix2).rowBytes & 0x3FFF;
 	rowWidth = (bounds.right - bounds.left) * (**pix1).pixelSize/8;
 	
-	
 	switch ((**pix1).pixelSize)
 	{
 		case 32:
 			for (int i=0; i < bounds.bottom - bounds.top; i++)
 			{
-				cursor1 = i * rowBytes1 + baseAddr1;
-				cursor2 = i * rowBytes2 + baseAddr2;
-				for (int j=0; j < rowWidth; j+=4)
-					if (cursor1[j + 1] != cursor2[j + 1] ||
-					    cursor1[j + 2] != cursor2[j + 2] ||
-					    cursor1[j + 3] != cursor2[j + 3])
+				longCursor1 = (unsigned long*)(i * rowBytes1 + baseAddr1);
+				longCursor2 = (unsigned long*)(i * rowBytes2 + baseAddr2);
+				for (int j=0; j < rowWidth/4; j++)
+					if (longCursor1[j] != longCursor2[j])
 						return false;
 			}
 		break;
@@ -1201,7 +1214,7 @@ void DrawPictureDithered(PicHandle srcPic, Rect* targetRect)
 	SAVEGWORLD;
 	SAVECOLORS;
 	
-	NewGWorldUnpadded(&tempGW, 32, targetRect, NULL);
+	NewGWorld(&tempGW, 32, targetRect, NULL, NULL, 0);
 	tempPix = GetGWorldPixMap(tempGW);
 	LockPixels(tempPix);
 	
@@ -1358,10 +1371,11 @@ void ExportPictureToPICTFile(PicHandle exportPic, FSSpec exportFile, long creato
 {
 	short	pictFile;
 	long	zeroData, dataLength;
+	OSErr	err;
 	
-	FSpDelete(&exportFile);
-	FSpCreate(&exportFile, creator, 'PICT', 0);
-	FSpOpenDF(&exportFile, fsRdWrPerm, &pictFile);
+	err = FSpDelete(&exportFile);
+	err = FSpCreate(&exportFile, creator, 'PICT', 0);
+	err = FSpOpenDF(&exportFile, fsRdWrPerm, &pictFile);
 	
 	zeroData = 0;
 	dataLength = sizeof(zeroData);
@@ -1392,28 +1406,80 @@ pascal OSErr QTDataUnloadProc(Ptr imageData, long bytesNeeded, long refCon)
 	return err;
 }
 
+void GetQTFileInfo(FSSpec file, Rect *fileBounds, int *fileDepth)
+{
+	GraphicsImportComponent		importer = NULL;
+	ImageDescriptionHandle		description;
+	
+	GetGraphicsImporterForFile(&file, &importer);
+	
+	GraphicsImportGetImageDescription(importer, &description);
+	
+	SetRect(fileBounds, 0, 0, (**description).width, (**description).height);
+	*fileDepth = (**description).depth;
+	
+	DisposeHandle(Handle(description));
+	
+	CloseComponent(importer);
+}
+
 void ImportQTFileToGWorld(FSSpec file, GWorldPtr gWorld)
 {
 	GraphicsImportComponent		importer = NULL;
+	Rect						drawRect;
 	
 	GetGraphicsImporterForFile(&file, &importer);
 	
 	GraphicsImportSetGWorld(importer, gWorld, NULL);
+	GetPortBounds(gWorld, &drawRect);
+	GraphicsImportSetBoundsRect(importer, &drawRect);
 	
 	GraphicsImportDraw(importer);
 	
 	CloseComponent(importer);
 }
 
-void ExportPixMap32ToQTFile(PixMapHandle imagePix, Rect bounds,
-							FSSpec exportFile, long creator, long fileType,
-							CodecType codec, QTHeaderFunction headerFunction)
+void ExportGWToQTFile(GWorldPtr imageGW, FSSpec exportFile, OSType creator, OSType fileType, long depth)
 {
+	OSErr			  	err;
+	ComponentInstance	exporter = NULL;
+	UInt32				exportSize;
+	FInfo				fileInfo;
+	PixMapHandle		imagePix;
+	
+	imagePix = GetGWorldPixMap(imageGW);
+	exportSize = ((**imagePix).rowBytes * 0x3FFF) * (**imagePix).bounds.bottom;
+	
+	err = OpenADefaultComponent(GraphicsExporterComponentType,fileType, &exporter);
+	if (err != noErr) goto bail;
+	
+	err = GraphicsExportSetInputGWorld(exporter, imageGW);
+	if (err != noErr) goto bail;
+	
+	err = GraphicsExportSetDepth(exporter, depth);
+	if (err != noErr) goto bail;
+	
+	err = GraphicsExportSetOutputFile(exporter, &exportFile);
+	if (err != noErr) goto bail;
+
+	err = GraphicsExportDoExport(exporter, &exportSize);
+	if (err != noErr) goto bail;
+	
+
+	FSpGetFInfo(&exportFile, &fileInfo);
+	fileInfo.fdCreator = creator;
+	FSpSetFInfo(&exportFile, &fileInfo);
+	
+bail:	
+	if (exporter) CloseComponent(exporter);
+    				
+/*
 	ImageDescriptionHandle	 	imageDescription;
 	Handle						imageData;
 	ICMFlushProcRecord			flushProc;
 	short						file;
 	int							size;
+	OSErr						err;
 	
 	size = codecMinimumDataSize;
 	
@@ -1428,7 +1494,6 @@ void ExportPixMap32ToQTFile(PixMapHandle imagePix, Rect bounds,
 	FSpOpenDF(&exportFile, fsRdWrPerm, &file);
 	
 	SetFPos(file, fsFromStart, 0);
-				
 	
 	flushProc.flushProc = NewICMFlushUPP(QTDataUnloadProc);
 	flushProc.flushRefCon = file;
@@ -1436,7 +1501,7 @@ void ExportPixMap32ToQTFile(PixMapHandle imagePix, Rect bounds,
 	if (headerFunction != NULL)
 		headerFunction(file, imagePix, bounds);
 
-	FCompressImage(imagePix,
+	err = FCompressImage(imagePix,
 				   &bounds,
 				   32,
 				   codecNormalQuality,
@@ -1445,16 +1510,20 @@ void ExportPixMap32ToQTFile(PixMapHandle imagePix, Rect bounds,
 				   NULL,
 				   codecFlagWasCompressed,
 				   codecMinimumDataSize,
-				   &flushProc,
+				   NULL,
 				   NULL,
 				   imageDescription,
 				   *imageData);
+				   
+	DebugNValues("\pFCompressImage error, size: ", 2, err, (**imageDescription).dataSize);
 
-	//FSWrite(file, &(**imageDescription).dataSize, *imageData);
+	SetFPos(file, fsFromStart, 0);
 
-	//SetFPos(file, fsFromStart, (**imageDescription).dataSize);
+	FSWrite(file, &(**imageDescription).dataSize, *imageData);
 
-	//SetEOF(file, (**imageDescription).dataSize);
+	SetFPos(file, fsFromStart, (**imageDescription).dataSize);
+
+	SetEOF(file, (**imageDescription).dataSize);
 							 
 	FSClose(file);
 				
@@ -1462,6 +1531,7 @@ void ExportPixMap32ToQTFile(PixMapHandle imagePix, Rect bounds,
 	DisposeHandle(imageData);
 				
 	DisposeICMFlushUPP(flushProc.flushProc);
+	*/
 }
 
 /*void ExportPixMap32ToPhotoshopFile(PixMapHandle imagePix, Rect bounds, PixMapHandle maskPix, FSSpec exportFile, long creator)
@@ -1602,15 +1672,13 @@ int GetAverageLuminance(PixMapHandle pix)
 	return sum/numberOfPixels;
 }
 
-void ChangeContrast(PixMapHandle pix, int contrast)
+void ChangeContrast(PixMapHandle pix, int contrast, int averageLuminance)
 {
-	int avg, numberOfBytes;
+	int numberOfBytes;
 	unsigned char* pixelData;
 	float c;
 	
 	c = 1.0 + (float)contrast/100.0;
-	
-	avg = GetAverageLuminance(pix);
 	
 	pixelData = (unsigned char*)(**pix).baseAddr;
 	
@@ -1618,9 +1686,9 @@ void ChangeContrast(PixMapHandle pix, int contrast)
 	
 	for (int j=0; j < numberOfBytes; j+=4)
 	{
-		pixelData[j + 1] = constrain((1.0 - c) * avg + c * pixelData[j + 1], 0, 255);
-		pixelData[j + 2] = constrain((1.0 - c) * avg + c * pixelData[j + 2], 0, 255);
-		pixelData[j + 3] = constrain((1.0 - c) * avg + c * pixelData[j + 3], 0, 255);
+		pixelData[j + 1] = constrain((1.0 - c) * averageLuminance + c * pixelData[j + 1], 0, 255);
+		pixelData[j + 2] = constrain((1.0 - c) * averageLuminance + c * pixelData[j + 2], 0, 255);
+		pixelData[j + 3] = constrain((1.0 - c) * averageLuminance + c * pixelData[j + 3], 0, 255);
 	}
 }
 
@@ -2183,4 +2251,97 @@ int FindInColorTable(CTabHandle colorTable, RGBColor color)
 			return (**colorTable).ctTable[i].value;
 	
 	return -1;
+}
+
+void GWorldTransferScaled(GWorldPtr srcGW, Rect srcRect,
+						  GWorldPtr destGW, Rect destRect,
+						  RgnHandle maskRegion, bool dithering, int scaling)
+{
+	short mode;
+
+	SAVEGWORLD;	
+	SetGWorld(destGW, NULL);
+	SAVECOLORS;
+	
+	if (dithering)
+		mode = srcCopy + ditherCopy;
+	else
+		mode = srcCopy;
+	
+	if (MUtilities::GestaltQTVersion(6, 0))
+	{
+		ImageDescriptionHandle	desc;
+		CodecQ					quality;
+		MatrixRecord			matrix;
+		
+		switch (scaling)
+		{
+			case kScalingBlocky: quality = codecMinQuality; break;
+			case kScalingSmooth: quality = codecMaxQuality; break;
+		}
+		
+		SetIdentityMatrix(&matrix);
+		MapMatrix(&matrix, &srcRect, &destRect);
+		
+		MakeImageDescriptionForPixMap(GetGWorldPixMap(srcGW), &desc);
+			
+		FDecompressImage((**GetGWorldPixMap(srcGW)).baseAddr,
+						 desc,
+						 GetGWorldPixMap(destGW),
+						 &srcRect,
+						 &matrix,
+						 mode,
+						 maskRegion,
+						 NULL, // mate pix map
+						 NULL, // matte rect
+						 quality,
+						 bestFidelityCodec,
+						 0,  // buffer size
+						 NULL, // data proc
+						 NULL); // progress proc
+						 
+		DisposeHandle((Handle)desc);
+	}
+	else
+	{
+		PixMapHandle srcPix, destPix;
+		
+		srcPix = GetGWorldPixMap(srcGW);
+		destPix = GetGWorldPixMap(destGW);
+		
+		CopyBits((BitMap*)*srcPix, (BitMap*)*destPix,
+				 &srcRect, &destRect,
+			     mode, maskRegion);
+	}
+	
+	RESTORECOLORS;
+	RESTOREGWORLD;
+}
+
+void PictureTransferScaled(PicHandle srcPic, Rect srcRect,
+						   GWorldPtr destGW, Rect destRect,
+						   bool dithering, int scaling)
+{
+	GWorldPtr		picGW;
+	PixMapHandle	picPix;
+	
+	NewGWorld(&picGW, 32, &(**srcPic).picFrame, NULL, NULL, 0);
+	picPix = GetGWorldPixMap(picGW);
+	LockPixels(picPix);
+	
+	SAVEGWORLD;
+	SetGWorld(picGW, NULL);
+	SAVECOLORS;
+	
+	DrawPicture(srcPic, &(**srcPic).picFrame);
+	
+	RESTORECOLORS;
+	RESTOREGWORLD;
+	
+	GWorldTransferScaled(picGW, srcRect,
+						 destGW, destRect,
+						 NULL, dithering, scaling);
+	
+	UnlockPixels(picPix);
+	DisposeGWorld(picGW);
 }

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
+<plist version="0.9">
+<dict>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeIconFile</key>
+			<string>MacOSIcon.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>Mac OS Icon file</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>Icon</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>ico</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>WindowsXPIcon.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>Windows XP Icon file</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>ICOX</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>ico</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>WindowsIcon.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>Windows Icon file</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>ICO </string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>tiff</string>
+				<string>tif</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>MacOSXServerIcon.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>Mac OS X Server (1.x) Icon file</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>TIFF</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>icns</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>MacOSXIcon.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>Mac OS X Icon file</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>Icon</string>
+				<string>icns</string>
+				<string>ICNS</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>*</string>
+			</array>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>****</string>
+				<string>fold</string>
+				<string>disk</string>
+			</array>
+		</dict>
+	</array>
+	<key>CFBundleExecutable</key>
+	<string>Iconographer</string>
+	<key>CFBundleGetInfoString</key>
+	<string>Iconographer 2.2 Copyright 1998-2001 Mscape Software</string>
+	<key>CFBundleIconFile</key>
+	<string>Iconographer.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.mscape.iconographer</string>
+	<key>CFBundleName</key>
+	<string>Iconographer</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>2.2</string>
+	<key>CFBundleSignature</key>
+	<string>Mngl</string>
+	<key>CFBundleVersion</key>
+	<string>2.2</string>
+</dict>
+</plist>

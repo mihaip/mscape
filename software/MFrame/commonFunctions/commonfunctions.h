@@ -29,6 +29,7 @@ typedef void (*EnhancedPlacardUpdateFuncPtr)(struct EnhancedPlacardData* data, i
 
 typedef struct EnhancedPlacardData
 {
+	long							version;
 	int 							flags;
 	short							font;
 	short							size;
@@ -41,6 +42,7 @@ typedef struct EnhancedPlacardData
 	bool							pictureIsResource;
 	EnhancedPlacardUpdateFuncPtr	updateFunc;
 	void*							clientData;
+	int								helpResID, helpStringNo;
 } EnhancedPlacardData;
 
 typedef EnhancedPlacardData* EnhancedPlacardDataPtr;
@@ -60,7 +62,6 @@ enum EnhancedPlacardFlags
 
 const static float kEnhancedPlacardMenuArrowBlend = 0.75;
 const static float kEnhancedPlacardMenuArrowInactiveBlend = 0.45;
-
 
 enum {
 	kSelectItem = 10, 			// select button item number
@@ -268,11 +269,6 @@ extern OSErr FSWriteLE(short refNum, long* count, void* buffPtr);
 				  XYMenuDrawFn Draw,
 				  XYMenuUpdateFn Update,
 				  void* clientData);*/
-extern bool GestaltVersion(unsigned long gestaltCode, int major, int revision);
-extern bool GestaltExists(unsigned long gestaltCode);
-extern OSStatus ThemeSoundStart(ThemeDragSoundKind kind);
-extern OSStatus ThemeSoundEnd(void);
-extern OSStatus ThemeSoundPlay(ThemeSoundKind kind);
 extern void DeactivateNControls(int controlCount, ... );
 extern void ActivateNControls(int controlCount, ... );
 extern void GetImageWellColors(RGBColor* border, RGBColor* hilite, RGBColor* shadow, ThemeDrawState state);
@@ -305,6 +301,8 @@ extern int GetEnhancedPlacardMenuValue(ControlHandle placard);
 
 
 void DebugValue(const Str255 label, int value);
+void DebugNValues(const Str255 label, int valueCount, ...);
+#define DebugAssert(condition) if (!(condition)) DebugValue("\passert failed at line ", __LINE__)
 
 // inline functions
 inline void CopyPixMap(PixMapHandle srcPix, PixMapHandle targetPix, const Rect* srcRect, const Rect* targetRect, long flags, RgnHandle clipRgn)

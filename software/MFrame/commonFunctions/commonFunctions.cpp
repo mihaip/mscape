@@ -1,4 +1,7 @@
 #include "commonfunctions.h"
+#include "graphicalFunctions.h"
+#include "MUtilities.h"
+#include <string.h>
 
 const WindowPtr kFrontmost = (WindowPtr)-1L;
 const int kMessageDialogID = 3000;
@@ -661,17 +664,24 @@ int GetDepth(int noOfColors)
 	return 8; // default value
 }
 
-void CropPixMap(PixMapHandle pixMap, int targetRowBytes)
+/*void CropPixMap(PixMapHandle pixMap, int targetRowBytes)
 {
-	int oldRowBytes;
+//	QTSetPixMapHandleRowBytes(pixMap, targetRowBytes);
+//	int oldRowBytes;
 	short flags;
 	
-	oldRowBytes = (**pixMap).rowBytes & 0x3FFF;
+//	oldRowBytes = (**pixMap).rowBytes & 0x3FFF;
 	flags = (**pixMap).rowBytes & 0xC000;
-	(**pixMap).rowBytes = targetRowBytes + flags;
-	for (int i = 0; i < (**pixMap).bounds.bottom - (**pixMap).bounds.top; i++)
-		BlockMove((*pixMap)->baseAddr + i*oldRowBytes, (*pixMap)->baseAddr + i*targetRowBytes, targetRowBytes);
-}
+	(**pixMap).rowBytes = targetRowBytes | flags;
+//	for (int i = 0; i < (**pixMap).bounds.bottom - (**pixMap).bounds.top; i++)
+//		BlockMove((*pixMap)->baseAddr + i*oldRowBytes, (*pixMap)->baseAddr + i*targetRowBytes, targetRowBytes);
+		
+	if ((**pixMap).pmExt)
+	{
+		PixMapExtension** ext = (PixMapExtension**)(**pixMap).pmExt;
+		(**ext).longRowBytes = targetRowBytes;
+	}
+}*/
 
 void GetFSSpecFromAEDesc(AEDesc &inDesc, FSSpec &outValue)
 {
@@ -1285,6 +1295,7 @@ OSStatus Make1BitMask(PixMapHandle srcPix, PixMapHandle targetPix, Rect bounds)
 	Rect			localBounds;
 	
 	SAVECOLORS;
+	SAVEGWORLD;
 	
 	if (srcPix == NULL || targetPix == NULL)
 		return paramErr;
@@ -1306,11 +1317,30 @@ OSStatus Make1BitMask(PixMapHandle srcPix, PixMapHandle targetPix, Rect bounds)
 			  &white,
 			  maskColorSearchUPP,
 			  0);
+			  
+	Rect targetBounds = (**targetPix).bounds;
 	
-	CopyBits((BitMap*)*maskPix,
+	if ((**targetPix).pixelSize == 1)
+	{
+		// we have to clear off the destination and use the srcOr because of a Mac OS X 10.3
+		// QuickDraw bug that causes clipping
+		unsigned char* baseAddr = (unsigned char*)(**targetPix).baseAddr;
+		int rowBytes = (**targetPix).rowBytes & 0x3FFF;
+		for (int y=0; y < targetBounds.bottom - targetBounds.top; y++)
+			memset(baseAddr + rowBytes * y, 0x00, rowBytes);
+		
+		CopyBits((BitMap*)*maskPix,
+				 (BitMap*)*targetPix,
+				 &localBounds,
+				 &targetBounds,
+				 srcOr,
+				 NULL);
+	}
+	else
+		CopyBits((BitMap*)*maskPix,
 			 (BitMap*)*targetPix,
 			 &localBounds,
-			 &(**targetPix).bounds,
+			 &targetBounds,
 			 srcCopy,
 			 NULL);
 			 
@@ -2632,9 +2662,27 @@ pascal void EnhancedPlacardDraw(ControlHandle placard, short partCode)
 		
 		if (data->picture)
 			h += (pictureRect.right - pictureRect.left) - 2;
+
+#if TARGET_API_MAC_CARBON
+		CFStringRef cfString;
+		Rect		labelRect;
+	
+		cfString = CFStringCreateWithPascalString(NULL, data->title, kCFStringEncodingMacRoman);
+		SetRect(&labelRect, h, v - 10, h + 500, v);
 		
+		DrawThemeTextBox(cfString,
+						 kThemeCurrentPortFont,
+						 kThemeStateActive,
+						 false,
+						 &labelRect,
+						 teFlushLeft,
+						 NULL);
+						 
+		CFRelease(cfString);
+#else
 		MoveTo(h, v);
 		DrawString(data->title);
+#endif
 		
 		TextFont(0);
 		TextSize(12);
@@ -2928,54 +2976,6 @@ int GetEnhancedPlacardMenuValue(ControlHandle placard)
 
 #pragma mark -
 
-bool GestaltVersion(unsigned long gestaltCode, int major, int revision)
-{
-	char version[4];
-	
-	if (Gestalt(gestaltCode, (long *)version) != noErr)
-		return false;
-	else
-	{
-		if (version[2] > major)
-			return true;
-		else if ((version[2] == major) && version[3] >= revision)
-			return true;
-		else
-			return false;
-	}
-}
-
-bool GestaltExists(unsigned long gestaltCode)
-{
-	long result;
-	
-	return (Gestalt(gestaltCode, &result) == noErr);
-}
-
-OSStatus ThemeSoundStart(ThemeDragSoundKind kind)
-{
-	if (GestaltVersion(gestaltAppearanceVersion, 0x01, 0x10))
-		return BeginThemeDragSound(kind);
-	else
-		return envBadVers;
-}
-
-OSStatus ThemeSoundEnd(void)
-{
-	if (GestaltVersion(gestaltAppearanceVersion, 0x01, 0x10))
-		return EndThemeDragSound();
-	else
-		return envBadVers;
-}
-
-OSStatus ThemeSoundPlay(ThemeSoundKind kind)
-{
-	if (GestaltVersion(gestaltAppearanceVersion, 0x01, 0x10))
-		return PlayThemeSound(kind);
-	else
-		return envBadVers;
-}
-
 void DeactivateNControls(int controlCount, ... )
 {
 	va_list			argptrs;		
@@ -3011,7 +3011,7 @@ void GetImageWellColors(RGBColor* border,
 						RGBColor* shadow,
 						ThemeDrawState state)
 {
-	if (GestaltVersion(gestaltAppearanceVersion, 0x01, 0x01))
+	if (MUtilities::GestaltVersion(gestaltAppearanceVersion, 0x01, 0x01))
 	{
 		GWorldPtr 		tempGW;
 		PixMapHandle	tempPix;
@@ -3028,7 +3028,7 @@ void GetImageWellColors(RGBColor* border,
 		RESTORECOLORS;
 		EraseRect(&tempRect);
 	
-		if (GestaltVersion(gestaltSystemVersion, 0x10, 0x00))
+		if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x10, 0x00))
 		{
 			InsetRect(&tempRect, 2, 2);
 			DrawThemeEditTextFrame(&tempRect, state);
@@ -3069,14 +3069,14 @@ void GetImageWellColors(RGBColor* border,
 
 void DrawImageWell(ControlHandle theControl, Rect targetRect)
 {
-	if (GestaltVersion(gestaltSystemVersion, 0x10, 0x00))
+	if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x10, 0x00))
 	{
 		if (IsControlActive(theControl))
 			DrawThemeEditTextFrame(&targetRect, kThemeStateActive);
 		else
 			DrawThemeEditTextFrame(&targetRect, kThemeStateInactive);
 	}
-	else if (GestaltVersion(gestaltAppearanceVersion, 0x01, 0x01))
+	else if (MUtilities::GestaltVersion(gestaltAppearanceVersion, 0x01, 0x01))
 	{
 		if (IsControlActive(theControl))
 			DrawThemeGenericWell(&targetRect, kThemeStateActive, false);
@@ -3161,7 +3161,7 @@ void DrawImageWell(RgnHandle theRgn, ThemeDrawState state, bool fillCenter)
 
 void GetFocusColor(RGBColor* focusColor)
 {
-	if (GestaltExists(gestaltAppearanceAttr))
+	if (MUtilities::GestaltExists(gestaltAppearanceAttr))
 	{
 		GWorldPtr 		tempGW;
 		PixMapHandle	tempPix;
@@ -3366,11 +3366,29 @@ OSErr FSWrite2(short file, short data)
 
 void DebugValue(const Str255 label, int value)
 {
-	Str255 temp, temp2;
+	DebugNValues(label, 1, value);
+}
+
+void DebugNValues(const Str255 label, int valueCount, ...)
+{
+	va_list	argptrs;
+	Str255	temp, temp2;
+	int		value;
+	
+	va_start(argptrs, valueCount);
 	
 	CopyString(temp, label);
 	
-	NumToString(value, temp2);
-	AppendString(temp, temp2);
+	for (int i = 0; i < valueCount; i++ )
+	{
+		value = va_arg(argptrs, int);
+		
+		NumToString(value, temp2);
+		AppendString(temp, temp2);
+		AppendString(temp, "\p	");
+	}
+
 	DebugStr(temp);
+
+	va_end(argptrs);
 }

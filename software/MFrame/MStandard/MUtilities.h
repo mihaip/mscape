@@ -7,6 +7,13 @@
 
 #pragma once
 
+#if !PROJECTBUILDER
+#include <QuickTimeComponents.h>
+#include <ImageCodec.h>
+#endif
+
+#include <stdarg.h>
+
 class MIcon;
 
 // type definitions
@@ -17,6 +24,25 @@ enum MUtilitiesCursor
 {
 	rArrow = 0, // not really an ID
 	rIBeam = 1 // ditto
+};
+
+typedef struct
+{
+	Str255*			formats;
+	Str255*			extensions;
+	int				formatsCount;
+	Str255			formatPopupLabel;
+	ControlHandle	formatPopup;
+	Handle			customItems;
+	int				chosenFormat;
+	bool			forceExtension;
+} FormatsSaveData;
+
+enum FormatSaveOptions
+{
+	kForceExtension = 1,
+	kPutFile = 2,
+	kNewFolder = 4
 };
 
 class MSounds
@@ -51,6 +77,7 @@ class MUtilities
 		static bool		GestaltTest(MType gestaltCode, MType gestaltMask);
 		static bool 	GestaltVersion(MType gestaltCode, int major, int revision);
 		static bool 	GestaltExists(MType gestaltCode);
+		static bool		GestaltQTVersion(int major, int revision);
 		
 		static bool		IsKeyPressed(short keyCode);
 		
@@ -82,7 +109,23 @@ class MUtilities
 		static void		ResetFileSpec(FSSpec* spec);
 		static FSSpec	GetFSSpecFromAEDesc(AEDesc desc);
 		static bool		GetFileSpec(MType creator, MType fileType, Str255 message, FileFilterProcPtr filterFunction, FSSpec* spec);
+		static bool		GetFileSpec(Str255 message, FileFilterProcPtr filterFunction, FSSpec* spec, MType creator, int fileTypeCount, const OSType fileTypes[]);
 		static bool		NewFileSpec(FSSpec* spec);
+		
+		static pascal Boolean NavObjectsFileFilter(AEDesc *theItem, void *info, void *callBackUD, NavFilterModes filterMode);
+		static bool		GetObjects(Str255 prompt, FSSpec** specs, long *specCount, int fileTypeCount, const OSType fileTypes[]);
+		
+		static bool		NewFileSpecWithFormats(Str255 prompt, Str255 currentName, Str255 formatMenuLabel,
+											   int formatCount, Str255 formats[], Str255 extensions[], int options,
+											   FSSpec* spec, int* format);
+		static pascal void NavFormatsEventHandler(NavEventCallbackMessage callBackSelector, NavCBRecPtr callBackParms, NavCallBackUserData callBackUD);
+		static void		InitializeFormatPopup(FormatsSaveData* saveData);
+		static void		SyncNameToFormatPopup(NavCBRecPtr callBackParms, FormatsSaveData* saveData);
+		static void		SyncFormatPopupToName(NavCBRecPtr callBackParms, FormatsSaveData* saveData);
+		
+		static bool		FileHasExtension(Str255 name, const Str255 extension);
+		static void		SetFileExtension(Str255 name, const Str255 extension);
+		static void		StripExtension(Str255 name);
 		
 		static void		ChangeCursor(short ID);
 		static int 		GetCurrentCursor();
@@ -105,6 +148,8 @@ class MUtilities
 		static int 		CountVisibleMenuItems(MenuRef menu);
 		
 		static Rect		GetUsableScreenRect();
+		
+		static OSErr	QTCopyAtomContainer(QTAtomContainer source, QTAtomContainer* dest);
 		
 		static pascal void ApplicationIconDraw(ControlHandle iconControl, SInt16 controlPart);
 		
@@ -152,3 +197,7 @@ class MUtilities
 #define ISOPTIONDOWN\
 	(MUtilities::IsKeyPressed(0x3A) || MUtilities::IsKeyPressed(0x3D))
 #endif
+
+// constants
+
+const static int kOptionScrollingMultiplier = 4;

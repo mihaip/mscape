@@ -1,4 +1,4 @@
-/* Resource fork of software/Iconographer/Testing/Icon->.ICO source/resources/PPStarterResources.ppob */
+/* Resource fork of software/extras/Iconographer Support/Testing/Icon->.ICO source/resources/PPStarterResources.ppob */
 data 'µMWC' (32000) {
 };
 

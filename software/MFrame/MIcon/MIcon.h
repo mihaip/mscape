@@ -12,8 +12,10 @@
 #include "MString.h"
 #include "MWindow.h"
 #include "MFile.h"
+#if !PROJECTBUILDER
 #if !TARGET_API_MAC_CARBON
 #include "Find_icon.h"
+#endif
 #endif
 
 const static int icnsSizePadding = 2; // this should yield 2 for 68K and 4 for PPC
@@ -54,7 +56,7 @@ const static long ichSize = 0x240;
 const static long ich8Size = 0x900;
 const static long ich4Size = 0x480;
 
-const static long it32Size = 0xFFFF;
+const static long it32Size = 0x10000;
 const static long t8mkSize = 0x4000;
 
 const static long icm8Size = 0xC0;
@@ -154,13 +156,13 @@ enum MIconResources
 	// menus
 	rFormatMenu = 4000,
 	mBaseIDMenu = 203,
-	mIDMenuCount = 7,
+	mIDMenuCount = 9,
 	
 	// strings
 	rFormatStrings = 4000,
 	rIconNames = 4001,
 	rMiscIconStrings = 4002,
-	rIconInfoBalloonHelp = 4003,
+	rIconInfoHelp = 4003,
 	rIconInfoStrings = 4004
 };
 
@@ -243,7 +245,9 @@ enum miscIconStrings
 	eICNonIconDataFork = 3,
 	eICYesButton = 4,
 	eICNoButton = 5,
-	eICChooseAnotherFile = 6
+	eICChooseAnotherFile = 6,
+	eIcon = 7,
+	eMask = 8
 };
 
 enum iconInfoStrings
@@ -407,6 +411,10 @@ class MIcon
 		
 		GWorldPtr		icm4GW;
 		PixMapHandle	icm4Pix;
+
+#if TARGET_API_MAC_CARBON
+		bool			dialogLoaded;
+#endif
 		
 	protected:
 		
@@ -414,7 +422,7 @@ class MIcon
 
 		void			PreSave();
 		void			PostSave();
-		void			SetupFileSpec(bool erase);
+		void			SetupFileSpec();
 		void			CleanupFileSpec();
 		
 		short			targetFile, oldFile;
@@ -438,6 +446,8 @@ class MIcon
 		void			SaveTIFF();
 		void			SaveDataFork();
 		
+		void			RefreshIcon();
+		
 		void 			GetGWorldAndPixPointers(long pixName, GWorldPtr** gW, PixMapHandle** pix);
 		
 		static DialogPtr			infoDialog;
@@ -449,6 +459,7 @@ class MIcon
 		static MWindowPtr			infoDialogWindow;
 		static EditIconInfoData		dialogData;
 		static int					currentTab;
+		static bool					resourceItemsEnabled;
 
 		
 	public:
@@ -468,8 +479,9 @@ class MIcon
 		
 						MIcon(void);
 						~MIcon(void);
+						
 		void			Load();
-		
+		void 			Load(bool simple);
 		void			LoadFileIcon();
 		void			LoadDataFork();
 		void			LoadFromIconSuite(IconSuiteRef theIconSuite);
@@ -485,11 +497,16 @@ class MIcon
 		void			ExportToPixMap(PixMapHandle targetPix);
 		void			ImportFromClipboard(bool dither);
 		OSErr 			Save();
+		OSErr			Save(bool simple);
+		
+		void			TransformWithColor(RGBColor color);
 		
 		long			GetSize();
 		long			GetLargestSize();
 		
 		bool			IDChanged();
+		
+		int				CountMembers();
 		
 		int				GetPixName(int height, int depth, bool icon);
 		int 			GetBestPixName(int height, int depth, bool strict);
@@ -515,9 +532,13 @@ class MIcon
 		static void		GetMembersCheckboxes(DialogPtr dialog, long* usedMembers);
 		static void 	HandleMembersCheckbox(DialogPtr dialog, int itemHit, long *usedMembers, int format);
 		static pascal Boolean IconInfoDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit);
-		static void		ToggleNonMacOSItems(DialogPtr infoDialog);
+		static void		ToggleResourceItems(DialogPtr infoDialog);
 		static void		SplitMenuItem(Str255 text, long* ID, Str255 iconName);
 		static void		GetIDMenu(int ID, MenuHandle* menu, int* item, Str255 name);
+		
+		static bool		FileHasIcon(MFile *file, short ID, int format);
+		static void		DeleteIcon(MFile* file, short ID, int format);
+		static void		GetActualIconSpec(FSSpec currentSpec, FSSpec* iconSpec);
 		
 		IconFamilyHandle Geticns();
 		
@@ -531,7 +552,7 @@ typedef MIcon* MIconPtr;
 pascal OSErr IconExtractor(ResType iconType, Handle *theIcon, void *dataPtr);
 
 void GeticnsInfo(IconFamilyHandle icnsHandle, long* members, int* maxHeight);
-void GetICNInfo(short ID, Str255 name, long* members, int *cellHeight);
+void GetICNInfo(short ID, Str255 name, long* members, int *cellHeight, OSType alreadyLoadedType);
 
 IconFamilyElement* GeticnsMember(long iconType, IconFamilyHandle icnsHandle);
 void AddIconMember(IconFamilyHandle* icnsHandle, long iconType, PixMapHandle iconPix);
@@ -541,7 +562,6 @@ OSStatus NewIconSet(GWorldPtr *gWorld,
 					int depth,
 					CTabHandle cTable);
 bool CheckClipboard(bool verbose);
-bool FileHasExtension(Str255 name, const Str255 extension);
 bool FilterIconFile(FSSpec file, long format);
 void SetFileExtension(int format, Str255 fileName);
 long GetFileFormat(FSSpec file);

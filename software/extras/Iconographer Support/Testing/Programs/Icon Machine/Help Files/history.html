@@ -1,0 +1,209 @@
+<HTML>  
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0 Mac">
+  <TITLE>Version History</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><FONT COLOR="#1e2866" FACE="Charcoal">Version History</FONT></P>
+
+<P><B><FONT SIZE="-1" FACE="Geneva">2.0.1<BR>
+</FONT></B><FONT SIZE="-1" FACE="Geneva">- Fixed some selection
+and drawing problems that could cause garbage to appear in the
+images.<BR>
+- Fixed a bug where moving a selection partly offscreen, deselecting,
+and undoing would result in a cut-off image in the selection.<BR>
+- Clicking on the proxy icon and quickly dragging will now drag
+the window, rather than doing nothing.<BR>
+- Creating a small 4-bit or 8-bit icon also creates a small B&amp;W
+icon if it's not there, to hold the mask.<BR>
+- Fixed the bucket tool for image-only mode in 32-bit icons.<BR>
+- Fixed problems with selecting folders with Navigation Services.
+The window had no title, and the Save Changes dialog didn't appear.<BR>
+- Using a contextual menu to delete a 32-bit icon that wasn't
+active didn't delete the mask.<BR>
+- No more -43 errors when saving the icon of a disk.<BR>
+- 32-bit icons previews are drawn dithered for displays that are
+not set to millions of colors.<BR>
+</FONT></P>
+
+<P><B><FONT SIZE="-1" FACE="Geneva">2.0</FONT></B><FONT SIZE="-1"
+ FACE="Geneva"><BR>
+- 32-bit icon editing! As a part of this, the window layout has
+been rearranged a bit, and the transparency selector has been
+added.<BR>
+- Changed the way the mask dots are drawn. The new way uses less
+memory and is possibly a little faster, and transparent pixels
+look more like I want them to (which is more important in 32-bit
+icons).<BR>
+- Fixed a crash that happened when dragging to icon selectors.<BR>
+- Tool tips no longer appear in inactive windows.<BR>
+- Icons are no longer read and saved by sending AppleEvents to
+the Finder, since this method does not work with 32-bit icons.<BR>
+- Option-clicking a color selector button opens the Color Picker.<BR>
+- Added the Copy Family and Paste Family commands.<BR>
+- Many other minor improvements and bug fixes.</FONT></P>
+
+<P><B><FONT SIZE="-1" FACE="Geneva">1.6.2</FONT></B><FONT SIZE="-1"
+ FACE="Geneva"><BR>
+- Many fixes to the way tools and selections work in mask view.<BR>
+- Fixed the error -192 that would happen on some machines<BR>
+- Internal changes to the way masks are handled, in preparation
+for 8-bit masks.<BR>
+- Fixed some memory leaks<BR>
+- No longer automatically &quot;fixes&quot; the mask when opening
+an icon<BR>
+- Double-clicking the eraser tool erases both the image and the
+mask (in normal drawing mode)<BR>
+- Fixed some drawing glitches in the polygon tool<BR>
+- Fixed the paint bucket; it was sometimes using the wrong color<BR>
+- Fixed a crash that could happen when dragging an icon to the
+large 16-color icon box<BR>
+- Added a spinning cursor when saving icons<BR>
+- Uses old-style directory dialogs if there's not enough memory
+for Navigation Services</FONT></P>
+
+<P><B><FONT SIZE="-1" FACE="Geneva">1.6.1</FONT></B><FONT SIZE="-1"
+ FACE="Geneva"><BR>
+- Mask view no longer displays solid black<BR>
+- The magic wand tool works properly in mask view</FONT></P>
+
+<P><B><FONT SIZE="-1" FACE="Geneva">1.6</FONT></B><FONT SIZE="-1"
+ FACE="Geneva"><BR>
+- Added mask view<BR>
+- Added tool tips<BR>
+- Fixed some pre-Appearance drawing problems<BR>
+- Fixed some drawing problems that happened with gridlines off<BR>
+- Conflicts with Navigation Services have been removed</FONT></P>
+
+<P><B><FONT SIZE="-1" FACE="Geneva">1.5b17</FONT></B><FONT SIZE="-1"
+ FACE="Geneva"><BR>
+- Fixed several bugs related to displaying selections<BR>
+- Moving a file while it is open in Icon Machine won't cause problems
+when you try to save</FONT></P>
+
+<P><B><FONT SIZE="-1" FACE="Geneva">1.5b16</FONT></B><FONT SIZE="-1"
+ FACE="Geneva"><BR>
+- The editing window has been redesigned to take advantage of
+the Mac OS 8 Appearance Manager<BR>
+- Open and Save As now use Navigation Services dialogs when available<BR>
+- Flip and Rotate commands have been added<BR>
+- The Edit Icon plugin now works on multiple files<BR>
+- Mac OS 8.5 proxy icons and path pop-ups<BR>
+- The Style pop-up menu was replaced with three toggle buttons<BR>
+- The mask modes have different icons (if you don't like them
+and have a better idea, please let me know)<BR>
+- The member selector has been redesigned, and I don't call them
+&quot;members&quot; anymore<BR>
+- Some error messages are now more accurate<BR>
+- This version no longer has balloon help, but it will be added
+again in the future<BR>
+- Recompiled with CodeWarrior Pro 4<BR>
+- Fixed various problems that would happen when dragging from
+one icon selector box to another<BR>
+- Kineticon is disabled while Icon Machine is active, to avoid
+unwanted animations in Icon Machine's windows</FONT></P>
+
+<P><B><FONT SIZE="-1" FACE="Geneva">1.3.2</FONT></B><FONT SIZE="-1"
+ FACE="Geneva"><BR>
+- Fixed a crash that happened when undoing the Delete Member command<BR>
+- Fixed a bug introduced in 1.3.1 where the Delete Member command
+was enabled for the large B&amp;W icon.<BR>
+- Made the dropper cursor resource non-purgeable, which should
+fix the problem of the cursor turning to garbage<BR>
+- Recompiled with CodeWarrior Pro 3</FONT></P>
+
+<P><B><FONT SIZE="-1" FACE="Geneva">1.3.1</FONT></B><FONT SIZE="-1"
+ FACE="Geneva"><BR>
+- Fixed a problem with incoming drag flavors marked &quot;don't
+save&quot;. This was needed for drag-and-drop compatibility with
+the new version of the Kineticon editor.<BR>
+- Fixed the translucent drag image of small icons in the icon
+preview (they were being stretched to large icon size)<BR>
+- The Edit Icon plugin finally works correctly when Icon Machine
+is not on the startup drive.</FONT></P>
+
+<P><B><FONT SIZE="-1" FACE="Geneva">1.3</FONT></B><FONT SIZE="-1"
+ FACE="Geneva"><BR>
+- Added keyboard shortcuts for tools.<BR>
+- Added the Show Gridlines command.<BR>
+- Fixed a potential crashing bug when saving while the Finder
+is not running, such as with At Ease.<BR>
+- Added a Troubleshooting section to Icon Machine Guide.<BR>
+- The Help command in contextual menus is now enabled, and opens
+Icon Machine Guide.<BR>
+- Only allows one about box open at a time.<BR>
+- Fixed a contextual menu bug introduced in 1.2.1 - control-clicking
+in a window's drag area would drag the window instead of displaying
+a menu.<BR>
+- Fixed a bug which made the System Colors palette not tear off.<BR>
+- Fixed a bug in the System Colors palette which would hilite
+two &quot;blank&quot; colors if you put the mouse in just the
+right place.<BR>
+- Fixed another bug in the System Colors palette where using the
+dropper tool to select certain colors would cause the wrong color
+to be hilited, even though the right color was chosen.</FONT></P>
+
+<P><B><FONT SIZE="-1" FACE="Geneva">1.2.1</FONT></B><FONT SIZE="-1"
+ FACE="Geneva"><BR>
+- When the Other Size dialog was open, you could control-click
+in another window to bring it to the front. This has been fixed.
+This was a potentially dangerous problem because you could close
+the window you were trying to choose a size for, which probably
+would have caused a crash.<BR>
+- Keyboard shortcuts for the OK and Cancel buttons are recognized
+in the Other Size dialog, and the OK button is outlined.</FONT></P>
+
+<P><B><FONT SIZE="-1" FACE="Geneva">1.2</FONT></B><FONT SIZE="-1"
+ FACE="Geneva"><BR>
+- The icon preview is now draggable.<BR>
+- Fixed a crashing bug in the Edit Icon plugin. My apologies to
+those who ran into this.<BR>
+- When you drag an icon clipping onto the member selector, it
+will use the contents of the clipping rather than the clipping's
+icon (when appropriate).<BR>
+- With some icons, dragging an icon from the member selector to
+the editing area created a selection with an incorrect mask. This
+is fixed.<BR>
+- The Edit Icon plugin was modified to keep the &quot;Edit Icon&quot;
+string in a resource for easier localization.</FONT></P>
+
+<P><B><FONT SIZE="-1" FACE="Geneva">1.1</FONT></B><FONT SIZE="-1"
+ FACE="Geneva"><BR>
+- Mac OS 8 contextual menus in all windows<BR>
+- Window menu, which under Mac OS 8 displays each window's icon<BR>
+- Tear-off floating palettes (requires System 7.5 or later)<BR>
+- The pattern selector uses the foreground and background colors
+to display patterns<BR>
+- The Paste command is only enabled if there is picture data on
+the clipboard<BR>
+- The about box is modeless<BR>
+- Added a Revert command to the file menu<BR>
+- Double-clicking the marquee or lasso tool does a Select All,
+and double-clicking the eraser erases the current icon (obeying
+the current mask mode)<BR>
+- The Edit Icon plugin now searches all disks for Icon Machine
+so you don't have to have it on your startup disk<BR>
+- Recompiled with CodeWarrior Pro 2 and PowerPlant 1.8.1<BR>
+- Fixed a crash that happened when dragging icons in from Icon
+Archiver<BR>
+- Now able to open and save icons on floppy disks<BR>
+- The text tool now handles double-byte text correctly</FONT></P>
+
+<P><B><FONT SIZE="-1" FACE="Geneva">1.0.1</FONT></B><FONT SIZE="-1"
+ FACE="Geneva"><BR>
+- Updated to PowerPlant 1.8b1. The most visible result of this
+is that the Other Size dialog looks a little different.<BR>
+- Fixed a crash in the polygon tool.<BR>
+- Fixed a problem with the pencil's auto-erase in 16-color icons.<BR>
+- Corrected a typo in the balloon help.</FONT></P>
+
+<P><B><FONT SIZE="-1" FACE="Geneva">1.0</FONT></B><FONT SIZE="-1"
+ FACE="Geneva"><BR>
+- First momentous release.</FONT></P>
+
+<P><CENTER><FONT SIZE="-1" FACE="Geneva"><HR><A HREF="../Icon%20Machine%20Help.html">Table
+of contents</A></FONT></CENTER>
+
+</BODY>
+</HTML>
