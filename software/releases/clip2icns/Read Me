@@ -1,0 +1,68 @@
+clip2icns 1.0b3
+by Mihai Parparita
+mihai@mscape.com
+http://cafe.ambrosiasw.com/gui-central/clip2icns.html
+
+Beta Release
+
+This is a beta release which expires on November 1, 1998. The newest version is always available from the address above. Although I have tried to get all the bugs out chances are that a few might have sneaked past me so always use this on a copy of your files. I'm not responsible for any damage done to your system, computer, etc. Bug reports and suggestions for future releases should be sent to the address above.
+
+Introduction
+
+This little utility is designed to help you create 32 bit icons (which are available under MacOS 8.5 and above). Since Apple has chosen (for the time being) not to release an editor, I've created clip2icns to fill that gap. It takes a picture from the clipboard, splits it up into the icon and mask, and either inserts it into a current file or makes a new icon.
+
+Usage
+
+First a quick explanation on how 32 bit icons work. All of their data is stored in an icns resource, including the 8, 4, and 1 bit versions (you should also old style resources (icl8, ICN#, ics8, etc) for backwards compatibility). When drawing the icon the MacOS takes the icon and uses the mask to display it. Unlike the old masks where you only had two colors, white as transparent and black as opaque, the new 8 bit masks allow you to use grays to have semi-transparency. For example a light gray would make the icon be almost totally transparent, while a dark one would make it almost totally opaque. This semi-transparency can be used to create cool effects, such as translucent icons, drop shadows that look good on any background and anti-aliasing. For some examples of these effects see the clippings in the Goodies folder.
+ 
+
+
+
+
+
+
+
+clip2icns creates the icon by taking the clipboard data and splitting it up into different sections. The picture above shows how the 80x32 image is divided up.  If you don't want to you can omit the small version (thus the image size would be 64x32), and the Finder will shrink down the image automatically (although chances are that the result won't look so great). You can also make icons that only have the small version (so the image would be 16x32), but chances are that this is useful only if you make Kaleidoscope schemes.
+
+Here are the steps used in creating or modifying icons:
+
+1. Create an 80x32, 64x32 or 16x32 image with your favorite image editor
+2. Paint the icon(s) and mask(s) in their appropriate postions (see the image above)
+3. Select the whole image and copy it to the clipboard.
+4. Open up clipicns.
+5. Choose either New Icon From Clipboard… or Insert Icon Into File… from the File menu (you can also drag a file onto the clip2icns to insert an icon into it)
+6. Pick a file or choose a spot to save the new icon (depending on which command you chose)
+7. Pick an icon ID if necessary (the other IDs are only use useful for developers of Kaleidoscope schemes).
+8. Click the Insert button and voilà, the icon has been created.
+
+There is another menu command, Extract Icon to Clipboard…, which does the opposite of the above commands. It takes an icon and generates an 80x32 picture that contains the icon and mask, as well as the small versions. This is useful if you want to tweak someone else's icons, or if you want to see how they've done a certain trick.
+
+Shareware Info
+
+clip2icns is shareware; it is NOT free. If you use clip2icns for more than a few icons you should pay a $10 registration fee. Registrations for clip2icns are handled by the Kagi Shareware service run by Kee Nethery. In addition to cash in various currencies and US dollar checks drawn on US banks, Kagi Shareware also accepts credit card registrations by snail-mail or e-mail (your card number is scrambled). For organizations, they handle invoices and site licenses, too. To register please use the enclosed Register application (online registration coming soon).
+
+Version History
+
+1.0b3
+ - the saved icons are now compressed, yielding savings of about 30%
+ - global preferences added
+ - can now export an icns to the clipboard
+ - can now import and display icons which are compressed
+ - rewrote internatlly using a c++ icns class, thus it's much neater
+ - better clipboard checking
+1.0b2
+ - Does not require MacOS 8.5 anymore (I've rolled my own icon displaying functions).
+1.0b1
+ - Initial release
+
+Future Plans
+
+I'm planning to turn this tool into a Photoshop plug-in which takes a layer and it's transparency data and converts it into an icon (thus greatly easing icon creation if you use many transparency effects).
+
+Thanks
+
+All the beta testers, who put up with my very informal releases.
+Emy Parparita for helping me out with the compression.
+Mathemaesthetics for creating Resourcerer, the only tool that can currently disassemble (and soon view) icns.
+All the people who helped with clip2icns.
+Arlo Rose for pushing me to do this tool and for giving me the icns specs. Although, no thanks to him for not shipping my hat properly :p
