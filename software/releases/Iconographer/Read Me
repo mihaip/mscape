@@ -1,45 +1,44 @@
-Iconographer 1.0d7
-this development release expires on September 1
+Ê
 
-Please send all feedback to mihai@mscape.com. The main focus of this release is stability, since it'll be the final development release, and hopefully beyond this point no more features will be added, and instead the whole product will be polished. If you're getting sick of the registration reminders, here is the beta tester serial code:
 
-Name: Beta Tester
-Registration code: PP271678
 
-I'd like to have a little Goodies/Showcase folder with some icons showing off the new features of the format. If you have anything which you feel would be appropriate, please send it in.
 
-Known Bugs:
-- background disabling problems when switching among windows
-- garbage on right side when dragging diagonal gradient to huge size
-- when using click there it is, dragging save dialog doesn't work (snaps back to original position)
 
-Release notes:
-1.0d7
-- mac os x server icon (.TIFF) import support
-- windows icon (.ICO) import/export support
-- new icons have names by default
-- save into file command
-- polygon lasso tool (double click on lasso tool, or hold down option when using it)
-- hue/saturation and brightness/contrast tweaking
-- pattern support (this caused the minimum window size to changed to 7x magnification)
-- interface alignment tweaks
-- preference to turn off generation of old style icons
-- got rid of the flash that would sometimes occur when created a new editor
-- even more photoshop-like selection tools:
-	holding command down toggles to move tool
-	moving of selection outline (both by using marquee/lasso/wand tools and by using arrows).
-	cursors showing that selection will be floated, etc.
-- copying of icon and mask
-- copy and paste icon family commands
-- added icon info command to view menu (since clicking on the info placard wasn't immediately obvious)
-- ID pop-up menu in info box
-- improved 8-bit mask to 1-bit mask generation
-- the overlay (displayed while dragging a rectangle, line, etc.) now uses the nearest color in the current pallete
-- cleaned up fill tool (improved algorithm and fixed some errors when filling around the right edge)
-- it's now possible to undo the transfer between depths
-- balloon help points in the right direction when the balloon wouldn't fit in the default position
-- when dithering was on and irregulary shaped items were dragged, the shape was not extracted properly
-- flip horizontal now works in 4 bits
-- select similar now works in 8-bit or less when the screen is in thousands or less
-- copying up from 8-bits to 32-bits now works when the screen is in thousands or less
-- changed country code to US because Japan was causing interference with the Japanese Language Kit
+
+
+
+
+
+
+Introduction
+
+Iconographer is a an icon editor. It allows you to both change the icons of items, as well as edit the icon resources used by various programs. Iconographer has been created from the ground up to edit the new, Mac OS 8.5+, 32-bit icons with 8-bit masks. In addition, it allows you to work with icons from other platforms (at this moment, Windows .ico files and Mac OS X Server .tiff files).
+
+Requirements
+
+System 7.5.3 and above
+Appearance Manager (built-in with Mac OS 8.0 and up)
+A Power Macintosh
+
+Usage
+
+Iconographer attempts to follow all of the established Mac OS human interface guidelines. If previous you have used any graphics editor, you should be familiar with the manner in which Iconographer operates.
+
+If you wish to obtain more details on how to operate Iconographer, a detailed on-line help is available. It can be accessed both through the Help menu within the application (refer to the instructions below on how to enable this feature), or simply by double-clicking on the Help alias within the application's folder.
+
+Installing the On-line Help
+
+Iconographer uses the new HTML-based help system that is provided by Apple with Mac OS 8.5 and above (note that you can still view the help with any browser by opening the Help file with it). In order to enable searching of the help, access from the Help menu and from the Help Center, the Iconographer Help folder must be placed inside the Help folder which resides inside your System Folder.
+
+Shareware Info
+
+Iconographer is shareware; it is NOT free. If you use Iconographer for more than a few icons you should pay the $15 registration fee.
+
+Registrations for Iconographer are handled by the Kagi Shareware service run by Kee Nethery. In addition to cash in various currencies and US dollar checks drawn on US banks, Kagi Shareware also accepts credit card registrations by snail-mail or e-mail (your card number is scrambled). For organizations, they handle invoices and site licenses, too.
+
+To register please use the enclosed Register application or register online at http://order.kagi.com/?QEJ. You will receive a registration code from Kagi, and when you enter that and your name in the registration dialog (available from the Apple menu) the reminder will be disabled.
+
+Version History
+
+1.0 August 26, 1999
+- Initial release
