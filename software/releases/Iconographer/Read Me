@@ -12,23 +12,22 @@
 
 Introduction
 
-Iconographer is a an icon editor. It allows you to both change the icons of items, as well as edit the icon resources used by various programs. Iconographer has been created from the ground up to edit the new, Mac OS 8.5+, 32-bit icons with 8-bit masks. In addition, it allows you to work with icons from other platforms (at this moment, Windows .ico files and Mac OS X Server .tiff files).
+Iconographer is a an icon editor. It allows you to both change the icons of items, as well as edit the icon resources used by various programs. Iconographer has been created from the ground up to deal with many icon formats. These include: classic Mac OS (8-bit icons only), Mac OS 8.5+ (32-bit icons with 8-bit icons), Mac OS X (128 x 128 icons in .icns files), Windows (.ico files), and Mac OS X Server (48 x 48 icons in .tiff files).
+
+Due to its flexibility, Iconographer is useful to both beginners and advanced users. It can be used for a wide range of tasks, ranging from simply creating some customized folder icons to editing complex resource files for an application to converting icons between platforms.
 
 Requirements
 
 System 7.5.3 and above
 Appearance Manager (built-in with Mac OS 8.0 and up)
 A Power Macintosh
+Iconographer will run under Mac OS X using the Classic environment.
 
 Usage
 
 Iconographer attempts to follow all of the established Mac OS human interface guidelines. If previous you have used any graphics editor, you should be familiar with the manner in which Iconographer operates.
 
-If you wish to obtain more details on how to operate Iconographer, a detailed on-line help is available. It can be accessed both through the Help menu within the application (refer to the instructions below on how to enable this feature), or simply by double-clicking on the Help alias within the application's folder.
-
-Installing the On-line Help
-
-Iconographer uses the new HTML-based help system that is provided by Apple with Mac OS 8.5 and above (note that you can still view the help with any browser by opening the Help file with it). In order to enable searching of the help, access from the Help menu and from the Help Center, the Iconographer Help folder must be placed inside the Help folder which resides inside your System Folder.
+If you wish to obtain more details on how to operate Iconographer, a detailed on-line help is available. It can be accessed both through the Help menu within the application (refer to the instructions below on how to enable this feature), or simply by double-clicking on the Help file within the application's folder.
 
 Shareware Info
 
@@ -39,6 +38,13 @@ Registrations for Iconographer are handled by the Kagi Shareware service run by 
 To register please use the enclosed Register application or register online at http://order.kagi.com/?QEJ. You will receive a registration code from Kagi, and when you enter that and your name in the registration dialog (available from the Apple menu) the reminder will be disabled.
 
 Version History
+2.0: September 14, 2000 
+ - Support for editing Mac OS X icons (128 x 128 size, .icns files) 
+ - Completely revamped user interface featuring flexible floating palettes 
+ - Support for an external editor 
+ - Most settings (current color, tool, pattern, etc.) are remembered when re-launching Iconographer. 
+ - Many bug fixes and usability improvements. 
+
 1.1.1: February 15, 2000
  - Icon browser usability and integration improvements.
  - Fixed problem with window activation. 

@@ -43,22 +43,31 @@ enum defaultNames
 	eRegisterButton = 7,
 	eNotYetButton = 8,
 	eRegisterAppName = 9,
-	eNotRegistered = 10,
-	eEmailAddress = 11,
-	eHomepageAddress = 12,
-	eShowColorsPalette = 13,
-	eHideColorsPalette = 14,
-	eShowMembersPalette = 15,
-	eHideMembersPalette = 16,
-	eShowPreviewPalette = 17,
-	eHidePreviewPalette = 18,
-	eShowToolPalette = 19,
-	eHideToolPalette = 20,
-	eIconographerHelp = 21,
-	eEmailAuthor = 22,
-	eIconographerHomepage = 23,
-	eHelpPath = 24,
-	eRevertButton = 25
+	eRegistrationHomepage = 10,
+	eRegisterOnline = 11,
+	eLaunchRegisterApp = 12,
+	eNotRegistered = 13,
+	eEmailAddress = 14,
+	eHomepageAddress = 15,
+	eShowColorsPalette = 16,
+	eHideColorsPalette = 17,
+	eShowMembersPalette = 18,
+	eHideMembersPalette = 19,
+	eShowPreviewPalette = 20,
+	eHidePreviewPalette = 21,
+	eShowToolPalette = 22,
+	eHideToolPalette = 23,
+	eIconographerHelp = 24,
+	eEmailAuthor = 25,
+	eIconographerHomepage = 26,
+	eHelpPath = 27,
+	eRevertButton = 28,
+	eShowPixelGrid = 29,
+	eHidePixelGrid = 30,
+	eAddMember = 31,
+	eInsertIcon = 32,
+	eOpenHelp = 33,
+	eContinue = 34
 };
 
 enum stdErrors
@@ -77,7 +86,8 @@ enum stdErrors
 	eCouldntFindRegister = 12,
 	eBadRegCode = 13,
 	eThanksForRegistering = 14,
-	eAppearanceNotInstalled = 15
+	eAppearanceNotInstalled = 15,
+	eNeedInternetConfigRegistration = 16
 };
 
 enum prompts
@@ -92,7 +102,9 @@ enum prompts
 	eSelectICO = 8,
 	eSelectTIFF = 9,
 	eIconAlreadyExists = 10,
-	eRevert = 11
+	eRevert = 11,
+	eChooseRegistrationMethod = 12,
+	eWelcome = 13
 };
 
 enum saveOptions
@@ -209,7 +221,8 @@ enum iconMenu
 	iColors = 4,
 	iInsertIcon = 6,
 	iIconInfo = 7,
-	iOpenInExternalEditor = 9
+	iPixelGrid = 8,
+	iOpenInExternalEditor = 10
 };
 
 enum colorsMenu
@@ -250,10 +263,16 @@ enum registerItems
 {
 	iRegisterButton = 1,
 	// iCancel = 2,
-	iLaunchRegister = 3,
+	iOrderRegistrationCode = 3,
 	iNameField = 4,
 	iCompanyField = 5,
 	iRegCodeField = 6
+};
+
+enum chooseRegistrationMethodItems
+{
+	iRegisterOnline = 1,
+	iLaunchRegisterApp = 3	
 };
 
 enum openItems
@@ -288,11 +307,13 @@ void		DoMenuCommand(long menuResult);
 void		AboutBox(void);
 pascal 		bool AboutBoxEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *itemHit);
 void		Register(void);
+void		ChooseRegistrationMethod();
 OSErr		NewIcon(bool showWindow);
 bool		HandleSimpleCases(FSSpec fileSpec, long* ID);
 OSErr		NewBrowser(FSSpec file, int format);
 OSErr 		GetIcon(FSSpec* fileSpec);
 void		OpenIcon(FSSpec *fileToOpen);
+void		PostOpen();
 bool		Close(int flags);
 int			WantToSave(FSSpec fileSpec, int flags);
 void		Nag(bool startup);
@@ -305,8 +326,13 @@ extern void	DoError(int resourceID, int stringNo);
 void		OpenIconFromBrowser(FSSpec *fileToOpen, long ID, long format, long member);
 icnsEditorPtr GetEmptyEditor(FSSpec fileToOpen, long ID, int format);
 void		RebuildWindowsMenu();
+
 void 		TogglePalette(MFloaterPtr palette, int menuItem, int showStringIndex, int hideStringIndex);
 void 		SetupPalette(MFloaterPtr palette, int flag, int menuItem, int showStringIndex, int hideStringIndex);
+
+void 		TogglePixelGrid();
+void		SetupPixelGrid();
+
 void		InsertIcon();
 
 // file stuff

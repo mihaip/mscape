@@ -9,7 +9,7 @@
 #include "iconmangler.h"
 #include "MHTMLHelp.h"
 
-#define EXPIRES
+//#define EXPIRES
 
 // globals, only the minimum necessary
 bool			gIsDone; // true when the application is ready to quit
@@ -64,7 +64,7 @@ void Initialize()
 	
 #ifdef EXPIRES	
 	GetTime(&theDate); // and if we haven't expired
-	if (theDate.month >= 9 && theDate.day >= 1 && theDate.year >= 2000)
+	if (theDate.month >= 10 && theDate.day >= 1 && theDate.year >= 2000)
 	{
 		DoError(rStdErrors, eExpired);
 		gIsDone = true;
@@ -78,6 +78,8 @@ void Initialize()
 		gIsDone = true;
 	}
 
+	LoadPreferences();
+	
 	err = InitMenuBar(); // and set up the menubar
 	if (err != noErr)
 	{
@@ -95,7 +97,6 @@ void Initialize()
 	if (NavServicesAvailable())
 		NavLoad();
 	
-	LoadPreferences();
 	
 	if (icnsEditorClass::statics.preferences.IsRegistered())
 	{
@@ -207,19 +208,19 @@ OSErr InitMenuBar()
 	else
 		return resNotFound;
 		
-	menu = GetMenu(mPaste); // same for the transform menu
+	menu = GetMenu(mPaste); // same for the paste menu
 	if(menu != NULL)
 		InsertMenu(menu,hierMenu);
 	else
 		return resNotFound;
 		
-	menu = GetMenu(mCopy); // same for the transform menu
+	menu = GetMenu(mCopy); // same for the copy menu
 	if(menu != NULL)
 		InsertMenu(menu,hierMenu);
 	else
 		return resNotFound;
 		
-	menu = GetMenu(mColors); // same for the transform menu
+	menu = GetMenu(mColors); // same for the colors menu
 	if(menu != NULL)
 	{
 		InsertMenu(menu,hierMenu);
@@ -227,6 +228,8 @@ OSErr InitMenuBar()
 	}
 	else
 		return resNotFound;
+
+	SetupPixelGrid();
 	
 	menu = GetMenuHandle(mEdit);
 	if (menu != NULL)
@@ -285,6 +288,8 @@ void LoadPreferences(void)
 		FSpCreate(&preferencesFile, creatorCode, prefFileType, 0); /*smRoman = 0*/
 		FSpCreateResFile(&preferencesFile, creatorCode, prefFileType, 0); /*smRoman = 0*/
 		preferencesRefNum = FSpOpenResFile(&preferencesFile, fsCurPerm);
+		
+		icnsEditorClass::statics.firstTime = true;
 	}
 	
 	oldFile = CurResFile();
@@ -360,13 +365,56 @@ void DoIdle(void)
 	Str255			currentTitle = "\p";
 	
 	
+	if (HMGetBalloons())
+	{
+		Point globalMouse;
+		WindowPtr	windowPtrUnderMouse;
+		MWindowPtr	windowUnderMouse;
+		
+		GetMouse(&globalMouse);
+		LocalToGlobal(&globalMouse);
+		
+		FindWindow(globalMouse, &windowPtrUnderMouse);
+		
+		windowUnderMouse = GetWindow(windowPtrUnderMouse);
+		
+		if (windowUnderMouse != NULL &&
+			windowUnderMouse->GetType() == kFloaterType &&
+			FrontWindow() != windowPtrUnderMouse)
+		{
+			BringToFront(windowPtrUnderMouse);
+		}
+		
+	}
+	
 	frontWindow = MWindow::GetFront();
 	
 	if (frontWindow != NULL)
 		frontWindow->GetTitle(currentTitle);
 	
 	if (gLastFrontWindow != frontWindow || !EqualString(currentTitle, gLastFrontWindowTitle, true, true))
+	{
+		Str255	menuItemText;
+		MenuHandle	iconMenu;
+		
 		RebuildWindowsMenu();
+		
+		iconMenu = GetMenu(mIcon);		
+	
+		if (frontWindow == NULL)
+			DisableItem(iconMenu, iInsertIcon);
+		else if (frontWindow->GetType() == kEditorType)
+		{
+			GetIndString(menuItemText, rDefaultNames, eAddMember);
+			SetMenuItemText(iconMenu, iInsertIcon, menuItemText);
+		}
+		else if (frontWindow->GetType() == kBrowserType)
+		{
+			GetIndString(menuItemText, rDefaultNames, eInsertIcon);
+			SetMenuItemText(iconMenu, iInsertIcon, menuItemText);	
+		}
+	}
+		
 	
 	gLastFrontWindow = frontWindow;
 	CopyString(gLastFrontWindowTitle, currentTitle);
@@ -510,22 +558,25 @@ void DoIdle(void)
 			DrawMenuBar();
 		}
 		
+		menu = GetMenuHandle(mIcon);
+		
 		if (frontEditor->status & canZoomIn) // if we're not at the max magnification
-			EnableMenuItem(mIcon, iZoomIn);
+			EnableItem(menu, iZoomIn);
 		else
-			DisableMenuItem(mIcon, iZoomIn);
+			DisableItem(menu, iZoomIn);
 			
 		if (frontEditor->status & canZoomOut) // if we're not zoomed out as far as possible
-			EnableMenuItem(mIcon, iZoomOut);
+			EnableItem(menu, iZoomOut);
 		else
-			DisableMenuItem(mIcon, iZoomOut);
+			DisableItem(menu, iZoomOut);
 			
-		DisableMenuItem(mIcon, iInsertIcon);
-		EnableMenuItem(mIcon, iIconInfo);
+		EnableItem(menu, iInsertIcon);
+		EnableItem(menu, iIconInfo);
+		EnableItem(menu, iPixelGrid);
 			
 		if (frontEditor->CurrentDepthSupportsColors())
 		{
-			EnableMenuItem(mIcon, iColors);
+			EnableMenuItem(menu, iColors);
 			
 			menu = GetMenuHandle(mColors);
 			
@@ -542,7 +593,7 @@ void DoIdle(void)
 			}
 		}
 		else
-			DisableMenuItem(mIcon, iColors);
+			DisableMenuItem(menu, iColors);
 	}
 	else
 	{
@@ -559,11 +610,14 @@ void DoIdle(void)
 				EnableMenuItem(mIcon, 0);
 				DrawMenuBar();
 			}
-			DisableMenuItem(mIcon, iZoomIn);
-			DisableMenuItem(mIcon, iZoomOut);
-			DisableMenuItem(mIcon, iColors);
-			EnableMenuItem(mIcon, iInsertIcon);
-			DisableMenuItem(mIcon, iIconInfo);	
+			
+			menu = GetMenu(mIcon);
+			DisableItem(menu, iZoomIn);
+			DisableItem(menu, iZoomOut);
+			DisableItem(menu, iColors);
+			EnableItem(menu, iInsertIcon);
+			DisableItem(menu, iIconInfo);
+			DisableItem(menu, iPixelGrid);
 		}
 		else
 		{
@@ -713,7 +767,13 @@ void HandleKeyDown(EventRecord *eventPtr)
 	if ((key == kHelpCharCode) || 
 	    ((eventPtr->modifiers & cmdKey) && (key == '/')))
 	{
+		HiliteMenu(kHMHelpMenuID);
 		menuEvent = ((kHMHelpMenuID << 16) & 0xFFFF0000) + iIconographerHelp;
+	}
+	else if ((eventPtr->modifiers & cmdKey) && ((key == 'k') || (key == 'K') || (key == 'û')))
+	{
+		HiliteMenu(mIcon);
+		menuEvent = ((mIcon << 16) & 0xFFFF0000) + iInsertIcon;
 	}
 	else
 	{
@@ -954,13 +1014,13 @@ void DoMenuCommand(long menuResult)
 						case iCut: frontEditor->Cut(); break;
 						case iClear : frontEditor->Clear(); break;
 						case iAdjust: frontEditor->Adjust(); break;
-						case iPreferences : icnsEditorClass::statics.preferences.Edit(); break;
+						case iPreferences : icnsEditorClass::statics.preferences.Edit(kPrefsSettingsPane); break;
 					}
 				else
 					switch (item)
 					{
 						case iClear: if (GetFrontBrowser()) GetFrontBrowser()->Clear(); break;
-						case iPreferences : icnsEditorClass::statics.preferences.Edit(); break;
+						case iPreferences : icnsEditorClass::statics.preferences.Edit(kPrefsSettingsPane); break;
 					}
 				break;
 			case mSelect:
@@ -1013,7 +1073,9 @@ void DoMenuCommand(long menuResult)
 					{
 						case iZoomIn : frontEditor->ZoomIn(); break;
 						case iZoomOut : frontEditor->ZoomOut(); break;
+						case iInsertIcon: frontEditor->AddMember(); break;
 						case iIconInfo : frontEditor->EditIconInfo(kIconInfo); break;
+						case iPixelGrid: TogglePixelGrid(); frontEditor->Invalidate(); frontEditor->Refresh(); break;
 						case iOpenInExternalEditor: frontEditor->OpenInExternalEditor(); break;
 					}
 				else if (GetFrontBrowser != NULL)
@@ -1089,16 +1151,21 @@ void DoMenuCommand(long menuResult)
 				switch (item)
 				{
 					case iIconographerHelp:
-						Str255			helpPath;
-						MHTMLHelpPtr	help;
+						FSSpec supportFolder;
 						
-						GetIndString(helpPath, rDefaultNames, eHelpPath);
-						
-						help = new MHTMLHelp(helpPath);
-						
-						help->Open();
-						
-						delete help;
+						if (icnsEditorClass::statics.GetSupportFolder(&supportFolder))
+						{
+							Str255			helpPath;
+							MHTMLHelpPtr	help;
+							
+							GetIndString(helpPath, rDefaultNames, eHelpPath);
+							
+							help = new MHTMLHelp(helpPath);
+							
+							help->Open();
+							
+							delete help;
+						}
 						break;
 					case iEmailAuthor:
 						Str255	address;
@@ -1119,6 +1186,42 @@ void DoMenuCommand(long menuResult)
 		
 		HiliteMenu(0); // after the command has been executed, we must unhilite the menu
 	}
+}
+
+#pragma mark -
+
+void TogglePixelGrid()
+{
+	MenuHandle	menu;
+	Str255		menuItemText;
+	
+	if (icnsEditorClass::statics.preferences.FeatureEnabled(prefsDrawGrid))
+	{
+		icnsEditorClass::statics.preferences.DisableFeature(prefsDrawGrid);
+		GetIndString(menuItemText, rDefaultNames, eShowPixelGrid);
+	}
+	else
+	{
+		icnsEditorClass::statics.preferences.EnableFeature(prefsDrawGrid);
+		GetIndString(menuItemText, rDefaultNames, eHidePixelGrid);
+	}
+	
+	menu = GetMenu(mIcon);
+	SetMenuItemText(menu, iPixelGrid, menuItemText);
+}
+
+void SetupPixelGrid()
+{
+	MenuHandle	menu;
+	Str255		menuItemText;
+	
+	if (icnsEditorClass::statics.preferences.FeatureEnabled(prefsDrawGrid))
+		GetIndString(menuItemText, rDefaultNames, eHidePixelGrid);
+	else
+		GetIndString(menuItemText, rDefaultNames, eShowPixelGrid);
+	
+	menu = GetMenu(mIcon);
+	SetMenuItemText(menu, iPixelGrid, menuItemText);
 }
 
 #pragma mark -
@@ -1186,12 +1289,8 @@ void InsertIcon()
 		
 		newIcon->SetBestMember();
 		
-		SAVEGWORLD;
-		SetPort(newIcon->GetWindow()); // we must invalidate the window so that it can be
-		InvalRgn(newIcon->GetWindow()->visRgn); // redrawn
+		newIcon->Invalidate();
 		newIcon->Refresh();
-		
-		RESTOREGWORLD;
 		
 		newIcon->Show();
 		
@@ -1237,7 +1336,7 @@ void AboutBox()
 	
 	SetDialogDefaultItem(aboutBox, iAboutPic); // when the user hits return, this item is "clicked"
 	
-	ShowWindow(aboutBox); // we can now show the window
+	ShowWindow(GetDialogWindow(aboutBox)); // we can now show the window
 	
 	eventFilterUPP = NewModalFilterProc((ProcPtr) AboutBoxEventFilter);
 		
@@ -1280,7 +1379,7 @@ pascal bool AboutBoxEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *
 	{
 		case activateEvt: // if the window isn't the dialog, then we tell the update function
 		case updateEvt: //  to take care of it
-			if((WindowPtr) eventPtr->message != dialog)
+			if((DialogPtr) eventPtr->message != dialog)
 			{
 				HandleUpdate(eventPtr);
 				handledEvent = true;
@@ -1305,7 +1404,7 @@ pascal bool AboutBoxEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *
 				SAVEGWORLD;
 				SAVECOLORS;
 				
-				SetPort(dialog);
+				SetPortDialogPort(dialog);
 				
 				GetDialogItemAsControl(dialog, iAboutPic, &control);
 				GetControlBounds(control, &picRect);
@@ -1324,19 +1423,19 @@ pascal bool AboutBoxEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *
 				
 				GetDialogItemAsControl(dialog, iNameDisplayField, &control);
 				GetControlBounds(control, &controlRect);
-				MoveTo(controlRect.right - StringWidth(name), controlRect.bottom);
+				MoveTo(controlRect.left, controlRect.bottom);
 				DrawString(name);
 				
 				TextFace(normal);
 			
 				GetDialogItemAsControl(dialog, iCompanyDisplayField, &control);
 				GetControlBounds(control, &controlRect);
-				MoveTo(controlRect.right - StringWidth(company), controlRect.bottom);
+				MoveTo(controlRect.left, controlRect.bottom);
 				DrawString(company);
 				
 				GetDialogItemAsControl(dialog, iRegCodeDisplayField, &control);
 				GetControlBounds(control, &controlRect);
-				MoveTo(controlRect.right - StringWidth(regCode), controlRect.bottom);
+				MoveTo(controlRect.left, controlRect.bottom);
 				DrawString(regCode);
 				
 				TextFace(normal);
@@ -1376,7 +1475,9 @@ void Register(void)
 	
 	eventFilterUPP = NewModalFilterProc((ProcPtr) AlertEventFilter);
 	
-	ShowWindow(registration);
+	MWindow::DeactivateAll();
+	
+	ShowWindow(GetDialogWindow(registration));
 	
 	dialogDone = false;
 	
@@ -1396,6 +1497,8 @@ void Register(void)
 					
 					icnsEditorClass::statics.preferences.Register(name, company, regCode);
 					dialogDone = true;
+					DisposeRoutineDescriptor(eventFilterUPP);
+					DisposeDialog(registration);
 					DoError(rStdErrors, eThanksForRegistering);
 					menu = GetMenuHandle(mApple);
 					DeleteMenuItem(menu, iRegister);
@@ -1406,26 +1509,68 @@ void Register(void)
 					itemHit = 0;
 				}
 				break;	
-			case iCancel: dialogDone = true; break;
-			case iLaunchRegister:
-				FSSpec	registerSpec;
-				Str255	registerFileName;
-				
-				GetIndString(registerFileName, rDefaultNames, eRegisterAppName);
-				if (FSMakeFSSpec(0, 0, registerFileName, &registerSpec) != noErr)
-					DoError(rStdErrors, eCouldntFindRegister);
-				else
-				{
-					dialogDone = true;
-					SendFinderAEOpen(registerSpec);
-				}
+			case iCancel:
+				dialogDone = true;
+				DisposeRoutineDescriptor(eventFilterUPP);
+				DisposeDialog(registration);
+				break;
+			case iOrderRegistrationCode:
+				DisposeRoutineDescriptor(eventFilterUPP);
+				DisposeDialog(registration);
+				ChooseRegistrationMethod();
+				dialogDone = true;
 				break;
 		}
 		
 	}
 	
-	DisposeRoutineDescriptor(eventFilterUPP);
-	DisposeDialog(registration);
+	MWindow::ActivateAll();
+}
+
+void ChooseRegistrationMethod()
+{
+	MAlert		chooseMethod;
+	Str255		text;
+	MString		temp;
+		
+	GetIndString(text, rPrompts, eChooseRegistrationMethod); 
+	
+	SubstituteString(text, "\p<app name>", gAppName); // substitute
+	SubstituteString(text, "\p<app name>", gAppName);
+	
+	chooseMethod.SetButtonName(iRegisterOnline, rDefaultNames, eRegisterOnline);
+	chooseMethod.SetButtonName(kMACancel, rDefaultNames, eCancelButton);
+	chooseMethod.SetButtonName(iLaunchRegisterApp, rDefaultNames, eLaunchRegisterApp);
+	
+	temp = text;
+	
+	chooseMethod.SetError(temp);
+	chooseMethod.SetBeep(false);
+	chooseMethod.SetMovable(true);
+	chooseMethod.SetPosition(kWindowCenterMainScreen);
+		
+	switch (chooseMethod.Display())
+	{
+		case iRegisterOnline:
+			Str255		address;
+			
+			GetIndString(address, rDefaultNames, eRegistrationHomepage);
+			if (LaunchURL((ConstStr255Param)address) != noErr)
+				DoError(rStdErrors, eNeedInternetConfigRegistration);
+			break;
+		case kMACancel:
+			break;
+		case iLaunchRegisterApp:
+			FSSpec	registerSpec;
+			Str255	registerFileName;
+
+			GetIndString(registerFileName, rDefaultNames, eRegisterAppName);
+			if (FSMakeFSSpec(0, 0, registerFileName, &registerSpec) != noErr)
+				DoError(rStdErrors, eCouldntFindRegister);
+			else
+				MUtilities::AESendFinderOpen(registerSpec);
+			break;
+	}
 }
 
 // __________________________________________________________________________________________
@@ -1766,6 +1911,49 @@ void OpenIconFromBrowser(FSSpec *fileToOpen, long ID, long format, long member)
 		DoIdle();
 		DrawMenuBar();
 	}
+}
+
+void PostOpen()
+{
+	FSSpec supportFolder;
+	
+	if (!(icnsEditorClass::statics.preferences.IsRegistered()) &&
+		(icnsEditorClass::statics.preferences.GetTimesUsed() > 50))
+		Nag(true);
+	
+	icnsEditorClass::statics.GetSupportFolder(&supportFolder);
+	
+	if (icnsEditorClass::statics.firstTime)
+	{
+		MAlert		firstTime;
+		Str255		text;
+		MString		temp;
+			
+		GetIndString(text, rPrompts, eWelcome); 
+		
+		SubstituteString(text, "\p<app name>", gAppName); // substitute
+		
+		firstTime.SetButtonName(kMAOK, rDefaultNames, eOpenHelp);
+		firstTime.SetButtonName(kMACancel, rDefaultNames, eContinue);
+		
+		temp = text;
+		
+		firstTime.SetError(temp);
+		firstTime.SetBeep(false);
+		firstTime.SetMovable(true);
+		firstTime.SetPosition(kWindowCenterMainScreen);
+			
+		switch (firstTime.Display())
+		{
+			case kMAOK:
+				DoMenuCommand(((kHMHelpMenuID << 16) & 0xFFFF0000) + iIconographerHelp);
+				break;
+			case kMACancel:
+				break;
+		}
+		
+		icnsEditorClass::statics.firstTime = false;
+	}	
 }
 
 // __________________________________________________________________________________________
@@ -2116,7 +2304,7 @@ void Nag(bool startup)
 		itemHit = nagAlert.Display();
 			
 		if (itemHit == kMAOK)
-			Register();
+			ChooseRegistrationMethod();
 	}
 }
 
@@ -2144,6 +2332,7 @@ void DoError(int resourceID, int stringNo)
 	alert.SetMovable(true);
 	alert.SetBeep(true);
 	alert.SetButtonName(kMAOK, rDefaultNames, eOKButton);
+	alert.SetPosition(kWindowCenterMainScreen);
 	
 	alert.SetError(text);
 	
@@ -2169,50 +2358,16 @@ pascal bool	AlertEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *ite
 	{
 		case activateEvt: // if the window isn't the dialog, then we tell the update function
 		case updateEvt: //  to take care of it
-			if((WindowPtr) eventPtr->message != dialog)
+			if((DialogPtr) eventPtr->message != dialog)
 			{
 				HandleUpdate(eventPtr);
 				handledEvent = true;
 			}
 			break;
-		case keyDown: // if the user presses a key, and it matches the first letter of the
-		case autoKey: // third button, then we simulate a click on that button, complete
-					  // with highlighting
-			ControlHandle thirdButton; // the button for which we must check hits
-				
-			if (GetKeyboardFocus(dialog, &thirdButton) == noErr && thirdButton == NULL)
-			{
-				char key; // the character which symbolizes the key that was down
-				
-				Str255 buttonName; // the name of the button
-				
-				key = eventPtr->message & charCodeMask;
-				GetDialogItemAsControl(dialog, kAlertStdAlertOtherButton, &thirdButton);
-				if (thirdButton != NULL) // if there is a third button
-				{
-					GetControlTitle(thirdButton, buttonName);
-					if (key == buttonName[1] || (key + 'A' - 'a') == buttonName[1])
-					// if the pressed key is the fist letter of the button (regardless of the case)
-					// then we simulate a click on it
-					{
-						*itemHit = kAlertStdAlertOtherButton;
-						HiliteControl(thirdButton, 1);
-						Sleep(9); // standard delay for highlighting, 9 ticks (9 * 1/60th of a second)
-						HiliteControl(thirdButton, 0);
-						handledEvent = true;
-					}
-					else
-						handledEvent = StdFilterProc(dialog, eventPtr, itemHit);
-						// if it was a different key then we let the system take care of it
-				}
-			}
-			else
-				handledEvent = StdFilterProc(dialog, eventPtr, itemHit);
-			break;
 		default:
 			// if it's not an event we support, then we let the system take care of it
 			SAVEGWORLD;
-			SetPort(dialog);
+			SetPortDialogPort(dialog);
 
 			handledEvent = StdFilterProc(dialog, eventPtr, itemHit);
 

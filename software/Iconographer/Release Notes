@@ -1,6 +1,3 @@
-bugs to be fixed:
-- pasting something in one bit, inverting doesn't invert everything, painting on one side affects the other too (pointers overlap?)
-
 possibiles issues:
 - when using click there it is, dragging save dialog causes it to dissapear
 - crashes involving icon info dialog
@@ -17,7 +14,6 @@ shoulds:
 - should move all control functions as static function members of the class they belong to
 - remember current tab
 - move palette on screen if not within new screen bounds (when res changes, etc.)
-- look into icon browser overdraw
 - 8-bit system palette balloon help should explain each section
 - clicking in preview should set slider to that color
 - don't trying open folders when verying if an icon already exists when doing save into icon
@@ -42,15 +38,63 @@ Future stuff (planned version in parantheses):
 - floaters everywhere (2.0)
 
 todo:
-- drag outline drawing issues when dragging to/from the drawing area
-- drags to finder only work intermitently
-- check for "Iconographer Support" folder, re-create if necessary (and complain about missing help)
-- update documentation (and balloon help?)
-- update about box
-- members palette flashes with no contents after setting preferences/adjusting + cancel
+- update homepage
+
+(future)
+- .rsrc files
+- preferences and adjust balloon help
+- colors and pattern pop-ups should use dialog window to be carbon/OS X compliant
+- pop-ups should emulate menu behavior (click and release should leave the display open)
+- deal with icon and mask not being the same size in icon browser preview
+- scale icon up if previewing at a size that isn't available
+- when hitting the editor key shortcut, the icon menu should be hilighted
+- preference for not hiding floaters when in background
 
 Changes:
+2.0x9
+- preview palette approximates display if current icon doesn't include that size (e.g. large icons are scaled up to the thumbnail size for old icons)
+- fixed glitch with using selection tools (wand, lasso, marquee) to move a floated selection
+- the lasso can be used for moving the selection shape when a selection isn't floated
+- added thumbnail and huge size icons for the application (thanks go to Rick Roe for helping me with these).
+- fixed some issues with the alert text not being fully visible when the system font was set to charcoal
+- renamed "check mask sync" preference to "check masks when saving" and made it also check if masks exist in the first place
+- window staggering now works properly even when the front-most window is window-shaded
+- background windows disable when the registration windows shows up
+
+2.0x8:
+- updated documentation
+- "add member" command (in Icon menu and at the bottom of the members palette), hold down shit or option for the "current" source to be selected by default
+- info and add member buttons now have a text label in addition to a minuscule icon
+- updating when returning from an external editor can be undone
+- updated balloon help for icon info dialog
+- updated about box
+- new "choose registration method" dialog for registering online
+- slider snapping for the preview palette isn't jittery anymore
+- typing in a value in the preview size text field snaps it to the nearest allowed size
+- holding down option and clicking with the eye dropper tool now puts the color into the background slot (restored feature from 8.x)
+- icon browser menu now uses a placard instead of a bevel button
+- dialog offering to open help is displayed at start-up for first-time users
+- fixed drawing glitches in colors palette
+- fixed bug which would cause some 8-bit icons to be declared corrupted when copied and pasted into Photoshop
+- fixed issue with cursors in the favorites tab of the colors palette showing up even when it was hidden or behind another palette
+
+2.0x7:
+- redone preview palette
+- updated balloon help
+- html help now works properly under pre-8.5 systems
+- external editor works again
+- if an external editor isn't chosen and the "open in external editor" command is selected, an error is shown and the user is given an opportunity to choose one
+- hitting return in the icon browser now opens the currently selected icon
+- reset colors and swap colors widgets in the color swatch now disable properly
+- lasso works as expected in floated selections
+- fixed bug which caused garbage to appear in the icon browser for the file's finder icon
+- fixed flickering of colors palette
+- fixed alerts getting placed off the screen when the editing area was zoomed out
+
 2.0x6:
+- added option for changing the preview background
+- added option for members palette to show only loaded members
+- we now check for "Iconographer Support" folder, re-create it if necessary (and complain about missing help) 
 - drag outline/translucent image is positioned correctly relative to the cursor
 - dragging from the members palette can now occur only if the user clicks inside the icon well
 - added zoom box for toggling between an ideal size and the current one
@@ -63,6 +107,9 @@ Changes:
 - cursor is now rest when a dialog comes up
 - further reduced application size by using a newer version of the Find_icon library
 - the current color picker tab is remember when quitting and restarting iconographer
+- moved pixel grid option from preferences to icon menu
+- fixed bug where members palette would sometimes flash white
+- fixed bug which would cause drags from the edit area to other windows or the finder to sometimes fail
 - fixed bug which caused loading errors for small windows icons
 - fixed bug which caused the creation of multiple 'Mngl' resources
 - fixed icon browser overdraw issues (visible effect was that folder shadows would get darker as you scrolled around)

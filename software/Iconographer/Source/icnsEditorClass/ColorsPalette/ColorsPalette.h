@@ -5,6 +5,8 @@
 const static OSType kColorsPaletteType = 'IcCP';
 
 const static int kSliderEndcap = 4;
+const static int kSliderThumbWidth = 13;
+const static int kSmallTabTabsHeight = 22;
 
 enum ColorsPaletteResources
 {
@@ -337,8 +339,6 @@ class ColorsPalette : public MFloater
 		void			DoIdle();
 		
 		void			Show();
-		
-		void			Refresh();
 		
 		void			HandleContentClick(EventRecord* eventPtr);
 		

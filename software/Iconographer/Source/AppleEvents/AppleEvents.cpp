@@ -51,12 +51,7 @@ OSErr AEGotRequiredParams(const AppleEvent *theAppleEvent)
 
 pascal OSErr AEOpenApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
 {
-	reply;
-	refCon;
-	
-	if (!(icnsEditorClass::statics.preferences.IsRegistered()) &&
-		(icnsEditorClass::statics.preferences.GetTimesUsed() > 50))
-		Nag(true);
+#pragma unused(reply,refCon)
 	
 	if (MWindow::GetFront() == NULL)
 	{
@@ -65,11 +60,15 @@ pascal OSErr AEOpenApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long 
 		else if (!icnsEditorClass::statics.preferences.FeatureEnabled(prefsDontMakeNewEditor))
 			NewIcon(true);
 	}
+	
+	PostOpen();
+	
 	return AEGotRequiredParams(theAppleEvent);
 }
 
 pascal OSErr AEOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
 {
+#pragma unused(reply, refCon)
 	OSErr		err;
 	AEDescList	fileSpecList;
 	short		i;
@@ -79,16 +78,9 @@ pascal OSErr AEOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long 
 	AEKeyword	keyword;
 	DescType	type;
 
-	reply;
-	refCon;
-
 	err = AEGetParamDesc(theAppleEvent, keyDirectObject, typeAEList, &fileSpecList);
 	
 	err = AECountItems(&fileSpecList, &count);
-	
-	if (!(icnsEditorClass::statics.preferences.IsRegistered()) &&
-		(icnsEditorClass::statics.preferences.GetTimesUsed() > 50))
-		Nag(true);
 		
 	for (i = 1; i <= count; i++)
 	{
@@ -96,6 +88,9 @@ pascal OSErr AEOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long 
 		if (err == noErr)
 			OpenIcon(&fileToOpen);
 	}
+	
+	PostOpen();
+	
 	return AEGotRequiredParams(theAppleEvent);
 }
 

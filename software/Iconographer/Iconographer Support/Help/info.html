@@ -6,23 +6,27 @@
 </HEAD>
 <BODY BGCOLOR="#ffffff" link="#CC6600" alink="#AA33A00" vlink="#AA3300">
 <TABLE WIDTH=350><TR><TD valign=top>
-<CENTER><FONT FACE="Helvetica,Arial" SIZE="6" COLOR="#993300"><B>Iconographer 1.1.1</B></FONT><BR>
+<CENTER><FONT FACE="Helvetica,Arial" SIZE="6" COLOR="#993300"><B>Iconographer 2.0</B></FONT><BR>
 <FONT FACE="Helvetica,Arial" SIZE="4" COLOR="#993300"><B>
 Created by: <A HREF="mailto:mihai@mscape.com">Mihai Parparita</A><BR>
 Published by: <A HREF="http://www.mscape.com/">Mscape Software</A><BR>
 </B></FONT></CENTER>
 <P>
-<FONT FACE="Helvetica,Arial" SIZE="4" COLOR="#993300"><B>Who is to blame?</B></FONT>
+<FONT FACE="Helvetica,Arial" SIZE="4" COLOR="#993300"><B>General History</B></FONT>
 <UL>
 	<FONT FACE="Geneva,Arial" SIZE="2">
-	<A HREF="http://www.workthatmouse.com/">Arlo Rose</A> provided the impetus to start this program. Eventually, under the development name of Icon Mangler, it became my Computer Science IB Higher Dossier project, and was submitted to the commission on April 14, and ended up bagging me the maximum grade. After a month-long break, I started programming again, and added four more tools. Then Arlo showed his head again. Based on certain suggestions made by him, Iconographer acquired Windows and Mac OS X Server icon support, a new icon and about box, pattern support, and other little tweaks. Many thanks go to Arlo for his feeback through Iconographer's development process.
-	</FONT>
+	Back in the day when Mac OS 8.5 was nearing release, <A HREF="http://www.workthatmouse.com/">Arlo Rose</A> contacted me to create a tool to edit the new icon format. The initial results of this effort were <A HREF="http://www.mscape.com/products/clip2icns.html">clip2icns</A> and <A HREF="http://www.mscape.com/products/glypher.html">Glypher</A>. While they did their job adquately, the fact that they were "one shot" utilities with no real Mac interface made them rather cumbersome. Coincidentally, as part of my <A HREF="http://www.ibo.org/">IB</A> Computer Science curriculum, I was required to have a portfolio program which demostrated a number of techniques. I realized that instead of doing the predictable database program, I could do something that was useful in more than an academic sense. Thus Icon Mangler was born, and for the next few months (especially during my winter break) I implemented my first real Macintosh application. Eventually, April, the due date, came, and I had to print all 140 pages of source code along with 40 pages of specifications, architecture and test data. In the end, the IB comission must have enjoyed the result ("What is this? An icon editor? For the Mac? Hahaha, at least he deservers some points for creativity") because I ended up getting the maximum grade.
+<P>
+	As the summer vacation was starting I picked up the Iconographer source code and realized that it wasn't quite ready for release. Arlo also came back into the picture, and due to him Iconographer has Windows icon import and export support and a reasonably polished interface. As the summer vacation was ending I realized that I should release Iconographer very soon, because I would have no time to work on it later. This was a fundamentally sound idea (the next major update did not come until February of the next year), but the actually release was too rushed. Version 1.0.1 came the next day, but even that did not squash all bugs, so 1.0.2 followed it two days later. Iconographer then went into statis while such matters as school and applying to college took over. As that wound down, I was able to add some features which I had wished to include in 1.0 but did not have the time: an improved icon browser and a floating colors palette. Other gimmicks, such as anti-aliasing and user interface improvements snuck in. Version 1.1 was also the first to be released in more than one language. Many thanks go to Yoshi Sakuma and Jean-Baptiste Leheup, who are responsible for the Japanese and French versions of Iconographer.
+<P>
+	Around this time, Mac OS X was making more and more waves, and one of it's more prominent features that affected me was the new icon size, a gargantuan 128 by 128 pixels. Initially Apple did not have an official editor planned for this, and Iconographer was slated to fill that slot. However, due to limited time on my side, this deal did not take place. However, when I learned that Apple was going to have an editor of their own, and the competition (hi <A HREF="http://www.uncommonplace.com/">David</A>!) wasn't standing still either, I was even more determined to make Iconographer stand out as the premiere way to edit icons for Mac OS X. Afther examining the possibilities, I decided that I no choice but to redo the entire user interface, since accomodating the new icon sizes in the current one would have been prohibitive. Thus the current four palette layout was born (designed with the conscious intention of emulating <A HREF="http://www.adobe.com/">Adobe  Photoshop</A>, where icon creators are spending increasing amounts of time). To further accomodate those who used other graphics applications to create the base artwork for their icons, support was added for an external editor. Many other tweaks were made, to ensure that Iconographer accomodated all manners of icon editing. Finally, the self-imposed deadline of the release of the Mac OS X beta was approaching, so I started to think about releasing version 2.0. I believe that my decision to maintain Iconographer as a Classic application (running on all Power Macs with Mac OS 8.0 or higher, and in emulation on Mac OS X) was sound given the timing, since the installed base for Mac OS X was minimal at release time. However, a Carbonized version should follow as soon as possible (considering that college has just begun, this probably means "in time for the final release of Mac OS X").
+</FONT>
 </UL>
 
 <FONT FACE="Helvetica,Arial" SIZE="4" COLOR="#993300"><B>Testers</B></FONT>
 <UL>
 	<FONT FACE="Geneva,Arial" SIZE="2">
-	Arlo Rose, Michael Robinette, David Catmull, Daniel Bogan, Andreas C. Bauer, Emy Parparita, Michael Coyle, Jarvis Badgley, Lance Robertson, William Martin, Jean-Baptiste Leheup, Yoshi Sakuma, Martin Eisler, Brian Pink
+	Arlo Rose, Michael Robinette, David Catmull, Daniel Bogan, Andreas C. Bauer, Emy Parparita, Michael Coyle, Jarvis Badgley, Lance Robertson, William Martin, Jean-Baptiste Leheup, Yoshi Sakuma, Martin Eisler, Brian Pink, Andrew Goldstone, Phil Dokas, Bill Paris, Rick Roe, HŒkan Waara, Andrea Gianarro, Layne Karkruff, Sven Ryen.
 	</FONT>
 </UL>
 
@@ -35,6 +39,17 @@ Published by: <A HREF="http://www.mscape.com/">Mscape Software</A><BR>
 
 <FONT FACE="Helvetica,Arial" SIZE="4" COLOR="#993300"><B>Version History</B></FONT>
 <UL>
+	<FONT FACE="Geneva,Arial" SIZE="2">
+	<FONT COLOR="#330000"><B>2.0</B><I>September 14, 2000</I></FONT>
+	<UL>
+	<LI><FONT FACE="Geneva,Arial" SIZE="2">Support for editing Mac OS X icons (128 x 128 size, .icns files)</FONT></LI>
+	<LI><FONT FACE="Geneva,Arial" SIZE="2">Completely revamped user interface featuring flexible floating palettes</FONT></LI>
+	<LI><FONT FACE="Geneva,Arial" SIZE="2">Support for an external editor</FONT></LI>
+	<LI><FONT FACE="Geneva,Arial" SIZE="2">Most settings (current color, tool, pattern, etc.) are remembered when re-launching Iconographer.</FONT></LI>
+	<LI><FONT FACE="Geneva,Arial" SIZE="2">Many bug fixes and usability improvements.</FONT></LI>
+	</UL>
+	</FONT>
+	
 	<FONT FACE="Geneva,Arial" SIZE="2">
 	<FONT COLOR="#330000"><B>1.1.1 </B><I>February 15, 2000</I></FONT>
 	<UL>

@@ -38,7 +38,7 @@ int main()
 	while (1)
 	{
 		cout << "Name: ";
-		cin.getline((char*)&name[1], 24);
+		cin.getline((char*)&name[1], 80);
 
 		name[0] = strlen((char*)&name[1]);
 		

@@ -114,15 +114,18 @@ void icnsEditorClass::FinishPan()
 void icnsEditorClass::InvalidateDrawingArea(void)
 {
 	Rect	rectToInvalidate, // the rect which will be invalidated
-			controlRect;		
+			controlRect,
+			windowRect;		
 	SAVEGWORLD; // we must save the current gworld, since the rect is in the local coordinates
 				// of the window
 		
-	SetPort(window);
+	SetPort();
+	
+	windowRect = GetPortRect();
 	
 	// we set the boundaries
 	rectToInvalidate.left = editAreaRect.left - 2;
-	rectToInvalidate.right = window->portRect.right;
+	rectToInvalidate.right = windowRect.right;
 	rectToInvalidate.top = 0;
 	GetControlBounds(controls.zoomPlacard, &controlRect);
 	rectToInvalidate.bottom = controlRect.top;
@@ -160,7 +163,7 @@ void icnsEditorClass::DrawMember(int pixName, Rect targetRect)
 		RESTOREGWORLD;
 		
 		CopyBits((BitMap*)*statics.canvasPix,
-				  &qd.thePort->portBits,
+				  GetPortBitMapForCopyBits(qd.thePort),
 				  &pixRect,
 				  &targetRect,
 				  srcCopy,
@@ -188,14 +191,14 @@ void icnsEditorClass::PreviewDisplay(int height, int depth, int maskDepth, Rect 
 	
 	pixName = GetPixName(height, depth, true);
 	GetGWorldAndPix(pixName, &srcGW, &srcPix);
-	
+		
 	if (maskDepth == -1)
 		maskName = GetBestMaskName(height, depth, true);
 	else
 		maskName = GetPixName(height, maskDepth, false);
-		
+			
 	GetGWorldAndPix(maskName, &maskGW, &maskPix);
-	
+			
 	pixRect = (**srcPix).bounds;
 	maskRect = (**maskPix).bounds;
 	
@@ -265,7 +268,7 @@ void icnsEditorClass::PreviewDisplay(int height, int depth, int maskDepth, Rect 
 	
 	CopyDeepMask((BitMap*)*srcPix,
 				 (BitMap*)*maskPix,
-				 &qd.thePort->portBits,
+				 GetPortBitMapForCopyBits(qd.thePort),
 				 &pixRect,
 				 &maskRect,
 				 &targetRect,
@@ -411,11 +414,11 @@ void icnsEditorClass::PaintEditAreaRect(Rect targetRect)
 {
 	Rect			canvasRect, sourceRect, canvasSourceRect; // the target rect moved so that it's top/left corner is at 0, 0
 	OSStatus		err = noErr; // used for error checking
-	BitMap			*target; // the final target for CopyBits
+	const BitMap *	target = GetPortBitMapForCopyBits(qd.thePort);
 	int				dX, dY;
+	RgnHandle		visibleRegion = NewRgn();
 	
 	SAVEGWORLD;
-	target = &qd.thePort->portBits; // the target is the BitMap associated with the current port
 	
 	SetGWorld(statics.canvasGW, NULL);
 	SAVECOLORS;
@@ -487,8 +490,10 @@ void icnsEditorClass::PaintEditAreaRect(Rect targetRect)
 			 &canvasSourceRect,
 			 &targetRect,
 			 srcCopy,
-			 window->visRgn);
+			 GetPortVisibleRegion(GetWindowPort(window), visibleRegion));
 			  
+	DisposeRgn(visibleRegion);		  
+	
 	RESTORECOLORS;
 	RESTOREGWORLD;
 }

@@ -4,6 +4,14 @@
 ToolPalette::ToolPalette()
 			:MFloater(rTPWindow, kToolPaletteType)
 {
+
+	swapColorsIcon = GetCIcon(rTPSwapColorsIcon); 
+	HLock((Handle)swapColorsIcon);
+	SetupCIcon(swapColorsIcon);
+	resetColorsIcon = GetCIcon(rTPResetColorsIcon);
+	HLock((Handle)resetColorsIcon);
+	SetupCIcon(resetColorsIcon);
+	
 	CreateControls();
 	
 	for (int i=0; i < kToolCount; i++)
@@ -26,6 +34,8 @@ ToolPalette::ToolPalette()
 	backColor = kWhiteAsRGB;
 	
 	pattern = 0;
+	
+	
 }
 
 ToolPalette::~ToolPalette()
@@ -33,6 +43,11 @@ ToolPalette::~ToolPalette()
 	ReleaseResource(Handle(lineThicknessMenu));
 	ReleaseResource(Handle(antiAliasingMenu));
 	ReleaseResource(Handle(fillMenu));
+	
+	HUnlock((Handle)swapColorsIcon); // we can get rid of these resources too
+	DisposeCIcon(swapColorsIcon);
+	HUnlock((Handle)resetColorsIcon);
+	DisposeCIcon(resetColorsIcon);
 }
 
 void ToolPalette::Activate()
@@ -63,11 +78,15 @@ void ToolPalette::DoIdle()
 	{
 		if (oldTool == toolNone)
 		{
-			if (ISOPTIONDOWN && currentTool != toolMarquee &&
+			if (ISOPTIONDOWN && currentTool != toolMarquee && // selection and 
 								currentTool != toolMove &&
 								currentTool != toolMagicWand &&
 								currentTool != toolLasso &&
-								currentTool != toolZoom)
+								
+								currentTool != toolZoom && // zoom tools dont't toggle to the eye dropper
+								currentTool != toolPan &&
+								
+								currentTool != toolEyeDropper)
 			{
 				oldTool = currentTool;
 				currentTool = toolEyeDropper;
@@ -202,24 +221,6 @@ void ToolPalette::ChangeCursor(int flags)
 	MUtilities::ChangeCursor(newID);
 }
 
-void ToolPalette::Refresh(void)
-{
-	SAVEGWORLD; // saving the current gworld for restoring later
-	
-	
-	BeginUpdate(window); // BeginUpdate means that the drawing is clipped to the regions which
-						 // has been marked as needed updates (by InvalRect, etc.)
-	
-	SetPort(window); // we're drawing in the window
-	
-	UpdateControls(window, window->clipRgn); // we're also refreshing the controls
-	
-	EndUpdate(window); // and we're done with the updating
-	
-	RESTOREGWORLD; // we can restore the saved gworld now
-	
-}
-
 void ToolPalette::HandleContentClick(EventRecord* eventPtr)
 {
 	Point 				where;
@@ -231,7 +232,7 @@ void ToolPalette::HandleContentClick(EventRecord* eventPtr)
 	
 	SAVEGWORLD;
 	
-	SetPort(window);
+	SetPort();
 	
 	GlobalToLocal(&where);
 	
@@ -651,6 +652,7 @@ pascal void	ToolPalette::ColorSwatchDraw(ControlHandle theControl,SInt16 thePart
 	ToolPalettePtr	parent; // the editor which owns this control
 	RGBColor		foreColor, backColor;
 	Rect			tempRect, controlRect, canvasRect;
+	int				copyMode = srcCopy;
 	
 	SAVECOLORS; // we'll be changing the foreground/background colors
 	SAVEGWORLD;
@@ -658,7 +660,6 @@ pascal void	ToolPalette::ColorSwatchDraw(ControlHandle theControl,SInt16 thePart
 	parent = (ToolPalettePtr)::GetWindow(GetControlOwner(theControl));
 	
 	GetControlBounds(theControl, &controlRect);
-	InsetRect(&controlRect, -1, -1);
 	canvasRect = controlRect;
 	OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top);
 	
@@ -695,35 +696,42 @@ pascal void	ToolPalette::ColorSwatchDraw(ControlHandle theControl,SInt16 thePart
 	
 	RESTORECOLORS; // we're done with the color changing
 	
+	if (!parent->IsActive())
+	{
+		RGBColor opColor = {0xFFFF/2, 0xFFFF/2, 0xFFFF/2};
+		OpColor(&opColor);
+		copyMode = blend;
+	}
+	
 	// now we can draw the swap colors widget
 	tempRect = parent->colorSwatchRects[kTPSwapColors];
 	OffsetRect(&tempRect, -controlRect.left, -controlRect.top);
 	// we clean out the place where we'll be drawing
-	if (IsFrontProcess() && parent->IsActive())
-	// if we're in the foreground and we're the frontmost window...
-		PlotCIcon(&tempRect, icnsEditorClass::statics.swapColorsIconEnabled); 
-	else
-		PlotCIcon(&tempRect, icnsEditorClass::statics.swapColorsIconDisabled);
+	PlotCIconWithMode(&tempRect, parent->swapColorsIcon, copyMode);
 	
 	// same as above, except for the reset color widget
 	tempRect = parent->colorSwatchRects[kTPResetColors];
 	OffsetRect(&tempRect, -controlRect.left, -controlRect.top);
-	if (IsFrontProcess() && parent->IsActive())
-		PlotCIcon(&tempRect, icnsEditorClass::statics.resetColorsIconEnabled);
-	else
-		PlotCIcon(&tempRect, icnsEditorClass::statics.resetColorsIconDisabled);
+	PlotCIconWithMode(&tempRect, parent->resetColorsIcon, copyMode);
 	
 	ForeColor(blackColor);
 	BackColor(whiteColor);
 		
 	RESTOREGWORLD;
 	
+	if (!parent->IsActive())
+	{
+		OpColor(&kWhiteAsRGB);
+	}
+	
 	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
-			 &qd.thePort->portBits,
+			 GetPortBitMapForCopyBits(qd.thePort),
 			 &canvasRect,
 			 &controlRect,
 			 srcCopy,
 			 NULL);
+	
+	
 	
 	RESTORECOLORS;
 }
@@ -765,6 +773,8 @@ void ToolPalette::MakeColorSwatchRects(Rect controlRect, Rect rects[])
 	int		iconWidth, // the dimensions of the above rectangle
 			iconHeight;
 	
+	InsetRect(&controlRect, 1, 1);
+	
 	// first we must set up these variables
 	thirdOfHeight = (controlRect.bottom - controlRect.top)/3 + 1;
 	thirdOfWidth = (controlRect.right - controlRect.left)/3 + 1;
@@ -782,7 +792,7 @@ void ToolPalette::MakeColorSwatchRects(Rect controlRect, Rect rects[])
 	InsetRect(&rects[kTPForeColor], 1, 1);
 	
 	// the swap colors widget rect goes into the top right corner
-	iconRect = (**icnsEditorClass::statics.swapColorsIconEnabled).iconPMap.bounds;
+	iconRect = (**swapColorsIcon).iconPMap.bounds;
 	iconWidth = iconRect.right - iconRect.left;
 	iconHeight = iconRect.bottom - iconRect.top;
 	rects[kTPSwapColors] = controlRect;
@@ -790,7 +800,7 @@ void ToolPalette::MakeColorSwatchRects(Rect controlRect, Rect rects[])
 	rects[kTPSwapColors].bottom = rects[kTPSwapColors].top + iconHeight;
 	
 	// the reset colors widget goes into the bottom left corner
-	iconRect = (**icnsEditorClass::statics.resetColorsIconEnabled).iconPMap.bounds;
+	iconRect = (**resetColorsIcon).iconPMap.bounds;
 	iconWidth = iconRect.right - iconRect.left;
 	iconHeight = iconRect.bottom - iconRect.top;
 	rects[kTPResetColors] = controlRect;
@@ -826,7 +836,6 @@ pascal void	ToolPalette::PatternsDraw(ControlHandle theControl,SInt16 thePart)
 	
 	
 	GetControlBounds(theControl, &controlRect);
-	InsetRect(&controlRect, -2, -2);
 	canvasRect = controlRect;
 	OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top);
 	
@@ -860,7 +869,7 @@ pascal void	ToolPalette::PatternsDraw(ControlHandle theControl,SInt16 thePart)
 	
 	RESTOREGWORLD;
 	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
-		     &qd.thePort->portBits,
+		     GetPortBitMapForCopyBits(qd.thePort),
 		     &canvasRect,
 		     &controlRect,
 		     srcCopy,

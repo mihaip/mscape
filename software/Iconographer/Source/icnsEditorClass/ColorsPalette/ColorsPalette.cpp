@@ -75,49 +75,50 @@ void ColorsPalette::Show()
 
 void ColorsPalette::DoIdle()
 {
-	Point	theMouse;
-	Rect	colorPickerRect;
+	Point		theMouse, globalMouse;
+	WindowPtr	windowUnderMouse;
 	
 	SAVEGWORLD;
 	
-	SetPort(window);
+	SetPort();
 	
 	GetMouse(&theMouse);
 	
-	GetControlBounds(controls.colorPickerArea, &colorPickerRect);
+	globalMouse = theMouse;
+	LocalToGlobal(&globalMouse);
+	FindWindow(globalMouse, &windowUnderMouse);
 	
-	if (PtInRect(theMouse, &colorPickerRect))
-		currentColorPicker->DoIdle();
-	else
+	if (windowUnderMouse == window)
 	{
-		if (HMGetBalloons())
-			HandleBalloons(theMouse, window, rCPBalloonHelp);
-		if (PtInRgn(theMouse, foreColorRgn))
-			UpdateReadout(-1, -1, fore);
-		else if (PtInRgn(theMouse, backColorRgn))
-			UpdateReadout(-1, -1, back);
-	}
+		Rect		colorPickerRect;
 		
+		GetControlBounds(controls.colorPickerArea, &colorPickerRect);
+		
+		if (PtInRect(theMouse, &colorPickerRect))
+			currentColorPicker->DoIdle();
+		else
+		{
+			if (HMGetBalloons())
+			{
+				Rect			controlBounds;
+				
+				GetControlBounds(controls.tabs, &controlBounds);
+				
+				controlBounds.bottom = controlBounds.top + kSmallTabTabsHeight;
+				
+				if (PtInRect(theMouse, &controlBounds))
+					HandleBalloon(rCPBalloonHelp, hCPTabs, controlBounds, theMouse);
+				else
+					HandleBalloons(theMouse, window, rCPBalloonHelp);
+			}
+			if (PtInRgn(theMouse, foreColorRgn))
+				UpdateReadout(-1, -1, fore);
+			else if (PtInRgn(theMouse, backColorRgn))
+				UpdateReadout(-1, -1, back);
+		}
+	}
 	
 	RESTOREGWORLD;
-}
-
-void ColorsPalette::Refresh(void)
-{
-	SAVEGWORLD; // saving the current gworld for restoring later
-	
-	
-	BeginUpdate(window); // BeginUpdate means that the drawing is clipped to the regions which
-						 // has been marked as needed updates (by InvalRect, etc.)
-	
-	SetPort(window); // we're drawing in the window
-	
-	UpdateControls(window, window->clipRgn); // we're also refreshing the controls
-	
-	EndUpdate(window); // and we're done with the updating
-	
-	RESTOREGWORLD; // we can restore the saved gworld now
-	
 }
 
 void ColorsPalette::HandleContentClick(EventRecord* eventPtr)
@@ -131,7 +132,7 @@ void ColorsPalette::HandleContentClick(EventRecord* eventPtr)
 	
 	SAVEGWORLD;
 	
-	SetPort(window);
+	SetPort();
 	
 	GlobalToLocal(&where);
 	
@@ -163,13 +164,7 @@ void ColorsPalette::HandleContentClick(EventRecord* eventPtr)
 }
 
 void ColorsPalette::SetCurrentPicker(int picker)
-{
-	if (GetControlValue(controls.tabs) != picker)
-	{
-		SetControlValue(controls.tabs, picker);
-		Draw1Control(controls.tabs);
-	}
-	
+{	
 	switch (picker)
 	{
 		case kRGBPane:
@@ -195,6 +190,12 @@ void ColorsPalette::SetCurrentPicker(int picker)
 			currentColorPicker->Hide();
 			favorites.Show();
 			currentColorPicker = &favorites;
+	}
+	
+	if (GetControlValue(controls.tabs) != picker)
+	{
+		SetControlValue(controls.tabs, picker);
+		Draw1Control(controls.tabs);
 	}
 }
 
@@ -255,7 +256,7 @@ void ColorsPalette::UpdateColors()
 
 void ColorsPalette::Update()
 {
-	Draw1Control(controls.root);
+	UpdateColors();
 }
 
 void ColorsPalette::UpdateReadout(int x, int y, RGBColor color)
@@ -302,7 +303,7 @@ void ColorsPalette::CreateControls()
 	readoutStyle.just = teFlushRight;
 	
 	SAVEGWORLD;
-	SetPort(window);
+	SetPort();
 	TextFont(applFont);
 	TextSize(9);
 	RESTOREGWORLD;
@@ -310,7 +311,7 @@ void ColorsPalette::CreateControls()
 	CreateRootControl(window, &controls.root);
 	
 	controls.backgroundPane = GetNewControl(rCPBackgroundPane, window);
-	backgroundPaneRect = window->portRect;
+	backgroundPaneRect = GetPortRect();
 	InsetRect(&backgroundPaneRect, -1, -1);
 	SetControlBounds(controls.backgroundPane, &backgroundPaneRect);
 	SetControlUserPaneDraw(controls.backgroundPane, CPBackgroundPaneDraw);
@@ -481,7 +482,14 @@ void RGBColorPicker::DoIdle()
 	GetMouse(&theMouse);
 	
 	if (HMGetBalloons())
-		HandleBalloons(theMouse, parentWindow->GetWindow(), rRGBCPBalloonHelp);
+		if (HandleBalloon(rRGBCPBalloonHelp, redSlider, theMouse) ||
+			HandleBalloon(rRGBCPBalloonHelp, greenSlider, theMouse) ||
+			HandleBalloon(rRGBCPBalloonHelp, blueSlider, theMouse))
+		{
+			;
+		}
+		else
+			HandleBalloons(theMouse, parentWindow->GetWindow(), rRGBCPBalloonHelp);
 }
 
 void RGBColorPicker::HandleContentClick(EventRecord* eventPtr)
@@ -494,7 +502,7 @@ void RGBColorPicker::HandleContentClick(EventRecord* eventPtr)
 	
 	SAVEGWORLD;
 	
-	SetPort(parentWindow->GetWindow());
+	parentWindow->SetPort();
 	
 	GlobalToLocal(&where);
 	
@@ -594,7 +602,7 @@ void RGBColorPicker::DrawGradient(Rect targetRect, RGBColor color,
 	SAVECOLORS;
 	
 	CopyBits((BitMap*)*tempPix,
-			 &qd.thePort->portBits,
+			 GetPortBitMapForCopyBits(qd.thePort),
 			 &tempRect,
 			 &targetRect,
 			 srcCopy,
@@ -745,7 +753,14 @@ void HSVColorPicker::DoIdle()
 	GetMouse(&theMouse);
 	
 	if (HMGetBalloons())
-		HandleBalloons(theMouse, parentWindow->GetWindow(), rHSVCPBalloonHelp);
+		if (HandleBalloon(rHSVCPBalloonHelp, hueSlider, theMouse) ||
+			HandleBalloon(rHSVCPBalloonHelp, saturationSlider, theMouse) ||
+			HandleBalloon(rHSVCPBalloonHelp, valueSlider, theMouse))
+		{
+			;
+		}
+		else
+			HandleBalloons(theMouse, parentWindow->GetWindow(), rHSVCPBalloonHelp);
 }
 
 void HSVColorPicker::HandleContentClick(EventRecord* eventPtr)
@@ -758,7 +773,7 @@ void HSVColorPicker::HandleContentClick(EventRecord* eventPtr)
 	
 	SAVEGWORLD;
 	
-	SetPort(parentWindow->GetWindow());
+	parentWindow->SetPort();
 	
 	GlobalToLocal(&where);
 	
@@ -788,12 +803,24 @@ void HSVColorPicker::HandleContentClick(EventRecord* eventPtr)
 pascal void HSVColorPicker::PreviewDraw(ControlHandle theControl, short thePart)
 {
 #pragma unused (thePart)
-	Rect			controlRect;
+	Rect			controlRect, tempRect;
 	HSVColorPicker*	picker;
 	
 	picker = &ColorsPalettePtr(GetWindow(GetControlOwner(theControl)))->hsv;
 	
 	GetControlBounds(theControl, &controlRect);
+	
+	// stupid corner trick since the background seems to be wrong
+	tempRect = controlRect;
+	tempRect.top = tempRect.bottom - 1;
+	tempRect.right = tempRect.left + 1;
+	EraseRect(&tempRect);
+	tempRect = controlRect;
+	tempRect.bottom = tempRect.top + 1;
+	tempRect.left = tempRect.right - 1;
+	EraseRect(&tempRect);
+	
+	InsetRect(&controlRect, 2, 2);
 	
 	DrawImageWell(theControl, controlRect);
 	
@@ -847,7 +874,7 @@ void HSVColorPicker::DrawGradient(Rect targetRect, HSVColor color,
 	SAVECOLORS;
 	
 	CopyBits((BitMap*)*tempPix,
-			 &qd.thePort->portBits,
+			 GetPortBitMapForCopyBits(qd.thePort),
 			 &tempRect,
 			 &targetRect,
 			 srcCopy,
@@ -995,7 +1022,7 @@ void SystemColorPicker::HandleContentClick(EventRecord* eventPtr)
 	
 	SAVEGWORLD;
 	
-	SetPort(parentWindow->GetWindow());
+	parentWindow->SetPort();
 	
 	GlobalToLocal(&where);
 	
@@ -1155,7 +1182,7 @@ pascal void SystemColorPicker::PaletteDraw(ControlHandle theControl, short thePa
 	RESTOREGWORLD;
 	
 	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
-			 &qd.thePort->portBits,
+			 GetPortBitMapForCopyBits(qd.thePort),
 			 &canvasRect,
 			 &controlRect,
 			 srcCopy,
@@ -1261,7 +1288,7 @@ void FavoritesColorPicker::HandleContentClick(EventRecord* eventPtr)
 	
 	SAVEGWORLD;
 	
-	SetPort(parentWindow->GetWindow());
+	parentWindow->SetPort();
 	
 	GlobalToLocal(&where);
 	
@@ -1343,7 +1370,6 @@ pascal void FavoritesColorPicker::PaletteDraw(ControlHandle theControl, short th
 	RGBColor	currentColor;
 	
 	GetControlBounds(theControl, &controlRect);
-	InsetRect(&controlRect, 1, 6);
 	canvasRect = controlRect;
 	OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top);
 	
@@ -1388,7 +1414,7 @@ pascal void FavoritesColorPicker::PaletteDraw(ControlHandle theControl, short th
 	RESTOREGWORLD;
 	
 	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
-			  &qd.thePort->portBits,
+			  GetPortBitMapForCopyBits(qd.thePort),
 			  &canvasRect,
 			  &controlRect,
 			  srcCopy,
@@ -1495,7 +1521,7 @@ pascal void	CPSwatchDraw(ControlHandle theControl,SInt16 thePart)
 	RESTOREGWORLD;
 	
 	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
-			 &qd.thePort->portBits,
+			 GetPortBitMapForCopyBits(qd.thePort),
 			 &canvasRect,
 			 &controlRect,
 			 srcCopy,

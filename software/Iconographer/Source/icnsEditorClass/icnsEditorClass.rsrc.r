@@ -35,6 +35,12 @@ resource 'dlgx' (1002) {
 	}
 };
 
+resource 'dlgx' (1003) {
+	versionZero {
+		15
+	}
+};
+
 resource 'dctb' (1410) {
 	{	/* array ColorSpec: 5 elements */
 		/* [1] */
@@ -141,6 +147,21 @@ resource 'dctb' (1002) {
 };
 
 resource 'dctb' (1000) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
+	}
+};
+
+resource 'dctb' (1003) {
 	{	/* array ColorSpec: 5 elements */
 		/* [1] */
 		wContentColor, 65535, 65535, 65535,
@@ -581,17 +602,6 @@ resource 'CNTL' (1110, purgeable) {
 	"Locked"
 };
 
-resource 'CNTL' (1007, "Preferences Tabs", purgeable) {
-	{8, 0, 252, 390},
-	1007,
-	visible,
-	100,
-	0,
-	128,
-	0,
-	""
-};
-
 resource 'CNTL' (201, "Zoom Placard", purgeable) {
 	{193, 4294967295, 209, 63},
 	32,
@@ -634,6 +644,17 @@ resource 'CNTL' (1004, "Default Format", purgeable) {
 	401,
 	0,
 	"Default icon format:"
+};
+
+resource 'CNTL' (1007, "Preferences Tabs", purgeable) {
+	{8, 0, 252, 390},
+	1007,
+	visible,
+	100,
+	0,
+	128,
+	0,
+	""
 };
 
 resource 'CNTL' (1008, "Default Members Group Box", purgeable) {
@@ -687,6 +708,28 @@ resource 'CNTL' (1018, "External Editor Shortcut", purgeable) {
 	100,
 	0,
 	32,
+	0,
+	""
+};
+
+resource 'CNTL' (1019, "Members Palette Box", purgeable) {
+	{162, 9, 215, 378},
+	0,
+	visible,
+	100,
+	0,
+	160,
+	0,
+	"Members Palette Display:"
+};
+
+resource 'CNTL' (1020, "Members Palette Display Slider", purgeable) {
+	{187, 222, 203, 340},
+	64,
+	visible,
+	64,
+	16,
+	57,
 	0,
 	""
 };
@@ -757,26 +800,26 @@ resource 'CNTL' (1105, "Members Divider", purgeable) {
 	"Purgeable"
 };
 
-resource 'CNTL' (1020, "Members Palette Display Slider", purgeable) {
-	{187, 222, 203, 340},
-	64,
-	visible,
-	64,
-	16,
-	57,
-	0,
-	""
-};
-
-resource 'CNTL' (1019, "Members Palette Box", purgeable) {
-	{162, 9, 215, 378},
+resource 'CNTL' (1120, "Add Member Type Menu", purgeable) {
+	{56, 4, 76, 338},
 	0,
 	visible,
 	100,
+	1120,
+	401,
 	0,
-	160,
+	"Member type:"
+};
+
+resource 'CNTL' (1121, "Add Member Source Menu", purgeable) {
+	{82, 4, 102, 338},
 	0,
-	"Members Palette Display:"
+	visible,
+	100,
+	1121,
+	401,
+	0,
+	"Copy from:"
 };
 
 data 'PAT#' (1000, purgeable) {
@@ -803,93 +846,6 @@ data 'PAT#' (1001, preload) {
 	$"FF00"                                               /* ÿ. */
 };
 
-resource 'STR#' (203, "Editor Balloon Help", purgeable) {
-	{	/* array StringArray: 24 elements */
-		/* [1] */
-		"Rectangular Marquee Tool (M)",
-		/* [2] */
-		"Move Tool (V)",
-		/* [3] */
-		"Lasso Tool (L)",
-		/* [4] */
-		"Magic Wand Tool (W)",
-		/* [5] */
-		"Pencil Tool (N)",
-		/* [6] */
-		"Eye Dropper Tool (I)",
-		/* [7] */
-		"Paint Bucket Tool (K)",
-		/* [8] */
-		"Eraser Tool (E)",
-		/* [9] */
-		"Rectangle Tool (R)",
-		/* [10] */
-		"Oval Tool (O)",
-		/* [11] */
-		"Line Tool (Y)",
-		/* [12] */
-		"Polygon Tool (P)",
-		/* [13] */
-		"Gradient Tool (G)",
-		/* [14] */
-		"Text Tool (T)",
-		/* [15] */
-		"This is the main editing area. The curre"
-		"nt icon is displayed at a magnified size"
-		" here.",
-		/* [16] */
-		"The magnification level is displayed her"
-		"e. To change it, you either use the Zoom"
-		" In and Zoom Out commands from the View "
-		"menu, or the grow box in the lower-right"
-		" corner of the window.",
-		/* [17] */
-		"The name and ID of the current icon are "
-		"displayed here. Clicking on this placard"
-		" will result in a dialog which allows yo"
-		"u to change the name, ID and flags of th"
-		"e icon.",
-		/* [18] */
-		"The current foreground and background co"
-		"lors are displayed here. Click on the co"
-		"lor swatches to change them.",
-		/* [19] */
-		"This set of image wells displays the thr"
-		"ee sizes (48 x 48, 32 x 32 and 16 x16) f"
-		"or the current icon depth. You can click"
-		" on them to edit that size. You may also"
-		" drag among them to copy and scale their"
-		" contents.",
-		/* [20] */
-		"This popup is used to switch among the d"
-		"ifferent icon depths. You may also hold "
-		"down option to transfer one depth to ano"
-		"ther.",
-		/* [21] */
-		"This set of image wells displays the thr"
-		"ee sizes (48 x 48, 32 x 32 and 16 x16) f"
-		"or the current mask depth. You can click"
-		" on them to edit that size. You may also"
-		" drag among them to copy and scale their"
-		" contents.",
-		/* [22] */
-		"This popup is used to switch among the d"
-		"ifferent mask depths. You may also hold "
-		"down option to transfer one depth to ano"
-		"ther.",
-		/* [23] */
-		"Here you can see a preview of the curren"
-		"t icon and mask together on two differen"
-		"t backgrounds (white and the current des"
-		"ktop pattern). You can click on the prev"
-		"iew in order to view the icon in the sel"
-		"ected state.",
-		/* [24] */
-		"The current color pattern is displayed h"
-		"ere. Click on the swatch to change it."
-	}
-};
-
 resource 'STR#' (201, "Labels", purgeable) {
 	{	/* array StringArray: 8 elements */
 		/* [1] */
@@ -911,8 +867,22 @@ resource 'STR#' (201, "Labels", purgeable) {
 	}
 };
 
+resource 'STR#' (203, "Editor Balloon Help", purgeable) {
+	{	/* array StringArray: 2 elements */
+		/* [1] */
+		"This main editing area.\n\nThe current ico"
+		"n is displayed at a magnified size here.",
+		/* [2] */
+		"The magnification level is displayed her"
+		"e.\n\nTo change it, you either use the Zoo"
+		"m In and Zoom Out commands from the View"
+		" menu, or the pop-up menu that apears wh"
+		"en you click"
+	}
+};
+
 resource 'STR#' (204, "Icon Info Balloon Help", purgeable) {
-	{	/* array StringArray: 12 elements */
+	{	/* array StringArray: 13 elements */
 		/* [1] */
 		"Sets the selected attributes and closes "
 		"this dialog.",
@@ -951,55 +921,76 @@ resource 'STR#' (204, "Icon Info Balloon Help", purgeable) {
 		"This pop-up menu can be used to select v"
 		"arious icon formats. Note that some of t"
 		"hem do not support all options (e.g. Win"
-		"dows does not allow 8-bit masks)"
+		"dows does not allow 8-bit masks).",
+		/* [13] */
+		"These checkboxes are used to select the "
+		"possible members that the icon can have."
+		" Only the checked members will appear in"
+		" the members palette. Some checkboxes ma"
+		"ybe be disabled if the current format do"
+		"es not support them."
 	}
 };
 
 resource 'STR#' (200, "Basic Strings", purgeable) {
-	{	/* array StringArray: 15 elements */
+	{	/* array StringArray: 19 elements */
 		/* [1] */
 		"Untitled",
 		/* [2] */
 		"An icon with the ID <ID> already exists "
 		"in this file. If you continue, the old i"
 		"con will be overwritten when the current"
-		" is saved.",
+		" one is saved.",
 		/* [3] */
 		"Overwrite",
 		/* [4] */
 		"Cancel",
 		/* [5] */
-		"The large 8-bit and 1-bit masks seem to "
-		"be out of sync. Should the large 1-bit m"
-		"ask be regenerated?",
+		"The <size> 8-bit and 1-bit masks do not "
+		"seem to match. This can cause problems w"
+		"hen viewing the icon in the Finder. Shou"
+		"ld the <size> 1-bit mask be regenerated?",
 		/* [6] */
-		"The small 8-bit and 1-bit masks seem to "
-		"be out of sync. Should the small 1-bit m"
-		"ask be regenerated?",
+		"Regenerate Mask",
 		/* [7] */
-		"The huge 8-bit and 1-bit masks seem to b"
-		"e out of sync. Should the huge 1-bit mas"
-		"k be regenerated?",
-		/* [8] */
 		"Yes",
-		/* [9] */
+		/* [8] */
 		"No",
+		/* [9] */
+		"The <size> size does not have a mask. Wi"
+		"thout one the icon will not be displayed"
+		" properly. Do you wish one to be created"
+		" for you?",
 		/* [10] */
-		"Insert IconÉ",
+		"Generate Mask",
 		/* [11] */
+		"Insert IconÉ",
+		/* [12] */
 		"The file <file name> already has informa"
 		"tion in its data fork. Saving an icon in"
 		"to it will overwrite it. Do you wish to "
 		"continue or to select another file to sa"
 		"ve into?",
-		/* [12] */
-		"Choose Another File",
 		/* [13] */
-		"Click to choose a shortcut",
+		"Choose Another File",
 		/* [14] */
-		"Click to choose an external editor",
+		"Click to choose a shortcut",
 		/* [15] */
-		":Iconographer Support:"
+		"Click to choose an external editor",
+		/* [16] */
+		"Iconographer Support",
+		/* [17] */
+		"The folder ÒIconographer SupportÓ could "
+		"not be found. It has been recreated, but"
+		" certain features such as the help will "
+		"not be available until Iconographer is r"
+		"einstalled.",
+		/* [18] */
+		"An external edtor has not been selected."
+		" Please choose one in the preferences di"
+		"alog.",
+		/* [19] */
+		"Open Preferences"
 	}
 };
 
@@ -1157,6 +1148,23 @@ resource 'mctb' (207) {
 };
 
 resource 'mctb' (208) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (1121) {
 	{	/* array MCTBArray: 1 elements */
 		/* [1] */
 		mctbLast, 0,
@@ -1717,6 +1725,32 @@ resource 'MENU' (201) {
 	}
 };
 
+resource 'MENU' (1120) {
+	1120,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Member Type",
+	{	/* array: 0 elements */
+	}
+};
+
+resource 'MENU' (1121) {
+	1121,
+	textMenuProc,
+	0x7FFFFFFB,
+	enabled,
+	"Source",
+	{	/* array: 3 elements */
+		/* [1] */
+		"None", noIcon, noKey, noMark, 2,
+		/* [2] */
+		"Current", noIcon, noKey, noMark, 2,
+		/* [3] */
+		"-", noIcon, noKey, noMark, plain
+	}
+};
+
 resource 'DITL' (1410, "Text Tool", purgeable) {
 	{	/* array DITLarray: 9 elements */
 		/* [1] */
@@ -1918,6 +1952,25 @@ resource 'DITL' (9999) {
 		Control {
 			enabled,
 			202
+		}
+	}
+};
+
+resource 'DITL' (1002, purgeable) {
+	{	/* array DITLarray: 2 elements */
+		/* [1] */
+		{2, 2, 34, 346},
+		StaticText {
+			disabled,
+			"Press all of the keys you intend to use "
+			"as a shortcut. Let go of all of them to "
+			"set it."
+		},
+		/* [2] */
+		{38, 2, 55, 346},
+		StaticText {
+			disabled,
+			""
 		}
 	}
 };
@@ -2251,21 +2304,39 @@ resource 'DITL' (1001, "Icon Info", purgeable) {
 	}
 };
 
-resource 'DITL' (1002, purgeable) {
-	{	/* array DITLarray: 2 elements */
+resource 'DITL' (1003, purgeable) {
+	{	/* array DITLarray: 5 elements */
 		/* [1] */
-		{2, 2, 34, 346},
-		StaticText {
-			disabled,
-			"Press all of the keys you intend to use "
-			"as a shortcut. Let go of all of them to "
-			"set it."
+		{116, 270, 136, 338},
+		Button {
+			enabled,
+			"Add"
 		},
 		/* [2] */
-		{38, 2, 55, 346},
+		{116, 190, 136, 254},
+		Button {
+			enabled,
+			"Cancel"
+		},
+		/* [3] */
+		{4, 4, 52, 344},
 		StaticText {
 			disabled,
-			""
+			"Select the new member you wish to add, a"
+			"nd optionally the current member you wis"
+			"h it to be based upon."
+		},
+		/* [4] */
+		{56, 4, 76, 338},
+		Control {
+			enabled,
+			1120
+		},
+		/* [5] */
+		{82, 4, 102, 338},
+		Control {
+			enabled,
+			1121
 		}
 	}
 };
@@ -2285,10 +2356,10 @@ resource 'DITL' (1000, "Preferences", purgeable) {
 			"Cancel"
 		},
 		/* [3] */
-		{39, 8, 55, 168},
+		{39, 8, 55, 313},
 		CheckBox {
 			enabled,
-			"Show pixel grid"
+			"Show only loaded members"
 		},
 		/* [4] */
 		{46, 320, 57, 360},
@@ -2324,7 +2395,7 @@ resource 'DITL' (1000, "Preferences", purgeable) {
 		{56, 8, 72, 313},
 		CheckBox {
 			enabled,
-			"Check sync between 8-bit and 1-bit masks"
+			"Check masks when saving"
 		},
 		/* [10] */
 		{73, 8, 89, 313},
@@ -2755,6 +2826,16 @@ data 'DLGX' (9999) {
 	$"0000"                                               /* .. */
 };
 
+data 'DLGX' (1002) {
+	$"0654 6563 686E 6F00 0000 0000 0000 0000"            /* .Techno......... */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
+	$"0002 0006 0000 0000 0000 0000 0000 0006"            /* ................ */
+	$"0000 0000 0000 0000 0000"                           /* .......... */
+};
+
 data 'DLGX' (1001) {
 	$"0647 656E 6576 6100 0000 0000 0000 0000"            /* .Geneva......... */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
@@ -2804,14 +2885,16 @@ data 'DLGX' (1001) {
 	$"0000 0000 0000 0000 0000"                           /* .......... */
 };
 
-data 'DLGX' (1002) {
+data 'DLGX' (1003) {
 	$"0654 6563 686E 6F00 0000 0000 0000 0000"            /* .Techno......... */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
-	$"0002 0006 0000 0000 0000 0000 0000 0006"            /* ................ */
-	$"0000 0000 0000 0000 0000"                           /* .......... */
+	$"0005 0000 0000 0000 0000 0000 0000 0001"            /* ................ */
+	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
+	$"0000 0000 0000 0005 0000 0000 0000 0000"            /* ................ */
+	$"0000 0005 0000 0000 0000 0000 0000"                 /* .............. */
 };
 
 data 'DLGX' (1000) {
@@ -2930,17 +3013,6 @@ resource 'DLOG' (9999, purgeable) {
 	noAutoCenter
 };
 
-resource 'DLOG' (1001, "Icon Info", purgeable) {
-	{202, 34, 549, 418},
-	1043,
-	invisible,
-	goAway,
-	0x0,
-	1001,
-	"Icon InfoÉ",
-	centerMainScreen
-};
-
 resource 'DLOG' (1002, "Set External Editor Shortcut", purgeable) {
 	{259, 337, 318, 687},
 	dBoxProc,
@@ -2950,6 +3022,28 @@ resource 'DLOG' (1002, "Set External Editor Shortcut", purgeable) {
 	1002,
 	"",
 	centerParentWindow
+};
+
+resource 'DLOG' (1001, "Icon Info", purgeable) {
+	{228, 594, 575, 978},
+	1043,
+	invisible,
+	goAway,
+	0x0,
+	1001,
+	"Icon InfoÉ",
+	centerMainScreen
+};
+
+resource 'DLOG' (1003, "Add Member", purgeable) {
+	{475, 625, 623, 975},
+	1043,
+	invisible,
+	noGoAway,
+	0x0,
+	1003,
+	"Add Member...",
+	noAutoCenter
 };
 
 resource 'DLOG' (1000, "Preferences", purgeable) {
@@ -3121,6 +3215,12 @@ data 'ictb' (1000) {
 	$"0000 0000 FFFF FFFF FFFF 0000"                      /* ....ÿÿÿÿÿÿ.. */
 };
 
+data 'ictb' (1003) {
+	$"0000 0000 0000 0000 0007 0014 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"FFFF FFFF FFFF 0000"                                /* ÿÿÿÿÿÿ.. */
+};
+
 data 'Mcmd' (1410) {
 	$"0000"                                               /* .. */
 };
@@ -3141,6 +3241,10 @@ data 'Mcmd' (202) {
 
 data 'Mcmd' (203) {
 	$"0000"                                               /* .. */
+};
+
+data 'Mcmd' (1021) {
+	$"0003 0000 0000 0000 0000 0000 0000"                 /* .............. */
 };
 
 resource 'PICT' (2051, "Graycale Picker") {
@@ -7990,25 +8094,6 @@ resource 'tab#' (1007, "Preferences Tabs") {
 	}
 };
 
-data 'hrct' (1001, "Icon Info", purgeable) {
-	$"0002 0000 0000 0000 0000 000C 0014 0003"            /* ................ */
-	$"0000 0000 00BA 00C6 00CE 010A 00CC 0001"            /* .....º.Æ.Î...Ì.. */
-	$"0014 0003 0000 0000 00BA 0078 00CE 00B8"            /* .........º.x.Î.¸ */
-	$"00CC 0002 0014 0003 0000 0000 000D 0040"            /* .Ì.............@ */
-	$"001D 007C 00CC 0003 0014 0003 0000 0000"            /* ...|.Ì.......... */
-	$"000D 008B 001D 0107 00CC 0004 0014 0003"            /* ...‹.....Ì...... */
-	$"0000 0000 0046 0040 0056 010B 00CC 0005"            /* .....F.@.V...Ì.. */
-	$"0014 0003 0000 0000 0074 000E 0084 007C"            /* .........t...„.| */
-	$"00CC 0006 0014 0003 0000 0000 0086 000E"            /* .Ì...........†.. */
-	$"0096 007C 00CC 0007 0014 0003 0000 0000"            /* .–.|.Ì.......... */
-	$"0099 000E 00A9 007C 00CC 0008 0014 0003"            /* .™...©.|.Ì...... */
-	$"0000 0000 0074 0092 0084 0100 00CC 0009"            /* .....t.’.„...Ì.. */
-	$"0014 0003 0000 0000 0086 0092 0096 0100"            /* .........†.’.–.. */
-	$"00CC 000A 0014 0003 0000 0000 000B 007C"            /* .Ì.............| */
-	$"001F 0092 00CC 000B 0014 0003 0000 0000"            /* ...’.Ì.......... */
-	$"0028 000A 003C 010E 00CC 000C"                      /* .(...<...Ì.. */
-};
-
 resource 'wctb' (200) {
 	{	/* array ColorSpec: 5 elements */
 		/* [1] */
@@ -8032,5 +8117,25 @@ resource 'WIND' (200, purgeable) {
 	0x0,
 	"",
 	noAutoCenter
+};
+
+data 'hrct' (1001, "Icon Info", purgeable) {
+	$"0002 0000 0000 0000 0000 000D 0014 0003"            /* ................ */
+	$"0000 0000 013E 0132 0152 0176 00CC 0001"            /* .....>.2.R.v.Ì.. */
+	$"0014 0003 0000 0000 013E 00E4 0152 0124"            /* .........>.ä.R.$ */
+	$"00CC 0002 0014 0003 0000 0000 000D 0040"            /* .Ì.............@ */
+	$"001D 007C 00CC 0003 0014 0003 0000 0000"            /* ...|.Ì.......... */
+	$"000D 00A5 001D 0178 00CC 0004 0014 0003"            /* ...¥...x.Ì...... */
+	$"0000 0000 0046 0040 0056 0177 00CC 0005"            /* .....F.@.V.w.Ì.. */
+	$"0014 0003 0000 0000 0108 000E 0118 007C"            /* ...............| */
+	$"00CC 0006 0014 0003 0000 0000 011A 000E"            /* .Ì.............. */
+	$"012A 007C 00CC 0007 0014 0003 0000 0000"            /* .*.|.Ì.......... */
+	$"0108 0108 0118 0176 00CC 0008 0014 0003"            /* .......v.Ì...... */
+	$"0000 0000 0108 0086 0118 00F4 00CC 0009"            /* .......†...ô.Ì.. */
+	$"0014 0003 0000 0000 011A 0086 012A 00F4"            /* ...........†.*.ô */
+	$"00CC 000A 0014 0003 0000 0000 000B 0082"            /* .Ì.............‚ */
+	$"001F 0098 00CC 000B 0014 0003 0000 0000"            /* ...˜.Ì.......... */
+	$"0028 000A 003C 017A 00CC 000C 0014 0003"            /* .(...<.z.Ì...... */
+	$"0000 0000 0063 0009 00F1 017D 00CC 000D"            /* .....c...ñ.}.Ì.. */
 };
 

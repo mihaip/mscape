@@ -19,7 +19,7 @@ void icnsEditorClass::Adjust(void)
 	
 	adjustDialog = GetNewDialog(rAdjust, NULL, (WindowPtr)-1L);
 	
-	adjustDialogWindow = new MWindow(adjustDialog, kDialogType);
+	adjustDialogWindow = new MWindow(GetDialogWindow(adjustDialog), kDialogType);
 	
 	eventFilterUPP = NewModalFilterProc(AdjustDialogFilter);
 	
@@ -89,7 +89,7 @@ void icnsEditorClass::Adjust(void)
 	
 	MWindow::DeactivateAll();
 	
-	ShowWindow(adjustDialog);
+	ShowWindow(GetDialogWindow(adjustDialog));
 	
 	dialogDone = false;
 	
@@ -155,7 +155,7 @@ void icnsEditorClass::Adjust(void)
 							ShowControl(tempControl);
 							Draw1Control(tempControl);
 						}
-						SetKeyboardFocus(adjustDialog, dialogData.hueField, kControlEditTextPart);
+						SetKeyboardFocus(GetDialogWindow(adjustDialog), dialogData.hueField, kControlEditTextPart);
 						Draw1Control(dialogData.hueField);
 						break;
 						
@@ -171,7 +171,7 @@ void icnsEditorClass::Adjust(void)
 							ShowControl(tempControl);
 							Draw1Control(tempControl);
 						}
-						SetKeyboardFocus(adjustDialog, dialogData.brightnessField, kControlEditTextPart);
+						SetKeyboardFocus(GetDialogWindow(adjustDialog), dialogData.brightnessField, kControlEditTextPart);
 						Draw1Control(dialogData.brightnessField);
 						break;
 				}
@@ -258,18 +258,18 @@ pascal bool AdjustDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* i
 	MWindowPtr			adjustDialogWindow;
 	short				part;
 	
-	adjustDialogWindow = MWindowPtr(GetWRefCon(dialog));
+	adjustDialogWindow = MWindowPtr(GetWRefCon(GetDialogWindow(dialog)));
 	dialogData = AdjustDialogDataPtr(adjustDialogWindow->GetRefCon());
 	
 	switch (eventPtr->what)
 	{
 		case mouseDown:
 			SAVEGWORLD;
-			SetPort(dialog);
+			SetPortDialogPort(dialog);
 			Point theMouse;
 			theMouse = eventPtr->where;
 			GlobalToLocal(&theMouse);
-			if((part = FindControl(theMouse, dialog,&theControl)) && part)
+			if((part = FindControl(theMouse, GetDialogWindow(dialog), &theControl)) && part)
 			{
 				if(theControl == dialogData->hueSlider ||
 				   theControl == dialogData->saturationSlider ||
@@ -423,7 +423,7 @@ pascal void SliderActionFunction(ControlHandle theControl, short thePart)
 	
 	SetControlText(field, tempString);
 	SetKeyboardFocus(GetControlOwner(theControl), field, kControlEditTextPart);
-	SelectDialogItemText(GetControlOwner(theControl), fieldNo, 0, 32767);
+	SelectDialogItemText(GetDialogFromWindow(GetControlOwner(theControl)), fieldNo, 0, 32767);
 	Draw1Control(field);
 	
 	if (GetControlValue(dialogData->preview))

@@ -79,6 +79,19 @@ resource 'cctb' (404) {
 	}
 };
 
+resource 'cctb' (405) {
+	{	/* array ColorSpec: 4 elements */
+		/* [1] */
+		cFrameColor, 0, 0, 0,
+		/* [2] */
+		cBodyColor, 65535, 65535, 65535,
+		/* [3] */
+		cTextColor, 0, 0, 0,
+		/* [4] */
+		cElevatorColor, 65535, 65535, 65535
+	}
+};
+
 resource 'CNTL' (400, "Members Pane", purgeable) {
 	{0, 4294967295, 128, 141},
 	0,
@@ -113,7 +126,7 @@ resource 'CNTL' (403, "Background Pane", purgeable) {
 };
 
 resource 'CNTL' (402, "Members State Selection", purgeable) {
-	{450, 4294967295, 461, 130},
+	{450, 4294967295, 461, 41},
 	400,
 	visible,
 	402,
@@ -124,7 +137,18 @@ resource 'CNTL' (402, "Members State Selection", purgeable) {
 };
 
 resource 'CNTL' (404, "Members Info", purgeable) {
-	{450, 129, 461, 140},
+	{450, 109, 461, 141},
+	400,
+	visible,
+	402,
+	512,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (405, "Add Member", purgeable) {
+	{450, 40, 461, 110},
 	400,
 	visible,
 	402,
@@ -238,8 +262,71 @@ resource 'PICT' (400, "Info Button") {
 	$"FFFC 0000 FF00 00FF"
 };
 
+resource 'PICT' (401, "Add Member Button") {
+	508,
+	{0, 0, 7, 7},
+	$"0011 02FF 0C00 FFFE 0000 0048 0000 0048"
+	$"0000 0000 0000 0007 0007 0000 0000 00A1"
+	$"01F2 0016 3842 494D 0000 0000 0000 0007"
+	$"0007 4772 8970 68AF 626A 0001 000A 0000"
+	$"0000 0007 0007 8201 0000 00E4 0000 0001"
+	$"0000 0000 0000 0000 0000 0000 0000 0001"
+	$"0000 0000 0000 0000 0000 0000 0000 4000"
+	$"0000 0000 00B2 0000 0000 0007 0007 0000"
+	$"0056 726C 6520 0000 0000 0000 0000 0001"
+	$"0001 6170 706C 0000 0000 0000 0400 0007"
+	$"0007 0048 0000 0048 0000 0000 005C 0001"
+	$"0941 6E69 6D61 7469 6F6E 0000 0000 0000"
+	$"0000 0000 0000 0000 0000 0000 0000 0000"
+	$"0028 0028 4000 005C 0008 0000 0000 0007"
+	$"0000 0102 FFFF FFFF FFFF 0300 FF01 02FF"
+	$"0000 0000 FF00 00FF 0102 FF00 0000 00FF"
+	$"0000 FF01 02FF FFFF FF00 FF00 00FF 0102"
+	$"FF7F 00FF 00FF 0000 FF01 02FF 007F FF00"
+	$"FF00 00FF 0102 7FFF FFFF FFFF 0000 FF00"
+	$"009A 0000 00FF 801C 0000 0000 0007 0007"
+	$"0000 0004 0000 0000 0048 0000 0048 0000"
+	$"0010 0020 0003 0008 0000 0000 0000 0000"
+	$"0000 0000 0000 0000 0007 0007 0000 0000"
+	$"0007 0007 0040 02EC 0013 0000 FDFF 0200"
+	$"FF00 FDFF 0200 FF00 FDFF 0100 FF13 0000"
+	$"FDFF 0200 FF00 FDFF 0200 FF00 FDFF 0100"
+	$"FF12 FD00 02FF 00FF FD00 02FF 00FF FD00"
+	$"02FF 00FF 16FF 0012 FF00 FF00 FF00 00FF"
+	$"00FF 00FF 0000 FF00 FF00 FF16 1400 FF00"
+	$"00FF 00FF 00FF 0000 FF00 FF00 FF00 00FF"
+	$"00FF 0CFB 0000 FFFB 0000 FFFB 0000 FF00"
+	$"00FF"
+};
+
+resource 'STR#' (401, "Members Palette Names", purgeable) {
+	{	/* array StringArray: 2 elements */
+		/* [1] */
+		"Info",
+		/* [2] */
+		"Add Member"
+	}
+};
+
+resource 'STR#' (400, "Members Palette Balloon Help", purgeable) {
+	{	/* array StringArray: 2 elements */
+		/* [1] */
+		"Icon Info\n\nClick this button to set an i"
+		"con’s attributes (ID, name, members, and"
+		" flags).",
+		/* [2] */
+		"Add Member\n\nClick here to create an addi"
+		"tional member (icon part) with a specifi"
+		"c size and depth."
+	}
+};
+
+data 'ictb' (9999) {
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+};
+
 resource 'DITL' (9999, purgeable) {
-	{	/* array DITLarray: 3 elements */
+	{	/* array DITLarray: 4 elements */
 		/* [1] */
 		{4294967295, 140, 451, 151},
 		Control {
@@ -247,16 +334,22 @@ resource 'DITL' (9999, purgeable) {
 			401
 		},
 		/* [2] */
-		{450, 129, 461, 140},
+		{450, 40, 461, 110},
 		Control {
 			enabled,
-			404
+			405
 		},
 		/* [3] */
-		{450, 4294967295, 461, 130},
+		{450, 4294967295, 461, 41},
 		Control {
 			enabled,
 			402
+		},
+		/* [4] */
+		{450, 109, 461, 141},
+		Control {
+			enabled,
+			404
 		}
 	}
 };
@@ -267,9 +360,10 @@ data 'DLGX' (9999) {
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
-	$"0003 0005 0000 0000 0000 0000 0000 0005"            /* ................ */
+	$"0004 0005 0000 0000 0000 0000 0000 0005"            /* ................ */
 	$"0000 0000 0000 0000 0000 0005 0000 0000"            /* ................ */
-	$"0000 0000 0000"                                     /* ...... */
+	$"0000 0000 0000 0005 0000 0000 0000 0000"            /* ................ */
+	$"0000"                                               /* .. */
 };
 
 resource 'DLOG' (9999, purgeable) {
@@ -281,9 +375,5 @@ resource 'DLOG' (9999, purgeable) {
 	9999,
 	"Icon Members",
 	noAutoCenter
-};
-
-data 'ictb' (9999) {
-	$"0000 0000 0000 0000 0000 0000"                      /* ............ */
 };
 

@@ -45,7 +45,7 @@ enum staticsResources
 
 enum preferencesDialogItems
 {
-	iDrawGrid = 3,
+	iShowOnlyLoadedMembers = 3,
 	iDefaultZoomLevelField = 4,
 	iDefaultZoomLevelArrows = 5,
 	iStartupCreateNewEditor = 6,
@@ -80,9 +80,9 @@ enum preferencesDialogItems
 
 enum preferencesTabs
 {
-	kSettingsTab = 1,
-	kDefaultsTab = 2,
-	kExternalEditorTab = 3
+	kPrefsSettingsPane = 1,
+	kPrefsDefaultsPane = 2,
+	kPrefsExternalEditorPane = 3
 };
 
 enum prefsSaveForks
@@ -133,6 +133,7 @@ typedef struct preferencesStruct
 	long		previewSize;
 	Point		adjustDialogLocation;
 	long		currentColorPicker;
+	long		previewBackground;
 } PreferencesStruct;
 
 typedef PreferencesStruct** PreferencesHandle;
@@ -151,12 +152,13 @@ class editorPreferencesClass
 	public:
 	
 		void				Load(int ID);
-		void				Edit();
+		void				Edit(int pane);
 		void				Save(int ID);
 		
 		bool				FeatureEnabled(long flag);
 		void				EnableFeature(long flag);
 		void				DisableFeature(long flag);
+		void				ToggleFeature(long flag);
 		
 		RGBColor			GetFavoriteColor(int index);
 		void				SetFavoriteColor(int index, RGBColor color);
@@ -175,9 +177,13 @@ class editorPreferencesClass
 		void				SetExternalEditor(FSSpec editorSpec);
 		int					GetExternalEditorFormat();
 		long				GetExternalEditorCreator();
+		bool				ExternalEditorChosen();
 		
 		int					GetLineThickness();
 		void				SetLineThickness(int thickness);
+		
+		int					GetPreviewBackground();
+		void				SetPreviewBackground(int background);
 		
 		Point				GetAdjustDialogLocation();
 		void				SetAdjustDialogLocation(Point location);
@@ -189,6 +195,7 @@ class editorPreferencesClass
 		int					GetTimesUsed();
 		
 		bool				IsRegistered();
+		bool				IsRegistered(Str255 name);
 		bool				ValidRegCode(Str255 name, Str255 inRegCode);
 		void				Register(Str255 name, Str255 company, Str255 regCode);
 		void				GetRegistrationInfo(Str255 name, Str255 company, Str255 regCode);
@@ -197,21 +204,23 @@ class editorPreferencesClass
 
 enum preferencesFlags
 {
-	prefsDrawGrid = 1,
-	prefsDontCheckSync = 2,
-	prefsDither = 4,
-	prefsDontMakeNewEditor = 8,
-	prefsOpenIcon = 16,
-	prefsGenerateOldStyle = 32,
-	prefsRealTimePreviews = 64,
-	prefsAntiAlias = 128,
-	prefsColorsPaletteVisible = 256,
-	prefsMembersPaletteVisible = 512,
-	prefsPreviewPaletteVisible = 1024,
-	prefsToolPaletteVisible = 2048,
-	prefsExportIconAndMask = 4096,
-	prefsFilled = 8192,
-	prefsPreviewScaled = 16384
+	prefsDrawGrid = 				1 << 0,
+	prefsDontCheckMasks = 			1 << 1,
+	prefsDither =					1 << 2,
+	prefsDontMakeNewEditor =		1 << 3,
+	prefsOpenIcon = 				1 << 4,
+	prefsGenerateOldStyle = 		1 << 5,
+	prefsRealTimePreviews = 		1 << 6,
+	prefsAntiAlias = 				1 << 7,
+	prefsColorsPaletteVisible = 	1 << 8,
+	prefsMembersPaletteVisible =	1 << 9,
+	prefsPreviewPaletteVisible =	1 << 10,
+	prefsToolPaletteVisible = 		1 << 11,
+	prefsExportIconAndMask =		1 << 12,
+	prefsFilled = 					1 << 13,
+	prefsPreviewScaled = 			1 << 14,
+	prefsShowOnlyLoadedMembers = 	1 << 15,
+	prefsPreviewSelected =			1 << 16
 };
 
 typedef struct textSettings
@@ -267,12 +276,6 @@ class editorStaticsClass
 		CGrafPtr		startupPort;
 		GDHandle		startupDevice;
 		
-		CIconHandle		swapColorsIconEnabled;
-		CIconHandle		swapColorsIconDisabled;
-		
-		CIconHandle		resetColorsIconEnabled;
-		CIconHandle		resetColorsIconDisabled;
-		
 		PicHandle		aliasedPic, antiAliasedPic,
 						unfilledPic, filledPic;
 		
@@ -288,9 +291,10 @@ class editorStaticsClass
 		
 		long			currentBalloon;
 		
+		bool			firstTime;
 		
-		
-		MenuHandle		zoomMenu;
+		MenuHandle		zoomMenu,
+						browserTypeMenu;
 		
 		editorPreferencesClass preferences;
 		
@@ -309,6 +313,8 @@ class editorStaticsClass
 		
 		void			UpdatePalettes(int flags);
 		void			UpdatePalettes(icnsEditorPtr frontEditor, int flags);
+		
+		bool 			GetSupportFolder(FSSpec* supportFolder);
 		
 		ColorsPalettePtr colorsPalette;
 		MembersPalettePtr membersPalette;

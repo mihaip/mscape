@@ -51,7 +51,8 @@ void icnsEditorClass::HandleDrawing(Point theMouse)
 	{
 		currentState = new drawingStateClass(currentState, this); // we must save the state
 		status |= needToSave; // the drawing was modified, and thus it needs to be saved...
-		status |= needsUpdate; // and be update as well
+		UpdateEditArea();
+		statics.UpdatePalettes(this, 0);
 	}
 }
 
@@ -1001,8 +1002,11 @@ void icnsEditorClass::HandleLasso(Point startMouse)
 	RgnHandle		lassoSelectionRgn, // the drawn selection shape
 					tightenedRgn; 
 	OSStatus		err = noErr; // error checking
+	Point			trueStartMouse;
 	SAVEGWORLD;
 	SAVECOLORS;
+	
+	trueStartMouse = startMouse;
 	
 	// we get the starting position
 	GetDrawingMousePosition(&startX, &startY, &startMouse, magnified);
@@ -1018,16 +1022,21 @@ void icnsEditorClass::HandleLasso(Point startMouse)
 	if (mode == normal)
 	{
 		Point theMouse;
+		int		tempX, tempY;
 		
-		theMouse.h = startX;
-		theMouse.v = startY;
+		startMouse = trueStartMouse;
+		
+		GetDrawingMousePosition(&tempX, &tempY, &startMouse, 0);
+		
+		theMouse.h = tempX;
+		theMouse.v = tempY;
 		
 		if (PtInRgn(theMouse, selectionRgn))
 		{
 			if (status & selectionFloated)
-				HandleMove(startMouse);
+				HandleMove(trueStartMouse);
 			else
-				DragSelection(startX, startY);
+				DragSelection(tempX, tempY);
 			return;
 		}
 	}
@@ -1071,7 +1080,6 @@ void icnsEditorClass::HandleLasso(Point startMouse)
 	
 	// we create these regions
 	lassoSelectionRgn = NewRgn();
-	
 	
 	// we get the overall shape of the selection
 	Make1BitMask(overlayPix, overlayPix, currentBounds);
@@ -1243,12 +1251,14 @@ RgnHandle icnsEditorClass::TightenLasso(RgnHandle lassoSelectionRgn)
 	RgnHandle 		tightenedRgn;
 	ColorSearchUPP	maskColorSearchUPP;
 	GrafPtr			temp;
-	Rect			tempRect;
+	Rect			lassoBounds, tempRect;
 	RGBColor		transparentColor;
+	PixMapHandle	targetPix;
 	
 	tightenedRgn = NewRgn();
 	// then we calculate the tightened selection shape
-	tempRect = (**lassoSelectionRgn).rgnBBox;
+	GetRegionBounds(lassoSelectionRgn, &lassoBounds);
+	tempRect = lassoBounds;
 	OffsetRect(&tempRect, -tempRect.left, -tempRect.top);
 	temp = CreateGrafPort(&tempRect);
 
@@ -1256,16 +1266,21 @@ RgnHandle icnsEditorClass::TightenLasso(RgnHandle lassoSelectionRgn)
 	
 	statics.toolPalette->GetColors(NULL, &transparentColor);
 	
-	CalcCMask((BitMap*)*currentPix,
-			  &temp->portBits,
-			  &(**lassoSelectionRgn).rgnBBox,
+	if (status & selectionFloated)
+		targetPix = selectionPix;
+	else
+		targetPix = currentPix;
+	
+	CalcCMask((BitMap*)*targetPix,
+			  GetPortBitMapForCopyBits(temp),
+			  &lassoBounds,
 			  &tempRect,
 			  &transparentColor,
 			  maskColorSearchUPP,
 			  0);
 	
-	BitMapToRegion(tightenedRgn, &temp->portBits);
-	OffsetRgn(tightenedRgn, (**lassoSelectionRgn).rgnBBox.left, (**lassoSelectionRgn).rgnBBox.top);
+	BitMapToRegion(tightenedRgn, GetPortBitMapForCopyBits(temp));
+	OffsetRgn(tightenedRgn, lassoBounds.left, lassoBounds.top);
 	SectRgn(tightenedRgn, lassoSelectionRgn, tightenedRgn);
 	
 	DisposeRoutineDescriptor(maskColorSearchUPP);
@@ -1290,9 +1305,12 @@ void icnsEditorClass::HandleMagicWand(Point theMouse)
 	int			mode; // the selection mode
 	RgnHandle	tempRgn; // this is where the new selection will be temporarely stored 
 	OSStatus	err = noErr; // error checking
+	Point		trueStartMouse;
 	
 	SAVEGWORLD;
 	SAVECOLORS;
+	
+	trueStartMouse = theMouse;
 	
 	GetDrawingMousePosition(&x, &y, &theMouse, 0); // we get the click position
 	
@@ -1314,7 +1332,7 @@ void icnsEditorClass::HandleMagicWand(Point theMouse)
 		if (PtInRgn(theMouse, selectionRgn))
 		{
 			if (status & selectionFloated)
-				HandleMove(theMouse);
+				HandleMove(trueStartMouse);
 			else
 				DragSelection(x, y);
 			return;
@@ -1337,7 +1355,7 @@ void icnsEditorClass::HandleMagicWand(Point theMouse)
 		// we must get the new selection from the current GWorld
 		SetGWorld(currentGW, NULL);
 		SeedCFill((BitMap*)*currentPix,
-			  &selectionShape->portBits,
+			  GetPortBitMapForCopyBits(selectionShape),
 			  &currentBounds,
 			  &currentBounds,
 			  x, y,
@@ -1349,7 +1367,7 @@ void icnsEditorClass::HandleMagicWand(Point theMouse)
 		// otherwise we get it from the selection GWorld
 		SetGWorld(selectionGW, NULL);
 		SeedCFill((BitMap*)*selectionPix,
-			  &selectionShape->portBits,
+			  GetPortBitMapForCopyBits(selectionShape),
 			  &currentBounds,
 			  &currentBounds,
 			  x, y,
@@ -1358,7 +1376,7 @@ void icnsEditorClass::HandleMagicWand(Point theMouse)
 	}
 	
 	// we convert the pixmap into a region to get the selection shape
-	BitMapToRegion(tempRgn, &selectionShape->portBits); 
+	BitMapToRegion(tempRgn, GetPortBitMapForCopyBits(selectionShape)); 
 			  
 	RESTOREGWORLD;
 	RESTORECOLORS;
@@ -1391,10 +1409,11 @@ void icnsEditorClass::HandleMagicWand(Point theMouse)
 
 bool icnsEditorClass::HandleMove(Point startMouse)
 {
-	int		anchorX, anchorY, // previous location
-			x, y, // current location
-			startX, startY; // original location
-	Rect	oldBounds, newBounds;
+	int			anchorX, anchorY, // previous location
+				x, y, // current location
+				startX, startY; // original location
+	Rect		oldBounds, newBounds;
+	RgnHandle	selectionVisibleRegion = NewRgn();
 	
 	if (EmptyRgn(selectionRgn))
 	{
@@ -1424,17 +1443,25 @@ bool icnsEditorClass::HandleMove(Point startMouse)
 	anchorX = startX;
 	anchorY = startY;
 	
+	GetPortVisibleRegion(selectionGW, selectionVisibleRegion);
+	
 	while (Button()) // we move while the button is down
 	{
 		GetDrawingMousePosition(&x, &y, NULL, noLimit);
 		if ((x < 0) || (y < 0) || (x > (**currentPix).bounds.right) || (y > (**currentPix).bounds.bottom))
 		{
-			EventRecord event;
-			Point		localMouse;
-			int			boundsX, boundsY;
+			EventRecord 	event;
+			Point			localMouse;
+			int				boundsX, boundsY;
+			GWorldPtr		dragGW = NULL;
+			PixMapHandle	dragPix = NULL;
+			Rect			selectionBounds, bounds, sourceBounds, windowRect;
+			RgnHandle 		dragRgn;
 			
-			boundsX = (**selectionRgn).rgnBBox.left;
-			boundsY = (**selectionRgn).rgnBBox.top;
+			GetRegionBounds(selectionRgn, &selectionBounds);
+			
+			boundsX = selectionBounds.left;
+			boundsY = selectionBounds.top;
 			
 			// reset the selection to its original location
 			OffsetRgn(selectionRgn, startX - anchorX, startY - anchorY);
@@ -1446,30 +1473,43 @@ bool icnsEditorClass::HandleMove(Point startMouse)
 					  (startY - anchorY) * magnification);
 					  
 			OffsetRect(&(**selectionPix).bounds, startX - anchorX, startY - anchorY);
-			OffsetRgn(selectionGW->visRgn, startX - anchorX, startY - anchorY);
+			OffsetRgn(selectionVisibleRegion, startX - anchorX, startY - anchorY);
+			SetPortVisibleRegion(selectionGW, selectionVisibleRegion);
 			
 			UpdateEditArea();
 			
+			
+			windowRect = GetPortRect();
+			
 			GetMouse(&localMouse);
+			localMouse.h = constrain(localMouse.h, windowRect.left, windowRect.right);
+			localMouse.v = constrain(localMouse.v, windowRect.top, windowRect.bottom);
+			
+			event.what = mouseDown;
+			event.message = 0;
 			event.where = localMouse;
+			event.when = LMGetTicks();
 			LocalToGlobal(&event.where);
+			event.modifiers = 0;
+			
+			
 			dragSrcRect = editAreaRect;
 			
-			GWorldPtr tempGW;
-			PixMapHandle tempPix;
-			Rect	bounds, sourceBounds;
-			RgnHandle dragRgn;
+			
 			
 			bounds = (**selectionPix).bounds;
 			MagnifyRect(&bounds, magnification);
 			OffsetRect(&bounds, -bounds.left, -bounds.top);
 			
-			NewGWorld(&tempGW, (**selectionPix).pixelSize, &bounds, (**selectionPix).pmTable, NULL, 0);
-			tempPix = GetGWorldPixMap(tempGW);
-			LockPixels(tempPix);
-			SAVECOLORS;
-			CopyPixMap(selectionPix, tempPix, &(**selectionPix).bounds, &bounds, srcCopy, NULL);
-			RESTORECOLORS;
+			if (RectArea(bounds) <= kMaximumTranslucentArea)
+			{ 
+				NewGWorldUnpadded(&dragGW, (**selectionPix).pixelSize, &bounds, (**selectionPix).pmTable);
+				dragPix = GetGWorldPixMap(dragGW);
+				LockPixels(dragPix);
+				SAVECOLORS;
+				CopyPixMap(selectionPix, dragPix, &(**selectionPix).bounds, &bounds, srcCopy, NULL);
+				RESTORECOLORS;
+			}
 			
 			dragRgn = NewRgn();
 			CopyRgn(selectionRgn, dragRgn);
@@ -1479,12 +1519,19 @@ bool icnsEditorClass::HandleMove(Point startMouse)
 			OffsetRect(&sourceBounds,
 					   localMouse.h - magnification * (x - boundsX),
 					   localMouse.v - magnification * (y - boundsY));
-			DragPixMap(&sourceBounds, &event, tempPix, dragRgn, selectionPix, selectionRgn, selection);
+			
+			DragPixMap(sourceBounds, &event, dragPix, dragRgn, selectionPix, selectionRgn, selection);
+			
+			SetRect(&dragSrcRect, 0, 0, 0, 0);
+			
+			if (dragGW != NULL)
+			{
+				UnlockPixels(dragPix);
+				DisposeGWorld(dragGW);
+			}
 			
 			DisposeRgn(dragRgn);
-			
-			UnlockPixels(tempPix);
-			DisposeGWorld(tempGW);
+			DisposeRgn(selectionVisibleRegion);
 			return false;		  
 		}
 		else
@@ -1506,7 +1553,8 @@ bool icnsEditorClass::HandleMove(Point startMouse)
 			oldBounds = (**selectionPix).bounds;
 			OffsetRect(&(**selectionPix).bounds, x - anchorX, y - anchorY);
 			newBounds = (**selectionPix).bounds;
-			OffsetRgn(selectionGW->visRgn, x - anchorX, y - anchorY);
+			OffsetRgn(selectionVisibleRegion, x - anchorX, y - anchorY);
+			SetPortVisibleRegion(selectionGW, selectionVisibleRegion);
 			
 			UpdateEditArea(oldBounds, newBounds, 0);
 			
@@ -1518,6 +1566,8 @@ bool icnsEditorClass::HandleMove(Point startMouse)
 			anchorY = y;
 		}
 	}
+	
+	DisposeRgn(selectionVisibleRegion);
 	
 	return true;
 }
@@ -1534,6 +1584,7 @@ void icnsEditorClass::FloatSelection(void)
 {
 	RgnHandle	selectionLimits;
 	RGBColor	backColor;
+	Rect		regionBounds;
 	
 	SAVEGWORLD;
 	SAVECOLORS;
@@ -1544,12 +1595,14 @@ void icnsEditorClass::FloatSelection(void)
 	MagnifySelectionRgn();
 	DisposeRgn(selectionLimits);
 	
+	GetRegionBounds(selectionRgn, &regionBounds);
+	
 	// we need to update the selection contents with the new dimensions
 	UnlockPixels(selectionPix);
 	DisposeGWorld(selectionGW);
 	NewGWorldUnpadded(&selectionGW,
 					  (**currentPix).pixelSize,
-					  &(**selectionRgn).rgnBBox,
+					  &regionBounds,
 					  (**currentPix).pmTable);
 	selectionPix = GetGWorldPixMap(selectionGW);
 	LockPixels(selectionPix);
@@ -1557,8 +1610,8 @@ void icnsEditorClass::FloatSelection(void)
 	// copy the selection contents into it
 	CopyPixMap(currentPix,
 			   selectionPix,
-			   &(**selectionRgn).rgnBBox,
-			   &(**selectionRgn).rgnBBox,
+			   &regionBounds,
+			   &regionBounds,
 			   srcCopy,
 			   selectionRgn);
 	
@@ -1628,11 +1681,13 @@ void icnsEditorClass::HandleMarquee(Point startMouse)
 	Rect		marqueeRect, // the rectangle the selection
 				currentBounds, // the dimensions of the current pixmap
 				oldMarqueeRect;
-	Point		currentMouse; // the current coordinates
+	Point		trueStartMouse, currentMouse; // the current coordinates
 	RgnHandle	savedRgn; // the saved selection shape
 	int			mode; // the mode in which the selection operates
 	bool		optionKeyOriginallyDown = false, // were these modifiers held down before
 				shiftKeyOriginallyDown = false;  // the mouse buttom was?
+	
+	trueStartMouse = startMouse;
 	
 	// we get the starting point, etc. (this is very similar to the rectangle function, only
 	// differences will be noted).
@@ -1669,7 +1724,7 @@ void icnsEditorClass::HandleMarquee(Point startMouse)
 		if (PtInRgn(theMouse, selectionRgn))
 		{
 			if (status & selectionFloated)
-				HandleMove(startMouse);
+				HandleMove(trueStartMouse);
 			else
 				DragSelection(x1, y1);
 			return;
@@ -1685,7 +1740,7 @@ void icnsEditorClass::HandleMarquee(Point startMouse)
 	if ((status & selectionFloated) && (mode == normal || mode == additive))
 		DefloatSelection(); // we must defloat it
 	
-	oldMarqueeRect = (**selectionRgn).rgnBBox;
+	GetRegionBounds(selectionRgn, &oldMarqueeRect);
 	
 	while (Button())
 	{
@@ -1835,13 +1890,16 @@ void icnsEditorClass::HandleMarquee(Point startMouse)
 			MagnifySelectionRgn();
 		}
 		else if (mode == normal) // if the starting and current positions are the same
+		{
 			SetEmptyRgn(selectionRgn);
+			SetRect(&marqueeRect, 0, 0, 0, 0);
+		}
 		
-		UpdateEditArea((**selectionRgn).rgnBBox, oldMarqueeRect, 0);
+		UpdateEditArea(marqueeRect, oldMarqueeRect, 0);
 		if (statics.colorsPalette->IsVisible())
 			statics.colorsPalette->UpdateReadout(x2, y2, kPickerNeverUsedColor);
 			
-		oldMarqueeRect = (**selectionRgn).rgnBBox;
+		GetRegionBounds(selectionRgn, &oldMarqueeRect);
 		// we need to update the whole thing
 	}
 }
@@ -1864,9 +1922,9 @@ void icnsEditorClass::DragSelection(int anchorX, int anchorY)
 			ConstrainLine45(startX, startY, &x, &y);
 		
 		// we must move both the normal and the magnified selection shape
-		oldBounds = (**selectionRgn).rgnBBox;
+		GetRegionBounds(selectionRgn, &oldBounds);
 		OffsetRgn(selectionRgn, x - anchorX, y - anchorY);
-		newBounds = (**selectionRgn).rgnBBox;
+		GetRegionBounds(selectionRgn, &newBounds);
 		OffsetRgn(selectionContentsMagnifiedRgn,
 				 (x - anchorX) * magnification,
 				 (y - anchorY) * magnification);
@@ -1904,18 +1962,20 @@ void icnsEditorClass::DragSelection(int anchorX, int anchorY)
 
 void icnsEditorClass::MagnifySelectionRgn(void)
 {
-	Rect		tempRect; // the rectangle used for enlarging
+	Rect		currentBounds,
+				tempRect; // the rectangle used for enlarging
 	RgnHandle	tempRgn; // the region used for "cutting out"
 	
 	if (EmptyRgn(selectionRgn)) // if the selection is empty, then we don't do anything
 		return;
 	
 	// we get the target dimensions (original * magnification)
-	tempRect = (**selectionRgn).rgnBBox;
+	GetRegionBounds(selectionRgn, &currentBounds);
+	tempRect = currentBounds;
 	MagnifyRect(&tempRect, magnification);
 	
 	CopyRgn(selectionRgn, selectionContentsMagnifiedRgn); // we copy the normal selection shape
-	MapRgn(selectionContentsMagnifiedRgn, &(**selectionRgn).rgnBBox, &tempRect); // and enlarge it
+	MapRgn(selectionContentsMagnifiedRgn, &currentBounds, &tempRect); // and enlarge it
 	
 	CopyRgn(selectionContentsMagnifiedRgn, selectionOutlineMagnifiedRgn);
 	
@@ -2009,7 +2069,7 @@ void icnsEditorClass::HandleFilling(Point theMouse)
 	
 	SetGWorld(targetGW, NULL);
 	SeedCFill((BitMap*)*targetPix,
-		  &fillShape->portBits,
+		  GetPortBitMapForCopyBits(fillShape),
 		  &(**targetPix).bounds,
 		  &(**targetPix).bounds,
 		  x, y,
@@ -2018,7 +2078,9 @@ void icnsEditorClass::HandleFilling(Point theMouse)
 	
 	tempRgn = NewRgn();
 	// we convert the pixmap into a region to get the selection shape
-	BitMapToRegion(tempRgn, &fillShape->portBits);
+	BitMapToRegion(tempRgn, GetPortBitMapForCopyBits(fillShape));
+	
+	DisposeGrafPort(fillShape);
 	
 	if (clipRgn != NULL)
 		SectRgn(tempRgn, clipRgn, tempRgn);
@@ -2076,7 +2138,8 @@ void icnsEditorClass::HandleEyeDropper(Point theMouse)
 			
 			GetCPixel(x, y, &newColor);
 			
-			if (ISOPTIONDOWN && !statics.toolPalette->InToggleMode()) // if option is down and we're not in toggle mode
+			if (((ISOPTIONDOWN || ISSHIFTDOWN) && !statics.toolPalette->InToggleMode()) || // if option is down and we're not in toggle mode
+				(ISSHIFTDOWN && statics.toolPalette->InToggleMode()))
 				statics.toolPalette->SetColors(NULL, &newColor);
 			else
 				statics.toolPalette->SetColors(&newColor, NULL); // otherwise it goes into the foreground color
@@ -2256,7 +2319,7 @@ inline void icnsEditorClass::GetDrawingMousePosition(int *x, int *y, Point* theM
 	{
 		SAVEGWORLD; // we'll be changing the port
 		
-		SetPort(window);
+		SetPort();
 		
 		GetMouse(&originalMouse); // in terms of the window
 		

@@ -12,6 +12,7 @@ MembersPalette::MembersPalette()
 	parentEditor = NULL;
 	
 	infoButtonPicture = GetPicture(rMPInfoButtonPicture);
+	addMemberButtonPicture = GetPicture(rMPAddMemberButtonPicture);
 	
 	CreateControls();
 	
@@ -21,6 +22,7 @@ MembersPalette::MembersPalette()
 MembersPalette::~MembersPalette()
 {
 	KillPicture(infoButtonPicture);
+	KillPicture(addMemberButtonPicture);
 }
 
 void MembersPalette::Activate()
@@ -47,22 +49,41 @@ void MembersPalette::Show()
 	RefreshMemberPanes();
 }
 
-void MembersPalette::Refresh(void)
+void MembersPalette::DoIdle()
 {
-	SAVEGWORLD; // saving the current gworld for restoring later
+	Point	theMouse; // the current mouse coordinates
 	
+	SAVEGWORLD; // we must save the gworld...
+	SetPort(); // since we set the current port to the editor's window...
+			
+	GetMouse(&theMouse); // because we want the mouse coordinates in terms of the window
 	
-	BeginUpdate(window); // BeginUpdate means that the drawing is clipped to the regions which
-						 // has been marked as needed updates (by InvalRect, etc.)
+	if (IsFrontProcess()) // if we're the main app now...
+	{
+		Rect windowRect;
+		
+		windowRect = GetPortRect();
+		
+		if (PtInRect(theMouse, &windowRect) && HMGetBalloons())
+		{
+			Rect				infoButtonRect, addMemberButtonRect;
+			
+			GetControlBounds(controls.infoButton, &infoButtonRect);
+			GetControlBounds(controls.addMemberButton, &addMemberButtonRect);
+			
+			if (PtInRect(theMouse, &infoButtonRect))
+				HandleBalloon(rMPBalloonHelp, hInfoButton, infoButtonRect, theMouse);
+			else if (PtInRect(theMouse, &addMemberButtonRect))
+				HandleBalloon(rMPBalloonHelp, hAddMemberButton, addMemberButtonRect, theMouse);
+			else
+			{
+				HMRemoveBalloon();
+				icnsEditorClass::statics.currentBalloon = 0;
+			}
+		}
+	}
 	
-	SetPort(window); // we're drawing in the window
-	
-	UpdateControls(window, window->clipRgn); // we're also refreshing the controls
-	
-	EndUpdate(window); // and we're done with the updating
-	
-	RESTOREGWORLD; // we can restore the saved gworld now
-	
+	RESTOREGWORLD; // we can now restore the gworld
 }
 
 void MembersPalette::HandleContentClick(EventRecord* eventPtr)
@@ -70,20 +91,26 @@ void MembersPalette::HandleContentClick(EventRecord* eventPtr)
 	Point 				where;
 	short 				controlPart;
 	ControlHandle 		clickedControl;
-	Rect				controlRect;
+	Rect				infoButtonRect, addMemberButtonRect;
 	
 	where = eventPtr->where;
 	
 	SAVEGWORLD;
 	
-	SetPort(window);
+	SetPort();
 	
 	GlobalToLocal(&where);
 	
-	GetControlBounds(controls.infoButton, &controlRect);
-	if (PtInRect(where, &controlRect))
+	GetControlBounds(controls.infoButton, &infoButtonRect);
+	GetControlBounds(controls.addMemberButton, &addMemberButtonRect);
+	if (PtInRect(where, &infoButtonRect))
 	{
 		clickedControl = controls.infoButton;
+		controlPart = kControlIndicatorPart;
+	}
+	else if (PtInRect(where, &addMemberButtonRect))
+	{
+		clickedControl = controls.addMemberButton;
 		controlPart = kControlIndicatorPart;
 	}
 	else
@@ -93,12 +120,11 @@ void MembersPalette::HandleContentClick(EventRecord* eventPtr)
 	{
 		if (clickedControl == controls.scrollbar)
 			TrackControl(clickedControl, where, (ControlActionUPP) -1);
-		else if (clickedControl == controls.statesPane)
-			SysBeep(6);
-		else if (clickedControl == controls.infoButton)
+		else if (clickedControl == controls.infoButton ||
+				 clickedControl == controls.addMemberButton)
 		{
 			if (TrackControl(clickedControl, where, (ControlActionUPP) -1))
-				EnhancedPlacardHandleClick(controls.infoButton);
+				EnhancedPlacardHandleClick(clickedControl);
 		}
 		else if (clickedControl == controls.backgroundPane)
 		{
@@ -134,7 +160,7 @@ void MembersPalette::HandleMemberPaneClick(ControlHandle pane, short controlPart
 	SAVEGWORLD;
 	
 	
-	SetPort(window); // we set the port to the window
+	SetPort(); // we set the port to the window
 	//SAVECOLORS;
 	
 	memberIndex = GetControlReference(pane);
@@ -196,14 +222,13 @@ void MembersPalette::HandleMemberPaneClick(ControlHandle pane, short controlPart
 			dragType = srcPixName;
 		}
 		RESTOREGWORLD; // we must restore the port
-		DragPixMap(&dragSrcRect, eventPtr, dragPix, NULL, dragPix, NULL, dragType); // the actual dragging
+		DragPixMap(dragSrcRect, eventPtr, dragPix, NULL, dragPix, NULL, dragType); // the actual dragging
 		SetRect(&dragSrcRect, 0, 0, 0, 0);
 		if (needToDispose) // if we need to dipose...
 		{
 			UnlockPixels(dragPix);
 			DisposeGWorld(dragGW); // then we do
 		}
-		
 		//RESTORECOLORS; // and the colors so that we can drag
 	}
 	else // just a normal click, we just set the currentPix/GW/Name to whatever the user
@@ -225,6 +250,7 @@ void MembersPalette::CreateControls()
 {
 	Rect						windowRect;
 	ControlActionUPP			scrollBarActionUPP;
+	Str255						controlTitle;
 	
 	CreateRootControl(window, &controls.root);
 	
@@ -246,19 +272,24 @@ void MembersPalette::CreateControls()
 		SetControlReference(controls.members[i], i);
 	}
 	
-	windowRect = window->portRect;
+	windowRect = GetPortRect();
 	pageSize = windowRect.bottom - kSmallGrowBoxHeight + 1;
 	
 	ResizeMemberPanes();
 	
-	controls.statesPane = GetNewControl(rMPStatesPane, window);
-	SetControlUserPaneDraw(controls.statesPane, MembersPalette::StatesPaneDraw);
-	SetControlUserPaneHitTest(controls.statesPane, GenericHitTest);
+	controls.fillerPlacard = NewEnhancedPlacard(rMPSFillerPlacard, window, enhancedPlacardDrawBorder + enhancedPlacardNoHitTest, 0, 0, "\p", NULL, NULL, icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix, NULL, NULL);
 	
+	GetIndString(controlTitle, rMPNames, eMPInfo);
 	controls.infoButton = NewEnhancedPlacard(rMPInfoButton, window, enhancedPlacardDrawBorder,
-										  	 0, 0, "\p", infoButtonPicture, NULL,
+										  	 0, 0, controlTitle, infoButtonPicture, NULL,
 										  	 icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix,
 										  	 InfoButtonUpdate, this);
+										  	 
+	GetIndString(controlTitle, rMPNames, eMPAddMember);
+	controls.addMemberButton = NewEnhancedPlacard(rMPAddMemberButton, window, enhancedPlacardDrawBorder,
+												  0, 0, controlTitle, addMemberButtonPicture, NULL,
+												  icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix,
+												  AddMemberButtonUpdate, this);
 	
 	RepositionControls();
 }
@@ -273,6 +304,19 @@ void MembersPalette::InfoButtonUpdate(struct EnhancedPlacardData* data, int flag
 	{
 		if (parent->parentEditor)
 			parent->parentEditor->EditIconInfo(kIconInfo);
+	}
+}
+
+void MembersPalette::AddMemberButtonUpdate(struct EnhancedPlacardData* data, int flags)
+{
+	MembersPalettePtr parent;
+		
+	parent = MembersPalettePtr(data->clientData);
+		
+	if (flags & enhancedPlacardStateChanged)
+	{
+		if (parent->parentEditor)
+			parent->parentEditor->AddMember();
 	}
 }
 
@@ -322,7 +366,7 @@ void MembersPalette::HandleGrow(Point where)
 	int			h, v;
 	RgnHandle	updateRgn;
 	
-	windowRect = window->portRect;
+	windowRect = GetPortRect();
 	
 	SetRect(&maxGrowRect,
 			windowRect.right - windowRect.left,
@@ -338,15 +382,15 @@ void MembersPalette::HandleGrow(Point where)
 	if (v != windowRect.bottom - windowRect.top)
 	{
 		SAVEGWORLD;
-		SetPort(window);
+		SetPort();
 		
 		updateRgn = NewRgn(); // we must invalidate the old window region...
-		CopyRgn(window->visRgn, updateRgn);
+		GetPortVisibleRegion(GetWindowPort(window), updateRgn);
 		InvalRgn(updateRgn);
 		
 		SizeWindow(window, h, v, true); //...do the resizing
 		
-		CopyRgn(window->visRgn, updateRgn); // and invalidate the new one as well
+		GetPortVisibleRegion(GetWindowPort(window), updateRgn); // and invalidate the new one as well
 		InvalRgn(updateRgn);
 		
 		DisposeRgn(updateRgn); // and now we're done with the region
@@ -361,7 +405,7 @@ void MembersPalette::RepositionControls()
 {
 	Rect	controlRect, windowRect;
 	
-	windowRect = window->portRect;
+	windowRect = GetPortRect();
 	
 	GetControlBounds(controls.scrollbar, &controlRect);
 	controlRect.right = windowRect.right + 1;
@@ -380,15 +424,17 @@ void MembersPalette::RepositionControls()
 	
 	SetControlBounds(controls.scrollbar, &controlRect);
 	
-	GetControlBounds(controls.statesPane, &controlRect);
-	controlRect.right = windowRect.right - kSmallScrollbarWidth - kInfoButtonWidth + 3;
-	controlRect.left = -1;
+	GetControlBounds(controls.fillerPlacard, &controlRect);
 	controlRect.bottom = windowRect.bottom + 1;
 	controlRect.top = controlRect.bottom - kSmallGrowBoxHeight - 1;
-	SetControlBounds(controls.statesPane, &controlRect);
+	SetControlBounds(controls.fillerPlacard, &controlRect);
 	
-	controlRect.left = controlRect.right - 1;
-	controlRect.right = windowRect.right - kSmallScrollbarWidth + 2;
+	GetControlBounds(controls.addMemberButton, &controlRect);
+	controlRect.bottom = windowRect.bottom + 1;
+	controlRect.top = controlRect.bottom - kSmallGrowBoxHeight - 1;
+	SetControlBounds(controls.addMemberButton, &controlRect);
+	
+	GetControlBounds(controls.infoButton, &controlRect);
 	controlRect.bottom = windowRect.bottom + 1;
 	controlRect.top = controlRect.bottom - kSmallGrowBoxHeight - 1;
 	SetControlBounds(controls.infoButton, &controlRect);
@@ -412,12 +458,12 @@ void MembersPalette::RefreshMemberPanes(icnsEditorPtr frontEditor)
 	
 	SAVEGWORLD;
 	
-	SetPort(window);
+	SetPort();
 	
 	initialPosition = -scrollValue - 1;
-	membersHeight = GetTotalMembersHeight();
+	membersHeight = GetTotalMembersHeight(frontEditor);
 	
-	windowRect = window->portRect;
+	windowRect = GetPortRect();
 	
 	StartClipping();
 	
@@ -475,11 +521,11 @@ void MembersPalette::StartClipping()
 	
 	SAVEGWORLD;
 	
-	SetPort(window);
+	SetPort();
 		
 	oldClip = NewRgn();
 	GetClip(oldClip);
-	clipRect = window->portRect;
+	clipRect = GetPortRect();
 	clipRect.right -= kSmallScrollbarWidth - 1;
 	clipRect.bottom -= kSmallGrowBoxHeight;
 	ClipRect(&clipRect);
@@ -491,7 +537,7 @@ void MembersPalette::EndClipping()
 {
 	SAVEGWORLD;
 	
-	SetPort(window);
+	SetPort();
 	
 	SetClip(oldClip);
 	DisposeRgn(oldClip);
@@ -550,7 +596,8 @@ void MembersPalette::Update(icnsEditorPtr editor, bool updateAll)
 		EndClipping();
 		
 		Draw1Control(controls.scrollbar);
-		Draw1Control(controls.statesPane);
+		Draw1Control(controls.fillerPlacard);
+		Draw1Control(controls.addMemberButton);
 		Draw1Control(controls.infoButton);
 	}
 	else
@@ -579,7 +626,7 @@ void MembersPalette::ScrollToCurrentMember(icnsEditorPtr frontEditor)
 	
 	SAVEGWORLD;
 	
-	SetPort(window);
+	SetPort();
 	
 	for (int i=0; i < kMembersCount; i++)
 		if (kMembers[i].name & frontEditor->usedMembers &&
@@ -793,7 +840,7 @@ void MembersPalette::HiliteRegion(RgnHandle inHiliteRgn)
 	
 	SAVECOLORS;
 	SAVEGWORLD;
-	SetPort(window);
+	SetPort();
 	
 	GetDragHiliteColor(window, &dragHiliteColor);
 	
@@ -849,7 +896,7 @@ void MembersPalette::DragScroll(DragReference theDragRef)
 	GetDragMouse(theDragRef, &theMouse, 0);
 	GlobalToLocal(&theMouse);
 	
-	windowRect = window->portRect;
+	windowRect = GetPortRect();
 	
 	testRect = windowRect;
 	testRect.bottom = testRect.top + kDragScrollBorder;
@@ -913,6 +960,7 @@ pascal void MembersPalette::MemberPaneDraw(ControlHandle theControl, short thePa
 	MembersPalettePtr	parent;
 	Rect			labelRect;
 	MString			label;
+	RgnHandle		clipRegion = NewRgn();
 	
 	parent = icnsEditorClass::statics.membersPalette;
 	
@@ -996,12 +1044,14 @@ pascal void MembersPalette::MemberPaneDraw(ControlHandle theControl, short thePa
 	RESTOREGWORLD;
 	
 	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
-			 &qd.thePort->portBits,
+			 GetPortBitMapForCopyBits(qd.thePort),
 			 &canvasRect,
 			 &controlRect,
 			 srcCopy,
-			 parent->window->clipRgn);
-			 
+			 GetPortClipRegion(GetWindowPort(parent->window), clipRegion));
+	
+	DisposeRgn(clipRegion);
+	
 	RESTORECOLORS;
 }
 

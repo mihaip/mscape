@@ -47,17 +47,6 @@ resource 'CNTL' (300, "Icon Browser: Scroll Bar", purgeable) {
 	""
 };
 
-resource 'CNTL' (303, "Icon Browser: Type Menu", purgeable) {
-	{343, 4294967295, 359, 101},
-	300,
-	visible,
-	100,
-	0,
-	36,
-	0,
-	"Icon Types:"
-};
-
 resource 'CNTL' (301, "Icon Browser: Info Pane", purgeable) {
 	{343, 100, 359, 320},
 	0,
@@ -67,6 +56,17 @@ resource 'CNTL' (301, "Icon Browser: Info Pane", purgeable) {
 	256,
 	0,
 	"27 icons"
+};
+
+resource 'CNTL' (303, "Icon Browser: Type Menu", purgeable) {
+	{343, 4294967295, 359, 101},
+	32,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	"Icon Types:"
 };
 
 resource 'cctb' (301) {
@@ -230,22 +230,6 @@ resource 'dlgx' (300) {
 	}
 };
 
-resource 'MENU' (300, "Icon Browser: Icon Types") {
-	300,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"Icon Types",
-	{	/* array: 3 elements */
-		/* [1] */
-		"New", noIcon, noKey, noMark, plain,
-		/* [2] */
-		"Old", noIcon, noKey, noMark, plain,
-		/* [3] */
-		"Both", noIcon, noKey, noMark, plain
-	}
-};
-
 resource 'WIND' (300, purgeable) {
 	{229, 200, 485, 540},
 	1025,
@@ -282,6 +266,22 @@ resource 'STR#' (300, "Icon Browser: Strings", purgeable) {
 		"Are you sure you want to delete the icon"
 		" ID: <icon ID> from the file Ò<file name"
 		">Ó?"
+	}
+};
+
+resource 'MENU' (303, "Icon Browser: Icon Types") {
+	303,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Icon Types",
+	{	/* array: 3 elements */
+		/* [1] */
+		"New", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Old", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Both", noIcon, noKey, noMark, plain
 	}
 };
 

@@ -22,7 +22,7 @@ class drawingStateClass
 		short			selectionDepth;
 		CTabHandle		selectionColorTable;
 		long			status;
-		long			members;
+		long			members, usedMembers;
 		long			colors;
 		
 	public:

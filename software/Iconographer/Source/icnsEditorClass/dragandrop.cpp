@@ -73,7 +73,7 @@ pascal OSErr DrawDragHilite(DragReference theDragRef, icnsEditorPtr parentEditor
 		
 		SAVECOLORS;
 		SAVEGWORLD;
-		SetPort(parentEditor->window);
+		parentEditor->SetPort();
 		
 		GetDragHiliteColor(parentEditor->window, &dragHiliteColor);
 		
@@ -86,7 +86,7 @@ pascal OSErr DrawDragHilite(DragReference theDragRef, icnsEditorPtr parentEditor
 		GetForeColor(&windowForeColor);
 		RGBForeColor(&dragHiliteColor);
 		
-		targetRect = parentEditor->window->portRect;
+		targetRect = parentEditor->GetPortRect();
 		OffsetRect(&targetRect, -targetRect.left, -targetRect.top);
 		
 		if (parentEditor->statics.dragHiliteRgn == NULL)
@@ -202,10 +202,13 @@ pascal OSErr DragReceiveHandler (WindowPtr theWindow, void *, DragReference theD
 			if (targetPix == parentEditor->currentPix)
 			{
 				RgnHandle tempRgn;
+				Rect		portRect;
 				
 				tempRgn = NewRgn();
 				
-				RectRgn(tempRgn, &parentEditor->window->portRect);
+				portRect = parentEditor->GetPortRect();
+				
+				RectRgn(tempRgn, &portRect);
 				
 				UnionRgn(tempRgn, updateRgn, updateRgn);
 				
@@ -326,7 +329,7 @@ void InsertPicIntoIcon(icnsEditorPtr parentEditor, PicHandle pic)
 	DisposeGWorld(maskGW);
 }
 
-void DragPixMap(Rect* dragSourceRect,
+void DragPixMap(Rect dragSourceRect,
 				EventRecord *eventPtr,
 				PixMapHandle dragPix,
 				RgnHandle dragShapeRgn,
@@ -343,7 +346,15 @@ void DragPixMap(Rect* dragSourceRect,
 	
 	maskRgn = NewRgn();
 	if (dragShapeRgn == NULL)
-		RectRgn(maskRgn, &(**dragPix).bounds);
+	{
+		if (dragPix != NULL)
+			RectRgn(maskRgn, &(**dragPix).bounds);
+		else
+		{
+			RectRgn(maskRgn, &dragSourceRect);
+			OffsetRgn(maskRgn, -dragSourceRect.left, -dragSourceRect.top);
+		}
+	}
 	else
 		CopyRgn(dragShapeRgn, maskRgn);
 		
@@ -359,20 +370,11 @@ void DragPixMap(Rect* dragSourceRect,
 	AddDragItemFlavor(dragRef, 0, 'PICT', *dragPic,  GetHandleSize((Handle)dragPic), 0);
 	AddDragItemFlavor(dragRef, 0, 'Icon', &dragType, sizeof(long), 0);
 	
-	if (dragSourceRect != NULL)
-	{
-		offsetPt.h = dragSourceRect->left;
-		offsetPt.v = dragSourceRect->top;
-		LocalToGlobal(&offsetPt);
-	}
-	else
-	{
-		offsetPt = eventPtr->where;
-		offsetPt.h -= ((**dragPix).bounds.right - (**dragPix).bounds.left)/2;
-		offsetPt.v -= ((**dragPix).bounds.bottom - (**dragPix).bounds.top)/2;
-	}
+	offsetPt.h = dragSourceRect.left;
+	offsetPt.v = dragSourceRect.top;
+	LocalToGlobal(&offsetPt);
 	
-	if (RegionArea(maskRgn) <= 128 * 128)
+	if (dragPix != NULL && RegionArea(maskRgn) <= kMaximumTranslucentArea)
 		SetDragImage(dragRef, dragPix, maskRgn, offsetPt, kDragStandardTranslucency);
 	
 	tempRgn = NewRgn();
@@ -388,4 +390,6 @@ void DragPixMap(Rect* dragSourceRect,
 	DisposeRgn(dragRgn);
 	DisposeRgn(tempRgn);
 	DisposeHandle((Handle)dragPic);
+	
+	DisposeDrag(dragRef);
 }

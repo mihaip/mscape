@@ -75,17 +75,6 @@ resource 'CNTL' (252, "Colors Palette: Background Pane", purgeable) {
 	""
 };
 
-resource 'CNTL' (261, "Colors Palette: RGB Picker: Red Slider", purgeable) {
-	{34, 100, 52, 308},
-	0,
-	visible,
-	255,
-	0,
-	49,
-	0,
-	"Red:"
-};
-
 resource 'CNTL' (262, "Colors Palette: RGB Picker: Green Slider", purgeable) {
 	{71, 100, 89, 308},
 	0,
@@ -106,72 +95,6 @@ resource 'CNTL' (263, "Colors Palette: RGB Picker: Blue Slider", purgeable) {
 	49,
 	0,
 	"Blue:"
-};
-
-resource 'CNTL' (277, "Colors Palette: HSV Picker: Hue Preview", purgeable) {
-	{54, 111, 62, 298},
-	0,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (278, "Colors Palette: HSV Picker: Saturation Preview", purgeable) {
-	{91, 111, 99, 298},
-	0,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (279, "Colors Palette: HSV Picker: Value Preview", purgeable) {
-	{128, 111, 136, 298},
-	0,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (271, "Colors Palette: HSV Picker: Hue Slider", purgeable) {
-	{34, 100, 54, 308},
-	0,
-	visible,
-	360,
-	0,
-	49,
-	0,
-	"Hue:"
-};
-
-resource 'CNTL' (272, "Colors Palette: HSV Picker: Saturation Slider", purgeable) {
-	{71, 100, 91, 308},
-	0,
-	visible,
-	100,
-	0,
-	49,
-	0,
-	"Green:"
-};
-
-resource 'CNTL' (273, "Colors Palette: HSV Picker: Value Slider", purgeable) {
-	{108, 100, 128, 308},
-	0,
-	visible,
-	100,
-	0,
-	49,
-	0,
-	"Value:"
 };
 
 resource 'CNTL' (251, "Colors Palette: Tabs", purgeable) {
@@ -230,17 +153,6 @@ resource 'CNTL' (270, "Colors Palette: HSV Picker: Parent", purgeable) {
 };
 
 resource 'CNTL' (280, "Colors Palette: System Picker: Palette", purgeable) {
-	{22, 73, 158, 317},
-	2,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (290, "Colors Palette: Favorites Picker: Palette", purgeable) {
 	{22, 73, 158, 317},
 	2,
 	visible,
@@ -416,6 +328,94 @@ resource 'CNTL' (276, "Colors Palette: HSV Colors: Value Label", purgeable) {
 	"V:"
 };
 
+resource 'CNTL' (277, "Colors Palette: HSV Picker: Hue Preview", purgeable) {
+	{52, 109, 64, 300},
+	0,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (278, "Colors Palette: HSV Picker: Saturation Preview", purgeable) {
+	{89, 109, 101, 300},
+	0,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (279, "Colors Palette: HSV Picker: Value Preview", purgeable) {
+	{126, 109, 138, 300},
+	0,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (290, "Colors Palette: Favorites Picker: Palette", purgeable) {
+	{28, 74, 152, 316},
+	2,
+	visible,
+	100,
+	0,
+	256,
+	0,
+	""
+};
+
+resource 'CNTL' (261, "Colors Palette: RGB Picker: Red Slider", purgeable) {
+	{34, 100, 50, 308},
+	0,
+	visible,
+	255,
+	0,
+	49,
+	0,
+	"Red:"
+};
+
+resource 'CNTL' (271, "Colors Palette: HSV Picker: Hue Slider", purgeable) {
+	{34, 100, 50, 308},
+	0,
+	visible,
+	360,
+	0,
+	49,
+	0,
+	"Hue:"
+};
+
+resource 'CNTL' (272, "Colors Palette: HSV Picker: Saturation Slider", purgeable) {
+	{71, 100, 87, 308},
+	0,
+	visible,
+	100,
+	0,
+	49,
+	0,
+	"Green:"
+};
+
+resource 'CNTL' (273, "Colors Palette: HSV Picker: Value Slider", purgeable) {
+	{108, 100, 124, 308},
+	0,
+	visible,
+	100,
+	0,
+	49,
+	0,
+	"Value:"
+};
+
 resource 'tab#' (251, "Color Palette Tabs") {
 	versionZero {
 		{	/* array TabInfo: 4 elements */
@@ -517,17 +517,6 @@ resource 'DITL' (280, purgeable) {
 		Control {
 			enabled,
 			280
-		}
-	}
-};
-
-resource 'DITL' (290, purgeable) {
-	{	/* array DITLarray: 1 elements */
-		/* [1] */
-		{22, 73, 158, 317},
-		Control {
-			enabled,
-			290
 		}
 	}
 };
@@ -662,6 +651,17 @@ resource 'DITL' (260, purgeable) {
 	}
 };
 
+resource 'DITL' (290, purgeable) {
+	{	/* array DITLarray: 1 elements */
+		/* [1] */
+		{28, 74, 152, 316},
+		Control {
+			enabled,
+			290
+		}
+	}
+};
+
 resource 'DITL' (270, purgeable) {
 	{	/* array DITLarray: 10 elements */
 		/* [1] */
@@ -671,19 +671,19 @@ resource 'DITL' (270, purgeable) {
 			270
 		},
 		/* [2] */
-		{108, 100, 128, 308},
+		{108, 100, 124, 308},
 		Control {
 			enabled,
 			273
 		},
 		/* [3] */
-		{34, 100, 54, 308},
+		{34, 100, 50, 308},
 		Control {
 			enabled,
 			271
 		},
 		/* [4] */
-		{71, 100, 91, 308},
+		{71, 100, 87, 308},
 		Control {
 			enabled,
 			272
@@ -707,19 +707,19 @@ resource 'DITL' (270, purgeable) {
 			276
 		},
 		/* [8] */
-		{54, 111, 62, 298},
+		{52, 109, 64, 300},
 		Control {
 			enabled,
 			277
 		},
 		/* [9] */
-		{91, 111, 99, 298},
+		{89, 109, 101, 300},
 		Control {
 			enabled,
 			278
 		},
 		/* [10] */
-		{128, 111, 136, 298},
+		{126, 109, 138, 300},
 		Control {
 			enabled,
 			279
@@ -728,15 +728,6 @@ resource 'DITL' (270, purgeable) {
 };
 
 data 'DLGX' (280) {
-	$"0647 656E 6576 6100 0000 0000 0000 0000"            /* .Geneva......... */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0009 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
-	$"0001 0005 0000 0000 0000 0000 0000"                 /* .............. */
-};
-
-data 'DLGX' (290) {
 	$"0647 656E 6576 6100 0000 0000 0000 0000"            /* .Geneva......... */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
@@ -777,6 +768,15 @@ data 'DLGX' (260) {
 	$"0000 0000 0000 0000 0000"                           /* .......... */
 };
 
+data 'DLGX' (290) {
+	$"0647 656E 6576 6100 0000 0000 0000 0000"            /* .Geneva......... */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0009 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
+	$"0001 0005 0000 0000 0000 0000 0000"                 /* .............. */
+};
+
 data 'DLGX' (270) {
 	$"0647 656E 6576 6100 0000 0000 0000 0000"            /* .Geneva......... */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
@@ -804,17 +804,6 @@ resource 'DLOG' (280, "Colors Palette: System Picker", purgeable) {
 	noAutoCenter
 };
 
-resource 'DLOG' (290, "Colors Palette: Favorites Picker", purgeable) {
-	{299, 526, 459, 846},
-	dBoxProc,
-	visible,
-	goAway,
-	0x0,
-	290,
-	"",
-	noAutoCenter
-};
-
 resource 'DLOG' (250, "Colors Palette", purgeable) {
 	{432, 158, 592, 478},
 	1057,
@@ -833,6 +822,17 @@ resource 'DLOG' (260, "Colors Palette: RGB Picker", purgeable) {
 	goAway,
 	0x0,
 	260,
+	"",
+	noAutoCenter
+};
+
+resource 'DLOG' (290, "Colors Palette: Favorites Picker", purgeable) {
+	{299, 526, 459, 846},
+	dBoxProc,
+	visible,
+	goAway,
+	0x0,
+	290,
 	"",
 	noAutoCenter
 };

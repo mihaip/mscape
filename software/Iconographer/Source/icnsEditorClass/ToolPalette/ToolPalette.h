@@ -33,10 +33,8 @@ enum ToolPaletteResources
 	rTPCantZoom = 652,
 	
 	// widget icons
-	rSwapColorsIconEnabled = 650,
-	rSwapColorsIconDisabled = 651,
-	rResetColorsIconEnabled = 652,
-	rResetColorsIconDisabled = 653,
+	rTPSwapColorsIcon = 650,
+	rTPResetColorsIcon = 651,
 	
 	// settings pictures
 	rTPAliasedPic = 660,
@@ -125,7 +123,6 @@ class ToolPalette : public MFloater
 		
 		void					DoIdle();
 		
-		void					Refresh();
 		void 					HandleContentClick(EventRecord* eventPtr);
 		void 					HandleKeyDown(EventRecord *eventPtr);
 		
@@ -153,6 +150,8 @@ class ToolPalette : public MFloater
 		int						currentTool, oldTool;
 		int						toolModes[kToolCount];
 		
+		CIconHandle				swapColorsIcon, resetColorsIcon;
+		
 		Rect					colorSwatchRects[kTPColorSwatchPartCount];
 		
 		RGBColor				foreColor, backColor;
@@ -172,7 +171,7 @@ class ToolPalette : public MFloater
 		
 		static pascal void 		SwatchUpdate(RGBColor* color, void *clientData);
 		
-		static void				MakeColorSwatchRects(Rect controlRect, Rect rects[]);
+		void					MakeColorSwatchRects(Rect controlRect, Rect rects[]);
 		
 		static pascal void		ColorSwatchDraw(ControlHandle theControl,SInt16 thePart);
 		static pascal short 	ColorSwatchHitTest(ControlHandle control, Point where);

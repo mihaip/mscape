@@ -203,7 +203,7 @@ void icnsEditorClass::Show(void)
 {
 	MWindow::Show();
 	
-	statics.UpdatePalettes(updateAll);
+	statics.UpdatePalettes(this, updateAll);
 }
 
 // __________________________________________________________________________________________
@@ -221,7 +221,7 @@ void icnsEditorClass::Activate()
 		ActivateControl(controls.rootControl); // activate the control
 	}
 	
-	statics.UpdatePalettes(updateAll);
+	statics.UpdatePalettes(this, updateAll);
 	statics.membersPalette->ScrollToCurrentMember(this);
 	
 	if (exportMode && GetModificationDate(exportFile) > exportDate)
@@ -295,7 +295,7 @@ void icnsEditorClass::DoIdle(void)
 	Point	globalMouse;
 	
 	SAVEGWORLD; // we must save the gworld...
-	SetPort(window); // since we set the current port to the editor's window...
+	SetPort(); // since we set the current port to the editor's window...
 			
 	GetMouse(&theMouse); // because we want the mouse coordinates in terms of the window
 	
@@ -319,7 +319,25 @@ void icnsEditorClass::DoIdle(void)
 		if (window == windowUnderMouse)
 		{
 			if (HMGetBalloons())
-				HandleBalloons(theMouse, window, rEditorBalloonHelp);				
+				if (PtInRect(theMouse, &editAreaRect))
+					HandleBalloon(rEditorBalloonHelp, hEditingArea, editAreaRect, theMouse);
+				else
+				{
+					ControlHandle	theControl;
+					
+					FindControl(theMouse, window, &theControl);
+					
+					if (theControl == controls.zoomPlacard)
+					{
+						Rect	controlBounds;
+						
+						GetControlBounds(controls.zoomPlacard, &controlBounds);
+						
+						HandleBalloon(rEditorBalloonHelp, hZoomPlacard, controlBounds, theMouse);
+					}
+					else
+						HandleBalloons(theMouse, window, rEditorBalloonHelp);
+				}
 			
 			UpdateCursor(theMouse);
 		}
@@ -328,7 +346,7 @@ void icnsEditorClass::DoIdle(void)
 			Point temp;
 			
 			SAVEGWORLD;
-			SetPort(windowUnderMouse);
+			GetEditor(windowUnderMouse)->SetPort();
 			GetMouse(&temp);
 			if (PtInRect(temp, &GetEditor(windowUnderMouse)->editAreaRect))
 				MUtilities::ChangeCursor(rTPToolBaseID + toolEyeDropper);
@@ -341,14 +359,14 @@ void icnsEditorClass::DoIdle(void)
 	{
 		UpdateEditArea();
 		
-		statics.UpdatePalettes(updateAll);
+		statics.UpdatePalettes(this, updateAll);
 		status &= ~needsUpdate;
 	}
 	else if (!EmptyRgn(selectionRgn))
 	{
 		Rect selectionUpdateRect;
 		
-		selectionUpdateRect = (**selectionContentsMagnifiedRgn).rgnBBox;
+		GetRegionBounds(selectionContentsMagnifiedRgn, &selectionUpdateRect);
 		//MagnifyRect(&selectionUpdateRect, magnification);
 		OffsetRect(&selectionUpdateRect,
 				   editAreaRect.left - hScrollbarValue,
@@ -547,7 +565,8 @@ void icnsEditorClass::ChangeColorsIconSet(long name, GWorldPtr* gWorld, PixMapHa
 //				  is clippied to the update region.
 
 void icnsEditorClass::Refresh(void)
-{	
+{
+	RgnHandle	visibleRegion = NewRgn();
 	SAVEGWORLD; // saving the current gworld for restoring later
 	
 	if ((MWindow::GetFront() == this) &&				// if we're the front window
@@ -562,7 +581,7 @@ void icnsEditorClass::Refresh(void)
 	BeginUpdate(window); // BeginUpdate means that the drawing is clipped to the regions which
 						 // has been marked as needed updates (by InvalRect, etc.)
 	
-	SetPort(window); // we're drawing in the window
+	SetPort(); // we're drawing in the window
 	
 	if (status & resized) // if we were resized
 	{
@@ -576,7 +595,9 @@ void icnsEditorClass::Refresh(void)
 		status &= ~resized; // and we're done with the resizing
 	}
 	
-	UpdateControls(window, window->visRgn); // we're also refreshing the controls
+	UpdateControls(window, GetPortVisibleRegion(GetWindowPort(window), visibleRegion)); // we're also refreshing the controls
+	
+	DisposeRgn(visibleRegion);
 	
 	EndUpdate(window); // and we're done with the updating
 	
@@ -631,7 +652,7 @@ void icnsEditorClass::HandleContentClick(EventRecord *eventPtr)
 				GetDrawingMousePosition(&x, &y, NULL, noLimit);
 				if (x >= 0 && y >= 0 && x < (**currentPix).bounds.right && y < (**currentPix).bounds.bottom)
 				{
-					SetPort(window);
+					SetPort();
 					GlobalToLocal(&where);
 					
 					HandleEyeDropper(where);
@@ -652,7 +673,7 @@ void icnsEditorClass::HandleContentClick(EventRecord *eventPtr)
 	}	
 	else
 	{
-		SetPort(window); 
+		SetPort(); 
 		GlobalToLocal(&where); // we must convert the coordinates to local ones in term of
 							   // the window
 		controlPart = FindControl(where, window, &clickedControl);
@@ -918,6 +939,7 @@ int icnsEditorClass::EditIconInfo(int mode)
 	long			temp, menuSelection, oldFormat, oldUsedMembers;
 	MenuHandle		menu, popupMenu, formatMenu;
 	int				menuID, item;
+	MWindowPtr		infoDialogWindow;
 	
 	oldFormat = format;
 	oldUsedMembers = usedMembers;
@@ -926,7 +948,7 @@ int icnsEditorClass::EditIconInfo(int mode)
 	
 	SAVEGWORLD;
 	
-	SetPort(infoDialog);
+	SetPortDialogPort(infoDialog);
 	TextFont(applFont);
 	TextSize(9);
 	
@@ -937,11 +959,12 @@ int icnsEditorClass::EditIconInfo(int mode)
 		Str255 windowTitle;
 		
 		GetIndString(windowTitle, rBasicStrings, eInsertIconTitle);
-		SetWTitle(infoDialog, windowTitle);
+		SetWTitle(GetDialogWindow(infoDialog), windowTitle);
 	}
 	
-	//MWindow::CenterOnFront(GetDialogWindow(infoDialog));
-	
+	infoDialogWindow = new MWindow(GetDialogWindow(infoDialog), kDialogType);
+	MWindow::CenterOnFront(infoDialogWindow);
+
 	eventFilterUPP = NewModalFilterProc(IconInfoDialogFilter);
 	
 	SetDialogDefaultItem(infoDialog, iOK);
@@ -998,11 +1021,11 @@ int icnsEditorClass::EditIconInfo(int mode)
 	
 	MWindow::DeactivateAll();
 	
-	ShowWindow(infoDialog);
+	ShowWindow(GetDialogWindow(infoDialog));
 	
 	GetIDMenu(ID, &menu, &item, tempString);
 	CheckItem(menu, item, true);
-	SetControlValue(IDMenu, (**menu).menuID - mBaseIDMenu + 1);
+	SetControlValue(IDMenu, GetMenuID(menu) - mBaseIDMenu + 1);
 	
 	dialogDone = false;
 	
@@ -1092,7 +1115,7 @@ int icnsEditorClass::EditIconInfo(int mode)
 				StringToNum(tempString, &temp);
 				GetIDMenu(temp, &menu, &item, tempString);
 				CheckItem(menu, item, true);
-				SetControlValue(IDMenu, (**menu).menuID - mBaseIDMenu + 1);
+				SetControlValue(IDMenu, GetMenuID(menu) - mBaseIDMenu + 1);
 				if (tempString[0] != 0)
 				{
 					SetControlText(nameField, tempString);
@@ -1142,6 +1165,8 @@ int icnsEditorClass::EditIconInfo(int mode)
 	
 	DisposeRoutineDescriptor(eventFilterUPP);
 	DisposeDialog(infoDialog);
+	
+	delete infoDialogWindow;
 	
 	MWindow::ActivateAll();
 	
@@ -1246,7 +1271,7 @@ pascal bool IconInfoDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short*
 			ControlHandle IDField, focusControl;
 			
 			GetDialogItemAsControl(dialog, iIconIDField, &IDField);
-			GetKeyboardFocus(dialog, &focusControl);
+			GetKeyboardFocus(GetDialogWindow(dialog), &focusControl);
 			
 			if (eventPtr->modifiers & cmdKey)
 				handledEvent = StdFilterProc(dialog, eventPtr, itemHit);
@@ -1281,6 +1306,128 @@ pascal bool IconInfoDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short*
 
 #pragma mark -
 
+void icnsEditorClass::AddMember()
+{
+	DialogPtr		addMemberDialog;
+	ModalFilterUPP	eventFilterUPP;
+	MWindowPtr		addMemberDialogWindow;
+	bool			dialogDone = false;
+	short			itemHit;
+	ControlHandle	typePopup, sourcePopup;
+	MenuHandle		typeMenu, sourceMenu;
+	
+	addMemberDialog = GetNewDialog(rAddMember, NULL, (WindowPtr)-1L);
+	
+	SetDialogDefaultItem(addMemberDialog, iOK);
+	SetDialogCancelItem(addMemberDialog, iCancel);
+	
+	addMemberDialogWindow = new MWindow(GetDialogWindow(addMemberDialog), kDialogType);
+	MWindow::CenterOnFront(addMemberDialogWindow);
+
+
+	GetDialogItemAsControl(addMemberDialog, iTypePopup, &typePopup);
+	typeMenu = GetControlPopupMenuHandle(typePopup);
+	BuildMembersMenu(typeMenu, 0, ~members);
+	SetControlMaximum(typePopup, CountMenuItems(typeMenu));
+	SetControlValue(typePopup, 1);
+	
+	GetDialogItemAsControl(addMemberDialog, iSourcePopup, &sourcePopup);
+	sourceMenu = GetControlPopupMenuHandle(sourcePopup);
+	BuildMembersMenu(sourceMenu, 3, members);
+	SetControlMaximum(sourcePopup, CountMenuItems(sourceMenu));
+	if (ISSHIFTDOWN || ISOPTIONDOWN)
+		SetControlValue(sourcePopup, iSourceCurrent);
+	else
+		SetControlValue(sourcePopup, iSourceNone);
+	
+	MWindow::DeactivateAll();
+	
+	ShowWindow(GetDialogWindow(addMemberDialog));
+
+	eventFilterUPP = NewModalFilterProc(StandardEditorDialogFilter);
+	
+	while (!dialogDone)
+	{
+		ModalDialog(eventFilterUPP, &itemHit);
+		
+		switch (itemHit)
+		{
+			case iOK:
+				int newMember, sourceMember;
+				
+				GetMenuItemRefCon(typeMenu, GetControlValue(typePopup), (unsigned long*)&newMember);
+				
+				switch (GetControlValue(sourcePopup))
+				{
+					case iSourceNone: sourceMember = -1; break;
+					case iSourceCurrent: sourceMember = currentPixName; break;
+					default: GetMenuItemRefCon(sourceMenu, GetControlValue(sourcePopup), (unsigned long*)&sourceMember); break; 
+				}
+				
+				members |= newMember;
+				usedMembers |= newMember;
+				
+				if (sourceMember != -1)
+				{
+					GWorldPtr		sourceGW, targetGW;
+					PixMapHandle	sourcePix, targetPix;
+					
+					GetGWorldAndPix(sourceMember, &sourceGW, &sourcePix);
+					GetGWorldAndPix(newMember, &targetGW, &targetPix);
+					
+					SAVECOLORS;
+					
+					if (statics.preferences.FeatureEnabled(prefsDither))
+						CopyPixMap(sourcePix, targetPix, &(**sourcePix).bounds, &(**targetPix).bounds, srcCopy + ditherCopy, NULL);
+					else
+						CopyPixMap(sourcePix, targetPix, &(**sourcePix).bounds, &(**targetPix).bounds, srcCopy, NULL);
+					
+					RESTORECOLORS;
+				}
+				
+				SetCurrentMember(newMember, true);
+					
+				dialogDone = true;
+				break;
+			case iCancel: dialogDone = true; break;
+		}
+	}
+	
+	DisposeRoutineDescriptor(eventFilterUPP);
+	DisposeDialog(addMemberDialog);
+	
+	delete addMemberDialogWindow;
+	
+	MWindow::ActivateAll();
+}
+
+void icnsEditorClass::BuildMembersMenu(MenuHandle menu, int startingPoint, int membersToList)
+{
+	Str255	memberName;
+	int		previousSize = -1;
+	
+	for (int i=0; i < kMembersCount; i++)
+		if ((kDefaultMembers[format] & kMembers[i].name) &&
+			membersToList & kMembers[i].name)
+		{
+			if (previousSize != kMembers[i].height)
+			{
+				if (-1 != previousSize)
+					InsertMenuItem(menu, "\p-", startingPoint++);
+				
+				previousSize = kMembers[i].height;
+			}
+				
+			GetMemberNameString(kMembers[i].name, memberName);
+			
+			InsertMenuItem(menu, memberName, startingPoint++);
+			
+			SetMenuItemRefCon(menu, startingPoint, kMembers[i].name);
+		}
+}
+
+#pragma mark -
+
 // __________________________________________________________________________________________
 // Name			: icnsEditorClass::RepositionControls
 // Input		: None
@@ -1298,10 +1445,10 @@ void icnsEditorClass::RepositionControls()
 	// how much the edit area should be grown by for each magnification level
 	
 	SAVEGWORLD;
-	SetPort(window); // we'll be changing controls in this window, so the coordinates must
+	SetPort(); // we'll be changing controls in this window, so the coordinates must
 					 // be local to here
 	
-	windowRect = window->portRect;
+	windowRect = GetPortRect();
 	OffsetRect(&windowRect, -windowRect.left, -windowRect.top);
 	windowRect.bottom -= kScrollbarHeight;
 	windowRect.right -= kScrollbarWidth;
@@ -1364,7 +1511,7 @@ void icnsEditorClass::MakeEditAreaRect(int h, int v, Rect* areaRect)
 {
 	Rect	windowRect;
 	
-	windowRect = window->portRect;
+	windowRect = GetPortRect();
 	OffsetRect(&windowRect, -windowRect.left, -windowRect.top);
 	windowRect.bottom -= kScrollbarHeight;
 	windowRect.right -= kScrollbarWidth;
@@ -1501,14 +1648,6 @@ void icnsEditorClass::UpdateZoom()
 	Draw1Control(controls.zoomPlacard);
 }
 
-void icnsEditorClass::UpdatePreview()
-{
-	if (currentPixName & thumbnailSize)
-		statics.previewPalette->SetPane(kPPThumbnailPane);
-	else
-		statics.previewPalette->SetPane(kPPHintsPane);
-}
-
 // __________________________________________________________________________________________
 // Name			: icnsEditorClass::HandleGrow
 // Input		: where: point in the grow box that was clicked
@@ -1540,15 +1679,15 @@ void icnsEditorClass::HandleGrow(Point where)
 	if (h != currentDimensions.h || v != currentDimensions.v)
 	{	
 		SAVEGWORLD;
-		SetPort(window);
+		SetPort();
 		
 		updateRgn = NewRgn(); // we must invalidate the old window region...
-		CopyRgn(window->visRgn, updateRgn);
+		GetPortVisibleRegion(GetWindowPort(window), updateRgn);
 		InvalRgn(updateRgn);
 		
 		SizeWindow(window, h, v, true); //...do the resizing
 		
-		CopyRgn(window->visRgn, updateRgn); // and invalidate the new one as well
+		GetPortVisibleRegion(GetWindowPort(window), updateRgn); // and invalidate the new one as well
 		InvalRgn(updateRgn);
 		
 		DisposeRgn(updateRgn); // and now we're done with the region
@@ -1695,7 +1834,8 @@ void icnsEditorClass::ToggleZoom()
 			tempPosition.h += GetBorderThickness(borderLeft) + kDefaultWindowSeparation;
 			tempPosition.v += GetBorderThickness(borderTop);
 			SetPosition(tempPosition);
-			magnification = GetMaxMagnification();
+			if (editAreaRect.top == 0 && editAreaRect.left == 0)
+				magnification = GetMaxMagnification();
 			ZoomFitWindow();
 		}
 		else
@@ -1773,8 +1913,6 @@ void icnsEditorClass::PostLoad()
 {
 	LoadUsedMembers();
 	
-	UpdatePreview();
-	
 	for (int i=0; i < kPreferredMembersCount; i++)
 		if (members & kPreferredMembers[i])
 		{
@@ -1784,71 +1922,149 @@ void icnsEditorClass::PostLoad()
 	
 	ResetStates();
 	
+	statics.previewPalette->SetPreviewSize((**currentPix).bounds.bottom);
 	statics.membersPalette->RefreshMemberPanes(this);
 }
 
 void icnsEditorClass::LoadUsedMembers()
 {
-	short oldFile, targetFile;
-	Handle	usedMembersResource;
-	
-	SetupFileSpec(false);
-	
-	oldFile = CurResFile();
-	targetFile = FSpOpenResFile(&srcFileSpec, fsRdWrPerm);
-	
-	UseResFile(targetFile);
-	
-	usedMembersResource = Get1Resource('Mngl', 128);
-	
-	if (usedMembersResource != NULL)
-		usedMembers = **((long**)usedMembersResource);
+	if (statics.preferences.FeatureEnabled(prefsShowOnlyLoadedMembers))
+	{
+		usedMembers = kDefaultMembers[format] & members;
+	}
 	else
-		usedMembers |= members;
-	
-	CloseResFile(targetFile);
-	UseResFile(oldFile);
-	
-	CleanupFileSpec();
+	{
+		short oldFile, targetFile;
+		Handle	usedMembersResource;
+		
+		SetupFileSpec(false);
+		
+		oldFile = CurResFile();
+		targetFile = FSpOpenResFile(&srcFileSpec, fsRdWrPerm);
+		
+		UseResFile(targetFile);
+		
+		usedMembersResource = Get1Resource('Mngl', 128);
+		
+		if (usedMembersResource != NULL)
+			usedMembers = **((long**)usedMembersResource);
+		else
+			usedMembers |= members;
+		
+		CloseResFile(targetFile);
+		UseResFile(oldFile);
+		
+		CleanupFileSpec();
+	}
 }
 
 void icnsEditorClass::SaveUsedMembers()
 {
-	short oldFile, targetFile;
-	Handle	usedMembersResource;
-	
-	SetupFileSpec(false);
-	
-	oldFile = CurResFile();
-	targetFile = FSpOpenResFile(&srcFileSpec, fsRdWrPerm);
-	
-	UseResFile(targetFile);
-	
-	do
+	if (statics.preferences.FeatureEnabled(prefsShowOnlyLoadedMembers))
 	{
-		usedMembersResource = Get1Resource('Mngl', 128);
-		if (usedMembersResource != NULL)
+		;
+	}
+	else
+	{
+		short oldFile, targetFile;
+		Handle	usedMembersResource;
+		
+		SetupFileSpec(false);
+		
+		oldFile = CurResFile();
+		targetFile = FSpOpenResFile(&srcFileSpec, fsRdWrPerm);
+		
+		UseResFile(targetFile);
+		
+		do
 		{
-			RemoveResource(usedMembersResource);
-			UpdateResFile(targetFile);
+			usedMembersResource = Get1Resource('Mngl', 128);
+			if (usedMembersResource != NULL)
+			{
+				RemoveResource(usedMembersResource);
+				UpdateResFile(targetFile);
+			}
+		} while (usedMembersResource != NULL);
+		
+		usedMembersResource = NewHandleClear(sizeof(usedMembers));
+		
+		BlockMoveData(&usedMembers, *usedMembersResource, sizeof(usedMembers));
+		
+		DetachResource(usedMembersResource);
+		AddResource(usedMembersResource, 'Mngl', 128, "\p");
+		
+		ChangedResource(usedMembersResource);
+		WriteResource(usedMembersResource);
+		
+		UpdateResFile(targetFile);
+		CloseResFile(targetFile);
+		UseResFile(oldFile);
+		
+		CleanupFileSpec();
+	}
+}
+
+void icnsEditorClass::CheckMaskSync(PixMapHandle basePix, PixMapHandle maskPix, int size)
+{
+	GWorldPtr 		tempGW;
+	PixMapHandle	tempPix;
+	Rect			bounds;
+	
+	
+	bounds = (**basePix).bounds;
+	
+	NewGWorld(&tempGW, 1, &bounds, NULL, NULL, 0);
+	tempPix = GetGWorldPixMap(tempGW);
+	LockPixels(tempPix);
+	
+	Mask8ToMask1(basePix, tempPix);
+	
+	if (!SamePixMap(tempPix, maskPix))
+	{
+		Str255	text, sizeName, regenerateButton, noButton;
+		
+		GetIndString(text, rBasicStrings, eMaskSync);
+		GetSizeName(size, sizeName);
+		if (sizeName[1] < 'a') sizeName[1] += ('a' - 'A');
+		SubstituteString(text, "\p<size>", sizeName);
+		SubstituteString(text, "\p<size>", sizeName);
+		
+		GetIndString(regenerateButton, rBasicStrings, eRegenerateButton);
+		GetIndString(noButton, rBasicStrings, eNoButton);
+		if (statics.DisplayAlert(text, regenerateButton, noButton, "\p"))
+		{
+			SAVECOLORS;
+			CopyPixMap(tempPix, maskPix, &bounds, &bounds, srcCopy, NULL);
+			RESTORECOLORS;
 		}
-	} while (usedMembersResource != NULL);
+	}
+	UnlockPixels(tempPix);
+	DisposeGWorld(tempGW);
+}
+
+void icnsEditorClass::GenerateMask(int maskName)
+{
+	Str255	text, sizeName, generateButton, noButton;
+		
+	GetIndString(text, rBasicStrings, eNoMask);
+	GetSizeName(maskName, sizeName);
+	if (sizeName[1] < 'a') sizeName[1] += ('a' - 'A');
+	SubstituteString(text, "\p<size>", sizeName);
 	
-	usedMembersResource = NewHandleClear(sizeof(usedMembers));
-	
-	BlockMoveData(&usedMembers, *usedMembersResource, sizeof(usedMembers));
-	
-	DetachResource(usedMembersResource);
-	AddResource(usedMembersResource, 'Mngl', 128, "\p");
-	
-	ChangedResource(usedMembersResource);
-	WriteResource(usedMembersResource);
-	
-	UpdateResFile(targetFile);
-	CloseResFile(targetFile);
-	UseResFile(oldFile);
-	
-	CleanupFileSpec();
+	GetIndString(generateButton, rBasicStrings, eGenerateButton);
+	GetIndString(noButton, rBasicStrings, eNoButton);
+	if (statics.DisplayAlert(text, generateButton, noButton, "\p"))
+	{
+		GWorldPtr		iconGW, maskGW;
+		PixMapHandle	iconPix, maskPix;
+		int				iconName;
+		
+		GetGWorldAndPix(maskName, &maskGW, &maskPix);
+		iconName = GetBestPixName((**maskPix).bounds.bottom, (**maskPix).pixelSize, true);
+		GetGWorldAndPix(iconName, &iconGW, &iconPix);
+		
+		Make1BitMask(iconPix, maskPix, (**maskPix).bounds);
+	}
 }
 
 // __________________________________________________________________________________________
@@ -1860,16 +2076,23 @@ void icnsEditorClass::SaveUsedMembers()
 
 OSErr icnsEditorClass::Save(void)
 {
-	if (!statics.preferences.FeatureEnabled(prefsDontCheckSync))
+	if (!statics.preferences.FeatureEnabled(prefsDontCheckMasks))
 	{
-		if ((members & l8mk) || !IsEmptyPixMap(l8mkPix))
-			CheckMaskSync(l8mkPix, icnmPix, eLargeMaskSync);
+		RefreshIconMembers();
 		
-		if ((members & s8mk) || !IsEmptyPixMap(s8mkPix))
-			CheckMaskSync(s8mkPix, icsmPix, eSmallMaskSync);
-			
-		if ((members & h8mk) || !IsEmptyPixMap(h8mkPix))
-			CheckMaskSync(h8mkPix, ichmPix, eHugeMaskSync);
+		if (format == formatMacOSUniversal ||
+			format == formatMacOSNew)
+		{
+			if (members & l8mk)	CheckMaskSync(l8mkPix, icnmPix, largeSize);
+			if (members & s8mk)	CheckMaskSync(s8mkPix, icsmPix, smallSize);
+			if (members & h8mk)	CheckMaskSync(h8mkPix, ichmPix, hugeSize);
+		}
+		
+		if (members & thumbnailSize && !(members & t8mk)) GenerateMask(t8mk);
+		if (members & hugeSize && !(members & (h8mk | ichm))) GenerateMask(ichm);
+		if (members & largeSize && !(members & (l8mk | icnm))) GenerateMask(icnm);
+		if (members & smallSize && !(members & (s8mk | icsm))) GenerateMask(icsm);
+		if (members & miniSize && !(members & icmm)) GenerateMask(icmm);
 	}
 
 	if (colors == winColors)
@@ -2044,11 +2267,30 @@ void icnsEditorClass::PostSave()
 
 void icnsEditorClass::OpenInExternalEditor()
 {
-	Str255			memberName;
+	Str255			memberName, temp;
 	GWorldPtr		iconGW, maskGW;
 	PixMapHandle	iconPix, maskPix;
 	long			iconName, maskName, creator;
 	Rect			bounds;
+	
+	if (!statics.preferences.ExternalEditorChosen())
+	{
+		Str255	error, prefsButton, cancelButton;
+		
+		GetIndString(error, rBasicStrings, eExternalEditorError);
+		GetIndString(prefsButton, rBasicStrings, eOpenPreferences);
+		GetIndString(cancelButton, rBasicStrings, eInfoCancelButton);
+		
+		if (statics.DisplayAlert(error, prefsButton, cancelButton, "\p") == 1)
+		{
+			statics.preferences.Edit(kPrefsExternalEditorPane);
+			
+			if (!statics.preferences.ExternalEditorChosen())
+				return;
+		}
+		else
+			return;
+	}
 	
 	if (exportMode)
 		FSpDelete(&exportFile);
@@ -2070,7 +2312,12 @@ void icnsEditorClass::OpenInExternalEditor()
 	
 	creator = statics.preferences.GetExternalEditorCreator();
 	
-	GetIndString(exportFile.name, rBasicStrings, eIconographerSupportFolder);
+	statics.GetSupportFolder(&exportFile);
+	
+	GetIndString(temp, rBasicStrings, eIconographerSupportFolder);
+	CopyString(exportFile.name, "\p:");
+	AppendString(exportFile.name, temp);
+	AppendString(exportFile.name, "\p:");
 	NumToString(long(this), memberName);
 	AppendString(exportFile.name, memberName);
 	AppendString(exportFile.name, "\p.");
@@ -2191,6 +2438,7 @@ void icnsEditorClass::ReloadFromExternalEditor()
 	else
 		ImportQTFileToGWorld(exportFile, currentGW);
 
+	currentState = new drawingStateClass(currentState, this);
 	status |= needToSave;
 	status |= needsUpdate;
 }
@@ -2260,16 +2508,18 @@ void icnsEditorClass::SetCurrentMember(long memberName, bool fancy)
 		RepositionControls();
 	}
 	
+	if (fancy)
+		statics.previewPalette->SetPreviewSize((**currentPix).bounds.bottom);
+	
 	SAVEGWORLD;
-	SetPort(window);
+	SetPort();
 	UpdateEditArea();
 	RESTOREGWORLD;
 	
 	RefreshWindowTitle();
-	UpdatePreview();
 	
 	statics.membersPalette->ScrollToCurrentMember(this);
-	icnsEditorClass::statics.UpdatePalettes(updateAll);
+	icnsEditorClass::statics.UpdatePalettes(this, updateAll);
 	
 	if (fancy)
 	{
@@ -2317,13 +2567,13 @@ void icnsEditorClass::SetBestMember()
 		case formatMacOSUniversal:
 		case formatMacOSNew:
 		case formatMacOSXServer:
-			SetCurrentMember(il32, false);
+			SetCurrentMember(il32, true);
 			break;
 		case formatMacOSOld:
-			SetCurrentMember(icl8, false);
+			SetCurrentMember(icl8, true);
 			break;
 		case formatWindows:
-			SetCurrentMember(il32, false);
+			SetCurrentMember(il32, true);
 			break;
 	}
 	
@@ -2369,7 +2619,7 @@ void icnsEditorClass::ToggleIconMask()
 	
 	Draw1Control(controls.editArea);
 
-	statics.UpdatePalettes(0);
+	statics.UpdatePalettes(this, 0);
 }
 
 #pragma mark-
@@ -2430,43 +2680,6 @@ void icnsEditorClass::SaveState(GWorldPtr gWorld, PixMapHandle pix, long name)
 
 #pragma mark -
 
-void icnsEditorClass::CheckMaskSync(PixMapHandle basePix, PixMapHandle maskPix, int errorString)
-{
-	GWorldPtr tempGW;
-	PixMapHandle tempPix;
-	short		itemHit;
-	Str255		text, yesButton, noButton;
-	Rect		bounds;
-	
-	
-	bounds = (**basePix).bounds;
-	
-	NewGWorld(&tempGW, 1, &bounds, NULL, NULL, 0);
-	tempPix = GetGWorldPixMap(tempGW);
-	LockPixels(tempPix);
-	
-	Mask8ToMask1(basePix, tempPix);
-	
-	
-	
-	if (!SamePixMap(tempPix, maskPix))
-	{
-		GetIndString(text, rBasicStrings, errorString);
-		GetIndString(yesButton, rBasicStrings, eYesButton);
-		GetIndString(noButton, rBasicStrings, eNoButton);
-		itemHit = statics.DisplayAlert(text, yesButton, noButton, "\p");
-		if (itemHit == 1)
-		{
-			SAVECOLORS;
-			CopyPixMap(tempPix, maskPix, &bounds, &bounds, srcCopy, NULL);
-			RESTORECOLORS;
-		}
-		
-	}
-	UnlockPixels(tempPix);
-	DisposeGWorld(tempGW);
-}
-
 // __________________________________________________________________________________________
 // Name			: icnsEditorClass::HandleKeyDown
 // Input		: eventPtr: pointer to the EventRecord that describes the event which happened
@@ -2498,7 +2711,7 @@ void icnsEditorClass::HandleKeyDown(EventRecord *eventPtr)
 		case kPageDownCharCode:
 			{
 				SAVEGWORLD;
-				SetPort(window);
+				SetPort();
 				StartPan();
 				ScrollbarAction(controls.vScrollbar, kControlPageDownPart);
 				FinishPan();
@@ -2508,7 +2721,7 @@ void icnsEditorClass::HandleKeyDown(EventRecord *eventPtr)
 		case kPageUpCharCode:
 			{
 				SAVEGWORLD;
-				SetPort(window);
+				SetPort();
 				StartPan();
 				ScrollbarAction(controls.vScrollbar, kControlPageUpPart);
 				FinishPan();
@@ -2831,7 +3044,7 @@ void icnsEditorClass::Paste(int pasteType)
 				case intoSelection:
 					if (status & selectionFloated)
 						DefloatSelection();
-					(**clipPicture).picFrame = (**selectionRgn).rgnBBox;
+					GetRegionBounds(selectionRgn, &(**clipPicture).picFrame);
 					InsertFromPicture(clipPicture, currentGW, 0);
 					break;
 			}
@@ -2862,13 +3075,16 @@ void icnsEditorClass::Paste(int pasteType)
 void icnsEditorClass::InsertFromPicture(PicHandle srcPic, GWorldPtr targetGW, int options)
 {
 	Rect	picRect, // the dimensions of the picture
-			currentBounds; // the size of the current GWorld
-	
+			currentBounds, // the size of the current GWorld
+			targetGWBounds;
+
 	SAVEGWORLD;
 	SAVECOLORS;
 	
+	GetPortBounds(targetGW, &targetGWBounds);
+	
 	if (options & insertScaled) // if we scale then the picture should be as big as the target
-		picRect = targetGW->portRect;
+		picRect = targetGWBounds;
 	else // otherwise the size is left alone
 		picRect = (**srcPic).picFrame;
 		
@@ -2876,8 +3092,8 @@ void icnsEditorClass::InsertFromPicture(PicHandle srcPic, GWorldPtr targetGW, in
 	
 	if (options & insertCentered)
 		OffsetRect(&picRect,
-				   (targetGW->portRect.right - picRect.right)/2,
-				   (targetGW->portRect.bottom - picRect.bottom)/2);
+				   (targetGWBounds.right - picRect.right)/2,
+				   (targetGWBounds.bottom - picRect.bottom)/2);
 	
 	if (targetGW == currentGW)
 	// if we're inserting into the current gworld we must put the picture into a floating selection
@@ -2965,7 +3181,7 @@ void icnsEditorClass::PictureToMask(PicHandle srcPic, GWorldPtr maskGW)
 	SAVEGWORLD;
 	SAVECOLORS;
 	
-	bounds = maskGW->portRect; // we get the bounds
+	GetPortBounds(maskGW, &bounds); // we get the bounds
 	
 	// make a GWorld for the picture
 	err = NewGWorld(&tempGW, 32, &bounds, NULL, NULL, 0);
@@ -2979,7 +3195,7 @@ void icnsEditorClass::PictureToMask(PicHandle srcPic, GWorldPtr maskGW)
 	DrawPicture(srcPic, &bounds);
 	
 	// and then get the mask
-	Make1BitMask(tempPix, maskGW->portPixMap, (**tempPix).bounds);
+	Make1BitMask(tempPix, GetGWorldPixMap(maskGW), (**tempPix).bounds);
 	
 	RESTOREGWORLD;
 	RESTORECOLORS;
@@ -3124,19 +3340,22 @@ void icnsEditorClass::MakeSelection(int selectionType)
 
 void icnsEditorClass::GetSelectionColors(RGBColor** colors, int* noOfColors)
 {
-	Point temp;
+	Point		temp;
 	RGBColor	*tempColorPtr, tempColor;
-	bool	exists = false;
+	bool		exists = false;
+	Rect		selectionBounds;
 	
 	*noOfColors = 0;
 	
 	SAVEGWORLD;
 	SetGWorld(currentGW, NULL);
 	
+	GetRegionBounds(selectionRgn, &selectionBounds);
+	
 	*colors = new RGBColor;
 	
-	for (int y = (**selectionRgn).rgnBBox.top; y < (**selectionRgn).rgnBBox.bottom; y++)
-		for (int x = (**selectionRgn).rgnBBox.left; x < (**selectionRgn).rgnBBox.right; x++)
+	for (int y = selectionBounds.top; y < selectionBounds.bottom; y++)
+		for (int x = selectionBounds.left; x < selectionBounds.right; x++)
 		{
 			temp.h = x; temp.v = y;
 			if (PtInRgn(temp, selectionRgn))
@@ -3186,6 +3405,7 @@ void icnsEditorClass::Rotate(int angle)
 								// converting it back into a region
 		PixMapHandle	tempPix; // PixMap belonging to the GWorld above
 		OSStatus		err = noErr; // error checking
+		Rect			bounds;
 		
 		SAVEGWORLD;
 		SAVECOLORS;
@@ -3195,15 +3415,17 @@ void icnsEditorClass::Rotate(int angle)
 			
 		::Rotate(angle, &selectionGW, &selectionPix); // we rotate the contents
 		
+		GetRegionBounds(selectionRgn, &bounds);
+		
 		// we make the tempGW the size of the selection
-		err = NewGWorld(&tempGW, 1, &(**selectionRgn).rgnBBox, NULL, NULL, 0);
+		err = NewGWorld(&tempGW, 1, &bounds, NULL, NULL, 0);
 		if (err != noErr) {status |= outOfMemory; return; }
 		tempPix = GetGWorldPixMap(tempGW);
 		LockPixels(tempPix);
 		
 		// we draw the selection in
 		SetGWorld(tempGW, NULL);
-		EraseRect(&qd.thePort->portRect);
+		EraseRect(&bounds);
 		PaintRgn(selectionRgn);
 		
 		// we rotate the GWorld
@@ -3252,6 +3474,7 @@ void icnsEditorClass::Flip(int flipType)
 		GWorldPtr		tempGW;						
 		PixMapHandle	tempPix; 
 		OSStatus		err = noErr;
+		Rect			bounds;
 		
 		SAVEGWORLD;
 		SAVECOLORS;
@@ -3264,13 +3487,15 @@ void icnsEditorClass::Flip(int flipType)
 		else
 			::FlipVertical(selectionPix);
 		
-		err = NewGWorld(&tempGW, 1, &(**selectionRgn).rgnBBox, NULL, NULL, 0);
+		GetRegionBounds(selectionRgn, &bounds);
+		
+		err = NewGWorld(&tempGW, 1, &bounds, NULL, NULL, 0);
 		if (err != noErr) {status |= outOfMemory; return; }
 		tempPix = GetGWorldPixMap(tempGW);
 		LockPixels(tempPix);
 		
 		SetGWorld(tempGW, NULL);
-		EraseRect(&qd.thePort->portRect);
+		EraseRect(&bounds);
 		PaintRgn(selectionRgn);
 		
 		if (flipType == horizontal)
@@ -3347,7 +3572,7 @@ void icnsEditorClass::Invert(void)
 	currentState = new drawingStateClass(currentState, this);
 }
 
-
+#pragma mark -
 
 // __________________________________________________________________________________________
 // Name			: GetEditor
@@ -3415,12 +3640,17 @@ pascal bool StandardEditorDialogFilter(DialogPtr dialog, EventRecord* eventPtr, 
 	{
 		//case osEvt:
 		case activateEvt:
+			Rect	portRect;
+			
 			GetPort(&oldPort);
-			SetPort(dialog);
-			InvalRect(&dialog->portRect);
+			SetPortDialogPort(dialog);
+			
+			GetPortBounds(GetDialogPort(dialog), &portRect);
+			
+			InvalRect(&portRect);
 			SetPort(oldPort);
 		case updateEvt:
-			if ((WindowPtr) eventPtr->message != dialog)
+			if ((DialogPtr) eventPtr->message != dialog)
 			{
 				window = GetWindow((WindowPtr)eventPtr->message);
 				if (window != NULL)
@@ -3431,7 +3661,7 @@ pascal bool StandardEditorDialogFilter(DialogPtr dialog, EventRecord* eventPtr, 
 			break;
 		default:
 			GetPort(&oldPort);
-			SetPort(dialog);
+			SetPortDialogPort(dialog);
 			
 			handledEvent = StdFilterProc(dialog,eventPtr,itemHit);
 			SetPort(oldPort);
@@ -3469,60 +3699,88 @@ void HandleBalloons(Point theMouse, WindowPtr window, int strings)
 	FindControl(theMouse, window, &theControl);
 	
 	if (theControl != NULL)
-	{
-		HMMessageRecord standardMessage;
-		OSErr err;
+	{	
+		Rect balloonRect;
 		
-		if ((GetControlBalloonHelp(theControl) != icnsEditorClass::statics.currentBalloon) || !HMIsBalloon())
-		{
-			BalloonVariant	variant;
-			Rect			balloonRect, portRect;
-			GDHandle 		mainScreen;
-		
-			mainScreen = GetMainDevice();
+		GetControlBounds(theControl, &balloonRect);
 			
-			standardMessage.hmmHelpType = khmmStringRes;
-			standardMessage.u.hmmStringRes.hmmResID = strings; 
-			standardMessage.u.hmmStringRes.hmmIndex = GetControlBalloonHelp(theControl);
-			
-			GetControlBounds(theControl, &balloonRect);
-			
-			theMouse.h = balloonRect.right - 10;
-			theMouse.v = balloonRect.bottom - 10;
-			
-			LocalToGlobal(&theMouse);
-			
-			
-			portRect = (**mainScreen).gdRect;;
-			
-			//OffsetRect(&balloonRect, window->portRect.right, window->portRect.top);
-			
-			HMBalloonRect(&standardMessage, &balloonRect);
-			if ((balloonRect.right > portRect.right - theMouse.h))
-				if ((balloonRect.bottom > portRect.bottom - theMouse.v))
-					variant = kBottomRightTipPointsDownVariant;
-				else
-					variant = kTopRightTipPointsRightVariant;
-			else
-				if ((balloonRect.bottom > portRect.bottom - theMouse.v))
-					variant = kBottomLeftTipPointsDownVariant;
-				else
-					variant = kTopLeftTipPointsLeftVariant;
-			
-			err = HMShowBalloon(&standardMessage,
-						  theMouse,
-						  NULL,
-						  NULL,
-						  kBalloonWDEFID,
-						  variant,
-						  kHMRegularWindow);
-			
-			icnsEditorClass::statics.currentBalloon = GetControlBalloonHelp(theControl);
-		}
+		HandleBalloon(strings, GetControlBalloonHelp(theControl), balloonRect, theMouse);
 	}
 	else if (icnsEditorClass::statics.currentBalloon != 0)
 	{
 		HMRemoveBalloon();
 		icnsEditorClass::statics.currentBalloon = 0;
 	}
+}
+
+bool HandleBalloon(int strings, ControlHandle theControl, Point theMouse)
+{
+	Rect	controlBounds;
+	
+	GetControlBounds(theControl, &controlBounds);
+	
+	if (PtInRect(theMouse, &controlBounds))
+	{
+		HandleBalloon(strings, GetControlBalloonHelp(theControl), controlBounds, theMouse);
+		
+		return true;
+	}
+	else
+		return false;
+}
+
+void HandleBalloon(int strings, int index, Rect balloonRect, Point theMouse)
+{
+	HMMessageRecord	standardMessage;
+	BalloonVariant	variant;
+	Rect			portRect;
+	GDHandle 		mainScreen;
+
+	if ((index == icnsEditorClass::statics.currentBalloon && HMIsBalloon()) ||
+		!IsFrontProcess())
+		return;
+
+	mainScreen = GetMainDevice();
+	
+	standardMessage.hmmHelpType = khmmStringRes;
+	standardMessage.u.hmmStringRes.hmmResID = strings; 
+	standardMessage.u.hmmStringRes.hmmIndex = index;
+	
+	theMouse.h = balloonRect.right - 10;
+	theMouse.v = balloonRect.bottom - 10;
+	
+	LocalToGlobal(&theMouse);
+	
+	portRect = (**mainScreen).gdRect;
+	
+	//OffsetRect(&balloonRect, window->portRect.right, window->portRect.top);
+	SetRect(&balloonRect, 0, 0, 0, 0);
+	HMBalloonRect(&standardMessage, &balloonRect);
+	OffsetRect(&balloonRect, -balloonRect.left, -balloonRect.top);
+	balloonRect.right += 41;
+	balloonRect.bottom += 25;
+	OffsetRect(&balloonRect, theMouse.h, theMouse.v);
+	if (balloonRect.right > portRect.right)
+	{
+		if ((balloonRect.bottom > portRect.bottom))
+			variant = kBottomRightTipPointsDownVariant;
+		else
+			variant = kTopRightTipPointsRightVariant;
+	}
+	else
+	{
+		if (balloonRect.bottom > portRect.bottom)
+			variant = kBottomLeftTipPointsDownVariant;
+		else
+			variant = kTopLeftTipPointsLeftVariant;
+	}
+	HMShowBalloon(&standardMessage,
+				  theMouse,
+				  NULL,
+				  NULL,
+				  kBalloonWDEFID,
+				  variant,
+				  kHMRegularWindow);
+	
+	icnsEditorClass::statics.currentBalloon = index;
 }

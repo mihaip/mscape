@@ -12,6 +12,7 @@
 OSErr GetTextAttributes(textSettings* lastTextSettings)
 {
 	DialogPtr		textDialog;
+	MWindowPtr		textDialogWindow;
 	bool			dialogDone;
 	short			itemHit, menuChoice;
 	ControlHandle	fontPopup, stylePopup, sizePopup, textField, sizeField;
@@ -24,7 +25,7 @@ OSErr GetTextAttributes(textSettings* lastTextSettings)
 	ModalFilterUPP	eventFilterUPP;
 	
 	textDialog = GetNewDialog(rTextDialog, NULL, (WindowPtr)-1L);
-	
+	textDialogWindow = new MWindow(GetDialogWindow(textDialog), kDialogType);
 	eventFilterUPP = NewModalFilterProc(TextDialogFilter);
 	
 	SetDialogDefaultItem(textDialog, iOK);
@@ -55,11 +56,11 @@ OSErr GetTextAttributes(textSettings* lastTextSettings)
 	
 	StyleControl(textField, fontNo, size, style);
 	
-	MWindow::CenterOnFront(GetDialogWindow(textDialog));
+	MWindow::CenterOnFront(textDialogWindow);
 	
 	MWindow::DeactivateAll();
 	
-	ShowWindow(textDialog);
+	ShowWindow(GetDialogWindow(textDialog));
 	
 	dialogDone = false;
 	
@@ -125,6 +126,8 @@ OSErr GetTextAttributes(textSettings* lastTextSettings)
 	}
 	
 	DisposeDialog(textDialog);
+	
+	delete textDialogWindow;
 	
 	MWindow::ActivateAll();
 	

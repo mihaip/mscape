@@ -16,7 +16,7 @@ typedef struct
 					scrollBar,
 					infoPlacard,
 					list,
-					menu;	
+					typeMenu;	
 } IconBrowserControls;
 
 enum IBResources
@@ -32,7 +32,7 @@ enum IBControls
 	rIBScrollBar	= 300,
 	rIBInfoPlacard	= 301,
 	rIBList			= 302,
-	rIBMenu			= 303
+	rIBTypeMenu		= 303
 };
 
 enum IBProgressItems
@@ -105,7 +105,6 @@ class iconBrowserClass : public MWindow
 		
 		void	DoIdle();
 		
-		void	Refresh();
 		void	RefreshList();
 		void	HandleContentClick(EventRecord* eventPtr);
 		void	HandleGrow(Point where);
@@ -127,7 +126,7 @@ class iconBrowserClass : public MWindow
 		void				LoadFamily(OSType type, bool newType, short oldFile, short file, ControlHandle progressBar, ControlHandle progressText);
 		void 				AddIcon(int ID, Str255 name, long members, bool newType);
 		void				RefreshIconTypes();
-		
+		void				OpenCurrentIcon();
 		
 		MList				theList;
 		
@@ -142,6 +141,8 @@ class iconBrowserClass : public MWindow
 		
 		short				shownIconTypes;
 		long				scrollingIncrement;
+		
+		static void			BrowserMenuUpdate(struct EnhancedPlacardData* data, int flags);
 		
 	friend pascal void	ListDraw(ControlHandle theControl,SInt16 thePart);
 	friend pascal ControlPartCode ListHitTest(ControlHandle theControl, Point where);

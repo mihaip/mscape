@@ -6,17 +6,17 @@ PreviewPalette::PreviewPalette()
 {
 	Str255	sizeAsString;
 	
-	selected = false;
-	
 	oscillating = false;
 	increasing = false;
 	
 	parentEditor = NULL;
 	
+	settingsMenu = GetMenu(rPPSettingsMenu);
+	
 	CreateControls();
 	
-	NumToString(GetControlValue(controls.thumbnailSlider), sizeAsString);
-	SetControlText(controls.thumbnailText, sizeAsString);
+	NumToString(GetControlValue(controls.slider), sizeAsString);
+	SetControlText(controls.text, sizeAsString);
 }
 
 PreviewPalette::~PreviewPalette()
@@ -31,9 +31,9 @@ void PreviewPalette::Activate()
 
 void PreviewPalette::DoIdle()
 {
-	if (oscillating && currentPane == kPPThumbnailPane)
+	if (oscillating)
 	{
-		int currentValue, newTicks, delta;
+		int newTicks, delta;
 		Str255	valueAsString;
 		
 		newTicks = LMGetTicks();
@@ -45,27 +45,25 @@ void PreviewPalette::DoIdle()
 			
 		oscillationTicks = newTicks;
 		
-		currentValue = GetControlValue(controls.thumbnailSlider);
-		
-		
-		
 		if (increasing)
 			currentValue += delta;
 		else
 			currentValue -= delta;
 			
-		if (currentValue <= GetControlMinimum(controls.thumbnailSlider) ||
-			currentValue >= GetControlMaximum(controls.thumbnailSlider))
+		SetControlValue(controls.slider, currentValue);
+		if (currentValue <= GetControlMinimum(controls.slider) ||
+			currentValue >= GetControlMaximum(controls.slider))
+		{
 			increasing = !increasing;
-			
-		SetControlValue(controls.thumbnailSlider, currentValue);
+			currentValue = GetControlValue(controls.slider);
+		}	
+		SliderAction(controls.slider, kControlIndicatorPart);
+		NumToString(GetControlValue(controls.slider), valueAsString);
 		
-		NumToString(GetControlValue(controls.thumbnailSlider), valueAsString);
+		SetControlText(controls.text, valueAsString);
 		
-		SetControlText(controls.thumbnailText, valueAsString);
-		
-		Draw1Control(controls.thumbnailText);
-		Draw1Control(controls.thumbnailPreview);
+		Draw1Control(controls.text);
+		Draw1Control(controls.preview);
 	}
 }
 
@@ -73,27 +71,9 @@ void PreviewPalette::Deactivate()
 {
 	if (IsControlActive(controls.root))
 	{
-		SetThemeWindowBackground(window, kThemeBrushDialogBackgroundActive, false);
+		//SetThemeWindowBackground(window, kThemeBrushDialogBackgroundActive, false);
 		DeactivateControl(controls.root);
 	}
-}
-
-void PreviewPalette::Refresh(void)
-{
-	SAVEGWORLD; // saving the current gworld for restoring later
-	
-	
-	BeginUpdate(window); // BeginUpdate means that the drawing is clipped to the regions which
-						 // has been marked as needed updates (by InvalRect, etc.)
-	
-	SetPort(window); // we're drawing in the window
-	
-	UpdateControls(window, window->clipRgn); // we're also refreshing the controls
-	
-	EndUpdate(window); // and we're done with the updating
-	
-	RESTOREGWORLD; // we can restore the saved gworld now
-	
 }
 
 void PreviewPalette::HandleContentClick(EventRecord* eventPtr)
@@ -106,61 +86,47 @@ void PreviewPalette::HandleContentClick(EventRecord* eventPtr)
 	
 	SAVEGWORLD;
 	
-	SetPort(window);
+	SetPort();
 	
 	GlobalToLocal(&where);
 	
 	if ((part = FindControl(where, window, &clickedControl)) &&
 		 (part != kControlNoPart))
 	{
-		if (clickedControl == controls.thumbnailSlider &&
-			(part == kControlPageUpPart || part == kControlPageDownPart))
-			ThemeSoundStart(kThemeDragSoundSliderThumb);
-	
-	
 		if (TrackControl(clickedControl, where, (ControlActionUPP) -1))
 		{
-			if (clickedControl == controls.tabs)
-				SetPane(GetControlValue(controls.tabs));
-			else if (clickedControl == controls.thumbnailText)
-				SetKeyboardFocus(window, controls.thumbnailText, kControlFocusNextPart);
-			else if (clickedControl == controls.thumbnailPreview ||
-					 clickedControl == controls.hintsPreview)
+			if (clickedControl == controls.text)
+				SetKeyboardFocus(window, controls.text, kControlFocusNextPart);
+			else if (clickedControl == controls.preview)
 			{
-				selected = !selected;
+				icnsEditorClass::statics.preferences.ToggleFeature(prefsPreviewSelected);
 				
-				if (currentPane == kPPThumbnailPane)
-					Draw1Control(controls.thumbnailPreview);
-				else
-					Draw1Control(controls.hintsPreview);
+				Draw1Control(controls.preview);
+				Draw1Control(controls.settings);
 			}
+			else if (clickedControl == controls.settings)
+				EnhancedPlacardHandleClick(controls.settings);
 		}
-		
-		if (clickedControl == controls.thumbnailSlider &&
-			(part == kControlPageUpPart || part == kControlPageDownPart))
-			ThemeSoundEnd();
 	}
 	
-	if (clickedControl != controls.thumbnailText && GetKeyboardFocus(window) == controls.thumbnailText)
+	if (clickedControl != controls.text && GetKeyboardFocus(window) == controls.text)
 	{
 		Str255	newSizeAsString;
 		long	newSize;
 		
 		ClearKeyboardFocus(window);
 		
-		GetControlText(controls.thumbnailText, newSizeAsString);
+		GetControlText(controls.text, newSizeAsString);
 		StringToNum(newSizeAsString, &newSize);
-		SetControlValue(controls.thumbnailSlider, newSize);
 		
-		Draw1Control(controls.thumbnailPreview);
+		SetPreviewSize(newSize);
 	}	
 	RESTOREGWORLD;
 }
 
 void PreviewPalette::HandleKeyDown(EventRecord* eventPtr)
 {
-	if ((currentPane == kPPThumbnailPane) &&
-		GetKeyboardFocus(window) == controls.thumbnailText)
+	if (GetKeyboardFocus(window) == controls.text)
 	{
 		switch (eventPtr->message & charCodeMask)
 		{
@@ -172,14 +138,13 @@ void PreviewPalette::HandleKeyDown(EventRecord* eventPtr)
 				
 				ClearKeyboardFocus(window);
 				
-				GetControlText(controls.thumbnailText, newSizeAsString);
+				GetControlText(controls.text, newSizeAsString);
 				StringToNum(newSizeAsString, &newSize);
-				SetControlValue(controls.thumbnailSlider, newSize);
 				
-				Draw1Control(controls.thumbnailPreview);
+				SetPreviewSize(newSize);
 				break;
 			default:
-				HandleControlKey(controls.thumbnailText,
+				HandleControlKey(controls.text,
 								 (eventPtr->message & keyCodeMask) >> 16,
 								 eventPtr->message & charCodeMask,
 								 eventPtr->modifiers);
@@ -206,6 +171,7 @@ void PreviewPalette::HandleKeyDown(EventRecord* eventPtr)
 		{
 			oscillating = !oscillating;
 			oscillationTicks = -1;
+			currentValue = GetControlValue(controls.slider);
 		}
 	}
 }
@@ -216,37 +182,26 @@ void PreviewPalette::CreateControls()
 	
 	SAVEGWORLD;
 	
-	SetPort(window);
+	SetPort();
 	TextFont(applFont);
 	TextSize(9);
 	
 	CreateRootControl(window, &controls.root);
 	
-	controls.tabs = GetNewControl(rPPTabs, window);
+	controls.background = NewEnhancedPlacard(rPPBackground, window, enhancedPlacardDrawBorder + enhancedPlacardNoHitTest + enhancedPlacardDrawDialogFrame, 0, 0, "\p", NULL, NULL, icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix, NULL, NULL);
 	
-	// thumbnail pane
-	controls.thumbnailPreview = GetNewControl(rPPThumbnailPreview, window);
-	EmbedControl(controls.thumbnailPreview, controls.tabs);
-	SetControlUserPaneDraw(controls.thumbnailPreview, PreviewPalette::ThumbnailPreviewDraw);
-	SetControlUserPaneHitTest(controls.thumbnailPreview, GenericHitTest);
+	controls.preview = GetNewControl(rPPPreview, window);
+	SetControlUserPaneDraw(controls.preview, PreviewPalette::PreviewDraw);
+	SetControlUserPaneHitTest(controls.preview, GenericHitTest);
 	
-	controls.thumbnailSlider = GetNewControl(rPPThumbnailSlider, window);
-	EmbedControl(controls.thumbnailSlider, controls.tabs);
-	sliderActionUPP = NewControlActionProc(PreviewPalette::ThumbnailSliderAction);
-	SetControlAction(controls.thumbnailSlider, sliderActionUPP);
+	controls.slider = GetNewControl(rPPSlider, window);
+	sliderActionUPP = NewControlActionProc(PreviewPalette::SliderAction);
+	SetControlAction(controls.slider, sliderActionUPP);
 	
-	controls.thumbnailText = GetNewControl(rPPThumbnailText, window);
-	EmbedControl(controls.thumbnailText, controls.tabs);
-	SetControlKeyFilter(controls.thumbnailText, PreviewPalette::KeyFilter);
+	controls.text = GetNewControl(rPPText, window);
+	SetControlKeyFilter(controls.text, PreviewPalette::KeyFilter);
 	
-	currentPane = kPPThumbnailPane;
-
-	// hints pane
-	controls.hintsPreview = GetNewControl(rPPHints, window);
-	EmbedControl(controls.hintsPreview, controls.tabs);
-	SetControlUserPaneDraw(controls.hintsPreview, PreviewPalette::HintsPreviewDraw);
-	SetControlUserPaneHitTest(controls.hintsPreview, GenericHitTest);
-	HideControl(controls.hintsPreview);
+	controls.settings = NewEnhancedPlacard(rPPSettings, window, enhancedPlacardDrawBorder + enhancedPlacardLargeArrow, 0, 0, "\p", NULL, settingsMenu, icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix, PreviewPalette::SettingsUpdate, this);
 
 	RESTOREGWORLD;
 }
@@ -261,87 +216,179 @@ void PreviewPalette::Update(icnsEditorPtr editor)
 	parentEditor = editor;
 	
 	if (editor == NULL && IsControlActive(controls.root))
-			DeactivateControl(controls.root);
+		DeactivateControl(controls.root);
 	else if (editor != NULL && !IsControlActive(controls.root))
-			ActivateControl(controls.root);
-	else if (currentPane == kPPThumbnailPane)
-		Draw1Control(controls.thumbnailPreview);
+		ActivateControl(controls.root);
 	else
-		Draw1Control(controls.hintsPreview);
+		Draw1Control(controls.preview);
 }
 
-void PreviewPalette::SetPane(int pane)
+void PreviewPalette::SetPreviewSize(int size)
 {
-	if (pane != currentPane)
-	{
-		currentPane = pane;
-		
-		if (GetControlValue(controls.tabs) != currentPane)
-			SetControlValue(controls.tabs, currentPane);
-		
-		switch (currentPane)
-		{
-			case kPPThumbnailPane:
-				HideControl(controls.hintsPreview);
-				ShowControl(controls.thumbnailPreview);
-				ShowControl(controls.thumbnailSlider);
-				ShowControl(controls.thumbnailText);
-				break;
-			case kPPHintsPane:
-				ShowControl(controls.hintsPreview);
-				HideControl(controls.thumbnailPreview);
-				HideControl(controls.thumbnailSlider);
-				HideControl(controls.thumbnailText);
-				break;
-		}
-	}
+	Str255	sliderText;
+	
+	SnapPreviewSize(&size);
+	
+	SetControlValue(controls.slider, size);
+	
+	NumToString(size, sliderText);
+	
+	SetControlText(controls.text, sliderText);
+	
+	SAVEGWORLD;
+	
+	SetPort();
+	
+	Draw1Control(controls.slider);
+	Draw1Control(controls.text);
+	Draw1Control(controls.preview);
+	
+	RESTOREGWORLD;
 }
 
 #pragma mark -
 
-pascal void PreviewPalette::ThumbnailSliderAction(ControlHandle theControl, SInt16 thePart)
+void PreviewPalette::SettingsUpdate(struct EnhancedPlacardData* data, int flags)
 {
 	PreviewPalettePtr	parent;
-	int					size = -1;
-	Str255				sizeAsString;
 	
-	if (thePart == kControlPageUpPart || thePart == kControlPageDownPart)
+	parent = PreviewPalettePtr(data->clientData);
+	
+	if (flags & enhancedPlacardUpdateState)
 	{
-		Rect controlRect;
-		Point	where;
+		Str255	menuItemText;
 		
-		GetControlBounds(theControl, &controlRect);
+		CopyString(data->title, "\p");
 		
-		GetMouse(&where);
+		if (icnsEditorClass::statics.preferences.FeatureEnabled(prefsPreviewSelected))
+		{
+			GetMenuItemText(data->menu, iPPSelected, menuItemText);
+			
+			CheckItem(data->menu, iPPNormal, false);
+			CheckItem(data->menu, iPPSelected, true);
+		}
+		else
+		{
+			GetMenuItemText(data->menu, iPPNormal, menuItemText);
+			
+			CheckItem(data->menu, iPPNormal, true);
+			CheckItem(data->menu, iPPSelected, false);
+		}
 		
-		if (where.h < controlRect.left + kSliderEndcap) where.h = controlRect.left + kSliderEndcap;
-		else if (where.h > controlRect.right - kSliderEndcap) where.h = controlRect.right - kSliderEndcap;
+		AppendString(data->title, menuItemText);
+		AppendString(data->title, "\p, ");
 		
-		SetControlValue(theControl, float(where.h - (controlRect.left + kSliderEndcap))/float(controlRect.right - controlRect.left - kSliderEndcap * 2) * GetControlMaximum(theControl));
-	}
-	
-	parent = icnsEditorClass::statics.previewPalette;
-
-	size = GetControlValue(theControl);
-	
-	if (ISCOMMANDDOWN)
-		for (int i=0; i < kPPThumbnailSliderSnapCount; i++)
-			if (abs(size - kPPThumbnailSliderSnaps[i]) < 8)
-			{
-				size = kPPThumbnailSliderSnaps[i];
-				SetControlValue(theControl, kPPThumbnailSliderSnaps[i]);
+		switch (icnsEditorClass::statics.preferences.GetPreviewBackground())
+		{
+			case iPPWhite:
+				GetMenuItemText(data->menu, iPPWhite, menuItemText);
+				CheckItem(data->menu, iPPWhite, true);
+				CheckItem(data->menu, iPPBlack, false);
+				CheckItem(data->menu, iPPListView, false);
+				CheckItem(data->menu, iPPDesktop, false);
 				break;
-			}
-
-	NumToString(size, sizeAsString);
-	
-	SetControlText(parent->controls.thumbnailText, sizeAsString);
-	Draw1Control(parent->controls.thumbnailText);
-	
-	Draw1Control(parent->controls.thumbnailPreview);
+			case iPPBlack:
+				GetMenuItemText(data->menu, iPPBlack, menuItemText);
+				CheckItem(data->menu, iPPWhite, false);
+				CheckItem(data->menu, iPPBlack, true);
+				CheckItem(data->menu, iPPListView, false);
+				CheckItem(data->menu, iPPDesktop, false);
+				break;
+			case iPPListView:
+				GetMenuItemText(data->menu, iPPListView, menuItemText);
+				CheckItem(data->menu, iPPWhite, false);
+				CheckItem(data->menu, iPPBlack, false);
+				CheckItem(data->menu, iPPListView, true);
+				CheckItem(data->menu, iPPDesktop, false);
+				break;
+			default:
+				GetMenuItemText(data->menu, iPPDesktop, menuItemText);
+				CheckItem(data->menu, iPPWhite, false);
+				CheckItem(data->menu, iPPBlack, false);
+				CheckItem(data->menu, iPPListView, false);
+				CheckItem(data->menu, iPPDesktop, true);
+				break;
+		}
+		
+		AppendString(data->title, menuItemText);
+	}
+	else
+	{
+		switch (data->menuValue)
+		{
+			case iPPSelected: icnsEditorClass::statics.preferences.EnableFeature(prefsPreviewSelected); break;
+			case iPPNormal: icnsEditorClass::statics.preferences.DisableFeature(prefsPreviewSelected); break;
+			default: icnsEditorClass::statics.preferences.SetPreviewBackground(data->menuValue); break;
+		}
+		
+		Draw1Control(parent->controls.preview);
+	}
 }
 
-pascal short PreviewPalette::KeyFilter(ControlHandle theControl, SInt16* keyCode, SInt16* charCode, SInt16* modifiers)
+pascal void PreviewPalette::SliderAction(ControlHandle theControl, SInt16 thePart)
+{
+#pragma unused (thePart)
+	PreviewPalettePtr	parent;
+	int					initialValue, currentValue, min, max, length;
+	Str255				sizeAsString;
+	Rect 				controlBounds;
+	Point				where;
+	float				percentageValue;
+	
+	parent = icnsEditorClass::statics.previewPalette;
+	
+	initialValue = GetControlValue(theControl);
+	GetControlBounds(theControl, &controlBounds);
+	min = GetControlMinimum(theControl);
+	max = GetControlMaximum(theControl);
+	length = max - min;
+	
+	
+	ThemeSoundStart(kThemeDragSoundSliderThumb);
+	
+	while (Button())
+	{
+		GetMouse(&where);
+		
+		where.h -= 3;
+		
+		where.h = constrain(where.h, controlBounds.left + kSliderEndcap, controlBounds.right - kSliderEndcap);
+		
+		if (where.v - controlBounds.bottom > 20 ||
+			controlBounds.top - where.v > 20)
+			currentValue = initialValue;
+		else
+		{
+			percentageValue = float(where.h - (controlBounds.left + kSliderEndcap))/float(controlBounds.right - controlBounds.left - kSliderEndcap * 2);
+			currentValue = min + percentageValue * length;
+		}
+		
+		SnapPreviewSize(&currentValue);
+		
+		SetControlValue(theControl, currentValue);
+		
+		NumToString(currentValue, sizeAsString);
+	
+		SetControlText(parent->controls.text, sizeAsString);
+		Draw1Control(parent->controls.text);
+		
+		Draw1Control(parent->controls.preview);
+	}
+	
+	ThemeSoundEnd();
+}
+
+void PreviewPalette::SnapPreviewSize(int* value)
+{
+	if (*value < 14 && (GetFrontEditor() == NULL || GetFrontEditor()->members & miniSize)) *value = 12;
+	else if (*value < 24) *value = 16;
+	else if (*value < 40) *value = 32;
+	else if (*value < 56) *value = 48;
+	else if (*value < 64) *value = 64;
+	else if (*value > 128) *value = 128;
+}
+
+pascal short PreviewPalette::KeyFilter(ControlHandle theControl, SInt16* keyCode, SInt16* charCode, UInt16* modifiers)
 {
 #pragma unused(theControl, keyCode, modifiers )
 
@@ -363,11 +410,11 @@ pascal short PreviewPalette::KeyFilter(ControlHandle theControl, SInt16* keyCode
 	}
 }
 
-pascal void PreviewPalette::ThumbnailPreviewDraw(ControlHandle theControl, short thePart)
+pascal void PreviewPalette::PreviewDraw(ControlHandle theControl, short thePart)
 {
 #pragma unused (thePart)
 	PreviewPalettePtr	parent;
-	PixPatHandle		desktopPattern;
+	int					maskDepth, previewDepth;
 	Rect				controlRect, canvasRect, tempRect;
 	
 	parent = icnsEditorClass::statics.previewPalette;
@@ -381,122 +428,98 @@ pascal void PreviewPalette::ThumbnailPreviewDraw(ControlHandle theControl, short
 	SAVECOLORS;
 	
 	SetGWorld(icnsEditorClass::statics.canvasGW, NULL);
-	
+	RESTORECOLORS;
+	EraseRect(&canvasRect);
+	ForeColor(blackColor);
+	BackColor(whiteColor);
 	tempRect = canvasRect;
 	InsetRect(&tempRect, 2, 2);
 	DrawImageWell(theControl, tempRect);
 	
-	desktopPattern = LMGetDeskCPat();
-	HLock((Handle)desktopPattern);
-	FillCRect(&tempRect, desktopPattern);
-	HUnlock((Handle)desktopPattern);
+	FillRectWithPreviewBackground(tempRect);
 	
 	SetRect(&tempRect, 0, 0,
-			GetControlValue(parent->controls.thumbnailSlider),
-			GetControlValue(parent->controls.thumbnailSlider));
+			GetControlValue(parent->controls.slider),
+			GetControlValue(parent->controls.slider));
+			
+	if (tempRect.right == 12) tempRect.right = 16;
 			
 	OffsetRect(&tempRect,
 			   canvasRect.left + ((canvasRect.right - canvasRect.left) - (tempRect.right - tempRect.left))/2,
 			   canvasRect.top + ((canvasRect.bottom - canvasRect.top) - (tempRect.bottom - tempRect.top))/2);
 	
 	if (parent->parentEditor)
-		parent->parentEditor->PreviewDisplay(128, 32, -1, tempRect, parent->selected);  
-	
-	RESTOREGWORLD;
-	
-	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
-			 &qd.thePort->portBits,
-			 &canvasRect,
-			 &controlRect,
-			 srcCopy,
-			 NULL);
-	
-	RESTORECOLORS;
-}
-
-pascal void PreviewPalette::HintsPreviewDraw(ControlHandle theControl, short thePart)
-{
-#pragma unused (thePart)
-	PreviewPalettePtr	parent;
-	PixPatHandle		desktopPattern;
-	Rect				controlRect, canvasRect, tempRect;
-	icnsEditorPtr		frontEditor;
-	int					rectCount = 0, rectSpacing, currentTop = 0, previewDepth, maskDepth;
-	
-	parent = icnsEditorClass::statics.previewPalette;
-	
-	GetControlBounds(theControl, &controlRect);
-	
-	canvasRect = controlRect;
-	OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top + 48);
-	
-	SAVEGWORLD;
-	SAVECOLORS;
-	
-	SetGWorld(icnsEditorClass::statics.canvasGW, NULL);
-	
-	tempRect = canvasRect;
-	InsetRect(&tempRect, 2, 2);
-	
-	DrawImageWell(theControl, tempRect);
-	
-	desktopPattern = LMGetDeskCPat();
-	HLock((Handle)desktopPattern);
-	FillCRect(&tempRect, desktopPattern);
-	HUnlock((Handle)desktopPattern);
-	
-	frontEditor = parent->parentEditor;
-	
-	if (frontEditor)
 	{
-		if (masks & frontEditor->currentPixName)
+		int previewSize;
+		
+		if (masks & parent->parentEditor->currentPixName)
 		{
-			maskDepth = (**frontEditor->currentPix).pixelSize;
+			maskDepth = (**parent->parentEditor->currentPix).pixelSize;
 			if (maskDepth == 8)
 			{
-				if (frontEditor->members & icon32)
+				if (parent->parentEditor->members & icon32)
 					previewDepth = 32;
-				else if (frontEditor->members & icon8)
+				else if (parent->parentEditor->members & icon8)
 					previewDepth = 8;
-				else if (frontEditor->members & icon4)
+				else if (parent->parentEditor->members & icon4)
 					previewDepth = 4;
 				else
 					previewDepth = 1;
 			}
-			else if (frontEditor->members & icon8)
+			else if (parent->parentEditor->members & icon8)
 				previewDepth = 8;
-			else if (frontEditor->members & icon4)
+			else if (parent->parentEditor->members & icon4)
 				previewDepth = 4;
-			else if (frontEditor->members & icon32)
+			else if (parent->parentEditor->members & icon32)
 				previewDepth = 32;
 			else
 				previewDepth = 1;
 		}
 		else
 		{
-			previewDepth = (**frontEditor->currentPix).pixelSize;
+			previewDepth = (**parent->parentEditor->currentPix).pixelSize;
 			maskDepth = -1;
 		}
+		
+		previewSize = tempRect.bottom - tempRect.top;
+		
+		if (previewSize != (**parent->parentEditor->currentPix).bounds.bottom)
+		{
+			int members;
 			
-		if (frontEditor->members & hugeSize) {rectCount++; currentTop += 48;};
-		if (frontEditor->members & largeSize) {rectCount++; currentTop += 32;};
-		if (frontEditor->members & smallSize) {rectCount++; currentTop += 16;};
-		if (frontEditor->members & miniSize && previewDepth != 32) {rectCount++; currentTop += 12;};
-		
-		rectSpacing = (canvasRect.bottom - canvasRect.top - currentTop)/(rectCount + 1);
-		
-		currentTop = rectSpacing;
-		
-		HintsPreviewDrawMember(frontEditor, hugeSize, previewDepth, maskDepth, hugeIconRect, rectSpacing, canvasRect, &currentTop, parent->selected);
-		HintsPreviewDrawMember(frontEditor, largeSize, previewDepth, maskDepth, largeIconRect, rectSpacing, canvasRect, &currentTop, parent->selected);
-		HintsPreviewDrawMember(frontEditor, smallSize, previewDepth, maskDepth, smallIconRect, rectSpacing, canvasRect, &currentTop, parent->selected);
-		HintsPreviewDrawMember(frontEditor, miniSize, previewDepth, maskDepth, miniIconRect, rectSpacing, canvasRect, &currentTop, parent->selected);
+			members = parent->parentEditor->members;
+			
+			if (members & thumbnailSize)
+			{
+				previewSize = 128;
+				previewDepth = 32;
+				maskDepth = 8;
+			}
+			else if (members & hugeSize)
+			{
+				previewSize = 48;
+			}
+			else if (members & largeSize)
+			{
+				previewSize = 32;
+			}
+			else if (members & smallSize)
+			{
+				previewSize = 16;
+			}
+			else
+			{
+				previewSize = 12;
+				if (previewDepth == 32) previewDepth = 8;
+				if (maskDepth == 8) maskDepth = 1;
+			}
+		}
+		parent->parentEditor->PreviewDisplay(previewSize, previewDepth, maskDepth, tempRect, icnsEditorClass::statics.preferences.FeatureEnabled(prefsPreviewSelected));  
 	}
-	
 	RESTOREGWORLD;
 	
 	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
-			 &qd.thePort->portBits,
+			 GetPortBitMapForCopyBits(qd.thePort),
 			 &canvasRect,
 			 &controlRect,
 			 srcCopy,
@@ -505,26 +528,33 @@ pascal void PreviewPalette::HintsPreviewDraw(ControlHandle theControl, short the
 	RESTORECOLORS;
 }
 
-void PreviewPalette::HintsPreviewDrawMember(icnsEditorPtr editor,
-											int size, int depth, int maskDepth,
-											Rect iconRect, int spacing,
-											Rect drawRect, int* currentTop,
-											bool selected)
+void PreviewPalette::FillRectWithPreviewBackground(Rect targetRect)
 {
-	Rect tempRect;
+	SAVECOLORS;
 	
-	if (editor->members & size)
+	switch (icnsEditorClass::statics.preferences.GetPreviewBackground())
 	{
-		tempRect = iconRect;
-		OffsetRect(&tempRect,
-				   drawRect.left + ((drawRect.right - drawRect.left) - tempRect.right)/2,
-				   drawRect.top + *currentTop);
-		
-		if (depth != 32 || size != miniSize)
-		{
-			editor->PreviewDisplay(iconRect.bottom, depth, maskDepth, tempRect, selected);
-		
-			*currentTop += spacing + iconRect.bottom;
-		}
+		case iPPListView:
+			SetThemeBackground(kThemeBrushListViewBackground, 32, true);
+			EraseRect(&targetRect);
+			break;
+		case iPPWhite:
+			SetThemeBackground(kThemeBrushWhite, 32, true);
+			EraseRect(&targetRect);
+			break;
+		case iPPBlack:
+			SetThemeBackground(kThemeBrushBlack, 32, true);
+			EraseRect(&targetRect);
+			break;
+		default:
+			PixPatHandle		desktopPattern;
+
+			desktopPattern = LMGetDeskCPat();
+			HLock((Handle)desktopPattern);
+			FillCRect(&targetRect, desktopPattern);
+			HUnlock((Handle)desktopPattern);
+			break;
 	}
+	
+	RESTORECOLORS;
 }

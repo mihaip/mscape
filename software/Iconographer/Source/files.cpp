@@ -155,7 +155,7 @@ pascal short OpenDialogHook(short item, DialogPtr theDlgPtr, Ptr dataPtr)
 	// be sure Std File is really showing us the intended dialog,
 	// not a nested modal dialog
 	
-	if (((WindowPeek) theDlgPtr)->refCon != sfMainDialogRefCon)
+	if (GetWRefCon(GetDialogWindow(theDlgPtr)) != sfMainDialogRefCon)
 	{
 		return item;
 	}
@@ -232,7 +232,7 @@ pascal bool OpenEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short *i
 	{
 		case activateEvt: // if the window isn't the dialog, then we tell the update function
 		case updateEvt: //  to take care of it
-			if((WindowPtr) eventPtr->message != theDlgPtr)
+			if((DialogPtr) eventPtr->message != theDlgPtr)
 			{
 				HandleUpdate(eventPtr);
 				handledEvent = true;
@@ -371,7 +371,7 @@ pascal void NavOpenEventFilter(NavEventCallbackMessage callBackSelector,
 					where = callBackParms->eventData.eventDataParms.event->where;
 					
 					GlobalToLocal(&where);
-					theItem = FindDialogItem(callBackParms->window,where);	// get the item number of the control
+					theItem = FindDialogItem(GetDialogFromWindow(callBackParms->window), where);	// get the item number of the control
 					partCode = FindControl(where,callBackParms->window,&formatPopup);	// get the control itself
 					
 					if (formatPopup != NULL)
@@ -382,7 +382,7 @@ pascal void NavOpenEventFilter(NavEventCallbackMessage callBackSelector,
 					break;
 				case keyDown:
 					NavCustomControl(callBackParms->context,kNavCtlGetFirstControlID,&firstItem);	// ask NavServices for our first control ID
-					GetDialogItemAsControl(callBackParms->window, firstItem + 1, &formatPopup);
+					GetDialogItemAsControl(GetDialogFromWindow(callBackParms->window), firstItem + 1, &formatPopup);
 					
 					NavCustomControl(callBackParms->context,kNavCtlGetEditFileName,&fileName);
 					
@@ -425,7 +425,7 @@ pascal void NavOpenEventFilter(NavEventCallbackMessage callBackSelector,
 				if (NavCustomControl(callBackParms->context, kNavCtlAddControlList, customItems) == noErr)
 				{
 					theErr = NavCustomControl(callBackParms->context, kNavCtlGetFirstControlID, &firstItem);
-					GetDialogItemAsControl(callBackParms->window, firstItem + 1, &formatPopup);
+					GetDialogItemAsControl(GetDialogFromWindow(callBackParms->window), firstItem + 1, &formatPopup);
 					
 					SetControlReference(formatPopup, (SInt32)customItems);
 					
@@ -469,7 +469,7 @@ pascal void NavOpenEventFilter(NavEventCallbackMessage callBackSelector,
 			
 		case kNavCBTerminate:
 			theErr = NavCustomControl(callBackParms->context,kNavCtlGetFirstControlID,&firstItem);	// ask NavServices for our first control ID
-			GetDialogItemAsControl(callBackParms->window, firstItem + 1, &formatPopup);
+			GetDialogItemAsControl(GetDialogFromWindow(callBackParms->window), firstItem + 1, &formatPopup);
 			
 			saveData->format = GetControlValue(formatPopup);
 			
@@ -600,7 +600,7 @@ pascal void NavSaveEventFilter(NavEventCallbackMessage callBackSelector,
 					where = callBackParms->eventData.eventDataParms.event->where;
 					
 					GlobalToLocal(&where);
-					theItem = FindDialogItem(callBackParms->window,where);	// get the item number of the control
+					theItem = FindDialogItem(GetDialogFromWindow(callBackParms->window), where);	// get the item number of the control
 					partCode = FindControl(where,callBackParms->window,&formatPopup);	// get the control itself
 					
 					if ((formatPopup != NULL))
@@ -614,7 +614,7 @@ pascal void NavSaveEventFilter(NavEventCallbackMessage callBackSelector,
 					break;
 				case keyDown:
 					NavCustomControl(callBackParms->context,kNavCtlGetFirstControlID,&firstItem);	// ask NavServices for our first control ID
-					GetDialogItemAsControl(callBackParms->window, firstItem + 1, &formatPopup);
+					GetDialogItemAsControl(GetDialogFromWindow(callBackParms->window), firstItem + 1, &formatPopup);
 					
 					NavCustomControl(callBackParms->context,kNavCtlGetEditFileName,&fileName);
 					
@@ -658,7 +658,7 @@ pascal void NavSaveEventFilter(NavEventCallbackMessage callBackSelector,
 				if (NavCustomControl(callBackParms->context, kNavCtlAddControlList, customItems) == noErr)
 				{
 					theErr = NavCustomControl(callBackParms->context, kNavCtlGetFirstControlID, &firstItem);
-					GetDialogItemAsControl(callBackParms->window, firstItem + 1, &formatPopup);
+					GetDialogItemAsControl(GetDialogFromWindow(callBackParms->window), firstItem + 1, &formatPopup);
 					
 					SetControlReference(formatPopup, (SInt32)customItems);
 					
@@ -680,7 +680,7 @@ pascal void NavSaveEventFilter(NavEventCallbackMessage callBackSelector,
 			
 		case kNavCBTerminate:
 			theErr = NavCustomControl(callBackParms->context,kNavCtlGetFirstControlID,&firstItem);	// ask NavServices for our first control ID
-			GetDialogItemAsControl(callBackParms->window, firstItem + 1, &formatPopup);
+			GetDialogItemAsControl(GetDialogFromWindow(callBackParms->window), firstItem + 1, &formatPopup);
 			
 			saveData->format = GetControlValue(formatPopup);
 			
@@ -727,7 +727,7 @@ pascal bool SaveEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short *i
 	{
 		case activateEvt: // if the window isn't the dialog, then we tell the update function
 		case updateEvt: //  to take care of it
-			if((WindowPtr) eventPtr->message != theDlgPtr)
+			if((DialogPtr) eventPtr->message != theDlgPtr)
 			{
 				HandleUpdate(eventPtr);
 				handledEvent = true;
@@ -744,7 +744,7 @@ pascal bool SaveEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short *i
 			GlobalToLocal(&where);
 			
 			theItem = FindDialogItem(theDlgPtr, where);	// get the item number of the control
-			partCode = FindControl(where, theDlgPtr, &formatPopup);	// get the control itself
+			partCode = FindControl(where, GetDialogWindow(theDlgPtr), &formatPopup);	// get the control itself
 			
 			//GetDialogItemAsControl(theDlgPtr, sfItemFileNameTextEdit, &nameField);
 			GetDialogItem(theDlgPtr, sfItemFileNameTextEdit, &itemType, (Handle*)&nameField, &bounds);
@@ -765,7 +765,7 @@ pascal bool SaveEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short *i
 			
 			break;
 		case keyDown:
-			if (WindowPeek(theDlgPtr)->refCon == sfMainDialogRefCon)
+			if (GetWRefCon(GetDialogWindow(theDlgPtr)) == sfMainDialogRefCon)
 			{
 				GetDialogItem(theDlgPtr, sfItemFileNameTextEdit, &itemType, (Handle*)&nameField, &bounds);
 				GetDialogItemText((Handle)nameField, fileName);

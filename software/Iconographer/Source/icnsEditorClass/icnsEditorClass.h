@@ -44,6 +44,8 @@ const static int kMaxPanUpdateRects = 10;
 
 const static int kZoomMenuItemCount = 5;
 
+const static int kMaximumTranslucentArea = 128 * 128;
+
 // resource IDs
 
 enum resources
@@ -65,6 +67,7 @@ enum resources
 	
 	// dialogs
 	rIconInfo = 1001,
+	rAddMember = 1003,
 	rAdjust = 1010,
 	rAdjustHuePane = 1011,
 	rAdjustBrightnessPane = 1012
@@ -131,6 +134,16 @@ enum iconInfoItems
 	i1BitMaskLabel = 32
 };
 
+enum addMemberItems
+{
+	iTypePopup = 4,
+	iSourcePopup = 5,
+	
+	// source popup menu items
+	iSourceNone = 1,
+	iSourceCurrent = 2
+};
+
 enum adjustItems
 {
 	iPreview = 3,
@@ -158,17 +171,24 @@ enum basicStrings
 	eIDAlreadyExists = 2,
 	eOverwriteButton = 3,
 	eInfoCancelButton = 4,
-	eLargeMaskSync = 5,
-	eSmallMaskSync = 6,
-	eHugeMaskSync = 7,
-	eYesButton = 8,
-	eNoButton = 9,
-	eInsertIconTitle = 10,
-	eNonIconDataFork = 11,
-	eChooseAnotherFile = 12,
-	eClickToChooseAShortcut = 13,
-	eClickToChooseAnEditor = 14,
-	eIconographerSupportFolder = 15
+	
+	eMaskSync = 5,
+	eRegenerateButton = 6,
+	eYesButton = 7,
+	eNoButton = 8,
+	
+	eNoMask = 9,
+	eGenerateButton = 10,
+	
+	eInsertIconTitle = 11,
+	eNonIconDataFork = 12,
+	eChooseAnotherFile = 13,
+	eClickToChooseAShortcut = 14,
+	eClickToChooseAnEditor = 15,
+	eIconographerSupportFolder = 16,
+	eIconographerSupportFolderError = 17,
+	eExternalEditorError = 18,
+	eOpenPreferences = 19
 };
 
 enum labelStrings
@@ -181,6 +201,12 @@ enum labelStrings
 	sSizeSuffix = 6,
 	sInfoLabelName = 7,
 	sInfoLabelNoName = 8
+};
+
+enum editorBalloonHelp
+{
+	hEditingArea = 1,
+	hZoomPlacard = 2
 };
 
 enum controlIDs
@@ -329,7 +355,8 @@ class icnsEditorClass : public icnsClass, public MWindow
 										   PixMapHandle* maskPix, GWorldPtr* maskGW, long* maskName,
 										   bool strict);
 		void			ToggleIconMask(void);
-		void			CheckMaskSync(PixMapHandle basePix, PixMapHandle maskPix, int errorString);
+		void			CheckMaskSync(PixMapHandle basePix, PixMapHandle maskPix, int size);
+		void			GenerateMask(int mask);
 		void			ChangeColorsIconSet(long name, GWorldPtr* gWorld, PixMapHandle* pix, CTabHandle colorTable, bool saveState);
 		
 		void 			HandleDrawing(Point theMouse);
@@ -386,7 +413,6 @@ class icnsEditorClass : public icnsClass, public MWindow
 		int				GetMaxMagnification();
 		void			UpdateZoom();
 		
-		void			UpdatePreview();
 		void			CopyDepth(int oldDepth, int newDepth, int iconOrMask);
 		void 			GetDisplayPix(Point theMouse, GWorldPtr *clickedGW, PixMapHandle *clickedPix, long *clickedName, Rect *clickedRect);
 		void			InsertFromPicture(PicHandle srcPic, GWorldPtr targetGW, int options);
@@ -395,6 +421,8 @@ class icnsEditorClass : public icnsClass, public MWindow
 		void			SaveState(GWorldPtr gWorld, PixMapHandle pix, long name);
 		void			SaveMembers(void);
 		void			UpdateCursor(Point theMouse);
+		
+		void			BuildMembersMenu(MenuHandle menu, int startingPoint, int membersToList);
 		
 		static pascal void	ScrollbarAction(ControlHandle theControl, SInt16 thePart);
 		
@@ -484,6 +512,7 @@ class icnsEditorClass : public icnsClass, public MWindow
 		void			ZoomIn();
 		void			ZoomOut();
 		int				EditIconInfo(int mode);
+		void			AddMember();
 		void			OpenInExternalEditor();
 		void			ReloadFromExternalEditor();
 		
@@ -532,7 +561,7 @@ extern pascal OSErr 			DragTrackingHandler(DragTrackingMessage message, WindowPt
 extern pascal OSErr 			DragReceiveHandler (WindowPtr theWindow, void *, DragReference theDragRef);
 extern pascal OSErr 			ApproveDragReference (DragReference theDragRef, bool *approved, icnsEditorPtr parentEditor);
 extern pascal OSErr 			DrawDragHilite(DragReference dragRef, icnsEditorPtr parentEditor);
-extern void						DragPixMap(Rect* dragSourceRect,
+extern void						DragPixMap(Rect dragSourceRect,
 										   EventRecord *eventPtr,
 										   PixMapHandle dragPix,
 										   RgnHandle dragShapeRgn,
@@ -562,8 +591,11 @@ extern void ToggleNonMacOSItems(DialogPtr infoDialog);
 extern void SplitMenuItem(Str255 text, long* ID, Str255 iconName);
 extern void GetIDMenu(int ID, MenuHandle* menu, int* item, Str255 name);
 extern void SetControlBalloonHelp(ControlHandle theControl, long stringNo);
+
 extern long GetControlBalloonHelp(ControlHandle theControl);
 extern void HandleBalloons(Point theMouse, WindowPtr window, int strings);
+extern bool HandleBalloon(int strings, ControlHandle theControl, Point theMouse);
+extern void HandleBalloon(int strings, int index, Rect ballonRect, Point theMouse);
 
 extern pascal bool AdjustDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit);
 extern void FieldToSlider(ControlHandle field, ControlHandle slider);

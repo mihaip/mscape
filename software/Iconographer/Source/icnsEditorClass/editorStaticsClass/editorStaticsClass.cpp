@@ -1,9 +1,10 @@
 #include "editorStaticsClass.h"
 #include "icnsEditorClass.h"
 #include "MAlert.h"
+#include "iconBrowserClass.h"
 
 const static int kPrefsSettingsPaneItems[] = {
-	iDrawGrid, iCheckSync, iDither,
+	iShowOnlyLoadedMembers, iCheckSync, iDither,
 	iStartupGroupBox, iStartupCreateNewEditor, iStartupOpenIcon, iStartupDoNothing,
 	iSaveGroupBox, iSaveDataAndResource, iSaveResource, iSaveData,
 	iResetPaletteLocations,
@@ -54,16 +55,6 @@ editorStaticsClass::editorStaticsClass(void)
 		GetIndPattern(&selectionPatterns[i], rSelectionPatterns, i+1);
 	// we load the patterns used for the drawing of the selection marching ant animation
 
-	swapColorsIconEnabled = GetCIcon(rSwapColorsIconEnabled); // here we're loading the icons
-	HLock((Handle)swapColorsIconEnabled);				      // used for the disabled/
-	swapColorsIconDisabled = GetCIcon(rSwapColorsIconDisabled); // enabled view of the
-	HLock((Handle)swapColorsIconDisabled);					  // swap colors widget
-
-	resetColorsIconEnabled = GetCIcon(rResetColorsIconEnabled); // ditto here, but for the
-	HLock((Handle)resetColorsIconEnabled);						// reset colors widget
-	resetColorsIconDisabled = GetCIcon(rResetColorsIconDisabled);
-	HLock((Handle)resetColorsIconDisabled);
-
 	aliasedPic = GetPicture(rTPAliasedPic);
 	antiAliasedPic = GetPicture(rTPAntiAliasedPic);
 	
@@ -100,7 +91,7 @@ editorStaticsClass::editorStaticsClass(void)
 	lastTextSettings.size = 12;
 	lastTextSettings.style = normal;
 	
-	currentBalloon = 0;
+	currentBalloon = -1;
 
 	colorsPalette = new ColorsPalette();
 	membersPalette = new MembersPalette();
@@ -108,6 +99,9 @@ editorStaticsClass::editorStaticsClass(void)
 	toolPalette = new ToolPalette();
 	
 	zoomMenu = GetMenu(mZoom);
+	browserTypeMenu = GetMenu(rIBTypeMenu);
+	
+	firstTime = false;
 }
 
 void editorStaticsClass::LoadPicker(int ID,
@@ -159,15 +153,6 @@ editorStaticsClass::~editorStaticsClass(void)
 	UnlockPixels(canvasPix); // we're done with the canvas GWorld/PixMap
 	DisposeGWorld(canvasGW);
 	
-	HUnlock((Handle)swapColorsIconEnabled); // we can get rid of these resources too
-	DisposeCIcon(swapColorsIconEnabled);
-	HUnlock((Handle)swapColorsIconDisabled);
-	DisposeCIcon(swapColorsIconDisabled);
-	HUnlock((Handle)resetColorsIconEnabled);
-	DisposeCIcon(resetColorsIconEnabled);
-	HUnlock((Handle)resetColorsIconDisabled);
-	DisposeCIcon(resetColorsIconDisabled);
-	
 	UnlockPixels(sys8PickerPix); DisposeGWorld(sys8PickerGW); DisposeRgn(sys8PickerRgn);
 	UnlockPixels(sys4PickerPix); DisposeGWorld(sys4PickerGW); DisposeRgn(sys4PickerRgn);
 	UnlockPixels(sys1PickerPix); DisposeGWorld(sys1PickerGW); DisposeRgn(sys1PickerRgn);
@@ -177,7 +162,8 @@ editorStaticsClass::~editorStaticsClass(void)
 	UnlockPixels(win8PickerPix); DisposeGWorld(win8PickerGW); DisposeRgn(win8PickerRgn);
 	UnlockPixels(win4PickerPix); DisposeGWorld(win4PickerGW); DisposeRgn(win4PickerRgn);
 	
-	ReleaseResource(Handle(zoomMenu));
+	DisposeMenu(zoomMenu);
+	DisposeMenu(browserTypeMenu);
 	
 	SetGWorld(startupPort, startupDevice); // and restore the startup port and device
 	// (altho there shouldn't have been any reason to change them in the first place)
@@ -421,6 +407,38 @@ void editorStaticsClass::UpdatePalettes(icnsEditorPtr frontEditor, int flags)
 	if ((flags & updateAll) && colorsPalette->IsVisible()) colorsPalette->Update();
 }
 
+bool editorStaticsClass::GetSupportFolder(FSSpec* supportFolder)
+{
+	Str255	temp, supportFolderName;
+	
+	GetIndString(supportFolderName, rBasicStrings, eIconographerSupportFolder);
+
+	CopyString(temp, "\p:");
+	AppendString(temp, supportFolderName);
+	
+	if (FSMakeFSSpec(0, 0, temp, supportFolder) == noErr)
+		return true;
+	else
+	{
+		FSSpec 	appSpec;
+		Str255 	error;
+		long	dirID;
+		
+		GetIndString(error, rBasicStrings, eIconographerSupportFolderError);
+		
+		DisplayAlert(error, "\pOK", "\p", "\p");
+		
+		appSpec = GetApplicationFileSpec();
+		
+		DirCreate(appSpec.vRefNum, appSpec.parID, supportFolderName, &dirID);
+		
+		FSMakeFSSpec(0, 0, temp, supportFolder);
+		
+		return false;
+	}
+	
+}
+
 #pragma mark -
 
 void editorPreferencesClass::Load(int ID)
@@ -501,6 +519,12 @@ void editorPreferencesClass::Load(int ID)
 			(**data).adjustDialogLocation.h = (**data).adjustDialogLocation.v = -1;
 			
 			(**data).currentColorPicker = kRGBPane;
+			
+			(**data).flags &= ~(prefsShowOnlyLoadedMembers | prefsPreviewSelected);
+			
+			(**data).previewBackground = iPPDesktop;
+			
+			icnsEditorClass::statics.firstTime = true;
 		}
 		default:
 			(**data).version = 0x20;
@@ -600,7 +624,7 @@ pascal void editorPreferencesClass::ZoomArrowsAction(ControlHandle controlHdl,SI
 
 		SetControlValue(controlHdl,controlValue);
 		
-		GetDialogItemAsControl(GetControlOwner(controlHdl), iDefaultZoomLevelField, &defaultZoomLevelField);
+		GetDialogItemAsControl(GetDialogFromWindow(GetControlOwner(controlHdl)), iDefaultZoomLevelField, &defaultZoomLevelField);
 		
 		NumToString(controlValue, tempString);
 		AppendString(tempString, "\p00%");
@@ -655,7 +679,7 @@ pascal bool editorPreferencesClass::PreferencesDialogFilter(DialogPtr dialog, Ev
 			short			part;
 			
 			SAVEGWORLD;
-			SetPort(dialog);
+			SetPortDialogPort(dialog);
 			
 			GetDialogItemAsControl(dialog, iDefaultZoomLevelArrows, &arrowsControl);
 			GetDialogItemAsControl(dialog, iDefaultZoomLevelField, &fieldControl);
@@ -664,7 +688,7 @@ pascal bool editorPreferencesClass::PreferencesDialogFilter(DialogPtr dialog, Ev
 			
 			theMouse = eventPtr->where;
 			GlobalToLocal(&theMouse);
-			if ((part = FindControl(theMouse,dialog, &control)) && part)
+			if ((part = FindControl(theMouse, GetDialogWindow(dialog), &control)) && part)
 				if (control == arrowsControl)
 				{
 					ControlActionUPP	arrowsActionFunctionUPP;
@@ -676,7 +700,7 @@ pascal bool editorPreferencesClass::PreferencesDialogFilter(DialogPtr dialog, Ev
 				}
 				else if (control == fieldControl)
 				{
-					ClearKeyboardFocus(dialog);
+					ClearKeyboardFocus(GetDialogWindow(dialog));
 					handledEvent = true;
 				}
 				else if (control == previewSizeSlider)
@@ -699,7 +723,7 @@ pascal bool editorPreferencesClass::PreferencesDialogFilter(DialogPtr dialog, Ev
 				else if (control == previewSizeField)
 				{
 					if (TrackControl(control, theMouse, NULL))
-						SetKeyboardFocus(dialog, control, kControlEditTextPart);
+						SetKeyboardFocus(GetDialogWindow(dialog), control, kControlEditTextPart);
 					
 					handledEvent = true;
 				}
@@ -742,13 +766,15 @@ pascal bool editorPreferencesClass::PreferencesDialogFilter(DialogPtr dialog, Ev
 	return handledEvent;
 }
 
-void editorPreferencesClass::Edit()
+#define GETFLAG(control, flag) {if (GetControlValue(control)) (**data).flags |= flag; else (**data).flags &= ~flag;}
+
+void editorPreferencesClass::Edit(int pane)
 {
 	DialogPtr			preferencesDialog;
 	ModalFilterUPP		eventFilterUPP;
 	ControlHandle		defaultZoomLevelField,
 						defaultZoomLevelArrows,
-						drawGrid,
+						showOnlyLoadedMembers,
 						checkSync,
 						dither,
 						newEditor,
@@ -808,11 +834,11 @@ void editorPreferencesClass::Edit()
 	SetControlMaximum(defaultZoomLevelArrows, kMaxMagnification);
 	SetControlValue(defaultZoomLevelArrows, (**data).defaultZoomLevel);
 	
-	GetDialogItemAsControl(preferencesDialog, iDrawGrid, &drawGrid);
-	SetControlValue(drawGrid, bool((**data).flags & prefsDrawGrid));
+	GetDialogItemAsControl(preferencesDialog, iShowOnlyLoadedMembers, &showOnlyLoadedMembers);
+	SetControlValue(showOnlyLoadedMembers, bool((**data).flags & prefsShowOnlyLoadedMembers));
 	
 	GetDialogItemAsControl(preferencesDialog, iCheckSync, &checkSync);
-	SetControlValue(checkSync, !bool((**data).flags & prefsDontCheckSync));
+	SetControlValue(checkSync, !bool((**data).flags & prefsDontCheckMasks));
 	
 	GetDialogItemAsControl(preferencesDialog, iDither, &dither);
 	SetControlValue(dither, bool((**data).flags & prefsDither));
@@ -870,25 +896,37 @@ void editorPreferencesClass::Edit()
 	
 	GetDialogItemAsControl(preferencesDialog, iPreferencesTabs, &tabs);
 	
+	SetControlValue(tabs, pane);
+	Draw1Control(tabs);
+	
 	for (int i=0; i < kPrefsDefaultsPaneItemsCount; i++)
 	{
 		GetDialogItemAsControl(preferencesDialog, kPrefsDefaultsPaneItems[i], &tempControl);
 		EmbedControl(tempControl, tabs);
-		HideControl(tempControl);
+		if (pane == kPrefsDefaultsPane)
+			Draw1Control(tempControl);
+		else
+			HideControl(tempControl);
 	}
 	
 	for (int i=0; i < kPrefsExternalEditorPaneItemsCount; i++)
 	{
 		GetDialogItemAsControl(preferencesDialog, kPrefsExternalEditorPaneItems[i], &tempControl);
 		EmbedControl(tempControl, tabs);
-		HideControl(tempControl);
+		if (pane == kPrefsExternalEditorPane)
+			Draw1Control(tempControl);
+		else
+			HideControl(tempControl);
 	}
 	
 	for (int i=0; i < kPrefsSettingsPaneItemsCount; i++)
 	{
 		GetDialogItemAsControl(preferencesDialog, kPrefsSettingsPaneItems[i], &tempControl);
 		EmbedControl(tempControl, tabs);
-		Draw1Control(tempControl);
+		if (pane == kPrefsSettingsPane)
+			Draw1Control(tempControl);
+		else
+			HideControl(tempControl);
 	}
 	
 	if ((**data).flags & prefsPreviewScaled)
@@ -908,28 +946,28 @@ void editorPreferencesClass::Edit()
 		DeactivateControl(previewSizeField);
 	}
 	
-	AutoEmbedControl(newEditor, preferencesDialog);
-	AutoEmbedControl(openIcon, preferencesDialog);
-	AutoEmbedControl(doNothing, preferencesDialog);
+	AutoEmbedControl(newEditor, GetDialogWindow(preferencesDialog));
+	AutoEmbedControl(openIcon, GetDialogWindow(preferencesDialog));
+	AutoEmbedControl(doNothing, GetDialogWindow(preferencesDialog));
 	
-	AutoEmbedControl(saveDataAndResource, preferencesDialog);
-	AutoEmbedControl(saveData, preferencesDialog);
-	AutoEmbedControl(saveResource, preferencesDialog);
+	AutoEmbedControl(saveDataAndResource, GetDialogWindow(preferencesDialog));
+	AutoEmbedControl(saveData, GetDialogWindow(preferencesDialog));
+	AutoEmbedControl(saveResource, GetDialogWindow(preferencesDialog));
 	
-	AutoEmbedControl(previewFullSize, preferencesDialog);
-	AutoEmbedControl(previewScaled, preferencesDialog);
+	AutoEmbedControl(previewFullSize, GetDialogWindow(preferencesDialog));
+	AutoEmbedControl(previewScaled, GetDialogWindow(preferencesDialog));
 	
-	ClearKeyboardFocus(preferencesDialog);
+	ClearKeyboardFocus(GetDialogWindow(preferencesDialog));
 	
 	SAVEGWORLD;
-	SetPort(preferencesDialog);
+	SetPortDialogPort(preferencesDialog);
 	TextFont(applFont);
 	TextSize(9);
 	RESTOREGWORLD;
 	
 	icnsEditorClass::SetMembersCheckboxes(preferencesDialog, (**data).defaultUsedMembers, (**data).defaultFormat);
 	
-	ShowWindow(preferencesDialog);
+	ShowWindow(GetDialogWindow(preferencesDialog));
 	
 	dialogDone = false;
 	
@@ -947,11 +985,11 @@ void editorPreferencesClass::Edit()
 				tempString[0] -= 3;
 				StringToNum(tempString, &(**data).defaultZoomLevel);
 				
-				if (GetControlValue(drawGrid)) (**data).flags |= prefsDrawGrid; else (**data).flags &= ~prefsDrawGrid;
-				if (!GetControlValue(checkSync)) (**data).flags |= prefsDontCheckSync; else (**data).flags &= ~prefsDontCheckSync;
-				if (GetControlValue(dither)) (**data).flags |= prefsDither; else (**data).flags &= ~prefsDither;
-				if (GetControlValue(exportIconAndMask)) (**data).flags |= prefsExportIconAndMask; else (**data).flags &= ~prefsExportIconAndMask;
-				if (GetControlValue(previewScaled)) (**data).flags |= prefsPreviewScaled; else (**data).flags &= ~prefsPreviewScaled;
+				GETFLAG(showOnlyLoadedMembers, prefsShowOnlyLoadedMembers);
+				if (!GetControlValue(checkSync)) (**data).flags |= prefsDontCheckMasks; else (**data).flags &= ~prefsDontCheckMasks;
+				GETFLAG(dither, prefsDither);
+				GETFLAG(exportIconAndMask, prefsExportIconAndMask);
+				GETFLAG(previewScaled, prefsPreviewScaled);
 				
 				(**data).defaultFormat = GetControlValue(defaultFormat);
 				
@@ -992,7 +1030,7 @@ void editorPreferencesClass::Edit()
 				
 				dialogDone = true;
 				break;
-			case iDrawGrid: ToggleCheckbox(drawGrid); break;
+			case iShowOnlyLoadedMembers: ToggleCheckbox(showOnlyLoadedMembers); break;
 			case iCheckSync: ToggleCheckbox(checkSync); break;
 			case iDither: ToggleCheckbox(dither); break;
 			
@@ -1028,12 +1066,12 @@ void editorPreferencesClass::Edit()
 				SetControlValue(saveData, 0);
 				break;
 			case iPreferencesTabs:
-				ClearKeyboardFocus(preferencesDialog);
+				ClearKeyboardFocus(GetDialogWindow(preferencesDialog));
 				currentTab = GetControlValue(tabs);
 				
 				switch (currentTab)
 				{
-					case kSettingsTab:
+					case kPrefsSettingsPane:
 						for (int i=0; i < kPrefsDefaultsPaneItemsCount; i++)
 						{
 							GetDialogItemAsControl(preferencesDialog, kPrefsDefaultsPaneItems[i], &tempControl);
@@ -1050,7 +1088,7 @@ void editorPreferencesClass::Edit()
 							ShowControl(tempControl);
 						}
 						break;
-					case kDefaultsTab:
+					case kPrefsDefaultsPane:
 						for (int i=0; i < kPrefsSettingsPaneItemsCount; i++)
 						{
 							GetDialogItemAsControl(preferencesDialog, kPrefsSettingsPaneItems[i], &tempControl);
@@ -1067,7 +1105,7 @@ void editorPreferencesClass::Edit()
 							ShowControl(tempControl);
 						}
 						break;
-					case kExternalEditorTab:
+					case kPrefsExternalEditorPane:
 						for (int i=0; i < kPrefsSettingsPaneItemsCount; i++)
 						{
 							GetDialogItemAsControl(preferencesDialog, kPrefsSettingsPaneItems[i], &tempControl);
@@ -1228,6 +1266,14 @@ void editorPreferencesClass::DisableFeature(long flag)
 	(**data).flags &= ~flag;
 }
 
+void editorPreferencesClass::ToggleFeature(long flag)
+{
+	if ((**data).flags & flag)
+		(**data).flags &= ~flag;
+	else
+		(**data).flags |= flag;
+}
+
 RGBColor editorPreferencesClass::GetFavoriteColor(int index)
 {
 	return (**data).favoriteColors[index];
@@ -1316,9 +1362,9 @@ void editorPreferencesClass::GetNewEditorShortcut()
 	
 	MWindow::DeactivateAll();
 	
-	ShowWindow(dialog);
+	ShowWindow(GetDialogWindow(dialog));
 	
-	DrawControls(dialog);
+	DrawControls(GetDialogWindow(dialog));
 	
 	for (int i=0; i < kMaxExternalEditorShortcutKeys + 1; i++)
 		(**data).externalEditorShortcut[i] = 0xFF;
@@ -1422,6 +1468,15 @@ long editorPreferencesClass::GetExternalEditorCreator()
 	return fileInfo.fdCreator;
 }
 
+bool editorPreferencesClass::ExternalEditorChosen()
+{
+	FSSpec externalEditor;
+	
+	externalEditor = GetExternalEditor();
+	
+	return (externalEditor.vRefNum != -1 || externalEditor.parID != -1);
+}
+
 #pragma mark -
 
 int editorPreferencesClass::GetLineThickness()
@@ -1432,6 +1487,18 @@ int editorPreferencesClass::GetLineThickness()
 void editorPreferencesClass::SetLineThickness(int thickness)
 {
 	(**data).lineThickness = thickness;
+}
+
+#pragma mark -
+
+int editorPreferencesClass::GetPreviewBackground()
+{
+	return (**data).previewBackground;
+}
+
+void editorPreferencesClass::SetPreviewBackground(int background)
+{
+	(**data).previewBackground = background;
 }
 
 #pragma mark -
@@ -1453,10 +1520,16 @@ void editorPreferencesClass::GetRegistrationInfo(Str255 name, Str255 company, St
 	CopyString(regCode, (**data).regCode);
 }	
 
-bool editorPreferencesClass::IsRegistered(void)
+bool editorPreferencesClass::IsRegistered()
 {
-	return !(EqualString("\pNot registered", (**data).name, true, true) ||
-			EqualString("\pInpher                  ", (**data).name, true, true));
+	return IsRegistered((**data).name);
+}
+
+bool editorPreferencesClass::IsRegistered(Str255 name)
+{
+	return !(EqualString("\pNot registered", name, true, true) ||
+			 EqualString("\pInpher                  ", name, true, true) ||
+			 EqualString("\pMacintosh               ", name, true, true));
 }
 
 void editorPreferencesClass::GenerateRegCode(Str255 name, Str255 regCode)
@@ -1482,7 +1555,7 @@ bool editorPreferencesClass::ValidRegCode(Str255 name, Str255 inRegCode)
 	Str255 regCode;
 	
 	GenerateRegCode(name, regCode);
-	return EqualString(inRegCode, regCode, true, true);
+	return (IsRegistered(name) && EqualString(inRegCode, regCode, true, true));
 }
 
 void editorPreferencesClass::Register(Str255 name, Str255 company, Str255 regCode)

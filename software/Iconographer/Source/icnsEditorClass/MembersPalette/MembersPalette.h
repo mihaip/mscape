@@ -6,7 +6,6 @@
 const static OSType kMembersPaletteType = 'IcMP';
 
 const static int kMPDefaultWidth = 150;
-const static int kInfoButtonWidth = 11;
 
 enum MembersPaletteResources
 {
@@ -14,12 +13,30 @@ enum MembersPaletteResources
 	rMPWindow = 400,
 	rMPMemberPane = 400,
 	rMPScrollbar = 401,
-	rMPStatesPane = 402,
+	rMPSFillerPlacard = 402,
 	rMPBackgroundPane = 403,
 	rMPInfoButton = 404,
+	rMPAddMemberButton = 405,
+	
+	// pictures
+	rMPInfoButtonPicture = 400,
+	rMPAddMemberButtonPicture = 401,
 	
 	// others
-	rMPInfoButtonPicture = 400
+	rMPBalloonHelp = 400,
+	rMPNames = 401
+};
+
+enum membersPaletteBalloonHelp
+{
+	hInfoButton = 1,
+	hAddMemberButton = 2
+};
+
+enum membersPaletteNames
+{
+	eMPInfo = 1,
+	eMPAddMember = 2
 };
 
 const static int kScrollingIncrement = 16;
@@ -36,7 +53,7 @@ const static int kDragScrollSpeed = 4;
 
 typedef struct
 {
-	ControlHandle	root, scrollbar, backgroundPane, statesPane, infoButton;
+	ControlHandle	root, scrollbar, backgroundPane, fillerPlacard, infoButton, addMemberButton;
 	ControlHandle	members[kMembersCount];
 } MembersPaletteControls;
 
@@ -59,7 +76,8 @@ class MembersPalette : public MFloater
 		
 		void					Show();
 		
-		void					Refresh();
+		void					DoIdle();
+		
 		void 					HandleContentClick(EventRecord* eventPtr);
 		void					HandleGrow(Point where);
 		
@@ -82,7 +100,8 @@ class MembersPalette : public MFloater
 		
 		RgnHandle				oldClip;
 		
-		PicHandle				infoButtonPicture;
+		PicHandle				infoButtonPicture,
+								addMemberButtonPicture;
 		
 				
 		static pascal short		MemberPaneHitTest(ControlHandle theControl, Point where);
@@ -109,7 +128,7 @@ class MembersPalette : public MFloater
 		void 					HandleMemberPaneClick(ControlHandle pane, short controlPart, EventRecord* eventPtr);
 		
 		static void				InfoButtonUpdate(struct EnhancedPlacardData* data, int flags);
-
+		static void				AddMemberButtonUpdate(struct EnhancedPlacardData* data, int flags);
 
 		// drag and drop stuff
 		
@@ -125,4 +144,5 @@ class MembersPalette : public MFloater
 		
 	friend class editorPreferencesClass;
 	friend class icnsEditorClass;
+	friend class drawingStateClass;
 };

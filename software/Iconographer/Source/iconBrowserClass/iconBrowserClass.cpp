@@ -35,19 +35,19 @@ iconBrowserClass::iconBrowserClass(FSSpec file, OpenFuncPtr OpenFunc, int format
 	switch (format)
 	{
 		case formatMacOSOld:
-			SetBevelButtonMenuValue(controls.menu, mIBOld);
+			SetEnhancedPlacardMenuValue(controls.typeMenu, mIBOld);
 			break;
 		case formatMacOSNew:
-			SetBevelButtonMenuValue(controls.menu, mIBNew);
+			SetEnhancedPlacardMenuValue(controls.typeMenu, mIBNew);
 			break;
 		default:
-			SetBevelButtonMenuValue(controls.menu, mIBBoth);
+			SetEnhancedPlacardMenuValue(controls.typeMenu, mIBBoth);
 			break;
 	}
 	
 	shownIconTypes = -1;
 	
-	RefreshIconTypes();
+	EnhancedPlacardHandleClick(controls.typeMenu);
 	
 	RepositionControls();
 	
@@ -92,9 +92,12 @@ OSErr iconBrowserClass::CreateControls()
 				   (Ptr) &placardDrawUPP);
 				   
 	
-	controls.menu = GetNewControl(rIBMenu, window);
-	if (controls.menu == NULL) return mFulErr;
-	SetControlFontStyle(controls.menu, &smallTextStyle); // set the style too
+	//controls.menu = GetNewControl(rIBMenu, window);
+	controls.typeMenu = NewEnhancedPlacard(rIBTypeMenu, window, enhancedPlacardDrawBorder + enhancedPlacardLargeArrow, 0, 0,
+										   "\p", NULL, icnsEditorClass::statics.browserTypeMenu, icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix,
+										   BrowserMenuUpdate, this);
+	if (controls.typeMenu == NULL) return mFulErr;
+	//SetControlFontStyle(controls.menu, &smallTextStyle); // set the style too
 	
 	controls.list = GetNewControl(rIBList, window);
 	if (controls.list == NULL) return mFulErr;
@@ -142,11 +145,11 @@ OSErr iconBrowserClass::BuildIconList()
 	
 	SetControlMaximum(progressBar, iconCount);
 	
-	GetWTitle(progressDialog, dialogTitle);
+	GetWTitle(GetDialogWindow(progressDialog), dialogTitle);
 	SubstituteString(dialogTitle, "\p<name>", srcFileSpec.name);
-	SetWTitle(progressDialog, dialogTitle);
+	SetWTitle(GetDialogWindow(progressDialog), dialogTitle);
 	
-	ShowWindow(progressDialog);
+	ShowWindow(GetDialogWindow(progressDialog));
 	
 	file = FSpOpenResFile(&srcFileSpec, fsRdPerm);
 	UseResFile(file);
@@ -155,12 +158,11 @@ OSErr iconBrowserClass::BuildIconList()
 	LoadFamily('ICN#', false, oldFile, file, progressBar, progressText);
 	LoadFamily('ics#', false, oldFile, file, progressBar, progressText);
 	
-	drawIcon.LoadFileIcon();
-	AddIcon(kIDUseFileIcon, "\p", drawIcon.members, drawIcon.members & il32);
-	
-	
 	CloseResFile(file);
 	UseResFile(oldFile);
+	
+	drawIcon.LoadFileIcon();
+	AddIcon(kIDUseFileIcon, "\p", drawIcon.members, drawIcon.members & il32);
 	
 	DisposeDialog(progressDialog);
 	
@@ -254,16 +256,16 @@ void iconBrowserClass::RepositionControls()
 	
 	SAVEGWORLD;
 	
-	SetPort(window);
+	SetPort();
 	
-	windowRect = window->portRect;
+	windowRect = GetPortRect();
 	
 	HideControl(controls.rootControl);
 	
-	GetControlBounds(controls.menu, &controlRect);
+	GetControlBounds(controls.typeMenu, &controlRect);
 	h = controlRect.left;
 	v = windowRect.bottom - windowRect.top - 15;
-	MoveControl(controls.menu, h, v);
+	MoveControl(controls.typeMenu, h, v);
 	
 	GetControlBounds(controls.infoPlacard, &controlRect);
 	h = windowRect.right - windowRect.left - 100 - 16 + 2;
@@ -313,22 +315,6 @@ void iconBrowserClass::DoIdle()
 	;
 }
 
-void iconBrowserClass::Refresh()
-{
-	SAVEGWORLD;
-	
-	
-	SetPort(window);
-	
-	BeginUpdate(window);
-	
-	UpdateControls(window, window->visRgn);
-	
-	EndUpdate(window);
-	
-	RESTOREGWORLD;
-}
-
 void iconBrowserClass::RefreshList()
 {
 	Str255	iconCount,iconCountLabel;
@@ -337,7 +323,7 @@ void iconBrowserClass::RefreshList()
 	
 	SAVEGWORLD;
 	
-	SetPort(window);
+	SetPort();
 	
 	theList.Filter();
 	Draw1Control(controls.list);
@@ -367,6 +353,20 @@ void iconBrowserClass::HandleKeyDown(EventRecord* eventPtr)
 		SetControlValue(controls.scrollBar, theList.GetVOffset());
 		Draw1Control(controls.list);
 	}
+	else
+	{
+		char theKey;
+		
+		theKey = eventPtr->message & charCodeMask;
+		
+		switch (theKey)
+		{
+			case kReturnCharCode:
+			case kEnterCharCode:
+				OpenCurrentIcon();
+				break;
+		}
+	}
 }
 
 void iconBrowserClass::HandleContentClick(EventRecord* eventPtr)
@@ -387,7 +387,7 @@ void iconBrowserClass::HandleContentClick(EventRecord* eventPtr)
 	
 	SAVEGWORLD;
 	
-	SetPort(window);
+	SetPort();
 	
 	GlobalToLocal(&where);
 	
@@ -397,12 +397,10 @@ void iconBrowserClass::HandleContentClick(EventRecord* eventPtr)
 	{
 		if (clickedControl == controls.scrollBar)
 			TrackControl(clickedControl, where, (ControlActionUPP) -1);
-		else if (clickedControl == controls.menu)
+		else if (clickedControl == controls.typeMenu)
 		{
-			
-			TrackControl(clickedControl, where, NULL);
-			
-			RefreshIconTypes();
+			TrackControl(clickedControl, where, (ControlActionUPP) -1);
+			EnhancedPlacardHandleClick(controls.typeMenu);
 		}
 		else if (clickedControl == controls.list)
 		{
@@ -423,17 +421,7 @@ void iconBrowserClass::HandleContentClick(EventRecord* eventPtr)
 			} while(Button());
 			if (((LMGetTicks() - lastSelectionTime) < LMGetDoubleTime())
 				&& (currentSelection == lastSelection))
-			{
-				long ID;
-				ListDrawingData* cellData;
-				
-				theList.GetCellClientData(currentSelection, 0, &cellData);
-				ID = cellData->ID;
-				if (cellData->newType)
-					Open(&srcFileSpec, ID, formatMacOSNew, part);
-				else
-					Open(&srcFileSpec, ID, formatMacOSOld, part);
-			}
+				OpenCurrentIcon();
 			
 			lastSelectionTime = LMGetTicks();
 			lastSelection = currentSelection;
@@ -444,7 +432,76 @@ void iconBrowserClass::HandleContentClick(EventRecord* eventPtr)
 	RESTOREGWORLD;
 }
 
-void iconBrowserClass::RefreshIconTypes()
+void iconBrowserClass::OpenCurrentIcon()
+{
+	long 				ID, currentSelection;
+	ListDrawingData*	cellData;
+	
+	currentSelection = theList.GetSelection();
+	
+	if (currentSelection == -1) return;
+	
+	theList.GetCellClientData(currentSelection, 0, &cellData);
+	ID = cellData->ID;
+	if (cellData->newType)
+		Open(&srcFileSpec, ID, formatMacOSNew, -1);
+	else
+		Open(&srcFileSpec, ID, formatMacOSOld, -1);
+}
+
+void iconBrowserClass::BrowserMenuUpdate(struct EnhancedPlacardData* data, int flags)
+{
+	iconBrowserPtr	parent;
+	
+	parent = iconBrowserPtr(data->clientData);
+
+	if (flags & enhancedPlacardUpdateState)
+	{
+		Str255				menuItemText;
+		
+		GetIndString(data->title, rIBStrings, eIBIconTypes);
+		GetMenuItemText(data->menu, parent->shownIconTypes, menuItemText);
+		SubstituteString(data->title, "\p<types>", menuItemText);
+	}
+	else
+	{
+		Rect		controlBounds;
+		int			v;
+		Str255		iconCountLabel, iconCountAsString;
+		
+		if (parent->shownIconTypes == data->menuValue) return;
+		
+		parent->shownIconTypes = data->menuValue;
+		parent->theList.Filter();
+		
+		GetControlBounds(parent->controls.list, &controlBounds);
+		
+		v = controlBounds.bottom - controlBounds.top;
+		
+		if (parent->theList.GetHeight() - v > 0)
+			SetControlMaximum(parent->controls.scrollBar, parent->theList.GetHeight() - v);
+		else
+			SetControlMaximum(parent->controls.scrollBar, 0);
+		
+		if (GetControlValue(parent->controls.scrollBar) > GetControlMaximum(parent->controls.scrollBar))
+			SetControlValue(parent->controls.scrollBar, GetControlMaximum(parent->controls.scrollBar));
+		
+		Draw1Control(parent->controls.list);
+			
+		GetIndString(iconCountLabel, rIBStrings, eIBIconCountLabel);
+		
+		NumToString(parent->theList.CountVisible(), iconCountAsString);
+		SubstituteString(iconCountLabel, "\p<number>", iconCountAsString);
+		NumToString(parent->theList.CountTotal(), iconCountAsString);
+		SubstituteString(iconCountLabel, "\p<total>", iconCountAsString);
+		
+		SetControlTitle(parent->controls.infoPlacard, iconCountLabel);
+		
+		Draw1Control(parent->controls.infoPlacard);
+	}
+}
+
+/*void iconBrowserClass::RefreshIconTypes()
 {
 	Str255 iconTypes, selectedType, iconCountLabel, iconCountAsString;
 	short menuSelection;
@@ -470,32 +527,9 @@ void iconBrowserClass::RefreshIconTypes()
 		
 		theList.Filter();
 		
-		GetControlBounds(controls.list, &controlRect);
 		
-		v = controlRect.bottom - controlRect.top;
-		
-		if (theList.GetHeight() - v > 0)
-			SetControlMaximum(controls.scrollBar, theList.GetHeight() - v);
-		else
-			SetControlMaximum(controls.scrollBar, 0);
-		
-		if (GetControlValue(controls.scrollBar) > GetControlMaximum(controls.scrollBar))
-			SetControlValue(controls.scrollBar, GetControlMaximum(controls.scrollBar));
-		
-		Draw1Control(controls.list);
-			
-		GetIndString(iconCountLabel, rIBStrings, eIBIconCountLabel);
-		
-		NumToString(theList.CountVisible(), iconCountAsString);
-		SubstituteString(iconCountLabel, "\p<number>", iconCountAsString);
-		NumToString(theList.CountTotal(), iconCountAsString);
-		SubstituteString(iconCountLabel, "\p<total>", iconCountAsString);
-		
-		SetControlTitle(controls.infoPlacard, iconCountLabel);
-		
-		Draw1Control(controls.infoPlacard);
 	}
-}
+}*/
 
 void iconBrowserClass::HandleGrow(Point where)
 {
@@ -518,15 +552,15 @@ void iconBrowserClass::HandleGrow(Point where)
 	if (SizeSupported(h, v))
 	{	
 		SAVEGWORLD;
-		SetPort(window);
+		SetPort();
 		
 		updateRgn = NewRgn(); // we must invalidate the old window region...
-		CopyRgn(window->visRgn, updateRgn);
+		GetPortVisibleRegion(GetWindowPort(window), updateRgn);
 		InvalRgn(updateRgn);
 		
 		SizeWindow(window, h, v, true); //...do the resizing
 		
-		CopyRgn(window->visRgn, updateRgn); // and invalidate the new one as well
+		GetPortVisibleRegion(GetWindowPort(window), updateRgn); // and invalidate the new one as well
 		InvalRgn(updateRgn);
 		
 		DisposeRgn(updateRgn); // and now we're done with the region
@@ -725,7 +759,9 @@ void IconUpdate(MStringPtr cellString, int* height, void* clientData)
 	drawingData = (ListDrawingData*)clientData;
 	
 	drawingData->icon->ID = drawingData->ID;
-	if (drawingData->newType)
+	if (drawingData->ID == kIDUseFileIcon)
+		drawingData->icon->LoadFileIcon();
+	else if (drawingData->newType)
 		drawingData->icon->LoadNew();
 	else
 		drawingData->icon->LoadOld();

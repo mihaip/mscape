@@ -104,7 +104,7 @@ drawingStateClass::drawingStateClass(drawingStatePtr previousLastState, icnsEdit
 	// and also the status and the current icon sizes
 	status = editor->status;
 	members = editor->members;
-	
+	usedMembers = editor->usedMembers;
 	colors = editor->colors;
 }
 
@@ -201,7 +201,7 @@ void drawingStateClass::RestoreState(icnsEditorPtr editor)
 	// restoring the status
 	editor->status = status;
 	editor->members = members;
-	
+	editor->usedMembers = usedMembers;
 	editor->colors = colors;
 	
 	// if there's a selection, we should also update the magnified selection region
@@ -210,6 +210,8 @@ void drawingStateClass::RestoreState(icnsEditorPtr editor)
 	
 	// and the drawing area needs to be updated
 	editor->InvalidateDrawingArea();
+	
+	icnsEditorClass::statics.membersPalette->RefreshMemberPanes(editor);
 	
 	RESTOREGWORLD;
 	RESTORECOLORS;
