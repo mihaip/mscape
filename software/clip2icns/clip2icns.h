@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commonfunctions.h"
+#include "icnsClass.h"
 #include <PictUtils.h>
 #include <MacMemory.h>
 #include <Controls.h>

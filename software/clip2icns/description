@@ -1,0 +1,37 @@
+Hello,
+
+For my first product at Kagi (clip2icns) I want to use a serial number based on the name that the user provides. Here is the algoritm:
+
+this function is case sensitive
+take the first 24 characters of the name (if less than that fill it up with spaces)
+the result is a 6 character string
+take the first 6 characters of the name, get the last digit of each of their ascii codes (so mod them by 10) and put those into the the first 6 characters of the return string
+repeat that for the next 3 sets of 6 characters (add them on to what's already in the result string)
+take the first character of the result string, add 2 to it, mod it by 10 and add '0' (that's the ASCII code of 0), so the result will be a number (in the ASCII character set)
+ditto for the 2nd character, but now add 4
+ditto for the 3rd character, but now add 0
+ditto for the 4rd character, but now add 9
+ditto for the 5rd character, but now add 9
+ditto for the 6rd character, but now add 8
+
+In the end you should get a 6 character string that's all digits
+
+Here are some sample values:
+
+Mihai Parparita: 647258
+Mike Robinette: 806460
+Arlo Rose: 273676
+Maury McCown: 048834
+Murray Chapman: 002422
+Alex Moritz: 200971
+Curtis Townson: 363887
+Tracy Ann Connolly: 300074
+Ed Deans: 538361
+Jason Jones: 469586
+Doug Zartman: 137522
+Alex Okita: 811073
+Hamish Sinclair: 510874
+
+
+
+

@@ -809,11 +809,11 @@ void DrawImageWell(Rect bounds)
 		UseResFile(scheme);\
 		if (Get1Resource('icns', ID) || Get1Resource('icl8', ID) || Get1Resource('ics8', ID))\
 		{\
-			RegisterIconRefFromResource('c2ci', 'test', &schemeSpec, ID, &currentIconRef);\
 			FillCRect(&iconPreviewRect, desktopPattern);\
-			PlotIconRef(&currentLargeIconRect,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);\
-			PlotIconRef(&currentSmallIconRect,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);\
-			ReleaseIconRef(currentIconRef);\
+			currenticns.ID = ID;\
+			currenticns.Load();\
+			currenticns.Display(currentLargeIconRect);\
+			currenticns.Display(currentSmallIconRect);\
 		}\
 		else\
 		{\
@@ -856,15 +856,15 @@ void GeticnsID(bool createFile)
 	int					selectedIcns, i, selectedType=1, currentMenuID = 201;
 	Str255				IDAsString, menuItemText, icnsName = "\p Item Icon";
 	int					includeOldStyle = 1;
-	GWorldPtr			clipboardGWorld, tempGWorld;
-	PixMapHandle		clipboardPix, tempPix;
+	GWorldPtr			clipboardGWorld;
+	PixMapHandle		clipboardPix;
 	Rect				sourceRect, largeIconRect={0,0,32, 32}, smallIconRect = {0, 0, 16, 16};
 	RGBColor			currentForeColor, currentBackColor;
 	Rect				clipboardPreviewRect, iconPreviewRect, clipboardRect, tempRect;
 	Rect				clipLargeIconRect, clipLargeMaskRect, clipSmallIconRect, clipSmallMaskRect;
 	PixPatHandle		desktopPattern;
 	Rect				currentLargeIconRect, currentSmallIconRect;
-	IconRef				currentIconRef;
+	icnsClass			currenticns;
 	int					x, y;
 	
 	if (!createFile)
@@ -921,11 +921,6 @@ void GeticnsID(bool createFile)
 	clipboardPix = GetGWorldPixMap(clipboardGWorld);
 	LockPixels(clipboardPix);
 	
-	NewGWorld(&tempGWorld, 32, &largeIconRect, NULL, NULL, 0);
-	SetGWorld(tempGWorld, NULL);
-	tempPix = GetGWorldPixMap(tempGWorld);
-	LockPixels(tempPix);
-	
 	ForeColor(blackColor);
 	BackColor(whiteColor);
 	
@@ -935,9 +930,10 @@ void GeticnsID(bool createFile)
 		sourceRect.left += (sourceRect.right - sourceRect.left)/2;
 		tempRect = largeIconRect;
 		MakeTargetRect(sourceRect, &tempRect);
-		CopyBits(&insertIcns->portBits, (BitMap *) *tempPix,&tempRect,&largeIconRect,srcCopy,NULL);
 		SetRect(&clipLargeIconRect, 16, 0, 48, 32);
 		SetRect(&clipLargeMaskRect, 48, 0, 80, 32);
+		
+		//CopyBits((BitMap*) *maskPix, &insertIcns->portBits, &largeIconRect, &tempRect, srcCopy, NULL);
 		CopyDeepMask((BitMap *) *clipboardPix,
 					 (BitMap *) *clipboardPix,
 					 &insertIcns->portBits,
@@ -950,7 +946,6 @@ void GeticnsID(bool createFile)
 		sourceRect.right -= (sourceRect.right - sourceRect.left)/2;
 		tempRect = smallIconRect;
 		MakeTargetRect(sourceRect, &tempRect);
-		CopyBits(&insertIcns->portBits, (BitMap *) *tempPix,&tempRect,&smallIconRect,srcCopy,NULL);
 		SetRect(&clipSmallIconRect, 0, 0, 16, 16);
 		SetRect(&clipSmallMaskRect, 0, 16, 16, 32);
 		CopyDeepMask((BitMap *) *clipboardPix,
@@ -967,7 +962,6 @@ void GeticnsID(bool createFile)
 		GetDialogItem(insertIcns, kClipboardPreview, &itemType, &item, &sourceRect);
 		tempRect = largeIconRect;
 		MakeTargetRect(sourceRect, &tempRect);
-		CopyBits(&insertIcns->portBits, (BitMap *) *tempPix,&tempRect,&largeIconRect,srcCopy,NULL);
 		SetRect(&clipLargeIconRect, 0, 0, 32, 32);
 		SetRect(&clipLargeMaskRect, 32, 0, 64, 32);
 		CopyDeepMask((BitMap *) *clipboardPix,
@@ -984,7 +978,6 @@ void GeticnsID(bool createFile)
 		GetDialogItem(insertIcns, kClipboardPreview, &itemType, &item, &sourceRect);
 		tempRect = smallIconRect;
 		MakeTargetRect(sourceRect, &tempRect);
-		CopyBits(&insertIcns->portBits, (BitMap *) *tempPix,&tempRect,&smallIconRect,srcCopy,NULL);
 		SetRect(&clipSmallIconRect, 0, 0, 16, 16);
 		SetRect(&clipSmallMaskRect, 0, 16, 16, 32);
 		CopyDeepMask((BitMap *) *clipboardPix,
@@ -998,12 +991,11 @@ void GeticnsID(bool createFile)
 	}
 	RGBForeColor(&currentForeColor);
 	RGBBackColor(&currentBackColor);
-	UnlockPixels(clipboardPix);
-	DisposeGWorld(clipboardGWorld);
-	UnlockPixels(tempPix);
-	DisposeGWorld(tempGWorld);
 	
 	SetPort(insertIcns);
+	
+	UnlockPixels(clipboardPix);
+	DisposeGWorld(clipboardGWorld);
 
 	GetDialogItem(insertIcns, kCurrentIconPreview, &itemType, &item, &sourceRect);
 	sourceRect.left += (sourceRect.right - sourceRect.left)/2;
@@ -1015,10 +1007,17 @@ void GeticnsID(bool createFile)
 	currentSmallIconRect = smallIconRect;
 	MakeTargetRect(sourceRect, &currentSmallIconRect);
 	
-	RegisterIconRefFromResource('c2ic', 'test', &schemeSpec, -16455, &currentIconRef); 
-	PlotIconRef(&currentLargeIconRect,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef); 
-	PlotIconRef(&currentSmallIconRect,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);
-	ReleaseIconRef(currentIconRef);
+	if (!createFile)
+	{
+		scheme = FSpOpenResFile(&schemeSpec, fsRdWrPerm);
+		UseResFile(scheme);
+		currenticns.ID = -16455;
+		currenticns.Load();
+		currenticns.Display(currentLargeIconRect);
+		currenticns.Display(currentSmallIconRect);
+		CloseResFile(scheme);
+		UseResFile(appFile);
+	}
 	
 	ShowWindow( insertIcns );
 
@@ -1343,14 +1342,14 @@ void clip2icns(short icnsID, Str255 icnsName, int flags)
 				 &smallIconRect,
 				 srcCopy,
 				 NULL);
-		SetGWorld(startupPort, startupDevice);
+/*		SetGWorld(startupPort, startupDevice);
 		CopyBits((BitMap *)*maskSmall1BitPix,
 				 &qd.thePort->portBits,
 				 &smallIconRect,
 				 &smallIconRect,
 				 srcCopy,
 				 NULL);
-		
+*/		
 		UnlockPixels(tempPix);
 		DisposeGWorld(tempGWorld);
 		
@@ -1391,6 +1390,7 @@ void clip2icns(short icnsID, Str255 icnsName, int flags)
 	}
 	
 	SetGWorld(startupPort, startupDevice);
+	
 	icnsSize = sizeof(IconFamilyResource) - sizeof(IconFamilyElement);
 	if (hasLarge)
 		icnsSize += sizeof(IconFamilyElement) * 4 + large32BitSize - 4 + large8BitMaskSize - 4 + large1BitSize - 4 + large8BitSize - 4;
@@ -1599,7 +1599,7 @@ void clip2icns(short icnsID, Str255 icnsName, int flags)
 		UnlockPixels(bwSmallPix);
 		
 		DisposeGWorld(colorSmall32BitGWorld);
-		DisposeGWorld(colorSmall32BitGWorld);
+		DisposeGWorld(colorSmall8BitGWorld);
 		DisposeGWorld(maskSmall8BitGWorld);
 		DisposeGWorld(maskSmall1BitGWorld);
 		DisposeGWorld(bwSmallGWorld);

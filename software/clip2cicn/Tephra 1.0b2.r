@@ -35933,10 +35933,6 @@ resource 'PICT' (-14320, sysheap, purgeable) {
 	$"20FF 0000 00FF"
 };
 
-data 'Colr' (129, sysheap, purgeable) {
-	$"0000 2000 0001 0000 0001 0000 0000 0000"            /* .. ............. */
-};
-
 data 'clut' (-14336, "Active Header", sysheap, purgeable) {
 	$"0000 0000 0000 0006 0000 0000 0000 0000"            /* ................ */
 	$"0001 2323 2323 2323 0002 0000 BBBB 0000"            /* ..######....»».. */
@@ -42982,21 +42978,6 @@ data 'cinf' (-9552, "Desktop Icon Background", sysheap, purgeable) {
 	$"0000"                                               /* .. */
 };
 
-resource 'actb' (-14336, sysheap, purgeable) {
-	{	/* array ColorSpec: 5 elements */
-		/* [1] */
-		wContentColor, 8995, 8995, 8995,
-		/* [2] */
-		wFrameColor, 0, 0, 0,
-		/* [3] */
-		wTextColor, 0, 48059, 0,
-		/* [4] */
-		wHiliteColor, 0, 0, 0,
-		/* [5] */
-		wTitleBarColor, 65535, 65535, 65535
-	}
-};
-
 data 'ppat' (-10064, sysheap, purgeable) {
 	$"0001 0000 001C 0000 004E 0000 0000 FFFF"            /* .........N....ÿÿ */
 	$"0000 0000 F078 3C1E 0F87 C3E1 0000 0000"            /* ....ðx<..‡Ãá.... */
@@ -43572,16 +43553,6 @@ resource 'icm8' (-3800, sysheap, purgeable) {
 	$"00FF FFFF FFFF FFFF FFFF FFFF FF"
 };
 
-resource 'STR#' (-14320, "Control Panel Info") {
-	{	/* array StringArray: 2 elements */
-		/* [1] */
-		"Tephra",
-		/* [2] */
-		"A techish and curvy scheme that should l"
-		"ook cool and yet still be usable. "
-	}
-};
-
 data 'crsr' (0, sysheap, purgeable) {
 	$"8001 0000 0060 0000 0092 0000 0000 0000"            /* €....`...’...... */
 	$"0000 0000 0000 4000 6000 7000 7800 7C00"            /* ......@.`.p.x.|. */
@@ -43677,6 +43648,35 @@ data 'crsr' (-20487, sysheap, purgeable) {
 	$"FFFF 0001 0000 CCCC 0000 0002 0000 BBBB"            /* ÿÿ....ÌÌ......»» */
 	$"0000 0003 0000 4444 0000 0004 0000 2222"            /* ......DD......"" */
 	$"0000 0005 0000 1111 0000"                           /* .......... */
+};
+
+data 'Colr' (129, sysheap, purgeable) {
+	$"0000 2000 0001 0000 0001 0000 0000 0000"            /* .. ............. */
+};
+
+resource 'actb' (-14336, sysheap, purgeable) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 8995, 8995, 8995,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 48059, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
+	}
+};
+
+resource 'STR#' (-14320, "Control Panel Info") {
+	{	/* array StringArray: 2 elements */
+		/* [1] */
+		"Tephra",
+		/* [2] */
+		"A techish and curvy scheme that should l"
+		"ook cool and yet still be usable. "
+	}
 };
 
 resource 'dlgx' (-14320, "Scheme About Box", sysheap, purgeable) {
