@@ -1,4 +1,4 @@
-#include "badger.h"
+#include "glypher.h"
 
 void main(void)
 {
@@ -382,16 +382,18 @@ void NewIconSet()
 {
 	OSStatus	theErr;
 	
-/*	if (navServicesAvailable)
+	if (navServicesAvailable)
 	{
 		theErr = GetBadgesNav();
-		theErr = NewIconSetNav();
+		if (theErr == noErr)
+			theErr = NewIconSetNav();
 	}
 	else
-	{ */
+	{
 		theErr = GetBadgesOld();
-		theErr = NewIconSetOld();
-	//}
+		if (theErr == noErr)
+			theErr = NewIconSetOld();
+	}
 	if (theErr == noErr)
 		MakeNewSet();
 	
@@ -414,15 +416,15 @@ OSStatus NewIconSetNav()
 	dialogOptions.dialogOptionFlags -= kNavAllowMultipleFiles;
 	dialogOptions.dialogOptionFlags += kNavNoTypePopup;
 	dialogOptions.dialogOptionFlags -= kNavAllowPreviews;
-	CopyString(dialogOptions.clientName, "\pclip2icns");
+	CopyString(dialogOptions.clientName, "\pGlypher");
 	CopyString(dialogOptions.savedFileName, "\pUntitled Icon Set");
 	
 	theErr = NavPutFile(NULL,	// use system's default location
 			   &reply,
 			   &dialogOptions,
 			   eventUPP,
-			   'Icon',
-			   'c2ci',
+			   'rsrc',
+			   'RSED',
 			   NULL);
 					
 	DisposeRoutineDescriptor(eventUPP);
@@ -463,9 +465,9 @@ OSStatus NewIconSetOld()
 void EditBadges()
 {
 	OSStatus	theErr;
-	//if (navServicesAvailable)
-	//	theErr = GetBadgesNav();
-	//else
+	if (navServicesAvailable)
+		theErr = GetBadgesNav();
+	else
 		theErr = GetBadgesOld();
 	if (theErr == noErr)
 		PositionBadges();
@@ -487,8 +489,8 @@ OSStatus GetBadgesNav()
 	dialogOptions.dialogOptionFlags -= kNavAllowMultipleFiles;
 	dialogOptions.dialogOptionFlags += kNavNoTypePopup;
 	dialogOptions.dialogOptionFlags -= kNavAllowPreviews;
-	CopyString(dialogOptions.clientName, "\pBadges");
-	typeList = MakeTypeList ( 'Bdgr', 1, 'Bdgs');
+	CopyString(dialogOptions.clientName, "\pGlypher");
+	typeList = MakeTypeList ( 'Glph', 1, badgesFileType);
 	
 	NavGetFile(NULL,
 			   &reply,
@@ -659,6 +661,18 @@ void MergeIcon(int ID, Str255 name, icnsClass* baseicns)
 	OffsetRect(&badgeRect, hOffset, vOffset);
 	badgeicns.Display(badgeRect);
 	
+	SetGWorld(targeticns.icl4GW, NULL);
+	baseicns->Display(largeIconRect);
+	badgeRect = largeIconRect;
+	OffsetRect(&badgeRect, hOffset, vOffset);
+	badgeicns.Display(badgeRect);
+	
+	SetGWorld(targeticns.icniGW, NULL);
+	baseicns->Display(largeIconRect);
+	badgeRect = largeIconRect;
+	OffsetRect(&badgeRect, hOffset, vOffset);
+	badgeicns.Display(badgeRect);
+	
 	SetGWorld(badgeicns.l8mkGW, NULL);
 	ScrollRect(&largeIconRect, hOffset, vOffset, ignoredRgn);
 	SetGWorld(badgeicns.il32GW, NULL);
@@ -758,6 +772,18 @@ void MergeIcon(int ID, Str255 name, icnsClass* baseicns)
 	
 	// loading the small version
 	SetGWorld(targeticns.ics8GW, NULL);
+	baseicns->Display(smallIconRect);
+	badgeRect = smallIconRect;
+	OffsetRect(&badgeRect, smallHOffset, smallVOffset);
+	badgeicns.Display(badgeRect);
+	
+	SetGWorld(targeticns.ics4GW, NULL);
+	baseicns->Display(smallIconRect);
+	badgeRect = smallIconRect;
+	OffsetRect(&badgeRect, smallHOffset, smallVOffset);
+	badgeicns.Display(badgeRect);
+	
+	SetGWorld(targeticns.icsiGW, NULL);
 	baseicns->Display(smallIconRect);
 	badgeRect = smallIconRect;
 	OffsetRect(&badgeRect, smallHOffset, smallVOffset);
@@ -885,8 +911,8 @@ void MakeNewSet()
 		
 	FSpDelete(&setSpec);
 
-	FSpCreate(&setSpec, 'Bdgr', 'Icon', 0); /*smRoman = 0*/
-	FSpCreateResFile(&setSpec, 'Bdgr', 'Icon', 0); /*smRoman = 0*/
+	FSpCreate(&setSpec, 'RSED', 'rsrc', 0); /*smRoman = 0*/
+	FSpCreateResFile(&setSpec, 'RSED', 'rsrc', 0); /*smRoman = 0*/
 	
 	badges = FSpOpenResFile(&badgesSpec, fsRdPerm);
 	UseResFile(badges);
@@ -1003,11 +1029,7 @@ void MakeNewSet()
 	OffsetRect(&badgeRect, hOffset, vOffset);\
 	baseicns.Display(largeIconRect);\
 	if (ID != 128)\
-	{\
-		badgeicns.ID = ID;\
-		badgeicns.LoadFromFile(badgesSpec);\
 		badgeicns.Display(badgeRect);\
-	}\
 	else\
 	{\
 		InsetRect(&badgeRect, 8, 8);\
@@ -1023,11 +1045,7 @@ void MakeNewSet()
 	OffsetRect(&smallBadgeRect, smallHOffset, smallVOffset);\
 	baseicns.Display(smallIconRect);\
 	if (ID != 128)\
-	{\
-		badgeicns.ID = ID;\
-		badgeicns.LoadFromFile(badgesSpec);\
 		badgeicns.Display(smallBadgeRect);\
-	}\
 	else\
 	{\
 		InsetRect(&smallBadgeRect, 4, 4);\
@@ -1156,6 +1174,9 @@ void PositionBadges(void)
 	
 	ShowWindow( positionBadges );
 	
+	badgeicns.ID = -20801;
+	badgeicns.LoadFromFile(badgesSpec);
+	
 	Refresh();
 	
 	SetPort(positionBadges);
@@ -1221,6 +1242,10 @@ void PositionBadges(void)
 				DrawImageWell(targetRect);
 				DrawImageWell(smallTargetRect);
 				DrawImageWell(desktopPreview);
+				
+				badgeicns.ID = ID;
+				badgeicns.LoadFromFile(badgesSpec);
+				
 				Refresh();
 				break;
 		}

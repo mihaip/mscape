@@ -11,7 +11,7 @@
 
 // file types
 
-#define badgesFileType 'Bdgs'
+#define badgesFileType 'Glfs'
 
 // --- Constants --- //
 #define partsResourceType 'wnd#'
