@@ -1034,9 +1034,9 @@ void MWindow::UpdateCursor(Point theMouse)
 #pragma unused(theMouse)
 }
 
-void MWindow::DoIdle(void)
+void MWindow::DoIdle(MWindowPtr windowUnderMouse)
 {
-	;
+#pragma unused(windowUnderMouse)
 }
 
 void MWindow::Refresh()

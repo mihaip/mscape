@@ -84,7 +84,7 @@ resource 'CNTL' (258, "Colors Palette: Color Readout Label", purgeable) {
 	0,
 	296,
 	0,
-	"R:\nG:\nB:"
+	"R:\nV:\nB:"
 };
 
 resource 'CNTL' (259, "Colors Palette: Color Readout Data", purgeable) {
@@ -143,14 +143,14 @@ resource 'CNTL' (263, "Colors Palette: RGB Picker: Blue Slider", purgeable) {
 };
 
 resource 'CNTL' (264, "Colors Palette: RGB Colors: Red Label", purgeable) {
-	{74, 19, 88, 43},
+	{74, 15, 88, 43},
 	0,
 	visible,
 	100,
 	0,
 	296,
 	0,
-	"Red"
+	"Rouge"
 };
 
 resource 'CNTL' (265, "Colors Palette: RGB Colors: Green Label", purgeable) {
@@ -161,7 +161,7 @@ resource 'CNTL' (265, "Colors Palette: RGB Colors: Green Label", purgeable) {
 	0,
 	296,
 	0,
-	"Green"
+	"Verte"
 };
 
 resource 'CNTL' (266, "Colors Palette: RGB Colors: Blue Label", purgeable) {
@@ -172,7 +172,7 @@ resource 'CNTL' (266, "Colors Palette: RGB Colors: Blue Label", purgeable) {
 	0,
 	296,
 	0,
-	"Blue"
+	"Bleu"
 };
 
 resource 'CNTL' (267, "Colors Palette: RGB Picker: Red Preview", purgeable) {
@@ -253,14 +253,14 @@ resource 'CNTL' (273, "Colors Palette: HSV Picker: Value Slider", purgeable) {
 };
 
 resource 'CNTL' (274, "Colors Palette: HSV Colors: Hue Label", purgeable) {
-	{74, 19, 88, 43},
+	{74, 13, 88, 43},
 	0,
 	visible,
 	100,
 	0,
 	296,
 	0,
-	"Hue"
+	"Teinte"
 };
 
 resource 'CNTL' (275, "Colors Palette: HSV Colors: Saturation Label", purgeable) {
@@ -282,7 +282,7 @@ resource 'CNTL' (276, "Colors Palette: HSV Colors: Value Label", purgeable) {
 	0,
 	296,
 	0,
-	"Value"
+	"Valeur"
 };
 
 resource 'CNTL' (277, "Colors Palette: HSV Picker: Hue Preview", purgeable) {
@@ -432,7 +432,7 @@ resource 'DITL' (260, purgeable) {
 			266
 		},
 		/* [6] */
-		{74, 19, 88, 43},
+		{74, 15, 88, 43},
 		Control {
 			enabled,
 			264
@@ -497,7 +497,7 @@ resource 'DITL' (261, purgeable) {
 			276
 		},
 		/* [6] */
-		{74, 19, 88, 43},
+		{74, 13, 88, 43},
 		Control {
 			enabled,
 			274
@@ -674,106 +674,98 @@ resource 'DLOG' (290, "Colors Palette: Favorites Picker", purgeable) {
 resource 'STR#' (250, "Colors Palette: Balloon Help", purgeable) {
 	{	/* array StringArray: 4 elements */
 		/* [1] */
-		"The current foreground and background co"
-		"lors are displayed here. The color with "
-		"the focus around it is the one being cur"
-		"rently modified. Click on the other to s"
-		"elect that for modification",
+		"Couleurs de premier et d'arrière plan. L"
+		"a couleur sélectionnée est la couleur ac"
+		"tuellement modifiée. Cliquez sur l'autre"
+		" pour la modifier.",
 		/* [2] */
-		"These tabs can be used to toggle among t"
-		"he various color pickers that are availa"
-		"ble: Red/Green/Blue sliders, Hue/Saturat"
-		"ion/Value sliders, the System palette an"
-		"d a set of slots for your Favorite color"
-		"s.",
+		"Utilisez ces onglets pour sélectionner u"
+		"ne palette de couleurs : curseurs Rouge/"
+		"Vert/Bleu, curseurs Teinte/Saturation/Lu"
+		"minosité, palette Système, et vos couleu"
+		"rs préférées.",
 		/* [3] */
-		"The current position of the cursor (in r"
-		"elation to the drawing) is displayed her"
-		"e.",
+		"La position actuelle du curseur (par rap"
+		"port au dessin) est affichée ici.",
 		/* [4] */
-		"The colors in the drawing underneath the"
-		" cursor are displayed here."
+		"Les couleurs du dessin pointées par le c"
+		"urseur sont affichées ici."
 	}
 };
 
 resource 'STR#' (260, "Colors Palette: RGB Picker: Balloon Help", purgeable) {
 	{	/* array StringArray: 6 elements */
 		/* [1] */
-		"Red slider: controls the intensity of th"
-		"e color red in the current mixture.",
+		"Curseur Rouge : contrôle l'intensité du "
+		"rouge dans le mélange sélectionné.",
 		/* [2] */
-		"Red preview: displays the effects of set"
-		"ting the red slider at various points al"
-		"ong the track.",
+		"Prév. Rouge : affiche le résultat de la "
+		"modification du curseur Rouge.",
 		/* [3] */
-		"Green slider: controls the intensity of "
-		"the color green in the current mixture.",
+		"Curseur Vert : contrôle l'intensité du v"
+		"ert dans le mélange sélectionné.",
 		/* [4] */
-		"Green preview: displays the effects of s"
-		"etting the green slider at various point"
-		"s along the track.",
+		"Prév. Vert : affiche le résultat de la m"
+		"odification du curseur Vert.",
 		/* [5] */
-		"Blue slider: controls the intensity of t"
-		"he color blue in the current mixture.",
+		"Curseur Bleu : contrôle l'intensité du b"
+		"leu dans le mélange sélectionné.",
 		/* [6] */
-		"Blue preview: displays the effects of se"
-		"tting the blue slider at various points "
-		"along the track."
+		"Prév. Bleu : affiche le résultat de la m"
+		"odification du curseur Bleu.\""
 	}
 };
 
 resource 'STR#' (270, "Colors Palette: HSV Picker: Balloon Help", purgeable) {
 	{	/* array StringArray: 6 elements */
 		/* [1] */
-		"Hue slider: controls the current hue of "
-		"the color. The hue is the overall tint a"
-		"nd color.\n\nIf disabled, you must first i"
-		"ncrease the value and then the saturatio"
-		"n in order to be able to have colors.",
+		"Curseur Teinte : contrôle la teinte de l"
+		"a couleur. La teinte regroupe la couleur"
+		" et la nuance.\n\nS'il est désactivé, vous"
+		" devez déjà augmenter la luminosité puis"
+		" la saturation afin d'obtenir une couleu"
+		"r.",
 		/* [2] */
-		"Hue preview: displays the effects of set"
-		"ting the hue slider at various points al"
-		"ong the track.",
+		"Prév. Teinte : affiche les modifications"
+		" du curseur Teinte.",
 		/* [3] */
-		"Saturation slider: controls the saturati"
-		"on of the color. Saturation is the “puri"
-		"ty” of the color, at its lowest it yield"
-		"s a gray, at its maximum the current hue"
-		" at maximum.\n\nIf disabled, you must firs"
-		"t increase the value.",
+		"Curseur Saturation : contrôle la saturat"
+		"ion de la couleur, qui correspond à sa p"
+		"ureté : au minimum la couleur se rapproc"
+		"he du gris, au maximum la couleur s'appr"
+		"oche de la saturation.\n\nAugmentez le cur"
+		"seur Luminosité si celui-ci est désactiv"
+		"ée.",
 		/* [4] */
-		"Saturation preview: displays the effects"
-		" of setting the saturation slider at var"
-		"ious points along the track.",
+		"Prév. Saturation : affiche les modificat"
+		"ions du curseur Saturation.",
 		/* [5] */
-		"Value slider: controls the intensity of "
-		"the current hue in the current color. Th"
-		"e value is the intensity in a color.",
+		"Curseur Luminosité : contrôle l'intensit"
+		"é de la saturation dans la couleur. La l"
+		"uminosité est l'intensité d'une couleur.",
 		/* [6] */
-		"Value preview: displays the effects of s"
-		"etting the value slider at various point"
-		"s along the track."
+		"Prév. Luminosité : affiche les modificat"
+		"ions du curseur Luminosité."
 	}
 };
 
 resource 'STR#' (280, "Colors Palette: System Picker: Balloon Help", purgeable) {
 	{	/* array StringArray: 1 elements */
 		/* [1] */
-		"The system palette depth is displayed he"
-		"re. Click on a square to set its content"
-		"s as your foreground/background color."
+		"Prév. Luminosité : affiche les modificat"
+		"ions du curseur Luminosité."
 	}
 };
 
 resource 'STR#' (290, "Colors Palette: Favorites Picker: Baloon Help", purgeable) {
 	{	/* array StringArray: 1 elements */
 		/* [1] */
-		"You can store your favorite colors here."
-		" Simply click on an empty square to fill"
-		" it with the current color. Clicking on "
-		"it in the future will “pick-up” that col"
-		"or. You can command-click to remove a co"
-		"lor."
+		"Conservez ici vous couleurs préférées. C"
+		"liquez sur un carré vide pour y déposer "
+		"la couleur actuelle. Pour sélectionner e"
+		"nsuite cette couleur, cliquez sur le car"
+		"ré. Pour effacer une couleur, cliquez av"
+		"ec la touche commande appuyée."
 	}
 };
 
@@ -783,7 +775,7 @@ resource 'WIND' (250, "Colors Palette", purgeable) {
 	invisible,
 	goAway,
 	0x0,
-	"Colors",
+	"Couleurs",
 	noAutoCenter
 };
 

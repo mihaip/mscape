@@ -9,12 +9,8 @@ AboutBox::AboutBox()
 	
 	ChangeWindowAttributes(window, kWindowCloseBoxAttribute, kWindowFullZoomAttribute | kWindowCollapseBoxAttribute);
 	
-	applicationIcon.ID = 128;
-	applicationIcon.format = formatMacOSNew;
-	applicationIcon.Load();
-	
 	icon = GetNewControl(rAboutBoxIcon, window);
-	SetControlUserPaneDraw(icon, AboutBox::IconDraw);
+	SetControlUserPaneDraw(icon, MUtilities::ApplicationIconDraw);
 	
 	appName = GetNewControl(rAboutBoxAppName, window);
 	ResetStaticTextTitle(appName);
@@ -137,12 +133,20 @@ void AboutBox::HandleContentClick(EventRecord* eventPtr)
 	RESTOREGWORLD;
 }
 
-pascal void AboutBox::IconDraw(ControlHandle iconControl, SInt16 controlPart)
+void AboutBox::UpdateCursor(Point theMouse)
 {
-#pragma unused (controlPart)
-	Rect		iconBounds;
+	Rect controlRect;
 	
-	GetControlBounds(iconControl, &iconBounds);
-	
-	gAboutBox->applicationIcon.DisplayMember(it32, iconBounds, false);
+	if (MUtilities::GestaltVersion(gestaltAppearanceVersion, 0x01, 0x10))
+	{
+		GetControlBounds(webAddress, &controlRect);
+		if (PtInRect(theMouse, &controlRect))
+			MUtilities::ChangeCursor(kThemePointingHandCursor);
+		else
+		{
+			GetControlBounds(emailAddress, &controlRect);
+			if (PtInRect(theMouse, &controlRect))
+				MUtilities::ChangeCursor(kThemePointingHandCursor);
+		}
+	}
 }

@@ -5,7 +5,7 @@ class ToolPalette;
 typedef ToolPalette* ToolPalettePtr;
 
 #include "MFloater.h"
-#include "icnsClass.h"
+#include "MIcon.h"
 #include "PixMapColorPicker.h"
 #include "PatternPicker.h"
 
@@ -118,7 +118,7 @@ class ToolPalette : public MFloater
 		void					Activate();
 		void					Deactivate();
 		
-		void					DoIdle();
+		void					DoIdle(MWindowPtr windowUnderMouse);
 		
 		void 					HandleContentClick(EventRecord* eventPtr);
 		void 					HandleKeyDown(EventRecord *eventPtr);

@@ -339,7 +339,7 @@ class ColorsPalette : public MFloater
 		
 		void			Activate();
 		void			Deactivate();
-		void			DoIdle();
+		void			DoIdle(MWindowPtr windowUnderMouse);
 		void			UpdateCursor(Point theMouse);
 		
 		void			Show();

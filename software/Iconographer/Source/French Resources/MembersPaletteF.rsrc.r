@@ -117,32 +117,6 @@ resource 'DLOG' (9999, purgeable) {
 	noAutoCenter
 };
 
-resource 'MENU' (400, "Icon States") {
-	400,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"Icon States",
-	{	/* array: 8 elements */
-		/* [1] */
-		"Normal", noIcon, noKey, noMark, plain,
-		/* [2] */
-		"Hover", noIcon, noKey, noMark, plain,
-		/* [3] */
-		"Selected", noIcon, noKey, noMark, plain,
-		/* [4] */
-		"Open", noIcon, noKey, noMark, plain,
-		/* [5] */
-		"Accept Drop", noIcon, noKey, noMark, plain,
-		/* [6] */
-		"Accept Drop Open/Running", noIcon, noKey, noMark, plain,
-		/* [7] */
-		"Disabled", noIcon, noKey, noMark, plain,
-		/* [8] */
-		"Tile", noIcon, noKey, noMark, plain
-	}
-};
-
 resource 'PICT' (400, "Info Button") {
 	498,
 	{0, 0, 7, 7},
@@ -219,22 +193,23 @@ resource 'PICT' (401, "Add Member Button") {
 resource 'STR#' (400, "Members Palette Balloon Help", purgeable) {
 	{	/* array StringArray: 2 elements */
 		/* [1] */
-		"Icon Info\n\nClick this button to set an i"
-		"con’s attributes (ID, name, members, and"
-		" flags).",
+		"Information sur l'icone\n\nCliquez sur ce "
+		"bouton pour régler les paramètres d'une "
+		"icone (ID, nom, membres, et flags).",
 		/* [2] */
-		"Add Member\n\nClick here to create an addi"
-		"tional member (icon part) with a specifi"
-		"c size and depth."
+		"Ajouter un membre\n\nCliquez ici pour ajou"
+		"ter un membre (partie d'icone) et spécif"
+		"ier sa taille et sa profondeur de couleu"
+		"rs."
 	}
 };
 
 resource 'STR#' (401, "Members Palette Names", purgeable) {
 	{	/* array StringArray: 2 elements */
 		/* [1] */
-		"Info",
+		"Infos",
 		/* [2] */
-		"Add Member"
+		"Ajouter"
 	}
 };
 
@@ -244,7 +219,7 @@ resource 'WIND' (400, "Members Palette", purgeable) {
 	invisible,
 	goAway,
 	0x0,
-	"Members",
+	"Membres",
 	noAutoCenter
 };
 
@@ -343,23 +318,6 @@ resource 'dctb' (9999) {
 
 data 'ictb' (9999) {
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-};
-
-resource 'mctb' (400) {
-	{	/* array MCTBArray: 1 elements */
-		/* [1] */
-		mctbLast, 0,
-		{	/* array: 4 elements */
-			/* [1] */
-			0, 0, 0,
-			/* [2] */
-			0, 0, 0,
-			/* [3] */
-			0, 0, 0,
-			/* [4] */
-			0, 0, 0
-		}
-	}
 };
 
 resource 'wctb' (400) {

@@ -79,7 +79,7 @@ class MWindow
 		void				UnlockPortBits();
 		
 		virtual void		UpdateCursor(Point theMouse);
-		virtual void		DoIdle();
+		virtual void		DoIdle(MWindowPtr windowUnderMouse);
 		
 		virtual void		Refresh();
 		virtual void		HandleContentClick(EventRecord* eventPtr);

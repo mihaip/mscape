@@ -195,8 +195,6 @@ void drawingStateClass::RestoreState(icnsEditorPtr editor)
 	// and the drawing area needs to be updated
 	editor->InvalidateDrawingArea();
 	
-	icnsEditorClass::statics.membersPalette->RefreshMemberPanes(editor);
-	
 	RESTOREGWORLD;
 	RESTORECOLORS;
 	

@@ -22,6 +22,8 @@ int				gWindowMenuOffset = 0;
 MenuRef			gHelpMenu = NULL;
 int				gHelpMenuOffset = 0;
 int				gPreviousStatus = 0;
+MWindowPtr		gWindowUnderMouse = NULL;
+WindowRef		gWindowPtrUnderMouse = NULL;
 #if TARGET_API_MAC_CARBON
 AboutBoxPtr		gAboutBox = NULL;
 #endif
@@ -69,9 +71,15 @@ void Initialize()
 	GetIndString(gAppName, rDefaultNames, eAppName);
 	// this is used in lots of places, but for easy localization we get it from a resource
 	
+	err = RegisterAppearanceClient(); // and if we can intialize the appearance manager
+	if (err != noErr && err != themeProcessRegisteredErr)
+	{
+		DoError(rStdErrors, eAppearanceInitProblems);
+		gIsDone = true;
+	}
 	
 	if (!ConfigurationSupported()) // we check if we can run on this setup
-		CleanUp();
+		gIsDone = true;
 	
 #ifdef EXPIRES	
 	GetTime(&theDate); // and if we haven't expired
@@ -81,13 +89,6 @@ void Initialize()
 		gIsDone = true;
 	}
 #endif
-
-	err = RegisterAppearanceClient(); // and if we can intialize the appearance manager
-	if (err != noErr && err != themeProcessRegisteredErr)
-	{
-		DoError(rStdErrors, eAppearanceInitProblems);
-		gIsDone = true;
-	}
 
 	LoadPreferences();
 	
@@ -159,7 +160,7 @@ void Initialize()
 
 bool ConfigurationSupported(void)
 {
-	if (GestaltVersion(gestaltSystemVersion, 0x07, 0x53))
+	if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x07, 0x53))
 	{
 		long appearanceInfo;
 		
@@ -168,13 +169,24 @@ bool ConfigurationSupported(void)
 			DoError(rStdErrors, eAppearanceNotInstalled);
 			return false;
 		}
-		else if (appearanceInfo & (1 << gestaltAppearanceExists))
-			return true;
-		else
+		else if (!appearanceInfo & (1 << gestaltAppearanceExists))
 		{
 			DoError(rStdErrors, eAppearanceNotInstalled);
 			return false;
 		}
+		
+#if TARGET_API_MAC_CARBON
+		long	carbonVersion;
+
+		if (Gestalt(gestaltCarbonVersion, &carbonVersion) != noErr ||
+			carbonVersion < 0x0130 ||
+			!MUtilities::GestaltVersion(gestaltSystemVersion, 0x10, 0x00))
+		{
+			DoError(rStdErrors, eNeedCarbonLib);
+			return false;
+		}
+#endif
+		return true;
 	}
 	else
 	{
@@ -215,13 +227,7 @@ OSErr InitMenuBar()
 	
 	menu = GetMenu(mSelect);
 	if(menu != NULL)
-	{
-		InsertMenu(menu,kInsertHierarchicalMenu); // the select menu is not directly in the menubar,
-							       // rather it is a submenu of the edit menu
-#if TARGET_API_MAC_CARBON
-		SetMenuItemCommandID(menu, iAll, kHICommandSelectAll);
-#endif
-	}
+		InsertMenu(menu,kInsertHierarchicalMenu);
 	else
 		return resNotFound;
 	
@@ -233,23 +239,13 @@ OSErr InitMenuBar()
 		
 	menu = GetMenu(mPaste); // same for the paste menu
 	if(menu != NULL)
-	{
 		InsertMenu(menu,kInsertHierarchicalMenu);
-#if TARGET_API_MAC_CARBON
-		SetMenuItemCommandID(menu, iPasteNormally, kHICommandPaste);
-#endif
-	}
 	else
 		return resNotFound;
 		
 	menu = GetMenu(mCopy); // same for the copy menu
 	if(menu != NULL)
-	{
 		InsertMenu(menu,kInsertHierarchicalMenu);
-#if TARGET_API_MAC_CARBON
-		SetMenuItemCommandID(menu, iCopyNormally, kHICommandCopy);
-#endif
-	}
 	else
 		return resNotFound;
 		
@@ -376,6 +372,15 @@ OSErr InitMenuBar()
 	SetMenuItemCommandID(menu, iPaste, kHICommandPaste);
 	SetMenuItemCommandID(menu, iClear, kHICommandClear);
 	
+	MenuItemIndex minimizeIndex;
+	
+	GetIndMenuItemWithCommandID(NULL, kHICommandMinimizeWindow, 1, &menu, &minimizeIndex);
+	if (menu)
+	{
+		SetItemCmd(menu, minimizeIndex, 0);
+		SetItemCmd(menu, minimizeIndex + 1, 0);
+	}
+	
 #else
 	gWindowMenu = GetMenuHandle(mWindows);
 #endif
@@ -487,25 +492,19 @@ void DoIdle(void)
 	Str255			currentTitle = "\p";
 	int				newStatus;
 	Point 			globalMouse;
-	WindowPtr		windowPtrUnderMouse;
-	MWindowPtr		windowUnderMouse;
 	
 	GetMouse(&globalMouse);
 	LocalToGlobal(&globalMouse);
-	
-	FindWindow(globalMouse, &windowPtrUnderMouse);
-	
-	windowUnderMouse = GetWindow(windowPtrUnderMouse);
 	
 	DEBUG("\pgot window under mouse");
 		
 
 #if !TARGET_API_MAC_CARBON
 	if (HMGetBalloons())
-		if (windowUnderMouse != NULL &&
-			windowUnderMouse->GetType() == kFloaterType &&
-			FrontWindow() != windowPtrUnderMouse)
-			BringToFront(windowPtrUnderMouse);
+		if (gWindowUnderMouse != NULL &&
+			gWindowUnderMouse->GetType() == kFloaterType &&
+			FrontWindow() != gWindowPtrUnderMouse)
+			BringToFront(gWindowPtrUnderMouse);
 			
 	DEBUG("\pdealt with balloons");
 #endif
@@ -608,19 +607,25 @@ void DoIdle(void)
 		
 		newStatus |= frontIsBrowser;
 	}
+#if TARGET_API_MAC_CARBON
+	else if (frontWindow == gAboutBox)
+	{
+		newStatus = frontIsAbout;
+	}
+#endif
 	else
 		newStatus = 0;
 		
 	DEBUG("\pgotnew status");
 	
-	if (newStatus != gPreviousStatus && windowUnderMouse)
+	if (newStatus != gPreviousStatus && gWindowPtrUnderMouse)
 	{
 		SAVEGWORLD;
-		windowUnderMouse->SetPort();
+		gWindowUnderMouse->SetPort();
 		GlobalToLocal(&globalMouse);
 		RESTOREGWORLD;
 		
-		windowUnderMouse->UpdateCursor(globalMouse);
+		gWindowUnderMouse->UpdateCursor(globalMouse);
 	}
 	
 	DEBUG("\pupdated cursor");
@@ -637,7 +642,7 @@ void DoIdle(void)
 	{
 		if (currentWindow == frontWindow ||
 			currentWindow->GetType() == kFloaterType)
-			currentWindow->DoIdle();
+			currentWindow->DoIdle(gWindowUnderMouse);
 			
 		currentWindow = currentWindow->GetNext();
 	}
@@ -710,6 +715,7 @@ void UpdateMenuBar(int status)
 			EnableMenuItem(menu, iSimilar); // and do stuff on the current selection
 			EnableMenuItem(menu, iNone); 
 			EnableMenuItem(menu, iInverse);
+			EnableMenuItem(menu, iExpandContract);
 			
 			MyEnableMenuItem(mPaste, iPasteIntoSelection);
 			MyEnableMenuItem(mCopy, iCopyNormally);
@@ -723,6 +729,7 @@ void UpdateMenuBar(int status)
 			DisableMenuItem(menu, iSimilar);
 			DisableMenuItem(menu, iNone);
 			DisableMenuItem(menu, iInverse);
+			DisableMenuItem(menu, iExpandContract);
 			
 			MyDisableMenuItem(mPaste, iPasteIntoSelection);
 			MyDisableMenuItem(mCopy, iCopyNormally);
@@ -759,6 +766,11 @@ void UpdateMenuBar(int status)
 		EnableMenuItem(menu, iInsertIcon);
 		EnableMenuItem(menu, iIconInfo);
 		EnableMenuItem(menu, iPixelGrid);
+				
+		if (status & currentPixIsIcon)
+			EnableMenuItem(menu, iGenerateMask);
+		else
+			DisableMenuItem(menu, iGenerateMask);
 			
 		if (status & currentDepthSupportsColors)
 		{
@@ -779,6 +791,8 @@ void UpdateMenuBar(int status)
 		}
 		else
 			DisableMenuItem(menu, iColors);
+		
+		EnableMenuItem(menu, iCompleteIcon);
 	}
 	else
 	{
@@ -811,7 +825,10 @@ void UpdateMenuBar(int status)
 		}
 		else
 		{
-			MyDisableMenuItem(mFile, iClose);
+			if (status & frontIsAbout)
+				MyEnableMenuItem(mFile, iClose);
+			else
+				MyDisableMenuItem(mFile, iClose);
 			MyDisableMenuItem(mEdit, iClear);
 			MyDisableMenuItem(mIcon, iInsertIcon);
 			MyDisableMenuItem(mIcon, iIconInfo);
@@ -851,13 +868,11 @@ void UpdateMenuBar(int status)
 void HandleMouseDown(EventRecord *eventPtr)
 {
 	int 			part; // the window part where the was a click
-	WindowPtr		theWindow; // winder where the click occured
 	GDHandle		mainScreen; // the screen in which the window can be moved
 	long			menuChoice; // the selected menu command
-	MWindowPtr		currentWindow; // the editor class beloging to the window that was clicked
 	
-	part = FindWindow(eventPtr->where, &theWindow);
-	currentWindow = GetWindow(theWindow);
+	part = FindWindow(eventPtr->where, &gWindowPtrUnderMouse);
+	gWindowUnderMouse = GetWindow(gWindowPtrUnderMouse);
 	switch (part) // depending on where the click was, we take different actions
 	{
 		case inMenuBar : // if it was in the menubar, we handle the menu command
@@ -867,36 +882,39 @@ void HandleMouseDown(EventRecord *eventPtr)
 #if !TARGET_API_MAC_CARBON
 		case inSysWindow : // if the user clicked in a different window, then we deactivate
 						   // this one
-			if (currentWindow != NULL)
-				currentWindow->Deactivate();
-			SystemClick(eventPtr, theWindow);
+			if (gWindowUnderMouse != NULL)
+				gWindowUnderMouse->Deactivate();
+			SystemClick(eventPtr, gWindowPtrUnderMouse);
 			break;
 #endif
 		case inDrag : // the user is attempting to drag the window
-			if (currentWindow != NULL &&
-				(currentWindow->GetType() == kEditorType ||
-				 currentWindow->GetType() == kBrowserType) &&
-				 MDocumentWindowPtr(currentWindow)->IsPathSelectClick(eventPtr))
-				 MDocumentWindowPtr(currentWindow)->PathSelect();
-			mainScreen = GetMainDevice();
-			currentWindow->Drag(eventPtr->where, (**mainScreen).gdRect);
+			if (gWindowUnderMouse != NULL &&
+				(gWindowUnderMouse->GetType() == kEditorType ||
+				 gWindowUnderMouse->GetType() == kBrowserType) &&
+				 MDocumentWindowPtr(gWindowUnderMouse)->IsPathSelectClick(eventPtr))
+				 MDocumentWindowPtr(gWindowUnderMouse)->PathSelect();
+			else
+			{
+				mainScreen = GetMainDevice();
+				gWindowUnderMouse->Drag(eventPtr->where, (**mainScreen).gdRect);
+			}
 			break;
 		case inGoAway: // the user has the mouse on the close box
-			if (TrackGoAway(theWindow, eventPtr->where)) // if he release it...
-				if (currentWindow != NULL)
-					if (currentWindow->GetType() == kFloaterType)
+			if (TrackGoAway(gWindowPtrUnderMouse, eventPtr->where)) // if he release it...
+				if (gWindowUnderMouse != NULL)
+					if (gWindowUnderMouse->GetType() == kFloaterType)
 					{
-						if (currentWindow == icnsEditorClass::statics.colorsPalette)
+						if (gWindowUnderMouse == icnsEditorClass::statics.colorsPalette)
 							TogglePalette(icnsEditorClass::statics.colorsPalette,
 									  iToggleColorsPalette,
 									  eShowColorsPalette,
 									  eHideColorsPalette);
-						else if (currentWindow == icnsEditorClass::statics.previewPalette)
+						else if (gWindowUnderMouse == icnsEditorClass::statics.previewPalette)
 							TogglePalette(icnsEditorClass::statics.previewPalette,
 										  iTogglePreviewPalette,
 										  eShowPreviewPalette,
 										  eHidePreviewPalette);
-						else if (currentWindow == icnsEditorClass::statics.toolPalette)
+						else if (gWindowUnderMouse == icnsEditorClass::statics.toolPalette)
 							TogglePalette(icnsEditorClass::statics.toolPalette,
 									  iToggleToolPalette,
 									  eShowToolPalette,
@@ -908,27 +926,27 @@ void HandleMouseDown(EventRecord *eventPtr)
 									  eHideMembersPalette);
 					}
 					else
-						Close(theWindow, 0); // we close the icon
+						Close(gWindowPtrUnderMouse, 0); // we close the icon
 			break;
 		case inZoomIn:
 		case inZoomOut:
-			if (TrackBox(theWindow, eventPtr->where, part)) // if he release it...
-				if (currentWindow != NULL)
-					currentWindow->ToggleZoom();
+			if (TrackBox(gWindowPtrUnderMouse, eventPtr->where, part)) // if he release it...
+				if (gWindowUnderMouse != NULL)
+					gWindowUnderMouse->ToggleZoom();
 			break;
 		case inContent: // if it's a contect click we pass it on the class
-			if (currentWindow != NULL)
-				currentWindow->HandleContentClick(eventPtr);
+			if (gWindowUnderMouse != NULL)
+				gWindowUnderMouse->HandleContentClick(eventPtr);
 			break;
 		case inGrow: // same for clicks in the grow box
-			if (currentWindow != NULL)
-				currentWindow->HandleGrow(eventPtr->where);
+			if (gWindowUnderMouse != NULL)
+				gWindowUnderMouse->HandleGrow(eventPtr->where);
 			break;
 		case inProxyIcon:
-			if (currentWindow != NULL &&
-				(currentWindow->GetType() == kEditorType ||
-				 currentWindow->GetType() == kBrowserType))
-				 MDocumentWindowPtr(currentWindow)->TrackProxyDrag(eventPtr->where);
+			if (gWindowUnderMouse != NULL &&
+				(gWindowUnderMouse->GetType() == kEditorType ||
+				 gWindowUnderMouse->GetType() == kBrowserType))
+				 MDocumentWindowPtr(gWindowUnderMouse)->TrackProxyDrag(eventPtr->where);
 			break;
 				 
 	}
@@ -959,6 +977,11 @@ void HandleKeyDown(EventRecord *eventPtr)
 	{
 		HiliteMenu(mIcon);
 		menuEvent = ((mIcon << 16) & 0xFFFF0000) + iInsertIcon;
+	}
+	else if (icnsEditorClass::statics.preferences.IsEditorShortcutPressed())
+	{
+		HiliteMenu(mIcon);
+		menuEvent = ((mIcon << 16) & 0xFFFF0000) + iOpenInExternalEditor;
 	}
 	else
 	{
@@ -1042,21 +1065,15 @@ void HandleOSEvent(EventRecord *eventPtr)
 			if (eventPtr->message & resumeFlag)
 			{
 				short part;
-				WindowPtr	theWindow;
-				MWindowPtr	currentWindow;
 				
 				MUtilities::ResetCursor();
 				
 				MWindow::ShowFloaters();
 				MWindow::ActivateAll();
-				part = FindWindow(eventPtr->where, &theWindow);
-				if (theWindow != NULL)
-				{
-					currentWindow = GetWindow(theWindow);
-					
-					if (part == inDrag)
-						currentWindow->Select();
-				}
+				part = FindWindow(eventPtr->where, &gWindowPtrUnderMouse);
+				gWindowUnderMouse = GetWindow(gWindowPtrUnderMouse);
+				if (gWindowUnderMouse != NULL && part == inDrag)
+					gWindowUnderMouse->Select();
 			}
 			else
 			{
@@ -1065,8 +1082,6 @@ void HandleOSEvent(EventRecord *eventPtr)
 			}
 			break;
 		case mouseMovedMessage:
-			WindowPtr	windowUnderMouse;
-			MWindowPtr 	windowToUpdate;
 			Point		theMouse;
 			
 			MUtilities::ResetCursorChanged();
@@ -1076,19 +1091,15 @@ void HandleOSEvent(EventRecord *eventPtr)
 			
 			theMouse = eventPtr->where;
 			
-			FindWindow(theMouse, &windowUnderMouse);
-			if (windowUnderMouse)
+			FindWindow(theMouse, &gWindowPtrUnderMouse);
+			gWindowUnderMouse = GetWindow(gWindowPtrUnderMouse);
+			if (gWindowUnderMouse)
 			{
-				windowToUpdate = GetWindow(windowUnderMouse);
-				if (windowToUpdate)
-				{
-					SAVEGWORLD;
-					windowToUpdate->SetPort();
-					GlobalToLocal(&theMouse);
-					RESTOREGWORLD;
-					windowToUpdate->UpdateCursor(theMouse);
-					
-				}
+				SAVEGWORLD;
+				gWindowUnderMouse->SetPort();
+				GlobalToLocal(&theMouse);
+				RESTOREGWORLD;
+				gWindowUnderMouse->UpdateCursor(theMouse);
 			}
 			
 			if (!MUtilities::CursorChanged())
@@ -1327,6 +1338,7 @@ void DoMenuCommand(long menuResult)
 						case iSimilar : frontEditor->MakeSelection(similar); break;
 						case iNone : frontEditor->MakeSelection(none); break;
 						case iInverse : frontEditor->MakeSelection(inverse); break;
+						case iExpandContract: frontEditor->MakeSelection(expandContract); break;
 					}
 				break;
 			case mTransform:
@@ -1371,6 +1383,8 @@ void DoMenuCommand(long menuResult)
 						case iInsertIcon: frontEditor->AddMember(); break;
 						case iIconInfo : frontEditor->EditIconInfo(); break;
 						case iPixelGrid: TogglePixelGrid(); frontEditor->Invalidate(); frontEditor->Refresh(); break;
+						case iGenerateMask: frontEditor->GenerateMask(); break;
+						case iCompleteIcon: frontEditor->CompleteIcon(); break;
 						case iOpenInExternalEditor: frontEditor->OpenInExternalEditor(); break;
 					}
 				else if (GetFrontBrowser() != NULL)
@@ -1790,7 +1804,12 @@ void Register(void)
 				}
 				else
 				{
+					ControlHandle root;
+					
 					DoError(rStdErrors, eBadRegCode);
+					
+					GetRootControl(GetDialogWindow(registration), &root);
+					ActivateControl(root);
 					itemHit = 0;
 				}
 				break;	
@@ -1874,11 +1893,15 @@ OSErr NewIcon(bool showWindow)
 	{		
 		if (showWindow)
 		{
-			Str255 untitledName;
+			Str255	untitledName;
+			FSSpec	untitledFile;
 			
 			GetIndString(untitledName, rBasicStrings, sUntitledName);
 			icnsEditorClass::statics.MakeIconNameUnique(untitledName);
-			CopyString(newEditor->srcFileSpec.name, untitledName);
+			MFile::ResetSpec(&untitledFile);
+			CopyString(untitledFile.name, untitledName);
+			newEditor->file.SetAssociatedFile(untitledFile);
+			
 			newEditor->RefreshWindowTitle(); // the window title is updated to reflect the icon name
 	
 			newEditor->SetBestMember();
@@ -1911,7 +1934,7 @@ OSErr NewBrowser(FSSpec file, int format)
 		currentBrowser = GetBrowser(currentWindow->GetWindow());
 		
 		if (currentBrowser != NULL)
-			if (SameFile(currentBrowser->srcFileSpec, file))
+			if (MFile::SameSpec(currentBrowser->file.GetAssociatedFile(), file))
 			{
 			    currentBrowser->Select();
 			    return noErr;
@@ -1938,7 +1961,7 @@ OSErr NewBrowser(FSSpec file, int format)
 bool HandleSimpleCases(FSSpec fileSpec, long* ID)
 {
 	Handle			currentIcon;
-	short			file, oldFile;
+	short			resFile, oldFile;
 	unsigned long	iconTypes[] = {'icns', 'icl8', 'ics8', 'ics4', 'icl4', 'ICN#', 'ics#', 'icm8', 'icm4', 'icm#'};
 	unsigned long	maxCountType = 0;
 	int				count=-1;
@@ -1948,6 +1971,7 @@ bool HandleSimpleCases(FSSpec fileSpec, long* ID)
 	Str255			name;
 	unsigned char isFolder, ignored;
 	ResType			ignoredType;
+	MFile			file;
 	
 	ResolveAliasFile(&fileSpec,true,&isFolder, &ignored);
 			
@@ -1956,11 +1980,13 @@ bool HandleSimpleCases(FSSpec fileSpec, long* ID)
 		*ID = kIDUseFileIcon;
 		return true;
 	}
+	
+	file.SetAssociatedFile(fileSpec);
 		
 	oldFile = CurResFile();
-	file = FSpOpenResFile(&fileSpec, fsRdPerm);
+	resFile = file.OpenResourceFork(fsRdPerm);
 	
-	if (file == -1 && ResError() == eofErr)
+	if (resFile == -1 && ResError() == eofErr)
 	{
 		if (FindSubstring(fileSpec.name, "\p.icns") != -1)
 			*ID = kIDLoadDataFork;
@@ -1968,7 +1994,7 @@ bool HandleSimpleCases(FSSpec fileSpec, long* ID)
 			*ID = kIDUseFileIcon;
 		return true;
 	}
-	UseResFile(file);
+	UseResFile(resFile);
 	
 	for (int i=0; i < typeCount; i++)
 	{
@@ -2014,7 +2040,7 @@ bool HandleSimpleCases(FSSpec fileSpec, long* ID)
 	}
 		
 	
-	CloseResFile(file);
+	CloseResFile(resFile);
 	UseResFile(oldFile);
 	
 	return simpleCase;
@@ -2033,15 +2059,14 @@ icnsEditorPtr GetEmptyEditor(FSSpec fileToOpen, long ID, int format)
 		currentEditor = GetEditor(currentWindow->GetWindow());
 		
 		if (currentEditor != NULL)
-			if (SameFile(currentEditor->srcFileSpec, fileToOpen) &&
+			if (MFile::SameSpec(currentEditor->file.GetAssociatedFile(), fileToOpen) &&
 			    (currentEditor->loadedID == ID) &&
 			    (currentEditor->loadedFormat == format))
 			{
 			    currentEditor->Select();
 			    return NULL;
 			}
-			else if (currentEditor->srcFileSpec.vRefNum == 0 &&
-					 currentEditor->srcFileSpec.parID == 0 &&
+			else if (!currentEditor->file.IsValid() &&
 					 !(currentEditor->status & canUndo) &&
 					 !(currentEditor->status & canRedo))
 			{
@@ -2068,13 +2093,14 @@ void Revert()
 	if (frontEditor != NULL)
 	{
 		MAlert					alert;
-		Str255					text;
+		Str255					text, fileName;
 		MString					temp;
 			
 		GetIndString(text, rPrompts, eRevert); // we get the message
 		
 		SubstituteString(text, "\p<app name>", gAppName); // substitute for the place holders
-		SubstituteString(text, "\p<file name>", frontEditor->srcFileSpec.name);
+		frontEditor->file.GetName(fileName);
+		SubstituteString(text, "\p<file name>", fileName);
 		
 		alert.SetButtonName(kMAOK, rDefaultNames, eRevertButton);
 		alert.SetButtonName(kMACancel, rDefaultNames, eCancelButton);
@@ -2153,7 +2179,7 @@ void OpenIcon(FSSpec *inFile)
 	
 	if (newEditor != NULL)
 	{
-		newEditor->srcFileSpec = fileToOpen;
+		newEditor->file.SetAssociatedFile(fileToOpen);
 		newEditor->loadedID = ID;
 		newEditor->loadedFormat = format;
 		newEditor->format = format;
@@ -2184,7 +2210,7 @@ void OpenIcon(FSSpec *inFile)
 	}
 }
 
-void InsertIcon(icnsClassPtr tempIcon)
+void InsertIcon(MIconPtr tempIcon)
 {
 	iconBrowserPtr frontBrowser;
 	
@@ -2194,15 +2220,20 @@ void InsertIcon(icnsClassPtr tempIcon)
 	tempIcon->ID = -16455;
 	tempIcon->format = frontBrowser->GetCurrentFormat();
 	tempIcon->usedMembers = kDefaultMembers[tempIcon->format];
-	tempIcon->srcFileSpec = frontBrowser->srcFileSpec;
+	tempIcon->file.SetAssociatedFile(frontBrowser->file.GetAssociatedFile());
 	tempIcon->Reset();
 	
 	if (tempIcon->EditIconInfo(kInsertIcon) == iOK)
 	{
+		FSSpec iconFile;
+		
 		tempIcon->members = (icni | icnm);
 		tempIcon->Save();
 		
-		OpenIconFromBrowser(&tempIcon->srcFileSpec, tempIcon->ID, tempIcon->format, -1);
+		
+		iconFile = tempIcon->file.GetAssociatedFile();
+		
+		OpenIconFromBrowser(&iconFile, tempIcon->ID, tempIcon->format, -1);
 		
 		RefreshIconBrowser(true, kIDNone, 0);
 	}
@@ -2216,7 +2247,7 @@ void OpenIconFromBrowser(FSSpec *fileToOpen, long ID, long format, long member)
 
 	if (newEditor != NULL)
 	{		
-		newEditor->srcFileSpec = *fileToOpen;
+		newEditor->file.SetAssociatedFile(*fileToOpen);
 		newEditor->loadedID = ID;
 		newEditor->loadedFormat = format;
 		
@@ -2250,7 +2281,7 @@ void OpenIconFromBrowser(FSSpec *fileToOpen, long ID, long format, long member)
 		DoIdle();
 		DrawMenuBar();
 		
-		icnsEditorClass::statics.preferences.AddRecentFile(newEditor->srcFileSpec);
+		icnsEditorClass::statics.preferences.AddRecentFile(newEditor->file.GetAssociatedFile());
 		RebuildRecentFilesMenu();
 	}
 }
@@ -2320,7 +2351,7 @@ bool Close(WindowPtr windowToClose, int flags)
 	{
 		if (GetEditor(windowToClose)->status & needToSave) // and it has unsaved changes
 		{
-			switch (WantToSave(GetEditor(windowToClose)->srcFileSpec, flags)) // we prompt the user
+			switch (WantToSave(GetEditor(windowToClose)->file.GetAssociatedFile(), flags)) // we prompt the user
 			{
 				case kAlertStdAlertOKButton: // we save the icon and close it
 					if (SaveIcon(GetEditor(windowToClose), false) == noErr)
@@ -2363,8 +2394,18 @@ bool Close(WindowPtr windowToClose, int flags)
 		closed = true;
 	}
 	
-	DoIdle();
-	DrawMenuBar();
+	if (windowToClose == gWindowPtrUnderMouse)
+	{
+		Point theMouse;
+		
+		GetMouse(&theMouse);
+		LocalToGlobal(&theMouse);
+		FindWindow(theMouse, &gWindowPtrUnderMouse);
+		gWindowUnderMouse = GetWindow(gWindowPtrUnderMouse);
+	}
+	
+	//DoIdle();
+	//DrawMenuBar();
 	
 	icnsEditorClass::statics.UpdatePalettes(updateAll);
 		
@@ -2392,25 +2433,28 @@ OSErr SaveIcon(icnsEditorPtr frontEditor, int flags)
 	{
 		if (flags & saveInto)
 		{
-			FSSpec	oldSpec;
+			FSSpec	oldSpec, editorFile;
 			Handle	icnsHandle;
 			short 	oldFile, file;
 			
-			oldSpec = frontEditor->srcFileSpec;
+			oldSpec = frontEditor->file.GetAssociatedFile();
 			
 			if (frontEditor->format == formatWindows ||
+				frontEditor->format == formatWindowsXP ||
 				frontEditor->format == formatMacOSXServer)
 			{
 				frontEditor->format = formatMacOSUniversal;
 				frontEditor->usedMembers = kDefaultMembers[formatMacOSUniversal];
 			}
-				
-			err = GetIconFile(&frontEditor->srcFileSpec, &frontEditor->format, true);
+			
+			editorFile = frontEditor->file.GetAssociatedFile();
+			err = GetIconFile(&editorFile, &frontEditor->format, true);
+			frontEditor->file.SetAssociatedFile(editorFile);
 			
 			if (err != noErr) return err;
 			
 			oldFile = CurResFile();
-			file = FSpOpenResFile(&frontEditor->srcFileSpec, fsRdPerm);
+			file = frontEditor->file.OpenResourceFork(fsRdPerm);
 			
 			UseResFile(file);
 			
@@ -2418,26 +2462,27 @@ OSErr SaveIcon(icnsEditorPtr frontEditor, int flags)
 			
 			if (icnsHandle != NULL)
 			{
-				Str255 text, yesButton, noButton, IDAsString;
+				Str255 text, yesButton, noButton, IDAsString, fileName;
 				short itemHit;
 				
 				ReleaseResource(icnsHandle);
 				
 				GetIndString(text, rPrompts, eIconAlreadyExists);
 				
-				SubstituteString(text, "\p<file name>", frontEditor->srcFileSpec.name);
+				frontEditor->file.GetName(fileName);
+				SubstituteString(text, "\p<file name>", fileName);
 				NumToString(frontEditor->ID, IDAsString);
 				SubstituteString(text, "\p<ID>", IDAsString);
 				
 				GetIndString(yesButton, rBasicStrings, eYesButton);
 				GetIndString(noButton, rBasicStrings, eNoButton);
 				
-				itemHit = MUtilities::DisplayAlert(text, yesButton, noButton, "\p", kAlertCautionAlert);
+				itemHit = MUtilities::DisplayAlert(text, NULL, yesButton, noButton, "\p", kAlertCautionAlert, kWindowAlertPositionParentWindow);
 				if (itemHit == 2)
 				{
 					CloseResFile(file);
 					UseResFile(oldFile);
-					frontEditor->srcFileSpec = oldSpec;
+					frontEditor->file.SetAssociatedFile(oldSpec);
 					return err;
 				}
 			}
@@ -2449,35 +2494,30 @@ OSErr SaveIcon(icnsEditorPtr frontEditor, int flags)
 			
 			frontEditor->RefreshWindowTitle();
 		}
-		else if ((flags & saveAs) || // if the user wants a new location
-			(frontEditor->srcFileSpec.vRefNum == 0 &&
-			frontEditor->srcFileSpec.parID == 0)) // or if there isn't one chosen yet
+		else if ((flags & saveAs) || !frontEditor->file.IsValid()) 
 		{
 			long	fileType;
+			FSSpec	targetFile;
 			
-			/*
-			frontEditor->format = icnsEditorClass::statics.preferences.GetDefaultFormat();
-			frontEditor->usedMembers = kDefaultMembers[frontEditor->format];
-			*/
-			err = SaveFile(&frontEditor->srcFileSpec, &frontEditor->format);
+			targetFile = frontEditor->file.GetAssociatedFile();
+			err = SaveFile(&targetFile, &frontEditor->format);
 						  		
 			if (err != noErr) // if there was a problem (most likely, the user cancelled)
 				return err; // we go back
 				
-			FSpDelete(&frontEditor->srcFileSpec); // we delete that file that was already there
-												  // (if any)
+			FSpDelete(&targetFile); // we delete that file that was already there (if any)
 												  
 			fileType = iconFormats[frontEditor->format];
 			
-			FSpCreate(&frontEditor->srcFileSpec, creatorCode, fileType, 0); // we create a new file
+			FSpCreate(&targetFile, creatorCode, fileType, 0); // we create a new file
 			// 0 = roman encoding type 
 			if (frontEditor->format == formatMacOSNew ||
 				frontEditor->format == formatMacOSOld ||
 				frontEditor->format == formatMacOSUniversal)
-				FSpCreateResFile(&frontEditor->srcFileSpec, creatorCode, fileType, 0);
-			// and we add a resource fork to it too
-			frontEditor->RefreshWindowTitle(); // must update the title of the window with the
-			// new file name
+				FSpCreateResFile(&targetFile, creatorCode, fileType, 0); // and we add a resource fork to it too
+				
+			frontEditor->file.SetAssociatedFile(targetFile);
+			frontEditor->RefreshWindowTitle(); // must update the title of the window with the new file name
 		}
 		else if (frontEditor->IDChanged())
 		{
@@ -2491,8 +2531,7 @@ OSErr SaveIcon(icnsEditorPtr frontEditor, int flags)
 		
 		if (err == fnOpnErr)
 		{
-			frontEditor->srcFileSpec.vRefNum = 0;
-			frontEditor->srcFileSpec.parID = 0;
+			frontEditor->file.Reset();
 			
 			SaveIcon(frontEditor, flags);
 		}
@@ -2500,7 +2539,7 @@ OSErr SaveIcon(icnsEditorPtr frontEditor, int flags)
 		if (!(icnsEditorClass::statics.preferences.IsRegistered()))
 			Nag(false);
 			
-		icnsEditorClass::statics.preferences.AddRecentFile(frontEditor->srcFileSpec);
+		icnsEditorClass::statics.preferences.AddRecentFile(frontEditor->file.GetAssociatedFile());
 		RebuildRecentFilesMenu();
 	}
 	
@@ -2523,7 +2562,7 @@ void RefreshIconBrowser(bool newIcon, int deletedIcon, int deletedIconFormat)
 		if (currentWindow->GetType() == kBrowserType)
 		{
 			currentBrowser = (iconBrowserPtr)currentWindow;
-			if (SameFile(currentBrowser->srcFileSpec, frontEditor->srcFileSpec))
+			if (MFile::SameSpec(currentBrowser->file.GetAssociatedFile(), frontEditor->file.GetAssociatedFile()))
 				break;
 			else
 				currentBrowser = NULL;
@@ -2577,7 +2616,7 @@ int WantToSave(FSSpec fileSpec, int flags)
 	Str255					text;
 	MString					temp;
 		
-	GetIndString(text, rPrompts, eWantToSave); // we get the message
+	GetIndString(text, rPrompts, eWantToSaveError); // we get the message
 	
 	SubstituteString(text, "\p<app name>", gAppName); // substitute for the place holders
 	SubstituteString(text, "\p<file name>", fileSpec.name);
@@ -2595,6 +2634,7 @@ int WantToSave(FSSpec fileSpec, int flags)
 	temp = text;
 	
 	alert.SetError(temp);
+	alert.SetExplanation(rPrompts, eWantToSaveExplanation);
 	
 	return alert.Display();
 }
@@ -2627,6 +2667,7 @@ void Nag(bool startup)
 		
 		nagAlert.SetButtonName(kMAOK, rDefaultNames, eRegisterButton);
 		nagAlert.SetButtonName(kMACancel, rDefaultNames, eNotYetButton);
+		nagAlert.SetPosition(kWindowCenterMainScreen);
 		
 		temp = text;
 		
@@ -2672,6 +2713,7 @@ void DoError(Str255 text)
 	alert.SetBeep(true);
 	alert.SetButtonName(kMAOK, rDefaultNames, eOKButton);
 	alert.SetPosition(kWindowCenterMainScreen);
+	alert.SetType(kAlertStopAlert);
 	
 	alert.SetError(text);
 	

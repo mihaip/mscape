@@ -1,18 +1,19 @@
 #pragma once
 
 #include "MFloater.h"
-#include "icnsClass.h"
+#include "MIcon.h"
 
 const static OSType kPreviewPaletteType = 'IcPP';
 const static int kPPDefaultHeight = 190;
 
-const static char kPPEasterEggPhrase[] = "*mwah*";
+const static char kPPEasterEggPhrase[] = "mangler";
 const static int kPPEasterEggPhraseLength = sizeof(kPPEasterEggPhrase)/sizeof(char) - 1;
 
 enum PreviewPaletteResources
 {
 	rPPSettingsMenu = 500,
 	rPPWindow = 500,
+	rPPStrings = 501,
 	rPPBackground = 500,
 	rPPPreview = 501,
 	rPPSlider = 502,
@@ -34,7 +35,13 @@ enum previewSettingsMenu
 	iPPDesktop = 4,
 	iPPListView = 5,
 	iPPWhite = 6,
-	iPPBlack = 7
+	iPPBlack = 7,
+	iPPCustomColor = 8
+};
+
+enum previewStrings
+{
+	ePPPickCustomColor = 1
 };
 
 class icnsEditorClass;
@@ -62,7 +69,7 @@ class PreviewPalette : public MFloater
 		void					HandleContentClick(EventRecord* eventPtr);
 		void					HandleKeyDown(EventRecord* eventPtr);
 		
-		void					DoIdle();
+		void					DoIdle(MWindowPtr windowUnderMouse);
 		
 		void					Update();
 		void					Update(icnsEditorPtr frontEditor);
@@ -82,6 +89,8 @@ class PreviewPalette : public MFloater
 		MenuHandle				settingsMenu;
 		
 		static ControlActionUPP sliderActionUPP;
+		
+		int						previousBackground;
 		
 		void					CreateControls();
 		

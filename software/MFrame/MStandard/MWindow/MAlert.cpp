@@ -6,6 +6,7 @@
 // Description	: implementation of generic alert class
 
 #include "MAlert.h"
+#include "commonfunctions.h"
 
 #if TARGET_API_MAC_CARBON
 	const static int kButtonEndcapWidth = 16;
@@ -93,21 +94,62 @@ void MAlert::SetExplanation(int stringResID, int stringNo)
 
 int MAlert::Display(void)
 {
+#if 0
+	AlertStdAlertParamRec	alertParameters;
+	short					itemHit;
+	ModalFilterUPP			eventFilterUPP;
+	
+	eventFilterUPP = NewModalFilterUPP(MAlert::EventFilter);
+	
+	alertParameters.movable = movable;
+	alertParameters.helpButton = false;
+	alertParameters.filterProc = eventFilterUPP;
+	if (buttonNames[kMAOK].Length())
+		alertParameters.defaultText = buttonNames[kMAOK].AsPascalString();
+	else
+		alertParameters.defaultText = NULL;
+	if (buttonNames[kMACancel].Length())
+		alertParameters.cancelText = buttonNames[kMACancel].AsPascalString();
+	else
+		alertParameters.cancelText = NULL;
+	if (buttonNames[kMAOther].Length())
+		alertParameters.otherText = buttonNames[kMAOther].AsPascalString();
+	else
+		alertParameters.otherText = NULL;
+	alertParameters.defaultButton = kMAOK;
+	alertParameters.cancelButton = kMACancel;
+	alertParameters.position = position;
+	
+	StandardAlert(type,
+				  error.AsPascalString(),
+				  explanation.AsPascalString(),
+				  &alertParameters,
+				  &itemHit);
+				  
+	DisposeModalFilterUPP(eventFilterUPP);
+				  
+	return itemHit;
+#else
 	DialogPtr		alert;
 	bool			dialogDone;
-	short			itemHit, itemType;
+	short			itemHit;
 	Rect			itemRect, alertRect;
-	Handle			okButton,
+	ControlHandle	okButton,
 					cancelButton,
 					otherButton,
 					errorField,
 					explanationField,
+#if TARGET_API_MAC_CARBON
+					applicationIcon,
+#endif
 					noteIcon, warningIcon, stopIcon;
 	int				errorLines, errorLineHeight,
 					explanationLines, explanationLineHeight,
 					newButtonWidth, delta, widthDelta;
 	StringPtr		okStr, cancelStr, otherStr, errorStr, explanationStr;
 	MWindowPtr		alertWindow;
+	ControlFontStyleRec			controlStyle;
+	ThemeFontID		errorFont, explanationFont;
 	
 	okStr = buttonNames[kMAOK].AsPascalString();
 	cancelStr = buttonNames[kMACancel].AsPascalString();
@@ -123,12 +165,19 @@ int MAlert::Display(void)
 		
 	alertWindow = new MWindow(GetDialogWindow(alert), kDialogType);
 		
-	TextFont(systemFont);
-#if TARGET_API_MAC_CARBON
-	TextSize(13);
-#else
-	TextSize(12);
-#endif
+	if (explanationStr[0] == 0 || !MUtilities::GestaltVersion(gestaltSystemVersion, 0x10, 0x00))
+		errorFont = kThemeSystemFont;
+	else
+		errorFont = kThemeEmphasizedSystemFont;
+	explanationFont = kThemeSmallSystemFont;
+
+	if(MUtilities::GestaltVersion(gestaltAppearanceVersion, 0x01, 0x10))
+		UseThemeFont(errorFont, smSystemScript);
+	else
+	{
+		TextFont(systemFont);
+		TextSize(12);
+	}
 	
 	widthDelta = StringWidth(okStr) + kButtonEndcapWidth * 2 +
 				 StringWidth(cancelStr) + kButtonEndcapWidth * 2 +
@@ -138,14 +187,28 @@ int MAlert::Display(void)
 	if (widthDelta < 0)
 		widthDelta = 0;
 	
-	GetDialogItem(alert, kMAError, &itemType, &errorField, &itemRect);
-	TextFont(systemFont);
-#if TARGET_API_MAC_CARBON
-	TextSize(13);
-#else
-	TextSize(12);
-#endif
-	errorLines = ceil(float(StringWidth(errorStr) * 1.05)/float(itemRect.right - itemRect.left));
+	GetDialogItemAsControl(alert, kMAError, &errorField);
+	GetControlBounds(errorField, &itemRect);
+
+	if(MUtilities::GestaltVersion(gestaltAppearanceVersion, 0x01, 0x10))
+	{
+		Str255 fontName;
+		Style	style;
+		
+		controlStyle.flags = kControlUseFontMask | kControlUseSizeMask | kControlUseFaceMask;
+		
+		GetThemeFont(errorFont, smSystemScript, fontName, &controlStyle.size, &style);
+		GetFNum(fontName, &controlStyle.font);
+		controlStyle.style = style;
+	}
+	else
+	{
+		controlStyle.flags = kControlUseFontMask;
+		controlStyle.font = kThemeSystemFont; // this font is installed on all systems
+	}
+	SetControlFontStyle(errorField, &controlStyle);
+
+	errorLines = ceil(float(StringWidth(errorStr))/float(itemRect.right - itemRect.left));
 	for (int i=1; i <= errorStr[0]; i++)
 		if (errorStr[i] == '\r')
 			errorLines++;
@@ -153,77 +216,119 @@ int MAlert::Display(void)
 	errorLineHeight = itemRect.bottom - itemRect.top;
 	itemRect.bottom = itemRect.top + errorLineHeight * errorLines;
 	itemRect.right += widthDelta;
-	SetDialogItem(alert, kMAError, itemType, errorField, &itemRect);
+	SetControlBounds(errorField, &itemRect);
 	
 	
-	GetDialogItem(alert, kMAExplanation, &itemType, &explanationField, &itemRect);
+	GetDialogItemAsControl(alert, kMAExplanation, &explanationField);
+	GetControlBounds(explanationField, &itemRect);
+	
+	if(MUtilities::GestaltVersion(gestaltAppearanceVersion, 0x01, 0x10))
+	{
+		Str255 fontName;
+		Style	style;
+		
+		controlStyle.flags = kControlUseFontMask | kControlUseSizeMask | kControlUseFaceMask;
+		
+		GetThemeFont(explanationFont, smSystemScript, fontName, &controlStyle.size, &style);
+		GetFNum(fontName, &controlStyle.font);
+		controlStyle.style = style;
+	}
+	else
+	{
+		controlStyle.flags = kThemeSmallSystemFont;
+		controlStyle.font = kThemeSystemFont; // this font is installed on all systems
+	}
+	SetControlFontStyle(explanationField, &controlStyle);
+	
 	OffsetRect(&itemRect, 0, (errorLines - 1) * errorLineHeight);
-	TextFont(applFont);
-	TextSize(10);
-	explanationLines = ceil(float(StringWidth(explanationStr) * 1.05)/float(itemRect.right - itemRect.left));
+
+	if(MUtilities::GestaltVersion(gestaltAppearanceVersion, 0x01, 0x10))
+		UseThemeFont(explanationFont, smSystemScript);
+	else
+	{
+		TextFont(applFont);
+		TextSize(10);
+	}
+
+	explanationLines = ceil(float(StringWidth(explanationStr))/float(itemRect.right - itemRect.left));
 	explanationLineHeight = itemRect.bottom - itemRect.top;
 	itemRect.bottom = itemRect.top + explanationLineHeight * explanationLines;
 	itemRect.right += widthDelta;
-	TextFont(systemFont);
-	TextSize(12);
-	SetDialogItem(alert, kMAExplanation, itemType, explanationField, &itemRect);
+	
+	if(MUtilities::GestaltVersion(gestaltAppearanceVersion, 0x01, 0x10))
+		UseThemeFont(errorFont, smSystemScript);
+	else
+	{
+		TextFont(systemFont);
+		TextSize(12);
+	}
+	SetControlBounds(explanationField, &itemRect);
 	
 	delta = (errorLines - 1) * errorLineHeight + (explanationLines - 1) * explanationLineHeight;
 	
 	if (delta < 14)
 		delta = 14;
 		
-	 GetPortBounds(GetDialogPort(alert), &alertRect);
+	GetPortBounds(GetDialogPort(alert), &alertRect);
 	
 	SizeWindow(GetDialogWindow(alert),
 			   alertRect.right - alertRect.left + widthDelta,
 			   alertRect.bottom - alertRect.top + delta,
 			   false);
 			   
-	GetDialogItem(alert, kMAOK, &itemType, &okButton, &itemRect);
+	GetDialogItemAsControl(alert, kMAOK, &okButton);
+	GetControlBounds(okButton, &itemRect);
+	
 	OffsetRect(&itemRect, 0, delta);
 	newButtonWidth = StringWidth(okStr) + kButtonEndcapWidth * 2;
 	if (newButtonWidth < kMinButtonWidth) newButtonWidth = kMinButtonWidth;
 	itemRect.left = itemRect.right - newButtonWidth;
 	OffsetRect(&itemRect, widthDelta, 0);
-	SetDialogItem(alert, kMAOK, itemType, okButton, &itemRect);
+	SetControlBounds(okButton, &itemRect);
 	newButtonWidth = itemRect.left - 12;
 	
-	GetDialogItem(alert, kMACancel, &itemType, &cancelButton, &itemRect);
+	GetDialogItemAsControl(alert, kMACancel, &cancelButton);
+	GetControlBounds(cancelButton, &itemRect);
 	OffsetRect(&itemRect, 0, delta);
 	itemRect.right = newButtonWidth;
 	newButtonWidth = StringWidth(cancelStr) + kButtonEndcapWidth * 2;
 	if (newButtonWidth < kMinButtonWidth) newButtonWidth = kMinButtonWidth;
 	itemRect.left = itemRect.right - newButtonWidth;
-	SetDialogItem(alert, kMACancel, itemType, cancelButton, &itemRect);
+	SetControlBounds(cancelButton, &itemRect);
 	
-	GetDialogItem(alert, kMAOther, &itemType, &otherButton, &itemRect);
+	GetDialogItemAsControl(alert, kMAOther, &otherButton);
+	GetControlBounds(otherButton, &itemRect);
 	OffsetRect(&itemRect, 0, delta);
 	newButtonWidth = StringWidth(otherStr) + kButtonEndcapWidth * 2;
 	if (newButtonWidth < kMinButtonWidth) newButtonWidth = kMinButtonWidth;
 	itemRect.right = itemRect.left + newButtonWidth;
-	SetDialogItem(alert, kMAOther, itemType, otherButton, &itemRect);
+	SetControlBounds(otherButton, &itemRect);
 	
 	
-	GetDialogItem(alert, kMAWarningIcon, &itemType, &warningIcon, &itemRect);
-	GetDialogItem(alert, kMANoteIcon, &itemType, &noteIcon, &itemRect);
-	GetDialogItem(alert, kMAStopIcon, &itemType, &stopIcon, &itemRect);
+	GetDialogItemAsControl(alert, kMAWarningIcon, &warningIcon);
+	GetDialogItemAsControl(alert, kMANoteIcon, &noteIcon);
+	GetDialogItemAsControl(alert, kMAStopIcon, &stopIcon);
 	
 	switch (type)
 	{
 		case kAlertStopAlert:
-			HideDialogItem(alert, kMAWarningIcon);
-			HideDialogItem(alert, kMANoteIcon);
+			HideControl(warningIcon);
+			HideControl(noteIcon);
 			break;
 		case kAlertNoteAlert:
-			HideDialogItem(alert, kMAWarningIcon);
-			HideDialogItem(alert, kMAStopIcon);
+			HideControl(warningIcon);
+			HideControl(stopIcon);
 			break;
 		case kAlertCautionAlert:
-			HideDialogItem(alert, kMAStopIcon);
-			HideDialogItem(alert, kMANoteIcon);
+			HideControl(stopIcon);
+			HideControl(noteIcon);
 			break;
 	}
+	
+#if TARGET_API_MAC_CARBON
+	GetDialogItemAsControl(alert, kMAApplicationIcon, &applicationIcon);
+	SetControlUserPaneDraw(applicationIcon, MUtilities::ApplicationIconDraw);
+#endif
 	
 	if (buttonNames[kMAOK][0] != 0)
 	{
@@ -247,16 +352,25 @@ int MAlert::Display(void)
 		HideDialogItem(alert, kMAOther);
 		
 	if (errorStr[0] != 0)
-		SetDialogItemText(errorField, errorStr);
+		SetControlData(errorField,
+				       kControlNoPart,
+				       kControlStaticTextTextTag,
+				       errorStr[0],
+				       (char*)&errorStr[1]);
 	else
 		HideDialogItem(alert, kMAError);
 		
 	if (explanationStr[0] != 0)
-		SetDialogItemText(explanationField, explanationStr);
+		SetControlData(explanationField,
+				       kControlNoPart,
+				       kControlStaticTextTextTag,
+				       explanationStr[0],
+				       (char*)&explanationStr[1]);
 	else
 		HideDialogItem(alert, kMAExplanation);
 	
-	if (position == kWindowCenterParentWindow)
+	if (position == kWindowCenterParentWindow ||
+		position == kWindowAlertPositionParentWindow)
 		MWindow::CenterOnFront(alertWindow);
 	else
 		MWindow::CenterOnScreen(alertWindow);
@@ -289,6 +403,7 @@ int MAlert::Display(void)
 	MWindow::ActivateAll();
 	
 	return itemHit;
+#endif
 }
 
 #pragma mark -
@@ -372,9 +487,16 @@ bool MAlert::KeyButtonShortcut(DialogPtr alert, char key, int buttonIndex)
 		GetControlTitle(button, buttonName);
 		if (key == buttonName[1] || (key + 'A' - 'a') == buttonName[1])
 		{
-			HiliteControl(button, 1);
+			HiliteControl(button, kControlButtonPart);
+#if TARGET_API_MAC_CARBON
+			SetDialogDefaultItem(alert, 0);
+			QDFlushPortBuffer(GetDialogPort(alert), NULL);
+#endif
 			MUtilities::Sleep(9);
 			HiliteControl(button, 0);
+#if TARGET_API_MAC_CARBON
+			QDFlushPortBuffer(GetDialogPort(alert), NULL);
+#endif
 			return true;
 		}
 	}

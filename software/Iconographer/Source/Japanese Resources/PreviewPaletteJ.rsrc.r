@@ -118,7 +118,7 @@ resource 'MENU' (500) {
 	0x7FFFFFFB,
 	enabled,
 	"•\\¦İ’è",
-	{	/* array: 7 elements */
+	{	/* array: 8 elements */
 		/* [1] */
 		"•W€", noIcon, noKey, noMark, plain,
 		/* [2] */
@@ -132,7 +132,9 @@ resource 'MENU' (500) {
 		/* [6] */
 		"”’”wŒi", noIcon, noKey, noMark, plain,
 		/* [7] */
-		"•”wŒi", noIcon, noKey, noMark, plain
+		"•”wŒi", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"”CˆÓ‚ÌF ...", noIcon, noKey, noMark, plain
 	}
 };
 
@@ -152,6 +154,13 @@ resource 'STR#' (500, "- Tool Palette Balloon Help") {
 		"ó‘Ô(•W€A‘I‘ğ)‚Æ”wŒi(ƒfƒXƒNƒgƒbƒv"
 		"AƒŠƒXƒg•\\¦A”’A•)‚Ìİ’è‚ğs‚¤‚±‚Æ‚ª‚Å"
 		"‚«‚Ü‚·B"
+	}
+};
+
+resource 'STR#' (501, "Preview Palette Strings", purgeable) {
+	{	/* array StringArray: 1 elements */
+		/* [1] */
+		"ƒvƒŒƒrƒ…[”wŒiF‚Ì‘I‘ğF"
 	}
 };
 
@@ -254,6 +263,23 @@ data 'hwin' (500, purgeable) {
 data 'ictb' (9999) {
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000"                                          /* .... */
+};
+
+resource 'mctb' (500, "•\\¦İ’è menu") {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
 };
 
 resource 'wctb' (500) {

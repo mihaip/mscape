@@ -49,8 +49,8 @@ void icnsEditorClass::HandleDrawing(Point theMouse)
 	
 	if (needToSaveState) // if there was painting performed...
 	{
-		currentState = new drawingStateClass(currentState, this); // we must save the state
 		status |= needToSave; // the drawing was modified, and thus it needs to be saved...
+		currentState = new drawingStateClass(currentState, this); // we must save the state
 		UpdateEditArea();
 		statics.UpdatePalettes(this, 0);
 	}

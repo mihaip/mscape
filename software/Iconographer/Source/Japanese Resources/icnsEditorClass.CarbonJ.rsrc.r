@@ -326,6 +326,41 @@ resource 'DITL' (1012, "Adjust: Brightness & Saturation Pane", purgeable) {
 	}
 };
 
+resource 'DITL' (1020, purgeable) {
+	{	/* array DITLarray: 5 elements */
+		/* [1] */
+		{60, 240, 80, 310},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{60, 146, 80, 216},
+		Button {
+			enabled,
+			"Cancel"
+		},
+		/* [3] */
+		{20, 20, 38, 229},
+		StaticText {
+			disabled,
+			"Expand or contract selection by:"
+		},
+		/* [4] */
+		{21, 233, 37, 261},
+		EditText {
+			enabled,
+			""
+		},
+		/* [5] */
+		{20, 272, 40, 310},
+		StaticText {
+			disabled,
+			"pixels"
+		}
+	}
+};
+
 resource 'DITL' (1100, purgeable) {
 	{	/* array DITLarray: 17 elements */
 		/* [1] */
@@ -769,7 +804,7 @@ resource 'DITL' (1102, purgeable) {
 			1016
 		},
 		/* [6] */
-		{156, 225, 172, 445},
+		{156, 225, 172, 465},
 		CheckBox {
 			enabled,
 			"アイコンとマスクの両方を出力する"
@@ -831,6 +866,18 @@ data 'DLGX' (1012) {
 	$"0000 0000 0000 0007 0000 0000 0000 0000"            /* ................ */
 	$"0000 0006 0000 0000 0000 0000 0000 0006"            /* ................ */
 	$"0000 0000 0000 0000 0000"                           /* .......... */
+};
+
+data 'DLGX' (1020) {
+	$"054F 7361 6B61 0000 0000 0000 0000 0000"            /* .Osaka.......... */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
+	$"0005 0000 0000 0000 0000 0000 0000 0001"            /* ................ */
+	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
+	$"0000 0000 0000 0007 0000 0000 0000 0000"            /* ................ */
+	$"0000 0006 0000 0000 0000 0000 0000"                 /* .............. */
 };
 
 data 'DLGX' (1100) {
@@ -960,6 +1007,17 @@ resource 'DLOG' (1012, "Adjust: Brightness and Contrast", purgeable) {
 	noAutoCenter
 };
 
+resource 'DLOG' (1020, "Expand/Contract", purgeable) {
+	{300, 200, 400, 530},
+	1043,
+	invisible,
+	noGoAway,
+	0x0,
+	1020,
+	"Expand/Contract Selection",
+	noAutoCenter
+};
+
 resource 'DLOG' (1100, "Preferences: General Pane", purgeable) {
 	{545, 286, 937, 804},
 	dBoxProc,
@@ -1065,6 +1123,21 @@ resource 'dctb' (1011) {
 };
 
 resource 'dctb' (1012) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
+	}
+};
+
+resource 'dctb' (1020) {
 	{	/* array ColorSpec: 5 elements */
 		/* [1] */
 		wContentColor, 65535, 65535, 65535,
@@ -2006,6 +2079,12 @@ resource 'dlgx' (1010) {
 	}
 };
 
+resource 'dlgx' (1020) {
+	versionZero {
+		15
+	}
+};
+
 data 'ictb' (1000) {
 	$"0000 0000 0000 0000 0000 0000"                      /* ............ */
 };
@@ -2023,6 +2102,11 @@ data 'ictb' (1011) {
 data 'ictb' (1012) {
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000"                      /* ............ */
+};
+
+data 'ictb' (1020) {
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000"                                          /* .... */
 };
 
 data 'ictb' (1100) {

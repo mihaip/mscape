@@ -8,8 +8,10 @@
 #include "MUtilities.h"
 #include "MWindow.h"
 #include "MAlert.h"
-#include <UnicodeConverter.h>
+#include "MIcon.h"
+#include <CFBundle.h>
 
+MIcon* MUtilities::applicationIcon = NULL;
 bool MUtilities::toolboxInited = false;
 short MUtilities::currentCursor = rArrow;
 bool MUtilities::cursorChanged = false;
@@ -128,7 +130,9 @@ void MUtilities::CrossProduct(float x0, float y0, float z0,
 	*zN = x0 * y1 - x1 * y0;
 }
 
-short MUtilities::DisplayAlert(Str255 message, Str255 button1, Str255 button2, Str255 button3, int type)
+short MUtilities::DisplayAlert(Str255 message, Str255 explanation,
+							   Str255 button1, Str255 button2, Str255 button3,
+							   int type, int position)
 {
 	MAlert		alert;
 	MString		temp;
@@ -147,12 +151,18 @@ short MUtilities::DisplayAlert(Str255 message, Str255 button1, Str255 button2, S
 	temp = message;
 	alert.SetError(temp);
 	
-	alert.SetType(kAlertStopAlert);
+	if (explanation)
+	{
+		temp = explanation;
+		alert.SetExplanation(temp);
+	}
 	
 	if (type == kAlertStopAlert)
 		alert.SetBeep(true);
 	
 	alert.SetType(type);
+	
+	alert.SetPosition(position);
 	
 	return alert.Display();
 }
@@ -227,16 +237,29 @@ OSType MUtilities::GetFrontProcessCreator()
 FSSpec MUtilities::GetCurrentProcessSpec()
 {
 	ProcessSerialNumber currentProcess;
-	ProcessInfoRec		infoRec;
 	FSSpec				processSpec;
 	
 	GetCurrentProcess(&currentProcess);
+	
+#if TARGET_API_MAC_CARBON	
+	FSRef		processRef;
+	CFBundleRef	processBundle;
+	CFURLRef	processURL;
+	
+	processBundle = CFBundleGetMainBundle();
+	processURL = CFBundleCopyBundleURL(processBundle);
+	CFURLGetFSRef(processURL, &processRef);
+	
+	FSGetCatalogInfo(&processRef, kFSCatInfoNone, NULL, NULL, &processSpec, NULL);
+#else
+	ProcessInfoRec		infoRec;
 	
 	infoRec.processInfoLength = sizeof(ProcessInfoRec);
 	infoRec.processName = NULL;
 	infoRec.processAppSpec = &processSpec;
 	
 	GetProcessInformation(&currentProcess, &infoRec);
+#endif
 	
 	return processSpec;
 }
@@ -296,16 +319,6 @@ void MUtilities::TouchFile(FSSpec file) //spec is the file whose icon you change
 			 PBSetCatInfoSync(&myCPB);
 		}
 	}
-}
-
-bool MUtilities::IsFileFolder(FSSpec file)
-{
-	unsigned char	ignored;
-	Boolean			isFolder;
-	
-	ResolveAliasFile(&file, true, &isFolder, &ignored);
-	
-	return isFolder;
 }
 
 #pragma mark -
@@ -866,6 +879,9 @@ void MUtilities::ChangeCursor(short ID)
 						SetCursor(*cursor);
 						//DisposeHandle((Handle)cursor);
 					}
+					else if (GestaltVersion(gestaltAppearanceVersion, 0x01, 0x10))
+						SetThemeCursor(ID);
+						
 				}
 				break;
 			
@@ -1153,6 +1169,27 @@ Rect MUtilities::GetUsableScreenRect()
 #endif
 
 	return usableRect;
+}
+
+#pragma mark -
+
+pascal void MUtilities::ApplicationIconDraw(ControlHandle iconControl, SInt16 controlPart)
+{
+#pragma unused (controlPart)
+	Rect		iconBounds;
+	
+	if (!applicationIcon)
+	{
+		applicationIcon = new MIcon;
+
+		applicationIcon->format = formatMacOSUniversal;
+		applicationIcon->file.SetAssociatedFile(MUtilities::GetCurrentProcessSpec());
+		applicationIcon->LoadFileIcon();
+	}
+	
+	GetControlBounds(iconControl, &iconBounds);
+	
+	applicationIcon->Display(iconBounds, false);
 }
 
 #pragma mark -

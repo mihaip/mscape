@@ -83,8 +83,9 @@ void ToolPalette::Deactivate()
 	}
 }
 
-void ToolPalette::DoIdle()
+void ToolPalette::DoIdle(MWindowPtr windowUnderMouse)
 {
+#pragma unused (windowUnderMouse)
 	icnsEditorPtr	frontEditor;
 	int			 	previousTool;
 	
@@ -547,8 +548,8 @@ void ToolPalette::PickColor(RGBColor* color, Point where, Str255 messageString)
 			if (TrackControl(controls.colorSwatch, where, NULL))
 			{
 				Point location = {0, 0};
+				
 				MWindow::DeactivateAll();
-				//Draw1Control(controls.rootControl);
 				::GetColor(location,
 						   messageString,
 						   color,
@@ -698,7 +699,7 @@ pascal void	ToolPalette::ColorSwatchDraw(ControlHandle theControl,SInt16 thePart
 		DrawThemePlacard(&tempRect, kThemeStateActive);
 	else
 		DrawThemePlacard(&tempRect, kThemeStateInactive);*/
-	RESTORECOLORS;
+	SetUpControlBackground(theControl, 32, true);
 	EraseRect(&tempRect);
 	
 	parent->GetColors(&foreColor, &backColor);
@@ -883,11 +884,8 @@ pascal void	ToolPalette::PatternsDraw(ControlHandle theControl,SInt16 thePart)
 	
 	tempRect = canvasRect;
 	InsetRect(&tempRect, -3, -3);
-	/*if (IsControlActive(theControl))
-		DrawThemePlacard(&tempRect, kThemeStateActive);
-	else
-		DrawThemePlacard(&tempRect, kThemeStateInactive);*/
-	RESTORECOLORS;
+	
+	SetUpControlBackground(theControl, 32, true);
 	EraseRect(&tempRect);
 	
 	tempRect = canvasRect;

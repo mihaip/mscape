@@ -1,52 +1,9 @@
 /* Resource fork of software/Iconographer/Source/iconmangler.Âµ.rsrc */
-resource 'BNDL' (128) {
-	'Mngl',
-	0,
-	{	/* array TypeArray: 2 elements */
-		/* [1] */
-		'ICN#',
-		{	/* array IDArray: 7 elements */
-			/* [1] */
-			0, 128,
-			/* [2] */
-			1, 0,
-			/* [3] */
-			2, 129,
-			/* [4] */
-			3, 0,
-			/* [5] */
-			4, 0,
-			/* [6] */
-			5, 130,
-			/* [7] */
-			6, 131
-		},
-		/* [2] */
-		'FREF',
-		{	/* array IDArray: 7 elements */
-			/* [1] */
-			0, 128,
-			/* [2] */
-			1, 129,
-			/* [3] */
-			2, 130,
-			/* [4] */
-			3, 131,
-			/* [5] */
-			4, 132,
-			/* [6] */
-			5, 133,
-			/* [7] */
-			6, 134
-		}
-	}
-};
-
 resource 'CNTL' (2000, "Types Pop-up", purgeable) {
-	{6, 8, 26, 258},
+	{6, 8, 26, 371},
 	0,
 	visible,
-	100,
+	108,
 	4000,
 	409,
 	0,
@@ -126,7 +83,7 @@ resource 'DITL' (129, "Registration") {
 resource 'DITL' (2000, purgeable) {
 	{	/* array DITLarray: 1 elements */
 		/* [1] */
-		{6, 8, 26, 258},
+		{6, 8, 26, 371},
 		Control {
 			enabled,
 			2000
@@ -364,7 +321,7 @@ resource 'DLOG' (129, "Register") {
 };
 
 resource 'DLOG' (2000, "Nav Custom Items", purgeable) {
-	{253, 278, 283, 547},
+	{253, 278, 285, 666},
 	1024,
 	visible,
 	goAway,
@@ -394,152 +351,6 @@ resource 'DLOG' (3002, "Save File", purgeable) {
 	3002,
 	"",
 	noAutoCenter
-};
-
-resource 'FREF' (1) {
-	'fold',
-	3,
-	""
-};
-
-resource 'FREF' (2) {
-	'disk',
-	4,
-	""
-};
-
-resource 'FREF' (128) {
-	'APPL',
-	0,
-	""
-};
-
-resource 'FREF' (129) {
-	'****',
-	1,
-	""
-};
-
-resource 'FREF' (130) {
-	'Icon',
-	2,
-	""
-};
-
-resource 'FREF' (131) {
-	'fold',
-	3,
-	""
-};
-
-resource 'FREF' (132) {
-	'disk',
-	4,
-	""
-};
-
-resource 'FREF' (133) {
-	'ICO ',
-	5,
-	""
-};
-
-resource 'FREF' (134) {
-	'TIFF',
-	6,
-	""
-};
-
-resource 'ICN#' (128) {
-	{	/* array: 2 elements */
-		/* [1] */
-		$"0000 0000 0000 0038 0000 C048 0003 C090"
-		$"000F 6120 003C 7E40 00F0 34C0 03C0 31C0"
-		$"0F00 33A0 3C00 E790 F000 CF8C C01B 9F03"
-		$"6066 0003 618E 4003 3031 D407 30CF FEAF"
-		$"1816 0357 182C 01FF 0C38 00DF 0C70 0EC0"
-		$"0670 7860 067C C060 037F 8030 033F 00FF"
-		$"0180 03FF 0180 0FFF 00C0 3FFC 00C0 FFF8"
-		$"0063 FFE0 006F FF00 003F FC00 003F C0",
-		/* [2] */
-		$"0000 0000 0000 0038 0000 C078 0003 C0F0"
-		$"000F E1E0 003F FFC0 00FF FF80 03FF FFC0"
-		$"0FFF FFE0 3FFF FFF0 FFFF FFF8 FFFF FFFF"
-		$"7FFF FFFF 7FFF FFFF 3FFF FFFF 3FFF FFFF"
-		$"1FFF FFFF 1FFF FFFF 0FFF FFDF 0FFF FFC0"
-		$"07FF FFE0 07FF FFE0 03FF FFF0 03FF FFFF"
-		$"01FF FFFF 01FF FFFF 00FF FFFC 00FF FFF8"
-		$"007F FFE0 007F FF00 003F FC00 003F C0"
-	}
-};
-
-resource 'ICN#' (129, "Mac OS Icon") {
-	{	/* array: 2 elements */
-		/* [1] */
-		$"03FF FF80 0200 00C0 0200 00A0 0200 0090"
-		$"7FFF F088 6CCD B884 6BB4 B0FE 6BB5 3856"
-		$"6BB5 3002 6CCD B806 7FFF F002 02AA A806"
-		$"0200 0002 0200 1006 0200 2002 021F FF86"
-		$"0210 4082 0212 4886 0212 4882 0210 4086"
-		$"0210 7082 0213 2286 0210 FC82 0210 2086"
-		$"021F FF82 0200 1006 0200 0802 0200 0006"
-		$"0200 0002 0200 0006 02AA AAAA 03FF FFFE",
-		/* [2] */
-		$"03FF FF80 03FF FFC0 03FF FFE0 03FF FFF0"
-		$"7FFF FFF8 7FFF FFFC 7FFF FFFE 7FFF FFFE"
-		$"7FFF FFFE 7FFF FFFE 7FFF FFFE 03FF FFFE"
-		$"03FF FFFE 03FF FFFE 03FF FFFE 03FF FFFE"
-		$"03FF FFFE 03FF FFFE 03FF FFFE 03FF FFFE"
-		$"03FF FFFE 03FF FFFE 03FF FFFE 03FF FFFE"
-		$"03FF FFFE 03FF FFFE 03FF FFFE 03FF FFFE"
-		$"03FF FFFE 03FF FFFE 03FF FFFE 03FF FFFE"
-	}
-};
-
-resource 'ICN#' (130, "Windows Icon") {
-	{	/* array: 2 elements */
-		/* [1] */
-		$"03FF FF80 0200 00C0 0200 00A0 0200 0090"
-		$"7FFF 8088 5D5D 8084 5D4D C0FE 5555 8056"
-		$"5559 C002 6B5D 8006 7FFF C002 02AA 8006"
-		$"0200 0002 0201 0006 0200 F002 0200 7F06"
-		$"0200 27C2 0204 66C6 0223 FCC2 0200 FF86"
-		$"0200 DB82 0208 F986 0203 F902 0200 7F06"
-		$"0200 0602 0200 0006 0200 0002 0200 0006"
-		$"0200 0002 0200 0006 02AA AAAA 03FF FFFE",
-		/* [2] */
-		$"03FF FF80 03FF FFC0 03FF FFE0 03FF FFF0"
-		$"7FFF FFF8 7FFF FFFC 7FFF FFFE 7FFF FFFE"
-		$"7FFF FFFE 7FFF FFFE 7FFF FFFE 03FF FFFE"
-		$"03FF FFFE 03FF FFFE 03FF FFFE 03FF FFFE"
-		$"03FF FFFE 03FF FFFE 03FF FFFE 03FF FFFE"
-		$"03FF FFFE 03FF FFFE 03FF FFFE 03FF FFFE"
-		$"03FF FFFE 03FF FFFE 03FF FFFE 03FF FFFE"
-		$"03FF FFFE 03FF FFFE 03FF FFFE 03FF FFFE"
-	}
-};
-
-resource 'ICN#' (131, "Mac OS X Icon") {
-	{	/* array: 2 elements */
-		/* [1] */
-		$"03FF FF80 0200 00C0 0200 00A0 0200 0090"
-		$"7FFF C088 6288 E084 76BB C0FE 7699 E056"
-		$"76BB C002 76BB E006 7FFF C002 02AA A006"
-		$"0200 0002 021F FF86 023F FFC2 023F FFC6"
-		$"0238 71C2 023E 77C6 023E 67C2 023F 0FC6"
-		$"023F 9FC2 023F 9FC6 023F 0FC2 023E 67C6"
-		$"023C F3C2 0238 60C6 023F FFC2 023F FFC6"
-		$"021F FF82 0200 0006 02AA AAAA 03FF FFFE",
-		/* [2] */
-		$"03FF FF80 03FF FFC0 03FF FFE0 03FF FFF0"
-		$"7FFF FFF8 7FFF FFFC 7FFF FFFE 7FFF FFFE"
-		$"7FFF FFFE 7FFF FFFE 7FFF FFFE 03FF FFFE"
-		$"03FF FFFE 03FF FFFE 03FF FFFE 03FF FFFE"
-		$"03FF FFFE 03FF FFFE 03FF FFFE 03FF FFFE"
-		$"03FF FFFE 03FF FFFE 03FF FFFE 03FF FFFE"
-		$"03FF FFFE 03FF FFFE 03FF FFFE 03FF FFFE"
-		$"03FF FFFE 03FF FFFE 03FF FFFE 03FF FFFE"
-	}
 };
 
 resource 'MBAR' (128) {
@@ -655,7 +466,7 @@ resource 'MENU' (132) {
 	allEnabled,
 	enabled,
 	"Select",
-	{	/* array: 4 elements */
+	{	/* array: 5 elements */
 		/* [1] */
 		"All", noIcon, "A", noMark, plain,
 		/* [2] */
@@ -663,7 +474,9 @@ resource 'MENU' (132) {
 		/* [3] */
 		"Deselect", noIcon, "D", noMark, plain,
 		/* [4] */
-		"Inverse", noIcon, "I", noMark, plain
+		"Inverse", noIcon, "I", noMark, plain,
+		/* [5] */
+		"Expand/Contract", noIcon, "E", noMark, plain
 	}
 };
 
@@ -728,10 +541,10 @@ resource 'MENU' (135) {
 resource 'MENU' (136) {
 	136,
 	textMenuProc,
-	0x7FFFFEEB,
+	0x7FFFF6EB,
 	enabled,
 	"Icon",
-	{	/* array: 10 elements */
+	{	/* array: 13 elements */
 		/* [1] */
 		"Zoom In", noIcon, "=", noMark, plain,
 		/* [2] */
@@ -751,6 +564,12 @@ resource 'MENU' (136) {
 		/* [9] */
 		"-", noIcon, noKey, noMark, plain,
 		/* [10] */
+		"Generate Mask", noIcon, "M", noMark, plain,
+		/* [11] */
+		"Complete Icon", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [13] */
 		"Open In External Editor", noIcon, noKey, noMark, plain
 	}
 };
@@ -789,11 +608,6 @@ resource 'MENU' (138) {
 		/* [6] */
 		"-", noIcon, noKey, noMark, plain
 	}
-};
-
-data 'Mngl' (0, "Owner resource") {
-	$"1BA9 2031 3939 382D 3230 3030 204D 6968"            /* .© 1998-2000 Mih */
-	$"6169 2050 6172 7061 7269 7461"                      /* ai Parparita */
 };
 
 data 'Pref' (129, "Default Preferences") {
@@ -974,7 +788,7 @@ resource 'STR#' (128, "Default Names", purgeable) {
 };
 
 resource 'STR#' (129, "Standard Errors", purgeable) {
-	{	/* array StringArray: 17 elements */
+	{	/* array StringArray: 18 elements */
 		/* [1] */
 		"The file you selected is already open in"
 		" another program.",
@@ -1040,16 +854,18 @@ resource 'STR#' (129, "Standard Errors", purgeable) {
 		/* [17] */
 		"The file Ò<file name>Ó could not be open"
 		"ed because an error (Type <error type>) "
-		"occurred. "
+		"occurred. ",
+		/* [18] */
+		"<app name> X requires Mac OS X 10.0 or l"
+		"ater."
 	}
 };
 
 resource 'STR#' (130, "Prompts", purgeable) {
-	{	/* array StringArray: 13 elements */
+	{	/* array StringArray: 14 elements */
 		/* [1] */
-		"Do you want to save changes to the <app "
-		"name> document Ò<file name>Ó before clos"
-		"ing it?",
+		"Do you want to save changes to the docum"
+		"ent Ò<file name>Ó before closing?",
 		/* [2] */
 		"Select the file or folder whose icon you"
 		" want to edit.",
@@ -1095,7 +911,10 @@ resource 'STR#' (130, "Prompts", purgeable) {
 		"ke to get more information on its operat"
 		"ion, extensive documentation is availabl"
 		"e. Would you like to open the documentat"
-		"ion or get started right away?"
+		"ion or get started right away?",
+		/* [14] */
+		"If you donÕt save, your changes will be "
+		"lost."
 	}
 };
 
@@ -1601,645 +1420,6 @@ resource 'dlgx' (3002) {
 	versionZero {
 		9
 	}
-};
-
-data 'hfdr' (-5696, purgeable) {
-	$"0002 0000 0000 0000 0000 0001 0008 0003"            /* ................ */
-	$"0096 0001"                                          /* .–.. */
-};
-
-data 'hmnu' (128, "Apple", purgeable) {
-	$"0002 0000 0000 0000 0000 0003 0004 0100"            /* ................ */
-	$"0004 0100 0014 0003 0097 0001 0097 0002"            /* .........—...—.. */
-	$"0000 0000 0000 0000 0014 0003 0097 0003"            /* .............—.. */
-	$"0097 0004 0000 0000 0000 0000"                      /* .—.......... */
-};
-
-data 'hmnu' (129, "File", purgeable) {
-	$"0002 0000 0000 0000 0000 000C 0004 0100"            /* ................ */
-	$"0014 0003 0098 0001 0098 0002 0000 0000"            /* .....˜...˜...... */
-	$"0098 0002 0014 0003 0098 0003 0098 0004"            /* .˜.......˜...˜.. */
-	$"0000 0000 0000 0000 0014 0003 0098 0005"            /* .............˜.. */
-	$"0098 0006 0000 0000 0000 0000 0004 0100"            /* .˜.............. */
-	$"0014 0003 0098 0007 0098 0008 0000 0000"            /* .....˜...˜...... */
-	$"0000 0000 0004 0100 0014 0003 0098 0009"            /* .............˜.. */
-	$"0098 000A 0000 0000 0000 0000 0014 0003"            /* .˜.............. */
-	$"0098 000B 0098 000C 0000 0000 0000 0000"            /* .˜...˜.......... */
-	$"0014 0003 0098 000D 0098 000E 0000 0000"            /* .....˜...˜...... */
-	$"0000 0000 0014 0003 0098 000F 0098 0010"            /* .........˜...˜.. */
-	$"0000 0000 0000 0000 0004 0100 0014 0003"            /* ................ */
-	$"0098 0011 0098 0012 0000 0000 0000 0000"            /* .˜...˜.......... */
-};
-
-data 'hmnu' (131, "Edit", purgeable) {
-	$"0002 0000 0000 0000 0000 000D 0004 0100"            /* ................ */
-	$"0014 0003 0099 0001 0099 0002 0000 0000"            /* .....™...™...... */
-	$"0099 0002 0014 0003 0099 0003 0099 0004"            /* .™.......™...™.. */
-	$"0000 0000 0000 0000 0014 0003 0099 0005"            /* .............™.. */
-	$"0099 0006 0000 0000 0000 0000 0004 0100"            /* .™.............. */
-	$"0014 0003 0099 0007 0099 0008 0000 0000"            /* .....™...™...... */
-	$"0000 0000 0014 0003 0099 0009 0099 000A"            /* .........™...™.. */
-	$"0000 0000 0000 0000 0014 0003 0099 000B"            /* .............™.. */
-	$"0099 000C 0000 0000 0000 0000 0014 0003"            /* .™.............. */
-	$"0099 000D 0099 000E 0000 0000 0000 0000"            /* .™...™.......... */
-	$"0014 0003 0099 000F 0099 0010 0000 0000"            /* .....™...™...... */
-	$"0000 0000 0014 0003 0099 0011 0099 0012"            /* .........™...™.. */
-	$"0000 0000 0000 0000 0014 0003 0099 0013"            /* .............™.. */
-	$"0099 0014 0000 0000 0000 0000 0004 0100"            /* .™.............. */
-	$"0014 0003 0099 0015 0099 0016 0000 0000"            /* .....™...™...... */
-	$"0000 0000"                                          /* .... */
-};
-
-data 'hmnu' (132, "Select", purgeable) {
-	$"0002 0000 0000 0000 0000 0005 0004 0100"            /* ................ */
-	$"0004 0100 0014 0003 009A 0001 009A 0002"            /* .........š...š.. */
-	$"0000 0000 0000 0000 0014 0003 009A 0003"            /* .............š.. */
-	$"009A 0004 0000 0000 0000 0000 0014 0003"            /* .š.............. */
-	$"009A 0005 009A 0006 0000 0000 0000 0000"            /* .š...š.......... */
-	$"0014 0003 009A 0007 009A 0008 0000 0000"            /* .....š...š...... */
-	$"0000 0000"                                          /* .... */
-};
-
-data 'hmnu' (133, "Transform", purgeable) {
-	$"0002 0000 0000 0000 0000 0008 0004 0100"            /* ................ */
-	$"0004 0100 0014 0003 009B 0001 0000 0000"            /* .........›...... */
-	$"0000 0000 0000 0000 0014 0003 009B 0002"            /* .............›.. */
-	$"0000 0000 0000 0000 0000 0000 0004 0100"            /* ................ */
-	$"0014 0003 009B 0003 0000 0000 0000 0000"            /* .....›.......... */
-	$"0000 0000 0014 0003 009B 0004 0000 0000"            /* .........›...... */
-	$"0000 0000 0000 0000 0004 0100 0014 0003"            /* ................ */
-	$"009B 0005 0000 0000 0000 0000 0000 0000"            /* .›.............. */
-};
-
-data 'hmnu' (134, "Paste", purgeable) {
-	$"0002 0000 0000 0000 0000 0005 0004 0100"            /* ................ */
-	$"0004 0100 0014 0003 009C 0001 0000 0000"            /* .........œ...... */
-	$"0000 0000 0000 0000 0014 0003 009C 0002"            /* .............œ.. */
-	$"0000 0000 0000 0000 0000 0000 0014 0003"            /* ................ */
-	$"009C 0003 009C 0004 0000 0000 0000 0000"            /* .œ...œ.......... */
-	$"0014 0003 009C 0005 009C 0006 0000 0000"            /* .....œ...œ...... */
-	$"0000 0000"                                          /* .... */
-};
-
-data 'hmnu' (135, "Copy", purgeable) {
-	$"0002 0000 0000 0000 0000 0004 0004 0100"            /* ................ */
-	$"0004 0100 0014 0003 009D 0001 009D 0002"            /* .............. */
-	$"0000 0000 0000 0000 0014 0003 009D 0003"            /* ............... */
-	$"009D 0004 0000 0000 0000 0000 0014 0003"            /* ............... */
-	$"009D 0005 009D 0006 0000 0000 0000 0000"            /* .............. */
-};
-
-data 'hmnu' (136, "Icon", purgeable) {
-	$"0002 0000 0000 0000 0000 000B 0004 0100"            /* ................ */
-	$"0014 0003 009E 0001 009E 0002 0000 0000"            /* .....ž...ž...... */
-	$"009E 0002 0014 0003 009E 0003 009E 0004"            /* .ž.......ž...ž.. */
-	$"0000 0000 0000 0000 0014 0003 009E 0005"            /* .............ž.. */
-	$"009E 0006 0000 0000 0000 0000 0004 0100"            /* .ž.............. */
-	$"0014 0003 0000 0000 009E 0007 0000 0000"            /* .........ž...... */
-	$"0000 0000 0004 0100 0014 0003 009E 0008"            /* .............ž.. */
-	$"009E 0009 0000 0000 0000 0000 0014 0003"            /* .ž.............. */
-	$"009E 000A 009E 000B 0000 0000 0000 0000"            /* .ž...ž.......... */
-	$"0014 0003 009E 000C 009E 000D 0000 0000"            /* .....ž...ž...... */
-	$"0000 0000 0004 0100 0014 0003 009E 000E"            /* .............ž.. */
-	$"009E 000F 0000 0000 0000 0000"                      /* .ž.......... */
-};
-
-data 'hmnu' (137, "Colors", purgeable) {
-	$"0002 0000 0000 0000 0000 0003 0004 0100"            /* ................ */
-	$"0004 0100 0014 0003 009F 0001 0000 0000"            /* .........Ÿ...... */
-	$"009F 0001 0000 0000 0014 0003 009F 0002"            /* .Ÿ...........Ÿ.. */
-	$"0000 0000 009F 0002 0000 0000"                      /* .....Ÿ...... */
-};
-
-data 'hmnu' (138, "Windows", purgeable) {
-	$"0002 0000 0000 0000 0000 0005 0004 0100"            /* ................ */
-	$"0014 0003 00A2 0001 00A2 0002 0000 0000"            /* .....¢...¢...... */
-	$"0000 0000 0014 0003 00A2 0003 0000 0000"            /* .........¢...... */
-	$"0000 0000 0000 0000 0014 0003 00A2 0004"            /* .............¢.. */
-	$"0000 0000 0000 0000 0000 0000 0014 0003"            /* ................ */
-	$"00A2 0005 0000 0000 0000 0000 0000 0000"            /* .¢.............. */
-	$"0014 0003 00A2 0006 0000 0000 0000 0000"            /* .....¢.......... */
-	$"0000 0000"                                          /* .... */
-};
-
-data 'hrct' (128, "About", purgeable) {
-	$"0002 0000 0000 0000 0000 0003 0014 0003"            /* ................ */
-	$"0000 0000 002C 002C 003E 009A 00A0 0001"            /* .....,.,.>.š. .. */
-	$"0014 0003 0000 0000 003C 0041 004E 00A1"            /* .........<.A.N.¡ */
-	$"00A0 0002 0014 0003 0000 0000 00B0 0002"            /* . ...........°.. */
-	$"00D8 006E 00A0 0003"                                /* .Ø.n. .. */
-};
-
-data 'hrct' (129, "Register", purgeable) {
-	$"0002 0000 0000 0000 0000 0006 0014 0003"            /* ................ */
-	$"0000 0000 0066 010E 007A 0152 00A1 0001"            /* .....f...z.R.¡.. */
-	$"0014 0003 0000 0000 0066 00BE 0079 00FE"            /* .........f.¾.y.þ */
-	$"00A1 0002 0014 0003 0000 0000 0066 0007"            /* .¡...........f.. */
-	$"007A 009E 00A1 0003 0014 0003 0000 0000"            /* .z.ž.¡.......... */
-	$"000C 0088 001C 0150 00A1 0004 0014 0003"            /* ...ˆ...P.¡...... */
-	$"0000 0000 0028 0088 0038 0150 00A1 0005"            /* .....(.ˆ.8.P.¡.. */
-	$"0014 0003 0000 0000 0044 0088 0054 0150"            /* .........D.ˆ.T.P */
-	$"00A1 0006"                                          /* .¡.. */
-};
-
-data 'hwin' (128, "About", purgeable) {
-	$"0002 0000 0000 0001 0080 6872 6374 0005"            /* .........€hrct.. */
-	$"0541 626F 7574"                                     /* .About */
-};
-
-data 'hwin' (129, "Register", purgeable) {
-	$"0002 0000 0000 0001 0081 6872 6374 0008"            /* .........hrct.. */
-	$"0852 6567 6973 7465 7200"                           /* .Register. */
-};
-
-resource 'icl8' (128) {
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 5E5E 5E00 0000"
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-	$"FFFF 0000 0000 0000 005E 0303 5E00 0000"
-	$"0000 0000 0000 0000 0000 0000 0000 FFFF"
-	$"FFFF 0000 0000 0000 5E03 2D88 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 FFFF FFFF"
-	$"00FF FF00 0000 005E 032D 8800 0000 0000"
-	$"0000 0000 0000 0000 0000 FFFF FFFF 0000"
-	$"F8FF FF08 0832 5E03 3488 0000 0000 0000"
-	$"0000 0000 0000 0000 FFFF FFFF 0000 F6F6"
-	$"F632 0808 325E 0334 8800 0000 0000 0000"
-	$"0000 0000 0000 FFFF FFFF 0000 F5F6 F62B"
-	$"0832 395E 5803 3388 DE33 0000 0000 0000"
-	$"0000 0000 FFFF FFFF 0000 F5F5 F5F6 2B08"
-	$"3339 885E 0333 88DE 5E33 3200 0000 0000"
-	$"0000 FFFF FFFF 0000 F5F5 F5F5 F62B 0833"
-	$"5E88 5E09 3388 DE88 5E33 3232 0000 0000"
-	$"FFFF FFFF 0000 F5F5 F5F5 F5F6 562C 3339"
-	$"885E 0933 88E0 8864 5E39 3232 3200 0000"
-	$"FFFF 0000 00F5 F5F5 F5F6 5681 0839 6488"
-	$"822D 3388 FFDF 645E 3333 3232 3232 DFDF"
-	$"00FF FF00 00F5 F5F6 5681 56F6 3364 8839"
-	$"3333 3232 3357 3208 080E 3232 3232 DFDF"
-	$"00FF FF00 F5F5 F556 F8F6 F656 8188 8808"
-	$"325D 3939 3208 0808 0808 3232 3233 DFDF"
-	$"0000 FFFF 00F5 F5F5 F656 8156 2B58 3364"
-	$"88DE 8988 885E 5E33 3232 3333 395D DFDF"
-	$"0000 FFFF 00F5 F5F5 F956 F6F7 64DD AD88"
-	$"8888 88DE AD88 8888 885E 5E5E 5E5E DFDF"
-	$"0000 00FF FF00 F5F5 F6F6 2B64 006B E056"
-	$"2B2B 2BF7 F7F8 81AD 88AD 8888 8888 DFDF"
-	$"0000 00FF FF00 F5F5 F6F6 FA07 40FF F92B"
-	$"2B2B F7F7 F7F7 F9FF FF88 8888 8888 DFDF"
-	$"0000 0000 FFFF 00F6 F632 6440 FFF9 2B2B"
-	$"2B2B F7F7 F8F7 F8F9 FFFF 0088 8888 DFDF"
-	$"0000 0000 FFFF 00F6 2BDE 8FDE F92B 2B2B"
-	$"F732 3839 4040 40F9 FFFF 0000 0000 0000"
-	$"0000 0000 00FF FF00 2B39 3939 F72B 2BF7"
-	$"3240 4040 3FF8 F8F8 F9FF FF00 0000 0000"
-	$"0000 0000 00FF FF00 F739 3939 31F7 3239"
-	$"4040 39F8 F7F8 F8F8 F9FF FF00 0000 0000"
-	$"0000 0000 0000 FFFF F539 3939 3F39 4040"
-	$"4039 F7F7 F7F8 F8F8 F9F9 FFFF 0000 0000"
-	$"0000 0000 0000 FFFF F532 3939 3939 4039"
-	$"F8F7 F7F7 F8F8 F9F9 FFFF FFFF F8F8 F8F6"
-	$"0000 0000 0000 00FF FFF5 3239 3939 32F7"
-	$"F7F7 F7F7 F9F9 FFFF FFFF FAFA FAFA F8F6"
-	$"0000 0000 0000 00FF FF00 2B2B 2B2B F7F7"
-	$"F7F7 F9F9 FFFF FEFF FAFA FAFA FAF8 F8F6"
-	$"0000 0000 0000 0000 FFFF 002B 2BF7 F7F7"
-	$"F9F9 FFFF FEFF FAFA FAFA FAFA F8F8 0000"
-	$"0000 0000 0000 0000 FFFF 002B 2BF7 F9F9"
-	$"FFFF FEFF FAFA FAFA FAFA F8F8 F600 0000"
-	$"0000 0000 0000 0000 00FF FFF5 F7F9 FFFF"
-	$"FEFF FAFA FAFA FAFA F8F8 F600 0000 0000"
-	$"0000 0000 0000 0000 00FF FFF7 FFFF FEFF"
-	$"FAFA FAFA F8F8 F8F8 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 FFFF FEFF FAFA"
-	$"F8F8 F8F8 F8F6 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 FFFF FBF8 F8F8"
-	$"F6F6"
-};
-
-resource 'icl8' (129, "Mac OS Icon") {
-	$"0000 0000 0000 8181 FBFB FBFB FBFB FCFC"
-	$"FCFC FCFC FCFC ACAC AC00 0000 0000 0000"
-	$"0000 0000 0000 FB00 0000 0000 0000 0000"
-	$"0000 0000 0000 00F5 FCFB 0000 0000 0000"
-	$"0000 0000 0000 FB00 F5F5 F5F5 F5F5 F5F5"
-	$"F5F5 F5F5 F5F5 F5F5 FC2B FB00 0000 0000"
-	$"0000 0000 0000 FB00 F5F5 F5F5 F5F5 F5F5"
-	$"F5F5 F5F5 F5F5 F5F5 FC00 F781 0000 0000"
-	$"00DD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD 2BF6 F5F5 FB00 F5F7 FB00 0000"
-	$"00DD DD00 DDDD 0000 DDDD 0000 DDDD 00DD"
-	$"DD00 DDDD F82B F5F5 FB00 00F6 F8FB 0000"
-	$"00DD DD00 DD00 DDDD DD00 DDDD 00DD 0000"
-	$"DD00 DDDD F9F7 F6F5 FBFC FCFC ACAC FD00"
-	$"00DD DD00 DD00 DDDD DD00 DDDD 00DD 00DD"
-	$"0000 DDDD FAF7 F6F5 F6F9 F9FA FA81 FD00"
-	$"00DD DD00 DD00 DDDD DD00 DDDD 00DD 00DD"
-	$"0000 DDDD FAF7 F6F5 F5F7 F7F8 F856 FD00"
-	$"00DD DD00 DDDD 0000 DDDD 0000 DDDD 00DD"
-	$"DD00 DDDD FAF7 F6F5 F5F5 F5F5 F556 FD00"
-	$"00DD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD DDDD F9F7 F6F5 F5F5 F5F5 F556 FD00"
-	$"0000 0000 0000 FDF9 F9F9 F9F9 F9F9 F9F9"
-	$"F9F9 FAF9 F82B F5F5 F5F5 F5F5 F556 FD00"
-	$"0000 0000 0000 ACF7 F7F7 F7F7 F7F7 F7F7"
-	$"F7F7 F7F7 2BF6 F5F5 F5F5 F5F5 F556 FD00"
-	$"0000 0000 0000 FCF5 F5F5 F5F5 F5F5 F5F5"
-	$"F5F5 2BAB F9F5 F5F5 F5F5 F5F5 F5F8 FD00"
-	$"0000 0000 0000 FC00 F5F5 F52B F72B F7F7"
-	$"2BF7 D6FC F72B F7F7 2BF5 F5F5 F5F8 FD00"
-	$"0000 0000 0000 FC00 F5F5 F5AB 80AA AA80"
-	$"AAF1 AC7F F97F 807F ABF5 F5F5 F5F8 FE00"
-	$"0000 0000 0000 FC00 F5F5 F5AB 7E7F 7FAA"
-	$"54FE 54F5 54F8 F52A 80F5 F5F5 F5F8 FE00"
-	$"0000 0000 0000 FC00 F5F5 00AA 7F7F ABAA"
-	$"80FF 2A2A 81AB F52A ABF5 F5F5 F5F8 FE00"
-	$"0000 0000 0000 FC00 F5F5 F5AB 7F7F 7F7F"
-	$"D680 2A2A 2AF7 2A2A 80F5 F5F5 F5F8 FE00"
-	$"0000 0000 0000 FC00 F5F5 F5FB 7F7F 7F7E"
-	$"FE7F 2A2A 2A2A 2A2A ABF5 F5F5 F5F8 FE00"
-	$"0000 0000 0000 FC00 F5F5 F5AA 7F7F 7F7F"
-	$"FDFE F4AC 2A2A F52A 80F5 F5F5 F5F8 FE00"
-	$"0000 0000 0000 FC00 F5F5 00AB 7F80 AA7F"
-	$"7E7E 7FAC 002A 802A ABF5 F5F5 F5F8 FE00"
-	$"0000 0000 0000 AC00 F5F5 F5AA 55AA ACAA"
-	$"AAAA ABFE F9AB FBF7 80F5 F5F5 F5F8 FE00"
-	$"0000 0000 0000 AC00 F5F5 00AB 7F7F 54A9"
-	$"ABAA ABFD 8055 F5F5 ABF5 F5F5 F5F8 F400"
-	$"0000 0000 0000 AC00 F5F5 F5AB AA80 AB80"
-	$"AA80 ABFE 5580 8080 AB00 F5F5 F5F7 FF00"
-	$"0000 0000 0000 AC00 F5F5 F52B 2BF7 2BF7"
-	$"F6F7 F8AB ACF7 2AF7 2BF5 F5F5 F5F7 FF00"
-	$"0000 0000 0000 AC00 F5F5 F5F5 F5F5 F5F5"
-	$"F5F5 F555 FC56 F5F5 F5F5 F5F5 F5F7 FF00"
-	$"0000 0000 0000 AC00 F5F5 F5F5 F5F5 F5F5"
-	$"F5F5 F500 F5F5 F5F5 F5F5 F5F5 F5F7 FF00"
-	$"0000 0000 0000 AC00 F5F5 F5F5 F5F5 F5F5"
-	$"F5F5 F5F5 F5F5 F5F5 F5F5 F5F5 F5F7 FF00"
-	$"0000 0000 0000 AC00 F5F5 F5F5 F5F5 F5F5"
-	$"F5F5 F5F5 F5F5 F5F5 F5F5 F5F5 F5F7 FF00"
-	$"0000 0000 0000 ACF5 F6F6 F6F6 F6F6 2B2B"
-	$"2B2B 2B2B 2B2B 2B2B 2B2B F7F7 F7F7 FF00"
-	$"0000 0000 0000 ACAC FDFD FDFD FDFD FEFD"
-	$"FEF4 FEFE F4FE FEF4 FFFF FFFF FFFF FF"
-};
-
-resource 'icl8' (130, "Windows Icon") {
-	$"0000 0000 0000 8181 FBFB FBFB FBFB FCFC"
-	$"FCFC FCFC FCFC ACAC AC00 0000 0000 0000"
-	$"0000 0000 0000 FB00 0000 0000 0000 0000"
-	$"0000 0000 0000 00F5 FCFB 0000 0000 0000"
-	$"0000 0000 0000 FB00 F5F5 F5F5 F5F5 F5F5"
-	$"F5F5 F5F5 F5F5 F5F5 FC2B FB00 0000 0000"
-	$"0000 0000 0000 FB00 F5F5 F5F5 F5F5 F5F5"
-	$"F5F5 F5F5 F5F5 F5F5 FC00 F781 0000 0000"
-	$"00DD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DD2B F6F5 F5F5 F5F5 FB00 F5F7 FB00 0000"
-	$"00DD 00DD DDDD 00DD 00DD 00DD DDDD 00DD"
-	$"DDF8 2BF5 F5F5 F5F5 FB00 00F6 F8FB 0000"
-	$"00DD 00DD DDDD 00DD 00DD 0000 DDDD 00DD"
-	$"DDF9 F7F6 F5F5 F5F5 FBFC FCFC ACAC FD00"
-	$"00DD 00DD 00DD 00DD 00DD 00DD 00DD 00DD"
-	$"DDFA F7F6 F5F5 F5F5 F6F9 F9FA FA81 FD00"
-	$"00DD 00DD 00DD 00DD 00DD 00DD DD00 00DD"
-	$"DDFA F7F6 F5F5 F5F5 F5F7 F7F8 F856 FD00"
-	$"00DD DD00 DD00 DDDD 00DD 00DD DDDD 00DD"
-	$"DDFA F7F6 F5F5 F5F5 F5F5 F5F5 F556 FD00"
-	$"00DD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDF9 F7F6 F5F5 F5F5 F5F5 F5F5 F656 FD00"
-	$"0000 0000 0000 FDF9 F9F9 F9FA FAFA FAFA"
-	$"F9F8 2BF5 F5F5 F5F5 F5F5 F5F5 F556 FD00"
-	$"0000 0000 0000 ACF7 F7F7 F7F7 F7F9 56F7"
-	$"F72B F6F5 F5F5 F5F5 F5F5 F5F5 F556 FD00"
-	$"0000 0000 0000 FCF5 F5F5 F5F5 F6F9 F9FA"
-	$"562B F5F5 F5F5 F5F5 F5F5 F5F5 F5F8 FD00"
-	$"0000 0000 0000 FC00 F5F5 F5F5 F732 2B56"
-	$"A5AB 8180 F9F7 F7F6 F5F5 F5F5 F6F8 FD00"
-	$"0000 0000 0000 FC00 F5F5 F5F5 5531 320E"
-	$"325D FDFD DFDF FFB2 7AF6 F5F5 F6F8 FE00"
-	$"0000 0000 0000 FC00 F5F5 F5F5 562C 072C"
-	$"0833 FF39 105E D1A7 FFFC F6F6 F5F8 FE00"
-	$"0000 0000 0000 FC00 F5F5 F555 565C 5632"
-	$"0E81 FD10 1688 A651 A6FF F6F6 F5F8 FE00"
-	$"0000 0000 0000 FC00 F5F5 FA55 4F55 8081"
-	$"82FD FD64 5FFF 7675 D1FC F5F5 F5F8 FE00"
-	$"0000 0000 0000 FC00 F5F5 5655 4F2B 5579"
-	$"81FD ABD0 F3FF A6A6 FF56 F5F5 F5F8 FE00"
-	$"0000 0000 0000 FC00 F5F5 F656 4F55 4F55"
-	$"ABFD 79A3 D035 5FFF FDF6 F5F5 F5F8 FE00"
-	$"0000 0000 0000 FC00 F5F5 F5F5 8056 557A"
-	$"FDA4 9DAB AD0B 0BFF 80F5 F5F5 F5F8 FE00"
-	$"0000 0000 0000 AC00 F5F5 F5F5 F556 ABFD"
-	$"FDFD CFF3 8305 35F3 F7F5 F5F5 F5F8 FE00"
-	$"0000 0000 0000 AC00 F5F5 F5F5 F5F5 F5F8"
-	$"80FC FDFF AD5F ADAC F5F5 F5F5 F5F8 F400"
-	$"0000 0000 0000 AC00 F5F5 F5F5 F5F5 F5F5"
-	$"F5F5 F656 ABF3 FFF8 F5F5 F5F5 F5F7 FF00"
-	$"0000 0000 0000 AC00 F5F5 F5F5 F5F5 F5F5"
-	$"F5F5 F5F5 F6F7 F8F5 F5F5 F5F5 F6F7 FF00"
-	$"0000 0000 0000 AC00 F5F5 F5F5 F5F5 F5F5"
-	$"F5F5 F5F5 F5F5 F5F5 F5F5 F5F5 F6F7 FF00"
-	$"0000 0000 0000 AC00 F5F5 F5F5 F5F5 F5F5"
-	$"F5F5 F5F5 F5F5 F5F5 F5F5 F5F5 F6F7 FF00"
-	$"0000 0000 0000 AC00 F5F5 F5F5 F5F5 F5F5"
-	$"F5F5 F5F5 F5F5 F5F5 F5F5 F5F5 F5F7 FF00"
-	$"0000 0000 0000 AC00 F5F5 F5F5 F5F5 F5F5"
-	$"F5F5 F5F5 F5F5 F5F5 F5F5 F5F5 F5F7 FF00"
-	$"0000 0000 0000 ACF5 F6F6 F6F6 F6F6 2B2B"
-	$"2B2B 2B2B 2B2B 2B2B 2B2B F7F7 F7F7 FF00"
-	$"0000 0000 0000 ACAC FDFD FDFD FDFD FDFD"
-	$"FEFE FEFE FEFE FEFE FFFF FFFF FFFF FF"
-};
-
-resource 'icl8' (131, "Mac OS X Icon") {
-	$"0000 0000 0000 8181 FBFB FBFB FBFB FCFC"
-	$"FCFC FCFC FCFC ACAC AC00 0000 0000 0000"
-	$"0000 0000 0000 FB00 0000 0000 0000 0000"
-	$"0000 0000 0000 00F5 FCFB 0000 0000 0000"
-	$"0000 0000 0000 FB00 F5F5 F5F5 F5F5 F5F5"
-	$"F5F5 F5F5 F5F5 F5F5 FC2B FB00 0000 0000"
-	$"0000 0000 0000 FB00 F5F5 F5F5 F5F5 F5F5"
-	$"F5F5 F5F5 F5F5 F5F5 FC00 F781 0000 0000"
-	$"00DD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD 2BF6 F5F5 F5F5 FB00 F5F7 FB00 0000"
-	$"00DD DD00 0000 DD00 DD00 0000 DD00 0000"
-	$"DDDD F82B F5F5 F5F5 FB00 00F6 F8FB 0000"
-	$"00DD DDDD 00DD DD00 DD00 DDDD DD00 DDDD"
-	$"DDDD F9F7 F6F5 F5F5 FBFC FCFC ACAC FD00"
-	$"00DD DDDD 00DD DD00 DD00 00DD DD00 00DD"
-	$"DDDD FAF7 F6F5 F5F5 F6F9 F9FA FA81 FD00"
-	$"00DD DDDD 00DD DD00 DD00 DDDD DD00 DDDD"
-	$"DDDD FAF7 F6F5 F5F5 F5F7 F7F8 F856 FD00"
-	$"00DD DDDD 00DD DD00 DD00 DDDD DD00 DDDD"
-	$"DDDD FAF7 F6F5 F5F5 F5F5 F5F5 F556 FD00"
-	$"00DD DDDD DDDD DDDD DDDD DDDD DDDD DDDD"
-	$"DDDD F9F7 F6F5 F5F5 F5F5 F5F5 F556 FD00"
-	$"0000 0000 0000 FDF9 F9F9 F9F9 F9F9 F9F9"
-	$"FAF9 F82B F5F5 F5F5 F5F5 F5F5 F556 FD00"
-	$"0000 0000 0000 ACF7 F7F7 F7F7 F7F7 F7F7"
-	$"F7F7 2BF6 F5F5 F5F5 F5F5 F5F5 F556 FD00"
-	$"0000 0000 0000 FCF5 F5F5 F554 5454 5454"
-	$"5454 5454 5454 5454 54F5 F5F5 F5F8 FD00"
-	$"0000 0000 0000 FC00 F5F5 5400 F8F6 F8F6"
-	$"F8F6 F8F6 F8F6 F8F6 F7AB F5F5 F5F8 FD00"
-	$"0000 0000 0000 FC00 F5F5 54F8 7F7F 7F7F"
-	$"7F7F 7F7F 7F7F 7F7F 7FAB F5F5 F5F8 FE00"
-	$"0000 0000 0000 FC00 F5F5 54F6 7FF6 F6F6"
-	$"F6F7 7FF7 F6F6 F67F 7FAB F5F5 F5F8 FE00"
-	$"0000 0000 0000 FC00 F5F5 54F8 7F7F 78F6"
-	$"F6AB 7F7F F67F ABAB 7FAB F5F5 F5F8 FE00"
-	$"0000 0000 0000 FC00 F5F5 54F6 787F 7FF6"
-	$"F6F7 7FF6 F6AA 7F7F 7FAB F5F5 F5F8 FE00"
-	$"0000 0000 0000 FC00 F5F5 54F8 7F7F 7F7F"
-	$"F6F6 F7F6 ABAB 7F7F 7FAB F5F5 F5F8 FE00"
-	$"0000 0000 0000 FC00 F5F5 54F6 7F7F 7F7F"
-	$"2BF6 F67F AB7F 7F7F 7FAB F5F5 F5F8 FE00"
-	$"0000 0000 0000 FC00 F5F5 54F8 7F7F 7F7F"
-	$"7FF6 F6F7 7F7F 7F7F 7FAB F5F5 F5F8 FE00"
-	$"0000 0000 0000 AC00 F5F5 54F6 7F7F 7F7F"
-	$"F6F6 F6F6 7F7F 7F7F 7FAB F5F5 F5F8 FE00"
-	$"0000 0000 0000 AC00 F5F5 54F8 7F7F 7FF7"
-	$"F6AA 7FF6 F67F 7F7F 7FAB F5F5 F5F8 F400"
-	$"0000 0000 0000 AC00 F5F5 54F6 7F7F F7F6"
-	$"7FAB 7F2B F6F6 7F7F 7FAB F5F5 F5F7 FF00"
-	$"0000 0000 0000 AC00 F5F5 54F8 7FF6 F6F6"
-	$"F77F 7FF6 F6F6 F6F7 7FAB F5F5 F5F7 FF00"
-	$"0000 0000 0000 AC00 F5F5 54F6 787F ABAA"
-	$"AB7F 7F7F ABAA ABAB 7FAB F5F5 F5F7 FF00"
-	$"0000 0000 0000 AC00 F5F5 547F 7F7F 7F7F"
-	$"7F7F 7F7F 7F7F 7F7F 7FAB F5F5 F5F7 FF00"
-	$"0000 0000 0000 AC00 F5F5 F5AB ABAB ABAB"
-	$"ABAB ABAB ABAB ABAB ABF5 F5F5 F5F7 FF00"
-	$"0000 0000 0000 AC00 F5F5 F5F5 F5F5 F5F5"
-	$"F5F5 F5F5 F5F5 F5F5 F5F5 F5F5 F5F7 FF00"
-	$"0000 0000 0000 ACF5 F6F6 F6F6 F6F6 2B2B"
-	$"2B2B 2B2B 2B2B 2B2B 2B2B F7F7 F7F7 FF00"
-	$"0000 0000 0000 ACAC FDFD FDFD FDFD FEFD"
-	$"FEF4 FEFE F4FE FEF4 FFFF FFFF FFFF FF"
-};
-
-resource 'ics#' (128) {
-	{	/* array: 2 elements */
-		/* [1] */
-		$"0006 0188 07CC 1C78 70FC C5FB DB01 43EB"
-		$"621F 240F 34CC 130C 183E 0AFF 0FFF 07FE",
-		/* [2] */
-		$"0006 018E 07FC 1FF8 7FFC FFFF FFFF 7FFF"
-		$"7FFF 3FFF 3FFC 1FFC 1FFE 0FFF 0FFF 07FE"
-	}
-};
-
-resource 'ics#' (129, "Mac OS Icon") {
-	{	/* array: 2 elements */
-		/* [1] */
-		$"1FF8 100C FFFA A457 AD47 A455 FFFF 1555"
-		$"1001 1003 1001 1003 1001 1003 1555 1FFF",
-		/* [2] */
-		$"1FF8 1FFC FFFE FFFF FFFF FFFF FFFF 1FFF"
-		$"1FFF 1FFF 1FFF 1FFF 1FFF 1FFF 1FFF 1FFF"
-	}
-};
-
-resource 'ics#' (130, "Windows Icon") {
-	{	/* array: 2 elements */
-		/* [1] */
-		$"1FF8 100C FFFE BA9F AAAD D6AF FFFD 1AAB"
-		$"1001 1003 1001 1003 1001 1003 1555 1FFF",
-		/* [2] */
-		$"1FF8 1FFC FFFE FFFF FFFF FFFF FFFF 1FFF"
-		$"1FFF 1FFF 1FFF 1FFF 1FFF 1FFF 1FFF 1FFF"
-	}
-};
-
-resource 'ics#' (131, "Mac OS X Icon") {
-	{	/* array: 2 elements */
-		/* [1] */
-		$"1FF8 100C FFFE 8A4D DADB DADD FFFB 1557"
-		$"1001 1003 1001 1003 1001 1003 1555 1FFF",
-		/* [2] */
-		$"1FF8 1FFC FFFE FFFF FFFF FFFF FFFF 1FFF"
-		$"1FFF 1FFF 1FFF 1FFF 1FFF 1FFF 1FFF 1FFF"
-	}
-};
-
-resource 'ics8' (128) {
-	$"0000 0000 0000 0000 0000 0000 0034 3400"
-	$"0000 0000 0000 00FF FF00 0000 342D 5D00"
-	$"0000 0000 00FF FFFF 8181 072D 345D 0000"
-	$"0000 00FF FFFF F5F6 2C33 3334 8800 0000"
-	$"00FF FFFF 00F5 F62C 5E5E 3488 392C 0000"
-	$"FFFF 00F5 F5F8 325E 5E34 FE64 3932 2CF9"
-	$"FFFF F5F6 F8F7 5E5D 3333 3208 0832 32DF"
-	$"00FF 00F5 F8F8 5D82 8888 885E 5D5D 5DDF"
-	$"00FF FFF5 F632 5DF9 2BF7 F7FC B388 88DF"
-	$"0000 FFF5 3264 FA2B F732 39F9 FF88 DFDF"
-	$"0000 FFFF 3239 F732 3939 32F8 FFFF 0000"
-	$"0000 00FF 0E39 3940 32F7 F856 FFFF 0000"
-	$"0000 00FF FF32 32F7 F756 FFFE FAFA F800"
-	$"0000 0000 FFF6 2BF8 FFFE FAFA FAFA F8F6"
-	$"0000 0000 FFFF FFFF FAFA FAFA F8F8 F6F6"
-	$"0000 0000 00FF FAFA FAF8 F8F8 F6F6 F6"
-};
-
-resource 'ics8' (129, "Mac OS Icon") {
-	$"0000 00FB FBFB FBFC FCFC FCFC FC00 0000"
-	$"0000 00FB F5F5 F5F5 F5F5 F5F5 FCFB 0000"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD FB00"
-	$"DD00 DD00 00DD 0000 00DD 00DD 00DD FAFF"
-	$"DD00 DD00 DDDD 00DD 00DD 0000 00DD FAFF"
-	$"DD00 DD00 00DD 0000 00DD 00DD 00DD F9FF"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD F9FF"
-	$"0000 00FC F7F7 F9F9 F9F9 F9F9 F9F9 F9FF"
-	$"0000 00FC F5F5 F5F5 F5F5 F5F5 F5F5 F8FE"
-	$"0000 00FC F5F5 F5F5 F5F5 F5F5 F5F5 F8FE"
-	$"0000 00FC F5F5 F5F5 F5F5 F5F5 F5F5 F8FE"
-	$"0000 00AC F5F5 F5F5 F5F5 F5F5 F5F5 F8FE"
-	$"0000 00AC F5F5 F5F5 F5F5 F5F5 F5F5 F7FF"
-	$"0000 00AC F5F5 F5F5 F5F5 F5F5 F5F5 F7FF"
-	$"0000 00AC F5F7 F7F7 F7F7 F7F7 F7F7 F7FF"
-	$"0000 00FD FDFD FDFD FEFE FEFE FFFF FFFF"
-};
-
-resource 'ics8' (130, "Windows Icon") {
-	$"0000 00FB FBFB FBFC FCFC FCFC FC00 0000"
-	$"0000 00FB F5F5 F5F5 F5F5 F5F5 FCFB 0000"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD FB00"
-	$"DD00 DDDD DD00 DD00 DD00 00DD DDDD FAFF"
-	$"DD00 DD00 DD00 DD00 DD00 DD00 DDDD FAFF"
-	$"DDDD 00DD 00DD DD00 DD00 DD00 DDDD F9FF"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD F9FF"
-	$"0000 00FC F7F7 F9F9 F9F9 F9F9 F9F9 F9FF"
-	$"0000 00FC F5F5 F5F5 F5F5 F5F5 F5F5 F8FE"
-	$"0000 00FC F5F5 F5F5 F5F5 F5F5 F5F5 F8FE"
-	$"0000 00FC F5F5 F5F5 F5F5 F5F5 F5F5 F8FE"
-	$"0000 00AC F5F5 F5F5 F5F5 F5F5 F5F5 F8FE"
-	$"0000 00AC F5F5 F5F5 F5F5 F5F5 F5F5 F7FF"
-	$"0000 00AC F5F5 F5F5 F5F5 F5F5 F5F5 F7FF"
-	$"0000 00AC F5F7 F7F7 F7F7 F7F7 F7F7 F7FF"
-	$"0000 00FD FDFD FDFD FEFE FEFE FFFF FFFF"
-};
-
-resource 'ics8' (131, "Mac OS X Icon") {
-	$"0000 00FB FBFB FBFC FCFC FCFC FC00 0000"
-	$"0000 00FB F5F5 F5F5 F5F5 F5F5 FCFB 0000"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD FB00"
-	$"DD00 0000 DD00 DD00 00DD 0000 DDDD FAFF"
-	$"DDDD 00DD DD00 DD00 DDDD 00DD DDDD FAFF"
-	$"DDDD 00DD DD00 DD00 DDDD 00DD DDDD F9FF"
-	$"DDDD DDDD DDDD DDDD DDDD DDDD DDDD F9FF"
-	$"0000 00FC F7F7 F9F9 F9F9 F9F9 F9F9 F9FF"
-	$"0000 00FC F5F5 F5F5 F5F5 F5F5 F5F5 F8FE"
-	$"0000 00FC F5F5 F5F5 F5F5 F5F5 F5F5 F8FE"
-	$"0000 00FC F5F5 F5F5 F5F5 F5F5 F5F5 F8FE"
-	$"0000 00AC F5F5 F5F5 F5F5 F5F5 F5F5 F8FE"
-	$"0000 00AC F5F5 F5F5 F5F5 F5F5 F5F5 F7FF"
-	$"0000 00AC F5F5 F5F5 F5F5 F5F5 F5F5 F7FF"
-	$"0000 00AC F5F7 F7F7 F7F7 F7F7 F7F7 F7FF"
-	$"0000 00FD FDFD FDFD FEFE FEFE FFFF FFFF"
-};
-
-data 'ictb' (129) {
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0007 0024 0000 0000 000C 0000 0000 0000"            /* ...$............ */
-	$"FFFF FFFF FFFF 0000"                                /* ÿÿÿÿÿÿ.. */
-};
-
-data 'ictb' (132) {
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0007 0028 8007 003C 0001 0000 0009 0000"            /* ...(€..<........ */
-	$"0000 0000 FFFF FFFF FFFF 0000 0050 0000"            /* ....ÿÿÿÿÿÿ...P.. */
-	$"0009 0000 0000 0000 FFFF FFFF FFFF 0000"            /* ........ÿÿÿÿÿÿ.. */
-	$"0647 656E 6576 61"                                  /* .Geneva */
-};
-
-data 'ictb' (2000) {
-	$"0000 0000"                                          /* .... */
-};
-
-data 'ictb' (3001) {
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-};
-
-data 'ictb' (3002) {
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000"                                          /* .... */
-};
-
-resource 'kind' (128) {
-	'Mngl',
-	0,
-	{	/* array kindArray: 3 elements */
-		/* [1] */
-		'Icon', "Mac OS Icon",
-		/* [2] */
-		'ICO ', "Windows Icon",
-		/* [3] */
-		'TIFF', "Mac OS X Server Icon"
-	}
-};
-
-resource 'mctb' (131) {
-	{	/* array MCTBArray: 1 elements */
-		/* [1] */
-		mctbLast, 0,
-		{	/* array: 4 elements */
-			/* [1] */
-			0, 0, 0,
-			/* [2] */
-			0, 0, 0,
-			/* [3] */
-			0, 0, 0,
-			/* [4] */
-			0, 0, 0
-		}
-	}
-};
-
-resource 'open' (128) {
-	'Mngl',
-	{	/* array typeArray: 6 elements */
-		/* [1] */
-		'Icon',
-		/* [2] */
-		'WIco',
-		/* [3] */
-		'TIFF',
-		/* [4] */
-		'****',
-		/* [5] */
-		'fold',
-		/* [6] */
-		'disk'
-	}
-};
-
-resource 'vers' (1) {
-	0x2,
-	0x10,
-	release,
-	0x0,
-	0,
-	"2.1",
-	"Iconographer 2.1\n©1998-2001 Mihai Parpar"
-	"ita"
-};
-
-resource 'vers' (2) {
-	0x2,
-	0x10,
-	release,
-	0x0,
-	0,
-	"2.1",
-	"http://www.mscape.com/"
 };
 
 resource 'xmnu' (129, "File Menu") {

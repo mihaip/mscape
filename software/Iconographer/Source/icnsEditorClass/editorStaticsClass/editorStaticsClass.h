@@ -66,7 +66,7 @@ enum preferencesDialogItems
 	iDefaultZoomLevelArrows = 6,
 	iDefaultIconFormat = 7,
 	iDefaultIconFormatLabel = 8,
-	// default members stuff goes here, constants are in icnsClass.h
+	// default members stuff goes here, constants are in MIcon.h
 	
 	
 	// external editor pane	
@@ -156,6 +156,8 @@ typedef struct preferencesStruct
 	long		previewBackground;
 	AliasHandle	recentFiles[kMaxRecentFiles];
 	int			recentFilesCount;
+	RGBColor	previewBackgroundColor;
+	int			lastSelectionExpansion;
 } PreferencesStruct;
 
 typedef PreferencesStruct** PreferencesHandle;
@@ -243,8 +245,14 @@ class editorPreferencesClass
 		int					GetLineThickness();
 		void				SetLineThickness(int thickness);
 		
+		int					GetLastSelectionExpansion();
+		void				SetLastSelectionExpansion(int expansion);
+		
 		int					GetPreviewBackground();
 		void				SetPreviewBackground(int background);
+		
+		RGBColor			GetPreviewBackgroundColor();
+		void				SetPreviewBackgroundColor(RGBColor color);
 		
 		Point				GetAdjustDialogLocation();
 		void				SetAdjustDialogLocation(Point location);

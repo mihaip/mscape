@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "icnsClass.h"
+#include "MIcon.h"
 #include "commonfunctions.h"
 #include "icnsEditorClass.h"
 #include "editorStaticsClass.h"
@@ -28,6 +28,7 @@ const static long prefFileType = 'pref';
 
 enum moreStatus
 {
+	frontIsAbout = 1 << 29,
 	frontIsBrowser = 1 << 30,
 	frontIsEditor = 1 << 31
 };
@@ -98,12 +99,13 @@ enum stdErrors
 	eThanksForRegistering = 14,
 	eAppearanceNotInstalled = 15,
 	eNeedInternetConfigRegistration = 16,
-	eCantOpenFile = 17
+	eCantOpenFile = 17,
+	eNeedCarbonLib = 18
 };
 
 enum prompts
 {
-	eWantToSave = 1,
+	eWantToSaveError = 1,
 	eSelectFile = 2,
 	eSaveFile = 3,
 	eSaveIntoFile = 4,
@@ -115,7 +117,8 @@ enum prompts
 	eIconAlreadyExists = 10,
 	eRevert = 11,
 	eChooseRegistrationMethod = 12,
-	eWelcome = 13
+	eWelcome = 13,
+	eWantToSaveExplanation = 14
 };
 
 enum saveOptions
@@ -200,7 +203,8 @@ enum selectMenu
 	iAll = 1,
 	iSimilar = 2,
 	iNone = 3,
-	iInverse = 4
+	iInverse = 4,
+	iExpandContract = 5
 };
 
 enum transformMenu
@@ -235,7 +239,11 @@ enum iconMenu
 	iInsertIcon = 6,
 	iIconInfo = 7,
 	iPixelGrid = 8,
-	iOpenInExternalEditor = 10
+	
+	iGenerateMask = 10,
+	iCompleteIcon = 11,
+	
+	iOpenInExternalEditor = 13
 };
 
 enum colorsMenu
@@ -351,7 +359,7 @@ void 		SetupPalette(MFloaterPtr palette, int flag, int menuItem, int showStringI
 void 		TogglePixelGrid();
 void		SetupPixelGrid();
 
-void		InsertIcon(icnsClassPtr tempIcon);
+void		InsertIcon(MIconPtr tempIcon);
 
 // file stuff
 
@@ -364,7 +372,7 @@ pascal void NavSaveEventFilter(NavEventCallbackMessage callBackSelector,
 pascal Boolean NavOpenFileFilter(AEDesc *theItem, void *info, void *callBackUD, NavFilterModes filterMode);
 OSErr		SaveFile(FSSpec* fileSpec, long* format);
 pascal Boolean SaveEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short *item, void* dataPtr);
-void		SyncPopupToName(Str255 name, ControlHandle formatPopup);
+void		SyncPopupToName(FSSpec* file, Str255 name, ControlHandle formatPopup);
 pascal short OpenDialogHook(short item, DialogPtr theDlgPtr, void* dataPtr);
 pascal Boolean OpenEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short *item, void* dataPtr);
 OSErr		GetIconFile(FSSpec* fileSpec, long* format, bool save);

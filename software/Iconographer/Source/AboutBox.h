@@ -1,7 +1,7 @@
 #pragma once
 
 #include "MWindow.h"
-#include "icnsClass.h"
+#include "MIcon.h"
 
 const static MType kAboutBoxType = 'Abot';
 
@@ -27,14 +27,12 @@ class AboutBox: public MWindow
 		void			SetRegistrationInfo(Str255 name, Str255 company, Str255 regCode);
 		
 		void			HandleContentClick(EventRecord* eventPtr);
+		
+		void			UpdateCursor(Point theMouse);
 	
 	private:
 		ControlHandle	icon, appName, version, registrationInfo,
 						webAddressTitle, webAddress, emailAddressTitle, emailAddress;
-						
-		icnsClass		applicationIcon;
-		
-		pascal static void 	IconDraw(ControlHandle iconControl, SInt16 controlPart);
 };
 
 typedef AboutBox* AboutBoxPtr;

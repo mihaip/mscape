@@ -117,42 +117,51 @@ resource 'MENU' (500) {
 	textMenuProc,
 	0x7FFFFFFB,
 	enabled,
-	"Preview Settings",
-	{	/* array: 7 elements */
+	"Réglages",
+	{	/* array: 8 elements */
 		/* [1] */
-		"Normal", noIcon, noKey, noMark, plain,
+		"Normale", noIcon, noKey, noMark, plain,
 		/* [2] */
-		"Selected", noIcon, noKey, noMark, plain,
+		"Sélectionnée", noIcon, noKey, noMark, plain,
 		/* [3] */
 		"-", noIcon, noKey, noMark, plain,
 		/* [4] */
-		"Desktop", noIcon, noKey, noMark, plain,
+		"Bureau", noIcon, noKey, noMark, plain,
 		/* [5] */
-		"List View", noIcon, noKey, noMark, plain,
+		"Sur liste", noIcon, noKey, noMark, plain,
 		/* [6] */
-		"White", noIcon, noKey, noMark, plain,
+		"Blanc", noIcon, noKey, noMark, plain,
 		/* [7] */
-		"Black", noIcon, noKey, noMark, plain
+		"Noir", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"Une autre couleur...", noIcon, noKey, noMark, plain
 	}
 };
 
 resource 'STR#' (500, "Tool Palette Balloon Help", purgeable) {
 	{	/* array StringArray: 3 elements */
 		/* [1] */
-		"Preview Size\n\nThe slider and text field "
-		"can be used to change the size of the pr"
-		"eview. Possible selections include anyth"
-		"ing between 128 and 64 (the icon will be"
-		" scaled smoothly), 48, 32, 16 and 12.",
+		"Taille de prévisualisation\n\nLa jauge et "
+		"le champ de texte servent à changer la t"
+		"aille de prév. Les tailles disponibles s"
+		"ont : 12, 16, 32, 48, et de 64 à 128 (av"
+		"ec lissage).",
 		/* [2] */
-		"Preview Area\n\nThe current icon member an"
-		"d mask are displayed here at the selecte"
-		"d size.",
+		"Aire de prévisualisation\n\nL'icone et son"
+		" masque sont affichés ici à la taille ch"
+		"oisie.",
 		/* [3] */
-		"Preview Settings\n\nThis menu can be used "
-		"to select the state of the preview icon "
-		"(normal or selected) and the background "
-		"(desktop, list view, white or black)."
+		"Réglages de prévisualisation\n\nCe menu pe"
+		"rmet de choisir l'état de l'icone (norma"
+		"le ou cliquée), et le fond (bureau, vue "
+		"par liste, blanc et noir)."
+	}
+};
+
+resource 'STR#' (501, "Preview Palette Strings", purgeable) {
+	{	/* array StringArray: 1 elements */
+		/* [1] */
+		"Choisissez une couleur de fond :"
 	}
 };
 
@@ -162,7 +171,7 @@ resource 'WIND' (500, "Preview Palette", purgeable) {
 	invisible,
 	goAway,
 	0x0,
-	"Preview",
+	"Prévisualisation",
 	noAutoCenter
 };
 
@@ -231,15 +240,19 @@ data 'ictb' (9999) {
 	$"0000 0000"                                          /* .... */
 };
 
-resource 'tab#' (500, "Preview Tabs") {
-	versionZero {
-		{	/* array TabInfo: 2 elements */
+resource 'mctb' (500) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
 			/* [1] */
-			0,
-			"Thumbnail",
+			0, 0, 0,
 			/* [2] */
-			0,
-			"Hints"
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
 		}
 	}
 };

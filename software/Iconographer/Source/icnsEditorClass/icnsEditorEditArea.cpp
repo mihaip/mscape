@@ -15,11 +15,7 @@ void icnsEditorClass::AddPanUpdateRect(Rect updateRect)
 
 void icnsEditorClass::StartPan()
 {
-#if TARGET_API_MAC_CARBON
-	scrollUpdateRgn = NewRgn();
-	savedClipRgn = NewRgn();
-	GetClip(savedClipRgn);
-#else
+#if !TARGET_API_MAC_CARBON
 	panUpdateRectsCount = 0;
 	
 	if (statics.toolPalette->IsVisible())
@@ -36,120 +32,16 @@ void icnsEditorClass::StartPan()
 #endif
 }
 
-/*void icnsEditorClass::PanEditArea(int dH, int dV)
-{
-#if TARGET_API_MAC_CARBON
-	if (!QDIsPortBuffered(GetWindowPort(window)))
-	{
-#endif
-	Rect		updateRect;
-	
-	ScrollRect(&editAreaRect, -dH, -dV, NULL);
-	
-	if (dV)
-	{
-		updateRect = editAreaRect;
-		if (dV > 0)
-			updateRect.top = updateRect.bottom - dV;
-		else
-			updateRect.bottom = updateRect.top - dV;
-			
-		UpdateEditArea(updateRect);
-
-		for (int i=0; i < panUpdateRectsCount; i++)
-		{
-			updateRect = panUpdateRects[i];
-			
-			if (dV > 0)
-			{
-				updateRect.bottom = updateRect.top;
-				updateRect.top -= dV;
-			}
-			else
-			{
-				updateRect.top = updateRect.bottom;
-				updateRect.bottom -= dV;
-			}
-			
-			if (dH > 0)
-				updateRect.left -= dH;
-			else
-				updateRect.right -= dH;
-			
-			UpdateEditArea(updateRect);
-		}
-	}
-	
-	if (dH)
-	{
-		updateRect = editAreaRect;
-		if (dH > 0)
-			updateRect.left = updateRect.right - dH;
-		else
-			updateRect.right = updateRect.left - dH;
-			
-		UpdateEditArea(updateRect);
-
-		for (int i=0; i < panUpdateRectsCount; i++)
-		{
-			updateRect = panUpdateRects[i];
-			
-			if (dH > 0)
-			{
-				updateRect.right = updateRect.left;
-				updateRect.left -= dH;
-			}
-			else
-			{
-				updateRect.left = updateRect.right;
-				updateRect.right -= dH;
-			}
-			
-			UpdateEditArea(updateRect);
-		}
-	}
-#if TARGET_API_MAC_CARBON
-	}
-#endif
-}*/
 
 void icnsEditorClass::PanEditArea(int dH, int dV)
 {
+#if TARGET_API_MAC_CARBON
+#pragma unused (dH, dV)
+	UpdateEditArea();
+#else
 	Rect		updateRect;
 
-#if TARGET_API_MAC_CARBON
-	ClipRect(&editAreaRect);
-	ScrollWindowRect(window, &editAreaRect, -dH, -dV, 0, scrollUpdateRgn);
-	SetClip(savedClipRgn);
-#else
 	ScrollRect(&editAreaRect, -dH, -dV, NULL);
-#endif
-	
-/*	ScrollRect(&editAreaRect, -dH, -dV, NULL);
-
-#if TARGET_API_MAC_CARBON
-	if (QDIsPortBuffered(GetWindowPort(window)))
-	{
-		RgnHandle	updateRgn = NewRgn();
-		
-		updateRect = editAreaRect;
-		if (dV > 0)
-			updateRect.bottom -= dV;
-		else
-			updateRect.top -= dV;
-			
-		if (dH > 0)
-			updateRect.right -= dH;
-		else
-			updateRect.left -= dH;
-		
-		RectRgn(updateRgn, &updateRect);
-		
-		QDFlushPortBuffer(GetWindowPort(window), updateRgn);
-		
-		DisposeRgn(updateRgn);
-	}
-#endif*/
 
 	if (dV)
 	{
@@ -161,7 +53,6 @@ void icnsEditorClass::PanEditArea(int dH, int dV)
 			
 		UpdateEditArea(updateRect);
 
-#if !TARGET_API_MAC_CARBON
 		for (int i=0; i < panUpdateRectsCount; i++)
 		{
 			updateRect = panUpdateRects[i];
@@ -184,7 +75,6 @@ void icnsEditorClass::PanEditArea(int dH, int dV)
 			
 			UpdateEditArea(updateRect);
 		}
-#endif
 	}
 	
 	if (dH)
@@ -197,7 +87,6 @@ void icnsEditorClass::PanEditArea(int dH, int dV)
 			
 		UpdateEditArea(updateRect);
 
-#if !TARGET_API_MAC_CARBON
 		for (int i=0; i < panUpdateRectsCount; i++)
 		{
 			updateRect = panUpdateRects[i];
@@ -215,16 +104,14 @@ void icnsEditorClass::PanEditArea(int dH, int dV)
 			
 			UpdateEditArea(updateRect);
 		}
-#endif
+
 	}
+#endif
 }
 
 void icnsEditorClass::FinishPan()
 {
-#if TARGET_API_MAC_CARBON
-	DisposeRgn(scrollUpdateRgn);
-	DisposeRgn(savedClipRgn);
-#else
+#if !TARGET_API_MAC_CARBON
 	panUpdateRectsCount = 0;
 #endif
 }
@@ -268,7 +155,7 @@ void icnsEditorClass::DrawMember(int pixName, Rect targetRect)
 {
 	if (!(status & selectionFloated) ||
 		((status & selectionFloated) && currentPixName != pixName))
-		icnsClass::DrawMember(pixName, targetRect);
+		MIcon::DrawMember(pixName, targetRect);
 	else
 	{
 		PixMapHandle srcPix;
@@ -624,14 +511,20 @@ void icnsEditorClass::PaintEditAreaRect(Rect targetRect)
 			DrawSelection(canvas, sourceRect, canvasRect, dX, dY);
 		
 		if (((**overlayPix).bounds.right == magnification * (**currentPix).bounds.right))
+		{
+			if (EmptyRgn(selectionRgn) && statics.preferences.FeatureEnabled(prefsDrawGrid))
+				DrawGrid(canvasRect);
+				
 			DrawOverlay(canvas, sourceRect, canvasSourceRect, dX, dY);
+		}
 		else
 		{
 			DrawOverlay(canvas, sourceRect, canvasRect, dX, dY);
-				
-			if (statics.preferences.FeatureEnabled(prefsDrawGrid))
+			
+			if (EmptyRgn(selectionRgn) && statics.preferences.FeatureEnabled(prefsDrawGrid))
 				DrawGrid(canvasRect);
 		}
+
 		
 	}
 	else if (!EmptyRgn(selectionRgn)) // if there is a selection and it hasn't been drawn already

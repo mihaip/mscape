@@ -118,7 +118,7 @@ resource 'MENU' (500) {
 	0x7FFFFFFB,
 	enabled,
 	"Preview Settings",
-	{	/* array: 7 elements */
+	{	/* array: 8 elements */
 		/* [1] */
 		"Normal", noIcon, noKey, noMark, plain,
 		/* [2] */
@@ -132,7 +132,9 @@ resource 'MENU' (500) {
 		/* [6] */
 		"White", noIcon, noKey, noMark, plain,
 		/* [7] */
-		"Black", noIcon, noKey, noMark, plain
+		"Black", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"Custom Color…", noIcon, noKey, noMark, plain
 	}
 };
 
@@ -152,7 +154,15 @@ resource 'STR#' (500, "Tool Palette Balloon Help", purgeable) {
 		"Preview Settings\n\nThis menu can be used "
 		"to select the state of the preview icon "
 		"(normal or selected) and the background "
-		"(desktop, list view, white or black)."
+		"(desktop, list view, white, black or a c"
+		"ustom color)."
+	}
+};
+
+resource 'STR#' (501, "Preview Palette Strings", purgeable) {
+	{	/* array StringArray: 1 elements */
+		/* [1] */
+		"Pick a preview background color:"
 	}
 };
 
@@ -166,69 +176,10 @@ resource 'WIND' (500, "Preview Palette", purgeable) {
 	noAutoCenter
 };
 
-resource 'cctb' (502) {
-	{	/* array ColorSpec: 4 elements */
-		/* [1] */
-		cFrameColor, 0, 0, 0,
-		/* [2] */
-		cBodyColor, 65535, 65535, 65535,
-		/* [3] */
-		cTextColor, 0, 0, 0,
-		/* [4] */
-		cElevatorColor, 65535, 65535, 65535
-	}
-};
-
-resource 'cctb' (504) {
-	{	/* array ColorSpec: 4 elements */
-		/* [1] */
-		cFrameColor, 0, 0, 0,
-		/* [2] */
-		cBodyColor, 65535, 65535, 65535,
-		/* [3] */
-		cTextColor, 0, 0, 0,
-		/* [4] */
-		cElevatorColor, 65535, 65535, 65535
-	}
-};
-
-resource 'dctb' (9999) {
-	{	/* array ColorSpec: 5 elements */
-		/* [1] */
-		wContentColor, 65535, 65535, 65535,
-		/* [2] */
-		wFrameColor, 0, 0, 0,
-		/* [3] */
-		wTextColor, 0, 0, 0,
-		/* [4] */
-		wHiliteColor, 0, 0, 0,
-		/* [5] */
-		wTitleBarColor, 65535, 65535, 65535
-	}
-};
-
 resource 'dlgx' (9999) {
 	versionZero {
 		15
 	}
-};
-
-data 'hrct' (500, "Tool Palette Help", purgeable) {
-	$"0002 0000 0000 0000 0000 0003 0014 0003"            /* ................ */
-	$"0000 0000 0006 0007 0017 0090 01F4 0001"            /* ...........ê.Ù.. */
-	$"0014 0003 0000 0000 0020 0006 00AA 0090"            /* ......... ...™.ê */
-	$"01F4 0002 0014 0003 0000 0000 00AF 0000"            /* .Ù...........Ø.. */
-	$"00BE 0096 01F4 0003"                                /* .æ.ñ.Ù.. */
-};
-
-data 'hwin' (500, purgeable) {
-	$"0002 0000 0000 0001 01F4 6872 6374 0007"            /* .........Ùhrct.. */
-	$"0750 7265 7669 6577"                                /* .Preview */
-};
-
-data 'ictb' (9999) {
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000"                                          /* .... */
 };
 
 resource 'tab#' (500, "Preview Tabs") {
@@ -241,21 +192,6 @@ resource 'tab#' (500, "Preview Tabs") {
 			0,
 			"Hints"
 		}
-	}
-};
-
-resource 'wctb' (500) {
-	{	/* array ColorSpec: 5 elements */
-		/* [1] */
-		wContentColor, 65535, 65535, 65535,
-		/* [2] */
-		wFrameColor, 0, 0, 0,
-		/* [3] */
-		wTextColor, 0, 0, 0,
-		/* [4] */
-		wHiliteColor, 0, 0, 0,
-		/* [5] */
-		wTitleBarColor, 65535, 65535, 65535
 	}
 };
 

@@ -1,0 +1,414 @@
+UNCONFIRMED
+- drag and drop in members palette sometimes yields rainbow cursor of death
+- copy from photoshop results in rainbow cursor of death when returning to iconographer
+- icon browser scrolling "dirt"
+
+TODO
+2.3
+- turn on resource file mapping
+- use FNNotify to tell Finder about icon changes?
+- fix photoshop actions (update readme, don't depend on the background being white)
+- handle Windows XP 24 x 24 icon size
+- shift clicking with pen tool should connect (like Photoshop)
+- default zoom level field is inconsistent (should actually be editable or look static)
+- command + space for temporary magnification tool
+- look into optimizing display of lines/gradient feedback by updating less pixels
+- figure out how to get OS X Finder to update icons sooner
+- take into account used members when caching members palette
+- grid button next to zoom placard (like in apple specs)
+- dragging to trash from members palette should remove that member
+- fix "swatches get hidden when clicking on background" bug under os 9
+- warn about windows icons having more than 10 members
+- remember format for undo/redo
+- add mac os x IDs to the pop-up menu
+- add "zoom to fit" and "zoom to actual size" to icon menu (same functionaly as double clicking on pan and zoom tools)
+- some polygonal lasso drawing issues
+- option while closing should close all windows
+- help tags
+- preferences and adjust balloon help
+- preference for not hiding floaters when in background
+- remember zoom levels for saved documents (and other stuff, but make it a preference)
+- redo colors palette (merge sliders tab, bring back favorites)
+- hovering over RGB/HSB slider previews should show color in readout
+- fix issues with drag scrolling (both in edit area and in memebers palette) under carbon by using timers
+- make prefs dialog movable modeless
+- support pasting of TIFF data from Cocoa apps (also PNG?)
+- move palettes on screen if not within new screen bounds (when res changes, etc.)
+- readout should show up when in another editor's drawing area
+- 8-bit system palette balloon help should explain each section
+
+post 2.3
+- turn alerts, info, add member into sheets
+- anti-aliased text
+- palette position snapping
+- snap colors in color floater to current palette, system, web, grays, etc.
+- refactor MIcon so that we don't statically allocate all members
+- different centering styles for MAlert
+- settable default button for MAlert
+- 8 bit selections (so that text can be anti-aliased, and dragged data can be placed into a proper selection).
+- Effects menu with: Glow, Blur, Shadow, Make Folder Icon, Screen Grab
+- transformations (at least scaling and rotation)
+- contextual menus
+- insertion/saving into .ICL/.DLL files
+- integration with glypher
+- simultaneous editing of icon and mask
+- multiple views
+- proper .tiff and .png support for linux icons
+
+
+OPTIMIZATION
+- calling UpdatePalettes twice when closing editors
+- too many updates at startup/application switching
+- when closing window, calling UpdatePalettes and ActivateFloaters redundant?
+- when showing window, calling UpdatePaletets and ActivateFloaters
+- calling with updateAll for MembersPalette when opening/closing, not quite necessary?
+- adjust WNE sleep value when in background, when in TrackMouseLocation, etc.
+- for live previewing of hue/saturation effects, cache image stored as HSV.
+
+CHANGES
+2.2:
+- windows xp icon format loading and saving
+- redone windows format support (it actually works under os x now)
+- .rsrc file support
+- selection expand/contract command
+- generate mask command
+- complete icon command
+- .tiff file loading now handles uneven (non 48, 32 or 16) sizes better
+- use SetUpControlBackground for all control drawing
+- when the current color isn't in the current palette, a little white dot in the t/l corner of the palett doesn't show up anymore
+- ToggleMemberCheckboxes for icon info and prefs only gets called when item is actually in range
+- made all members of icnsClass private, not protected, redid icnsEditorClass taking this into account
+- with classic version preview palette text field doesn't get cut off whe going to three digits
+- clicking on preview in preview palette doesn't modify slider value anymore
+- you can now have a custom preview background color
+- improved preview display, now is in sync with the algoritm used for tabbing between icon and mask
+- when changing current member, if previous one is empty, removed it from the members list
+- fixed issues when mistyping reg code
+- alerts now reflect the new standard under OS X 10.1 (large stop/warning/note icon, small application icon badged on top)
+- reduced the number of times the (potentially expensive) FindWindow is called
+- when running under OS X, the external editor shortcut key dialog updates as the keys are pressed
+- refactored icnseditorclass so that we don't depend on the internals of the icns class
+- command page up/down pages left/right (like photoshop)
+- windows now don't shift position when using the path menu pop-up
+- slight optimizations of members palette refreshing
+- panning and scrolling the editing area under os x is now smoother
+- when hitting the editor key shortcut, the icon menu is hilighted, as if a selection was made from there
+- when using the "first letter == button click" shortcut in alerts, the button should be hilighted
+- the close menu command and command W can now be used to close the about box
+- OS X is now required for Carbon version (which is now packaged)
+- cursor now turns into hand when hovering over addresses in about box of carbon version
+- restoring of recent menu items shouldn't worry about invalid aliases/ejected disks anymore
+- handles opening of .ico and .icns files that don't really contain anything in the data fork
+- can now edit the icons of volumes (under mac os x 10.1 and 9.x/8.x)
+
+2.1 August 31, 2001
+- carbon compliant
+- better handles converting to windows icon and saving immediately (checks datafork, name, etc.)
+- made .icns files separate format ("Mac OS X Icon")
+- format change results in the appropriate extension being added when saving
+- if a member was removed, and it was the current one, the current one is changed to the closest
+- windows icons don't need 1-bit icon member
+- fixed black screen in thousands bug (again)
+- system palette picker didn't seem to update when the member's palette changed
+- naming of new windows is now "Untitled", "Untitled 2", "Untitled 3", etc.
+- redone colors and pattern pop-ups (mostly coding/carbon compliance changes, not visual)
+- redone colors palette (old style/positioning got in way of dock on OS X)
+- clippings are now named "icon clipping"
+- double click or command click on member in members palette does a select all
+- default members checkboxes in prefs work again
+- pasting is centered in current view/on curent selection
+- standard carbon window menu
+- colors and pattern pop-ups now behave like real menus, you don't have to hold the button down all the time
+- live resizing (under os 9 too)
+- when autoscrolling to the current member, the member palette does this smoothly under os x
+- controls now take advantage of window double buffering under os x
+- when creating new editor, calling setbestmember, that updates the color palette and then calls UpdatePalettes, redudant?
+
+2.0.2 March 22, 2001
+- fixed sporadic crash at startup
+- improved mini icon saving
+- clicking once with the marquee (and lasso) deselects
+- magnification pop-up was slightly off
+- fixed bug under Mac OS 9.1 with the rectangle and oval tools
+- icon browser handles empty icons better
+- save as dialog pop-up stats off with the current icon format
+- windows colors palette doesn't get reset to mac os one after saving
+- fixed windows saving issues
+- UI tweak for open dialog
+- fixed crash when deleting icons in icon browser
+- can now get info in icon browser
+
+2.0.1 December 22, 2000
+- proxy icons
+- open recent files command
+- works again with pre 8.5 systems
+- fixed crashes when using ID menu, format menu in info window
+- fixed bug with typing in icon names in info window
+- handles corrupted icons better
+- when saving while having a floated selection, the selection is merged into the icon
+- registration message doesn't appear twice at startup if you've made more than 50 icons
+- clicking no in the generate and sync mask dialogs will actually not peform those operations
+- included "aprentice hat" icon now has 8 bit icon member
+- saving works properly even when the original file is moved or renamed
+- alert icons better match the seriousness of the message
+- fixed drag hilighting issues
+
+2.0x9/GM September 13, 2000
+- preview palette approximates display if current icon doesn't include that size (e.g. large icons are scaled up to the thumbnail size for old icons)
+- fixed glitch with using selection tools (wand, lasso, marquee) to move a floated selection
+- the lasso can be used for moving the selection shape when a selection isn't floated
+- added thumbnail and huge size icons for the application (thanks go to Rick Roe for helping me with these).
+- fixed some issues with the alert text not being fully visible when the system font was set to charcoal
+- renamed "check mask sync" preference to "check masks when saving" and made it also check if masks exist in the first place
+- window staggering now works properly even when the front-most window is window-shaded
+- background windows disable when the registration windows shows up
+
+
+2.0x8 September 1, 2000
+- updated documentation
+- "add member" command (in Icon menu and at the bottom of the members palette), hold down shit or option for the "current" source to be selected by default
+- info and add member buttons now have a text label in addition to a minuscule icon
+- updating when returning from an external editor can be undone
+- updated balloon help for icon info dialog
+- updated about box
+- new "choose registration method" dialog for registering online
+- slider snapping for the preview palette isn't jittery anymore
+- typing in a value in the preview size text field snaps it to the nearest allowed size
+- holding down option and clicking with the eye dropper tool now puts the color into the background slot (restored feature from 8.x)
+- icon browser menu now uses a placard instead of a bevel button
+- dialog offering to open help is displayed at start-up for first-time users
+- fixed drawing glitches in colors palette
+- fixed bug which would cause some 8-bit icons to be declared corrupted when copied and pasted into Photoshop
+- fixed issue with cursors in the favorites tab of the colors palette showing up even when it was hidden or behind another palette
+
+2.0x7 August 25, 2000
+- redone preview palette
+- updated balloon help
+- html help now works properly under pre-8.5 systems
+- external editor works again
+- if an external editor isn't chosen and the "open in external editor" command is selected, an error is shown and the user is given an opportunity to choose one
+- hitting return in the icon browser now opens the currently selected icon
+- reset colors and swap colors widgets in the color swatch now disable properly
+- lasso works as expected in floated selections
+- fixed bug which caused garbage to appear in the icon browser for the file's finder icon
+- fixed flickering of colors palette
+- fixed alerts getting placed off the screen when the editing area was zoomed out
+
+2.0x6 August 18, 2000
+- added option for changing the preview background
+- added option for members palette to show only loaded members
+- we now check for "Iconographer Support" folder, re-create it if necessary (and complain about missing help) 
+- drag outline/translucent image is positioned correctly relative to the cursor
+- dragging from the members palette can now occur only if the user clicks inside the icon well
+- added zoom box for toggling between an ideal size and the current one
+- icom browser now automatically names icons in the system ID range if they don't already have names (iPacks turned out to be too much of a hassle to do this for)
+- icon browser now lists the item's finder icon
+- added revert command
+- arrow keys in icon browser scroll up and down properly even when not all icon types are visible
+- icon browser (if open) updates properly after changing an icon's ID and saving it
+- changing an icon's ID removes the resource(s) with the old ID
+- cursor is now rest when a dialog comes up
+- further reduced application size by using a newer version of the Find_icon library
+- the current color picker tab is remember when quitting and restarting iconographer
+- moved pixel grid option from preferences to icon menu
+- fixed bug where members palette would sometimes flash white
+- fixed bug which would cause drags from the edit area to other windows or the finder to sometimes fail
+- fixed bug which caused loading errors for small windows icons
+- fixed bug which caused the creation of multiple 'Mngl' resources
+- fixed icon browser overdraw issues (visible effect was that folder shadows would get darker as you scrolled around)
+- fixed bug that caused 8-bit mask to be used in the preview instead of the 1-bit one (when the latter was selected)
+- fixed issues with (de)activation of controls in the members palette
+- fixed update issues when using paste as icon family and paste as icon and mask commands
+- fixed issue when clicking on the background of the members palette
+- fixed drawing errors when drawing certain kinds of anti-aliased lines
+
+2.0x5 August 12, 2000
+- improved icon browser
+- the previous position of the adjust dialog is now remembered and restored
+- icon info button at the bottom of the members palette (kinda small, but there's not much I can do)
+- members and preview palettes disable when no editors are open
+- improved help menu, with HTML help running under pre-8.5 as well (using a web browser), and with shortcuts for emailing me and visiting the Iconographer homepage
+- preview displays new members/sizes as they are added
+- the preview palette and members size sliders now change their values when the slider track is clicked
+- changed some command keys to be more consistent (copy and paste as family now have the same modifier (control), and info is now command I, invert has been changed to command option I...I'm not so sure about this change, chances are the info command will be used more often that the invert one, but previously I was consistent with Photoshop, now I'm not)
+- fixed a panning bug that resulted in freezes and/or crashes
+- fixed another scrolling bug that caused overdraw onto the scrollbars
+- fixed a bug which would sometimes corrupt the image when pasted into a 1-bit member
+- linking with less libraries, resulting in a decrease in app's file size
+- fixed clipping/overdraw issues with the members palette
+
+2.0x4 August 2, 2000
+- smoother updates while using sliders in Adjust command
+- fixed a crash when a menu shortcut key was pressed in the info dialog
+- fixed issue with tools turning black when pasting in 1-bit
+- improved algorithm for toggling between icons and masks using tab
+- dragging an 8-bit mask to an 1-bit slot calculates a new mask (as opposed to dithering down)
+- moving a floated selection to the edge of the drawing auto scrolls if possible
+- fixed drawing glitches when constraining lines/rectangles to 45 degrees/squares...
+- anti-aliased tools work even when drawing large lines/ovals/polygons in 128 x 128 size
+- resurrected pixel grid
+- members palette auto-scrolls to current member
+- option to display the members palette with scaled down previews
+- paste as icon and mask uses the best target (e.g. 8 bit mask) if available
+- the selection marching ants pattern doesn't update only in certain areas while drawing
+- the selected pattern is remembered when quitting and restarting the program
+- new buttons in tool palette for line thickness, anti-aliasing and fill
+- slightly rearranged preferences dialog
+- zoom placard now has a menu with common zoom factors
+- mini icons are now loaded from old style resources
+- rearranged External Editor tab of preferences
+- icon ID/name/flags in info dialog are disabled for non MacOS icons
+- clicking the track part of the sliders in the colors palette moves the thumb to that spot
+- fixed crash with "default zoom depth" arrows in prefs
+
+1.1 February 9, 2000
+- color palette
+- no more flickering for color & pattern swatches
+- support for the standard 8-bit Windows palette
+- windows menu
+- much improved icon browser
+- all three open commands have been combined into one
+- appearance sound support
+- windows .ico importing/exporting supports the 48 x 48 size too, and other sizes are placed in the nearest slot
+- when using the move tool with no selection, the entire image is floated
+- visible constrains when resizing
+- anti-aliasing support for oval, line, and polygon tools
+- improved stability, especially when low on memory
+
+1.0a1 September 1, 1999
+- miscellaneous bevels added
+- fixed crash that occured when app was put into background while adjustment dialog was in the front
+- UI tweaks in the adjustment dialog
+- windows now disable properly when placed in the background
+- fixed drawing glitch in the color swatch when it was pressed
+
+1.0d7 August 22, 1999
+- new icons have names by default
+- save into file command
+- polygon lasso tool (double click on lasso tool, or hold down option when using it)
+- hue/saturation and brightness/contrast tweaking
+- pattern support (this caused the minimum window size to be at 7x magnification)
+- interface alignment tweaks
+- preference to turn off generation of old style icons
+- got rid of the flash that would sometimes occur when created a new editor
+- even more photoshop-like selection tools:
+	holding command down toggles to move tool
+	moving of selection outline (both by using marquee/lasso/wand tools and by using arrows).
+	cursors showing that selection will be floated, etc.
+- copying of icon and mask
+- copy and paste icon family commands
+- mac os x server icon (.TIFF) import support
+- windows icon (.ICO) import/export support
+- added icon info command to view menu (since clicking on the info placard wasn't immediately obvious)
+- ID pop-up menu in info box
+- improved 8-bit mask to 1-bit mask generation
+- the overlay (displayed while dragging a rectangle, line, etc.) now uses the nearest color in the current pallete
+- cleaned up fill tool (improved algorithm and fixed some errors when filling around the right edge)
+- it's now possible to undo the transfer between depths
+- balloon help points in the right direction when the balloon wouldn't fit in the default position
+- when dithering was on and irregulary shaped items were dragged, the shape was not extracted properly
+- flip horizontal now works in 4 bits
+- select similar now works in 8-bit or less when the screen is in thousands or less
+- copying up from 8-bits to 32-bits now works when the screen is in thousands or less
+- changed country code to US because Japan was causing interference with the Japanese Language Kit
+
+1.0d6 June 15 1999
+- balloon help everywhere
+- paste into selection command, scales clipboard contents to current selection size  
+- HTML based help (drag Iconographer Help folder to Help folder in System Folder, and then open up the Help Center if you want searching and help menu to work), feedback wanted (if your name isn't listed in the testers paragram in the Program Info section, well, that's because you weren't much of a tester, so now's your change to remedy that :p)
+- now works with system 7.5.3 and above (with the appearance manager installed)
+- dithering option in preferences
+- lasso now tightens through the background color, not just white
+- the eraser's brush size is now 2 x 2
+- checking to make sure the 8 bit and 1 bit masks are synced (option in prefs to turn off)
+- pixel grid (option in the preferences)
+- the preview now displays the current icon/mask on two backgrounds, clicking on them toggles the selected state 
+- double clicks on tools for shortcuts:
+	marquee: select all
+	lasso: lasso all
+	eraser: erase all/erase selection
+	rectangle/oval/polygon: toggle between framed and filled modes
+	gradient: toggle between linear and radial modes
+- undo/redo restores the popup selection too
+- tab toggles between the current icon and mask
+- much better handling (both saving and loading) of icons which do not contain some depths or sizes
+- improved previewing in icon browser for icons with no huge size, etc.
+- icon browser now updates properly when put in the background and brought back
+- removed flickering in side display and preview
+- navigation services now works with pre Mac OS 8.5 systems
+- the saved states are now compressed, they take up between 6 and 2 times less memory (depending on the complexity of the drawing).
+- each open editor takes up 4K less of memory
+- the extra space that surrounded the 32 x 32 size has been eliminated (instead, the window is enlarged when switching to the 48 x 48 size)
+- if the icon only contains certain sizes (eg. no huge), then the preview area does not reserve space for the sizes which do not exist
+- the flash of garbage characters in the status bar when making a new editor has been removed
+- dragging from drawing area now works even if the editor isn't in the top left corner
+- filling with same color in 8 bits does not crash anymore
+- eye dropper now works across editors
+- copying down the 8 bit mask into the 1 bit one doesn't attempt to dither, it generates a new 1-bt mask
+
+1.0d5 June 7 1999
+- eye dropper now works in floated selections
+- filling over with the same color does not crash anymore
+- dragging can now be redone
+- it is now possible to drag from the drawing area
+- click on info placard results in ID/name/bits dialog
+- if a file is already open (to the same icon ID), then opening it again simply brings the window to the front instead of making a new one
+- registration stuff (nags appear every 10 saves for the first 50, every 5 up to 100, every 3 up to 150, every 2 up to 200, and every time beyond that)
+- preferences (currently only includes default zoom level, suggestions for other options wanted).
+- improved drag hilighting (works on non-white backgrounds)
+- improved menu command enabling/disabling
+- name changed to Iconographer, new icon and about box too
+- you can now import transparency data from photoshop (and other apps) by either dragging into the preview area, or by using the "Paste as Icon and Mask" command.
+- there is a minimum menu hilite delay, so that fast commands still appear to have happened
+- folders can now be selected as well in the open dialog, and dragged onto the app too
+- the finder icons of files and folders can now be edited
+- editors disabled properly when opening/saving
+- current size/depth is displayed in the titlebar and has a focus rect in the display on the right
+- the icon name is now displayed in the info placard
+- line constraintment when shift is down improved (and added to polygon, gradient, and pencil tools too)
+- when multiple files are dragged on the app's icon, they are all opened instead of just the first one
+- lasso tool (and gradient tool) are now displayed by inverting the current contents, so that they can be seen against black backgrounds
+- pen tool toggles to background color if start is already foreground
+- pesky bug which cause 8 bit mask to turn to black in thousands and less fixed
+- select similar command
+- new color picker for 8 bit icon/mask, 4 bit icon, 1 bit icon/mask
+- new editor created at startup if no file dragged on app icon
+- filling is once again clipped to selections
+- oval tool
+- polygon tool
+- gradient tool
+- text tool	
+- improved drawing in selections
+
+1.0d4 April 19 1999
+- improved the out of memory checks
+- code clean up and commenting
+- fixed bugs in rectangle/maruqee tools
+- more, but I can't remember since it's been so long
+
+1.0d3 February 21 1999
+- cursor isn't set when the application is in the background
+- old style icons are displayed in the Icon Browser
+- lots undo bugs fixed
+- drag and drop bug when dragging into current size/depth fixed
+- "Do you want to save..." dialog added
+- each instance of the editor takes up 15K less of memory
+- added swap colors and default colors buttons to the fore/back color swatches
+- cleaned up code
+- checks for Mac OS 8.5 at startup (requirements will go down eventually, but not now)
+- more code clean up
+
+1.0d2 January 19 1999
+- multiple undos
+- merged preview
+- drawing constraints when shift is held down
+- transformations (flips and rotates)
+- drawing in selections
+- Icon Browser (try opening a scheme!)
+- windows position properly
+- you can now transfer between bit depths by holding down the option key when using the menu
+- eliminated most memory leaks
+- rough "out of memory checks"
+
+1.0d1 December 25 1998
+- first release

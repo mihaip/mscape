@@ -281,12 +281,12 @@ pascal Boolean AdjustDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short
 				   theControl == dialogData->contrastSlider)
 				{
 					if (part == kControlPageUpPart || part == kControlPageDownPart)
-						ThemeSoundStart(kThemeDragSoundSliderThumb);
+						MUtilities::sounds.Start(kThemeDragSoundSliderThumb);
 					
 					TrackControl(theControl,theMouse,dialogData->sliderActionFunctionUPP);
 					
 					if (part == kControlPageUpPart || part == kControlPageDownPart)
-						ThemeSoundEnd();
+						MUtilities::sounds.End();
 				}						
 					
 				UpdateEffects(dialogData);

@@ -77,9 +77,9 @@ void ColorsPalette::Show()
 	MFloater::Show();
 }
 
-void ColorsPalette::DoIdle()
+void ColorsPalette::DoIdle(MWindowPtr windowUnderMouse)
 {
-	;
+#pragma unused (windowUnderMouse)
 }
 
 void ColorsPalette::UpdateCursor(Point theMouse)
@@ -559,7 +559,7 @@ void RGBColorPicker::HandleContentClick(EventRecord* eventPtr)
 	controlPart = FindControl(where, parentWindow->GetWindow(), &clickedControl);
 	
 	if (controlPart == kControlPageUpPart || controlPart == kControlPageDownPart)
-		ThemeSoundStart(kThemeDragSoundSliderThumb);
+		MUtilities::sounds.Start(kThemeDragSoundSliderThumb);
 	
 	if (controlPart != kControlNoPart && TrackControl(clickedControl, where, sliderActionUPP))
 	{
@@ -572,7 +572,7 @@ void RGBColorPicker::HandleContentClick(EventRecord* eventPtr)
 	}
 	
 	if (controlPart == kControlPageUpPart || controlPart == kControlPageDownPart)
-		ThemeSoundEnd();
+		MUtilities::sounds.End();
 	
 	RESTOREGWORLD;
 	
@@ -582,33 +582,58 @@ void RGBColorPicker::HandleContentClick(EventRecord* eventPtr)
 pascal void RGBColorPicker::PreviewDraw(ControlHandle theControl, short thePart)
 {
 #pragma unused (thePart)
-	Rect			controlRect, tempRect;
+	Rect			controlRect, canvasRect, tempRect;
 	RGBColorPicker*	picker;
 	
 	picker = &ColorsPalettePtr(GetWindow(GetControlOwner(theControl)))->rgb;
 	
 	GetControlBounds(theControl, &controlRect);
+	canvasRect = controlRect;
 	
-	// stupid corner trick since the background seems to be wrong
-	tempRect = controlRect;
-	tempRect.top = tempRect.bottom - 1;
-	tempRect.right = tempRect.left + 1;
-	EraseRect(&tempRect);
-	tempRect = controlRect;
-	tempRect.bottom = tempRect.top + 1;
-	tempRect.left = tempRect.right - 1;
-	EraseRect(&tempRect);
+	SAVEGWORLD;
+	SAVECOLORS;
 	
-	InsetRect(&controlRect, 2, 2);
+	if (picker->parentWindow->IsBuffered())
+	{
+		picker->parentWindow->LockPortBits();
+		picker->parentWindow->SetPort();
+		
+	}
+	else
+	{
+		SetGWorld(icnsEditorClass::statics.canvasGW, NULL);
+		OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top);
+	}
 	
-	DrawImageWell(theControl, controlRect);
+	SetUpControlBackground(theControl, 32, true);
+	EraseRect(&canvasRect);
+	
+	tempRect = canvasRect;
+	InsetRect(&tempRect, 2, 2);
+	
+	DrawImageWell(theControl, tempRect);
 	
 	if (theControl == picker->redPreview)
-		DrawGradient(controlRect, picker->color, 1, 0, 0);
+		DrawGradient(tempRect, picker->color, 1, 0, 0);
 	else if (theControl == picker->greenPreview)
-		DrawGradient(controlRect, picker->color, 0, 1, 0);
+		DrawGradient(tempRect, picker->color, 0, 1, 0);
 	else if (theControl == picker->bluePreview)
-		DrawGradient(controlRect, picker->color, 0, 0, 1);
+		DrawGradient(tempRect, picker->color, 0, 0, 1);
+	
+		
+	RESTOREGWORLD;
+	
+	if (picker->parentWindow->IsBuffered())
+		picker->parentWindow->UnlockPortBits();
+	else
+		CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
+				 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
+				 &canvasRect,
+				 &controlRect,
+				 srcCopy,
+				 NULL);
+				 
+	RESTORECOLORS;
 }
 
 void RGBColorPicker::DrawGradient(Rect targetRect, RGBColor color,
@@ -855,7 +880,7 @@ void HSVColorPicker::HandleContentClick(EventRecord* eventPtr)
 	controlPart = FindControl(where, parentWindow->GetWindow(), &clickedControl);
 	
 	if (controlPart == kControlPageUpPart || controlPart == kControlPageDownPart)
-		ThemeSoundStart(kThemeDragSoundSliderThumb);
+		MUtilities::sounds.Start(kThemeDragSoundSliderThumb);
 	
 	if (controlPart != kControlNoPart && TrackControl(clickedControl, where, sliderActionUPP))
 	{
@@ -868,43 +893,68 @@ void HSVColorPicker::HandleContentClick(EventRecord* eventPtr)
 	}
 	
 	if (controlPart == kControlPageUpPart || controlPart == kControlPageDownPart)
-		ThemeSoundEnd();
+		MUtilities::sounds.End();
 	
 	RESTOREGWORLD;
 	
 	parentWindow->UpdateColors();
 }
 
+
 pascal void HSVColorPicker::PreviewDraw(ControlHandle theControl, short thePart)
 {
 #pragma unused (thePart)
-	Rect			controlRect, tempRect;
+	Rect			controlRect, canvasRect, tempRect;
 	HSVColorPicker*	picker;
 	
 	picker = &ColorsPalettePtr(GetWindow(GetControlOwner(theControl)))->hsv;
 	
 	GetControlBounds(theControl, &controlRect);
+	canvasRect = controlRect;
 	
-	// stupid corner trick since the background seems to be wrong
-	tempRect = controlRect;
-	tempRect.top = tempRect.bottom - 1;
-	tempRect.right = tempRect.left + 1;
-	EraseRect(&tempRect);
-	tempRect = controlRect;
-	tempRect.bottom = tempRect.top + 1;
-	tempRect.left = tempRect.right - 1;
-	EraseRect(&tempRect);
+	SAVEGWORLD;
+	SAVECOLORS;
 	
-	InsetRect(&controlRect, 2, 2);
+	if (picker->parentWindow->IsBuffered())
+	{
+		picker->parentWindow->LockPortBits();
+		picker->parentWindow->SetPort();
+		
+	}
+	else
+	{
+		SetGWorld(icnsEditorClass::statics.canvasGW, NULL);
+		OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top);
+	}
 	
-	DrawImageWell(theControl, controlRect);
+	SetUpControlBackground(theControl, 32, true);
+	EraseRect(&canvasRect);
+	
+	tempRect = canvasRect;
+	InsetRect(&tempRect, 2, 2);
+	
+	DrawImageWell(theControl, tempRect);
 	
 	if (theControl == picker->huePreview)
-		DrawGradient(controlRect, picker->colorAsHSV, 1, 0, 0);
+		DrawGradient(tempRect, picker->colorAsHSV, 1, 0, 0);
 	else if (theControl == picker->saturationPreview)
-		DrawGradient(controlRect, picker->colorAsHSV, 0, 1, 0);
+		DrawGradient(tempRect, picker->colorAsHSV, 0, 1, 0);
 	else if (theControl == picker->valuePreview)
-		DrawGradient(controlRect, picker->colorAsHSV, 0, 0, 1);
+		DrawGradient(tempRect, picker->colorAsHSV, 0, 0, 1);
+		
+	RESTOREGWORLD;
+	
+	if (picker->parentWindow->IsBuffered())
+		picker->parentWindow->UnlockPortBits();
+	else
+		CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
+				 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
+				 &canvasRect,
+				 &controlRect,
+				 srcCopy,
+				 NULL);
+				 
+	RESTORECOLORS;
 }
 
 void HSVColorPicker::DrawGradient(Rect targetRect, HSVColor color,
@@ -1221,12 +1271,13 @@ void SystemColorPicker::TrackMouseDown(Point* theMouse)
 			DisposeRgn(hiliteRgn);
 		hiliteRgn = NewRgn();
 		GetSimilarColors(&color, 1, palettePix, paletteRgn, hiliteRgn);
-		InsetRgn(hiliteRgn, -1, -1);
+		if (!EmptyRgn(hiliteRgn))
+			InsetRgn(hiliteRgn, -1, -1);
 		
 		if (tracking)
 		{
 			UnionRgn(hiliteRgn, updateRgn, updateRgn);
-			ThemeSoundPlay(kThemeSoundMenuItemHilite);
+			MUtilities::sounds.Play(kThemeSoundMenuItemHilite);
 		}
 		
 		parentWindow->UpdateReadout(-1, -1, color);
@@ -1267,7 +1318,7 @@ pascal void SystemColorPicker::PaletteDraw(ControlHandle theControl, short thePa
 		picker->parentWindow->LockPortBits();
 	}
 	
-	RESTORECOLORS;
+	SetUpControlBackground(theControl, 32, true);
 	
 	EraseRect(&canvasRect);
 	
@@ -1295,11 +1346,14 @@ pascal void SystemColorPicker::PaletteDraw(ControlHandle theControl, short thePa
 	InsetRgn(picker->paletteRgn, -1, -1);
 	OffsetRgn(picker->paletteRgn, -paletteOffset.h, -paletteOffset.v);	
 	
-	ForeColor(whiteColor);
-	OffsetRgn(picker->hiliteRgn, paletteOffset.h, paletteOffset.v);
-	FrameRgn(picker->hiliteRgn);
-	OffsetRgn(picker->hiliteRgn, -paletteOffset.h, -paletteOffset.v);
-	ForeColor(blackColor);
+	if (!EmptyRgn(picker->hiliteRgn))
+	{
+		ForeColor(whiteColor);
+		OffsetRgn(picker->hiliteRgn, paletteOffset.h, paletteOffset.v);
+		FrameRgn(picker->hiliteRgn);
+		OffsetRgn(picker->hiliteRgn, -paletteOffset.h, -paletteOffset.v);
+		ForeColor(blackColor);
+	}
 	
 	RESTOREGWORLD;
 		
@@ -1650,7 +1704,7 @@ pascal void	CPSwatchDraw(ControlHandle theControl,SInt16 thePart)
 		parentPalette->SetPort();
 	}
 	
-	RESTORECOLORS;
+	SetUpControlBackground(theControl, 32, true);
 	
 	EraseRect(&canvasRect);
 	

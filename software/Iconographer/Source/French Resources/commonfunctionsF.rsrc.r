@@ -116,9 +116,9 @@ data 'DLOG' (3001, "Select Object", purgeable) {
 resource 'STR#' (3001, "Select Object Strings") {
 	{	/* array StringArray: 2 elements */
 		/* [1] */
-		"Select \"<file name>\"",
+		"Choisir \"<file name>\"",
 		/* [2] */
-		"Select Desktop"
+		"Choisir le bureau"
 	}
 };
 

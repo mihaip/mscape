@@ -12,6 +12,9 @@
 
 enum MAItems
 {
+#if TARGET_API_MAC_CARBON
+	kMAApplicationIcon = 9,
+#endif
 	kMAOK = 1,
 	kMACancel = 2,
 	kMAOther = 3,

@@ -11,9 +11,6 @@
 // #includes
 #include <stdio.h>
 #include <stdarg.h>
-#include <Navigation.h>
-#include <fp.h>
-#include <InternetConfig.h>
 
 const static int kActiveHilite = 0;
 const static int kInactiveHilite = 255;
@@ -84,7 +81,7 @@ enum BorderOptions
 // file reply record (so we can inspect the current selection)
 // and a copy of the "previous" file spec of the reply record
 // so we can see if the selection has changed
-
+#if !TARGET_API_MAC_CARBON
 struct UserDataRec {
 	StandardFileReply	*sfrPtr;
 	FSSpec				oldSelectionFSSpec;
@@ -93,9 +90,10 @@ struct UserDataRec {
 };
 typedef struct UserDataRec
 	UserDataRec, *UserDataRecPtr;
+#endif
 
-typedef pascal void (*XYMenuDrawFn)(int number, int x, int y, int width, int height, void* clientData);
-typedef pascal void (*XYMenuUpdateFn)(int selection, void* clientData);
+//typedef pascal void (*XYMenuDrawFn)(int number, int x, int y, int width, int height, void* clientData);
+//typedef pascal void (*XYMenuUpdateFn)(int selection, void* clientData);
 
 // macros
 #ifndef SAVEGWORLD
@@ -224,7 +222,7 @@ extern void LocalToGlobalRect(Rect	*theRect);
 extern void GlobalToLocalRect(Rect	*theRect);
 extern void PixMapToPicture(PixMapHandle srcPix, RgnHandle maskRgn, PicHandle *targetPic);
 extern void AppendString(Str255 string1, Str255 string2);
-extern void SubstituteString(Str255 string, Str255 pattern, Str255 replace);
+extern void SubstituteString(Str255 string, const Str255 pattern, Str255 replace);
 extern int FindSubstring(Str255 string, Str255 pattern);
 extern bool IsMenuItemEnabled(int menuID, int item);
 extern void MyEnableMenuItem(int menuID, int item);
@@ -249,8 +247,10 @@ extern long NearestPowerOf2(unsigned long in);
 extern void TouchFile(FSSpec spec);
 extern unsigned long GetModificationDate(FSSpec spec);
 OSErr FSpSetFinderFlags(FSSpec *folder, unsigned short fdFlags, bool orFlags);
+#if !TARGET_API_MAC_CARBON
 extern void StandardGetObject(FileFilterYDUPP fileFilter, UpdateFunctionPtr updateFunction, StandardFileReply *theSFR);
 extern pascal Boolean OnlyVisibleObjectsCustomFileFilter(CInfoPBPtr myCInfoPBPtr, Ptr dataPtr);
+#endif
 extern OSErr Get1IconSuite(IconSuiteRef* theIconSuite, SInt16 ID, IconSelectorValue selector);
 extern void AddResourceToSuite(OSType iconType, SInt16 ID, IconSuiteRef theIconSuite);
 extern long RegionArea(RgnHandle rgn);
@@ -259,7 +259,7 @@ extern void GrowHandle(Handle* inHandle, int delta);
 extern void SetBevelButtonIcon(ControlHandle theControl, short iconID);
 extern OSErr FSReadLE(short refNum, long* count, void* buffPtr);
 extern OSErr FSWriteLE(short refNum, long* count, void* buffPtr);
-extern int XYMenu(Point where,
+/*extern int XYMenu(Point where,
 				  WindowPtr window,
 				  int rows, int cols,
 				  int width, int height,
@@ -267,13 +267,12 @@ extern int XYMenu(Point where,
 				  int borderOptions,
 				  XYMenuDrawFn Draw,
 				  XYMenuUpdateFn Update,
-				  void* clientData);
+				  void* clientData);*/
 extern bool GestaltVersion(unsigned long gestaltCode, int major, int revision);
 extern bool GestaltExists(unsigned long gestaltCode);
 extern OSStatus ThemeSoundStart(ThemeDragSoundKind kind);
 extern OSStatus ThemeSoundEnd(void);
 extern OSStatus ThemeSoundPlay(ThemeSoundKind kind);
-extern bool SameFile(FSSpec file1, FSSpec file2);
 extern void DeactivateNControls(int controlCount, ... );
 extern void ActivateNControls(int controlCount, ... );
 extern void GetImageWellColors(RGBColor* border, RGBColor* hilite, RGBColor* shadow, ThemeDrawState state);
@@ -303,9 +302,9 @@ extern pascal short EnhancedPlacardTracking(ControlHandle placard, Point startPt
 extern void EnhancedPlacardHandleClick(ControlHandle placard);
 extern void SetEnhancedPlacardMenuValue(ControlHandle placard, int menuValue);
 extern int GetEnhancedPlacardMenuValue(ControlHandle placard);
-#if TARGET_API_MAC_CARBON
-void MyQDSetPatternOrigin(Point origin);
-#endif
+
+
+void DebugValue(const Str255 label, int value);
 
 // inline functions
 inline void CopyPixMap(PixMapHandle srcPix, PixMapHandle targetPix, const Rect* srcRect, const Rect* targetRect, long flags, RgnHandle clipRgn)
@@ -341,24 +340,24 @@ inline long RGBToLong(RGBColor color)
 		   ((color.blue >> 8)	& 0x000000FF);
 }
 
-inline unsigned char SwapBits(unsigned char in)
+inline unsigned char SwapBits(unsigned char inBits)
 {
-	unsigned char out = 0;
+	unsigned char outBits = 0;
 	
 	for (int i=0; i < 8; i++)
-		if (in & (1 << i)) out |= 1 << (7 - i);
+		if (inBits & (1 << i)) outBits |= 1 << (7 - i);
 		
-	return out;
+	return outBits;
 }
 
-inline unsigned char SwapNibble(unsigned char in)
+inline unsigned char SwapNibble(unsigned char inBits)
 {
-	unsigned char out = 0;
+	unsigned char outBits = 0;
 	
-	out = (in >> 4) & 0x0F;
-	out |= (in << 4) & 0xF0;
+	outBits = (inBits >> 4) & 0x0F;
+	outBits |= (inBits << 4) & 0xF0;
 	
-	return out;
+	return outBits;
 }
 
 inline void MagnifyRect(Rect* rect, float magnification)

@@ -12,6 +12,11 @@ MembersPalette::MembersPalette()
 	lastClickedPane = NULL;
 	lastPaneClick = 0;
 	
+	previousEditor = NULL;
+	previousScrollValue = 0;
+	previousMembers = 0;
+	previousCurrentControlIndex = -1;
+	
 	infoButtonPicture = GetPicture(rMPInfoButtonPicture);
 	addMemberButtonPicture = GetPicture(rMPAddMemberButtonPicture);
 	
@@ -32,9 +37,6 @@ MembersPalette::~MembersPalette()
 
 void MembersPalette::Activate()
 {
-	ResizeMemberPanes();
-	
-	Update(true);
 	RefreshMemberPanes();
 }
 
@@ -42,7 +44,7 @@ void MembersPalette::Deactivate()
 {
 	if (IsControlActive(controls.root))
 	{
-		SetThemeWindowBackground(window, kThemeBrushDialogBackgroundActive, false);
+		SetThemeWindowBackground(window,kThemeBrushDialogBackgroundInactive,false);
 		DeactivateControl(controls.root);
 	}
 }
@@ -54,7 +56,7 @@ void MembersPalette::Show()
 	RefreshMemberPanes();
 }
 
-void MembersPalette::DoIdle()
+void MembersPalette::DoIdle(MWindowPtr windowUnderMouse)
 {
 	Point	theMouse; // the current mouse coordinates
 	
@@ -70,7 +72,7 @@ void MembersPalette::DoIdle()
 		windowRect = GetPortRect();
 		
 #if !TARGET_API_MAC_CARBON
-		if (PtInRect(theMouse, &windowRect) && HMGetBalloons())
+		if (this == windowUnderMouse && HMGetBalloons())
 		{
 			Rect				infoButtonRect, addMemberButtonRect;
 			
@@ -87,6 +89,8 @@ void MembersPalette::DoIdle()
 				icnsEditorClass::statics.currentBalloon = 0;
 			}
 		}
+#else
+#pragma unused (windowUnderMouse)
 #endif
 	}
 	
@@ -435,7 +439,7 @@ void MembersPalette::RepositionControls()
 		SetControlMaximum(controls.scrollbar, GetTotalMembersHeight() - pageSize);
 	scrollValue = GetControlValue(controls.scrollbar);
 	
-	if (GestaltVersion(gestaltSystemVersion, 0x08, 0x50))
+	if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x08, 0x50))
 		SetControlViewSize(controls.scrollbar, pageSize);
 	
 	SetControlBounds(controls.scrollbar, &controlRect);
@@ -467,68 +471,106 @@ void MembersPalette::RefreshMemberPanes()
 
 void MembersPalette::RefreshMemberPanes(icnsEditorPtr frontEditor)
 {
-	Rect	controlRect, windowRect;
-	int		initialPosition, height, membersHeight;
-	
 	parentEditor = frontEditor;
 	
-	SAVEGWORLD;
-	
-	SetPort();
-	
-	initialPosition = -scrollValue - 1;
-	membersHeight = GetTotalMembersHeight(frontEditor);
-	
-	windowRect = GetPortRect();
-	
-	StartClipping();
-	
-	for (int i=0; i < kMembersCount; i++)
-		if (frontEditor == NULL ||
-			kMembers[i].name & frontEditor->usedMembers)
+	if (frontEditor != previousEditor ||
+		scrollValue != previousScrollValue ||
+		(frontEditor != NULL &&
+		(frontEditor->members != previousMembers ||
+		frontEditor->currentPixName != previousCurrentPixName)))
+	{
+		Rect	controlRect, windowRect;
+		int		initialPosition, height, membersHeight;
+		
+		previousEditor = frontEditor;
+		previousScrollValue = scrollValue;
+		
+		if (frontEditor != NULL)
 		{
-			GetControlBounds(controls.members[i], &controlRect);
-			height = controlRect.bottom - controlRect.top;
-			controlRect.top = initialPosition;
-			controlRect.bottom = initialPosition + height;
-			SetControlBounds(controls.members[i], &controlRect);
-			if (!SectRect(&controlRect, &windowRect, &controlRect))
-			{
-				if (IsControlVisible(controls.members[i]))
-					HideControl(controls.members[i]);
-			}
-			else if (!IsControlVisible(controls.members[i]))
-				ShowControl(controls.members[i]);
-			else
-				Draw1Control(controls.members[i]);
-			
-			initialPosition += height - 1;
+			previousMembers = frontEditor->members;
+			previousCurrentPixName = frontEditor->currentPixName;
+			previousCurrentControlIndex = -1;
 		}
-		else if (IsControlVisible(controls.members[i]))
-			HideControl(controls.members[i]);
+		else
+		{
+			previousMembers = icons + masks;
+			previousCurrentPixName = 0;
+			previousCurrentControlIndex = -1;
+		}
+		
+		
+		SAVEGWORLD;
+		
+		SetPort();
+		
+		initialPosition = -scrollValue - 1;
+		membersHeight = GetTotalMembersHeight(frontEditor);
+		
+		windowRect = GetPortRect();
+		
+		StartClipping();
+		
+		for (int i=0; i < kMembersCount; i++)
+			if (frontEditor == NULL ||
+				kMembers[i].name & frontEditor->usedMembers)
+			{
+				GetControlBounds(controls.members[i], &controlRect);
+				height = controlRect.bottom - controlRect.top;
+				controlRect.top = initialPosition;
+				controlRect.bottom = initialPosition + height;
+				SetControlBounds(controls.members[i], &controlRect);
+				if (!SectRect(&controlRect, &windowRect, &controlRect))
+				{
+					if (IsControlVisible(controls.members[i]))
+						HideControl(controls.members[i]);
+				}
+				else if (!IsControlVisible(controls.members[i]))
+					ShowControl(controls.members[i]);
+				else if (IsVisible())
+					Draw1Control(controls.members[i]);
+				
+				initialPosition += height - 1;
+				
+				if (frontEditor != NULL && frontEditor->currentPixName == kMembers[i].name)
+					previousCurrentControlIndex = i;
+			}
+			else if (IsControlVisible(controls.members[i]))
+				HideControl(controls.members[i]);
 
-	if (dragHiliteRgn != NULL)
-		HiliteRegion(dragHiliteRgn);
+		if (dragHiliteRgn != NULL)
+			HiliteRegion(dragHiliteRgn);
 
-	if (membersHeight - pageSize < 0)
-		SetControlMaximum(controls.scrollbar, 0);
-	else
-		SetControlMaximum(controls.scrollbar, membersHeight - pageSize);
-	scrollValue = GetControlValue(controls.scrollbar);
+		if (membersHeight - pageSize < 0)
+			SetControlMaximum(controls.scrollbar, 0);
+		else
+			SetControlMaximum(controls.scrollbar, membersHeight - pageSize);
+		scrollValue = GetControlValue(controls.scrollbar);
+		
+		controlRect = windowRect;
+		controlRect.right -= kSmallScrollbarWidth - 1;
+		controlRect.bottom -= kSmallGrowBoxHeight;
+		controlRect.top = membersHeight;
+		SetControlBounds(controls.backgroundPane, &controlRect);
+		
+		EndClipping();
+		
+		
+		Draw1Control(controls.scrollbar);
+		Draw1Control(controls.backgroundPane);
+		
+		RESTOREGWORLD;
+	}
+	else if (frontEditor &&
+			 previousCurrentControlIndex != -1 &&
+			 IsControlVisible(controls.members[previousCurrentControlIndex]))
+	{
 	
-	controlRect = windowRect;
-	controlRect.right -= kSmallScrollbarWidth - 1;
-	controlRect.bottom -= kSmallGrowBoxHeight;
-	controlRect.top = membersHeight;
-	SetControlBounds(controls.backgroundPane, &controlRect);
+		StartClipping();
 	
-	EndClipping();
-	
-	
-	Draw1Control(controls.scrollbar);
-	Draw1Control(controls.backgroundPane);
-	
-	RESTOREGWORLD;
+		Draw1Control(controls.members[previousCurrentControlIndex]);
+
+		EndClipping();
+	}
 }
 
 void MembersPalette::StartClipping()
@@ -595,7 +637,7 @@ void MembersPalette::Update(bool updateAll)
 }
 
 void MembersPalette::Update(icnsEditorPtr editor, bool updateAll)
-{
+{		
 	parentEditor = editor;
 	
 	if (updateAll || editor == NULL)
@@ -644,6 +686,18 @@ void MembersPalette::ScrollToCurrentMember(icnsEditorPtr frontEditor)
 	
 	SetPort();
 	
+	for (int i=0; i < kMembersCount; i++)
+		if (frontEditor->currentPixName == kMembers[i].name)
+		{
+			if (!IsMemberObscured(i))
+			{
+				RESTOREGWORLD;
+				return;
+			}
+			break;
+		}
+
+	
 	RefreshMemberPanes(frontEditor);
 	
 	for (int i=0; i < kMembersCount; i++)
@@ -671,7 +725,8 @@ void MembersPalette::ScrollToCurrentMember(icnsEditorPtr frontEditor)
 				else if (increment > -5 && increment < 0)
 					increment = -5;
 				
-				while (current != target)
+				while ((increment < 0 && current > target) ||
+					   (increment > 0 && current < target))
 				{
 					current += increment;
 					
@@ -804,7 +859,7 @@ pascal OSErr MembersPalette::DragReceiveHandler(WindowPtr theWindow, void *, Dra
 		frontEditor->GetGWorldAndPix(targetName, &targetGW, &targetPix);
 		
 		if (frontEditor->currentPix != targetPix)
-			frontEditor->SaveState(targetGW, targetPix, targetName);
+			frontEditor->SaveState(targetName);
 			
 		GetFlavorType(theDragRef, firstItem, 2, &flavorType);
 		if (flavorType == 'Icon')
@@ -829,7 +884,7 @@ pascal OSErr MembersPalette::DragReceiveHandler(WindowPtr theWindow, void *, Dra
 		DisposeHandle((Handle)pic);
 		
 		if (frontEditor->currentPix != targetPix)
-			frontEditor->SaveState(targetGW, targetPix, targetName);
+			frontEditor->SaveState(targetName);
 		
 		frontEditor->currentState = new drawingStateClass(frontEditor->currentState, frontEditor);	
 			
@@ -938,7 +993,7 @@ void MembersPalette::HiliteRegion(RgnHandle inHiliteRgn)
 		dragHiliteRgn = hiliteRgn;
 		
 		if (!EmptyRgn(inHiliteRgn))
-			ThemeSoundPlay(kThemeSoundDragTargetHilite);
+			MUtilities::sounds.Play(kThemeSoundDragTargetHilite);
 		 
 		PaintRgn(hiliteRgn);
 	}
@@ -948,7 +1003,7 @@ void MembersPalette::HiliteRegion(RgnHandle inHiliteRgn)
 		InvalWindowRgn(window, dragHiliteRgn);
 		DEBUG("\pwindow invalidated");
 		if (!EmptyRgn(dragHiliteRgn))
-			ThemeSoundPlay(kThemeSoundDragTargetUnhilite);
+			MUtilities::sounds.Play(kThemeSoundDragTargetUnhilite);
 		DEBUG("\psound played");
 		Refresh();
 		DEBUG("\prefreshed");
@@ -957,7 +1012,7 @@ void MembersPalette::HiliteRegion(RgnHandle inHiliteRgn)
 		
 		DEBUG("\pdrawing new region");
 		if (!EmptyRgn(inHiliteRgn))
-			ThemeSoundPlay(kThemeSoundDragTargetHilite);
+			MUtilities::sounds.Play(kThemeSoundDragTargetHilite);
 		
 		dragHiliteRgn = hiliteRgn;
 		
@@ -1088,7 +1143,7 @@ pascal void MembersPalette::MemberPaneDraw(ControlHandle theControl, short thePa
 		InsetRect(&imageWellRect, -1, -1);
 	}
 	
-	icnsClass::GetMemberNameString(kMembers[memberIndex].name, memberName);
+	MIcon::GetMemberNameString(kMembers[memberIndex].name, memberName);
 	label = memberName;
 	
 	TextFont(applFont);

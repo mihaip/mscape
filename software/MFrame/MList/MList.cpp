@@ -254,6 +254,7 @@ bool MList::HandleEvent(EventRecord* eventPtr)
 	{
 		case autoKey:
 		case keyDown:
+		{
 			char	theKey;
 			int		newVOffset = -1, newSelection = selection, height;
 			
@@ -338,6 +339,7 @@ bool MList::HandleEvent(EventRecord* eventPtr)
 			}
 			return true;
 			break;
+		}
 		default:
 			return false;
 	}

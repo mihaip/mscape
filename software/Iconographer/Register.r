@@ -1,4 +1,2143 @@
 /* Resource fork of software/Iconographer/Register */
+data 'hdlg' (200, "Register", purgeable) {
+	$"0002 0000 0000 0000 0000 0000 002D 0004"            /* .............-.. */
+	$"0100 0020 0003 0000 0000 0000 0000 0000"            /* ... ............ */
+	$"0000 6864 0001 0000 0000 0000 0000 0000"            /* ..hd............ */
+	$"0000 0020 0003 0000 0000 0000 0000 0000"            /* ... ............ */
+	$"0000 6864 0002 0000 0000 0000 0000 0000"            /* ..hd............ */
+	$"0000 0020 0003 0000 0000 0000 0000 0000"            /* ... ............ */
+	$"0000 6864 0003 0000 0000 0000 0000 0000"            /* ..hd............ */
+	$"0000 0020 0003 0000 0000 0000 0000 0000"            /* ... ............ */
+	$"0000 6864 0004 0000 0000 0000 0000 0000"            /* ..hd............ */
+	$"0000 0020 0003 0000 0000 0000 0000 0000"            /* ... ............ */
+	$"0000 6864 0005 0000 0000 0000 0000 0000"            /* ..hd............ */
+	$"0000 0020 0003 0000 0000 0000 0000 0000"            /* ... ............ */
+	$"0000 6864 0006 0000 0000 0000 0000 0000"            /* ..hd............ */
+	$"0000 0004 0100 0020 0003 0000 0000 0000"            /* ....... ........ */
+	$"0000 0000 0000 6864 0007 0000 0000 0000"            /* ......hd........ */
+	$"0000 0000 0000 0004 0100 0020 0003 0000"            /* ........... .... */
+	$"0000 0000 0000 0000 0000 6864 0008 0000"            /* ..........hd.... */
+	$"0000 0000 0000 0000 0000 0020 0003 0000"            /* ........... .... */
+	$"0000 0000 0000 0000 0000 6864 0009 0000"            /* ..........hd.... */
+	$"0000 0000 0000 0000 0000 0020 0003 0000"            /* ........... .... */
+	$"0000 0000 0000 0000 0000 6864 000A 0000"            /* ..........hd.... */
+	$"0000 6864 000B 0000 0000 0020 0003 0000"            /* ..hd....... .... */
+	$"0000 0000 0000 0000 0000 6864 000C 0000"            /* ..........hd.... */
+	$"0000 6864 000D 0000 0000 0020 0003 0000"            /* ..hd....... .... */
+	$"0000 0000 0000 0000 0000 6864 000E 6864"            /* ..........hd..hd */
+	$"000F 0000 0000 0000 0000 0020 0003 0000"            /* ........... .... */
+	$"0000 0000 0000 0000 0000 6864 0010 0000"            /* ..........hd.... */
+	$"0000 0000 0000 0000 0000 0020 0003 0000"            /* ........... .... */
+	$"0000 0000 0000 0000 0000 6864 0008 0000"            /* ..........hd.... */
+	$"0000 0000 0000 0000 0000 0020 0003 0000"            /* ........... .... */
+	$"0000 0000 0000 0000 0000 6864 0009 0000"            /* ..........hd.... */
+	$"0000 0000 0000 0000 0000 0020 0003 0000"            /* ........... .... */
+	$"0000 0000 0000 0000 0000 6864 000A 0000"            /* ..........hd.... */
+	$"0000 6864 000B 0000 0000 0020 0003 0000"            /* ..hd....... .... */
+	$"0000 0000 0000 0000 0000 6864 000C 0000"            /* ..........hd.... */
+	$"0000 6864 000D 0000 0000 0020 0003 0000"            /* ..hd....... .... */
+	$"0000 0000 0000 0000 0000 6864 000E 6864"            /* ..........hd..hd */
+	$"000F 0000 0000 0000 0000 0020 0003 0000"            /* ........... .... */
+	$"0000 0000 0000 0000 0000 6864 0010 0000"            /* ..........hd.... */
+	$"0000 0000 0000 0000 0000 0020 0003 0000"            /* ........... .... */
+	$"0000 0000 0000 0000 0000 6864 0008 0000"            /* ..........hd.... */
+	$"0000 0000 0000 0000 0000 0020 0003 0000"            /* ........... .... */
+	$"0000 0000 0000 0000 0000 6864 0009 0000"            /* ..........hd.... */
+	$"0000 0000 0000 0000 0000 0020 0003 0000"            /* ........... .... */
+	$"0000 0000 0000 0000 0000 6864 000A 0000"            /* ..........hd.... */
+	$"0000 6864 000B 0000 0000 0020 0003 0000"            /* ..hd....... .... */
+	$"0000 0000 0000 0000 0000 6864 000C 0000"            /* ..........hd.... */
+	$"0000 6864 000D 0000 0000 0020 0003 0000"            /* ..hd....... .... */
+	$"0000 0000 0000 0000 0000 6864 000E 6864"            /* ..........hd..hd */
+	$"000F 0000 0000 0000 0000 0020 0003 0000"            /* ........... .... */
+	$"0000 0000 0000 0000 0000 6864 0010 0000"            /* ..........hd.... */
+	$"0000 0000 0000 0000 0000 0004 0100 0020"            /* ...............  */
+	$"0003 0000 0000 0000 0000 0000 0000 6864"            /* ..............hd */
+	$"0011 0000 0000 0000 0000 0000 0000 0020"            /* ...............  */
+	$"0003 0000 0000 0000 0000 0000 0000 6864"            /* ..............hd */
+	$"0012 0000 0000 6864 0013 0000 0000 0004"            /* ......hd........ */
+	$"0100 0020 0003 0000 0000 0000 0000 0000"            /* ... ............ */
+	$"0000 6864 0014 0000 0000 0000 0000 0000"            /* ..hd............ */
+	$"0000 0020 0003 0000 0000 0000 0000 0000"            /* ... ............ */
+	$"0000 6864 0015 0000 0000 0000 0000 0000"            /* ..hd............ */
+	$"0000 0020 0003 0000 0000 0000 0000 0000"            /* ... ............ */
+	$"0000 6864 0016 0000 0000 0000 0000 0000"            /* ..hd............ */
+	$"0000 0004 0100 0004 0100 0004 0100 0020"            /* ...............  */
+	$"0003 0000 0000 0000 0000 0000 0000 6864"            /* ..............hd */
+	$"0017 0000 0000 0000 0000 0000 0000 0004"            /* ................ */
+	$"0100 0004 0100 0004 0100 0004 0100 0020"            /* ...............  */
+	$"0003 0000 0000 0000 0000 0000 0000 6864"            /* ..............hd */
+	$"0018 6864 0018 6864 0018 6864 0018 0004"            /* ..hd..hd..hd.... */
+	$"0100 0020 0003 0000 0000 0000 0000 0000"            /* ... ............ */
+	$"0000 6864 0019 6864 0019 6864 0019 6864"            /* ..hd..hd..hd..hd */
+	$"0019"                                               /* .. */
+};
+
+resource 'STR#' (26724, "Balloon Help Strings", purgeable) {
+	{	/* array StringArray: 25 elements */
+		/* [1] */
+		"Click this to save the registration form"
+		" as a text file.",
+		/* [2] */
+		"Click this to close the window and quit "
+		"this program.  This does not save any in"
+		"formation that you can send us.",
+		/* [3] */
+		"Click this to print the registration for"
+		"m.",
+		/* [4] */
+		"Click this to copy the registration form"
+		" to the clipboard.",
+		/* [5] */
+		"Type your name here.  This is the person"
+		" or organisation to whom the product wil"
+		"l be registered.",
+		/* [6] */
+		"Type your Email address here.  This is h"
+		"ow we will contact you with information "
+		"about your registration. Examples are: t"
+		"erry@aol.com, 12345.6789@compuserve.com,"
+		" jan@unix.university.edu",
+		/* [7] */
+		"Type your postal address here.  This is "
+		"the address to send the paper receipt or"
+		" other materials (if any).",
+		/* [8] */
+		"Type the number of single-user licenses "
+		"you require here.",
+		/* [9] */
+		"Type in the bonus you would like for thi"
+		"s row’s product.  I don’t know why you w"
+		"ould pay a bonus above the cost of the p"
+		"roduct, but some people do, and who am I"
+		" to say no?",
+		/* [10] */
+		"Click here to order a site license of th"
+		"is row’s product.  Site licenses cover a"
+		" single organisation for an area of up t"
+		"o one hundred miles (160 km) in radius.",
+		/* [11] */
+		"Click here to not order a site license o"
+		"f this row’s product.  Site licenses cov"
+		"er a single organisation for an area of "
+		"up to one hundred miles (160 km) in radi"
+		"us.",
+		/* [12] */
+		"Click here to order a world-wide license"
+		" of this row’s product.  A world-wide li"
+		"cense covers everyone in a single organi"
+		"sation.",
+		/* [13] */
+		"Click here to not order a world-wide lic"
+		"ense of this row’s product.  A world-wid"
+		"e license covers everyone in a single or"
+		"ganisation.",
+		/* [14] */
+		"Click here to get a special option for t"
+		"his product.  This may change the price "
+		"of various other options.",
+		/* [15] */
+		"Click here to turn off the special optio"
+		"n for this product.  This may change the"
+		" price of various other options.",
+		/* [16] */
+		"Click here to include a comment to that "
+		"vendor of the product.  It is usually be"
+		"tter to email the vendor directly, but y"
+		"ou can use this for short comments.",
+		/* [17] */
+		"Use the scroll bar to show other product"
+		"s.",
+		/* [18] */
+		"Click here if you require a paper receip"
+		"t.",
+		/* [19] */
+		"Click here if you do not require a paper"
+		" receipt.",
+		/* [20] */
+		"Type the name on the credit card here.",
+		/* [21] */
+		"Type your credit card number here. You c"
+		"an just enter the numbers, spaces and da"
+		"shes are not required.",
+		/* [22] */
+		"Type the credit card expiry (MM/YY) here"
+		". Month (MM) and year (YY) are all that "
+		"are required.",
+		/* [23] */
+		"Type the First Virtual ID here.",
+		/* [24] */
+		"Use this popup menu to select the cash c"
+		"urrency you wish to pay with.  Note that"
+		" you will probably get a better exchange"
+		" rate at your local bank.",
+		/* [25] */
+		"Use this popup menu to select a payment "
+		"method."
+	}
+};
+
+resource 'STR#' (128, "General", purgeable) {
+	{	/* array StringArray: 9 elements */
+		/* [1] */
+		"Payment Details:",
+		/* [2] */
+		"@$^1",
+		/* [3] */
+		"$^1.00",
+		/* [4] */
+		"US$^1.00",
+		/* [5] */
+		"Save payment file to:",
+		/* [6] */
+		"Payment",
+		/* [7] */
+		"Failed to save payment file (error ^1).",
+		/* [8] */
+		"Failed to print payment form (error ^1).",
+		/* [9] */
+		"Failed top copy payment form (error ^1)."
+	}
+};
+
+resource 'STR#' (200, "Form", purgeable) {
+	{	/* array StringArray: 18 elements */
+		/* [1] */
+		"Payment-method: ",
+		/* [2] */
+		"Card-name: ",
+		/* [3] */
+		"Data-SC: ",
+		/* [4] */
+		"Token: ",
+		/* [5] */
+		"Register-to: ",
+		/* [6] */
+		"Email: ",
+		/* [7] */
+		"Addr: ",
+		/* [8] */
+		"Program: ^1$ ^2 - ^3^5 * ^4",
+		/* [9] */
+		"Program: ^1$ ^2 - ^3^5 * Site license fo"
+		"r ^4",
+		/* [10] */
+		"Program: ^1$ ^2 - ^3^5 * World-wide lice"
+		"nse for ^4",
+		/* [11] */
+		"Program: ^1$ ^2 - Bonus for ^4",
+		/* [12] */
+		"Comment: ^4 - ^1",
+		/* [13] */
+		"Receipt: ^1$ ^2",
+		/* [14] */
+		"Total: ^1",
+		/* [15] */
+		"Time: ",
+		/* [16] */
+		"E",
+		/* [17] */
+		"CCaddr: ",
+		/* [18] */
+		"CCzip: "
+	}
+};
+
+resource 'STR#' (160, "Validate", purgeable) {
+	{	/* array StringArray: 15 elements */
+		/* [1] */
+		"Your Email address “^1” does not contain"
+		" either an @ or an !.  Your Email addres"
+		"s is the only way we can contact you.  A"
+		"re you sure it is valid?",
+		/* [2] */
+		"You are paying ^1.  Are you sure this is"
+		" what you want?",
+		/* [3] */
+		"Your expiry “^1” doesn’t look right (it "
+		"should be something like 01/99, and the "
+		"date must be in the future).  Are you su"
+		"re it is valid?",
+		/* [4] */
+		"Your First Virtual ID is blank.",
+		/* [5] */
+		"Your Card Name is blank.  This field sho"
+		"uld be the name that appears on the cred"
+		"it card.",
+		/* [6] */
+		"Your credit card number “^1” is all zero"
+		"s.",
+		/* [7] */
+		"Your credit card number “^1” doesn’t app"
+		"ear to be a valid number or is not of th"
+		"e chosen type.  Maybe you entered the nu"
+		"mber incorrectly?",
+		/* [8] */
+		"Your name “^1” did not change or is blan"
+		"k.",
+		/* [9] */
+		"If you intend to print this copy out and"
+		" send it to us, please print or save it "
+		"from within the program since that will "
+		"include barcodes which makes it easier f"
+		"or us to process your form. There is no "
+		"problem if you are going to Email it to "
+		"us. Thanks!",
+		/* [10] */
+		"Your address did not change or is blank."
+		"  Your address is required to send you t"
+		"he receipt or product.",
+		/* [11] */
+		"If you intend to print this copy out and"
+		" send it to us, please print or save it "
+		"from within the program since that will "
+		"include barcodes which makes it easier f"
+		"or us to process your form. Thanks!",
+		/* [12] */
+		"Your Email address “^1” did not change o"
+		"r is blank.  Your Email address is the m"
+		"ain way we can contact you.  It’s OK wit"
+		"h us but you need to be aware of this.\n",
+		/* [13] */
+		"WARNING: This program scrambles your cre"
+		"dit card number to protect it from casua"
+		"l inspection but it is in no way secure."
+		"  Email, FAX and Snail-mail can all be i"
+		"ntercepted and you should be aware of th"
+		"is before sending the form.",
+		/* [14] */
+		"One or more of the products you are regi"
+		"stering require an email address.  You m"
+		"ust enter one before continuing.",
+		/* [15] */
+		"You must select one or more of the produ"
+		"cts to pay for (enter the number of copi"
+		"es you want, or click the site or world-"
+		"wide license checkboxes)."
+	}
+};
+
+resource 'STR#' (150, "Ensure", purgeable) {
+	{	/* array StringArray: 7 elements */
+		/* [1] */
+		"Startup failed.",
+		/* [2] */
+		"Startup failed, generic error.",
+		/* [3] */
+		"Startup failed, System 7 required.  This"
+		" should never happen.",
+		/* [4] */
+		"Startup failed to initialize TCP.  This "
+		"should never happen.",
+		/* [5] */
+		"Failed to read the resource of programs."
+		"  This should never happen.",
+		/* [6] */
+		"Failed to read the resource of programs."
+		"  This should never happen.",
+		/* [7] */
+		"Failed to startup the dialog box.  This "
+		"should never happen."
+	}
+};
+
+resource 'STR#' (170, "Methods", purgeable) {
+	{	/* array StringArray: 7 elements */
+		/* [1] */
+		"Check",
+		/* [2] */
+		"Cash",
+		/* [3] */
+		"Invoice",
+		/* [4] */
+		"Card",
+		/* [5] */
+		"Card",
+		/* [6] */
+		"Card",
+		/* [7] */
+		"FirstVirtual"
+	}
+};
+
+resource 'STR#' (171, "MTHD", purgeable) {
+	{	/* array StringArray: 7 elements */
+		/* [1] */
+		"CHCK",
+		/* [2] */
+		"CASH",
+		/* [3] */
+		"INVC",
+		/* [4] */
+		"CARD",
+		/* [5] */
+		"CARD",
+		/* [6] */
+		"CARD",
+		/* [7] */
+		"FV"
+	}
+};
+
+resource 'STR#' (201, "Bar Form", purgeable) {
+	{	/* array StringArray: 18 elements */
+		/* [1] */
+		"PM",
+		/* [2] */
+		"CN",
+		/* [3] */
+		"DS",
+		/* [4] */
+		"TK",
+		/* [5] */
+		"RT",
+		/* [6] */
+		"EM",
+		/* [7] */
+		"AD",
+		/* [8] */
+		"PR^1^2U^3^5-^4",
+		/* [9] */
+		"PR^1^2S^3^5-^4",
+		/* [10] */
+		"PR^1^2W^3^5-^4",
+		/* [11] */
+		"PR^1^2B^3-^4",
+		/* [12] */
+		"CM^4-^1",
+		/* [13] */
+		"RC^1^2",
+		/* [14] */
+		"TL^1",
+		/* [15] */
+		"TM",
+		/* [16] */
+		"E",
+		/* [17] */
+		"CA",
+		/* [18] */
+		"CZ"
+	}
+};
+
+resource 'STR#' (140, "Display", purgeable) {
+	{	/* array StringArray: 22 elements */
+		/* [1] */
+		"^1 by ^2",
+		/* [2] */
+		"Bonus US$",
+		/* [3] */
+		"US$^1.00",
+		/* [4] */
+		"Single User @US$^1",
+		/* [5] */
+		"Site @US$^1",
+		/* [6] */
+		"World-Wide @US$^1",
+		/* [7] */
+		"Postcard Receipt:",
+		/* [8] */
+		"US$^1",
+		/* [9] */
+		"Subtotal:",
+		/* [10] */
+		"Total:",
+		/* [11] */
+		"Postal Address (optional):",
+		/* [12] */
+		"Postal Address (required):",
+		/* [13] */
+		"^1 @US$^2",
+		/* [14] */
+		"Bill To (required):",
+		/* [15] */
+		"Ship To (optional):",
+		/* [16] */
+		"Print the form, wrap the cash in paper t"
+		"o make it less obvious and send both to "
+		"the address on the form.  You will proba"
+		"bly get a better exchange rate at a bank"
+		".",
+		/* [17] */
+		"Please print this form out, make your ch"
+		"eck in USD, drawn on a US bank, payable "
+		"to “Kagi” and send both to the address o"
+		"n the form.",
+		/* [18] */
+		"Shipping:",
+		/* [19] */
+		"US$^1",
+		/* [20] */
+		"Please print this invoice, then approve "
+		"the invoice\nand submit it to your Purcha"
+		"sing Department for payment.",
+		/* [21] */
+		"Email Address:",
+		/* [22] */
+		"Email Address (required):"
+	}
+};
+
+resource 'STR#' (180, "Prefs", purgeable) {
+	{	/* array StringArray: 4 elements */
+		/* [1] */
+		"Your Name",
+		/* [2] */
+		"email@domain.com",
+		/* [3] */
+		"",
+		/* [4] */
+		""
+	}
+};
+
+resource 'STR#' (928, "About", purgeable) {
+	{	/* array StringArray: 9 elements */
+		/* [1] */
+		"",
+		/* [2] */
+		"",
+		/* [3] */
+		"Times:48:0:1:^2",
+		/* [4] */
+		":::-1:Version ^1",
+		/* [5] */
+		":::1:This program may be freely distribu"
+		"ted,\nbut may not be modified in any way.",
+		/* [6] */
+		"::H:1:Email <support@stairways.com.au>",
+		/* [7] */
+		"Helvetica:24::0:Stairways Shareware",
+		/* [8] */
+		":::-1:©1994-98 Peter N Lewis",
+		/* [9] */
+		"ICON:928"
+	}
+};
+
+resource 'STR#' (800, "URLs", purgeable) {
+	{	/* array StringArray: 3 elements */
+		/* [1] */
+		"ftp://ftp.share.com/pub/peterlewis/",
+		/* [2] */
+		"http://www.share.com/peterlewis/",
+		/* [3] */
+		"mailto:support@stairways.com.au"
+	}
+};
+
+resource 'STR#' (1900, "Fonts") {
+	{	/* array StringArray: 30 elements */
+		/* [1] */
+		"geneva",
+		/* [2] */
+		"0",
+		/* [3] */
+		"geneva",
+		/* [4] */
+		"9",
+		/* [5] */
+		"geneva",
+		/* [6] */
+		"12",
+		/* [7] */
+		"courier",
+		/* [8] */
+		"0",
+		/* [9] */
+		"courier",
+		/* [10] */
+		"9",
+		/* [11] */
+		"courier",
+		/* [12] */
+		"12",
+		/* [13] */
+		"chicago",
+		/* [14] */
+		"0",
+		/* [15] */
+		"chicago",
+		/* [16] */
+		"9",
+		/* [17] */
+		"chicago",
+		/* [18] */
+		"12",
+		/* [19] */
+		"SYSTEM",
+		/* [20] */
+		"0",
+		/* [21] */
+		"SYSTEM",
+		/* [22] */
+		"9",
+		/* [23] */
+		"SYSTEM",
+		/* [24] */
+		"12",
+		/* [25] */
+		"monaco",
+		/* [26] */
+		"0",
+		/* [27] */
+		"monaco",
+		/* [28] */
+		"9",
+		/* [29] */
+		"monaco",
+		/* [30] */
+		"12"
+	}
+};
+
+resource 'vers' (1) {
+	0x1,
+	0x27,
+	release,
+	0x0,
+	15,
+	"1.2.7",
+	"Register 1.2.7 © 1994-98 Stairways Softw"
+	"are & Peter N Lewis"
+};
+
+resource 'FREF' (128, purgeable) {
+	'APPL',
+	0,
+	""
+};
+
+data 'DLOG' (128, "About", purgeable) {
+	$"0030 002A 00EA 0143 0005 0000 0000 0000"            /* .0.*.Í.C........ */
+	$"0000 0080 0541 626F 7574"                           /* ...Ä.About */
+};
+
+data 'DLOG' (225, "Comment", purgeable) {
+	$"0033 000D 00EA 01F4 0005 0000 0000 0000"            /* .3...Í.Ù........ */
+	$"0000 00E1 0743 6F6D 6D65 6E74"                      /* ...·.Comment */
+};
+
+resource 'DLOG' (200, "Register Input", purgeable) {
+	{40, 4, 338, 500},
+	noGrowDocProc,
+	invisible,
+	goAway,
+	0x0,
+	200,
+	"Register",
+	centerMainScreen
+};
+
+data 'DLOG' (226, "Bill Address", purgeable) {
+	$"0033 000D 00EA 01F4 0005 0000 0000 0000"            /* .3...Í.Ù........ */
+	$"0000 00E2 1B43 7265 6469 7420 4361 7264"            /* ...‚.Credit Card */
+	$"2042 696C 6C69 6E67 2041 6464 7265 7373"            /*  Billing Address */
+};
+
+resource 'DITL' (128, purgeable) {
+	{	/* array DITLarray: 9 elements */
+		/* [1] */
+		{156, 112, 176, 170},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{150, 128, 182, 160},
+		UserItem {
+			disabled
+		},
+		/* [3] */
+		{1, 2, 50, 277},
+		UserItem {
+			enabled
+		},
+		/* [4] */
+		{39, 140, 52, 235},
+		UserItem {
+			enabled
+		},
+		/* [5] */
+		{56, 2, 81, 278},
+		UserItem {
+			disabled
+		},
+		/* [6] */
+		{85, 2, 98, 278},
+		UserItem {
+			enabled
+		},
+		/* [7] */
+		{107, 46, 132, 274},
+		UserItem {
+			enabled
+		},
+		/* [8] */
+		{132, 78, 145, 249},
+		UserItem {
+			enabled
+		},
+		/* [9] */
+		{104, 8, 136, 40},
+		UserItem {
+			enabled
+		}
+	}
+};
+
+resource 'DITL' (225, purgeable) {
+	{	/* array DITLarray: 5 elements */
+		/* [1] */
+		{157, 416, 177, 474},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{157, 344, 177, 402},
+		Button {
+			enabled,
+			"Cancel"
+		},
+		/* [3] */
+		{152, 432, 184, 464},
+		UserItem {
+			disabled
+		},
+		/* [4] */
+		{63, 8, 145, 480},
+		EditText {
+			enabled,
+			""
+		},
+		/* [5] */
+		{5, 8, 56, 479},
+		StaticText {
+			disabled,
+			"The recommended way to send comments to "
+			"an author is to email them separately, b"
+			"ut you can include a short comment about"
+			" “^1” by typing it here:"
+		}
+	}
+};
+
+resource 'DITL' (200, purgeable) {
+	{	/* array DITLarray: 50 elements */
+		/* [1] */
+		{273, 407, 293, 477},
+		Button {
+			enabled,
+			"Save…"
+		},
+		/* [2] */
+		{273, 327, 293, 397},
+		Button {
+			enabled,
+			"Quit"
+		},
+		/* [3] */
+		{244, 327, 264, 397},
+		Button {
+			enabled,
+			"Print…"
+		},
+		/* [4] */
+		{244, 407, 264, 477},
+		Button {
+			enabled,
+			"Copy…"
+		},
+		/* [5] */
+		{16, 11, 28, 243},
+		EditText {
+			enabled,
+			""
+		},
+		/* [6] */
+		{52, 11, 64, 243},
+		EditText {
+			enabled,
+			""
+		},
+		/* [7] */
+		{37, 8, 49, 208},
+		StaticText {
+			disabled,
+			"Email Address:"
+		},
+		/* [8] */
+		{16, 255, 64, 487},
+		EditText {
+			enabled,
+			""
+		},
+		/* [9] */
+		{1, 252, 13, 452},
+		StaticText {
+			disabled,
+			"Postal Address (optional):"
+		},
+		/* [10] */
+		{92, 16, 104, 52},
+		EditText {
+			enabled,
+			""
+		},
+		/* [11] */
+		{74, 405, 86, 463},
+		EditText {
+			enabled,
+			""
+		},
+		/* [12] */
+		{89, 165, 107, 263},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [13] */
+		{89, 265, 107, 400},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [14] */
+		{71, 208, 89, 348},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [15] */
+		{72, 13, 88, 29},
+		Icon {
+			enabled,
+			225
+		},
+		/* [16] */
+		{131, 16, 143, 52},
+		EditText {
+			enabled,
+			""
+		},
+		/* [17] */
+		{113, 405, 125, 463},
+		EditText {
+			enabled,
+			""
+		},
+		/* [18] */
+		{128, 165, 146, 263},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [19] */
+		{128, 265, 146, 400},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [20] */
+		{110, 208, 128, 348},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [21] */
+		{111, 13, 127, 29},
+		Icon {
+			enabled,
+			225
+		},
+		/* [22] */
+		{170, 16, 182, 52},
+		EditText {
+			enabled,
+			""
+		},
+		/* [23] */
+		{152, 405, 164, 463},
+		EditText {
+			enabled,
+			""
+		},
+		/* [24] */
+		{167, 165, 185, 263},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [25] */
+		{167, 265, 185, 400},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [26] */
+		{149, 208, 167, 348},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [27] */
+		{150, 13, 166, 29},
+		Icon {
+			enabled,
+			225
+		},
+		/* [28] */
+		{69, 8, 187, 475},
+		UserItem {
+			disabled
+		},
+		/* [29] */
+		{69, 474, 187, 490},
+		UserItem {
+			enabled
+		},
+		/* [30] */
+		{206, 296, 224, 475},
+		CheckBox {
+			enabled,
+			""
+		},
+		/* [31] */
+		{190, 312, 242, 475},
+		UserItem {
+			disabled
+		},
+		/* [32] */
+		{231, 96, 243, 287},
+		EditText {
+			enabled,
+			""
+		},
+		/* [33] */
+		{252, 96, 264, 287},
+		EditText {
+			enabled,
+			"0000-0000-0000-0000"
+		},
+		/* [34] */
+		{273, 96, 285, 287},
+		EditText {
+			enabled,
+			"01/90"
+		},
+		/* [35] */
+		{205, 272, 221, 288},
+		Icon {
+			enabled,
+			226
+		},
+		/* [36] */
+		{231, 16, 243, 91},
+		StaticText {
+			disabled,
+			"Name on Card:"
+		},
+		/* [37] */
+		{252, 16, 264, 91},
+		StaticText {
+			disabled,
+			"Card Number:"
+		},
+		/* [38] */
+		{273, 16, 285, 91},
+		StaticText {
+			disabled,
+			"Expiry (M/Y):"
+		},
+		/* [39] */
+		{231, 96, 243, 287},
+		EditText {
+			enabled,
+			""
+		},
+		/* [40] */
+		{231, 16, 243, 91},
+		StaticText {
+			disabled,
+			"First Virtual ID:"
+		},
+		/* [41] */
+		{252, 16, 288, 290},
+		StaticText {
+			disabled,
+			"For more information about First Virtual"
+			", send email to <help@fv.com>"
+		},
+		/* [42] */
+		{231, 16, 288, 290},
+		StaticText {
+			disabled,
+			"cheque text"
+		},
+		/* [43] */
+		{252, 16, 288, 290},
+		StaticText {
+			disabled,
+			"cash text item"
+		},
+		/* [44] */
+		{231, 96, 247, 196},
+		UserItem {
+			enabled
+		},
+		/* [45] */
+		{231, 16, 247, 91},
+		StaticText {
+			disabled,
+			"Currency:"
+		},
+		/* [46] */
+		{205, 96, 221, 196},
+		UserItem {
+			enabled
+		},
+		/* [47] */
+		{189, 8, 293, 294},
+		UserItem {
+			disabled
+		},
+		/* [48] */
+		{205, 16, 217, 91},
+		StaticText {
+			disabled,
+			"Method:"
+		},
+		/* [49] */
+		{1, 8, 13, 208},
+		StaticText {
+			disabled,
+			"Register To:"
+		},
+		/* [50] */
+		{0, 0, 0, 0},
+		HelpItem {
+			enabled,
+			HMScanhdlg {
+				200
+			}
+		}
+	}
+};
+
+resource 'DITL' (226, purgeable) {
+	{	/* array DITLarray: 10 elements */
+		/* [1] */
+		{155, 416, 175, 474},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{155, 344, 175, 402},
+		Button {
+			enabled,
+			"Cancel"
+		},
+		/* [3] */
+		{150, 432, 182, 464},
+		UserItem {
+			disabled
+		},
+		/* [4] */
+		{155, 182, 175, 330},
+		Button {
+			enabled,
+			"Not a USA address"
+		},
+		/* [5] */
+		{105, 120, 121, 475},
+		EditText {
+			enabled,
+			""
+		},
+		/* [6] */
+		{130, 120, 146, 234},
+		EditText {
+			enabled,
+			""
+		},
+		/* [7] */
+		{5, 8, 38, 480},
+		StaticText {
+			disabled,
+			"In order to help prevent fraud, the cred"
+			"it card companies now request that you i"
+			"nclude your credit card billing address."
+		},
+		/* [8] */
+		{40, 8, 95, 480},
+		StaticText {
+			disabled,
+			"Only the street address (eg “1442-A Waln"
+			"ut Street #392”) or post office box addr"
+			"ess (eg “PO Box 1256”) together with you"
+			"r zip code (eg “94709-1405”) are require"
+			"d."
+		},
+		/* [9] */
+		{105, 8, 121, 115},
+		StaticText {
+			disabled,
+			"Street Address:"
+		},
+		/* [10] */
+		{130, 8, 146, 115},
+		StaticText {
+			disabled,
+			"Zip code:"
+		}
+	}
+};
+
+resource 'BNDL' (128, purgeable) {
+	'Regi',
+	0,
+	{	/* array TypeArray: 2 elements */
+		/* [1] */
+		'FREF',
+		{	/* array IDArray: 1 elements */
+			/* [1] */
+			0, 128
+		},
+		/* [2] */
+		'ICN#',
+		{	/* array IDArray: 1 elements */
+			/* [1] */
+			0, 128
+		}
+	}
+};
+
+resource 'ICN#' (128, purgeable) {
+	{	/* array: 2 elements */
+		/* [1] */
+		$"0001 8000 0002 4000 0004 2000 0008 1000"
+		$"0010 0800 0020 0400 0041 8200 0081 8100"
+		$"0107 E080 020F F040 0419 9820 0819 9810"
+		$"1019 8008 2019 8004 401D 8002 800F E001"
+		$"8007 F001 4001 B802 2001 9804 1001 9808"
+		$"0819 9810 0419 9820 020F F040 0107 E080"
+		$"0081 8100 0041 8200 0020 0400 0010 0800"
+		$"0008 1000 0004 2000 0002 4000 0001 80",
+		/* [2] */
+		$"0001 8000 0003 C000 0007 E000 000F F000"
+		$"001F F800 003F FC00 007F FE00 00FF FF00"
+		$"01FF FF80 03FF FFC0 07FF FFE0 0FFF FFF0"
+		$"1FFF FFF8 3FFF FFFC 7FFF FFFE FFFF FFFF"
+		$"FFFF FFFF 7FFF FFFE 3FFF FFFC 1FFF FFF8"
+		$"0FFF FFF0 07FF FFE0 03FF FFC0 01FF FF80"
+		$"00FF FF00 007F FE00 003F FC00 001F F800"
+		$"000F F000 0007 E000 0003 C000 0001 80"
+	}
+};
+
+resource 'ics#' (128, purgeable) {
+	{	/* array: 2 elements */
+		/* [1] */
+		$"0100 0280 0440 0920 1390 2548 4504 8502"
+		$"8382 4144 2548 1390 0920 0440 0280 01",
+		/* [2] */
+		$"0100 0380 07C0 0FE0 1FF0 3FF8 7FFC FFFE"
+		$"FFFE 7FFC 3FF8 1FF0 0FE0 07C0 0380 01"
+	}
+};
+
+data 'Regi' (0, "Owner resource") {
+	$"00"                                                 /* . */
+};
+
+data 'TEXT' (200, "Check") {
+	$"5365 6E64 2074 6869 7320 666F 726D 2074"            /* Send this form t */
+	$"6F67 6574 6865 7220 7769 7468 2079 6F75"            /* ogether with you */
+	$"7220 6368 6563 6B20 6D61 6465 206F 7574"            /* r check made out */
+	$"2074 6F20 D24B 6167 69D3 2074 6F20 7468"            /*  to “Kagi” to th */
+	$"6520 6164 6472 6573 7320 6265 6C6F 772E"            /* e address below. */
+	$"2054 6865 2055 2E53 2E20 4665 6465 7261"            /*  The U.S. Federa */
+	$"6C20 456D 706C 6F79 6572 2049 6465 6E74"            /* l Employer Ident */
+	$"6966 6963 6174 696F 6E20 4E75 6D62 6572"            /* ification Number */
+	$"2022 4645 494E 2220 666F 7220 4B61 6769"            /*  "FEIN" for Kagi */
+	$"2069 7320 3934 2D33 3238 3138 3339 2E20"            /*  is 94-3281839.  */
+	$"5468 6520 5553 2067 6F76 6572 6E6D 656E"            /* The US governmen */
+	$"7420 646F 6573 206E 6F74 2063 6C61 7373"            /* t does not class */
+	$"6966 7920 4B61 6769 2061 7320 6120 776F"            /* ify Kagi as a wo */
+	$"6D65 6E20 6F77 6E65 6420 6275 7369 6E65"            /* men owned busine */
+	$"7373 206F 7220 6173 2061 206D 696E 6F72"            /* ss or as a minor */
+	$"6974 7920 6F77 6E65 6420 6275 7369 6E65"            /* ity owned busine */
+	$"7373 2E20 4974 2069 7320 636C 6173 7369"            /* ss. It is classi */
+	$"6669 6564 2061 7320 6120 736D 616C 6C20"            /* fied as a small  */
+	$"7365 7276 6963 6520 6275 7369 6E65 7373"            /* service business */
+	$"2061 2043 616C 6966 6F72 6E69 6120 636F"            /*  a California co */
+	$"7270 6F72 6174 696F 6E2E 0D0D 5365 6E64"            /* rporation...Send */
+	$"2074 6869 7320 666F 726D 2077 6974 6820"            /*  this form with  */
+	$"796F 7572 2070 6179 6D65 6E74 2074 6F3A"            /* your payment to: */
+	$"0D0D"                                               /* .. */
+};
+
+data 'TEXT' (201, "Cash") {
+	$"5365 6E64 2074 6869 7320 666F 726D 2074"            /* Send this form t */
+	$"6F67 6574 6865 7220 7769 7468 2079 6F75"            /* ogether with you */
+	$"7220 6361 7368 2028 7772 6170 7065 6420"            /* r cash (wrapped  */
+	$"696E 2074 6869 636B 2070 6170 6572 2074"            /* in thick paper t */
+	$"6F20 6D61 6B65 2074 6865 2063 6173 6820"            /* o make the cash  */
+	$"6C65 7373 206F 6276 696F 7573 2920 746F"            /* less obvious) to */
+	$"3A0D 0D"                                            /* :.. */
+};
+
+data 'TEXT' (202, "Net") {
+	$"5365 6E64 2074 6869 7320 666F 726D 2074"            /* Send this form t */
+	$"6F3A 0D0D"                                          /* o:.. */
+};
+
+data 'TEXT' (310, "To Author") {
+	$"506C 6561 7365 2073 656E 6420 7468 6973"            /* Please send this */
+	$"2066 6F72 6D20 746F 204B 6167 6920 616E"            /*  form to Kagi an */
+	$"6420 7365 6E64 2061 6E79 2063 6F6D 6D65"            /* d send any comme */
+	$"6E74 7320 6162 6F75 7420 7468 6520 7072"            /* nts about the pr */
+	$"6F64 7563 7473 2064 6972 6563 746C 7920"            /* oducts directly  */
+	$"746F 2074 6865 204D 7363 6170 6520 536F"            /* to the Mscape So */
+	$"6674 7761 7265 2061 7420 3C6D 6968 6169"            /* ftware at <mihai */
+	$"406D 7363 6170 652E 636F 6D3E 2E20 200D"            /* @mscape.com>.  . */
+	$"0D"                                                 /* . */
+};
+
+data 'TEXT' (300, "Address") {
+	$"456D 6169 6C3A 2073 616C 6573 406B 6167"            /* Email: sales@kag */
+	$"692E 636F 6D0D 4641 583A 202B 3120 3531"            /* i.com.FAX: +1 51 */
+	$"3020 3635 3220 3635 3839 0D50 6F73 7461"            /* 0 652 6589.Posta */
+	$"6C2D 6D61 696C 3A0D 4B61 6769 0D31 3434"            /* l-mail:.Kagi.144 */
+	$"322D 4120 5761 6C6E 7574 2053 7472 6565"            /* 2-A Walnut Stree */
+	$"7420 504D 4220 2333 3932 2D51 454A 0D42"            /* t PMB #392-QEJ.B */
+	$"6572 6B65 6C65 792C 2043 616C 6966 6F72"            /* erkeley, Califor */
+	$"6E69 612C 2039 3437 3039 2D31 3430 350D"            /* nia, 94709-1405. */
+	$"5553 410D 0D"                                       /* USA.. */
+};
+
+data 'TEXT' (320, "No Print") {
+	$"5468 6973 2066 6F72 6D20 6973 2066 6F72"            /* This form is for */
+	$"2045 6D61 696C 696E 6720 6F6E 6C79 2C20"            /*  Emailing only,  */
+	$"706C 6561 7365 2064 6F6E 2774 2046 4158"            /* please don't FAX */
+	$"206F 7220 706F 7374 616C 206D 6169 6C20"            /*  or postal mail  */
+	$"6974 2074 6F20 7573 2073 696E 6365 2069"            /* it to us since i */
+	$"7420 646F 6573 206E 6F74 2069 6E63 6C75"            /* t does not inclu */
+	$"6465 2074 6865 2062 6172 636F 6465 7320"            /* de the barcodes  */
+	$"7765 2072 6571 7569 7265 2066 6F72 2065"            /* we require for e */
+	$"6173 7920 7072 6F63 6573 7369 6E67 2E20"            /* asy processing.  */
+	$"506C 6561 7365 2064 6F20 6E6F 7420 6564"            /* Please do not ed */
+	$"6974 2074 6865 2066 6F6C 6C6F 7769 6E67"            /* it the following */
+	$"2069 6E66 6F72 6D61 7469 6F6E 2C20 646F"            /*  information, do */
+	$"696E 6720 736F 2070 7265 7665 6E74 7320"            /* ing so prevents  */
+	$"6175 746F 6D61 7469 6320 7072 6F63 6573"            /* automatic proces */
+	$"7369 6E67 2062 7920 6120 636F 6D70 7574"            /* sing by a comput */
+	$"6572 2E20 4564 6974 6564 2066 6F72 6D73"            /* er. Edited forms */
+	$"206D 7573 7420 6265 2070 726F 6365 7373"            /*  must be process */
+	$"6564 206D 616E 7561 6C6C 7920 616E 6420"            /* ed manually and  */
+	$"7468 6520 6164 6469 7469 6F6E 616C 2063"            /* the additional c */
+	$"6F73 7420 6973 2063 6861 7267 6564 2074"            /* ost is charged t */
+	$"6F20 7468 6520 7665 6E64 6F72 2E0D 0D"              /* o the vendor... */
+};
+
+data 'TEXT' (321, "No Email") {
+	$"5468 6973 2066 6F72 6D20 6973 2066 6F72"            /* This form is for */
+	$"2046 4158 206F 7220 706F 7374 616C 206D"            /*  FAX or postal m */
+	$"6169 6C20 6F6E 6C79 2C20 706C 6561 7365"            /* ail only, please */
+	$"2064 6F6E 2774 2045 6D61 696C 2069 7420"            /*  don't Email it  */
+	$"746F 2075 7320 7369 6E63 6520 6974 2069"            /* to us since it i */
+	$"6E63 6C75 6465 7320 7468 6520 6261 7263"            /* ncludes the barc */
+	$"6F64 6573 2077 6869 6368 2077 696C 6C20"            /* odes which will  */
+	$"6E6F 7420 456D 6169 6C20 7765 6C6C 2E0D"            /* not Email well.. */
+	$"0D"                                                 /* . */
+};
+
+data 'TEXT' (203, "Invoice") {
+	$"496E 766F 6963 650D 0D54 6F3A 2041 6363"            /* Invoice..To: Acc */
+	$"6F75 6E74 7320 5061 7961 626C 650D 0D50"            /* ounts Payable..P */
+	$"6C65 6173 6520 7061 7920 7468 6520 666F"            /* lease pay the fo */
+	$"6C6C 6F77 696E 6720 696E 766F 6963 652E"            /* llowing invoice. */
+	$"204E 6F74 6520 7468 6174 2074 6869 7320"            /*  Note that this  */
+	$"6973 2066 6F72 2061 206C 6963 656E 7365"            /* is for a license */
+	$"206F 6E6C 792C 2074 6865 7265 2061 7265"            /*  only, there are */
+	$"206E 6F20 6465 6C69 7665 7261 626C 6573"            /*  no deliverables */
+	$"2E20 4D61 6B65 2074 6865 2063 6865 636B"            /* . Make the check */
+	$"2070 6179 6162 6C65 2074 6F20 224B 6167"            /*  payable to "Kag */
+	$"6922 2061 6E64 2073 656E 6420 746F 2074"            /* i" and send to t */
+	$"6865 2061 6464 7265 7373 206C 6973 7465"            /* he address liste */
+	$"6420 6265 6C6F 772E 2054 6865 2055 2E53"            /* d below. The U.S */
+	$"2E20 4665 6465 7261 6C20 456D 706C 6F79"            /* . Federal Employ */
+	$"6572 2049 6465 6E74 6966 6963 6174 696F"            /* er Identificatio */
+	$"6E20 4E75 6D62 6572 2022 4645 494E 2220"            /* n Number "FEIN"  */
+	$"666F 7220 4B61 6769 2069 7320 3934 2D33"            /* for Kagi is 94-3 */
+	$"3238 3138 3339 2E20 5468 6520 5553 2067"            /* 281839. The US g */
+	$"6F76 6572 6E6D 656E 7420 646F 6573 206E"            /* overnment does n */
+	$"6F74 2063 6C61 7373 6966 7920 4B61 6769"            /* ot classify Kagi */
+	$"2061 7320 6120 776F 6D65 6E20 6F77 6E65"            /*  as a women owne */
+	$"6420 6275 7369 6E65 7373 206F 7220 6173"            /* d business or as */
+	$"2061 206D 696E 6F72 6974 7920 6F77 6E65"            /*  a minority owne */
+	$"6420 6275 7369 6E65 7373 2E20 4974 2069"            /* d business. It i */
+	$"7320 636C 6173 7369 6669 6564 2061 7320"            /* s classified as  */
+	$"6120 736D 616C 6C20 7365 7276 6963 6520"            /* a small service  */
+	$"6275 7369 6E65 7373 2C20 6120 4361 6C69"            /* business, a Cali */
+	$"666F 726E 6961 2043 6F72 706F 7261 7469"            /* fornia Corporati */
+	$"6F6E 2E0D 0D59 6F75 206D 7573 7420 696E"            /* on...You must in */
+	$"636C 7564 6520 6120 636F 7079 206F 6620"            /* clude a copy of  */
+	$"7468 6973 2069 6E76 6F69 6365 2077 6974"            /* this invoice wit */
+	$"6820 796F 7572 2070 6179 6D65 6E74 2E20"            /* h your payment.  */
+	$"0D0D 0D49 6E76 6F69 6365 2041 7070 726F"            /* ...Invoice Appro */
+	$"7665 643A 205F 5F5F 5F5F 5F5F 5F5F 5F5F"            /* ved: ___________ */
+	$"5F5F 5F5F 5F5F 5F5F 5F5F 5F5F 5F5F 200D"            /* ______________ . */
+	$"0D0D"                                               /* .. */
+};
+
+data 'TEXT' (150, "Ensure Alert") {
+	$"5342 533A 4F68 2057 656C 6C0D 5E31 0D"              /* SBS:Oh Well.^1. */
+};
+
+data 'TEXT' (160, "Validate Alert") {
+	$"5342 573A 436F 6E74 696E 7565 3A43 616E"            /* SBW:Continue:Can */
+	$"6365 6C0D 5E31 0D"                                  /* cel.^1. */
+};
+
+data 'TEXT' (161, "Validate Required Alert") {
+	$"5342 573A 4361 6E63 656C 0D5E 310D"                 /* SBW:Cancel.^1. */
+};
+
+data 'TEXT' (170, "Print or Email Alert") {
+	$"4E2D 573A 5669 6120 456D 6169 6C3A 4641"            /* N-W:Via Email:FA */
+	$"5820 6F72 204D 6169 6C09 456D 6169 6C3F"            /* X or Mail.Email? */
+	$"0D57 696C 6C20 796F 7520 6265 2073 656E"            /* .Will you be sen */
+	$"6469 6E67 2074 6869 7320 7669 6120 456D"            /* ding this via Em */
+	$"6169 6C3F 2020 4966 2073 6F2C 2049 D56C"            /* ail?  If so, I’l */
+	$"6C20 7361 7665 2061 7320 706C 6169 6E20"            /* l save as plain  */
+	$"7465 7874 2E20 2049 6620 6E6F 742C 2049"            /* text.  If not, I */
+	$"D56C 6C20 7361 7665 2069 7420 6173 2061"            /* ’ll save it as a */
+	$"2054 6561 6368 5465 7874 2064 6F63 756D"            /*  TeachText docum */
+	$"656E 7420 7769 7468 2074 6865 2062 6172"            /* ent with the bar */
+	$"636F 6465 7320 6469 7370 6C61 7965 6420"            /* codes displayed  */
+	$"736F 2079 6F75 2063 616E 2070 7269 6E74"            /* so you can print */
+	$"2069 7420 6F75 7420 6C61 7465 722E"                 /*  it out later. */
+};
+
+data 'TEXT' (180, "Did Nothing Alert") {
+	$"4342 573A 5175 6974 3A43 616E 6365 6C09"            /* CBW:Quit:Cancel. */
+	$"5175 6974 696E 6720 416C 7265 6164 793F"            /* Quiting Already? */
+	$"0D59 6F75 2064 6964 206E 6F74 2070 7269"            /* .You did not pri */
+	$"6E74 2C20 636F 7079 2C20 6F72 2073 6176"            /* nt, copy, or sav */
+	$"6520 7468 6520 6461 7461 2E20 2059 6F75"            /* e the data.  You */
+	$"206D 7573 7420 646F 206F 6E65 206F 6620"            /*  must do one of  */
+	$"7468 6573 6520 746F 2073 656E 6420 7468"            /* these to send th */
+	$"6520 696E 666F 726D 6174 696F 6E20 746F"            /* e information to */
+	$"2075 7320 2D20 646F 206E 6F74 2073 656E"            /*  us - do not sen */
+	$"6420 7468 6520 5265 6769 7374 6572 2061"            /* d the Register a */
+	$"7070 6C69 6361 7469 6F6E 2069 7473 656C"            /* pplication itsel */
+	$"6621"                                               /* f! */
+};
+
+data 'TEXT' (175, "Need Receipt?") {
+	$"4342 573A 5965 732F 593A 4E6F 2F4E 0952"            /* CBW:Yes/Y:No/N.R */
+	$"6563 6569 7074 3F0D 596F 7520 6F6E 6C79"            /* eceipt?.You only */
+	$"206E 6565 6420 6120 706F 7374 6361 7264"            /*  need a postcard */
+	$"2072 6563 6569 7074 2069 6620 796F 7520"            /*  receipt if you  */
+	$"6163 7475 616C 6C79 2077 616E 7420 6120"            /* actually want a  */
+	$"7068 7973 6963 616C 2070 6170 6572 2072"            /* physical paper r */
+	$"6563 6569 7074 2073 656E 7420 746F 2079"            /* eceipt sent to y */
+	$"6F75 2E20 2049 6620 796F 7520 7370 6563"            /* ou.  If you spec */
+	$"6966 7920 616E 2065 6D61 696C 2061 6464"            /* ify an email add */
+	$"7265 7373 2C20 616E 2065 6D61 696C 2072"            /* ress, an email r */
+	$"6563 6569 7074 2077 696C 6C20 616C 7761"            /* eceipt will alwa */
+	$"7973 2062 6520 7365 6E74 2074 6F20 796F"            /* ys be sent to yo */
+	$"752E 2020 446F 2079 6F75 2072 6561 6C6C"            /* u.  Do you reall */
+	$"7920 7761 6E74 2061 2070 6170 6572 2072"            /* y want a paper r */
+	$"6563 6569 7074 2073 656E 7420 746F 2079"            /* eceipt sent to y */
+	$"6F75 3F0D"                                          /* ou?. */
+};
+
+data 'TEXT' (185, "Cant launch") {
+	$"5342 573A 4F4B 0946 6169 6C65 6420 746F"            /* SBW:OK.Failed to */
+	$"204C 6175 6E63 6820 4865 6C70 6572 0D53"            /*  Launch Helper.S */
+	$"6F72 7279 2C20 4920 6661 696C 6564 2074"            /* orry, I failed t */
+	$"6F20 6C61 756E 6368 2074 6865 2068 656C"            /* o launch the hel */
+	$"7065 7220 6170 706C 6963 6174 696F 6E20"            /* per application  */
+	$"285E 3129 2E"                                       /* (^1). */
+};
+
+data 'TEXT' (322, "No Send") {
+	$"5468 6973 2066 6F72 6D20 6973 2066 6F72"            /* This form is for */
+	$"2069 6E66 6F72 6D61 7469 6F6E 616C 2070"            /*  informational p */
+	$"7572 706F 7365 7320 6F6E 6C79 2073 696E"            /* urposes only sin */
+	$"6365 2069 7420 646F 6573 206E 6F74 2069"            /* ce it does not i */
+	$"6E63 6C75 6465 2074 6865 2062 6172 636F"            /* nclude the barco */
+	$"6465 7320 616E 6420 796F 7520 6361 6E6E"            /* des and you cann */
+	$"6F74 2065 6D61 696C 2074 6869 7320 6B69"            /* ot email this ki */
+	$"6E64 206F 6620 7061 796D 656E 742E 2020"            /* nd of payment.   */
+	$"506C 6561 7365 2075 7365 2074 6865 2052"            /* Please use the R */
+	$"6567 6973 7465 7220 7072 6F67 7261 6D20"            /* egister program  */
+	$"746F 2070 7269 6E74 206F 7574 2061 2066"            /* to print out a f */
+	$"6F72 6D20 7468 6174 2079 6F75 2063 616E"            /* orm that you can */
+	$"2073 656E 6420 7769 7468 2079 6F75 7220"            /*  send with your  */
+	$"7061 796D 656E 742E 0D0D"                           /* payment... */
+};
+
+resource 'MENU' (200) {
+	200,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Method",
+	{	/* array: 10 elements */
+		/* [1] */
+		"Check/Money Order", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Cash", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Invoice", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"VISA", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"MasterCard", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"American Express", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"Diners Club", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"Discover", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"Optima", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"First Virtual", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (129) {
+	129,
+	textMenuProc,
+	0x7FFFFFDB,
+	enabled,
+	"File",
+	{	/* array: 7 elements */
+		/* [1] */
+		"Close", noIcon, "W", noMark, plain,
+		/* [2] */
+		"Save As…", noIcon, "S", noMark, plain,
+		/* [3] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"Page Setup…", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"Print…", noIcon, "P", noMark, plain,
+		/* [6] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"Quit", noIcon, "Q", noMark, plain
+	}
+};
+
+resource 'MENU' (130) {
+	130,
+	textMenuProc,
+	0x7FFFFFFD,
+	enabled,
+	"Edit",
+	{	/* array: 7 elements */
+		/* [1] */
+		"Undo", noIcon, "Z", noMark, plain,
+		/* [2] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Cut", noIcon, "X", noMark, plain,
+		/* [4] */
+		"Copy", noIcon, "C", noMark, plain,
+		/* [5] */
+		"Paste", noIcon, "V", noMark, plain,
+		/* [6] */
+		"Clear", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"Select All", noIcon, "A", noMark, plain
+	}
+};
+
+resource 'MENU' (128) {
+	128,
+	textMenuProc,
+	0x7FFFFFFD,
+	enabled,
+	apple,
+	{	/* array: 2 elements */
+		/* [1] */
+		"About Register…", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"-", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (201) {
+	201,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Country",
+	{	/* array: 0 elements */
+	}
+};
+
+resource 'CNTL' (200, "Method Menu", purgeable) {
+	{0, 0, 20, 200},
+	0,
+	visible,
+	0,
+	200,
+	1008,
+	0,
+	""
+};
+
+resource 'CNTL' (201, "Country Menu", purgeable) {
+	{0, 0, 20, 200},
+	0,
+	visible,
+	0,
+	201,
+	1008,
+	0,
+	""
+};
+
+data 'TMPL' (128, "PROG") {
+	$"0850 726F 6772 616D 734F 434E 5405 2A2A"            /* .ProgramsOCNT.** */
+	$"2A2A 2A4C 5354 4304 4E61 6D65 5053 5452"            /* ***LSTC.NamePSTR */
+	$"0641 7574 686F 7250 5354 5204 436F 6465"            /* .AuthorPSTR.Code */
+	$"5053 5452 0753 7065 6369 616C 5053 5452"            /* PSTR.SpecialPSTR */
+	$"0546 6C61 6773 484C 4E47 1345 6163 6820"            /* .FlagsHLNG.Each  */
+	$"436F 756E 7420 286D 6178 2031 3629 4F43"            /* Count (max 16)OC */
+	$"4E54 052A 2A2A 2A2A 4C53 5443 0443 6F73"            /* NT.*****LSTC.Cos */
+	$"7444 5752 441B 4D69 6E20 5174 7920 2866"            /* tDWRD.Min Qty (f */
+	$"6972 7374 2073 686F 756C 6420 6265 2030"            /* irst should be 0 */
+	$"2944 5752 4405 2A2A 2A2A 2A4C 5354 4504"            /* )DWRD.*****LSTE. */
+	$"5369 7465 4457 5244 0557 6F72 6C64 4457"            /* SiteDWRD.WorldDW */
+	$"5244 1345 6163 6820 436F 756E 7420 286D"            /* RD.Each Count (m */
+	$"6178 2031 3629 4F43 4E54 052A 2A2A 2A2A"            /* ax 16)OCNT.***** */
+	$"4C53 5443 0443 6F73 7444 5752 441B 4D69"            /* LSTC.CostDWRD.Mi */
+	$"6E20 5174 7920 2866 6972 7374 2073 686F"            /* n Qty (first sho */
+	$"756C 6420 6265 2030 2944 5752 4405 2A2A"            /* uld be 0)DWRD.** */
+	$"2A2A 2A4C 5354 4504 5369 7465 4457 5244"            /* ***LSTE.SiteDWRD */
+	$"0557 6F72 6C64 4457 5244 052A 2A2A 2A2A"            /* .WorldDWRD.***** */
+	$"4C53 5445"                                          /* LSTE */
+};
+
+data 'TMPL' (129, "CTRY") {
+	$"052A 2A2A 2A2A 4F43 4E54 052A 2A2A 2A2A"            /* .*****OCNT.***** */
+	$"4C53 5443 0743 6F75 6E74 7279 5053 5452"            /* LSTC.CountryPSTR */
+	$"0B45 6E67 6C69 7368 4E61 6D65 5053 5452"            /* .EnglishNamePSTR */
+	$"0443 6F64 6550 5354 5204 5261 7465 5053"            /* .CodePSTR.RatePS */
+	$"5452 0A4D 696E 2050 6170 6572 3144 4C4E"            /* TR.Min Paper1DLN */
+	$"470A 4D69 6E20 5061 7065 7232 444C 4E47"            /* G.Min Paper2DLNG */
+	$"052A 2A2A 2A2A 4C53 5445"                           /* .*****LSTE */
+};
+
+data 'TMPL' (130, "BARC") {
+	$"052A 2A2A 2A2A 4C53 5442 0443 6F64 6548"            /* .*****LSTB.CodeH */
+	$"4C4E 4705 2A2A 2A2A 2A4C 5354 45"                   /* LNG.*****LSTE */
+};
+
+data 'TMPL' (131, "SCRL") {
+	$"1A50 726F 6772 616D 2063 6F64 6520 746F"            /* .Program code to */
+	$"2053 6372 6F6C 6C20 746F 3A50 5354 52"              /*  Scroll to:PSTR */
+};
+
+resource 'MBAR' (128) {
+	{	/* array MenuArray: 3 elements */
+		/* [1] */
+		128,
+		/* [2] */
+		129,
+		/* [3] */
+		130
+	}
+};
+
+resource 'icl4' (128, purgeable) {
+	$"0000 0000 0000 000F F000 0000 0000 0000"
+	$"0000 0000 0000 00F7 7F00 0000 0000 0000"
+	$"0000 0000 0000 0F77 77F0 0000 0000 0000"
+	$"0000 0000 0000 F777 777F 0000 0000 0000"
+	$"0000 0000 000F 7777 7777 F000 0000 0000"
+	$"0000 0000 00F7 7777 7777 7F00 0000 0000"
+	$"0000 0000 0F77 7771 1777 77F0 0000 0000"
+	$"0000 0000 F777 7771 1777 777F 0000 0000"
+	$"0000 000F 7777 7111 1117 7777 F000 0000"
+	$"0000 00F7 7777 1111 1111 7777 7F00 0000"
+	$"0000 0F77 7771 1771 1771 1777 77F0 0000"
+	$"0000 F777 7771 1771 1771 1777 777F 0000"
+	$"000F 7777 7771 1771 1777 7777 7777 F000"
+	$"00F7 7777 7771 1771 1777 7777 7777 7F00"
+	$"0F77 7777 7771 1171 1777 7777 7777 77F0"
+	$"F777 7777 7777 1111 1117 7777 7777 777F"
+	$"F777 7777 7777 7111 1111 7777 7777 777F"
+	$"0F77 7777 7777 7771 1711 1777 7777 77F0"
+	$"00F7 7777 7777 7771 1771 1777 7777 7F00"
+	$"000F 7777 7777 7771 1771 1777 7777 F000"
+	$"0000 F777 7771 1771 1771 1777 777F 0000"
+	$"0000 0F77 7771 1771 1771 1777 77F0 0000"
+	$"0000 00F7 7777 1111 1111 7777 7F00 0000"
+	$"0000 000F 7777 7111 1117 7777 F000 0000"
+	$"0000 0000 F777 7771 1777 777F 0000 0000"
+	$"0000 0000 0F77 7771 1777 77F0 0000 0000"
+	$"0000 0000 00F7 7777 7777 7F00 0000 0000"
+	$"0000 0000 000F 7777 7777 F000 0000 0000"
+	$"0000 0000 0000 F777 777F 0000 0000 0000"
+	$"0000 0000 0000 0F77 77F0 0000 0000 0000"
+	$"0000 0000 0000 00F7 7F00 0000 0000 0000"
+	$"0000 0000 0000 000F F0"
+};
+
+resource 'icl4' (-16455, purgeable) {
+	$"0000 0000 0000 000F F000 0000 0000 0000"
+	$"0000 0000 0000 00F7 7F00 0000 0000 0000"
+	$"0000 0000 0000 0F77 77F0 0000 0000 0000"
+	$"0000 0000 0000 F777 777F 0000 0000 0000"
+	$"0000 0000 000F 7777 7777 F000 0000 0000"
+	$"0000 0000 00F7 7777 7777 7F00 0000 0000"
+	$"0000 0000 0F77 7771 1777 77F0 0000 0000"
+	$"0000 0000 F777 7771 1777 777F 0000 0000"
+	$"0000 000F 7777 7111 1117 7777 F000 0000"
+	$"0000 00F7 7777 1111 1111 7777 7F00 0000"
+	$"0000 0F77 7771 1771 1771 1777 77F0 0000"
+	$"0000 F777 7771 1771 1771 1777 777F 0000"
+	$"000F 7777 7771 1771 1777 7777 7777 F000"
+	$"00F7 7777 7771 1771 1777 7777 7777 7F00"
+	$"0F77 7777 7771 1171 1777 7777 7777 77F0"
+	$"F777 7777 7777 1111 1117 7777 7777 777F"
+	$"F777 7777 7777 7111 1111 7777 7777 777F"
+	$"0F77 7777 7777 7771 1711 1777 7777 77F0"
+	$"00F7 7777 7777 7771 1771 1777 7777 7F00"
+	$"000F 7777 7777 7771 1771 1777 7777 F000"
+	$"0000 F777 7771 1771 1771 1777 777F 0000"
+	$"0000 0F77 7771 1771 1771 1777 77F0 0000"
+	$"0000 00F7 7777 1111 1111 7777 7F00 0000"
+	$"0000 000F 7777 7111 1117 7777 F000 0000"
+	$"0000 0000 F777 7771 1777 777F 0000 0000"
+	$"0000 0000 0F77 7771 1777 77F0 0000 0000"
+	$"0000 0000 00F7 7777 7777 7F00 0000 0000"
+	$"0000 0000 000F 7777 7777 F000 0000 0000"
+	$"0000 0000 0000 F777 777F 0000 0000 0000"
+	$"0000 0000 0000 0F77 77F0 0000 0000 0000"
+	$"0000 0000 0000 00F7 7F00 0000 0000 0000"
+	$"0000 0000 0000 000F F0"
+};
+
+resource 'ics4' (128, purgeable) {
+	$"0000 000F 0000 0000 0000 00F7 F000 0000"
+	$"0000 0F77 7F00 0000 0000 F77F 77F0 0000"
+	$"000F 77FF F77F 0000 00F7 7F7F 7F77 F000"
+	$"0F77 7F7F 7777 7F00 F777 7F7F 7777 77F0"
+	$"F777 77FF F777 77F0 0F77 777F 7F77 7F00"
+	$"00F7 7F7F 7F77 F000 000F 77FF F77F 0000"
+	$"0000 F77F 77F0 0000 0000 0F77 7F00 0000"
+	$"0000 00F7 F000 0000 0000 000F"
+};
+
+resource 'cicn' (128, purgeable) {
+	8,
+	{0, 0, 32, 32},
+	2,
+	$"0001 8000 0003 C000 0007 E000 000F F000"
+	$"001F F800 003F FC00 007F FE00 00FF FF00"
+	$"01FF FF80 03FF FFC0 07FF FFE0 0FFF FFF0"
+	$"1FFF FFF8 3FFF FFFC 7FFF FFFE FFFF FFFF"
+	$"FFFF FFFF 7FFF FFFE 3FFF FFFC 1FFF FFF8"
+	$"0FFF FFF0 07FF FFE0 03FF FFC0 01FF FF80"
+	$"00FF FF00 007F FE00 003F FC00 001F F800"
+	$"000F F000 0007 E000 0003 C000 0001 8000",
+	$"0001 8000 0002 4000 0004 2000 0008 1000"
+	$"0010 0800 0020 0400 0041 8200 0081 8100"
+	$"0107 E080 020F F040 0419 9820 0819 9810"
+	$"1019 8008 2019 8004 401D 8002 800F E001"
+	$"8007 F001 4001 B802 2001 9804 1001 9808"
+	$"0819 9810 0419 9820 020F F040 0107 E080"
+	$"0081 8100 0041 8200 0020 0400 0010 0800"
+	$"0008 1000 0004 2000 0002 4000 0001 8000",
+	{	/* array ColorSpec: 4 elements */
+		/* [1] */
+		65535, 65535, 65535,
+		/* [2] */
+		0, 39321, 65535,
+		/* [3] */
+		65535, 65535, 0,
+		/* [4] */
+		0, 0, 0
+	},
+	$"0000 0003 C000 0000 0000 000D 7000 0000"
+	$"0000 0035 5C00 0000 0000 00D5 5700 0000"
+	$"0000 0355 55C0 0000 0000 0D55 5570 0000"
+	$"0000 3556 955C 0000 0000 D556 9557 0000"
+	$"0003 556A A955 C000 000D 55AA AA55 7000"
+	$"0035 5696 9695 5C00 00D5 5696 9695 5700"
+	$"0355 5696 9555 55C0 0D55 5696 9555 5570"
+	$"3555 56A6 9555 555C D555 55AA A955 5557"
+	$"D555 556A AA55 5557 3555 5556 9A95 555C"
+	$"0D55 5556 9695 5570 0355 5556 9695 55C0"
+	$"00D5 5696 9695 5700 0035 5696 9695 5C00"
+	$"000D 55AA AA55 7000 0003 556A A955 C000"
+	$"0000 D556 9557 0000 0000 3556 955C 0000"
+	$"0000 0D55 5570 0000 0000 0355 55C0 0000"
+	$"0000 00D5 5700 0000 0000 0035 5C00 0000"
+	$"0000 000D 7000 0000 0000 0003 C000 0000"
+};
+
+resource 'cicn' (928, purgeable) {
+	8,
+	{0, 0, 32, 32},
+	2,
+	$"0001 0000 0003 8000 0007 C000 000F E000"
+	$"001F F000 003F F800 007F FC00 00FF FE00"
+	$"01FF FF00 03FF FF80 07FF FFC0 0FFF FFE0"
+	$"1FFF FFF0 3FFF FFF8 7FFF FFFC FFFF FFFE"
+	$"7FFF FFFC 3FFF FFF8 1FFF FFF0 0FFF FFE0"
+	$"07FF FFC0 03FF FF80 01FF FF00 00FF FE00"
+	$"007F FC00 003F F800 001F F000 000F E000"
+	$"0007 C000 0003 8000 0001 0000 0000 0000",
+	$"0001 0000 0002 8000 0004 4000 0008 2000"
+	$"0010 1000 0020 0800 0040 0400 0080 0200"
+	$"0100 0300 0200 0380 0400 03C0 0800 03E0"
+	$"1000 03F0 2000 03F8 4000 03FC 80FF FFFE"
+	$"40FF FFFC 20FF FFF8 10FF FFF0 08FF FFE0"
+	$"04FF FFC0 02FF FF80 01FF FF00 00FF FE00"
+	$"007F FC00 003F F800 001F F000 000F E000"
+	$"0007 C000 0003 8000 0001 0000 0000 0000",
+	{	/* array ColorSpec: 4 elements */
+		/* [1] */
+		65535, 65535, 65535,
+		/* [2] */
+		0, 39321, 65535,
+		/* [3] */
+		0, 0, 56797,
+		/* [4] */
+		0, 0, 0
+	},
+	$"0000 0003 0000 0000 0000 000D C000 0000"
+	$"0000 0035 7000 0000 0000 00D5 5C00 0000"
+	$"0000 0355 5700 0000 0000 0D55 55C0 0000"
+	$"0000 3555 5570 0000 0000 D555 555C 0000"
+	$"0003 5555 555F 0000 000D 5555 555E C000"
+	$"0035 5555 555E B000 00D5 5555 555E AC00"
+	$"0355 5555 555E AB00 0D55 5555 555E AAC0"
+	$"3555 5555 555E AAB0 D555 FFFF FFFE AAAC"
+	$"3555 EAAA AAAA AAB0 0D55 EAAA AAAA AAC0"
+	$"0355 EAAA AAAA AB00 00D5 EAAA AAAA AC00"
+	$"0035 EAAA AAAA B000 000D EAAA AAAA C000"
+	$"0003 EAAA AAAB 0000 0000 EAAA AAAC 0000"
+	$"0000 3AAA AAB0 0000 0000 0EAA AAC0 0000"
+	$"0000 03AA AB00 0000 0000 00EA AC00 0000"
+	$"0000 003A B000 0000 0000 000E C000 0000"
+	$"0000 0003 0000 0000 0000 0000 0000 0000"
+};
+
+resource 'cicn' (225, purgeable) {
+	8,
+	{0, 0, 32, 32},
+	2,
+	$"00FF FFF0 00FF FFF0 03FF FFFC 03FF FFFC"
+	$"0FFF FFFF 0FFF FFFF 0FFF FFFF 0FFF FFFF"
+	$"0FFF FFFF 0FFF FFFF 0FFF FFFF 0FFF FFFF"
+	$"0FFF FFFF 0FFF FFFF 0FFF FFFF 0FFF FFFF"
+	$"0FFF FFFF 0FFF FFFF 0FFF FFFF 0FFF FFFF"
+	$"0FFF FFFF 0FFF FFFF 3FFF FFFF 3FFF FFFF"
+	$"FFFF FFFC FFFF FFFC FFFF FFF0 FFFF FFF0"
+	$"0000 0000 0000 0000 0000 0000 0000 0000",
+	$"00FF FFF0 00FF FFF0 0300 000C 0300 000C"
+	$"0C00 0003 0C00 0003 0C00 0003 0C00 0003"
+	$"0C3C FFC3 0C3C FFC3 0C00 0003 0C00 0003"
+	$"0C00 0003 0C00 0003 0C3F 3CC3 0C3F 3CC3"
+	$"0C00 0003 0C00 0003 0C00 0003 0C00 0003"
+	$"0C33 CFC3 0C33 CFC3 3000 0003 3000 0003"
+	$"C000 000C C000 000C FFFF FFF0 FFFF FFF0"
+	$"0000 0000 0000 0000 0000 0000 0000 0000",
+	{	/* array ColorSpec: 4 elements */
+		/* [1] */
+		65535, 65535, 65535,
+		/* [2] */
+		61166, 61166, 61166,
+		/* [3] */
+		34952, 34952, 34952,
+		/* [4] */
+		0, 0, 0
+	},
+	$"0000 FFFF FFFF FF00 0000 FFFF FFFF FF00"
+	$"000F A555 5555 5AF0 000F A555 5555 5AF0"
+	$"00FA 5555 5555 55AF 00FA 5555 5555 55AF"
+	$"00F5 5555 5555 555F 00F5 5555 5555 555F"
+	$"00F5 5FF5 FFFF F55F 00F5 5FF5 FFFF F55F"
+	$"00F5 5555 5555 555F 00F5 5555 5555 555F"
+	$"00F5 5555 5555 555F 00F5 5555 5555 555F"
+	$"00F5 5FFF 5FF5 F55F 00F5 5FFF 5FF5 F55F"
+	$"00F5 5555 5555 555F 00F5 5555 5555 555F"
+	$"00F5 5555 5555 555F 00F5 5555 5555 555F"
+	$"00F5 5F5F F5FF F55F 00F5 5F5F F5FF F55F"
+	$"0FA5 5555 5555 55AF 0FA5 5555 5555 55AF"
+	$"FA55 5555 5555 5AF0 FA55 5555 5555 5AF0"
+	$"FFFF FFFF FFFF FF00 FFFF FFFF FFFF FF00"
+	$"0000 0000 0000 0000 0000 0000 0000 0000"
+	$"0000 0000 0000 0000 0000 0000 0000 0000"
+};
+
+resource 'cicn' (226) {
+	8,
+	{0, 0, 32, 32},
+	2,
+	$"0000 0000 0000 0000 FFFF FFFC FFFF FFFC"
+	$"FFFF FFFC FFFF FFFC FFFF FFFC FFFF FFFC"
+	$"FFFF FFFC FFFF FFFC FFFF FFFC FFFF FFFC"
+	$"FFFF FFFC FFFF FFFC FFFF FFFC FFFF FFFC"
+	$"FFFF FFFC FFFF FFFC FFFF FFFC FFFF FFFC"
+	$"FFFF FFFC FFFF FFFC FFFF FFFC FFFF FFFC"
+	$"0000 0000 0000 0000 0000 0000 0000 0000"
+	$"0000 0000 0000 0000 0000 0000 0000 0000",
+	$"0000 0000 0000 0000 FFFF FFFC FFFF FFFC"
+	$"CCC0 030C CCC0 030C F300 030C F300 030C"
+	$"CCC0 03FC CCC0 03FC C000 000C C000 000C"
+	$"C033 300C C033 300C C0CC C00C C0CC C00C"
+	$"C033 300C C033 300C C000 000C C000 000C"
+	$"C000 000C C000 000C FFFF FFFC FFFF FFFC"
+	$"0000 0000 0000 0000 0000 0000 0000 0000"
+	$"0000 0000 0000 0000 0000 0000 0000 0000",
+	{	/* array ColorSpec: 4 elements */
+		/* [1] */
+		65535, 65535, 65535,
+		/* [2] */
+		43690, 43690, 43690,
+		/* [3] */
+		56797, 56797, 56797,
+		/* [4] */
+		0, 0, 0
+	},
+	$"0000 0000 0000 0000 0000 0000 0000 0000"
+	$"FFFF FFFF FFFF FFF0 FFFF FFFF FFFF FFF0"
+	$"F5F5 FAAA AAAF 55F0 F5F5 FAAA AAAF 55F0"
+	$"FF5F AAAA AAAF 55F0 FF5F AAAA AAAF 55F0"
+	$"F5F5 FAAA AAAF FFF0 F5F5 FAAA AAAF FFF0"
+	$"FAAA AAAA AAAA AAF0 FAAA AAAA AAAA AAF0"
+	$"FAAA AF5F 5FAA AAF0 FAAA AF5F 5FAA AAF0"
+	$"FAAA F5F5 FAAA AAF0 FAAA F5F5 FAAA AAF0"
+	$"FAAA AF5F 5FAA AAF0 FAAA AF5F 5FAA AAF0"
+	$"FAAA AAAA AAAA AAF0 FAAA AAAA AAAA AAF0"
+	$"FAAA AAAA AAAA AAF0 FAAA AAAA AAAA AAF0"
+	$"FFFF FFFF FFFF FFF0 FFFF FFFF FFFF FFF0"
+	$"0000 0000 0000 0000 0000 0000 0000 0000"
+	$"0000 0000 0000 0000 0000 0000 0000 0000"
+	$"0000 0000 0000 0000 0000 0000 0000 0000"
+	$"0000 0000 0000 0000 0000 0000 0000 0000"
+};
+
+data 'cicn' (0) {
+	$"0000 0000 8010 0000 0000 0020 0020 0000"            /* ....Ä...... . .. */
+	$"0000 0000 0000 0048 0000 0048 0000 0000"            /* .......H...H.... */
+	$"0004 0001 0004 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0004 0000 0000 0020 0020"            /* ............. .  */
+	$"0000 0000 0004 0000 0000 0020 0020 0000"            /* ........... . .. */
+	$"0000 01FF FF80 03FF FFC0 07FF FFE0 0FFF"            /* ...ˇˇÄ.ˇˇ¿.ˇˇ‡.ˇ */
+	$"FFF0 1FFF FFF8 3FFF FFFC 7FFF FFFE FFFF"            /* ˇ.ˇˇ¯?ˇˇ¸.ˇˇ˛ˇˇ */
+	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
+	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
+	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
+	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
+	$"FFFF FFFF FFFF FFFF FFFF 7FFF FFFE 3FFF"            /* ˇˇˇˇˇˇˇˇˇˇ.ˇˇ˛?ˇ */
+	$"FFFC 1FFF FFF8 0FFF FFF0 07FF FFE0 03FF"            /* ˇ¸.ˇˇ¯.ˇˇ.ˇˇ‡.ˇ */
+	$"FFC0 00FF FF00 01FF FF80 03FF FFC0 07FE"            /* ˇ¿.ˇˇ..ˇˇÄ.ˇˇ¿.˛ */
+	$"FFE0 0FFC 7FF0 1FEC 67F8 3FC4 47FC 7FC4"            /* ˇ‡.¸..Ïg¯?ƒG¸.ƒ */
+	$"47FE FF44 47FF FE44 47FF FE44 47FF FE44"            /* G˛ˇDGˇ˛DGˇ˛DGˇ˛D */
+	$"47FF FE44 47FF FE44 47FF FE40 071F FE00"            /* Gˇ˛DGˇ˛DGˇ˛@..˛. */
+	$"061F FE00 061F FE00 043F FE00 003F FE00"            /* ..˛...˛..?˛..?˛. */
+	$"007F FE00 007F FE00 00FF FE00 00FF FE00"            /* ..˛...˛..ˇ˛..ˇ˛. */
+	$"01FF FE00 01FF 7E04 03FE 3F02 07FC 1FFF"            /* .ˇ˛..ˇ~..˛?..¸.ˇ */
+	$"FFF8 0FFF FFF0 07FF FFE0 03FF FFC0 01FF"            /* ˇ¯.ˇˇ.ˇˇ‡.ˇˇ¿.ˇ */
+	$"FF80 0000 0000 0000 000A 0000 FFFF FFFF"            /* ˇÄ..........ˇˇˇˇ */
+	$"FFFF 0001 FFFF CCCC 9999 0002 FFFF 0000"            /* ˇˇ..ˇˇÃÃôô..ˇˇ.. */
+	$"0000 0003 CCCC 9999 6666 0004 9999 6666"            /* ....ÃÃôôff..ôôff */
+	$"3333 0005 9999 0000 0000 0006 DDDD 0000"            /* 33..ôô......››.. */
+	$"0000 0007 AAAA 0000 0000 0008 5555 0000"            /* ....™™......UU.. */
+	$"0000 0009 AAAA AAAA AAAA 000F 0000 0000"            /* ....™™™™™™...... */
+	$"0000 0000 0009 FFFF FFFF FFFF FFFF 9000"            /* ......ˇˇˇˇˇˇˇˇê. */
+	$"0000 0000 009F 2222 2222 2222 2222 F900"            /* .....ü""""""""˘. */
+	$"0000 0000 09F2 6666 666F 6666 6666 6F90"            /* .....Úfffoffffoê */
+	$"0000 0000 9F26 6666 66F3 F666 6666 66F9"            /* ....ü&fffÛˆffff˘ */
+	$"0000 0009 F266 666F 6F11 4F6F F666 666F"            /* ....Úffoo.Ooˆffo */
+	$"9000 009F 2666 66F3 FF11 4FF3 4F66 6666"            /* ê..ü&ffÛˇ.OÛOfff */
+	$"F900 09F2 6666 6F11 4F11 4F11 4F66 6666"            /* ˘..Úffo.O.O.Offf */
+	$"6F90 9F26 6666 FF11 4F11 4F11 4F66 6666"            /* oêü&ffˇ.O.O.Offf */
+	$"66F9 F266 666F 4F11 4F11 4F11 4F66 6666"            /* f˘ÚffoO.O.O.Offf */
+	$"665F F266 66F1 4F11 4F11 4F11 4F66 6666"            /* f_ÚffÒO.O.O.Offf */
+	$"665F F266 66F1 4F11 4F11 4F11 4F66 6666"            /* f_ÚffÒO.O.O.Offf */
+	$"665F F266 66F1 4F11 4F11 4F11 4F66 6666"            /* f_ÚffÒO.O.O.Offf */
+	$"665F F266 66F1 4F11 3F11 3F11 4F66 6666"            /* f_ÚffÒO.?.?.Offf */
+	$"665F F266 66F1 3F11 1F11 1F11 4F66 8FF6"            /* f_ÚffÒ?.....Ofèˆ */
+	$"665F F266 66F1 1F11 1111 1111 4F68 433F"            /* f_ÚffÒ......OhC? */
+	$"665F F266 66F1 1111 1111 1111 4F74 114F"            /* f_ÚffÒ......Ot.O */
+	$"665F F266 66F1 1111 1111 1111 3FF1 114F"            /* f_ÚffÒ......?Ò.O */
+	$"665F F266 66F1 1111 1111 1111 1F11 14F6"            /* f_ÚffÒ.........ˆ */
+	$"665F F266 66F1 1111 1111 1111 1111 14F6"            /* f_ÚffÒ.........ˆ */
+	$"665F F266 66F1 1111 1111 1111 1111 4F66"            /* f_ÚffÒ........Of */
+	$"665F F266 66F1 1111 1111 1111 1113 4F66"            /* f_ÚffÒ........Of */
+	$"665F F266 66F1 1111 1111 1111 1114 F666"            /* f_ÚffÒ........ˆf */
+	$"665F F266 66F1 1111 1111 1111 1134 F666"            /* f_ÚffÒ.......4ˆf */
+	$"665F F266 66F1 1111 1111 1111 114F 6666"            /* f_ÚffÒ.......Off */
+	$"665F F266 6674 1111 1111 1111 134F 6666"            /* f_Úfft.......Off */
+	$"665F 9F66 666F 1111 1F31 1113 34F6 6666"            /* f_üffo...1..4ˆff */
+	$"65F9 09F6 6666 F344 44F4 4444 4F66 6666"            /* e˘.ˆffÛDDÙDDOfff */
+	$"5F90 009F 6666 6FFF FF6F FFFF F666 6665"            /* _ê.üffoˇˇoˇˇˆffe */
+	$"F900 0009 F666 6666 6666 6666 6666 665F"            /* ˘...ˆffffffffff_ */
+	$"9000 0000 9F66 6666 6666 6666 6666 65F9"            /* ê...üfffffffffe˘ */
+	$"0000 0000 09F5 5555 5555 5555 5555 5F90"            /* .....ıUUUUUUUU_ê */
+	$"0000 0000 009F FFFF FFFF FFFF FFFF F900"            /* .....üˇˇˇˇˇˇˇˇ˘. */
+	$"0000"                                               /* .. */
+};
+
+data 'cicn' (1) {
+	$"0000 0000 8010 0000 0000 0020 0020 0000"            /* ....Ä...... . .. */
+	$"0000 0000 0000 0048 0000 0048 0000 0000"            /* .......H...H.... */
+	$"0004 0001 0004 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0004 0000 0000 0020 0020"            /* ............. .  */
+	$"0000 0000 0004 0000 0000 0020 0020 0000"            /* ........... . .. */
+	$"0000 FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ..ˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
+	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
+	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
+	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
+	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
+	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
+	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
+	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
+	$"FFFF FFFF FFFF 807F FFFF 807F FFFF 807F"            /* ˇˇˇˇˇˇÄ.ˇˇÄ.ˇˇÄ. */
+	$"FFFF 807F FFFF 807F C0FF 887F 003F 887E"            /* ˇˇÄ.ˇˇÄ.¿ˇà..?à~ */
+	$"001F 887C 000F 8078 0007 8078 0007 8070"            /* ..à|..Äx..Äx..Äp */
+	$"0003 8071 DDC3 8070 0003 8070 0003 8071"            /* ..Äq›√Äp..Äp..Äq */
+	$"DD43 8070 0003 8070 0003 8071 D703 8070"            /* ›CÄp..Äp..Äq◊.Äp */
+	$"0003 87F0 0003 81F1 EEC3 81F0 0007 81F0"            /* ..á..ÅÒÓ√Å..Å */
+	$"0007 81F0 000F 81E0 001F 8F80 007F 81FF"            /* ..Å..Å‡..èÄ..Åˇ */
+	$"FFFF 81FF FFFF 81FF FFFF 81FF FFFF FFFF"            /* ˇˇÅˇˇˇÅˇˇˇÅˇˇˇˇˇ */
+	$"FFFF 0000 0000 0000 0007 0000 FFFF FFFF"            /* ˇˇ..........ˇˇˇˇ */
+	$"FFFF 0001 FFFF CCCC 9999 0002 CCCC CCCC"            /* ˇˇ..ˇˇÃÃôô..ÃÃÃÃ */
+	$"FFFF 0003 CCCC 9999 6666 0004 9999 6666"            /* ˇˇ..ÃÃôôff..ôôff */
+	$"3333 0005 8888 8888 8888 0006 1111 1111"            /* 33..àààààà...... */
+	$"1111 000F 0000 0000 0000 6666 6666 6666"            /* ..........ffffff */
+	$"6666 6666 6666 6666 6666 6111 1113 4666"            /* ffffffffffa...Ff */
+	$"6666 6666 6666 6666 6666 6111 1111 4666"            /* ffffffffffa...Ff */
+	$"6666 6666 6666 6666 6666 6111 1111 4666"            /* ffffffffffa...Ff */
+	$"6666 6666 6666 6666 6666 6111 1111 4666"            /* ffffffffffa...Ff */
+	$"6666 6666 6666 6666 6666 6113 3111 4666"            /* ffffffffffa.1.Ff */
+	$"6666 6622 2222 6666 6666 6113 6111 4666"            /* fff"""ffffa.a.Ff */
+	$"6666 2220 0002 2566 6666 6113 6111 4666"            /* ff" ..%fffa.a.Ff */
+	$"6662 2000 0000 2256 6666 6111 6111 4666"            /* fb ..."Vffa.a.Ff */
+	$"6622 0000 0000 0225 6666 6111 1111 4666"            /* f".....%ffa...Ff */
+	$"6220 0000 0000 0022 5666 6111 1111 4666"            /* b ....."Vfa...Ff */
+	$"6200 0000 0000 0002 5666 6111 1111 4666"            /* b.......Vfa...Ff */
+	$"2200 0000 0000 0002 2566 6111 1111 4666"            /* ".......%fa...Ff */
+	$"2006 6606 6606 6600 2566 6111 1111 4666"            /*  .f.f.f.%fa...Ff */
+	$"2000 0000 0000 0000 2566 6111 1111 4666"            /*  .......%fa...Ff */
+	$"2000 0000 0000 0000 2566 6111 1111 4666"            /*  .......%fa...Ff */
+	$"2006 6606 6606 0600 2566 6111 1111 4666"            /*  .f.f...%fa...Ff */
+	$"2000 0000 0000 0000 2566 6111 1111 4666"            /*  .......%fa...Ff */
+	$"2000 0000 0000 0000 2566 6111 1111 4666"            /*  .......%fa...Ff */
+	$"2006 6606 0666 0000 2566 6111 1133 4666"            /*  .f..f..%fa..3Ff */
+	$"2000 0000 0000 0000 2566 6111 1666 6666"            /*  .......%fa..fff */
+	$"2000 0000 0000 0002 2566 6111 1346 6666"            /*  .......%fa..Fff */
+	$"2006 6660 6660 6602 5566 6111 1146 6666"            /*  .f`f`f.Ufa..Fff */
+	$"2000 0000 0000 0022 5666 6111 1146 6666"            /*  ......"Vfa..Fff */
+	$"2000 0000 0000 0225 5666 6111 1146 6666"            /*  ......%Vfa..Fff */
+	$"2000 0000 0002 2255 6666 6113 3336 6662"            /*  ....."Uffa.36fb */
+	$"2222 2222 2222 5556 6666 6111 6666 6222"            /* """"""UVffa.ffb" */
+	$"5555 5555 5555 5666 6666 6111 1116 6666"            /* UUUUUUVfffa...ff */
+	$"6666 6666 6666 6666 6666 6111 1146 6666"            /* ffffffffffa..Fff */
+	$"6666 6666 6666 6666 6666 6111 1146 6666"            /* ffffffffffa..Fff */
+	$"6666 6666 6666 6666 6666 6344 4446 6666"            /* ffffffffffcDDFff */
+	$"6666 6666 6666 6666 6666 6666 6666 6666"            /* ffffffffffffffff */
+	$"6666 6666 6666 6666 6666"                           /* ffffffffff */
+};
+
+data 'cicn' (2) {
+	$"0000 0000 8010 0000 0000 0020 0020 0000"            /* ....Ä...... . .. */
+	$"0000 0000 0000 0048 0000 0048 0000 0000"            /* .......H...H.... */
+	$"0004 0001 0004 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0004 0000 0000 0020 0020"            /* ............. .  */
+	$"0000 0000 0004 0000 0000 0020 0020 0000"            /* ........... . .. */
+	$"0000 0001 8000 0003 C000 0007 E000 0007"            /* ....Ä...¿...‡... */
+	$"E000 000F F000 000F F000 001F F800 001F"            /* ‡.........¯... */
+	$"F800 003F FC00 003F FC00 007F FE00 007F"            /* ¯..?¸..?¸...˛... */
+	$"FE00 00FF FF00 00FF FF00 01FF FF80 01FF"            /* ˛..ˇˇ..ˇˇ..ˇˇÄ.ˇ */
+	$"FF80 03FF FFC0 03FF FFC0 07FF FFE0 07FF"            /* ˇÄ.ˇˇ¿.ˇˇ¿.ˇˇ‡.ˇ */
+	$"FFE0 0FFF FFF0 0FFF FFF0 1FFF FFF8 1FFF"            /* ˇ‡.ˇˇ.ˇˇ.ˇˇ¯.ˇ */
+	$"FFF8 3FFF FFFC 3FFF FFFC 7FFF FFFE 7FFF"            /* ˇ¯?ˇˇ¸?ˇˇ¸.ˇˇ˛.ˇ */
+	$"FFFE FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇ˛ˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
+	$"FFFF 0001 8000 0003 C000 0003 C000 0006"            /* ˇˇ..Ä...¿...¿... */
+	$"6000 0006 6000 000C 3000 000C 3000 0018"            /* `...`...0...0... */
+	$"1800 0019 9800 0033 CC00 0033 CC00 0063"            /* ....ò..3Ã..3Ã..c */
+	$"C600 0063 C600 00C3 C300 00C3 C300 0183"            /* ∆..c∆..√√..√√..É */
+	$"C180 0183 C180 0303 C0C0 0303 C0C0 0603"            /* ¡Ä.É¡Ä..¿¿..¿¿.. */
+	$"C060 0601 8060 0C01 8030 0C00 0030 1800"            /* ¿`..Ä`..Ä0...0.. */
+	$"0018 1801 8018 3003 C00C 3003 C00C 6001"            /* ....Ä.0.¿.0.¿.`. */
+	$"8006 6000 0006 C000 0003 FFFF FFFF 7FFF"            /* Ä.`...¿...ˇˇˇˇ.ˇ */
+	$"FFFE 0000 0000 0000 0006 0000 FFFF FFFF"            /* ˇ˛..........ˇˇˇˇ */
+	$"FFFF 0001 FFFF CCCC 3333 0002 CCCC 9999"            /* ˇˇ..ˇˇÃÃ33..ÃÃôô */
+	$"0000 0003 9999 6666 0000 0004 3333 3333"            /* ....ôôff....3333 */
+	$"3333 0005 BBBB BBBB BBBB 000F 0000 0000"            /* 33..ªªªªªª...... */
+	$"0000 0000 0000 0000 000F F000 0000 0000"            /* ............... */
+	$"0000 0000 0000 0000 004F F400 0000 0000"            /* .........OÙ..... */
+	$"0000 0000 0000 0000 05FF FF50 0000 0000"            /* .........ˇˇP.... */
+	$"0000 0000 0000 0000 04F3 3F40 0000 0000"            /* .........Û?@.... */
+	$"0000 0000 0000 0000 5FF1 1FF5 0000 0000"            /* ........_Ò.ı.... */
+	$"0000 0000 0000 0000 4F31 13F4 0000 0000"            /* ........O1.Ù.... */
+	$"0000 0000 0000 0005 FF11 11FF 5000 0000"            /* ........ˇ..ˇP... */
+	$"0000 0000 0000 0004 F311 113F 4000 0000"            /* ........Û..?@... */
+	$"0000 0000 0000 005F F12F F21F F500 0000"            /* ......._Ò/Ú.ı... */
+	$"0000 0000 0000 004F 314F F413 F400 0000"            /* .......O1OÙ.Ù... */
+	$"0000 0000 0000 05FF 11FF FF11 FF50 0000"            /* .......ˇ.ˇˇ.ˇP.. */
+	$"0000 0000 0000 04F3 11FF FF11 3F40 0000"            /* .......Û.ˇˇ.?@.. */
+	$"0000 0000 0000 5FF1 11FF FF11 1FF5 0000"            /* ......_Ò.ˇˇ..ı.. */
+	$"0000 0000 0000 4F31 11FF FF11 13F4 0000"            /* ......O1.ˇˇ..Ù.. */
+	$"0000 0000 0005 FF11 11FF FF11 11FF 5000"            /* ......ˇ..ˇˇ..ˇP. */
+	$"0000 0000 0004 F311 11FF FF11 113F 4000"            /* ......Û..ˇˇ..?@. */
+	$"0000 0000 005F F111 11FF FF11 111F F500"            /* ....._Ò..ˇˇ...ı. */
+	$"0000 0000 004F 3111 11FF FF11 1113 F400"            /* .....O1..ˇˇ...Ù. */
+	$"0000 0000 05FF 1111 11FF FF11 1111 FF50"            /* .....ˇ...ˇˇ...ˇP */
+	$"0000 0000 04F3 1111 114F F411 1111 3F40"            /* .....Û...OÙ...?@ */
+	$"0000 0000 5FF1 1111 112F F211 1111 1FF5"            /* ...._Ò.../Ú....ı */
+	$"0000 0000 4F31 1111 111F F111 1111 13F4"            /* ....O1....Ò....Ù */
+	$"0000 0005 FF11 1111 1112 2111 1111 11FF"            /* ....ˇ.....!....ˇ */
+	$"5000 0004 F311 1111 1111 1111 1111 113F"            /* P...Û..........? */
+	$"4000 005F F111 1111 112F F211 1111 111F"            /* @.._Ò..../Ú..... */
+	$"F500 004F 3111 1111 11FF FF11 1111 1113"            /* ı..O1....ˇˇ..... */
+	$"F400 05FF 1111 1111 11FF FF11 1111 1111"            /* Ù..ˇ.....ˇˇ..... */
+	$"FF50 04F3 1111 1111 112F F211 1111 1111"            /* ˇP.Û...../Ú..... */
+	$"3F40 5FF1 1111 1111 1111 1111 1111 1111"            /* ?@_Ò............ */
+	$"1FF5 FF31 1111 1111 1111 1111 1111 1111"            /* .ıˇ1............ */
+	$"13FF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* .ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
+	$"FFFF 5FFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇ_ˇˇˇˇˇˇˇˇˇˇˇˇˇ */
+	$"FFF5"                                               /* ˇı */
+};
+
+resource 'dctb' (128) {
+	{	/* array ColorSpec: 0 elements */
+	}
+};
+
+resource 'dctb' (200) {
+	{	/* array ColorSpec: 0 elements */
+	}
+};
+
+data 'SCRL' (128) {
+	$"0658 5843 4F44 45"                                  /* .XXCODE */
+};
+
+resource 'ICON' (225) {
+	$"00FF FFF0 00FF FFF0 0300 000C 0300 000C"
+	$"0C00 0003 0C00 0003 0C00 0003 0C00 0003"
+	$"0C3C FFC3 0C3C FFC3 0C00 0003 0C00 0003"
+	$"0C00 0003 0C00 0003 0C3F 3CC3 0C3F 3CC3"
+	$"0C00 0003 0C00 0003 0C00 0003 0C00 0003"
+	$"0C33 CFC3 0C33 CFC3 3000 0003 3000 0003"
+	$"C000 000C C000 000C FFFF FFF0 FFFF FFF0"
+};
+
+resource 'ICON' (128) {
+	$"0001 8000 0002 4000 0004 2000 0008 1000"
+	$"0010 0800 0020 0400 0041 8200 0081 8100"
+	$"0107 E080 020F F040 0419 9820 0819 9810"
+	$"1019 8008 2019 8004 401D 8002 800F E001"
+	$"8007 F001 4001 B802 2001 9804 1001 9808"
+	$"0819 9810 0419 9820 020F F040 0107 E080"
+	$"0081 8100 0041 8200 0020 0400 0010 0800"
+	$"0008 1000 0004 2000 0002 4000 0001 80"
+};
+
+resource 'ICON' (928) {
+	$"0001 0000 0002 8000 0004 4000 0008 2000"
+	$"0010 1000 0020 0800 0040 0400 0080 0200"
+	$"0100 0300 0200 0380 0400 03C0 0800 03E0"
+	$"1000 03F0 2000 03F8 4000 03FC 80FF FFFE"
+	$"40FF FFFC 20FF FFF8 10FF FFF0 08FF FFE0"
+	$"04FF FFC0 02FF FF80 01FF FF00 00FF FE00"
+	$"007F FC00 003F F800 001F F000 000F E000"
+	$"0007 C000 0003 8000 0001"
+};
+
+resource 'ICON' (226) {
+	$"0000 0000 0000 0000 FFFF FFFC FFFF FFFC"
+	$"CCC0 030C CCC0 030C F300 030C F300 030C"
+	$"CCC0 03FC CCC0 03FC C000 000C C000 000C"
+	$"C033 300C C033 300C C0CC C00C C0CC C00C"
+	$"C033 300C C033 300C C000 000C C000 000C"
+	$"C000 000C C000 000C FFFF FFFC FFFF FFFC"
+};
+
+data 'CTRY' (128) {
+	$"0021 0941 7573 7472 616C 6961 0003 4155"            /* .!.Australia..AU */
+	$"4404 312E 3833 0000 0005 0000 0005 0F42"            /* D.1.83.........B */
+	$"656C 6769 912F 4265 6C67 6971 7565 0742"            /* elgië/Belgique.B */
+	$"656C 6769 756D 0342 4546 0434 302E 3400"            /* elgium.BEF.40.4. */
+	$"0000 6400 0000 6406 4272 756E 6569 0003"            /* ..d...d.Brunei.. */
+	$"424E 4404 312E 3834 0000 0001 0000 0001"            /* BND.1.84........ */
+	$"0643 616E 6164 6100 0343 4144 0431 2E36"            /* .Canada..CAD.1.6 */
+	$"3300 0000 0500 0000 0507 4461 6E6D 6172"            /* 3.........Danmar */
+	$"6B07 4465 6E6D 6172 6B03 444B 4B04 372E"            /* k.Denmark.DKK.7. */
+	$"3436 0000 0032 0000 0032 0B44 6575 7473"            /* 46...2...2.Deuts */
+	$"6368 6C61 6E64 0747 6572 6D61 6E79 0344"            /* chland.Germany.D */
+	$"454D 0431 2E39 3600 0000 0500 0000 0506"            /* EM.1.96......... */
+	$"4573 7061 9661 0553 7061 696E 0345 5350"            /* España.Spain.ESP */
+	$"0331 3637 0000 03E8 0000 03E8 0245 550E"            /* .167...Ë...Ë.EU. */
+	$"4575 726F 7065 616E 2055 6E69 6F6E 0358"            /* European Union.X */
+	$"4555 0530 2E39 3933 0000 0005 0000 0005"            /* EU.0.993........ */
+	$"0746 696E 6C61 6E64 0003 4649 4D04 352E"            /* .Finland..FIM.5. */
+	$"3937 0000 0014 0000 0032 0646 7261 6E63"            /* 97.......2.Franc */
+	$"6500 0346 5246 0436 2E35 3800 0000 1400"            /* e..FRF.6.58..... */
+	$"0000 3206 4865 6C6C 6173 0647 7265 6563"            /* ..2.Hellas.Greec */
+	$"6503 4752 4403 3334 3200 0000 C800 0001"            /* e.GRD.342...»... */
+	$"F409 486F 6E67 204B 6F6E 6700 0348 4B44"            /* Ù.Hong Kong..HKD */
+	$"0438 2E35 3300 0000 1400 0000 3207 4963"            /* .8.53.......2.Ic */
+	$"656C 616E 6400 0349 534B 0437 332E 3900"            /* eland..ISK.73.9. */
+	$"0001 F400 0001 F405 496E 6469 6100 0349"            /* ..Ù...Ù.India..I */
+	$"4E52 0434 342E 3900 0000 0500 0000 0507"            /* NR.44.9......... */
+	$"4972 656C 616E 6400 0349 4550 0530 2E37"            /* Ireland..IEP.0.7 */
+	$"3837 0000 0005 0000 0005 0649 7372 6165"            /* 87.........Israe */
+	$"6C00 0349 4C53 0434 2E30 3200 0000 1400"            /* l..ILS.4.02..... */
+	$"0000 3206 4974 616C 6961 0549 7461 6C79"            /* ..2.Italia.Italy */
+	$"0349 544C 0431 3932 3000 0003 E800 0003"            /* .ITL.1920...Ë... */
+	$"E805 4B6F 7265 610B 536F 7574 6820 4B6F"            /* Ë.Korea.South Ko */
+	$"7265 6103 4B52 5704 3134 3930 0000 03E8"            /* rea.KRW.1490...Ë */
+	$"0000 03E8 0A4C 7578 656D 626F 7572 6700"            /* ...Ë.Luxembourg. */
+	$"034C 5546 0434 302E 3400 0000 6400 0000"            /* .LUF.40.4...d... */
+	$"6409 4E65 6465 726C 616E 640B 4E65 7468"            /* d.Nederland.Neth */
+	$"6572 6C61 6E64 7303 4E4C 4703 322E 3200"            /* erlands.NLG.2.2. */
+	$"0000 0A00 0000 190B 4E65 7720 5A65 616C"            /* ........New Zeal */
+	$"616E 6400 034E 5A44 0432 2E31 3600 0000"            /* and..NZD.2.16... */
+	$"0500 0000 0506 4E69 7070 6F6E 054A 6170"            /* ......Nippon.Jap */
+	$"616E 034A 5059 0331 3537 0000 03E8 0000"            /* an.JPY.157...Ë.. */
+	$"03E8 054E 6F72 6765 064E 6F72 7761 7903"            /* .Ë.Norge.Norway. */
+	$"4E4F 4B04 382E 3334 0000 0032 0000 0032"            /* NOK.8.34...2...2 */
+	$"0A85 7374 6572 7265 6963 6807 4175 7374"            /* .Österreich.Aust */
+	$"7269 6103 4154 5304 3133 2E36 0000 0014"            /* ria.ATS.13.6.... */
+	$"0000 0032 0950 2E52 2E43 6869 6E61 0543"            /* ...2.P.R.China.C */
+	$"6869 6E61 0343 4E59 0339 2E33 0000 0001"            /* hina.CNY.9.3.... */
+	$"0000 0001 0850 6F72 7475 6761 6C00 0350"            /* .....Portugal..P */
+	$"5445 0332 3031 0000 01F4 0000 01F4 0953"            /* TE.201...Ù...Ù.S */
+	$"696E 6761 706F 7265 0003 5347 4404 312E"            /* ingapore..SGD.1. */
+	$"3838 0000 0002 0000 0005 0C53 6F75 7468"            /* 88.........South */
+	$"2041 6672 6963 6100 035A 4152 0435 2E38"            /*  Africa..ZAR.5.8 */
+	$"3300 0000 0A00 0000 0A07 5376 6572 6967"            /* 3.........Sverig */
+	$"6506 5377 6564 656E 0353 454B 0438 2E34"            /* e.Sweden.SEK.8.4 */
+	$"3800 0000 1400 0000 320B 5377 6974 7A65"            /* 8.......2.Switze */
+	$"726C 616E 6400 0343 4846 0431 2E36 3400"            /* rland..CHF.1.64. */
+	$"0000 0A00 0000 0A0D 5461 6977 616E 2052"            /* ........Taiwan R */
+	$"2E4F 2E43 2E06 5461 6977 616E 0354 5744"            /* .O.C..Taiwan.TWD */
+	$"0433 382E 3600 0000 3200 0000 320E 556E"            /* .38.6...2...2.Un */
+	$"6974 6564 204B 696E 6764 6F6D 0003 4742"            /* ited Kingdom..GB */
+	$"5004 302E 3636 0000 0005 0000 0005 0355"            /* P.0.66.........U */
+	$"5341 0003 5553 4404 312E 3030 0000 0001"            /* SA..USD.1.00.... */
+	$"0000 0001"                                          /* .... */
+};
+
 data 'BARC' (128, purgeable) {
 	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
 	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
@@ -32,52 +2171,6 @@ data 'BARC' (128, purgeable) {
 	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
 	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
 	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
-};
-
-resource 'BNDL' (128, purgeable) {
-	'Regi',
-	0,
-	{	/* array TypeArray: 2 elements */
-		/* [1] */
-		'FREF',
-		{	/* array IDArray: 1 elements */
-			/* [1] */
-			0, 128
-		},
-		/* [2] */
-		'ICN#',
-		{	/* array IDArray: 1 elements */
-			/* [1] */
-			0, 128
-		}
-	}
-};
-
-resource 'CNTL' (200, "Method Menu", purgeable) {
-	{0, 0, 20, 200},
-	0,
-	visible,
-	0,
-	200,
-	1008,
-	0,
-	""
-};
-
-resource 'CNTL' (201, "Country Menu", purgeable) {
-	{0, 0, 20, 200},
-	0,
-	visible,
-	0,
-	201,
-	1008,
-	0,
-	""
-};
-
-data 'CODE' (0, purgeable, protected) {
-	$"0000 0050 0000 0DF8 0000 0008 0000 0020"            /* ...P...¯.......  */
-	$"0000 3F3C 0001 A9F0"                                /* ..?<..© */
 };
 
 data 'CODE' (1, "Main", locked, protected) {
@@ -4943,70 +7036,9 @@ data 'CODE' (1, "Main", locked, protected) {
 	$"4855 524C 0000"                                     /* HURL.. */
 };
 
-data 'CTRY' (128) {
-	$"0021 0941 7573 7472 616C 6961 0003 4155"            /* .!.Australia..AU */
-	$"4404 312E 3833 0000 0005 0000 0005 0F42"            /* D.1.83.........B */
-	$"656C 6769 912F 4265 6C67 6971 7565 0742"            /* elgië/Belgique.B */
-	$"656C 6769 756D 0342 4546 0434 302E 3400"            /* elgium.BEF.40.4. */
-	$"0000 6400 0000 6406 4272 756E 6569 0003"            /* ..d...d.Brunei.. */
-	$"424E 4404 312E 3834 0000 0001 0000 0001"            /* BND.1.84........ */
-	$"0643 616E 6164 6100 0343 4144 0431 2E36"            /* .Canada..CAD.1.6 */
-	$"3300 0000 0500 0000 0507 4461 6E6D 6172"            /* 3.........Danmar */
-	$"6B07 4465 6E6D 6172 6B03 444B 4B04 372E"            /* k.Denmark.DKK.7. */
-	$"3436 0000 0032 0000 0032 0B44 6575 7473"            /* 46...2...2.Deuts */
-	$"6368 6C61 6E64 0747 6572 6D61 6E79 0344"            /* chland.Germany.D */
-	$"454D 0431 2E39 3600 0000 0500 0000 0506"            /* EM.1.96......... */
-	$"4573 7061 9661 0553 7061 696E 0345 5350"            /* España.Spain.ESP */
-	$"0331 3637 0000 03E8 0000 03E8 0245 550E"            /* .167...Ë...Ë.EU. */
-	$"4575 726F 7065 616E 2055 6E69 6F6E 0358"            /* European Union.X */
-	$"4555 0530 2E39 3933 0000 0005 0000 0005"            /* EU.0.993........ */
-	$"0746 696E 6C61 6E64 0003 4649 4D04 352E"            /* .Finland..FIM.5. */
-	$"3937 0000 0014 0000 0032 0646 7261 6E63"            /* 97.......2.Franc */
-	$"6500 0346 5246 0436 2E35 3800 0000 1400"            /* e..FRF.6.58..... */
-	$"0000 3206 4865 6C6C 6173 0647 7265 6563"            /* ..2.Hellas.Greec */
-	$"6503 4752 4403 3334 3200 0000 C800 0001"            /* e.GRD.342...»... */
-	$"F409 486F 6E67 204B 6F6E 6700 0348 4B44"            /* Ù.Hong Kong..HKD */
-	$"0438 2E35 3300 0000 1400 0000 3207 4963"            /* .8.53.......2.Ic */
-	$"656C 616E 6400 0349 534B 0437 332E 3900"            /* eland..ISK.73.9. */
-	$"0001 F400 0001 F405 496E 6469 6100 0349"            /* ..Ù...Ù.India..I */
-	$"4E52 0434 342E 3900 0000 0500 0000 0507"            /* NR.44.9......... */
-	$"4972 656C 616E 6400 0349 4550 0530 2E37"            /* Ireland..IEP.0.7 */
-	$"3837 0000 0005 0000 0005 0649 7372 6165"            /* 87.........Israe */
-	$"6C00 0349 4C53 0434 2E30 3200 0000 1400"            /* l..ILS.4.02..... */
-	$"0000 3206 4974 616C 6961 0549 7461 6C79"            /* ..2.Italia.Italy */
-	$"0349 544C 0431 3932 3000 0003 E800 0003"            /* .ITL.1920...Ë... */
-	$"E805 4B6F 7265 610B 536F 7574 6820 4B6F"            /* Ë.Korea.South Ko */
-	$"7265 6103 4B52 5704 3134 3930 0000 03E8"            /* rea.KRW.1490...Ë */
-	$"0000 03E8 0A4C 7578 656D 626F 7572 6700"            /* ...Ë.Luxembourg. */
-	$"034C 5546 0434 302E 3400 0000 6400 0000"            /* .LUF.40.4...d... */
-	$"6409 4E65 6465 726C 616E 640B 4E65 7468"            /* d.Nederland.Neth */
-	$"6572 6C61 6E64 7303 4E4C 4703 322E 3200"            /* erlands.NLG.2.2. */
-	$"0000 0A00 0000 190B 4E65 7720 5A65 616C"            /* ........New Zeal */
-	$"616E 6400 034E 5A44 0432 2E31 3600 0000"            /* and..NZD.2.16... */
-	$"0500 0000 0506 4E69 7070 6F6E 054A 6170"            /* ......Nippon.Jap */
-	$"616E 034A 5059 0331 3537 0000 03E8 0000"            /* an.JPY.157...Ë.. */
-	$"03E8 054E 6F72 6765 064E 6F72 7761 7903"            /* .Ë.Norge.Norway. */
-	$"4E4F 4B04 382E 3334 0000 0032 0000 0032"            /* NOK.8.34...2...2 */
-	$"0A85 7374 6572 7265 6963 6807 4175 7374"            /* .Österreich.Aust */
-	$"7269 6103 4154 5304 3133 2E36 0000 0014"            /* ria.ATS.13.6.... */
-	$"0000 0032 0950 2E52 2E43 6869 6E61 0543"            /* ...2.P.R.China.C */
-	$"6869 6E61 0343 4E59 0339 2E33 0000 0001"            /* hina.CNY.9.3.... */
-	$"0000 0001 0850 6F72 7475 6761 6C00 0350"            /* .....Portugal..P */
-	$"5445 0332 3031 0000 01F4 0000 01F4 0953"            /* TE.201...Ù...Ù.S */
-	$"696E 6761 706F 7265 0003 5347 4404 312E"            /* ingapore..SGD.1. */
-	$"3838 0000 0002 0000 0005 0C53 6F75 7468"            /* 88.........South */
-	$"2041 6672 6963 6100 035A 4152 0435 2E38"            /*  Africa..ZAR.5.8 */
-	$"3300 0000 0A00 0000 0A07 5376 6572 6967"            /* 3.........Sverig */
-	$"6506 5377 6564 656E 0353 454B 0438 2E34"            /* e.Sweden.SEK.8.4 */
-	$"3800 0000 1400 0000 320B 5377 6974 7A65"            /* 8.......2.Switze */
-	$"726C 616E 6400 0343 4846 0431 2E36 3400"            /* rland..CHF.1.64. */
-	$"0000 0A00 0000 0A0D 5461 6977 616E 2052"            /* ........Taiwan R */
-	$"2E4F 2E43 2E06 5461 6977 616E 0354 5744"            /* .O.C..Taiwan.TWD */
-	$"0433 382E 3600 0000 3200 0000 320E 556E"            /* .38.6...2...2.Un */
-	$"6974 6564 204B 696E 6764 6F6D 0003 4742"            /* ited Kingdom..GB */
-	$"5004 302E 3636 0000 0005 0000 0005 0355"            /* P.0.66.........U */
-	$"5341 0003 5553 4404 312E 3030 0000 0001"            /* SA..USD.1.00.... */
-	$"0000 0001"                                          /* .... */
+data 'CODE' (0, purgeable, protected) {
+	$"0000 0050 0000 0DF8 0000 0008 0000 0020"            /* ...P...¯.......  */
+	$"0000 3F3C 0001 A9F0"                                /* ..?<..© */
 };
 
 data 'DATA' (0, purgeable, protected) {
@@ -5118,698 +7150,6 @@ data 'DATA' (0, purgeable, protected) {
 	$"00"                                                 /* . */
 };
 
-resource 'DITL' (128, purgeable) {
-	{	/* array DITLarray: 9 elements */
-		/* [1] */
-		{156, 112, 176, 170},
-		Button {
-			enabled,
-			"OK"
-		},
-		/* [2] */
-		{150, 128, 182, 160},
-		UserItem {
-			disabled
-		},
-		/* [3] */
-		{1, 2, 50, 277},
-		UserItem {
-			enabled
-		},
-		/* [4] */
-		{39, 140, 52, 235},
-		UserItem {
-			enabled
-		},
-		/* [5] */
-		{56, 2, 81, 278},
-		UserItem {
-			disabled
-		},
-		/* [6] */
-		{85, 2, 98, 278},
-		UserItem {
-			enabled
-		},
-		/* [7] */
-		{107, 46, 132, 274},
-		UserItem {
-			enabled
-		},
-		/* [8] */
-		{132, 78, 145, 249},
-		UserItem {
-			enabled
-		},
-		/* [9] */
-		{104, 8, 136, 40},
-		UserItem {
-			enabled
-		}
-	}
-};
-
-resource 'DITL' (200, purgeable) {
-	{	/* array DITLarray: 50 elements */
-		/* [1] */
-		{273, 407, 293, 477},
-		Button {
-			enabled,
-			"Save…"
-		},
-		/* [2] */
-		{273, 327, 293, 397},
-		Button {
-			enabled,
-			"Quit"
-		},
-		/* [3] */
-		{244, 327, 264, 397},
-		Button {
-			enabled,
-			"Print…"
-		},
-		/* [4] */
-		{244, 407, 264, 477},
-		Button {
-			enabled,
-			"Copy…"
-		},
-		/* [5] */
-		{16, 11, 28, 243},
-		EditText {
-			enabled,
-			""
-		},
-		/* [6] */
-		{52, 11, 64, 243},
-		EditText {
-			enabled,
-			""
-		},
-		/* [7] */
-		{37, 8, 49, 208},
-		StaticText {
-			disabled,
-			"Email Address:"
-		},
-		/* [8] */
-		{16, 255, 64, 487},
-		EditText {
-			enabled,
-			""
-		},
-		/* [9] */
-		{1, 252, 13, 452},
-		StaticText {
-			disabled,
-			"Postal Address (optional):"
-		},
-		/* [10] */
-		{92, 16, 104, 52},
-		EditText {
-			enabled,
-			""
-		},
-		/* [11] */
-		{74, 405, 86, 463},
-		EditText {
-			enabled,
-			""
-		},
-		/* [12] */
-		{89, 165, 107, 263},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [13] */
-		{89, 265, 107, 400},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [14] */
-		{71, 208, 89, 348},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [15] */
-		{72, 13, 88, 29},
-		Icon {
-			enabled,
-			225
-		},
-		/* [16] */
-		{131, 16, 143, 52},
-		EditText {
-			enabled,
-			""
-		},
-		/* [17] */
-		{113, 405, 125, 463},
-		EditText {
-			enabled,
-			""
-		},
-		/* [18] */
-		{128, 165, 146, 263},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [19] */
-		{128, 265, 146, 400},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [20] */
-		{110, 208, 128, 348},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [21] */
-		{111, 13, 127, 29},
-		Icon {
-			enabled,
-			225
-		},
-		/* [22] */
-		{170, 16, 182, 52},
-		EditText {
-			enabled,
-			""
-		},
-		/* [23] */
-		{152, 405, 164, 463},
-		EditText {
-			enabled,
-			""
-		},
-		/* [24] */
-		{167, 165, 185, 263},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [25] */
-		{167, 265, 185, 400},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [26] */
-		{149, 208, 167, 348},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [27] */
-		{150, 13, 166, 29},
-		Icon {
-			enabled,
-			225
-		},
-		/* [28] */
-		{69, 8, 187, 475},
-		UserItem {
-			disabled
-		},
-		/* [29] */
-		{69, 474, 187, 490},
-		UserItem {
-			enabled
-		},
-		/* [30] */
-		{206, 296, 224, 475},
-		CheckBox {
-			enabled,
-			""
-		},
-		/* [31] */
-		{190, 312, 242, 475},
-		UserItem {
-			disabled
-		},
-		/* [32] */
-		{231, 96, 243, 287},
-		EditText {
-			enabled,
-			""
-		},
-		/* [33] */
-		{252, 96, 264, 287},
-		EditText {
-			enabled,
-			"0000-0000-0000-0000"
-		},
-		/* [34] */
-		{273, 96, 285, 287},
-		EditText {
-			enabled,
-			"01/90"
-		},
-		/* [35] */
-		{205, 272, 221, 288},
-		Icon {
-			enabled,
-			226
-		},
-		/* [36] */
-		{231, 16, 243, 91},
-		StaticText {
-			disabled,
-			"Name on Card:"
-		},
-		/* [37] */
-		{252, 16, 264, 91},
-		StaticText {
-			disabled,
-			"Card Number:"
-		},
-		/* [38] */
-		{273, 16, 285, 91},
-		StaticText {
-			disabled,
-			"Expiry (M/Y):"
-		},
-		/* [39] */
-		{231, 96, 243, 287},
-		EditText {
-			enabled,
-			""
-		},
-		/* [40] */
-		{231, 16, 243, 91},
-		StaticText {
-			disabled,
-			"First Virtual ID:"
-		},
-		/* [41] */
-		{252, 16, 288, 290},
-		StaticText {
-			disabled,
-			"For more information about First Virtual"
-			", send email to <help@fv.com>"
-		},
-		/* [42] */
-		{231, 16, 288, 290},
-		StaticText {
-			disabled,
-			"cheque text"
-		},
-		/* [43] */
-		{252, 16, 288, 290},
-		StaticText {
-			disabled,
-			"cash text item"
-		},
-		/* [44] */
-		{231, 96, 247, 196},
-		UserItem {
-			enabled
-		},
-		/* [45] */
-		{231, 16, 247, 91},
-		StaticText {
-			disabled,
-			"Currency:"
-		},
-		/* [46] */
-		{205, 96, 221, 196},
-		UserItem {
-			enabled
-		},
-		/* [47] */
-		{189, 8, 293, 294},
-		UserItem {
-			disabled
-		},
-		/* [48] */
-		{205, 16, 217, 91},
-		StaticText {
-			disabled,
-			"Method:"
-		},
-		/* [49] */
-		{1, 8, 13, 208},
-		StaticText {
-			disabled,
-			"Register To:"
-		},
-		/* [50] */
-		{0, 0, 0, 0},
-		HelpItem {
-			enabled,
-			HMScanhdlg {
-				200
-			}
-		}
-	}
-};
-
-resource 'DITL' (225, purgeable) {
-	{	/* array DITLarray: 5 elements */
-		/* [1] */
-		{157, 416, 177, 474},
-		Button {
-			enabled,
-			"OK"
-		},
-		/* [2] */
-		{157, 344, 177, 402},
-		Button {
-			enabled,
-			"Cancel"
-		},
-		/* [3] */
-		{152, 432, 184, 464},
-		UserItem {
-			disabled
-		},
-		/* [4] */
-		{63, 8, 145, 480},
-		EditText {
-			enabled,
-			""
-		},
-		/* [5] */
-		{5, 8, 56, 479},
-		StaticText {
-			disabled,
-			"The recommended way to send comments to "
-			"an author is to email them separately, b"
-			"ut you can include a short comment about"
-			" “^1” by typing it here:"
-		}
-	}
-};
-
-resource 'DITL' (226, purgeable) {
-	{	/* array DITLarray: 10 elements */
-		/* [1] */
-		{155, 416, 175, 474},
-		Button {
-			enabled,
-			"OK"
-		},
-		/* [2] */
-		{155, 344, 175, 402},
-		Button {
-			enabled,
-			"Cancel"
-		},
-		/* [3] */
-		{150, 432, 182, 464},
-		UserItem {
-			disabled
-		},
-		/* [4] */
-		{155, 182, 175, 330},
-		Button {
-			enabled,
-			"Not a USA address"
-		},
-		/* [5] */
-		{105, 120, 121, 475},
-		EditText {
-			enabled,
-			""
-		},
-		/* [6] */
-		{130, 120, 146, 234},
-		EditText {
-			enabled,
-			""
-		},
-		/* [7] */
-		{5, 8, 38, 480},
-		StaticText {
-			disabled,
-			"In order to help prevent fraud, the cred"
-			"it card companies now request that you i"
-			"nclude your credit card billing address."
-		},
-		/* [8] */
-		{40, 8, 95, 480},
-		StaticText {
-			disabled,
-			"Only the street address (eg “1442-A Waln"
-			"ut Street #392”) or post office box addr"
-			"ess (eg “PO Box 1256”) together with you"
-			"r zip code (eg “94709-1405”) are require"
-			"d."
-		},
-		/* [9] */
-		{105, 8, 121, 115},
-		StaticText {
-			disabled,
-			"Street Address:"
-		},
-		/* [10] */
-		{130, 8, 146, 115},
-		StaticText {
-			disabled,
-			"Zip code:"
-		}
-	}
-};
-
-data 'DLOG' (128, "About", purgeable) {
-	$"0030 002A 00EA 0143 0005 0000 0000 0000"            /* .0.*.Í.C........ */
-	$"0000 0080 0541 626F 7574"                           /* ...Ä.About */
-};
-
-resource 'DLOG' (200, "Register Input", purgeable) {
-	{40, 4, 338, 500},
-	noGrowDocProc,
-	invisible,
-	goAway,
-	0x0,
-	200,
-	"Register",
-	centerMainScreen
-};
-
-data 'DLOG' (225, "Comment", purgeable) {
-	$"0033 000D 00EA 01F4 0005 0000 0000 0000"            /* .3...Í.Ù........ */
-	$"0000 00E1 0743 6F6D 6D65 6E74"                      /* ...·.Comment */
-};
-
-data 'DLOG' (226, "Bill Address", purgeable) {
-	$"0033 000D 00EA 01F4 0005 0000 0000 0000"            /* .3...Í.Ù........ */
-	$"0000 00E2 1B43 7265 6469 7420 4361 7264"            /* ...‚.Credit Card */
-	$"2042 696C 6C69 6E67 2041 6464 7265 7373"            /*  Billing Address */
-};
-
-resource 'FREF' (128, purgeable) {
-	'APPL',
-	0,
-	""
-};
-
-resource 'ICN#' (128, "Item Icon") {
-	{	/* array: 2 elements */
-		/* [1] */
-		$"0001 8000 0002 4000 0004 2000 0008 1000"
-		$"0010 0800 0020 0400 0041 8200 0081 8100"
-		$"0107 E080 020F F040 0419 9820 0819 9810"
-		$"1019 8008 2019 8004 401D 8002 800F E001"
-		$"8007 F001 4001 B802 2001 9804 1001 9808"
-		$"0819 9810 0419 9820 020F F040 0107 E080"
-		$"0081 8100 0041 8200 0020 0400 0010 0800"
-		$"0008 1000 0004 2000 0002 4000 0001 80",
-		/* [2] */
-		$"0001 8000 0003 C000 0007 E000 000F F000"
-		$"001F F800 003F FC00 007F FE00 00FF FF00"
-		$"01FF FF80 03FF FFC0 07FF FFE0 0FFF FFF0"
-		$"1FFF FFF8 3FFF FFFC 7FFF FFFE FFFF FFFF"
-		$"FFFF FFFF 7FFF FFFE 3FFF FFFC 1FFF FFF8"
-		$"0FFF FFF0 07FF FFE0 03FF FFC0 01FF FF80"
-		$"00FF FF00 007F FE00 003F FC00 001F F800"
-		$"000F F000 0007 E000 0003 C000 0001 80"
-	}
-};
-
-resource 'ICON' (128) {
-	$"0001 8000 0002 4000 0004 2000 0008 1000"
-	$"0010 0800 0020 0400 0041 8200 0081 8100"
-	$"0107 E080 020F F040 0419 9820 0819 9810"
-	$"1019 8008 2019 8004 401D 8002 800F E001"
-	$"8007 F001 4001 B802 2001 9804 1001 9808"
-	$"0819 9810 0419 9820 020F F040 0107 E080"
-	$"0081 8100 0041 8200 0020 0400 0010 0800"
-	$"0008 1000 0004 2000 0002 4000 0001 80"
-};
-
-resource 'ICON' (225) {
-	$"00FF FFF0 00FF FFF0 0300 000C 0300 000C"
-	$"0C00 0003 0C00 0003 0C00 0003 0C00 0003"
-	$"0C3C FFC3 0C3C FFC3 0C00 0003 0C00 0003"
-	$"0C00 0003 0C00 0003 0C3F 3CC3 0C3F 3CC3"
-	$"0C00 0003 0C00 0003 0C00 0003 0C00 0003"
-	$"0C33 CFC3 0C33 CFC3 3000 0003 3000 0003"
-	$"C000 000C C000 000C FFFF FFF0 FFFF FFF0"
-};
-
-resource 'ICON' (226) {
-	$"0000 0000 0000 0000 FFFF FFFC FFFF FFFC"
-	$"CCC0 030C CCC0 030C F300 030C F300 030C"
-	$"CCC0 03FC CCC0 03FC C000 000C C000 000C"
-	$"C033 300C C033 300C C0CC C00C C0CC C00C"
-	$"C033 300C C033 300C C000 000C C000 000C"
-	$"C000 000C C000 000C FFFF FFFC FFFF FFFC"
-};
-
-resource 'ICON' (928) {
-	$"0001 0000 0002 8000 0004 4000 0008 2000"
-	$"0010 1000 0020 0800 0040 0400 0080 0200"
-	$"0100 0300 0200 0380 0400 03C0 0800 03E0"
-	$"1000 03F0 2000 03F8 4000 03FC 80FF FFFE"
-	$"40FF FFFC 20FF FFF8 10FF FFF0 08FF FFE0"
-	$"04FF FFC0 02FF FF80 01FF FF00 00FF FE00"
-	$"007F FC00 003F F800 001F F000 000F E000"
-	$"0007 C000 0003 8000 0001"
-};
-
-resource 'MBAR' (128) {
-	{	/* array MenuArray: 3 elements */
-		/* [1] */
-		128,
-		/* [2] */
-		129,
-		/* [3] */
-		130
-	}
-};
-
-resource 'MENU' (128) {
-	128,
-	textMenuProc,
-	0x7FFFFFFD,
-	enabled,
-	apple,
-	{	/* array: 2 elements */
-		/* [1] */
-		"About Register…", noIcon, noKey, noMark, plain,
-		/* [2] */
-		"-", noIcon, noKey, noMark, plain
-	}
-};
-
-resource 'MENU' (129) {
-	129,
-	textMenuProc,
-	0x7FFFFFDB,
-	enabled,
-	"File",
-	{	/* array: 7 elements */
-		/* [1] */
-		"Close", noIcon, "W", noMark, plain,
-		/* [2] */
-		"Save As…", noIcon, "S", noMark, plain,
-		/* [3] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [4] */
-		"Page Setup…", noIcon, noKey, noMark, plain,
-		/* [5] */
-		"Print…", noIcon, "P", noMark, plain,
-		/* [6] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [7] */
-		"Quit", noIcon, "Q", noMark, plain
-	}
-};
-
-resource 'MENU' (130) {
-	130,
-	textMenuProc,
-	0x7FFFFFFD,
-	enabled,
-	"Edit",
-	{	/* array: 7 elements */
-		/* [1] */
-		"Undo", noIcon, "Z", noMark, plain,
-		/* [2] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [3] */
-		"Cut", noIcon, "X", noMark, plain,
-		/* [4] */
-		"Copy", noIcon, "C", noMark, plain,
-		/* [5] */
-		"Paste", noIcon, "V", noMark, plain,
-		/* [6] */
-		"Clear", noIcon, noKey, noMark, plain,
-		/* [7] */
-		"Select All", noIcon, "A", noMark, plain
-	}
-};
-
-resource 'MENU' (200) {
-	200,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"Method",
-	{	/* array: 10 elements */
-		/* [1] */
-		"Check/Money Order", noIcon, noKey, noMark, plain,
-		/* [2] */
-		"Cash", noIcon, noKey, noMark, plain,
-		/* [3] */
-		"Invoice", noIcon, noKey, noMark, plain,
-		/* [4] */
-		"VISA", noIcon, noKey, noMark, plain,
-		/* [5] */
-		"MasterCard", noIcon, noKey, noMark, plain,
-		/* [6] */
-		"American Express", noIcon, noKey, noMark, plain,
-		/* [7] */
-		"Diners Club", noIcon, noKey, noMark, plain,
-		/* [8] */
-		"Discover", noIcon, noKey, noMark, plain,
-		/* [9] */
-		"Optima", noIcon, noKey, noMark, plain,
-		/* [10] */
-		"First Virtual", noIcon, noKey, noMark, plain
-	}
-};
-
-resource 'MENU' (201) {
-	201,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"Country",
-	{	/* array: 0 elements */
-	}
-};
-
-data 'Mngl' (128) {
-	$"01E0 1FE0"                                          /* .‡.‡ */
-};
-
-data 'PROG' (128) {
-	$"0002 0C49 636F 6E6F 6772 6170 6865 7200"            /* ...Iconographer. */
-	$"0451 454A 4D16 5570 6772 6164 6520 6672"            /* .QEJM.Upgrade fr */
-	$"6F6D 2063 6C69 7032 6963 6E73 0000 0001"            /* om clip2icns.... */
-	$"0001 000F 0000 0096 0258 0001 0005 0000"            /* .......ñ.X...... */
-	$"0032 00C8 0963 6C69 7032 6963 6E73 0004"            /* .2.».clip2icns.. */
-	$"5145 4A49 0000 0000 0100 0100 0A00 0000"            /* QEJI............ */
-	$"6401 F400 0000 FA03 E8"                             /* d.Ù...˙.Ë */
-};
-
-data 'Regi' (0, "Owner resource") {
-	$"00"                                                 /* . */
-};
-
-data 'SCRL' (128) {
-	$"0451 454A 4D"                                       /* .QEJM */
-};
-
 resource 'SIZE' (-1) {
 	reserved,
 	acceptSuspendResumeEvents,
@@ -5831,1388 +7171,787 @@ resource 'SIZE' (-1) {
 	204800
 };
 
-resource 'STR#' (128, "General", purgeable) {
-	{	/* array StringArray: 9 elements */
-		/* [1] */
-		"Payment Details:",
-		/* [2] */
-		"@$^1",
-		/* [3] */
-		"$^1.00",
-		/* [4] */
-		"US$^1.00",
-		/* [5] */
-		"Save payment file to:",
-		/* [6] */
-		"Payment",
-		/* [7] */
-		"Failed to save payment file (error ^1).",
-		/* [8] */
-		"Failed to print payment form (error ^1).",
-		/* [9] */
-		"Failed top copy payment form (error ^1)."
-	}
+data 'PROG' (128) {
+	$"0002 0C49 636F 6E6F 6772 6170 6865 7200"            /* ...Iconographer. */
+	$"0451 454A 4D16 5570 6772 6164 6520 6672"            /* .QEJM.Upgrade fr */
+	$"6F6D 2063 6C69 7032 6963 6E73 0000 0001"            /* om clip2icns.... */
+	$"0001 000F 0000 0096 0258 0001 0005 0000"            /* .......ñ.X...... */
+	$"0032 00C8 0963 6C69 7032 6963 6E73 0004"            /* .2.».clip2icns.. */
+	$"5145 4A49 0000 0000 0100 0100 0A00 0000"            /* QEJI............ */
+	$"6401 F400 0000 FA03 E8"                             /* d.Ù...˙.Ë */
 };
 
-resource 'STR#' (140, "Display", purgeable) {
-	{	/* array StringArray: 22 elements */
+resource 'icns' (128, "Item Icon") {
+	{	/* array elementArray: 11 elements */
 		/* [1] */
-		"^1 by ^2",
+		'ICN#',
+		$"0000 8000 0001 C000 0003 6000 0006 F000"
+		$"000D F800 001B FC00 0037 7E00 006E 3F00"
+		$"00DC 1F80 01B8 8FC0 0379 CFE0 06F9 FFF0"
+		$"0DF9 FFF8 1BF8 3FFC 37FC 1FFE 6FFF 8FFF"
+		$"3FFF CFFF 1FFF CFFE 0FF1 CFFC 07F8 8FF8"
+		$"03F8 1FF0 01FE 3FE0 00FF 7FC0 007F 7F80"
+		$"003F FF00 001F FE00 000F FC00 0007 F800"
+		$"0003 F000 0001 E000 0000 C000 0000 0000"
+		$"0000 C000 0001 E000 0003 F000 0007 F800"
+		$"000F FC00 001F FE00 003F FF00 007F FF80"
+		$"00FF FFC0 01FF FFE0 03FF FFF0 07FF FFF8"
+		$"0FFF FFFC 1FFF FFFE 3FFF FFFF 7FFF FFFF"
+		$"7FFF FFFF 3FFF FFFF 1FFF FFFE 0FFF FFFC"
+		$"07FF FFF8 03FF FFF0 01FF FFE0 00FF FFC0"
+		$"007F FF80 003F FF00 001F FE00 000F FC00"
+		$"0007 F800 0003 F000 0001 E000 0000 C000",
 		/* [2] */
-		"Bonus US$",
+		'icl4',
+		$"0000 0000 0000 000F F000 0000 0000 0000"
+		$"0000 0000 0000 00F7 7F00 0000 0000 0000"
+		$"0000 0000 0000 0F77 77F0 0000 0000 0000"
+		$"0000 0000 0000 F777 777F 0000 0000 0000"
+		$"0000 0000 000F 7777 7777 F000 0000 0000"
+		$"0000 0000 00F7 7777 7777 7F00 0000 0000"
+		$"0000 0000 0F77 7771 1777 77F0 0000 0000"
+		$"0000 0000 F777 7771 1777 777F 0000 0000"
+		$"0000 000F 7777 7111 1117 7777 F000 0000"
+		$"0000 00F7 7777 1111 1111 7777 7F00 0000"
+		$"0000 0F77 7771 1771 1771 1777 77F0 0000"
+		$"0000 F777 7771 1771 1771 1777 777F 0000"
+		$"000F 7777 7771 1771 1777 7777 7777 F000"
+		$"00F7 7777 7771 1771 1777 7777 7777 7F00"
+		$"0F77 7777 7771 1171 1777 7777 7777 77F0"
+		$"F777 7777 7777 1111 1117 7777 7777 777F"
+		$"F777 7777 7777 7111 1111 7777 7777 777F"
+		$"0F77 7777 7777 7771 1711 1777 7777 77F0"
+		$"00F7 7777 7777 7771 1771 1777 7777 7F00"
+		$"000F 7777 7777 7771 1771 1777 7777 F000"
+		$"0000 F777 7771 1771 1771 1777 777F 0000"
+		$"0000 0F77 7771 1771 1771 1777 77F0 0000"
+		$"0000 00F7 7777 1111 1111 7777 7F00 0000"
+		$"0000 000F 7777 7111 1117 7777 F000 0000"
+		$"0000 0000 F777 7771 1777 777F 0000 0000"
+		$"0000 0000 0F77 7771 1777 77F0 0000 0000"
+		$"0000 0000 00F7 7777 7777 7F00 0000 0000"
+		$"0000 0000 000F 7777 7777 F000 0000 0000"
+		$"0000 0000 0000 F777 777F 0000 0000 0000"
+		$"0000 0000 0000 0F77 77F0 0000 0000 0000"
+		$"0000 0000 0000 00F7 7F00 0000 0000 0000"
+		$"0000 0000 0000 000F F000 0000 0000 0000",
 		/* [3] */
-		"US$^1.00",
+		'icl8',
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"FF2B 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 00FF"
+		$"C7FF 2B00 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 FFC7"
+		$"4ECE FF2B 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 00FF C754"
+		$"C7C7 C8FF 2B00 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 FFC7 4FC7"
+		$"C7C7 C7CE FF2B 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 00FF C74F C67B"
+		$"2D7A C7C7 C8FF 2B00 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 FFC7 54C7 C72D"
+		$"2857 C7C7 C7C8 FF2B 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 00FF C74E C7C7 9E2E"
+		$"032D A5C7 C7C7 C8FF 2B00 0000 0000 0000"
+		$"0000 0000 0000 0000 FFC7 55C7 C77A 0409"
+		$"2E04 037B C7C7 C7CE FF2B 0000 0000 0000"
+		$"0000 0000 0000 00FF C74E C7C7 A304 042D"
+		$"5803 2E0A C7C7 C7C7 C8FF 2B00 0000 0000"
+		$"0000 0000 0000 FFC7 54C7 C7C7 7B03 2ECF"
+		$"D0AC 0304 A5C7 C7C7 C7CE FF2B 0000 0000"
+		$"0000 0000 00FF C74F C7C7 C7C7 502E 09D0"
+		$"CFCF D0F1 CFCE C7C7 C7C7 C8FF 2B00 0000"
+		$"0000 0000 FFC7 54C7 C7C7 C7C7 7B03 0457"
+		$"A5C7 CECF CFC8 C7C7 C7C7 C7C8 FF2B 0000"
+		$"0000 00FF C74F C7C7 C7C7 C7C7 A404 2D04"
+		$"0A27 57C8 C7C7 C7C7 C7C7 C7C7 C8FF 2B00"
+		$"0000 FFC7 54C7 C7C7 C7C7 C7C7 C7A5 0409"
+		$"280A 032D C7C7 C7C7 C7C7 C7C7 C7CE FF2B"
+		$"00FF C74E C7C7 C7C7 C7C7 C7C7 C7C8 CFA6"
+		$"3403 280A 7BC7 C7C7 C7C7 C7C7 C7C7 C8FF"
+		$"002B FFCE C7C7 C7C7 C7C7 C7C7 C7CD C8CF"
+		$"CF82 0928 57C8 C7C7 C7C7 C7C7 CECF FF81"
+		$"0000 2BFF C8C7 C7C7 C7C7 C7C7 7A7A A4C8"
+		$"CECF 2809 2ECE C7C7 C7C7 C7CE CFFF 812B"
+		$"0000 002B FFC8 C7C7 C7C7 C7C7 2E03 2DC7"
+		$"C8A4 0404 7BCF CEC7 C7C7 C8CF FF81 2B00"
+		$"0000 0000 2BFF C8C7 C7C7 C7C7 502E 042E"
+		$"502E 030A FCCF C7C7 C7CE CFFF 812B 0000"
+		$"0000 0000 002B FFC8 C7C7 C7C7 A42D 0409"
+		$"0403 2E7B D0CE C8C7 C7CF FF81 2B00 0000"
+		$"0000 0000 0000 2BFF CEC7 C7C7 C7AB 7B04"
+		$"2E2E 81D6 CFCE C7C8 CFFF 812B 0000 0000"
+		$"0000 0000 0000 002B FFC8 C7C7 C7C8 CF57"
+		$"0457 D0D0 CEC8 CECF FF81 2B00 0000 0000"
+		$"0000 0000 0000 0000 2BFF CEC7 C7C7 CE52"
+		$"0358 CFCE C8C8 CFFF 812B 0000 0000 0000"
+		$"0000 0000 0000 0000 002B FFC8 C7C7 C7A4"
+		$"82A5 CFC8 CDCF FF81 2B00 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 2BFF CEC7 C7C8"
+		$"CECF CFCE CFFF 812B 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 002B FFC8 C7C7"
+		$"C8CE C8CF FF81 2B00 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 2BFF CEC7"
+		$"C7CE CFFF 812B 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 002B FFC8"
+		$"CECF FF81 2B00 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 2BFF"
+		$"CFFF 812B 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 002B"
+		$"FF81 2B00 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"2B2B 0000 0000 0000 0000 0000 0000 0000",
 		/* [4] */
-		"Single User @US$^1",
+		'il32',
+		$"8DFF 0100 009A FF81 0098 FF02 0000 8080"
+		$"0096 FF02 0000 8082 0094 FF02 0000 8084"
+		$"0092 FF06 0000 8000 82AE 6E82 0090 FF07"
+		$"0000 8000 00AE EE97 8300 8EFF 0900 0080"
+		$"0000 48D3 EEC7 3C83 008C FF05 0000 8000"
+		$"0077 82EE 0067 8300 8AFF 0D00 0080 0000"
+		$"2BEE EED3 9BDE EEE7 1483 0088 FF02 0000"
+		$"8080 0008 7AEE E717 003C EEEE 4C84 0086"
+		$"FF02 0000 8081 0003 97EE DA04 8A00 84FF"
+		$"0200 0080 8200 0577 EEEE AF38 0489 0082"
+		$"FF02 0000 8083 0001 1FE7 80EE 02DA 800B"
+		$"8800 80FF 0200 0080 8500 014B DE81 EE01"
+		$"B607 8800 03FF 0000 8087 0002 105B B680"
+		$"EE00 6388 0000 FF8D 0003 6EEE EEA6 8800"
+		$"01FF FF87 0008 5757 3700 0004 EEEE AE88"
+		$"0080 FF86 0008 DEEE C604 0037 EEEE 9387"
+		$"0082 FF85 0008 9AEE EEC2 9BDE EEEE 3C86"
+		$"0084 FF84 0001 1BD7 82EE 0083 8600 86FF"
+		$"8400 051B 93E7 EECE 5786 0088 FF85 0002"
+		$"AEEE 9786 008A FF84 0002 AEEE 9785 008C"
+		$"FF83 0002 4357 3784 008E FF8B 0090 FF89"
+		$"0092 FF87 0094 FF85 0096 FF83 0098 FF81"
+		$"009A FF01 0000 8BFF 8DFF 0100 009A FF03"
+		$"0066 0000 98FF 0500 66B3 5200 0096 FF07"
+		$"0066 B366 6652 0000 94FF 0200 66B3 8166"
+		$"0252 0000 92FF 0B00 66B3 66AD C5A2 6666"
+		$"5200 0090 FF0D 0066 B366 66C4 E8B4 5E64"
+		$"6652 0000 8EFF 0F00 66B3 6666 8DD8 E8CC"
+		$"725E 6666 5200 008C FF05 0066 B366 66A7"
+		$"82E8 0696 6566 6652 0000 8AFF 1300 66B3"
+		$"6666 7DE8 E8D5 A6DB E8E3 6764 6666 5200"
+		$"0088 FF02 0066 B380 6609 A8E8 E33E 2151"
+		$"E8E8 785C 8066 0252 0000 86FF 0200 66B3"
+		$"8166 0AB7 E8D9 252D 332A 2130 5164 8066"
+		$"0252 0000 84FF 0200 66B3 8266 0AA2 E8E8"
+		$"B56C 5647 3438 5163 8166 0252 0000 82FF"
+		$"0200 66B3 8366 016D E380 E805 DDA8 5D56"
+		$"5E64 8266 0252 0000 80FF 0200 66B3 8466"
+		$"025E 76DB 81E8 01C7 6785 6606 5200 00FF"
+		$"0066 B385 6604 624F 3D6C B980 E801 9262"
+		$"8466 0652 5200 FF00 0052 8666 095D 4832"
+		$"267C E8E8 B355 6482 6608 5233 0000 FFFF"
+		$"0000 5284 660A 9594 7E52 4438 E8E8 B445"
+		$"5E81 6601 5233 8000 80FF 0200 0052 8366"
+		$"0ADF E8D1 625D 76E8 E89B 3A5A 8066 0152"
+		$"3380 0082 FF02 0000 5282 660E B7E8 E8CC"
+		$"B9DF E8E8 5238 5966 6652 3380 0084 FF02"
+		$"0000 5281 6601 68D7 82E8 0691 223E 5C66"
+		$"5233 8000 86FF 0200 0052 8066 0C5B 509C"
+		$"E2E8 D06F 202C 4A61 5233 8000 88FF 1000"
+		$"0052 6666 6250 34B3 E89F 202A 405A 5133"
+		$"8000 8AFF 0E00 0052 6666 6050 B9E8 9E2A"
+		$"4358 5033 8000 8CFF 0C00 0052 6666 627B"
+		$"7451 3755 5133 8000 8EFF 0A00 0052 6666"
+		$"5A3E 3042 4A33 8000 90FF 0800 0052 6660"
+		$"514A 4330 8000 92FF 0600 0052 6462 4D31"
+		$"8000 94FF 0400 0052 5233 8000 96FF 0200"
+		$"0033 8000 98FF 8100 9AFF 0100 008B FF8D"
+		$"FF01 0000 9AFF 0300 CC00 0098 FF05 00CC"
+		$"E6A3 0000 96FF 0700 CCE6 CCCC A300 0094"
+		$"FF02 00CC E681 CC02 A300 0092 FF0B 00CC"
+		$"E6CC 846B 8ECC CCA3 0000 90FF 0D00 CCE6"
+		$"CCCC 6947 6FBD C8CC A300 008E FF0F 00CC"
+		$"E6CC CCA4 5447 5082 BDCC CCA3 0000 8CFF"
+		$"0500 CCE6 CCCC 8A82 4706 82CA CCCC A300"
+		$"008A FF13 00CC E6CC CCB4 4747 4E4B 4647"
+		$"49AD C8CC CCA3 0000 88FF 0200 CCE6 80CC"
+		$"0F87 4749 5542 4047 4774 B9CB CCCC A300"
+		$"0086 FF02 00CC E681 CC0A 7547 4943 5A66"
+		$"5442 61A2 C780 CC02 A300 0084 FF02 00CC"
+		$"E682 CC0A 8147 474A 7CA5 8E69 70A2 C681"
+		$"CC02 A300 0082 FF02 00CC E683 CC01 A849"
+		$"8047 0551 7DA8 ACBD C982 CC02 A300 0080"
+		$"FF02 00CC E684 CC01 BB72 8247 0262 C2CB"
+		$"84CC 06A3 0000 FF00 CCE6 85CC 04C5 9E60"
+		$"4145 8047 027F C3CB 83CC 06A3 A300 FF00"
+		$"00A3 85CC 0ACB BA90 644B 4247 4755 AAC7"
+		$"82CC 08A3 6600 00FF FF00 00A3 84CC 0A9B"
+		$"9AA1 A488 6947 4749 8ABD 81CC 01A3 6680"
+		$"0080 FF02 0000 A383 CC0A 5047 5BBD BA91"
+		$"4747 4575 B380 CC01 A366 8000 82FF 0200"
+		$"00A3 82CC 0E70 4747 5871 4F47 4741 71B2"
+		$"CCCC A366 8000 84FF 0200 00A3 81CC 01A5"
+		$"4C82 4706 4944 7CB7 CCA3 6680 0086 FF02"
+		$"0000 A380 CC01 B674 8047 074C 5040 5795"
+		$"C2A3 6680 0088 FF10 0000 A3CC CCC4 A069"
+		$"4747 4440 5381 B3A1 6680 008A FF0E 0000"
+		$"A3CC CBBF A053 4743 5586 B19F 6680 008C"
+		$"FF0C 0000 A3CC CBC4 8859 476E AAA0 6680"
+		$"008E FF0A 0000 A3CC CCB5 7D5F 8393 6680"
+		$"0090 FF08 0000 A3CC BFA2 9485 6180 0092"
+		$"FF06 0000 A3C9 C399 6280 0094 FF04 0000"
+		$"A3A3 6680 0096 FF02 0000 6680 0098 FF81"
+		$"009A FF01 0000 8BFF",
 		/* [5] */
-		"Site @US$^1",
+		'l8mk',
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"FF33 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 00FF"
+		$"FFFF 3300 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 FFFF"
+		$"FFFF FF33 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 00FF FFFF"
+		$"FFFF FFFF 3300 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 FFFF FFFF"
+		$"FFFF FFFF FF33 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 00FF FFFF FFFF"
+		$"FFFF FFFF FFFF 3300 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FF33 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 00FF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF 3300 0000 0000 0000"
+		$"0000 0000 0000 0000 FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FF33 0000 0000 0000"
+		$"0000 0000 0000 00FF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF 3300 0000 0000"
+		$"0000 0000 0000 FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FF33 0000 0000"
+		$"0000 0000 00FF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF 3300 0000"
+		$"0000 0000 FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FF33 0000"
+		$"0000 00FF FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF 3300"
+		$"0000 FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FF33"
+		$"00FF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"0033 FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FF99"
+		$"0000 33FF FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF 9933"
+		$"0000 0033 FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FF99 3300"
+		$"0000 0000 33FF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF 9933 0000"
+		$"0000 0000 0033 FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FF99 3300 0000"
+		$"0000 0000 0000 33FF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF 9933 0000 0000"
+		$"0000 0000 0000 0033 FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FF99 3300 0000 0000"
+		$"0000 0000 0000 0000 33FF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF 9933 0000 0000 0000"
+		$"0000 0000 0000 0000 0033 FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FF99 3300 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 33FF FFFF FFFF"
+		$"FFFF FFFF FFFF 9933 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0033 FFFF FFFF"
+		$"FFFF FFFF FF99 3300 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 33FF FFFF"
+		$"FFFF FFFF 9933 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0033 FFFF"
+		$"FFFF FF99 3300 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 33FF"
+		$"FFFF 9933 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0033"
+		$"FF99 3300 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"3333 0000 0000 0000 0000 0000 0000 0000",
 		/* [6] */
-		"World-Wide @US$^1",
+		'ics#',
+		$"0100 0280 05C0 0AE0 15F0 2DF8 5CFC BFFE"
+		$"7FFE 3D7C 1FF8 0FF0 07E0 03C0 0180 0000"
+		$"0180 03C0 07E0 0FF0 1FF8 3FFC 7FFE FFFF"
+		$"FFFF 7FFE 3FFC 1FF8 0FF0 07E0 03C0 0180",
 		/* [7] */
-		"Postcard Receipt:",
+		'ics4',
+		$"0000 000F 0000 0000 0000 00F7 F000 0000"
+		$"0000 0F77 7F00 0000 0000 F77F 77F0 0000"
+		$"000F 77FF F77F 0000 00F7 7F7F 7F77 F000"
+		$"0F77 7F7F 7777 7F00 F777 7F7F 7777 77F0"
+		$"F777 77FF F777 77F0 0F77 777F 7F77 7F00"
+		$"00F7 7F7F 7F77 F000 000F 77FF F77F 0000"
+		$"0000 F77F 77F0 0000 0000 0F77 7F00 0000"
+		$"0000 00F7 F000 0000 0000 000F 0000 0000",
 		/* [8] */
-		"US$^1",
+		'ics8',
+		$"0000 0000 0000 00FF 2B00 0000 0000 0000"
+		$"0000 0000 0000 FF4E FF2B 0000 0000 0000"
+		$"0000 0000 00FF 4E9E CEFF 2B00 0000 0000"
+		$"0000 0000 FF78 9E0A 7AC8 FF2B 0000 0000"
+		$"0000 00FF 4EA4 2D2E 04A4 C8FF 2B00 0000"
+		$"0000 FF4E CD74 2ECF ABA5 C7CE FF2B 0000"
+		$"00FF 4EC7 C7A4 042D 7BCE C7C7 C8FF 2B00"
+		$"FF55 C7C7 C7C7 A558 047A C7C7 CECF FF2B"
+		$"2BFF CEC7 C79D A4CE 2E51 CDC8 CFFF 812B"
+		$"002B EACE C77A 0457 0382 C8CF FF81 2B00"
+		$"0000 2BFF CEC7 5704 82CF CFFF 812B 0000"
+		$"0000 002B FFC8 CE2E A5CF FF81 2B00 0000"
+		$"0000 0000 2BFF C8CE CFFF 812B 0000 0000"
+		$"0000 0000 002B FFCF FF81 2B00 0000 0000"
+		$"0000 0000 0000 2BFF 812B 0000 0000 0000"
+		$"0000 0000 0000 002B 2B00 0000 0000 0000",
 		/* [9] */
-		"Subtotal:",
+		'is32',
+		$"84FF 0100 008A FF03 0080 0000 88FF 0200"
+		$"805A 8000 86FF 0400 803F F85C 8000 84FF"
+		$"0600 8027 DABD F346 8000 82FF 0700 8000"
+		$"6DD9 0041 2F81 0080 FF07 0080 0300 37F3"
+		$"C95D 8300 03FF 0080 0480 0003 38B0 FD69"
+		$"8800 043C 3600 B9AD 8300 00FF 8100 0471"
+		$"F38C E969 8200 80FF 8000 0407 85FF 8505"
+		$"8100 82FF 8000 020D B924 8100 84FF 8000"
+		$"000D 8100 86FF 8300 88FF 8100 8AFF 0100"
+		$"0084 FF84 FF01 0000 8AFF 0300 B300 0088"
+		$"FF05 00B3 994D 0000 86FF 0700 B389 EF91"
+		$"4D00 0084 FF09 00B3 7DDC BEE8 8A4D 0000"
+		$"82FF 0B00 B360 A3D3 2A5F 595F 4D00 0080"
+		$"FF1C 00B3 6661 7FE9 D188 4962 674D 0000"
+		$"FF00 B368 6567 5B66 B0F2 9D60 664D 3381"
+		$"000A 4D67 6388 762D BFB7 534D 3380 000B"
+		$"FF00 004D 5FA2 EDAF E879 4C33 8000 80FF"
+		$"0800 004D 5E97 F48F 2E33 8000 82FF 0600"
+		$"004D 5BBC 4733 8000 84FF 0400 004D 5033"
+		$"8000 86FF 0200 0033 8000 88FF 8100 8AFF"
+		$"0100 0084 FF84 FF01 0000 8AFF 0300 E600"
+		$"0088 FF05 00E6 9E99 0000 86FF 0700 E6AB"
+		$"4389 9900 0084 FF09 00E6 B94F 443F A199"
+		$"0000 82FF 0B00 E6D6 9140 5956 65C6 9900"
+		$"0080 FF1C 00E6 CED1 A441 567A 9DC6 CF99"
+		$"0000 FF00 E6D0 CCCE CA71 3B3F 8BCF CC99"
+		$"6681 000A 99CE CFAD 9689 4D51 B799 6680"
+		$"000B FF00 0099 D689 477C 5045 AA66 8000"
+		$"80FF 0800 0099 BB53 3E42 5E66 8000 82FF"
+		$"0600 0099 A046 5366 8000 84FF 0400 0099"
+		$"8966 8000 86FF 0200 0066 8000 88FF 8100"
+		$"8AFF 0100 0084 FF",
 		/* [10] */
-		"Total:",
+		's8mk',
+		$"0000 0000 0000 00FF 3300 0000 0000 0000"
+		$"0000 0000 0000 FFFF FF33 0000 0000 0000"
+		$"0000 0000 00FF FFFF FFFF 3300 0000 0000"
+		$"0000 0000 FFFF FFFF FFFF FF33 0000 0000"
+		$"0000 00FF FFFF FFFF FFFF FFFF 3300 0000"
+		$"0000 FFFF FFFF FFFF FFFF FFFF FF33 0000"
+		$"00FF FFFF FFFF FFFF FFFF FFFF FFFF 3300"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FF33"
+		$"33FF FFFF FFFF FFFF FFFF FFFF FFFF 9933"
+		$"0033 FFFF FFFF FFFF FFFF FFFF FF99 3300"
+		$"0000 33FF FFFF FFFF FFFF FFFF 9933 0000"
+		$"0000 0033 FFFF FFFF FFFF FF99 3300 0000"
+		$"0000 0000 33FF FFFF FFFF 9933 0000 0000"
+		$"0000 0000 0033 FFFF FF99 3300 0000 0000"
+		$"0000 0000 0000 33FF 9933 0000 0000 0000"
+		$"0000 0000 0000 0033 3300 0000 0000 0000",
 		/* [11] */
-		"Postal Address (optional):",
-		/* [12] */
-		"Postal Address (required):",
-		/* [13] */
-		"^1 @US$^2",
-		/* [14] */
-		"Bill To (required):",
-		/* [15] */
-		"Ship To (optional):",
-		/* [16] */
-		"Print the form, wrap the cash in paper t"
-		"o make it less obvious and send both to "
-		"the address on the form.  You will proba"
-		"bly get a better exchange rate at a bank"
-		".",
-		/* [17] */
-		"Please print this form out, make your ch"
-		"eck in USD, drawn on a US bank, payable "
-		"to “Kagi” and send both to the address o"
-		"n the form.",
-		/* [18] */
-		"Shipping:",
-		/* [19] */
-		"US$^1",
-		/* [20] */
-		"Please print this invoice, then approve "
-		"the invoice\nand submit it to your Purcha"
-		"sing Department for payment.",
-		/* [21] */
-		"Email Address:",
-		/* [22] */
-		"Email Address (required):"
+		'icm8',
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
 	}
 };
 
-resource 'STR#' (150, "Ensure", purgeable) {
-	{	/* array StringArray: 7 elements */
+resource 'icns' (-16455, "Item Icon") {
+	{	/* array elementArray: 11 elements */
 		/* [1] */
-		"Startup failed.",
+		'ICN#',
+		$"0000 8000 0001 C000 0003 6000 0006 F000"
+		$"000D F800 001B FC00 0037 7E00 006E 3F00"
+		$"00DC 1F80 01B8 8FC0 0379 CFE0 06F9 FFF0"
+		$"0DF9 FFF8 1BF8 3FFC 37FC 1FFE 6FFF 8FFF"
+		$"3FFF CFFF 1FFF CFFE 0FF1 CFFC 07F8 8FF8"
+		$"03F8 1FF0 01FE 3FE0 00FF 7FC0 007F 7F80"
+		$"003F FF00 001F FE00 000F FC00 0007 F800"
+		$"0003 F000 0001 E000 0000 C000 0000 0000"
+		$"0000 C000 0001 E000 0003 F000 0007 F800"
+		$"000F FC00 001F FE00 003F FF00 007F FF80"
+		$"00FF FFC0 01FF FFE0 03FF FFF0 07FF FFF8"
+		$"0FFF FFFC 1FFF FFFE 3FFF FFFF 7FFF FFFF"
+		$"7FFF FFFF 3FFF FFFF 1FFF FFFE 0FFF FFFC"
+		$"07FF FFF8 03FF FFF0 01FF FFE0 00FF FFC0"
+		$"007F FF80 003F FF00 001F FE00 000F FC00"
+		$"0007 F800 0003 F000 0001 E000 0000 C000",
 		/* [2] */
-		"Startup failed, generic error.",
+		'icl4',
+		$"0000 0000 0000 000F F000 0000 0000 0000"
+		$"0000 0000 0000 00F7 7F00 0000 0000 0000"
+		$"0000 0000 0000 0F77 77F0 0000 0000 0000"
+		$"0000 0000 0000 F777 777F 0000 0000 0000"
+		$"0000 0000 000F 7777 7777 F000 0000 0000"
+		$"0000 0000 00F7 7777 7777 7F00 0000 0000"
+		$"0000 0000 0F77 7771 1777 77F0 0000 0000"
+		$"0000 0000 F777 7771 1777 777F 0000 0000"
+		$"0000 000F 7777 7111 1117 7777 F000 0000"
+		$"0000 00F7 7777 1111 1111 7777 7F00 0000"
+		$"0000 0F77 7771 1771 1771 1777 77F0 0000"
+		$"0000 F777 7771 1771 1771 1777 777F 0000"
+		$"000F 7777 7771 1771 1777 7777 7777 F000"
+		$"00F7 7777 7771 1771 1777 7777 7777 7F00"
+		$"0F77 7777 7771 1171 1777 7777 7777 77F0"
+		$"F777 7777 7777 1111 1117 7777 7777 777F"
+		$"F777 7777 7777 7111 1111 7777 7777 777F"
+		$"0F77 7777 7777 7771 1711 1777 7777 77F0"
+		$"00F7 7777 7777 7771 1771 1777 7777 7F00"
+		$"000F 7777 7777 7771 1771 1777 7777 F000"
+		$"0000 F777 7771 1771 1771 1777 777F 0000"
+		$"0000 0F77 7771 1771 1771 1777 77F0 0000"
+		$"0000 00F7 7777 1111 1111 7777 7F00 0000"
+		$"0000 000F 7777 7111 1117 7777 F000 0000"
+		$"0000 0000 F777 7771 1777 777F 0000 0000"
+		$"0000 0000 0F77 7771 1777 77F0 0000 0000"
+		$"0000 0000 00F7 7777 7777 7F00 0000 0000"
+		$"0000 0000 000F 7777 7777 F000 0000 0000"
+		$"0000 0000 0000 F777 777F 0000 0000 0000"
+		$"0000 0000 0000 0F77 77F0 0000 0000 0000"
+		$"0000 0000 0000 00F7 7F00 0000 0000 0000"
+		$"0000 0000 0000 000F F000 0000 0000 0000",
 		/* [3] */
-		"Startup failed, System 7 required.  This"
-		" should never happen.",
+		'icl8',
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"FF2B 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 00FF"
+		$"C7FF 2B00 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 FFC7"
+		$"4ECE FF2B 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 00FF C754"
+		$"C7C7 C8FF 2B00 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 FFC7 4FC7"
+		$"C7C7 C7CE FF2B 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 00FF C74F C67B"
+		$"2D7A C7C7 C8FF 2B00 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 FFC7 54C7 C72D"
+		$"2857 C7C7 C7C8 FF2B 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 00FF C74E C7C7 9E2E"
+		$"032D A5C7 C7C7 C8FF 2B00 0000 0000 0000"
+		$"0000 0000 0000 0000 FFC7 55C7 C77A 0409"
+		$"2E04 037B C7C7 C7CE FF2B 0000 0000 0000"
+		$"0000 0000 0000 00FF C74E C7C7 A304 042D"
+		$"5803 2E0A C7C7 C7C7 C8FF 2B00 0000 0000"
+		$"0000 0000 0000 FFC7 54C7 C7C7 7B03 2ECF"
+		$"D0AC 0304 A5C7 C7C7 C7CE FF2B 0000 0000"
+		$"0000 0000 00FF C74F C7C7 C7C7 502E 09D0"
+		$"CFCF D0F1 CFCE C7C7 C7C7 C8FF 2B00 0000"
+		$"0000 0000 FFC7 54C7 C7C7 C7C7 7B03 0457"
+		$"A5C7 CECF CFC8 C7C7 C7C7 C7C8 FF2B 0000"
+		$"0000 00FF C74F C7C7 C7C7 C7C7 A404 2D04"
+		$"0A27 57C8 C7C7 C7C7 C7C7 C7C7 C8FF 2B00"
+		$"0000 FFC7 54C7 C7C7 C7C7 C7C7 C7A5 0409"
+		$"280A 032D C7C7 C7C7 C7C7 C7C7 C7CE FF2B"
+		$"00FF C74E C7C7 C7C7 C7C7 C7C7 C7C8 CFA6"
+		$"3403 280A 7BC7 C7C7 C7C7 C7C7 C7C7 C8FF"
+		$"002B FFCE C7C7 C7C7 C7C7 C7C7 C7CD C8CF"
+		$"CF82 0928 57C8 C7C7 C7C7 C7C7 CECF FF81"
+		$"0000 2BFF C8C7 C7C7 C7C7 C7C7 7A7A A4C8"
+		$"CECF 2809 2ECE C7C7 C7C7 C7CE CFFF 812B"
+		$"0000 002B FFC8 C7C7 C7C7 C7C7 2E03 2DC7"
+		$"C8A4 0404 7BCF CEC7 C7C7 C8CF FF81 2B00"
+		$"0000 0000 2BFF C8C7 C7C7 C7C7 502E 042E"
+		$"502E 030A FCCF C7C7 C7CE CFFF 812B 0000"
+		$"0000 0000 002B FFC8 C7C7 C7C7 A42D 0409"
+		$"0403 2E7B D0CE C8C7 C7CF FF81 2B00 0000"
+		$"0000 0000 0000 2BFF CEC7 C7C7 C7AB 7B04"
+		$"2E2E 81D6 CFCE C7C8 CFFF 812B 0000 0000"
+		$"0000 0000 0000 002B FFC8 C7C7 C7C8 CF57"
+		$"0457 D0D0 CEC8 CECF FF81 2B00 0000 0000"
+		$"0000 0000 0000 0000 2BFF CEC7 C7C7 CE52"
+		$"0358 CFCE C8C8 CFFF 812B 0000 0000 0000"
+		$"0000 0000 0000 0000 002B FFC8 C7C7 C7A4"
+		$"82A5 CFC8 CDCF FF81 2B00 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 2BFF CEC7 C7C8"
+		$"CECF CFCE CFFF 812B 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 002B FFC8 C7C7"
+		$"C8CE C8CF FF81 2B00 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 2BFF CEC7"
+		$"C7CE CFFF 812B 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 002B FFC8"
+		$"CECF FF81 2B00 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 2BFF"
+		$"CFFF 812B 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 002B"
+		$"FF81 2B00 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"2B2B 0000 0000 0000 0000 0000 0000 0000",
 		/* [4] */
-		"Startup failed to initialize TCP.  This "
-		"should never happen.",
+		'il32',
+		$"8DFF 0100 009A FF81 0098 FF02 0000 8080"
+		$"0096 FF02 0000 8082 0094 FF02 0000 8084"
+		$"0092 FF06 0000 8000 82AE 6E82 0090 FF07"
+		$"0000 8000 00AE EE97 8300 8EFF 0900 0080"
+		$"0000 48D3 EEC7 3C83 008C FF05 0000 8000"
+		$"0077 82EE 0067 8300 8AFF 0D00 0080 0000"
+		$"2BEE EED3 9BDE EEE7 1483 0088 FF02 0000"
+		$"8080 0008 7AEE E717 003C EEEE 4C84 0086"
+		$"FF02 0000 8081 0003 97EE DA04 8A00 84FF"
+		$"0200 0080 8200 0577 EEEE AF38 0489 0082"
+		$"FF02 0000 8083 0001 1FE7 80EE 02DA 800B"
+		$"8800 80FF 0200 0080 8500 014B DE81 EE01"
+		$"B607 8800 03FF 0000 8087 0002 105B B680"
+		$"EE00 6388 0000 FF8D 0003 6EEE EEA6 8800"
+		$"01FF FF87 0008 5757 3700 0004 EEEE AE88"
+		$"0080 FF86 0008 DEEE C604 0037 EEEE 9387"
+		$"0082 FF85 0008 9AEE EEC2 9BDE EEEE 3C86"
+		$"0084 FF84 0001 1BD7 82EE 0083 8600 86FF"
+		$"8400 051B 93E7 EECE 5786 0088 FF85 0002"
+		$"AEEE 9786 008A FF84 0002 AEEE 9785 008C"
+		$"FF83 0002 4357 3784 008E FF8B 0090 FF89"
+		$"0092 FF87 0094 FF85 0096 FF83 0098 FF81"
+		$"009A FF01 0000 8BFF 8DFF 0100 009A FF03"
+		$"0066 0000 98FF 0500 66B3 5200 0096 FF07"
+		$"0066 B366 6652 0000 94FF 0200 66B3 8166"
+		$"0252 0000 92FF 0B00 66B3 66AD C5A2 6666"
+		$"5200 0090 FF0D 0066 B366 66C4 E8B4 5E64"
+		$"6652 0000 8EFF 0F00 66B3 6666 8DD8 E8CC"
+		$"725E 6666 5200 008C FF05 0066 B366 66A7"
+		$"82E8 0696 6566 6652 0000 8AFF 1300 66B3"
+		$"6666 7DE8 E8D5 A6DB E8E3 6764 6666 5200"
+		$"0088 FF02 0066 B380 6609 A8E8 E33E 2151"
+		$"E8E8 785C 8066 0252 0000 86FF 0200 66B3"
+		$"8166 0AB7 E8D9 252D 332A 2130 5164 8066"
+		$"0252 0000 84FF 0200 66B3 8266 0AA2 E8E8"
+		$"B56C 5647 3438 5163 8166 0252 0000 82FF"
+		$"0200 66B3 8366 016D E380 E805 DDA8 5D56"
+		$"5E64 8266 0252 0000 80FF 0200 66B3 8466"
+		$"025E 76DB 81E8 01C7 6785 6606 5200 00FF"
+		$"0066 B385 6604 624F 3D6C B980 E801 9262"
+		$"8466 0652 5200 FF00 0052 8666 095D 4832"
+		$"267C E8E8 B355 6482 6608 5233 0000 FFFF"
+		$"0000 5284 660A 9594 7E52 4438 E8E8 B445"
+		$"5E81 6601 5233 8000 80FF 0200 0052 8366"
+		$"0ADF E8D1 625D 76E8 E89B 3A5A 8066 0152"
+		$"3380 0082 FF02 0000 5282 660E B7E8 E8CC"
+		$"B9DF E8E8 5238 5966 6652 3380 0084 FF02"
+		$"0000 5281 6601 68D7 82E8 0691 223E 5C66"
+		$"5233 8000 86FF 0200 0052 8066 0C5B 509C"
+		$"E2E8 D06F 202C 4A61 5233 8000 88FF 1000"
+		$"0052 6666 6250 34B3 E89F 202A 405A 5133"
+		$"8000 8AFF 0E00 0052 6666 6050 B9E8 9E2A"
+		$"4358 5033 8000 8CFF 0C00 0052 6666 627B"
+		$"7451 3755 5133 8000 8EFF 0A00 0052 6666"
+		$"5A3E 3042 4A33 8000 90FF 0800 0052 6660"
+		$"514A 4330 8000 92FF 0600 0052 6462 4D31"
+		$"8000 94FF 0400 0052 5233 8000 96FF 0200"
+		$"0033 8000 98FF 8100 9AFF 0100 008B FF8D"
+		$"FF01 0000 9AFF 0300 CC00 0098 FF05 00CC"
+		$"E6A3 0000 96FF 0700 CCE6 CCCC A300 0094"
+		$"FF02 00CC E681 CC02 A300 0092 FF0B 00CC"
+		$"E6CC 846B 8ECC CCA3 0000 90FF 0D00 CCE6"
+		$"CCCC 6947 6FBD C8CC A300 008E FF0F 00CC"
+		$"E6CC CCA4 5447 5082 BDCC CCA3 0000 8CFF"
+		$"0500 CCE6 CCCC 8A82 4706 82CA CCCC A300"
+		$"008A FF13 00CC E6CC CCB4 4747 4E4B 4647"
+		$"49AD C8CC CCA3 0000 88FF 0200 CCE6 80CC"
+		$"0F87 4749 5542 4047 4774 B9CB CCCC A300"
+		$"0086 FF02 00CC E681 CC0A 7547 4943 5A66"
+		$"5442 61A2 C780 CC02 A300 0084 FF02 00CC"
+		$"E682 CC0A 8147 474A 7CA5 8E69 70A2 C681"
+		$"CC02 A300 0082 FF02 00CC E683 CC01 A849"
+		$"8047 0551 7DA8 ACBD C982 CC02 A300 0080"
+		$"FF02 00CC E684 CC01 BB72 8247 0262 C2CB"
+		$"84CC 06A3 0000 FF00 CCE6 85CC 04C5 9E60"
+		$"4145 8047 027F C3CB 83CC 06A3 A300 FF00"
+		$"00A3 85CC 0ACB BA90 644B 4247 4755 AAC7"
+		$"82CC 08A3 6600 00FF FF00 00A3 84CC 0A9B"
+		$"9AA1 A488 6947 4749 8ABD 81CC 01A3 6680"
+		$"0080 FF02 0000 A383 CC0A 5047 5BBD BA91"
+		$"4747 4575 B380 CC01 A366 8000 82FF 0200"
+		$"00A3 82CC 0E70 4747 5871 4F47 4741 71B2"
+		$"CCCC A366 8000 84FF 0200 00A3 81CC 01A5"
+		$"4C82 4706 4944 7CB7 CCA3 6680 0086 FF02"
+		$"0000 A380 CC01 B674 8047 074C 5040 5795"
+		$"C2A3 6680 0088 FF10 0000 A3CC CCC4 A069"
+		$"4747 4440 5381 B3A1 6680 008A FF0E 0000"
+		$"A3CC CBBF A053 4743 5586 B19F 6680 008C"
+		$"FF0C 0000 A3CC CBC4 8859 476E AAA0 6680"
+		$"008E FF0A 0000 A3CC CCB5 7D5F 8393 6680"
+		$"0090 FF08 0000 A3CC BFA2 9485 6180 0092"
+		$"FF06 0000 A3C9 C399 6280 0094 FF04 0000"
+		$"A3A3 6680 0096 FF02 0000 6680 0098 FF81"
+		$"009A FF01 0000 8BFF",
 		/* [5] */
-		"Failed to read the resource of programs."
-		"  This should never happen.",
+		'l8mk',
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"FF33 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 00FF"
+		$"FFFF 3300 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 FFFF"
+		$"FFFF FF33 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 00FF FFFF"
+		$"FFFF FFFF 3300 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 FFFF FFFF"
+		$"FFFF FFFF FF33 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 00FF FFFF FFFF"
+		$"FFFF FFFF FFFF 3300 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FF33 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 00FF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF 3300 0000 0000 0000"
+		$"0000 0000 0000 0000 FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FF33 0000 0000 0000"
+		$"0000 0000 0000 00FF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF 3300 0000 0000"
+		$"0000 0000 0000 FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FF33 0000 0000"
+		$"0000 0000 00FF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF 3300 0000"
+		$"0000 0000 FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FF33 0000"
+		$"0000 00FF FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF 3300"
+		$"0000 FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FF33"
+		$"00FF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"0033 FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FF99"
+		$"0000 33FF FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF 9933"
+		$"0000 0033 FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FF99 3300"
+		$"0000 0000 33FF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF 9933 0000"
+		$"0000 0000 0033 FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FF99 3300 0000"
+		$"0000 0000 0000 33FF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF 9933 0000 0000"
+		$"0000 0000 0000 0033 FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FF99 3300 0000 0000"
+		$"0000 0000 0000 0000 33FF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF 9933 0000 0000 0000"
+		$"0000 0000 0000 0000 0033 FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FF99 3300 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 33FF FFFF FFFF"
+		$"FFFF FFFF FFFF 9933 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0033 FFFF FFFF"
+		$"FFFF FFFF FF99 3300 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 33FF FFFF"
+		$"FFFF FFFF 9933 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0033 FFFF"
+		$"FFFF FF99 3300 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 33FF"
+		$"FFFF 9933 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0033"
+		$"FF99 3300 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"3333 0000 0000 0000 0000 0000 0000 0000",
 		/* [6] */
-		"Failed to read the resource of programs."
-		"  This should never happen.",
+		'ics#',
+		$"0100 0280 05C0 0AE0 15F0 2DF8 5CFC BFFE"
+		$"7FFE 3D7C 1FF8 0FF0 07E0 03C0 0180 0000"
+		$"0180 03C0 07E0 0FF0 1FF8 3FFC 7FFE FFFF"
+		$"FFFF 7FFE 3FFC 1FF8 0FF0 07E0 03C0 0180",
 		/* [7] */
-		"Failed to startup the dialog box.  This "
-		"should never happen."
-	}
-};
-
-resource 'STR#' (160, "Validate", purgeable) {
-	{	/* array StringArray: 15 elements */
-		/* [1] */
-		"Your Email address “^1” does not contain"
-		" either an @ or an !.  Your Email addres"
-		"s is the only way we can contact you.  A"
-		"re you sure it is valid?",
-		/* [2] */
-		"You are paying ^1.  Are you sure this is"
-		" what you want?",
-		/* [3] */
-		"Your expiry “^1” doesn’t look right (it "
-		"should be something like 01/99, and the "
-		"date must be in the future).  Are you su"
-		"re it is valid?",
-		/* [4] */
-		"Your First Virtual ID is blank.",
-		/* [5] */
-		"Your Card Name is blank.  This field sho"
-		"uld be the name that appears on the cred"
-		"it card.",
-		/* [6] */
-		"Your credit card number “^1” is all zero"
-		"s.",
-		/* [7] */
-		"Your credit card number “^1” doesn’t app"
-		"ear to be a valid number or is not of th"
-		"e chosen type.  Maybe you entered the nu"
-		"mber incorrectly?",
+		'ics4',
+		$"0000 000F 0000 0000 0000 00F7 F000 0000"
+		$"0000 0F77 7F00 0000 0000 F77F 77F0 0000"
+		$"000F 77FF F77F 0000 00F7 7F7F 7F77 F000"
+		$"0F77 7F7F 7777 7F00 F777 7F7F 7777 77F0"
+		$"F777 77FF F777 77F0 0F77 777F 7F77 7F00"
+		$"00F7 7F7F 7F77 F000 000F 77FF F77F 0000"
+		$"0000 F77F 77F0 0000 0000 0F77 7F00 0000"
+		$"0000 00F7 F000 0000 0000 000F 0000 0000",
 		/* [8] */
-		"Your name “^1” did not change or is blan"
-		"k.",
+		'ics8',
+		$"0000 0000 0000 00FF 2B00 0000 0000 0000"
+		$"0000 0000 0000 FF4E FF2B 0000 0000 0000"
+		$"0000 0000 00FF 4E9E CEFF 2B00 0000 0000"
+		$"0000 0000 FF78 9E0A 7AC8 FF2B 0000 0000"
+		$"0000 00FF 4EA4 2D2E 04A4 C8FF 2B00 0000"
+		$"0000 FF4E CD74 2ECF ABA5 C7CE FF2B 0000"
+		$"00FF 4EC7 C7A4 042D 7BCE C7C7 C8FF 2B00"
+		$"FF55 C7C7 C7C7 A558 047A C7C7 CECF FF2B"
+		$"2BFF CEC7 C79D A4CE 2E51 CDC8 CFFF 812B"
+		$"002B EACE C77A 0457 0382 C8CF FF81 2B00"
+		$"0000 2BFF CEC7 5704 82CF CFFF 812B 0000"
+		$"0000 002B FFC8 CE2E A5CF FF81 2B00 0000"
+		$"0000 0000 2BFF C8CE CFFF 812B 0000 0000"
+		$"0000 0000 002B FFCF FF81 2B00 0000 0000"
+		$"0000 0000 0000 2BFF 812B 0000 0000 0000"
+		$"0000 0000 0000 002B 2B00 0000 0000 0000",
 		/* [9] */
-		"If you intend to print this copy out and"
-		" send it to us, please print or save it "
-		"from within the program since that will "
-		"include barcodes which makes it easier f"
-		"or us to process your form. There is no "
-		"problem if you are going to Email it to "
-		"us. Thanks!",
+		'is32',
+		$"84FF 0100 008A FF03 0080 0000 88FF 0200"
+		$"805A 8000 86FF 0400 803F F85C 8000 84FF"
+		$"0600 8027 DABD F346 8000 82FF 0700 8000"
+		$"6DD9 0041 2F81 0080 FF07 0080 0300 37F3"
+		$"C95D 8300 03FF 0080 0480 0003 38B0 FD69"
+		$"8800 043C 3600 B9AD 8300 00FF 8100 0471"
+		$"F38C E969 8200 80FF 8000 0407 85FF 8505"
+		$"8100 82FF 8000 020D B924 8100 84FF 8000"
+		$"000D 8100 86FF 8300 88FF 8100 8AFF 0100"
+		$"0084 FF84 FF01 0000 8AFF 0300 B300 0088"
+		$"FF05 00B3 994D 0000 86FF 0700 B389 EF91"
+		$"4D00 0084 FF09 00B3 7DDC BEE8 8A4D 0000"
+		$"82FF 0B00 B360 A3D3 2A5F 595F 4D00 0080"
+		$"FF1C 00B3 6661 7FE9 D188 4962 674D 0000"
+		$"FF00 B368 6567 5B66 B0F2 9D60 664D 3381"
+		$"000A 4D67 6388 762D BFB7 534D 3380 000B"
+		$"FF00 004D 5FA2 EDAF E879 4C33 8000 80FF"
+		$"0800 004D 5E97 F48F 2E33 8000 82FF 0600"
+		$"004D 5BBC 4733 8000 84FF 0400 004D 5033"
+		$"8000 86FF 0200 0033 8000 88FF 8100 8AFF"
+		$"0100 0084 FF84 FF01 0000 8AFF 0300 E600"
+		$"0088 FF05 00E6 9E99 0000 86FF 0700 E6AB"
+		$"4389 9900 0084 FF09 00E6 B94F 443F A199"
+		$"0000 82FF 0B00 E6D6 9140 5956 65C6 9900"
+		$"0080 FF1C 00E6 CED1 A441 567A 9DC6 CF99"
+		$"0000 FF00 E6D0 CCCE CA71 3B3F 8BCF CC99"
+		$"6681 000A 99CE CFAD 9689 4D51 B799 6680"
+		$"000B FF00 0099 D689 477C 5045 AA66 8000"
+		$"80FF 0800 0099 BB53 3E42 5E66 8000 82FF"
+		$"0600 0099 A046 5366 8000 84FF 0400 0099"
+		$"8966 8000 86FF 0200 0066 8000 88FF 8100"
+		$"8AFF 0100 0084 FF",
 		/* [10] */
-		"Your address did not change or is blank."
-		"  Your address is required to send you t"
-		"he receipt or product.",
+		's8mk',
+		$"0000 0000 0000 00FF 3300 0000 0000 0000"
+		$"0000 0000 0000 FFFF FF33 0000 0000 0000"
+		$"0000 0000 00FF FFFF FFFF 3300 0000 0000"
+		$"0000 0000 FFFF FFFF FFFF FF33 0000 0000"
+		$"0000 00FF FFFF FFFF FFFF FFFF 3300 0000"
+		$"0000 FFFF FFFF FFFF FFFF FFFF FF33 0000"
+		$"00FF FFFF FFFF FFFF FFFF FFFF FFFF 3300"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FF33"
+		$"33FF FFFF FFFF FFFF FFFF FFFF FFFF 9933"
+		$"0033 FFFF FFFF FFFF FFFF FFFF FF99 3300"
+		$"0000 33FF FFFF FFFF FFFF FFFF 9933 0000"
+		$"0000 0033 FFFF FFFF FFFF FF99 3300 0000"
+		$"0000 0000 33FF FFFF FFFF 9933 0000 0000"
+		$"0000 0000 0033 FFFF FF99 3300 0000 0000"
+		$"0000 0000 0000 33FF 9933 0000 0000 0000"
+		$"0000 0000 0000 0033 3300 0000 0000 0000",
 		/* [11] */
-		"If you intend to print this copy out and"
-		" send it to us, please print or save it "
-		"from within the program since that will "
-		"include barcodes which makes it easier f"
-		"or us to process your form. Thanks!",
-		/* [12] */
-		"Your Email address “^1” did not change o"
-		"r is blank.  Your Email address is the m"
-		"ain way we can contact you.  It’s OK wit"
-		"h us but you need to be aware of this.\n",
-		/* [13] */
-		"WARNING: This program scrambles your cre"
-		"dit card number to protect it from casua"
-		"l inspection but it is in no way secure."
-		"  Email, FAX and Snail-mail can all be i"
-		"ntercepted and you should be aware of th"
-		"is before sending the form.",
-		/* [14] */
-		"One or more of the products you are regi"
-		"stering require an email address.  You m"
-		"ust enter one before continuing.",
-		/* [15] */
-		"You must select one or more of the produ"
-		"cts to pay for (enter the number of copi"
-		"es you want, or click the site or world-"
-		"wide license checkboxes)."
+		'icm8',
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
+		$"0000 0000 0000 0000 0000 0000 0000 0000"
 	}
 };
 
-resource 'STR#' (170, "Methods", purgeable) {
-	{	/* array StringArray: 7 elements */
-		/* [1] */
-		"Check",
-		/* [2] */
-		"Cash",
-		/* [3] */
-		"Invoice",
-		/* [4] */
-		"Card",
-		/* [5] */
-		"Card",
-		/* [6] */
-		"Card",
-		/* [7] */
-		"FirstVirtual"
-	}
-};
-
-resource 'STR#' (171, "MTHD", purgeable) {
-	{	/* array StringArray: 7 elements */
-		/* [1] */
-		"CHCK",
-		/* [2] */
-		"CASH",
-		/* [3] */
-		"INVC",
-		/* [4] */
-		"CARD",
-		/* [5] */
-		"CARD",
-		/* [6] */
-		"CARD",
-		/* [7] */
-		"FV"
-	}
-};
-
-resource 'STR#' (180, "Prefs", purgeable) {
-	{	/* array StringArray: 4 elements */
-		/* [1] */
-		"Your Name",
-		/* [2] */
-		"email@domain.com",
-		/* [3] */
-		"",
-		/* [4] */
-		""
-	}
-};
-
-resource 'STR#' (200, "Form", purgeable) {
-	{	/* array StringArray: 18 elements */
-		/* [1] */
-		"Payment-method: ",
-		/* [2] */
-		"Card-name: ",
-		/* [3] */
-		"Data-SC: ",
-		/* [4] */
-		"Token: ",
-		/* [5] */
-		"Register-to: ",
-		/* [6] */
-		"Email: ",
-		/* [7] */
-		"Addr: ",
-		/* [8] */
-		"Program: ^1$ ^2 - ^3^5 * ^4",
-		/* [9] */
-		"Program: ^1$ ^2 - ^3^5 * Site license fo"
-		"r ^4",
-		/* [10] */
-		"Program: ^1$ ^2 - ^3^5 * World-wide lice"
-		"nse for ^4",
-		/* [11] */
-		"Program: ^1$ ^2 - Bonus for ^4",
-		/* [12] */
-		"Comment: ^4 - ^1",
-		/* [13] */
-		"Receipt: ^1$ ^2",
-		/* [14] */
-		"Total: ^1",
-		/* [15] */
-		"Time: ",
-		/* [16] */
-		"E",
-		/* [17] */
-		"CCaddr: ",
-		/* [18] */
-		"CCzip: "
-	}
-};
-
-resource 'STR#' (201, "Bar Form", purgeable) {
-	{	/* array StringArray: 18 elements */
-		/* [1] */
-		"PM",
-		/* [2] */
-		"CN",
-		/* [3] */
-		"DS",
-		/* [4] */
-		"TK",
-		/* [5] */
-		"RT",
-		/* [6] */
-		"EM",
-		/* [7] */
-		"AD",
-		/* [8] */
-		"PR^1^2U^3^5-^4",
-		/* [9] */
-		"PR^1^2S^3^5-^4",
-		/* [10] */
-		"PR^1^2W^3^5-^4",
-		/* [11] */
-		"PR^1^2B^3-^4",
-		/* [12] */
-		"CM^4-^1",
-		/* [13] */
-		"RC^1^2",
-		/* [14] */
-		"TL^1",
-		/* [15] */
-		"TM",
-		/* [16] */
-		"E",
-		/* [17] */
-		"CA",
-		/* [18] */
-		"CZ"
-	}
-};
-
-resource 'STR#' (800, "URLs", purgeable) {
-	{	/* array StringArray: 3 elements */
-		/* [1] */
-		"ftp://ftp.share.com/pub/peterlewis/",
-		/* [2] */
-		"http://www.share.com/peterlewis/",
-		/* [3] */
-		"mailto:support@stairways.com.au"
-	}
-};
-
-resource 'STR#' (928, "About", purgeable) {
-	{	/* array StringArray: 9 elements */
-		/* [1] */
-		"",
-		/* [2] */
-		"",
-		/* [3] */
-		"Times:48:0:1:^2",
-		/* [4] */
-		":::-1:Version ^1",
-		/* [5] */
-		":::1:This program may be freely distribu"
-		"ted,\nbut may not be modified in any way.",
-		/* [6] */
-		"::H:1:Email <support@stairways.com.au>",
-		/* [7] */
-		"Helvetica:24::0:Stairways Shareware",
-		/* [8] */
-		":::-1:©1994-98 Peter N Lewis",
-		/* [9] */
-		"ICON:928"
-	}
-};
-
-resource 'STR#' (1900, "Fonts") {
-	{	/* array StringArray: 30 elements */
-		/* [1] */
-		"geneva",
-		/* [2] */
-		"0",
-		/* [3] */
-		"geneva",
-		/* [4] */
-		"9",
-		/* [5] */
-		"geneva",
-		/* [6] */
-		"12",
-		/* [7] */
-		"courier",
-		/* [8] */
-		"0",
-		/* [9] */
-		"courier",
-		/* [10] */
-		"9",
-		/* [11] */
-		"courier",
-		/* [12] */
-		"12",
-		/* [13] */
-		"chicago",
-		/* [14] */
-		"0",
-		/* [15] */
-		"chicago",
-		/* [16] */
-		"9",
-		/* [17] */
-		"chicago",
-		/* [18] */
-		"12",
-		/* [19] */
-		"SYSTEM",
-		/* [20] */
-		"0",
-		/* [21] */
-		"SYSTEM",
-		/* [22] */
-		"9",
-		/* [23] */
-		"SYSTEM",
-		/* [24] */
-		"12",
-		/* [25] */
-		"monaco",
-		/* [26] */
-		"0",
-		/* [27] */
-		"monaco",
-		/* [28] */
-		"9",
-		/* [29] */
-		"monaco",
-		/* [30] */
-		"12"
-	}
-};
-
-resource 'STR#' (26724, "Balloon Help Strings", purgeable) {
-	{	/* array StringArray: 25 elements */
-		/* [1] */
-		"Click this to save the registration form"
-		" as a text file.",
-		/* [2] */
-		"Click this to close the window and quit "
-		"this program.  This does not save any in"
-		"formation that you can send us.",
-		/* [3] */
-		"Click this to print the registration for"
-		"m.",
-		/* [4] */
-		"Click this to copy the registration form"
-		" to the clipboard.",
-		/* [5] */
-		"Type your name here.  This is the person"
-		" or organisation to whom the product wil"
-		"l be registered.",
-		/* [6] */
-		"Type your Email address here.  This is h"
-		"ow we will contact you with information "
-		"about your registration. Examples are: t"
-		"erry@aol.com, 12345.6789@compuserve.com,"
-		" jan@unix.university.edu",
-		/* [7] */
-		"Type your postal address here.  This is "
-		"the address to send the paper receipt or"
-		" other materials (if any).",
-		/* [8] */
-		"Type the number of single-user licenses "
-		"you require here.",
-		/* [9] */
-		"Type in the bonus you would like for thi"
-		"s row’s product.  I don’t know why you w"
-		"ould pay a bonus above the cost of the p"
-		"roduct, but some people do, and who am I"
-		" to say no?",
-		/* [10] */
-		"Click here to order a site license of th"
-		"is row’s product.  Site licenses cover a"
-		" single organisation for an area of up t"
-		"o one hundred miles (160 km) in radius.",
-		/* [11] */
-		"Click here to not order a site license o"
-		"f this row’s product.  Site licenses cov"
-		"er a single organisation for an area of "
-		"up to one hundred miles (160 km) in radi"
-		"us.",
-		/* [12] */
-		"Click here to order a world-wide license"
-		" of this row’s product.  A world-wide li"
-		"cense covers everyone in a single organi"
-		"sation.",
-		/* [13] */
-		"Click here to not order a world-wide lic"
-		"ense of this row’s product.  A world-wid"
-		"e license covers everyone in a single or"
-		"ganisation.",
-		/* [14] */
-		"Click here to get a special option for t"
-		"his product.  This may change the price "
-		"of various other options.",
-		/* [15] */
-		"Click here to turn off the special optio"
-		"n for this product.  This may change the"
-		" price of various other options.",
-		/* [16] */
-		"Click here to include a comment to that "
-		"vendor of the product.  It is usually be"
-		"tter to email the vendor directly, but y"
-		"ou can use this for short comments.",
-		/* [17] */
-		"Use the scroll bar to show other product"
-		"s.",
-		/* [18] */
-		"Click here if you require a paper receip"
-		"t.",
-		/* [19] */
-		"Click here if you do not require a paper"
-		" receipt.",
-		/* [20] */
-		"Type the name on the credit card here.",
-		/* [21] */
-		"Type your credit card number here. You c"
-		"an just enter the numbers, spaces and da"
-		"shes are not required.",
-		/* [22] */
-		"Type the credit card expiry (MM/YY) here"
-		". Month (MM) and year (YY) are all that "
-		"are required.",
-		/* [23] */
-		"Type the First Virtual ID here.",
-		/* [24] */
-		"Use this popup menu to select the cash c"
-		"urrency you wish to pay with.  Note that"
-		" you will probably get a better exchange"
-		" rate at your local bank.",
-		/* [25] */
-		"Use this popup menu to select a payment "
-		"method."
-	}
-};
-
-data 'TEXT' (150, "Ensure Alert") {
-	$"5342 533A 4F68 2057 656C 6C0D 5E31 0D"              /* SBS:Oh Well.^1. */
-};
-
-data 'TEXT' (160, "Validate Alert") {
-	$"5342 573A 436F 6E74 696E 7565 3A43 616E"            /* SBW:Continue:Can */
-	$"6365 6C0D 5E31 0D"                                  /* cel.^1. */
-};
-
-data 'TEXT' (161, "Validate Required Alert") {
-	$"5342 573A 4361 6E63 656C 0D5E 310D"                 /* SBW:Cancel.^1. */
-};
-
-data 'TEXT' (170, "Print or Email Alert") {
-	$"4E2D 573A 5669 6120 456D 6169 6C3A 4641"            /* N-W:Via Email:FA */
-	$"5820 6F72 204D 6169 6C09 456D 6169 6C3F"            /* X or Mail.Email? */
-	$"0D57 696C 6C20 796F 7520 6265 2073 656E"            /* .Will you be sen */
-	$"6469 6E67 2074 6869 7320 7669 6120 456D"            /* ding this via Em */
-	$"6169 6C3F 2020 4966 2073 6F2C 2049 D56C"            /* ail?  If so, I’l */
-	$"6C20 7361 7665 2061 7320 706C 6169 6E20"            /* l save as plain  */
-	$"7465 7874 2E20 2049 6620 6E6F 742C 2049"            /* text.  If not, I */
-	$"D56C 6C20 7361 7665 2069 7420 6173 2061"            /* ’ll save it as a */
-	$"2054 6561 6368 5465 7874 2064 6F63 756D"            /*  TeachText docum */
-	$"656E 7420 7769 7468 2074 6865 2062 6172"            /* ent with the bar */
-	$"636F 6465 7320 6469 7370 6C61 7965 6420"            /* codes displayed  */
-	$"736F 2079 6F75 2063 616E 2070 7269 6E74"            /* so you can print */
-	$"2069 7420 6F75 7420 6C61 7465 722E"                 /*  it out later. */
-};
-
-data 'TEXT' (175, "Need Receipt?") {
-	$"4342 573A 5965 732F 593A 4E6F 2F4E 0952"            /* CBW:Yes/Y:No/N.R */
-	$"6563 6569 7074 3F0D 596F 7520 6F6E 6C79"            /* eceipt?.You only */
-	$"206E 6565 6420 6120 706F 7374 6361 7264"            /*  need a postcard */
-	$"2072 6563 6569 7074 2069 6620 796F 7520"            /*  receipt if you  */
-	$"6163 7475 616C 6C79 2077 616E 7420 6120"            /* actually want a  */
-	$"7068 7973 6963 616C 2070 6170 6572 2072"            /* physical paper r */
-	$"6563 6569 7074 2073 656E 7420 746F 2079"            /* eceipt sent to y */
-	$"6F75 2E20 2049 6620 796F 7520 7370 6563"            /* ou.  If you spec */
-	$"6966 7920 616E 2065 6D61 696C 2061 6464"            /* ify an email add */
-	$"7265 7373 2C20 616E 2065 6D61 696C 2072"            /* ress, an email r */
-	$"6563 6569 7074 2077 696C 6C20 616C 7761"            /* eceipt will alwa */
-	$"7973 2062 6520 7365 6E74 2074 6F20 796F"            /* ys be sent to yo */
-	$"752E 2020 446F 2079 6F75 2072 6561 6C6C"            /* u.  Do you reall */
-	$"7920 7761 6E74 2061 2070 6170 6572 2072"            /* y want a paper r */
-	$"6563 6569 7074 2073 656E 7420 746F 2079"            /* eceipt sent to y */
-	$"6F75 3F0D"                                          /* ou?. */
-};
-
-data 'TEXT' (180, "Did Nothing Alert") {
-	$"4342 573A 5175 6974 3A43 616E 6365 6C09"            /* CBW:Quit:Cancel. */
-	$"5175 6974 696E 6720 416C 7265 6164 793F"            /* Quiting Already? */
-	$"0D59 6F75 2064 6964 206E 6F74 2070 7269"            /* .You did not pri */
-	$"6E74 2C20 636F 7079 2C20 6F72 2073 6176"            /* nt, copy, or sav */
-	$"6520 7468 6520 6461 7461 2E20 2059 6F75"            /* e the data.  You */
-	$"206D 7573 7420 646F 206F 6E65 206F 6620"            /*  must do one of  */
-	$"7468 6573 6520 746F 2073 656E 6420 7468"            /* these to send th */
-	$"6520 696E 666F 726D 6174 696F 6E20 746F"            /* e information to */
-	$"2075 7320 2D20 646F 206E 6F74 2073 656E"            /*  us - do not sen */
-	$"6420 7468 6520 5265 6769 7374 6572 2061"            /* d the Register a */
-	$"7070 6C69 6361 7469 6F6E 2069 7473 656C"            /* pplication itsel */
-	$"6621"                                               /* f! */
-};
-
-data 'TEXT' (185, "Cant launch") {
-	$"5342 573A 4F4B 0946 6169 6C65 6420 746F"            /* SBW:OK.Failed to */
-	$"204C 6175 6E63 6820 4865 6C70 6572 0D53"            /*  Launch Helper.S */
-	$"6F72 7279 2C20 4920 6661 696C 6564 2074"            /* orry, I failed t */
-	$"6F20 6C61 756E 6368 2074 6865 2068 656C"            /* o launch the hel */
-	$"7065 7220 6170 706C 6963 6174 696F 6E20"            /* per application  */
-	$"285E 3129 2E"                                       /* (^1). */
-};
-
-data 'TEXT' (200, "Check") {
-	$"5365 6E64 2074 6869 7320 666F 726D 2074"            /* Send this form t */
-	$"6F67 6574 6865 7220 7769 7468 2079 6F75"            /* ogether with you */
-	$"7220 6368 6563 6B20 6D61 6465 206F 7574"            /* r check made out */
-	$"2074 6F20 D24B 6167 69D3 2074 6F20 7468"            /*  to “Kagi” to th */
-	$"6520 6164 6472 6573 7320 6265 6C6F 772E"            /* e address below. */
-	$"2054 6865 2055 2E53 2E20 4665 6465 7261"            /*  The U.S. Federa */
-	$"6C20 456D 706C 6F79 6572 2049 6465 6E74"            /* l Employer Ident */
-	$"6966 6963 6174 696F 6E20 4E75 6D62 6572"            /* ification Number */
-	$"2022 4645 494E 2220 666F 7220 4B61 6769"            /*  "FEIN" for Kagi */
-	$"2069 7320 3934 2D33 3238 3138 3339 2E20"            /*  is 94-3281839.  */
-	$"5468 6520 5553 2067 6F76 6572 6E6D 656E"            /* The US governmen */
-	$"7420 646F 6573 206E 6F74 2063 6C61 7373"            /* t does not class */
-	$"6966 7920 4B61 6769 2061 7320 6120 776F"            /* ify Kagi as a wo */
-	$"6D65 6E20 6F77 6E65 6420 6275 7369 6E65"            /* men owned busine */
-	$"7373 206F 7220 6173 2061 206D 696E 6F72"            /* ss or as a minor */
-	$"6974 7920 6F77 6E65 6420 6275 7369 6E65"            /* ity owned busine */
-	$"7373 2E20 4974 2069 7320 636C 6173 7369"            /* ss. It is classi */
-	$"6669 6564 2061 7320 6120 736D 616C 6C20"            /* fied as a small  */
-	$"7365 7276 6963 6520 6275 7369 6E65 7373"            /* service business */
-	$"2061 2043 616C 6966 6F72 6E69 6120 636F"            /*  a California co */
-	$"7270 6F72 6174 696F 6E2E 0D0D 5365 6E64"            /* rporation...Send */
-	$"2074 6869 7320 666F 726D 2077 6974 6820"            /*  this form with  */
-	$"796F 7572 2070 6179 6D65 6E74 2074 6F3A"            /* your payment to: */
-	$"0D0D"                                               /* .. */
-};
-
-data 'TEXT' (201, "Cash") {
-	$"5365 6E64 2074 6869 7320 666F 726D 2074"            /* Send this form t */
-	$"6F67 6574 6865 7220 7769 7468 2079 6F75"            /* ogether with you */
-	$"7220 6361 7368 2028 7772 6170 7065 6420"            /* r cash (wrapped  */
-	$"696E 2074 6869 636B 2070 6170 6572 2074"            /* in thick paper t */
-	$"6F20 6D61 6B65 2074 6865 2063 6173 6820"            /* o make the cash  */
-	$"6C65 7373 206F 6276 696F 7573 2920 746F"            /* less obvious) to */
-	$"3A0D 0D"                                            /* :.. */
-};
-
-data 'TEXT' (202, "Net") {
-	$"5365 6E64 2074 6869 7320 666F 726D 2074"            /* Send this form t */
-	$"6F3A 0D0D"                                          /* o:.. */
-};
-
-data 'TEXT' (203, "Invoice") {
-	$"496E 766F 6963 650D 0D54 6F3A 2041 6363"            /* Invoice..To: Acc */
-	$"6F75 6E74 7320 5061 7961 626C 650D 0D50"            /* ounts Payable..P */
-	$"6C65 6173 6520 7061 7920 7468 6520 666F"            /* lease pay the fo */
-	$"6C6C 6F77 696E 6720 696E 766F 6963 652E"            /* llowing invoice. */
-	$"204E 6F74 6520 7468 6174 2074 6869 7320"            /*  Note that this  */
-	$"6973 2066 6F72 2061 206C 6963 656E 7365"            /* is for a license */
-	$"206F 6E6C 792C 2074 6865 7265 2061 7265"            /*  only, there are */
-	$"206E 6F20 6465 6C69 7665 7261 626C 6573"            /*  no deliverables */
-	$"2E20 4D61 6B65 2074 6865 2063 6865 636B"            /* . Make the check */
-	$"2070 6179 6162 6C65 2074 6F20 224B 6167"            /*  payable to "Kag */
-	$"6922 2061 6E64 2073 656E 6420 746F 2074"            /* i" and send to t */
-	$"6865 2061 6464 7265 7373 206C 6973 7465"            /* he address liste */
-	$"6420 6265 6C6F 772E 2054 6865 2055 2E53"            /* d below. The U.S */
-	$"2E20 4665 6465 7261 6C20 456D 706C 6F79"            /* . Federal Employ */
-	$"6572 2049 6465 6E74 6966 6963 6174 696F"            /* er Identificatio */
-	$"6E20 4E75 6D62 6572 2022 4645 494E 2220"            /* n Number "FEIN"  */
-	$"666F 7220 4B61 6769 2069 7320 3934 2D33"            /* for Kagi is 94-3 */
-	$"3238 3138 3339 2E20 5468 6520 5553 2067"            /* 281839. The US g */
-	$"6F76 6572 6E6D 656E 7420 646F 6573 206E"            /* overnment does n */
-	$"6F74 2063 6C61 7373 6966 7920 4B61 6769"            /* ot classify Kagi */
-	$"2061 7320 6120 776F 6D65 6E20 6F77 6E65"            /*  as a women owne */
-	$"6420 6275 7369 6E65 7373 206F 7220 6173"            /* d business or as */
-	$"2061 206D 696E 6F72 6974 7920 6F77 6E65"            /*  a minority owne */
-	$"6420 6275 7369 6E65 7373 2E20 4974 2069"            /* d business. It i */
-	$"7320 636C 6173 7369 6669 6564 2061 7320"            /* s classified as  */
-	$"6120 736D 616C 6C20 7365 7276 6963 6520"            /* a small service  */
-	$"6275 7369 6E65 7373 2C20 6120 4361 6C69"            /* business, a Cali */
-	$"666F 726E 6961 2043 6F72 706F 7261 7469"            /* fornia Corporati */
-	$"6F6E 2E0D 0D59 6F75 206D 7573 7420 696E"            /* on...You must in */
-	$"636C 7564 6520 6120 636F 7079 206F 6620"            /* clude a copy of  */
-	$"7468 6973 2069 6E76 6F69 6365 2077 6974"            /* this invoice wit */
-	$"6820 796F 7572 2070 6179 6D65 6E74 2E20"            /* h your payment.  */
-	$"0D0D 0D49 6E76 6F69 6365 2041 7070 726F"            /* ...Invoice Appro */
-	$"7665 643A 205F 5F5F 5F5F 5F5F 5F5F 5F5F"            /* ved: ___________ */
-	$"5F5F 5F5F 5F5F 5F5F 5F5F 5F5F 5F5F 200D"            /* ______________ . */
-	$"0D0D"                                               /* .. */
-};
-
-data 'TEXT' (300, "Address") {
-	$"456D 6169 6C3A 2073 616C 6573 406B 6167"            /* Email: sales@kag */
-	$"692E 636F 6D0D 4641 583A 202B 3120 3531"            /* i.com.FAX: +1 51 */
-	$"3020 3635 3220 3635 3839 0D50 6F73 7461"            /* 0 652 6589.Posta */
-	$"6C2D 6D61 696C 3A0D 4B61 6769 0D31 3434"            /* l-mail:.Kagi.144 */
-	$"322D 4120 5761 6C6E 7574 2053 7472 6565"            /* 2-A Walnut Stree */
-	$"7420 504D 4220 2333 3932 2D51 454A 0D42"            /* t PMB #392-QEJ.B */
-	$"6572 6B65 6C65 792C 2043 616C 6966 6F72"            /* erkeley, Califor */
-	$"6E69 612C 2039 3437 3039 2D31 3430 350D"            /* nia, 94709-1405. */
-	$"5553 410D 0D"                                       /* USA.. */
-};
-
-data 'TEXT' (310, "To Author") {
-	$"506C 6561 7365 2073 656E 6420 7468 6973"            /* Please send this */
-	$"2066 6F72 6D20 746F 204B 6167 6920 616E"            /*  form to Kagi an */
-	$"6420 7365 6E64 2061 6E79 2063 6F6D 6D65"            /* d send any comme */
-	$"6E74 7320 6162 6F75 7420 7468 6520 7072"            /* nts about the pr */
-	$"6F64 7563 7473 2064 6972 6563 746C 7920"            /* oducts directly  */
-	$"746F 204D 7363 6170 6520 536F 6674 7761"            /* to Mscape Softwa */
-	$"7265 2061 7420 3C6D 7363 6170 6540 6B61"            /* re at <mscape@ka */
-	$"6769 2E63 6F6D 3E2E 2020 0D0D"                      /* gi.com>.  .. */
-};
-
-data 'TEXT' (320, "No Print") {
-	$"5468 6973 2066 6F72 6D20 6973 2066 6F72"            /* This form is for */
-	$"2045 6D61 696C 696E 6720 6F6E 6C79 2C20"            /*  Emailing only,  */
-	$"706C 6561 7365 2064 6F6E 2774 2046 4158"            /* please don't FAX */
-	$"206F 7220 706F 7374 616C 206D 6169 6C20"            /*  or postal mail  */
-	$"6974 2074 6F20 7573 2073 696E 6365 2069"            /* it to us since i */
-	$"7420 646F 6573 206E 6F74 2069 6E63 6C75"            /* t does not inclu */
-	$"6465 2074 6865 2062 6172 636F 6465 7320"            /* de the barcodes  */
-	$"7765 2072 6571 7569 7265 2066 6F72 2065"            /* we require for e */
-	$"6173 7920 7072 6F63 6573 7369 6E67 2E20"            /* asy processing.  */
-	$"506C 6561 7365 2064 6F20 6E6F 7420 6564"            /* Please do not ed */
-	$"6974 2074 6865 2066 6F6C 6C6F 7769 6E67"            /* it the following */
-	$"2069 6E66 6F72 6D61 7469 6F6E 2C20 646F"            /*  information, do */
-	$"696E 6720 736F 2070 7265 7665 6E74 7320"            /* ing so prevents  */
-	$"6175 746F 6D61 7469 6320 7072 6F63 6573"            /* automatic proces */
-	$"7369 6E67 2062 7920 6120 636F 6D70 7574"            /* sing by a comput */
-	$"6572 2E20 4564 6974 6564 2066 6F72 6D73"            /* er. Edited forms */
-	$"206D 7573 7420 6265 2070 726F 6365 7373"            /*  must be process */
-	$"6564 206D 616E 7561 6C6C 7920 616E 6420"            /* ed manually and  */
-	$"7468 6520 6164 6469 7469 6F6E 616C 2063"            /* the additional c */
-	$"6F73 7420 6973 2063 6861 7267 6564 2074"            /* ost is charged t */
-	$"6F20 7468 6520 7665 6E64 6F72 2E0D 0D"              /* o the vendor... */
-};
-
-data 'TEXT' (321, "No Email") {
-	$"5468 6973 2066 6F72 6D20 6973 2066 6F72"            /* This form is for */
-	$"2046 4158 206F 7220 706F 7374 616C 206D"            /*  FAX or postal m */
-	$"6169 6C20 6F6E 6C79 2C20 706C 6561 7365"            /* ail only, please */
-	$"2064 6F6E 2774 2045 6D61 696C 2069 7420"            /*  don't Email it  */
-	$"746F 2075 7320 7369 6E63 6520 6974 2069"            /* to us since it i */
-	$"6E63 6C75 6465 7320 7468 6520 6261 7263"            /* ncludes the barc */
-	$"6F64 6573 2077 6869 6368 2077 696C 6C20"            /* odes which will  */
-	$"6E6F 7420 456D 6169 6C20 7765 6C6C 2E0D"            /* not Email well.. */
-	$"0D"                                                 /* . */
-};
-
-data 'TEXT' (322, "No Send") {
-	$"5468 6973 2066 6F72 6D20 6973 2066 6F72"            /* This form is for */
-	$"2069 6E66 6F72 6D61 7469 6F6E 616C 2070"            /*  informational p */
-	$"7572 706F 7365 7320 6F6E 6C79 2073 696E"            /* urposes only sin */
-	$"6365 2069 7420 646F 6573 206E 6F74 2069"            /* ce it does not i */
-	$"6E63 6C75 6465 2074 6865 2062 6172 636F"            /* nclude the barco */
-	$"6465 7320 616E 6420 796F 7520 6361 6E6E"            /* des and you cann */
-	$"6F74 2065 6D61 696C 2074 6869 7320 6B69"            /* ot email this ki */
-	$"6E64 206F 6620 7061 796D 656E 742E 2020"            /* nd of payment.   */
-	$"506C 6561 7365 2075 7365 2074 6865 2052"            /* Please use the R */
-	$"6567 6973 7465 7220 7072 6F67 7261 6D20"            /* egister program  */
-	$"746F 2070 7269 6E74 206F 7574 2061 2066"            /* to print out a f */
-	$"6F72 6D20 7468 6174 2079 6F75 2063 616E"            /* orm that you can */
-	$"2073 656E 6420 7769 7468 2079 6F75 7220"            /*  send with your  */
-	$"7061 796D 656E 742E 0D0D"                           /* payment... */
-};
-
-data 'TMPL' (128, "PROG") {
-	$"0850 726F 6772 616D 734F 434E 5405 2A2A"            /* .ProgramsOCNT.** */
-	$"2A2A 2A4C 5354 4304 4E61 6D65 5053 5452"            /* ***LSTC.NamePSTR */
-	$"0641 7574 686F 7250 5354 5204 436F 6465"            /* .AuthorPSTR.Code */
-	$"5053 5452 0753 7065 6369 616C 5053 5452"            /* PSTR.SpecialPSTR */
-	$"0546 6C61 6773 484C 4E47 1345 6163 6820"            /* .FlagsHLNG.Each  */
-	$"436F 756E 7420 286D 6178 2031 3629 4F43"            /* Count (max 16)OC */
-	$"4E54 052A 2A2A 2A2A 4C53 5443 0443 6F73"            /* NT.*****LSTC.Cos */
-	$"7444 5752 441B 4D69 6E20 5174 7920 2866"            /* tDWRD.Min Qty (f */
-	$"6972 7374 2073 686F 756C 6420 6265 2030"            /* irst should be 0 */
-	$"2944 5752 4405 2A2A 2A2A 2A4C 5354 4504"            /* )DWRD.*****LSTE. */
-	$"5369 7465 4457 5244 0557 6F72 6C64 4457"            /* SiteDWRD.WorldDW */
-	$"5244 1345 6163 6820 436F 756E 7420 286D"            /* RD.Each Count (m */
-	$"6178 2031 3629 4F43 4E54 052A 2A2A 2A2A"            /* ax 16)OCNT.***** */
-	$"4C53 5443 0443 6F73 7444 5752 441B 4D69"            /* LSTC.CostDWRD.Mi */
-	$"6E20 5174 7920 2866 6972 7374 2073 686F"            /* n Qty (first sho */
-	$"756C 6420 6265 2030 2944 5752 4405 2A2A"            /* uld be 0)DWRD.** */
-	$"2A2A 2A4C 5354 4504 5369 7465 4457 5244"            /* ***LSTE.SiteDWRD */
-	$"0557 6F72 6C64 4457 5244 052A 2A2A 2A2A"            /* .WorldDWRD.***** */
-	$"4C53 5445"                                          /* LSTE */
-};
-
-data 'TMPL' (129, "CTRY") {
-	$"052A 2A2A 2A2A 4F43 4E54 052A 2A2A 2A2A"            /* .*****OCNT.***** */
-	$"4C53 5443 0743 6F75 6E74 7279 5053 5452"            /* LSTC.CountryPSTR */
-	$"0B45 6E67 6C69 7368 4E61 6D65 5053 5452"            /* .EnglishNamePSTR */
-	$"0443 6F64 6550 5354 5204 5261 7465 5053"            /* .CodePSTR.RatePS */
-	$"5452 0A4D 696E 2050 6170 6572 3144 4C4E"            /* TR.Min Paper1DLN */
-	$"470A 4D69 6E20 5061 7065 7232 444C 4E47"            /* G.Min Paper2DLNG */
-	$"052A 2A2A 2A2A 4C53 5445"                           /* .*****LSTE */
-};
-
-data 'TMPL' (130, "BARC") {
-	$"052A 2A2A 2A2A 4C53 5442 0443 6F64 6548"            /* .*****LSTB.CodeH */
-	$"4C4E 4705 2A2A 2A2A 2A4C 5354 45"                   /* LNG.*****LSTE */
-};
-
-data 'TMPL' (131, "SCRL") {
-	$"1A50 726F 6772 616D 2063 6F64 6520 746F"            /* .Program code to */
-	$"2053 6372 6F6C 6C20 746F 3A50 5354 52"              /*  Scroll to:PSTR */
-};
-
-data 'cicn' (0) {
-	$"0000 0000 8010 0000 0000 0020 0020 0000"            /* ....Ä...... . .. */
-	$"0000 0000 0000 0048 0000 0048 0000 0000"            /* .......H...H.... */
-	$"0004 0001 0004 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0004 0000 0000 0020 0020"            /* ............. .  */
-	$"0000 0000 0004 0000 0000 0020 0020 0000"            /* ........... . .. */
-	$"0000 01FF FF80 03FF FFC0 07FF FFE0 0FFF"            /* ...ˇˇÄ.ˇˇ¿.ˇˇ‡.ˇ */
-	$"FFF0 1FFF FFF8 3FFF FFFC 7FFF FFFE FFFF"            /* ˇ.ˇˇ¯?ˇˇ¸.ˇˇ˛ˇˇ */
-	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
-	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
-	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
-	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
-	$"FFFF FFFF FFFF FFFF FFFF 7FFF FFFE 3FFF"            /* ˇˇˇˇˇˇˇˇˇˇ.ˇˇ˛?ˇ */
-	$"FFFC 1FFF FFF8 0FFF FFF0 07FF FFE0 03FF"            /* ˇ¸.ˇˇ¯.ˇˇ.ˇˇ‡.ˇ */
-	$"FFC0 00FF FF00 01FF FF80 03FF FFC0 07FE"            /* ˇ¿.ˇˇ..ˇˇÄ.ˇˇ¿.˛ */
-	$"FFE0 0FFC 7FF0 1FEC 67F8 3FC4 47FC 7FC4"            /* ˇ‡.¸..Ïg¯?ƒG¸.ƒ */
-	$"47FE FF44 47FF FE44 47FF FE44 47FF FE44"            /* G˛ˇDGˇ˛DGˇ˛DGˇ˛D */
-	$"47FF FE44 47FF FE44 47FF FE40 071F FE00"            /* Gˇ˛DGˇ˛DGˇ˛@..˛. */
-	$"061F FE00 061F FE00 043F FE00 003F FE00"            /* ..˛...˛..?˛..?˛. */
-	$"007F FE00 007F FE00 00FF FE00 00FF FE00"            /* ..˛...˛..ˇ˛..ˇ˛. */
-	$"01FF FE00 01FF 7E04 03FE 3F02 07FC 1FFF"            /* .ˇ˛..ˇ~..˛?..¸.ˇ */
-	$"FFF8 0FFF FFF0 07FF FFE0 03FF FFC0 01FF"            /* ˇ¯.ˇˇ.ˇˇ‡.ˇˇ¿.ˇ */
-	$"FF80 0000 0000 0000 000A 0000 FFFF FFFF"            /* ˇÄ..........ˇˇˇˇ */
-	$"FFFF 0001 FFFF CCCC 9999 0002 FFFF 0000"            /* ˇˇ..ˇˇÃÃôô..ˇˇ.. */
-	$"0000 0003 CCCC 9999 6666 0004 9999 6666"            /* ....ÃÃôôff..ôôff */
-	$"3333 0005 9999 0000 0000 0006 DDDD 0000"            /* 33..ôô......››.. */
-	$"0000 0007 AAAA 0000 0000 0008 5555 0000"            /* ....™™......UU.. */
-	$"0000 0009 AAAA AAAA AAAA 000F 0000 0000"            /* ....™™™™™™...... */
-	$"0000 0000 0009 FFFF FFFF FFFF FFFF 9000"            /* ......ˇˇˇˇˇˇˇˇê. */
-	$"0000 0000 009F 2222 2222 2222 2222 F900"            /* .....ü""""""""˘. */
-	$"0000 0000 09F2 6666 666F 6666 6666 6F90"            /* .....Úfffoffffoê */
-	$"0000 0000 9F26 6666 66F3 F666 6666 66F9"            /* ....ü&fffÛˆffff˘ */
-	$"0000 0009 F266 666F 6F11 4F6F F666 666F"            /* ....Úffoo.Ooˆffo */
-	$"9000 009F 2666 66F3 FF11 4FF3 4F66 6666"            /* ê..ü&ffÛˇ.OÛOfff */
-	$"F900 09F2 6666 6F11 4F11 4F11 4F66 6666"            /* ˘..Úffo.O.O.Offf */
-	$"6F90 9F26 6666 FF11 4F11 4F11 4F66 6666"            /* oêü&ffˇ.O.O.Offf */
-	$"66F9 F266 666F 4F11 4F11 4F11 4F66 6666"            /* f˘ÚffoO.O.O.Offf */
-	$"665F F266 66F1 4F11 4F11 4F11 4F66 6666"            /* f_ÚffÒO.O.O.Offf */
-	$"665F F266 66F1 4F11 4F11 4F11 4F66 6666"            /* f_ÚffÒO.O.O.Offf */
-	$"665F F266 66F1 4F11 4F11 4F11 4F66 6666"            /* f_ÚffÒO.O.O.Offf */
-	$"665F F266 66F1 4F11 3F11 3F11 4F66 6666"            /* f_ÚffÒO.?.?.Offf */
-	$"665F F266 66F1 3F11 1F11 1F11 4F66 8FF6"            /* f_ÚffÒ?.....Ofèˆ */
-	$"665F F266 66F1 1F11 1111 1111 4F68 433F"            /* f_ÚffÒ......OhC? */
-	$"665F F266 66F1 1111 1111 1111 4F74 114F"            /* f_ÚffÒ......Ot.O */
-	$"665F F266 66F1 1111 1111 1111 3FF1 114F"            /* f_ÚffÒ......?Ò.O */
-	$"665F F266 66F1 1111 1111 1111 1F11 14F6"            /* f_ÚffÒ.........ˆ */
-	$"665F F266 66F1 1111 1111 1111 1111 14F6"            /* f_ÚffÒ.........ˆ */
-	$"665F F266 66F1 1111 1111 1111 1111 4F66"            /* f_ÚffÒ........Of */
-	$"665F F266 66F1 1111 1111 1111 1113 4F66"            /* f_ÚffÒ........Of */
-	$"665F F266 66F1 1111 1111 1111 1114 F666"            /* f_ÚffÒ........ˆf */
-	$"665F F266 66F1 1111 1111 1111 1134 F666"            /* f_ÚffÒ.......4ˆf */
-	$"665F F266 66F1 1111 1111 1111 114F 6666"            /* f_ÚffÒ.......Off */
-	$"665F F266 6674 1111 1111 1111 134F 6666"            /* f_Úfft.......Off */
-	$"665F 9F66 666F 1111 1F31 1113 34F6 6666"            /* f_üffo...1..4ˆff */
-	$"65F9 09F6 6666 F344 44F4 4444 4F66 6666"            /* e˘.ˆffÛDDÙDDOfff */
-	$"5F90 009F 6666 6FFF FF6F FFFF F666 6665"            /* _ê.üffoˇˇoˇˇˆffe */
-	$"F900 0009 F666 6666 6666 6666 6666 665F"            /* ˘...ˆffffffffff_ */
-	$"9000 0000 9F66 6666 6666 6666 6666 65F9"            /* ê...üfffffffffe˘ */
-	$"0000 0000 09F5 5555 5555 5555 5555 5F90"            /* .....ıUUUUUUUU_ê */
-	$"0000 0000 009F FFFF FFFF FFFF FFFF F900"            /* .....üˇˇˇˇˇˇˇˇ˘. */
-	$"0000"                                               /* .. */
-};
-
-data 'cicn' (1) {
-	$"0000 0000 8010 0000 0000 0020 0020 0000"            /* ....Ä...... . .. */
-	$"0000 0000 0000 0048 0000 0048 0000 0000"            /* .......H...H.... */
-	$"0004 0001 0004 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0004 0000 0000 0020 0020"            /* ............. .  */
-	$"0000 0000 0004 0000 0000 0020 0020 0000"            /* ........... . .. */
-	$"0000 FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ..ˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
-	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
-	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
-	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
-	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
-	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
-	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
-	$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
-	$"FFFF FFFF FFFF 807F FFFF 807F FFFF 807F"            /* ˇˇˇˇˇˇÄ.ˇˇÄ.ˇˇÄ. */
-	$"FFFF 807F FFFF 807F C0FF 887F 003F 887E"            /* ˇˇÄ.ˇˇÄ.¿ˇà..?à~ */
-	$"001F 887C 000F 8078 0007 8078 0007 8070"            /* ..à|..Äx..Äx..Äp */
-	$"0003 8071 DDC3 8070 0003 8070 0003 8071"            /* ..Äq›√Äp..Äp..Äq */
-	$"DD43 8070 0003 8070 0003 8071 D703 8070"            /* ›CÄp..Äp..Äq◊.Äp */
-	$"0003 87F0 0003 81F1 EEC3 81F0 0007 81F0"            /* ..á..ÅÒÓ√Å..Å */
-	$"0007 81F0 000F 81E0 001F 8F80 007F 81FF"            /* ..Å..Å‡..èÄ..Åˇ */
-	$"FFFF 81FF FFFF 81FF FFFF 81FF FFFF FFFF"            /* ˇˇÅˇˇˇÅˇˇˇÅˇˇˇˇˇ */
-	$"FFFF 0000 0000 0000 0007 0000 FFFF FFFF"            /* ˇˇ..........ˇˇˇˇ */
-	$"FFFF 0001 FFFF CCCC 9999 0002 CCCC CCCC"            /* ˇˇ..ˇˇÃÃôô..ÃÃÃÃ */
-	$"FFFF 0003 CCCC 9999 6666 0004 9999 6666"            /* ˇˇ..ÃÃôôff..ôôff */
-	$"3333 0005 8888 8888 8888 0006 1111 1111"            /* 33..àààààà...... */
-	$"1111 000F 0000 0000 0000 6666 6666 6666"            /* ..........ffffff */
-	$"6666 6666 6666 6666 6666 6111 1113 4666"            /* ffffffffffa...Ff */
-	$"6666 6666 6666 6666 6666 6111 1111 4666"            /* ffffffffffa...Ff */
-	$"6666 6666 6666 6666 6666 6111 1111 4666"            /* ffffffffffa...Ff */
-	$"6666 6666 6666 6666 6666 6111 1111 4666"            /* ffffffffffa...Ff */
-	$"6666 6666 6666 6666 6666 6113 3111 4666"            /* ffffffffffa.1.Ff */
-	$"6666 6622 2222 6666 6666 6113 6111 4666"            /* fff"""ffffa.a.Ff */
-	$"6666 2220 0002 2566 6666 6113 6111 4666"            /* ff" ..%fffa.a.Ff */
-	$"6662 2000 0000 2256 6666 6111 6111 4666"            /* fb ..."Vffa.a.Ff */
-	$"6622 0000 0000 0225 6666 6111 1111 4666"            /* f".....%ffa...Ff */
-	$"6220 0000 0000 0022 5666 6111 1111 4666"            /* b ....."Vfa...Ff */
-	$"6200 0000 0000 0002 5666 6111 1111 4666"            /* b.......Vfa...Ff */
-	$"2200 0000 0000 0002 2566 6111 1111 4666"            /* ".......%fa...Ff */
-	$"2006 6606 6606 6600 2566 6111 1111 4666"            /*  .f.f.f.%fa...Ff */
-	$"2000 0000 0000 0000 2566 6111 1111 4666"            /*  .......%fa...Ff */
-	$"2000 0000 0000 0000 2566 6111 1111 4666"            /*  .......%fa...Ff */
-	$"2006 6606 6606 0600 2566 6111 1111 4666"            /*  .f.f...%fa...Ff */
-	$"2000 0000 0000 0000 2566 6111 1111 4666"            /*  .......%fa...Ff */
-	$"2000 0000 0000 0000 2566 6111 1111 4666"            /*  .......%fa...Ff */
-	$"2006 6606 0666 0000 2566 6111 1133 4666"            /*  .f..f..%fa..3Ff */
-	$"2000 0000 0000 0000 2566 6111 1666 6666"            /*  .......%fa..fff */
-	$"2000 0000 0000 0002 2566 6111 1346 6666"            /*  .......%fa..Fff */
-	$"2006 6660 6660 6602 5566 6111 1146 6666"            /*  .f`f`f.Ufa..Fff */
-	$"2000 0000 0000 0022 5666 6111 1146 6666"            /*  ......"Vfa..Fff */
-	$"2000 0000 0000 0225 5666 6111 1146 6666"            /*  ......%Vfa..Fff */
-	$"2000 0000 0002 2255 6666 6113 3336 6662"            /*  ....."Uffa.36fb */
-	$"2222 2222 2222 5556 6666 6111 6666 6222"            /* """"""UVffa.ffb" */
-	$"5555 5555 5555 5666 6666 6111 1116 6666"            /* UUUUUUVfffa...ff */
-	$"6666 6666 6666 6666 6666 6111 1146 6666"            /* ffffffffffa..Fff */
-	$"6666 6666 6666 6666 6666 6111 1146 6666"            /* ffffffffffa..Fff */
-	$"6666 6666 6666 6666 6666 6344 4446 6666"            /* ffffffffffcDDFff */
-	$"6666 6666 6666 6666 6666 6666 6666 6666"            /* ffffffffffffffff */
-	$"6666 6666 6666 6666 6666"                           /* ffffffffff */
-};
-
-data 'cicn' (2) {
-	$"0000 0000 8010 0000 0000 0020 0020 0000"            /* ....Ä...... . .. */
-	$"0000 0000 0000 0048 0000 0048 0000 0000"            /* .......H...H.... */
-	$"0004 0001 0004 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0004 0000 0000 0020 0020"            /* ............. .  */
-	$"0000 0000 0004 0000 0000 0020 0020 0000"            /* ........... . .. */
-	$"0000 0001 8000 0003 C000 0007 E000 0007"            /* ....Ä...¿...‡... */
-	$"E000 000F F000 000F F000 001F F800 001F"            /* ‡.........¯... */
-	$"F800 003F FC00 003F FC00 007F FE00 007F"            /* ¯..?¸..?¸...˛... */
-	$"FE00 00FF FF00 00FF FF00 01FF FF80 01FF"            /* ˛..ˇˇ..ˇˇ..ˇˇÄ.ˇ */
-	$"FF80 03FF FFC0 03FF FFC0 07FF FFE0 07FF"            /* ˇÄ.ˇˇ¿.ˇˇ¿.ˇˇ‡.ˇ */
-	$"FFE0 0FFF FFF0 0FFF FFF0 1FFF FFF8 1FFF"            /* ˇ‡.ˇˇ.ˇˇ.ˇˇ¯.ˇ */
-	$"FFF8 3FFF FFFC 3FFF FFFC 7FFF FFFE 7FFF"            /* ˇ¯?ˇˇ¸?ˇˇ¸.ˇˇ˛.ˇ */
-	$"FFFE FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇ˛ˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
-	$"FFFF 0001 8000 0003 C000 0003 C000 0006"            /* ˇˇ..Ä...¿...¿... */
-	$"6000 0006 6000 000C 3000 000C 3000 0018"            /* `...`...0...0... */
-	$"1800 0019 9800 0033 CC00 0033 CC00 0063"            /* ....ò..3Ã..3Ã..c */
-	$"C600 0063 C600 00C3 C300 00C3 C300 0183"            /* ∆..c∆..√√..√√..É */
-	$"C180 0183 C180 0303 C0C0 0303 C0C0 0603"            /* ¡Ä.É¡Ä..¿¿..¿¿.. */
-	$"C060 0601 8060 0C01 8030 0C00 0030 1800"            /* ¿`..Ä`..Ä0...0.. */
-	$"0018 1801 8018 3003 C00C 3003 C00C 6001"            /* ....Ä.0.¿.0.¿.`. */
-	$"8006 6000 0006 C000 0003 FFFF FFFF 7FFF"            /* Ä.`...¿...ˇˇˇˇ.ˇ */
-	$"FFFE 0000 0000 0000 0006 0000 FFFF FFFF"            /* ˇ˛..........ˇˇˇˇ */
-	$"FFFF 0001 FFFF CCCC 3333 0002 CCCC 9999"            /* ˇˇ..ˇˇÃÃ33..ÃÃôô */
-	$"0000 0003 9999 6666 0000 0004 3333 3333"            /* ....ôôff....3333 */
-	$"3333 0005 BBBB BBBB BBBB 000F 0000 0000"            /* 33..ªªªªªª...... */
-	$"0000 0000 0000 0000 000F F000 0000 0000"            /* ............... */
-	$"0000 0000 0000 0000 004F F400 0000 0000"            /* .........OÙ..... */
-	$"0000 0000 0000 0000 05FF FF50 0000 0000"            /* .........ˇˇP.... */
-	$"0000 0000 0000 0000 04F3 3F40 0000 0000"            /* .........Û?@.... */
-	$"0000 0000 0000 0000 5FF1 1FF5 0000 0000"            /* ........_Ò.ı.... */
-	$"0000 0000 0000 0000 4F31 13F4 0000 0000"            /* ........O1.Ù.... */
-	$"0000 0000 0000 0005 FF11 11FF 5000 0000"            /* ........ˇ..ˇP... */
-	$"0000 0000 0000 0004 F311 113F 4000 0000"            /* ........Û..?@... */
-	$"0000 0000 0000 005F F12F F21F F500 0000"            /* ......._Ò/Ú.ı... */
-	$"0000 0000 0000 004F 314F F413 F400 0000"            /* .......O1OÙ.Ù... */
-	$"0000 0000 0000 05FF 11FF FF11 FF50 0000"            /* .......ˇ.ˇˇ.ˇP.. */
-	$"0000 0000 0000 04F3 11FF FF11 3F40 0000"            /* .......Û.ˇˇ.?@.. */
-	$"0000 0000 0000 5FF1 11FF FF11 1FF5 0000"            /* ......_Ò.ˇˇ..ı.. */
-	$"0000 0000 0000 4F31 11FF FF11 13F4 0000"            /* ......O1.ˇˇ..Ù.. */
-	$"0000 0000 0005 FF11 11FF FF11 11FF 5000"            /* ......ˇ..ˇˇ..ˇP. */
-	$"0000 0000 0004 F311 11FF FF11 113F 4000"            /* ......Û..ˇˇ..?@. */
-	$"0000 0000 005F F111 11FF FF11 111F F500"            /* ....._Ò..ˇˇ...ı. */
-	$"0000 0000 004F 3111 11FF FF11 1113 F400"            /* .....O1..ˇˇ...Ù. */
-	$"0000 0000 05FF 1111 11FF FF11 1111 FF50"            /* .....ˇ...ˇˇ...ˇP */
-	$"0000 0000 04F3 1111 114F F411 1111 3F40"            /* .....Û...OÙ...?@ */
-	$"0000 0000 5FF1 1111 112F F211 1111 1FF5"            /* ...._Ò.../Ú....ı */
-	$"0000 0000 4F31 1111 111F F111 1111 13F4"            /* ....O1....Ò....Ù */
-	$"0000 0005 FF11 1111 1112 2111 1111 11FF"            /* ....ˇ.....!....ˇ */
-	$"5000 0004 F311 1111 1111 1111 1111 113F"            /* P...Û..........? */
-	$"4000 005F F111 1111 112F F211 1111 111F"            /* @.._Ò..../Ú..... */
-	$"F500 004F 3111 1111 11FF FF11 1111 1113"            /* ı..O1....ˇˇ..... */
-	$"F400 05FF 1111 1111 11FF FF11 1111 1111"            /* Ù..ˇ.....ˇˇ..... */
-	$"FF50 04F3 1111 1111 112F F211 1111 1111"            /* ˇP.Û...../Ú..... */
-	$"3F40 5FF1 1111 1111 1111 1111 1111 1111"            /* ?@_Ò............ */
-	$"1FF5 FF31 1111 1111 1111 1111 1111 1111"            /* .ıˇ1............ */
-	$"13FF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* .ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇ */
-	$"FFFF 5FFF FFFF FFFF FFFF FFFF FFFF FFFF"            /* ˇˇ_ˇˇˇˇˇˇˇˇˇˇˇˇˇ */
-	$"FFF5"                                               /* ˇı */
-};
-
-resource 'cicn' (128, purgeable) {
-	8,
-	{0, 0, 32, 32},
-	2,
-	$"0001 8000 0003 C000 0007 E000 000F F000"
-	$"001F F800 003F FC00 007F FE00 00FF FF00"
-	$"01FF FF80 03FF FFC0 07FF FFE0 0FFF FFF0"
-	$"1FFF FFF8 3FFF FFFC 7FFF FFFE FFFF FFFF"
-	$"FFFF FFFF 7FFF FFFE 3FFF FFFC 1FFF FFF8"
-	$"0FFF FFF0 07FF FFE0 03FF FFC0 01FF FF80"
-	$"00FF FF00 007F FE00 003F FC00 001F F800"
-	$"000F F000 0007 E000 0003 C000 0001 8000",
-	$"0001 8000 0002 4000 0004 2000 0008 1000"
-	$"0010 0800 0020 0400 0041 8200 0081 8100"
-	$"0107 E080 020F F040 0419 9820 0819 9810"
-	$"1019 8008 2019 8004 401D 8002 800F E001"
-	$"8007 F001 4001 B802 2001 9804 1001 9808"
-	$"0819 9810 0419 9820 020F F040 0107 E080"
-	$"0081 8100 0041 8200 0020 0400 0010 0800"
-	$"0008 1000 0004 2000 0002 4000 0001 8000",
-	{	/* array ColorSpec: 4 elements */
-		/* [1] */
-		65535, 65535, 65535,
-		/* [2] */
-		0, 39321, 65535,
-		/* [3] */
-		65535, 65535, 0,
-		/* [4] */
-		0, 0, 0
-	},
-	$"0000 0003 C000 0000 0000 000D 7000 0000"
-	$"0000 0035 5C00 0000 0000 00D5 5700 0000"
-	$"0000 0355 55C0 0000 0000 0D55 5570 0000"
-	$"0000 3556 955C 0000 0000 D556 9557 0000"
-	$"0003 556A A955 C000 000D 55AA AA55 7000"
-	$"0035 5696 9695 5C00 00D5 5696 9695 5700"
-	$"0355 5696 9555 55C0 0D55 5696 9555 5570"
-	$"3555 56A6 9555 555C D555 55AA A955 5557"
-	$"D555 556A AA55 5557 3555 5556 9A95 555C"
-	$"0D55 5556 9695 5570 0355 5556 9695 55C0"
-	$"00D5 5696 9695 5700 0035 5696 9695 5C00"
-	$"000D 55AA AA55 7000 0003 556A A955 C000"
-	$"0000 D556 9557 0000 0000 3556 955C 0000"
-	$"0000 0D55 5570 0000 0000 0355 55C0 0000"
-	$"0000 00D5 5700 0000 0000 0035 5C00 0000"
-	$"0000 000D 7000 0000 0000 0003 C000 0000"
-};
-
-resource 'cicn' (225, purgeable) {
-	8,
-	{0, 0, 32, 32},
-	2,
-	$"00FF FFF0 00FF FFF0 03FF FFFC 03FF FFFC"
-	$"0FFF FFFF 0FFF FFFF 0FFF FFFF 0FFF FFFF"
-	$"0FFF FFFF 0FFF FFFF 0FFF FFFF 0FFF FFFF"
-	$"0FFF FFFF 0FFF FFFF 0FFF FFFF 0FFF FFFF"
-	$"0FFF FFFF 0FFF FFFF 0FFF FFFF 0FFF FFFF"
-	$"0FFF FFFF 0FFF FFFF 3FFF FFFF 3FFF FFFF"
-	$"FFFF FFFC FFFF FFFC FFFF FFF0 FFFF FFF0"
-	$"0000 0000 0000 0000 0000 0000 0000 0000",
-	$"00FF FFF0 00FF FFF0 0300 000C 0300 000C"
-	$"0C00 0003 0C00 0003 0C00 0003 0C00 0003"
-	$"0C3C FFC3 0C3C FFC3 0C00 0003 0C00 0003"
-	$"0C00 0003 0C00 0003 0C3F 3CC3 0C3F 3CC3"
-	$"0C00 0003 0C00 0003 0C00 0003 0C00 0003"
-	$"0C33 CFC3 0C33 CFC3 3000 0003 3000 0003"
-	$"C000 000C C000 000C FFFF FFF0 FFFF FFF0"
-	$"0000 0000 0000 0000 0000 0000 0000 0000",
-	{	/* array ColorSpec: 4 elements */
-		/* [1] */
-		65535, 65535, 65535,
-		/* [2] */
-		61166, 61166, 61166,
-		/* [3] */
-		34952, 34952, 34952,
-		/* [4] */
-		0, 0, 0
-	},
-	$"0000 FFFF FFFF FF00 0000 FFFF FFFF FF00"
-	$"000F A555 5555 5AF0 000F A555 5555 5AF0"
-	$"00FA 5555 5555 55AF 00FA 5555 5555 55AF"
-	$"00F5 5555 5555 555F 00F5 5555 5555 555F"
-	$"00F5 5FF5 FFFF F55F 00F5 5FF5 FFFF F55F"
-	$"00F5 5555 5555 555F 00F5 5555 5555 555F"
-	$"00F5 5555 5555 555F 00F5 5555 5555 555F"
-	$"00F5 5FFF 5FF5 F55F 00F5 5FFF 5FF5 F55F"
-	$"00F5 5555 5555 555F 00F5 5555 5555 555F"
-	$"00F5 5555 5555 555F 00F5 5555 5555 555F"
-	$"00F5 5F5F F5FF F55F 00F5 5F5F F5FF F55F"
-	$"0FA5 5555 5555 55AF 0FA5 5555 5555 55AF"
-	$"FA55 5555 5555 5AF0 FA55 5555 5555 5AF0"
-	$"FFFF FFFF FFFF FF00 FFFF FFFF FFFF FF00"
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-};
-
-resource 'cicn' (226) {
-	8,
-	{0, 0, 32, 32},
-	2,
-	$"0000 0000 0000 0000 FFFF FFFC FFFF FFFC"
-	$"FFFF FFFC FFFF FFFC FFFF FFFC FFFF FFFC"
-	$"FFFF FFFC FFFF FFFC FFFF FFFC FFFF FFFC"
-	$"FFFF FFFC FFFF FFFC FFFF FFFC FFFF FFFC"
-	$"FFFF FFFC FFFF FFFC FFFF FFFC FFFF FFFC"
-	$"FFFF FFFC FFFF FFFC FFFF FFFC FFFF FFFC"
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 0000 0000",
-	$"0000 0000 0000 0000 FFFF FFFC FFFF FFFC"
-	$"CCC0 030C CCC0 030C F300 030C F300 030C"
-	$"CCC0 03FC CCC0 03FC C000 000C C000 000C"
-	$"C033 300C C033 300C C0CC C00C C0CC C00C"
-	$"C033 300C C033 300C C000 000C C000 000C"
-	$"C000 000C C000 000C FFFF FFFC FFFF FFFC"
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 0000 0000",
-	{	/* array ColorSpec: 4 elements */
-		/* [1] */
-		65535, 65535, 65535,
-		/* [2] */
-		43690, 43690, 43690,
-		/* [3] */
-		56797, 56797, 56797,
-		/* [4] */
-		0, 0, 0
-	},
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-	$"FFFF FFFF FFFF FFF0 FFFF FFFF FFFF FFF0"
-	$"F5F5 FAAA AAAF 55F0 F5F5 FAAA AAAF 55F0"
-	$"FF5F AAAA AAAF 55F0 FF5F AAAA AAAF 55F0"
-	$"F5F5 FAAA AAAF FFF0 F5F5 FAAA AAAF FFF0"
-	$"FAAA AAAA AAAA AAF0 FAAA AAAA AAAA AAF0"
-	$"FAAA AF5F 5FAA AAF0 FAAA AF5F 5FAA AAF0"
-	$"FAAA F5F5 FAAA AAF0 FAAA F5F5 FAAA AAF0"
-	$"FAAA AF5F 5FAA AAF0 FAAA AF5F 5FAA AAF0"
-	$"FAAA AAAA AAAA AAF0 FAAA AAAA AAAA AAF0"
-	$"FAAA AAAA AAAA AAF0 FAAA AAAA AAAA AAF0"
-	$"FFFF FFFF FFFF FFF0 FFFF FFFF FFFF FFF0"
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-};
-
-resource 'cicn' (928, purgeable) {
-	8,
-	{0, 0, 32, 32},
-	2,
-	$"0001 0000 0003 8000 0007 C000 000F E000"
-	$"001F F000 003F F800 007F FC00 00FF FE00"
-	$"01FF FF00 03FF FF80 07FF FFC0 0FFF FFE0"
-	$"1FFF FFF0 3FFF FFF8 7FFF FFFC FFFF FFFE"
-	$"7FFF FFFC 3FFF FFF8 1FFF FFF0 0FFF FFE0"
-	$"07FF FFC0 03FF FF80 01FF FF00 00FF FE00"
-	$"007F FC00 003F F800 001F F000 000F E000"
-	$"0007 C000 0003 8000 0001 0000 0000 0000",
-	$"0001 0000 0002 8000 0004 4000 0008 2000"
-	$"0010 1000 0020 0800 0040 0400 0080 0200"
-	$"0100 0300 0200 0380 0400 03C0 0800 03E0"
-	$"1000 03F0 2000 03F8 4000 03FC 80FF FFFE"
-	$"40FF FFFC 20FF FFF8 10FF FFF0 08FF FFE0"
-	$"04FF FFC0 02FF FF80 01FF FF00 00FF FE00"
-	$"007F FC00 003F F800 001F F000 000F E000"
-	$"0007 C000 0003 8000 0001 0000 0000 0000",
-	{	/* array ColorSpec: 4 elements */
-		/* [1] */
-		65535, 65535, 65535,
-		/* [2] */
-		0, 39321, 65535,
-		/* [3] */
-		0, 0, 56797,
-		/* [4] */
-		0, 0, 0
-	},
-	$"0000 0003 0000 0000 0000 000D C000 0000"
-	$"0000 0035 7000 0000 0000 00D5 5C00 0000"
-	$"0000 0355 5700 0000 0000 0D55 55C0 0000"
-	$"0000 3555 5570 0000 0000 D555 555C 0000"
-	$"0003 5555 555F 0000 000D 5555 555E C000"
-	$"0035 5555 555E B000 00D5 5555 555E AC00"
-	$"0355 5555 555E AB00 0D55 5555 555E AAC0"
-	$"3555 5555 555E AAB0 D555 FFFF FFFE AAAC"
-	$"3555 EAAA AAAA AAB0 0D55 EAAA AAAA AAC0"
-	$"0355 EAAA AAAA AB00 00D5 EAAA AAAA AC00"
-	$"0035 EAAA AAAA B000 000D EAAA AAAA C000"
-	$"0003 EAAA AAAB 0000 0000 EAAA AAAC 0000"
-	$"0000 3AAA AAB0 0000 0000 0EAA AAC0 0000"
-	$"0000 03AA AB00 0000 0000 00EA AC00 0000"
-	$"0000 003A B000 0000 0000 000E C000 0000"
-	$"0000 0003 0000 0000 0000 0000 0000 0000"
-};
-
-resource 'dctb' (128) {
-	{	/* array ColorSpec: 0 elements */
-	}
-};
-
-resource 'dctb' (200) {
-	{	/* array ColorSpec: 0 elements */
-	}
-};
-
-data 'hdlg' (200, "Register", purgeable) {
-	$"0002 0000 0000 0000 0000 0000 002D 0004"            /* .............-.. */
-	$"0100 0020 0003 0000 0000 0000 0000 0000"            /* ... ............ */
-	$"0000 6864 0001 0000 0000 0000 0000 0000"            /* ..hd............ */
-	$"0000 0020 0003 0000 0000 0000 0000 0000"            /* ... ............ */
-	$"0000 6864 0002 0000 0000 0000 0000 0000"            /* ..hd............ */
-	$"0000 0020 0003 0000 0000 0000 0000 0000"            /* ... ............ */
-	$"0000 6864 0003 0000 0000 0000 0000 0000"            /* ..hd............ */
-	$"0000 0020 0003 0000 0000 0000 0000 0000"            /* ... ............ */
-	$"0000 6864 0004 0000 0000 0000 0000 0000"            /* ..hd............ */
-	$"0000 0020 0003 0000 0000 0000 0000 0000"            /* ... ............ */
-	$"0000 6864 0005 0000 0000 0000 0000 0000"            /* ..hd............ */
-	$"0000 0020 0003 0000 0000 0000 0000 0000"            /* ... ............ */
-	$"0000 6864 0006 0000 0000 0000 0000 0000"            /* ..hd............ */
-	$"0000 0004 0100 0020 0003 0000 0000 0000"            /* ....... ........ */
-	$"0000 0000 0000 6864 0007 0000 0000 0000"            /* ......hd........ */
-	$"0000 0000 0000 0004 0100 0020 0003 0000"            /* ........... .... */
-	$"0000 0000 0000 0000 0000 6864 0008 0000"            /* ..........hd.... */
-	$"0000 0000 0000 0000 0000 0020 0003 0000"            /* ........... .... */
-	$"0000 0000 0000 0000 0000 6864 0009 0000"            /* ..........hd.... */
-	$"0000 0000 0000 0000 0000 0020 0003 0000"            /* ........... .... */
-	$"0000 0000 0000 0000 0000 6864 000A 0000"            /* ..........hd.... */
-	$"0000 6864 000B 0000 0000 0020 0003 0000"            /* ..hd....... .... */
-	$"0000 0000 0000 0000 0000 6864 000C 0000"            /* ..........hd.... */
-	$"0000 6864 000D 0000 0000 0020 0003 0000"            /* ..hd....... .... */
-	$"0000 0000 0000 0000 0000 6864 000E 6864"            /* ..........hd..hd */
-	$"000F 0000 0000 0000 0000 0020 0003 0000"            /* ........... .... */
-	$"0000 0000 0000 0000 0000 6864 0010 0000"            /* ..........hd.... */
-	$"0000 0000 0000 0000 0000 0020 0003 0000"            /* ........... .... */
-	$"0000 0000 0000 0000 0000 6864 0008 0000"            /* ..........hd.... */
-	$"0000 0000 0000 0000 0000 0020 0003 0000"            /* ........... .... */
-	$"0000 0000 0000 0000 0000 6864 0009 0000"            /* ..........hd.... */
-	$"0000 0000 0000 0000 0000 0020 0003 0000"            /* ........... .... */
-	$"0000 0000 0000 0000 0000 6864 000A 0000"            /* ..........hd.... */
-	$"0000 6864 000B 0000 0000 0020 0003 0000"            /* ..hd....... .... */
-	$"0000 0000 0000 0000 0000 6864 000C 0000"            /* ..........hd.... */
-	$"0000 6864 000D 0000 0000 0020 0003 0000"            /* ..hd....... .... */
-	$"0000 0000 0000 0000 0000 6864 000E 6864"            /* ..........hd..hd */
-	$"000F 0000 0000 0000 0000 0020 0003 0000"            /* ........... .... */
-	$"0000 0000 0000 0000 0000 6864 0010 0000"            /* ..........hd.... */
-	$"0000 0000 0000 0000 0000 0020 0003 0000"            /* ........... .... */
-	$"0000 0000 0000 0000 0000 6864 0008 0000"            /* ..........hd.... */
-	$"0000 0000 0000 0000 0000 0020 0003 0000"            /* ........... .... */
-	$"0000 0000 0000 0000 0000 6864 0009 0000"            /* ..........hd.... */
-	$"0000 0000 0000 0000 0000 0020 0003 0000"            /* ........... .... */
-	$"0000 0000 0000 0000 0000 6864 000A 0000"            /* ..........hd.... */
-	$"0000 6864 000B 0000 0000 0020 0003 0000"            /* ..hd....... .... */
-	$"0000 0000 0000 0000 0000 6864 000C 0000"            /* ..........hd.... */
-	$"0000 6864 000D 0000 0000 0020 0003 0000"            /* ..hd....... .... */
-	$"0000 0000 0000 0000 0000 6864 000E 6864"            /* ..........hd..hd */
-	$"000F 0000 0000 0000 0000 0020 0003 0000"            /* ........... .... */
-	$"0000 0000 0000 0000 0000 6864 0010 0000"            /* ..........hd.... */
-	$"0000 0000 0000 0000 0000 0004 0100 0020"            /* ...............  */
-	$"0003 0000 0000 0000 0000 0000 0000 6864"            /* ..............hd */
-	$"0011 0000 0000 0000 0000 0000 0000 0020"            /* ...............  */
-	$"0003 0000 0000 0000 0000 0000 0000 6864"            /* ..............hd */
-	$"0012 0000 0000 6864 0013 0000 0000 0004"            /* ......hd........ */
-	$"0100 0020 0003 0000 0000 0000 0000 0000"            /* ... ............ */
-	$"0000 6864 0014 0000 0000 0000 0000 0000"            /* ..hd............ */
-	$"0000 0020 0003 0000 0000 0000 0000 0000"            /* ... ............ */
-	$"0000 6864 0015 0000 0000 0000 0000 0000"            /* ..hd............ */
-	$"0000 0020 0003 0000 0000 0000 0000 0000"            /* ... ............ */
-	$"0000 6864 0016 0000 0000 0000 0000 0000"            /* ..hd............ */
-	$"0000 0004 0100 0004 0100 0004 0100 0020"            /* ...............  */
-	$"0003 0000 0000 0000 0000 0000 0000 6864"            /* ..............hd */
-	$"0017 0000 0000 0000 0000 0000 0000 0004"            /* ................ */
-	$"0100 0004 0100 0004 0100 0004 0100 0020"            /* ...............  */
-	$"0003 0000 0000 0000 0000 0000 0000 6864"            /* ..............hd */
-	$"0018 6864 0018 6864 0018 6864 0018 0004"            /* ..hd..hd..hd.... */
-	$"0100 0020 0003 0000 0000 0000 0000 0000"            /* ... ............ */
-	$"0000 6864 0019 6864 0019 6864 0019 6864"            /* ..hd..hd..hd..hd */
-	$"0019"                                               /* .. */
-};
-
-resource 'icl4' (128, "Item Icon") {
-	$"0000 0000 0000 000F F000 0000 0000 0000"
-	$"0000 0000 0000 00F7 7F00 0000 0000 0000"
-	$"0000 0000 0000 0F77 77F0 0000 0000 0000"
-	$"0000 0000 0000 F777 777F 0000 0000 0000"
-	$"0000 0000 000F 7777 7777 F000 0000 0000"
-	$"0000 0000 00F7 7777 7777 7F00 0000 0000"
-	$"0000 0000 0F77 7771 1777 77F0 0000 0000"
-	$"0000 0000 F777 7771 1777 777F 0000 0000"
-	$"0000 000F 7777 7111 1117 7777 F000 0000"
-	$"0000 00F7 7777 1111 1111 7777 7F00 0000"
-	$"0000 0F77 7771 1771 1771 1777 77F0 0000"
-	$"0000 F777 7771 1771 1771 1777 777F 0000"
-	$"000F 7777 7771 1771 1777 7777 7777 F000"
-	$"00F7 7777 7771 1771 1777 7777 7777 7F00"
-	$"0F77 7777 7771 1171 1777 7777 7777 77F0"
-	$"F777 7777 7777 1111 1117 7777 7777 777F"
-	$"F777 7777 7777 7111 1111 7777 7777 777F"
-	$"0F77 7777 7777 7771 1711 1777 7777 77F0"
-	$"00F7 7777 7777 7771 1771 1777 7777 7F00"
-	$"000F 7777 7777 7771 1771 1777 7777 F000"
-	$"0000 F777 7771 1771 1771 1777 777F 0000"
-	$"0000 0F77 7771 1771 1771 1777 77F0 0000"
-	$"0000 00F7 7777 1111 1111 7777 7F00 0000"
-	$"0000 000F 7777 7111 1117 7777 F000 0000"
-	$"0000 0000 F777 7771 1777 777F 0000 0000"
-	$"0000 0000 0F77 7771 1777 77F0 0000 0000"
-	$"0000 0000 00F7 7777 7777 7F00 0000 0000"
-	$"0000 0000 000F 7777 7777 F000 0000 0000"
-	$"0000 0000 0000 F777 777F 0000 0000 0000"
-	$"0000 0000 0000 0F77 77F0 0000 0000 0000"
-	$"0000 0000 0000 00F7 7F00 0000 0000 0000"
-	$"0000 0000 0000 000F F0"
-};
-
-resource 'icl8' (128, "Item Icon") {
-	$"0000 0000 0000 0000 0000 0000 0000 00FF"
-	$"FF00 0000 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 0000 FFBB"
-	$"C0FF 0000 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 00FF C0C0"
-	$"BBC0 FF00 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 FFBB C0BB"
-	$"C0BB C0FF 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 00FF C0C0 BBC0"
-	$"C0C0 BBC0 FF00 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 FFC1 BAC1 C0BA"
-	$"C1BB C0BB C0FF 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 00FF C0BA C1BA C105"
-	$"05C0 C1C0 BBC0 FF00 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 FFC0 BBC0 BBC0 C005"
-	$"0BBB C0BA C0BB C0FF 0000 0000 0000 0000"
-	$"0000 0000 0000 00FF C0BB C0C1 C005 0505"
-	$"050B 05C1 BAC0 BBC0 FF00 0000 0000 0000"
-	$"0000 0000 0000 FFC0 BBC0 BAC0 0505 050B"
-	$"0505 0505 C0C1 C0BB C0FF 0000 0000 0000"
-	$"0000 0000 00FF C0BB C0C1 C105 05C0 C005"
-	$"05C0 C005 05C0 BBC0 BBC0 FF00 0000 0000"
-	$"0000 0000 FFC0 BBC0 C1BA C005 05C1 BA05"
-	$"0BBB C005 05BB C0C0 C0BB C0FF 0000 0000"
-	$"0000 00FF C0BB C0BA C0C1 BA0B 05C0 C105"
-	$"05C0 BBC0 C0C0 BBC1 C0C0 BBC0 FF00 0000"
-	$"0000 FFC0 BBC0 C0C1 C1BA C005 05BA C005"
-	$"05C0 C0C1 BAC1 C0BA C0BB C0BB C0FF 0000"
-	$"00FF C0BB C0BB C0BA C1C0 BB0B 0505 C005"
-	$"05C0 BBC0 C1BA C1C0 BBC0 C1C0 BBC0 FF00"
-	$"FFC0 BBC0 C1C0 BAC1 BAC1 C0BA 0B05 050B"
-	$"0505 05C0 BAC1 C0BB C0BB C0BA C0BB C0FF"
-	$"FFBA C0BB C0C1 C0BA C1BA C1C0 BA0B 0505"
-	$"050B 0505 C0BA C1C0 C1C0 BBC0 C1C0 BBFF"
-	$"00FF C1C0 BBC0 BAC1 C0C1 BAC0 C1BA C005"
-	$"05C0 0505 05C1 C0BB C0BA C0BB C0BA FF00"
-	$"0000 FFC0 C0BB C1BA C1C0 C1BA C1C0 BB0B"
-	$"05C0 C005 05C0 BBC0 BBC0 C1C0 BBE0 0000"
-	$"0000 00E0 BBC0 9CC1 BAC0 BAC1 BAC1 C005"
-	$"05BB C005 05C1 C0BA C09D C0BA FF00 0000"
-	$"0000 0000 FFBB C0BA C1BB C005 05C0 BA0B"
-	$"05C0 BB0B 05BA C1C0 BBC0 BBE0 0000 0000"
-	$"0000 0000 00FF BAC1 C0C0 C005 0BBB C005"
-	$"05C0 C005 05C1 BAC1 C0BA FF00 0000 0000"
-	$"0000 0000 0000 FFBA C1BA C1C0 0505 0505"
-	$"0B05 0505 C0C0 C1BA C1FF 0000 0000 0000"
-	$"0000 0000 0000 00E0 BAC1 BAC1 BA0B 050B"
-	$"0505 05C0 C0C1 BAC0 FF00 0000 0000 0000"
-	$"0000 0000 0000 0000 FFC0 C1BA C0BA C005"
-	$"05C0 C0BB C0BA C1E0 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 00E0 BAC0 C1C0 C105"
-	$"05C0 BBC0 BAC1 FF00 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 FFBA C1BA C0C0"
-	$"C1BA C1C0 C1FF 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 00FF BAC1 BAC1"
-	$"BAC1 C0BB FF00 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 FFC0 C1BA"
-	$"C0C0 BBF4 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 00FF BAC1"
-	$"C0BB FF00 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 0000 FFBA"
-	$"C1FF 0000 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 0000 00FF"
-	$"FF"
-};
-
-resource 'ics#' (128, "Item Icon") {
-	{	/* array: 2 elements */
-		/* [1] */
-		$"0100 0280 0440 0920 1390 2548 4504 8502"
-		$"8382 4144 2548 1390 0920 0440 0280 01",
-		/* [2] */
-		$"0100 0380 07C0 0FE0 1FF0 3FF8 7FFC FFFE"
-		$"FFFE 7FFC 3FF8 1FF0 0FE0 07C0 0380 01"
-	}
-};
-
-resource 'ics4' (128, "Item Icon") {
-	$"0000 000F 0000 0000 0000 00F7 F000 0000"
-	$"0000 0F77 7F00 0000 0000 F77F 77F0 0000"
-	$"000F 77FF F77F 0000 00F7 7F7F 7F77 F000"
-	$"0F77 7F7F 7777 7F00 F777 7F7F 7777 77F0"
-	$"F777 77FF F777 77F0 0F77 777F 7F77 7F00"
-	$"00F7 7F7F 7F77 F000 000F 77FF F77F 0000"
-	$"0000 F77F 77F0 0000 0000 0F77 7F00 0000"
-	$"0000 00F7 F000 0000 0000 000F"
-};
-
-resource 'vers' (1) {
-	0x1,
-	0x27,
-	release,
-	0x0,
-	15,
-	"1.2.7",
-	"Register 1.2.7 © 1994-98 Stairways Softw"
-	"are & Peter N Lewis"
+data 'Mngl' (128) {
+	$"0000 1E7E"                                          /* ...~ */
 };
 

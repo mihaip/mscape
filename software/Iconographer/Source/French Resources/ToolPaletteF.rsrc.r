@@ -558,9 +558,9 @@ resource 'MENU' (624) {
 	"Anti-aliasing",
 	{	/* array: 2 elements */
 		/* [1] */
-		"Aliased", noIcon, noKey, noMark, plain,
+		"Pixellisés", noIcon, noKey, noMark, plain,
 		/* [2] */
-		"Anti-aliased", noIcon, noKey, noMark, plain
+		"Lissés", noIcon, noKey, noMark, plain
 	}
 };
 
@@ -572,9 +572,9 @@ resource 'MENU' (625) {
 	"Fill",
 	{	/* array: 2 elements */
 		/* [1] */
-		"Unfilled", noIcon, noKey, noMark, plain,
+		"Vides", noIcon, noKey, noMark, plain,
 		/* [2] */
-		"Filled", noIcon, noKey, noMark, plain
+		"Pleins", noIcon, noKey, noMark, plain
 	}
 };
 
@@ -1250,60 +1250,59 @@ resource 'PICT' (663, "Filled") {
 resource 'STR#' (600, "Tool Balloon Help", purgeable) {
 	{	/* array StringArray: 23 elements */
 		/* [1] */
-		"Rectangular Marquee Tool (M)",
+		"Rectangle de sélection (M)",
 		/* [2] */
-		"Move Tool (V)",
+		"Déplacement (V)",
 		/* [3] */
-		"Lasso Tool (L)",
+		"Lasso (L)",
 		/* [4] */
-		"Magic Wand Tool (W)",
+		"Baguette magique (W)",
 		/* [5] */
-		"Pencil Tool (N)",
+		"Crayon (N)",
 		/* [6] */
-		"Eye Dropper Tool (I)",
+		"Pipette (I)",
 		/* [7] */
-		"Paint Bucket Tool (K)",
+		"Pot de peinture (K)",
 		/* [8] */
-		"Eraser Tool (E)",
+		"Gomme (E)",
 		/* [9] */
-		"Rectangle Tool (R)",
+		"Rectangle (R)",
 		/* [10] */
-		"Oval Tool (O)",
+		"Ovale (O)",
 		/* [11] */
-		"Line Tool (Y)",
+		"Traits (Y)",
 		/* [12] */
-		"Polygon Tool (P)",
+		"Polygones (P)",
 		/* [13] */
-		"Gradient Tool (G)",
+		"Dégradé (G)",
 		/* [14] */
-		"Text Tool (T)",
+		"Texte (T)",
 		/* [15] */
-		"Pan Tool (H)",
+		"Pan (H)",
 		/* [16] */
-		"Zoom Tool (Z)",
+		"Zoom (Z)",
 		/* [17] */
-		"Line Thickness\n\nClick to select the thic"
-		"kness of the lines drawn.",
+		"Epaisseur de ligne\n\nCliquez pour modifie"
+		"r l'épaisseur des lignes.",
 		/* [18] */
-		"Aliasing\n\nClick to select between aliase"
-		"d (jagged) and anti-aliased (smooth) lin"
-		"es.",
+		"Lissage\n\nCliquez pour choisir le mode li"
+		"ssé (anti-aliasé) ou non-lissé (pixellis"
+		"é) des lignes.",
 		/* [19] */
-		"Fill\n\nClick to toggle between unfilled a"
-		"nd filled shapes.",
+		"Remplir\n\nCliquez pour choisir le mode re"
+		"mpli ou vide des polygones.",
 		/* [20] */
-		"Pattern\n\nThe current color pattern is di"
-		"splayed here. Click on the swatch to cha"
-		"nge it.",
+		"Motifs\n\nLe motif choisi est affiché ici."
+		" Cliquez dessus pour le changer.",
 		/* [21] */
-		"Color Swatch\n\nThe current foreground and"
-		" background colors are displayed here. C"
-		"lick on the color swatches to change the"
-		"m.",
+		"Echantillon de couleur\n\nLes couleurs de "
+		"premier plan et d'arrière plan sont affi"
+		"chées ici. Cliquez sur un échantillon de"
+		" couleur pour le changer.",
 		/* [22] */
-		"Swap Colors (X)",
+		"Echanger les couleurs (X)",
 		/* [23] */
-		"Default Colors (D)"
+		"Couleurs par défaut (D)"
 	}
 };
 
@@ -2528,6 +2527,23 @@ data 'ictb' (9999) {
 };
 
 resource 'mctb' (623) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (625) {
 	{	/* array MCTBArray: 1 elements */
 		/* [1] */
 		mctbLast, 0,

@@ -225,7 +225,7 @@ pascal OSErr DragReceiveHandler (WindowPtr theWindow, void *, DragReference theD
 			}
 			
 			if (parentEditor->currentPix != targetPix)
-				parentEditor->SaveState(targetGW, targetPix, targetName);
+				parentEditor->SaveState(targetName);
 			
 			GetFlavorType(theDragRef,theItem,2,&flavorType);
 			if (flavorType == 'Icon')
@@ -262,7 +262,7 @@ pascal OSErr DragReceiveHandler (WindowPtr theWindow, void *, DragReference theD
 			
 			
 			if (parentEditor->currentPix != targetPix)
-				parentEditor->SaveState(targetGW, targetPix, targetName);
+				parentEditor->SaveState(targetName);
 			
 			parentEditor->currentState = new drawingStateClass(parentEditor->currentState, parentEditor);	
 				
@@ -312,9 +312,9 @@ void InsertPicIntoIcon(icnsEditorPtr parentEditor, PicHandle pic)
 									 false);
 	
 	if (targetIconName != parentEditor->currentPixName)
-		parentEditor->SaveState(targetIconGW, targetIconPix, targetIconName);
+		parentEditor->SaveState(targetIconName);
 	else
-		parentEditor->SaveState(targetMaskGW, targetMaskPix, targetMaskName);
+		parentEditor->SaveState(targetMaskName);
 	
 	
 	targetRect = srcRect;
@@ -328,9 +328,9 @@ void InsertPicIntoIcon(icnsEditorPtr parentEditor, PicHandle pic)
 	parentEditor->members |= (targetIconName | targetMaskName);
 
 	if (targetIconName != parentEditor->currentPixName)
-		parentEditor->SaveState(targetIconGW, targetIconPix, targetIconName);
+		parentEditor->SaveState(targetIconName);
 	else
-		parentEditor->SaveState(targetMaskGW, targetMaskPix, targetMaskName);
+		parentEditor->SaveState(targetMaskName);
 	
 	UnlockPixels(iconPix);
 	DisposeGWorld(iconGW);

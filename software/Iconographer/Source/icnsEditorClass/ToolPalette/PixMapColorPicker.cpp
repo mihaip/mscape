@@ -71,7 +71,7 @@ void PixMapColorPicker::Update(Point theMouse)
 	{
 		*this->color = newColor;
 		
-		ThemeSoundPlay(kThemeSoundMenuItemHilite);
+		MUtilities::sounds.Play(kThemeSoundMenuItemHilite);
 		
 		GetColorRegion();
 		DrawContents(drawRect);

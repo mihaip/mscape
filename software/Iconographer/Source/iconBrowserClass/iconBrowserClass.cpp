@@ -2,7 +2,7 @@
 #include "icnsEditorClass.h"
 #include "MAlert.h"
 
-iconBrowserClass::iconBrowserClass(FSSpec file, OpenFuncPtr OpenFunc) :
+iconBrowserClass::iconBrowserClass(FSSpec spec, OpenFuncPtr OpenFunc) :
 				  MDocumentWindow(rBrowserWind, kBrowserType),
 				  theList(BrowserStringCompare, IconDraw, NULL, IconFilter, IconUpdate)
 {
@@ -14,7 +14,6 @@ iconBrowserClass::iconBrowserClass(FSSpec file, OpenFuncPtr OpenFunc) :
 		status |= outOfMemory;
 		return;
 	}
-	srcFileSpec = file;
 	
 	Open = OpenFunc;
 	
@@ -27,7 +26,8 @@ iconBrowserClass::iconBrowserClass(FSSpec file, OpenFuncPtr OpenFunc) :
 	lastSelectionTime = TickCount();
 	lastSelection = -1;
 	
-	drawIcon.srcFileSpec = file;
+	file.SetAssociatedFile(spec);
+	drawIcon.file.SetAssociatedFile(spec);
 	
 	format = BuildIconList();
 	
@@ -52,7 +52,8 @@ iconBrowserClass::iconBrowserClass(FSSpec file, OpenFuncPtr OpenFunc) :
 	
 	RefreshWindowTitle();
 	
-	SetAssociatedFile(srcFileSpec);
+	
+	SetAssociatedFile(&file);
 	SetModified(false);
 	
 	icnsEditorClass::statics.Stagger(this);
@@ -122,10 +123,10 @@ OSErr iconBrowserClass::CreateControls()
 
 int iconBrowserClass::BuildIconList()
 {
-	short		oldFile, file, iconCount;
+	short		oldFile, resFile, iconCount;
 	DialogPtr	progressDialog;
 	ControlHandle	progressBar, progressText;
-	Str255		dialogTitle;
+	Str255		dialogTitle, fileName;
 	int			format, oldIcons, newIcons;
 	MWindowPtr	progressDialogWindow;
 	
@@ -136,41 +137,47 @@ int iconBrowserClass::BuildIconList()
 	
 	progressDialogWindow = new MWindow(GetDialogWindow(progressDialog), kDialogType);
 	
+	
+	MWindow::DeactivateAll();
+	
 	GetDialogItemAsControl(progressDialog, iIBProgressBar, &progressBar);
 	GetDialogItemAsControl(progressDialog, iIBProgressText, &progressText);
 	
 	oldFile = CurResFile();
-	file = FSpOpenResFile(&srcFileSpec, fsRdPerm);
-	UseResFile(file);
+	resFile = file.OpenResourceFork(fsRdPerm);
+	UseResFile(resFile);
 	
 	newIcons = Count1Resources('icns');
 	oldIcons = Count1Resources('ICN#') + Count1Resources('ics#') + Count1Resources('icm#');
 		
 	iconCount = newIcons + oldIcons;
 	
-	CloseResFile(file);
+	CloseResFile(resFile);
 	UseResFile(oldFile);
 	
 	SetControlMaximum(progressBar, iconCount);
 	
 	GetWTitle(GetDialogWindow(progressDialog), dialogTitle);
-	SubstituteString(dialogTitle, "\p<name>", srcFileSpec.name);
+	file.GetName(fileName);
+	SubstituteString(dialogTitle, "\p<name>", fileName);
 	SetWTitle(GetDialogWindow(progressDialog), dialogTitle);
 	
 	ShowWindow(GetDialogWindow(progressDialog));
 	
-	file = FSpOpenResFile(&srcFileSpec, fsRdPerm);
-	UseResFile(file);
+	resFile = file.OpenResourceFork(fsRdPerm);
+	UseResFile(resFile);
 	
-	LoadFamily('icns', true, oldFile, file, progressBar, progressText, progressDialogWindow);
-	LoadFamily('ICN#', false, oldFile, file, progressBar, progressText, progressDialogWindow);
-	LoadFamily('ics#', false, oldFile, file, progressBar, progressText, progressDialogWindow);
-	LoadFamily('icm#', false, oldFile, file, progressBar, progressText, progressDialogWindow);
+	LoadFamily('icns', true, oldFile, resFile, progressBar, progressText, progressDialogWindow);
+	LoadFamily('ICN#', false, oldFile, resFile, progressBar, progressText, progressDialogWindow);
+	LoadFamily('ics#', false, oldFile, resFile, progressBar, progressText, progressDialogWindow);
+	LoadFamily('icm#', false, oldFile, resFile, progressBar, progressText, progressDialogWindow);
 	
-	CloseResFile(file);
+	CloseResFile(resFile);
 	UseResFile(oldFile);
 	
 	DisposeDialog(progressDialog);
+	
+	MWindow::ActivateAll();
 	
 	drawIcon.LoadFileIcon();
 	AddIcon(kIDUseFileIcon, "\p", drawIcon.members, drawIcon.members & (icon32 | mask8));
@@ -194,7 +201,7 @@ int iconBrowserClass::BuildIconList()
 	return format;
 }
 
-void iconBrowserClass::LoadFamily(OSType type, bool newType, short oldFile, short file, ControlHandle progressBar, ControlHandle progressText, MWindowPtr progressDialog)
+void iconBrowserClass::LoadFamily(OSType type, bool newType, short oldFile, short resFile, ControlHandle progressBar, ControlHandle progressText, MWindowPtr progressDialog)
 {
 	int 				iconCount, cellHeight, counter;
 	long				members;
@@ -240,7 +247,7 @@ void iconBrowserClass::LoadFamily(OSType type, bool newType, short oldFile, shor
 		
 		progressDialog->Flush();
 		
-		UseResFile(file);
+		UseResFile(resFile);
 	}
 }
 
@@ -328,7 +335,7 @@ void iconBrowserClass::RepositionControls()
 	else
 		SetControlMaximum(controls.scrollBar, 0);
 		
-	if (GestaltVersion(gestaltSystemVersion, 0x08, 0x50))
+	if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x08, 0x50))
 		SetControlViewSize(controls.scrollBar, v);
 	
 	ShowControl(controls.rootControl);
@@ -346,28 +353,23 @@ void iconBrowserClass::Deactivate()
 	DeactivateControl(controls.rootControl);
 }
 
-void iconBrowserClass::DoIdle()
+void iconBrowserClass::DoIdle(MWindowPtr windowUnderMouse)
 {
-	if (srcFileSpec.vRefNum != 0 ||
-		srcFileSpec.parID != 0)
+#pragma unused (windowUnderMouse)
+	if (file.IsValid() && file.Moved())
 	{
-		FSSpec newSrcSpec;
-		
-		GetAssociatedFile(&newSrcSpec);
-		if (!SameFile(newSrcSpec, srcFileSpec))
-		{
-			srcFileSpec = newSrcSpec;
-			RefreshWindowTitle();
-		}
+		RefreshProxy();
+		RefreshWindowTitle();
 	}
 }
 
 void iconBrowserClass::RefreshWindowTitle()
 {
-	Str255 title;
+	Str255 title, fileName;
 	
 	GetIndString(title, rIBStrings, eIBWindowTitle);
-	SubstituteString(title, "\p<name>", srcFileSpec.name);
+	file.GetName(fileName);
+	SubstituteString(title, "\p<name>", fileName);
 	
 	SetWTitle(window, title);
 }
@@ -493,6 +495,7 @@ void iconBrowserClass::OpenCurrentIcon()
 {
 	long 				ID, currentSelection;
 	ListDrawingData*	cellData;
+	FSSpec				targetFile;
 	
 	currentSelection = theList.GetSelection();
 	
@@ -500,10 +503,11 @@ void iconBrowserClass::OpenCurrentIcon()
 	
 	theList.GetCellClientData(currentSelection, 0, (void**)&cellData);
 	ID = cellData->ID;
+	targetFile = file.GetAssociatedFile();
 	if (cellData->newType)
-		Open(&srcFileSpec, ID, formatMacOSNew, -1);
+		Open(&targetFile, ID, formatMacOSNew, -1);
 	else
-		Open(&srcFileSpec, ID, formatMacOSOld, -1);
+		Open(&targetFile, ID, formatMacOSOld, -1);
 }
 
 int iconBrowserClass::GetCurrentFormat()
@@ -668,7 +672,7 @@ void iconBrowserClass::Clear()
 	MString				temp;
 	MAlert 				alert;
 	int					ID;
-	Str255 				IDAsString;
+	Str255 				IDAsString, fileName;
 	ListDrawingData*	drawingData;
 	
 	if (theList.GetSelection() == -1)
@@ -684,7 +688,8 @@ void iconBrowserClass::Clear()
 	GetIndString(message, rIBStrings, eIBDeleteWarning);
 	NumToString(ID, IDAsString);
 	SubstituteString(message, "\p<icon ID>", IDAsString);
-	SubstituteString(message, "\p<file name>", srcFileSpec.name);
+	file.GetName(fileName);
+	SubstituteString(message, "\p<file name>", fileName);
 	
 	temp = message;
 	
@@ -704,7 +709,7 @@ void iconBrowserClass::Clear()
 		theList.GetCellClientData(theList.GetSelection(), 0, (void**)&iconInfo);
 		
 		oldFile = CurResFile();
-		srcFile = FSpOpenResFile(&srcFileSpec, fsRdWrPerm);
+		srcFile = file.OpenResourceFork(fsRdWrPerm);
 		UseResFile(srcFile);
 		
 		if (iconInfo->newType)
@@ -758,7 +763,7 @@ void iconBrowserClass::GetIconString(int ID, Str255 name, long members, bool new
 		CopyString(localName, name);
 	else
 	{
-		icnsClass::GetIDMenu(ID, NULL, NULL, localName);
+		MIcon::GetIDMenu(ID, NULL, NULL, localName);
 		if (localName[0]) defaultName = true;
 	}
 	
@@ -793,14 +798,14 @@ void iconBrowserClass::GetIconString(int ID, Str255 name, long members, bool new
 	
 	part.LoadFromResource(rIBStrings, eIBListMembers);
 	(**iconString) += part;
-	part = icnsClass::GetMembersListNames(members);
+	part = MIcon::GetMembersListNames(members);
 	if (part.Length() == 0)
 		part.LoadFromResource(rIBStrings, eIBNoMembers);
 	(**iconString) += part;
 }
 
 
-icnsClassPtr iconBrowserClass::GetBrowserTempIcon()
+MIconPtr iconBrowserClass::GetBrowserTempIcon()
 {
 	return &drawIcon;
 }		
@@ -817,7 +822,7 @@ void iconBrowserClass::EditIconInfo()
 	
 	theList.GetCellClientData(currentSelection, 0, (void**)&cellData);
 	drawIcon.ID = oldID = cellData->ID;
-	drawIcon.srcFileSpec = srcFileSpec;
+	drawIcon.file.SetAssociatedFile(file.GetAssociatedFile());
 	oldNewType = cellData->newType;
 	if (cellData->newType)
 		drawIcon.format = formatMacOSNew;

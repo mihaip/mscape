@@ -94,7 +94,7 @@ void PatternPicker::Update(Point theMouse)
 	{
 		*pattern = newPattern;
 		
-		ThemeSoundPlay(kThemeSoundMenuItemHilite);
+		MUtilities::sounds.Play(kThemeSoundMenuItemHilite);
 		
 		DrawContents(drawRect);
 		

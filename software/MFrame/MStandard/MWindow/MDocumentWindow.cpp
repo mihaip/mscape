@@ -8,8 +8,7 @@ MDocumentWindow::MDocumentWindow(short resID, OSType type)
 
 MDocumentWindow::~MDocumentWindow()
 {
-	if (associatedFile != NULL)
-		DisposeHandle((Handle)associatedFile);
+	;
 }
 
 void MDocumentWindow::SetProxyIcon(OSType creator, OSType type)
@@ -18,21 +17,24 @@ void MDocumentWindow::SetProxyIcon(OSType creator, OSType type)
 		SetWindowProxyCreatorAndType(window, creator, type, kOnSystemDisk);
 }
 
-void MDocumentWindow::SetAssociatedFile(FSSpec file)
+void MDocumentWindow::SetAssociatedFile(MFile* file)
 {
-	if (associatedFile == NULL)
-		DisposeHandle((Handle)associatedFile);
-	NewAliasMinimal(&file, &associatedFile);
-
-	if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x08, 0x50))
-		SetWindowProxyFSSpec(window, &file);
+	associatedFile = file;
+	
+	RefreshProxy();
 }
 
-void MDocumentWindow::GetAssociatedFile(FSSpec* file)
-{
-	Boolean wasChanged;
-	
-	ResolveAlias(NULL, associatedFile, file, &wasChanged);
+void MDocumentWindow::RefreshProxy()
+{	
+	if (associatedFile)
+	{
+		FSSpec proxySpec;
+		
+		proxySpec = associatedFile->GetAssociatedFile();
+		
+		if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x08, 0x50))
+			SetWindowProxyFSSpec(window, &proxySpec);
+	}
 }
 
 void MDocumentWindow::SetModified(bool modified)

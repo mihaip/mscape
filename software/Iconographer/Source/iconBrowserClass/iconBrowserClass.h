@@ -1,9 +1,10 @@
-#include "icnsClass.h"
+#include "MIcon.h"
 #include "MDocumentWindow.h"
 #include "MList.h"
-#include "icnsClass.h"
+#include "MIcon.h"
 #include "commonFunctions.h"
 #include "MString.h"
+#include "MFile.h"
 
 const static long kBrowserType = 'IcBr';
 
@@ -74,7 +75,7 @@ typedef iconBrowserClass* iconBrowserPtr;
 typedef struct
 {
 	iconBrowserPtr	parentBrowser;
-	icnsClass*		icon;
+	MIcon*		icon;
 	long			members;
 	bool			newType;
 	long			ID;
@@ -105,7 +106,7 @@ class iconBrowserClass : public MDocumentWindow
 		void	Activate(void);
 		void	Deactivate(void);
 		
-		void	DoIdle();
+		void	DoIdle(MWindowPtr windowUnderMouse);
 		
 		void	RefreshWindowTitle();
 		void	RefreshList();
@@ -117,11 +118,11 @@ class iconBrowserClass : public MDocumentWindow
 		void				EditIconInfo();
 		int					GetCurrentFormat();
 		
-		icnsClassPtr		GetBrowserTempIcon();
+		MIconPtr		GetBrowserTempIcon();
 		
 		long				status;
 		
-		FSSpec				srcFileSpec;
+		MFile				file;
 		
 		static void	GetIconString(int ID, Str255 name, long members, bool newType, MStringPtr* iconString);
 				
@@ -144,7 +145,7 @@ class iconBrowserClass : public MDocumentWindow
 		OpenFuncPtr			Open;
 		IconBrowserControls	controls;
 		
-		icnsClass			drawIcon;
+		MIcon			drawIcon;
 		
 		long				lastSelectionTime;
 		int					lastSelection;

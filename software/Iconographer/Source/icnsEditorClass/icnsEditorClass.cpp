@@ -58,10 +58,8 @@ icnsEditorClass::icnsEditorClass(void) :
 		return;
 	}
 	
-	currentPix = il32Pix; // these are the current pixels that we are displaying
-	currentPixName = il32; // we use several fields for this since sometimes we need to compare
-	currentGW = il32GW; // the GWorld pointers /PixMap handles to see if the a GWorld/PixMap
-	// is the current one, and at other times we compare the "name" (actually a number)
+	currentPixName = il32;
+	GetGWorldAndPix(currentPixName, &currentGW, &currentPix);
 	
 	selectionRgn = NewRgn(); // we create the selection region
 	SetEmptyRgn(selectionRgn); // and set it to empty
@@ -107,8 +105,6 @@ icnsEditorClass::icnsEditorClass(void) :
 	currentState = new drawingStateClass(NULL, this); // we store the current state
 	firstState = currentState; // and also make this the first one
 	
-	srcFileSpec.vRefNum = 0;
-	srcFileSpec.parID = 0;
 	
 	ID = rCustomIcon; // the default ID is the standard finder custom icon ID
 	GetIDMenu(ID, NULL, NULL, name);
@@ -249,7 +245,7 @@ void icnsEditorClass::Deactivate()
 // Output		: None
 // Description	: this is the destructor for the editor class. It maintains the linked list,
 //				  disposes of the state linked linked list for this editor, as well as of any
-//				  allocated data (note that the constructor for the icnsClass is also closed)
+//				  allocated data (note that the constructor for the MIcon is also closed)
 
 icnsEditorClass::~icnsEditorClass(void)
 {
@@ -280,36 +276,19 @@ icnsEditorClass::~icnsEditorClass(void)
 //				  the status variable (with which the class interfaces with the rest of the
 //				  program) up do date.
 
-void icnsEditorClass::DoIdle(void)
+void icnsEditorClass::DoIdle(MWindowPtr windowUnderMouse)
 {
 	Point	theMouse; // the current mouse coordinates
-	WindowPtr windowUnderMouse;
-	Point	globalMouse;
 	
 	SAVEGWORLD; // we must save the gworld...
 	SetPort(); // since we set the current port to the editor's window...
 			
 	GetMouse(&theMouse); // because we want the mouse coordinates in terms of the window
 	
-	globalMouse = theMouse;
-	
-	LocalToGlobal(&globalMouse);
-	
-	FindWindow(globalMouse, &windowUnderMouse);
-
 #if !TARGET_API_MAC_CARBON
 	if (IsFrontProcess()) // if we're the main app now...
 	{
-		WindowPtr windowUnderMouse;
-		Point	globalMouse;
-		
-		globalMouse = theMouse;
-		
-		LocalToGlobal(&globalMouse);
-		
-		FindWindow(globalMouse, &windowUnderMouse);
-		
-		if (window == windowUnderMouse)
+		if (this == windowUnderMouse)
 		{
 
 			if (HMGetBalloons())
@@ -335,7 +314,14 @@ void icnsEditorClass::DoIdle(void)
 
 		}
 	}
+#else
+#pragma unused (windowUnderMouse)
 #endif
+	
+	if (currentPixName & icons)
+		status |= currentPixIsIcon;
+	else
+		status &= ~currentPixIsIcon;
 	
 	if (EmptyRgn(selectionRgn))
 		status &= ~hasSelection;
@@ -395,17 +381,10 @@ void icnsEditorClass::DoIdle(void)
 	if (status & resized) // if the window has been resized, we need to refresh it
 		Refresh();
 	
-	if (srcFileSpec.vRefNum != 0 ||
-		srcFileSpec.parID != 0)
+	if (file.IsValid() && file.Moved())
 	{
-		FSSpec newSrcSpec;
-		
-		GetAssociatedFile(&newSrcSpec);
-		if (!SameFile(newSrcSpec, srcFileSpec))
-		{
-			srcFileSpec = newSrcSpec;
-			RefreshWindowTitle();
-		}
+		RefreshProxy();
+		RefreshWindowTitle();
 	}
 	
 	if (MUtilities::ScrapHasFlavor('PICT'))
@@ -418,7 +397,7 @@ void icnsEditorClass::DoIdle(void)
 	else
 		status &= ~canPasteFamily;
 		
-	if (status & needToSave && (srcFileSpec.vRefNum != 0 || srcFileSpec.parID != 0))
+	if ((status & needToSave) && file.IsValid())
 		status |= canRevert;
 	else
 		status &= ~canRevert;
@@ -516,13 +495,13 @@ void icnsEditorClass::ChangeColors(int newColors, bool saveState)
 			break;
 	}
 	
-	ChangeColorsIconSet(ich4, &ich4GW, &ich4Pix, colorTable4, saveState);
-	ChangeColorsIconSet(icl4, &icl4GW, &icl4Pix, colorTable4, saveState);
-	ChangeColorsIconSet(ics4, &ics4GW, &ics4Pix, colorTable4, saveState);
+	ChangeColorsIconSet(ich4, colorTable4, saveState);
+	ChangeColorsIconSet(icl4, colorTable4, saveState);
+	ChangeColorsIconSet(ics4, colorTable4, saveState);
 	
-	ChangeColorsIconSet(ich8, &ich8GW, &ich8Pix, colorTable8, saveState);
-	ChangeColorsIconSet(icl8, &icl8GW, &icl8Pix, colorTable8, saveState);
-	ChangeColorsIconSet(ics8, &ics8GW, &ics8Pix, colorTable8, saveState);
+	ChangeColorsIconSet(ich8, colorTable8, saveState);
+	ChangeColorsIconSet(icl8, colorTable8, saveState);
+	ChangeColorsIconSet(ics8, colorTable8, saveState);
 	
 	if (currentPixName & (ich4 | icl4 | ics4 | ich8 | icl8 | ics8))
 		GetGWorldAndPix(currentPixName, &currentGW, &currentPix); 
@@ -536,21 +515,22 @@ void icnsEditorClass::ChangeColors(int newColors, bool saveState)
 			break;
 	}
 	
-	status |= needsUpdate;
-	status |= needToSave;
+	status |= (needsUpdate | needToSave);
 	
 	if (saveState)
 		currentState = new drawingStateClass(currentState, this);
 }
 
-void icnsEditorClass::ChangeColorsIconSet(long name, GWorldPtr* gWorld, PixMapHandle* pix, CTabHandle colorTable, bool saveState)
+void icnsEditorClass::ChangeColorsIconSet(long name, CTabHandle colorTable, bool saveState)
 {
-	GWorldPtr		tempGW;
-	PixMapHandle	tempPix;
+	GWorldPtr		tempGW, gWorld;
+	PixMapHandle	tempPix, pix;
 	int				copyMode;
 	OSStatus		err;
 	
-	err = NewIconSet(&tempGW, &tempPix, (***pix).bounds, (***pix).pixelSize, colorTable);
+	GetGWorldAndPix(name, &gWorld, &pix);
+	
+	err = NewIconSet(&tempGW, &tempPix, (**pix).bounds, (**pix).pixelSize, colorTable);
 	if (err != noErr)
 		SysBeep(6);
 
@@ -564,19 +544,18 @@ void icnsEditorClass::ChangeColorsIconSet(long name, GWorldPtr* gWorld, PixMapHa
 	else
 		copyMode = srcCopy;
 		
-	CopyPixMap(*pix, tempPix, &(***pix).bounds, &(***pix).bounds, copyMode, NULL);
+	CopyPixMap(pix, tempPix, &(**pix).bounds, &(**pix).bounds, copyMode, NULL);
 	
 	RESTORECOLORS;
 	RESTOREGWORLD;
 	
-	UnlockPixels(*pix);
-	DisposeGWorld(*gWorld);
+	ReplaceMember(name, tempGW, tempPix);
 	
-	*pix = tempPix;
-	*gWorld = tempGW;
+	if (currentPixName == name)
+		GetGWorldAndPix(currentPixName, &currentGW, &currentPix);
 	
 	if (saveState)
-		SaveState(*gWorld, *pix, name);
+		SaveState(name);
 }
 
 // __________________________________________________________________________________________
@@ -842,12 +821,12 @@ void icnsEditorClass::EditIconInfo()
 {
 	int itemHit;
 	
-	itemHit = icnsClass::EditIconInfo(kIconInfo);
+	itemHit = MIcon::EditIconInfo(kIconInfo);
 	
 	if (itemHit == iOK)
 	{
 		status |= needToSave;
-		
+		members &= usedMembers;
 		if (!(currentPixName & usedMembers))
 		{
 			for (int i=0; i < kPreferredMembersCount; i++)
@@ -923,7 +902,7 @@ void icnsEditorClass::AddMember()
 				
 				GetGWorldAndPix(newMember, &targetGW, &targetPix);
 				
-				icnsEditorClass::SaveState(targetGW, targetPix, newMember);
+				icnsEditorClass::SaveState(newMember);
 				
 				members |= newMember;
 				usedMembers |= newMember;
@@ -985,6 +964,90 @@ void icnsEditorClass::BuildMembersMenu(MenuHandle menu, int startingPoint, int m
 			
 			SetMenuItemRefCon(menu, startingPoint, kMembers[i].name);
 		}
+}
+
+
+void icnsEditorClass::GenerateMask()
+{
+	GWorldPtr		maskGW;
+	PixMapHandle	maskPix;
+	int				maskName;
+	
+	if (members & mask8)
+		maskName = GetPixName((**currentPix).bounds.bottom, 8, false);
+	else
+		maskName = GetPixName((**currentPix).bounds.bottom, 1, false);
+	
+	SaveState(maskName);
+	
+	GetGWorldAndPix(maskName, &maskGW, &maskPix);
+	
+	Make1BitMask(currentPix, maskPix, (**maskPix).bounds);
+	
+	members |= maskName;
+	
+	SaveState(maskName);
+	
+	status |= (needsUpdate | needToSave);
+	
+	currentState = new drawingStateClass(currentState, this);
+}
+
+void icnsEditorClass::CompleteIcon()
+{
+	long			iconName, maskName, targetName;
+	GWorldPtr		iconGW, maskGW, targetGW;
+	PixMapHandle	iconPix, maskPix, targetPix;
+	
+	SAVEGWORLD;
+	SAVECOLORS;
+	
+	RefreshIconMembers();
+	
+	GetCurrentIconMask(&iconPix, &iconGW, &iconName, &maskPix, &maskGW, &maskName, false);
+	
+	if (!(members & maskName))
+		Make1BitMask(iconPix, maskPix, (**maskPix).bounds);
+		
+	for (int i=0; i < kMembersCount; i++)
+	{
+		targetName = kMembers[i].name;
+		
+		if (targetName & usedMembers && !(targetName & members))
+		{
+			GetGWorldAndPix(targetName, &targetGW, &targetPix);
+			
+			SaveState(targetName);
+			
+			SetGWorld(targetGW, NULL);
+			
+			if (targetName & icons)
+			{
+				if (statics.preferences.FeatureEnabled(prefsDither))
+					CopyPixMap(iconPix, targetPix, &(**iconPix).bounds, &(**targetPix).bounds, srcCopy + ditherCopy, NULL);
+				else
+					CopyPixMap(iconPix, targetPix, &(**iconPix).bounds, &(**targetPix).bounds, srcCopy, NULL);
+			}
+			else
+			{
+				if ((**maskPix).pixelSize == 8 && (**targetPix).pixelSize == 1)
+					Make1BitMask(maskPix, targetPix, (**maskPix).bounds);
+				else
+					CopyPixMap(maskPix, targetPix, &(**maskPix).bounds, &(**targetPix).bounds, srcCopy, NULL);
+			}
+			
+			members |= targetName;
+			
+			SaveState(targetName);
+		}
+	}
+	
+	RESTORECOLORS;
+	RESTOREGWORLD;
+
+	status |= (needsUpdate | needToSave);
+	
+	currentState = new drawingStateClass(currentState, this);
 }
 
 #pragma mark -
@@ -1056,7 +1119,7 @@ void icnsEditorClass::RepositionControls()
 	hScrollbarValue = GetControlValue(controls.hScrollbar);
 	vScrollbarValue = GetControlValue(controls.vScrollbar);
 	
-	if (GestaltVersion(gestaltSystemVersion, 0x08, 0x50))
+	if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x08, 0x50))
 	{
 		SetControlViewSize(controls.hScrollbar, editAreaRect.right - editAreaRect.left);
 		SetControlViewSize(controls.vScrollbar, editAreaRect.bottom - editAreaRect.top);
@@ -1219,12 +1282,12 @@ Point icnsEditorClass::GetMaxDimensions()
 	
 	usableRect = MUtilities::GetUsableScreenRect();
 	
-	if ((statics.previewPalette->IsVisible() &&
-		PointsNear(statics.GetDefaultPalettePosition(statics.previewPalette), statics.previewPalette->GetPosition(), 5, 5)) ||
-		(statics.membersPalette->IsVisible() &&
-		PointsNear(statics.GetDefaultPalettePosition(statics.membersPalette), statics.membersPalette->GetPosition(), 5, 5)) ||
-		(statics.colorsPalette->IsVisible() &&
-		PointsNear(statics.GetDefaultPalettePosition(statics.colorsPalette), statics.colorsPalette->GetPosition(), 5, 5)))
+	if ((statics.preferences.FeatureEnabled(prefsPreviewPaletteVisible) &&
+		PointsNear(statics.GetDefaultPalettePosition(statics.previewPalette), statics.previewPalette->GetPosition(), 5, 32767)) &&
+		(statics.preferences.FeatureEnabled(prefsMembersPaletteVisible) &&
+		PointsNear(statics.GetDefaultPalettePosition(statics.membersPalette), statics.membersPalette->GetPosition(), 5, 32767)) &&
+		(statics.preferences.FeatureEnabled(prefsColorsPaletteVisible) &&
+		PointsNear(statics.GetDefaultPalettePosition(statics.colorsPalette), statics.colorsPalette->GetPosition(), 5, 32767)))
 	{
 		temp = statics.previewPalette->GetPosition();
 		limits.h = temp.h - statics.previewPalette->GetBorderThickness(borderLeft);
@@ -1369,7 +1432,10 @@ void icnsEditorClass::HandleGrow(Point where)
 		
 		if (currentDimensions.h < kMinWidth) currentDimensions.h = kMinWidth;
 		if (currentDimensions.v < kMinHeight) currentDimensions.v = kMinHeight;
-		
+
+#if TARGET_API_MAC_CARBON
+		DisableScreenUpdates();
+#endif
 		if (currentDimensions.h != previousDimensions.h ||
 			currentDimensions.v != previousDimensions.v)
 		{
@@ -1377,6 +1443,10 @@ void icnsEditorClass::HandleGrow(Point where)
 		
 			RepositionControls();
 		}
+
+#if TARGET_API_MAC_CARBON
+		EnableScreenUpdates();
+#endif
 		
 		previousDimensions = currentDimensions;
 	}
@@ -1555,9 +1625,10 @@ void icnsEditorClass::ToggleZoom()
 
 void icnsEditorClass::Load()
 {
-	icnsClass::Load(); // we call the base function
+	MIcon::Load(); // we call the base function
 	
-	if (format == formatWindows)
+	if (format == formatWindows ||
+		format == formatWindowsXP)
 		colors = winColors;
 	
 	PostLoad();
@@ -1573,21 +1644,21 @@ void icnsEditorClass::Load()
 
 void icnsEditorClass::LoadFileIcon()
 {
-	icnsClass::LoadFileIcon(); // we call the base function
+	MIcon::LoadFileIcon(); // we call the base function
 	
 	PostLoad();
 }
 
 void icnsEditorClass::LoadDataFork()
 {
-	icnsClass::LoadDataFork();
+	MIcon::LoadDataFork();
 	
 	PostLoad();
 }
 
 void icnsEditorClass::PostLoad()
 {
-	SetAssociatedFile(srcFileSpec);
+	SetAssociatedFile(&file);
 	
 	LoadUsedMembers();
 	
@@ -1630,7 +1701,7 @@ void icnsEditorClass::LoadUsedMembers()
 		SetupFileSpec(false);
 		
 		oldFile = CurResFile();
-		targetFile = FSpOpenResFile(&srcFileSpec, fsRdWrPerm);
+		targetFile = file.OpenResourceFork(fsRdWrPerm);
 		
 		if (targetFile != -1 && ResError() == noErr)
 		{
@@ -1640,11 +1711,13 @@ void icnsEditorClass::LoadUsedMembers()
 			
 			if (usedMembersResource != NULL &&
 				GetHandleSize(usedMembersResource) == sizeof(long))
+			{
 				usedMembers = **((long**)usedMembersResource);
+				ReleaseResource(usedMembersResource);
+			}
 			else
 				usedMembers |= members;
 			
-			ReleaseResource(usedMembersResource);
 			CloseResFile(targetFile);
 			UseResFile(oldFile);
 		}
@@ -1669,7 +1742,7 @@ void icnsEditorClass::SaveUsedMembers()
 		SetupFileSpec(false);
 		
 		oldFile = CurResFile();
-		targetFile = FSpOpenResFile(&srcFileSpec, fsRdWrPerm);
+		targetFile = file.OpenResourceFork(fsRdWrPerm);
 		
 		UseResFile(targetFile);
 		
@@ -1701,11 +1774,14 @@ void icnsEditorClass::SaveUsedMembers()
 	}
 }
 
-void icnsEditorClass::CheckMaskSync(PixMapHandle basePix, PixMapHandle maskPix, int maskName, int size)
+void icnsEditorClass::CheckMaskSync(int basePixName, int maskName, int size)
 {
-	GWorldPtr 		tempGW;
-	PixMapHandle	tempPix;
+	GWorldPtr 		tempGW, maskGW, baseGW;
+	PixMapHandle	tempPix, maskPix, basePix;
 	Rect			bounds;
+	
+	GetGWorldAndPix(basePixName, &baseGW, &basePix);
+	GetGWorldAndPix(maskName, &maskGW, &maskPix);
 	
 	bounds = (**basePix).bounds;
 	
@@ -1717,17 +1793,18 @@ void icnsEditorClass::CheckMaskSync(PixMapHandle basePix, PixMapHandle maskPix, 
 	
 	if (!SamePixMap(tempPix, maskPix))
 	{
-		Str255	text, sizeName, regenerateButton, noButton;
+		Str255	text, explanation, sizeName, regenerateButton, noButton;
 		
 		GetIndString(text, rBasicStrings, eMaskSync);
 		GetSizeName(size, sizeName);
 		if (sizeName[1] < 'a') sizeName[1] += ('a' - 'A');
 		SubstituteString(text, "\p<size>", sizeName);
-		SubstituteString(text, "\p<size>", sizeName);
+		
+		GetIndString(explanation, rBasicStrings, eMaskSyncExplanation);
 		
 		GetIndString(regenerateButton, rBasicStrings, eRegenerateButton);
 		GetIndString(noButton, rBasicStrings, eNoButton);
-		if (MUtilities::DisplayAlert(text, regenerateButton, noButton, "\p", kAlertCautionAlert) == kMAOK)
+		if (MUtilities::DisplayAlert(text, explanation, regenerateButton, noButton, "\p", kAlertCautionAlert, kWindowAlertPositionParentWindow) == kMAOK)
 		{
 			SAVECOLORS;
 			CopyPixMap(tempPix, maskPix, &bounds, &bounds, srcCopy, NULL);
@@ -1750,7 +1827,7 @@ void icnsEditorClass::GenerateMask(int maskName)
 	
 	GetIndString(generateButton, rBasicStrings, eGenerateButton);
 	GetIndString(noButton, rBasicStrings, eNoButton);
-	if (MUtilities::DisplayAlert(text, generateButton, noButton, "\p", kAlertCautionAlert) == kMAOK)
+	if (MUtilities::DisplayAlert(text, NULL, generateButton, noButton, "\p", kAlertCautionAlert, kWindowAlertPositionParentWindow) == kMAOK)
 	{
 		GWorldPtr		iconGW, maskGW;
 		PixMapHandle	iconPix, maskPix;
@@ -1781,29 +1858,24 @@ OSErr icnsEditorClass::Save(void)
 	{
 		RefreshIconMembers();
 		
-		if (format == formatMacOSUniversal ||
-			format == formatMacOSNew)
-		{
-			if (members & l8mk)	CheckMaskSync(l8mkPix, icnmPix, icnm, largeSize);
-			if (members & s8mk)	CheckMaskSync(s8mkPix, icsmPix, icsm, smallSize);
-			if (members & h8mk)	CheckMaskSync(h8mkPix, ichmPix, ichm, hugeSize);
-		}
+		if (members & l8mk)	CheckMaskSync(l8mk, icnm, largeSize);
+		if (members & s8mk)	CheckMaskSync(s8mk, icsm, smallSize);
+		if (members & h8mk)	CheckMaskSync(h8mk, ichm, hugeSize);
 		
 		if (members & thumbnailSize && !(members & t8mk)) GenerateMask(t8mk);
 		if (members & hugeSize && !(members & (h8mk | ichm))) GenerateMask(ichm);
 		if (members & largeSize && !(members & (l8mk | icnm))) GenerateMask(icnm);
 		if (members & smallSize && !(members & (s8mk | icsm))) GenerateMask(icsm);
 		if (members & miniSize && !(members & icmm)) GenerateMask(icmm);
-	}	
+	}
 	
-	
-	if (format != formatWindows && colors == winColors)
+	if ((format != formatWindows && format != formatWindowsXP) && colors == winColors)
 		ChangeColors(macOSColors, false);
 	
 	if (status & selectionFloated)
 		DefloatSelection(false);
 	
-	err = icnsClass::Save(); // this is from the base class
+	err = MIcon::Save(); // this is from the base class
 	RefreshWindowTitle();
 	
 	if (status & selectionFloated)
@@ -1821,7 +1893,7 @@ OSErr icnsEditorClass::Save(void)
 
 	status |= needsUpdate;
 	
-	SetAssociatedFile(srcFileSpec);
+	SetAssociatedFile(&file);
 	
 	return noErr;
 }
@@ -1844,7 +1916,7 @@ void icnsEditorClass::OpenInExternalEditor()
 		GetIndString(prefsButton, rBasicStrings, eOpenPreferences);
 		GetIndString(cancelButton, rBasicStrings, eInfoCancelButton);
 		
-		if (MUtilities::DisplayAlert(error, prefsButton, cancelButton, "\p", kAlertStopAlert) == 1)
+		if (MUtilities::DisplayAlert(error, NULL, prefsButton, cancelButton, "\p", kAlertStopAlert, kWindowAlertPositionMainScreen) == 1)
 		{
 			statics.preferences.Edit(kPrefsExternalEditorPane);
 			
@@ -2003,8 +2075,7 @@ void icnsEditorClass::ReloadFromExternalEditor()
 		ImportQTFileToGWorld(exportFile, currentGW);
 
 	currentState = new drawingStateClass(currentState, this);
-	status |= needToSave;
-	status |= needsUpdate;
+	status |= (needToSave | needsUpdate);
 }
 
 #pragma mark -
@@ -2018,10 +2089,12 @@ void icnsEditorClass::ReloadFromExternalEditor()
 void icnsEditorClass::RefreshWindowTitle()
 {
 	Str255	windowTitle, // the new window title
-			memberName;
+			memberName,
+			fileName;
 		
 	CopyString(windowTitle, "\p"); // we set back to nothing
-	AppendString(windowTitle, srcFileSpec.name); // put in the file name
+	file.GetName(fileName);
+	AppendString(windowTitle, fileName); // put in the file name
 	AppendString(windowTitle, "\p (");
 	GetMemberNameString(currentPixName, memberName);
 	AppendString(windowTitle, memberName);
@@ -2045,6 +2118,9 @@ void icnsEditorClass::SetCurrentMember(long memberName, int fancinessLevel)
 			SetEmptyRgn(selectionRgn); // and deselect it
 			status &= ~hasSelection; // and now we don't have a selection anymore
 		}
+		
+		if (fancinessLevel > 1 && IsEmptyPixMap(currentPix))
+			members &= ~currentPixName;
 			
 		status |= skipState; // when restoring, we must not restore to this state, rather
 							 // we must move on to the next one immediately
@@ -2104,7 +2180,7 @@ void icnsEditorClass::GetCurrentIconMask(PixMapHandle* iconPix, GWorldPtr* iconG
 	
 	index = GetMemberIndex(currentPixName);
 	
-	if (kMembers[index].icon)
+	if (kMembers[index].name & icons)
 	{
 		*iconPix = currentPix;
 		*iconGW = currentGW;
@@ -2125,6 +2201,84 @@ void icnsEditorClass::GetCurrentIconMask(PixMapHandle* iconPix, GWorldPtr* iconG
 	}
 }
 
+void icnsEditorClass::GetPreviewSizeAndDepths(int *previewSize, int* previewDepth, int* maskDepth)
+{
+	if (currentPixName == currentToggleMember)
+	{
+		GWorldPtr		maskGW, iconGW;
+		PixMapHandle	maskPix, iconPix;
+		if (masks & currentPixName)
+		{
+			GetGWorldAndPix(oldToggleMember, &iconGW, &iconPix);
+			GetGWorldAndPix(currentToggleMember, &maskGW, &maskPix);
+		}
+		else
+		{
+			GetGWorldAndPix(currentToggleMember, &iconGW, &iconPix);
+			GetGWorldAndPix(oldToggleMember, &maskGW, &maskPix);
+		}
+		
+		*previewDepth = (**iconPix).pixelSize;
+		*maskDepth = (**maskPix).pixelSize;
+	}
+	else if (masks & currentPixName)
+	{
+		*maskDepth = (**currentPix).pixelSize;
+		if (*maskDepth == 8)
+		{
+			if (members & icon32)
+				*previewDepth = 32;
+			else if (members & icon8)
+				*previewDepth = 8;
+			else if (members & icon4)
+				*previewDepth = 4;
+			else
+				*previewDepth = 1;
+		}
+		else if (members & icon8)
+			*previewDepth = 8;
+		else if (members & icon4)
+			*previewDepth = 4;
+		else if (members & icon32)
+			*previewDepth = 32;
+		else
+			*previewDepth = 1;
+	}
+	else
+	{
+		*previewDepth = (**currentPix).pixelSize;
+		*maskDepth = -1;
+	}
+	
+	if (*previewSize != (**currentPix).bounds.bottom)
+	{
+		if (members & thumbnailSize)
+		{
+			*previewSize = 128;
+			*previewDepth = 32;
+			*maskDepth = 8;
+		}
+		else if (members & hugeSize)
+		{
+			*previewSize = 48;
+		}
+		else if (members & largeSize)
+		{
+			*previewSize = 32;
+		}
+		else if (members & smallSize)
+		{
+			*previewSize = 16;
+		}
+		else
+		{
+			*previewSize = 12;
+			if (*previewDepth == 32) *previewDepth = 8;
+			if (*maskDepth == 8) *maskDepth = 1;
+		}
+	}
+}
+
 
 void icnsEditorClass::SetBestMember()
 {
@@ -2140,6 +2294,9 @@ void icnsEditorClass::SetBestMember()
 			break;
 		case formatWindows:
 			SetCurrentMember(il32, 1);
+			break;
+		case formatWindowsXP:
+			SetCurrentMember(ih32, 1);
 			break;
 	}
 	
@@ -2226,11 +2383,13 @@ void icnsEditorClass::ResetStates()
 	firstState = currentState;						  // newly loaded icon
 }
 
-void icnsEditorClass::SaveState(GWorldPtr gWorld, PixMapHandle pix, long name)
+void icnsEditorClass::SaveState(long name)
 {
-	GWorldPtr tempGW;
-	PixMapHandle tempPix;
+	GWorldPtr gWorld, tempGW;
+	PixMapHandle pix, tempPix;
 	long	tempPixName;
+	
+	GetGWorldAndPix(name, &gWorld, &pix);
 	
 	status |= (skipState | dontRestoreCurrentPix);
 	
@@ -2276,20 +2435,34 @@ void icnsEditorClass::HandleKeyDown(EventRecord *eventPtr)
 		
 		case kPageDownCharCode:
 			{
+				ControlHandle scrollbar;
+				
+				if (ISCOMMANDDOWN)
+					scrollbar = controls.hScrollbar;
+				else
+					scrollbar = controls.vScrollbar;
+				
 				SAVEGWORLD;
 				SetPort();
 				StartPan();
-				ScrollbarAction(controls.vScrollbar, kControlPageDownPart);
+				ScrollbarAction(scrollbar, kControlPageDownPart);
 				FinishPan();
 				RESTOREGWORLD;
 			}
 			break;
 		case kPageUpCharCode:
 			{
+				ControlHandle scrollbar;
+				
+				if (ISCOMMANDDOWN)
+					scrollbar = controls.hScrollbar;
+				else
+					scrollbar = controls.vScrollbar;
+				
 				SAVEGWORLD;
 				SetPort();
 				StartPan();
-				ScrollbarAction(controls.vScrollbar, kControlPageUpPart);
+				ScrollbarAction(scrollbar, kControlPageUpPart);
 				FinishPan();
 				RESTOREGWORLD;
 			}
@@ -2334,12 +2507,8 @@ void icnsEditorClass::HandleKeyDown(EventRecord *eventPtr)
 		currentState = new drawingStateClass(currentState, this);
 		
 		// and we've modifed the drawing and it also needs updating
-		status |= needToSave;
-		status |= needsUpdate;
+		status |= (needToSave | needsUpdate);
 	}
-	
-	if (statics.preferences.IsEditorShortcutPressed())
-		OpenInExternalEditor();
 }
 
 // __________________________________________________________________________________________
@@ -2369,6 +2538,7 @@ void icnsEditorClass::Undo()
 			Undo();
 	}
 	
+	statics.membersPalette->RefreshMemberPanes(this);
 	RefreshWindowTitle();
 }
 
@@ -2435,8 +2605,7 @@ void icnsEditorClass::Cut()
 	status &= ~hasSelection;
 	status &= ~selectionFloated;
 	
-	status |= needToSave; // we've made modifications
-	status |= needsUpdate;
+	status |= (needToSave | needsUpdate); // we've made modifications
 	
 	currentState = new drawingStateClass(currentState, this);
 	
@@ -2520,29 +2689,29 @@ void icnsEditorClass::Copy(int copyMode)
 
 void icnsEditorClass::SaveMembers()
 {
-	SaveState(ih32GW, ih32Pix, ih32);
-	SaveState(il32GW, il32Pix, il32);
-	SaveState(is32GW, is32Pix, is32);
+	SaveState(ih32);
+	SaveState(il32);
+	SaveState(is32);
 	
-	SaveState(h8mkGW, h8mkPix, h8mk);
-	SaveState(l8mkGW, l8mkPix, l8mk);
-	SaveState(s8mkGW, s8mkPix, s8mk);
+	SaveState(h8mk);
+	SaveState(l8mk);
+	SaveState(s8mk);
 	
-	SaveState(ich8GW, ich8Pix, ich8);
-	SaveState(icl8GW, icl8Pix, icl8);
-	SaveState(ics8GW, ics8Pix, ics8);
+	SaveState(ich8);
+	SaveState(icl8);
+	SaveState(ics8);
 	
-	SaveState(ich4GW, ich4Pix, ich4);
-	SaveState(icl4GW, icl4Pix, icl4);
-	SaveState(ics4GW, ics4Pix, ics4);
+	SaveState(ich4);
+	SaveState(icl4);
+	SaveState(ics4);
 	
-	SaveState(ichiGW, ichiPix, ichi);
-	SaveState(icniGW, icniPix, icni);
-	SaveState(icsiGW, icsiPix, icsi);
+	SaveState(ichi);
+	SaveState(icni);
+	SaveState(icsi);
 	
-	SaveState(ichmGW, ichmPix, ichm);
-	SaveState(icnmGW, icnmPix, icnm);
-	SaveState(icsmGW, icsmPix, icsm);
+	SaveState(ichm);
+	SaveState(icnm);
+	SaveState(icsm);
 }
 
 // __________________________________________________________________________________________
@@ -2828,8 +2997,7 @@ void icnsEditorClass::Clear(void)
 	RESTOREGWORLD;
 	RESTORECOLORS;
 	
-	status |= needToSave; // we've made changes...
-	status |= needsUpdate;
+	status |= (needToSave | needsUpdate); // we've made changes...
 	
 	currentState = new drawingStateClass(currentState, this);
 }
@@ -2860,8 +3028,7 @@ void icnsEditorClass::Fill(void)
 	RESTOREGWORLD;
 	RESTORECOLORS;
 	
-	status |= needToSave; // we've made changes
-	status |= needsUpdate;
+	status |= (needToSave | needsUpdate); // we've made changes
 	
 	currentState = new drawingStateClass(currentState, this);
 }
@@ -2918,6 +3085,65 @@ void icnsEditorClass::MakeSelection(int selectionType)
 			
 			MagnifySelectionRgn();
 			break;
+		case expandContract:
+			DialogPtr		expandContractDialog;
+			ModalFilterUPP	eventFilterUPP;
+			MWindowPtr		expandContractDialogWindow;
+			bool			dialogDone = false;
+			short			itemHit;
+			ControlHandle	pixels;
+			long			expandAmount;
+			Str255			expandAmountAsString;
+			
+			expandContractDialog = GetNewDialog(rExpandContractDialog, NULL, (WindowPtr)-1L);
+			
+			SetDialogDefaultItem(expandContractDialog, iOK);
+			SetDialogCancelItem(expandContractDialog, iCancel);
+			
+			expandContractDialogWindow = new MWindow(GetDialogWindow(expandContractDialog), kDialogType);
+			MWindow::CenterOnFront(expandContractDialogWindow);
+
+			GetDialogItemAsControl(expandContractDialog, iNoOfPixels, &pixels);
+			NumToString(statics.preferences.GetLastSelectionExpansion(), expandAmountAsString);
+			SetControlText(pixels, expandAmountAsString);
+			SelectDialogItemText(expandContractDialog, iNoOfPixels, 0, 32767);
+			
+			MWindow::DeactivateAll();
+			
+			ShowWindow(GetDialogWindow(expandContractDialog));
+
+			eventFilterUPP = NewModalFilterUPP(MWindow::StandardDialogFilter);
+			
+			while (itemHit != iOK && itemHit != iCancel)
+				ModalDialog(eventFilterUPP, &itemHit);
+			
+			if (itemHit == iOK)
+			{
+				Str255 tempString;
+				
+				GetControlText(pixels, tempString);
+				StringToNum(tempString, &expandAmount);
+				statics.preferences.SetLastSelectionExpansion(expandAmount);
+			}
+			else
+				expandAmount = 0;
+			
+			DisposeModalFilterUPP(eventFilterUPP);
+			DisposeDialog(expandContractDialog);
+			
+			MWindow::ActivateAll();
+			
+			delete expandContractDialogWindow;
+			
+			if (expandAmount)
+			{
+				InsetRgn(selectionRgn, -expandAmount, -expandAmount);
+				MagnifySelectionRgn();
+			}
+			else
+				return;
+			
+			break;
 	}
 	
 	if (!EmptyRgn(selectionRgn)) // if there's still a selection...
@@ -2932,51 +3158,11 @@ void icnsEditorClass::MakeSelection(int selectionType)
 
 void icnsEditorClass::GetSelectionColors(RGBColor** colors, int* noOfColors)
 {
-	Point		temp;
-	RGBColor	*tempColorPtr, tempColor;
-	bool		exists = false;
 	Rect		selectionBounds;
-	
-	*noOfColors = 0;
-	
-	SAVEGWORLD;
-	SetGWorld(currentGW, NULL);
 	
 	GetRegionBounds(selectionRgn, &selectionBounds);
 	
-	*colors = new RGBColor;
-	
-	for (int y = selectionBounds.top; y < selectionBounds.bottom; y++)
-		for (int x = selectionBounds.left; x < selectionBounds.right; x++)
-		{
-			temp.h = x; temp.v = y;
-			if (PtInRgn(temp, selectionRgn))
-			{
-				GetCPixel(x, y, &tempColor);
-				for (int i = 0; i < (*noOfColors); i++)
-					if (!AreEqualRGB(tempColor, (*colors)[i]) && !exists)
-					exists = false;
-				else
-					exists = true; 
-				
-				if (!exists)
-				{
-					(*colors)[*noOfColors] = tempColor;
-					(*noOfColors)++;
-					tempColorPtr = new RGBColor[*noOfColors + 1];
-					for (int i = 0; i < (*noOfColors) +1 ; i++)
-						tempColorPtr[i] = (*colors)[i];
-						
-					delete *colors;
-					
-					*colors = tempColorPtr;
-				}
-				
-				exists = false;
-			}
-		}
-		
-	RESTOREGWORLD;
+	*noOfColors = GetGWorldColors(currentGW, selectionBounds, selectionRgn, colors, NULL);
 }
 
 // __________________________________________________________________________________________
@@ -3035,8 +3221,7 @@ void icnsEditorClass::Rotate(int angle)
 		DisposeGWorld(tempGW);
 	}
 
-	status |= needToSave; // we made some changes
-	status |= needsUpdate;
+	status |= (needToSave | needsUpdate); // we made some changes
 	
 	currentState = new drawingStateClass(currentState, this);
 }
@@ -3105,8 +3290,7 @@ void icnsEditorClass::Flip(int flipType)
 		DisposeGWorld(tempGW);
 	}
 	
-	status |= needToSave;
-	status |= needsUpdate;
+	status |= (needToSave | needsUpdate);
 	
 	currentState = new drawingStateClass(currentState, this);
 }
@@ -3158,8 +3342,7 @@ void icnsEditorClass::Invert(void)
 	RESTOREGWORLD;
 	
 	// we've made changes
-	status |= needToSave;
-	status |= needsUpdate;
+	status |= (needToSave | needsUpdate);
 	
 	currentState = new drawingStateClass(currentState, this);
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MWindow.h"
+#include "MFile.h"
 
 class MDocumentWindow : public MWindow
 {
@@ -11,8 +12,9 @@ class MDocumentWindow : public MWindow
 		
 		void 		SetProxyIcon(OSType creator, OSType type);
 		
-		void 		SetAssociatedFile(FSSpec file);
-		void 		GetAssociatedFile(FSSpec* file);
+		void 		SetAssociatedFile(MFile *file);
+		
+		void		RefreshProxy();
 		
 		void		SetModified(bool modified);
 		
@@ -23,7 +25,7 @@ class MDocumentWindow : public MWindow
 		
 	private:
 	
-		AliasHandle	associatedFile;
+		MFile*		associatedFile;
 };
 
 typedef MDocumentWindow* MDocumentWindowPtr;

@@ -5,7 +5,6 @@
 // Last modified: April 1, 1999
 // Description	: this file contains graphical functions, such as flips, rotates and fills
 
-#include <QuickTimeComponents.h>
 #include "graphicalFunctions.h"
 
 pascal OSErr QTDataUnloadProc(Ptr imageData, long bytesNeeded, long refCon);
@@ -2100,3 +2099,88 @@ void PlotCIconWithMode(Rect* target, CIconHandle icon, int mode)
 	RESTORECOLORS;
 }
 
+#pragma mark -
+
+int GetGWorldColors(GWorldPtr gW, Rect bounds, RgnHandle boundingRgn, RGBColor** colors, int** frequencies)
+{
+	int			noOfColors;
+	Point		temp;
+	RGBColor	tempColor;
+	bool		exists = false;
+	
+	SAVEGWORLD;
+	
+	SetGWorld(gW, NULL);
+	
+	noOfColors = 0;
+	*colors = new RGBColor[128];
+	if (frequencies)
+		*frequencies = new int[128];
+	
+	for (int y = bounds.top; y < bounds.bottom; y++)
+		for (int x = bounds.left; x < bounds.right; x++)
+		{
+			temp.h = x; temp.v = y;
+			if (boundingRgn == NULL || PtInRgn(temp, boundingRgn))
+			{
+				GetCPixel(x, y, &tempColor);
+				exists = false;
+				for (int i = 0; i < noOfColors; i++)
+					if (AreEqualRGB(tempColor, (*colors)[i]))
+					{
+						exists = true;
+						if (frequencies)
+							(*frequencies)[i]++;
+						break;
+					}
+				
+				if (!exists)
+				{
+					(*colors)[noOfColors] = tempColor;
+					if (frequencies)
+						(*frequencies)[noOfColors] = 1;
+					noOfColors++;
+					
+					if (noOfColors % 128 == 0)
+					{
+						RGBColor	*tempColorPtr;
+						
+						tempColorPtr = new RGBColor[noOfColors + 128];
+						
+						for (int i = 0; i < noOfColors ; i++)
+							tempColorPtr[i] = (*colors)[i];
+							
+						delete *colors;
+						*colors = tempColorPtr;
+						
+						if (frequencies)
+						{
+							int			*tempFrequenciesPtr;
+						
+							tempFrequenciesPtr = new int[noOfColors + 128];
+						
+							for (int i = 0; i < noOfColors ; i++)
+								tempFrequenciesPtr[i] = (*frequencies)[i];
+							
+						
+							delete *frequencies;
+							*frequencies = tempFrequenciesPtr;
+						}	
+					}
+				}
+			}
+		}
+	
+	RESTOREGWORLD;
+	
+	return noOfColors;
+}
+
+int FindInColorTable(CTabHandle colorTable, RGBColor color)
+{
+	for (int i=0; i <= (**colorTable).ctSize; i++)
+		if (AreEqualRGB((**colorTable).ctTable[i].rgb, color))
+			return (**colorTable).ctTable[i].value;
+	
+	return -1;
+}

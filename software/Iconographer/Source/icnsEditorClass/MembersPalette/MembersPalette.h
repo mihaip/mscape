@@ -1,7 +1,7 @@
 #pragma once
 
 #include "MFloater.h"
-#include "icnsClass.h"
+#include "MIcon.h"
 
 const static OSType kMembersPaletteType = 'IcMP';
 
@@ -76,7 +76,7 @@ class MembersPalette : public MFloater
 		
 		void					Show();
 		
-		void					DoIdle();
+		void					DoIdle(MWindowPtr windowUnderMouse);
 		
 		void 					HandleContentClick(EventRecord* eventPtr);
 		void					HandleGrow(Point where);
@@ -105,6 +105,12 @@ class MembersPalette : public MFloater
 								
 		ControlHandle			lastClickedPane;
 		int						lastPaneClick;
+		
+		icnsEditorPtr			previousEditor;
+		int						previousMembers;
+		int						previousScrollValue;
+		int						previousCurrentPixName;
+		int						previousCurrentControlIndex;
 		
 				
 		static pascal short		MemberPaneHitTest(ControlHandle theControl, Point where);

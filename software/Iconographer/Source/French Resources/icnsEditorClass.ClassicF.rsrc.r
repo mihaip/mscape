@@ -18,7 +18,7 @@ resource 'CNTL' (1003, "Startup Options Group Box", purgeable) {
 	0,
 	160,
 	0,
-	"At startup"
+	"A l’ouverture:"
 };
 
 resource 'CNTL' (1004, "Default Format", purgeable) {
@@ -29,7 +29,7 @@ resource 'CNTL' (1004, "Default Format", purgeable) {
 	4000,
 	401,
 	0,
-	"Default icon format:"
+	"Format par défaut:"
 };
 
 resource 'CNTL' (1007, "Preferences Tabs", purgeable) {
@@ -51,7 +51,7 @@ resource 'CNTL' (1008, "Default Members Group Box", purgeable) {
 	0,
 	160,
 	0,
-	"Default Members"
+	"Membres par défaut"
 };
 
 resource 'CNTL' (1010, "Adjust Tabs", purgeable) {
@@ -128,7 +128,7 @@ resource 'CNTL' (1016, "External Format", purgeable) {
 	1016,
 	401,
 	0,
-	"Export format:"
+	"Format d'export:"
 };
 
 resource 'CNTL' (1017, "External Editor App", purgeable) {
@@ -161,7 +161,7 @@ resource 'CNTL' (1019, "Members Palette Box", purgeable) {
 	0,
 	160,
 	0,
-	"Display members palette"
+	"Palette des membres"
 };
 
 resource 'CNTL' (1020, "Members Palette Display Slider", purgeable) {
@@ -187,7 +187,7 @@ resource 'DITL' (1000, "Preferences", purgeable) {
 		{266, 226, 286, 290},
 		Button {
 			enabled,
-			"Cancel"
+			"Annuler"
 		},
 		/* [3] */
 		{9, 0, 253, 388},
@@ -210,13 +210,13 @@ resource 'DITL' (1010, "Adjust", purgeable) {
 		{153, 205, 173, 269},
 		Button {
 			enabled,
-			"Cancel"
+			"Annuler"
 		},
 		/* [3] */
 		{153, 5, 173, 165},
 		CheckBox {
 			enabled,
-			"Real-time preview"
+			"Voir les changements"
 		},
 		/* [4] */
 		{8, 0, 141, 367},
@@ -257,13 +257,13 @@ resource 'DITL' (1011, "Adjust: Hue & Saturation Pane", purgeable) {
 		{116, 6, 132, 166},
 		CheckBox {
 			enabled,
-			"Colorize"
+			"Coloriser"
 		},
 		/* [6] */
 		{47, 5, 68, 80},
 		StaticText {
 			disabled,
-			"Hue:"
+			"Teinte:"
 		},
 		/* [7] */
 		{85, 5, 106, 80},
@@ -304,13 +304,48 @@ resource 'DITL' (1012, "Adjust: Brightness & Saturation Pane", purgeable) {
 		{47, 5, 67, 84},
 		StaticText {
 			disabled,
-			"Brightness:"
+			"Luminosité:"
 		},
 		/* [6] */
 		{85, 5, 105, 84},
 		StaticText {
 			disabled,
-			"Contrast:"
+			"Contraste:"
+		}
+	}
+};
+
+resource 'DITL' (1020, purgeable) {
+	{	/* array DITLarray: 5 elements */
+		/* [1] */
+		{44, 232, 64, 302},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{44, 138, 64, 208},
+		Button {
+			enabled,
+			"Annuler"
+		},
+		/* [3] */
+		{12, 4, 30, 221},
+		StaticText {
+			disabled,
+			"Dilater/Contracter la sélection de"
+		},
+		/* [4] */
+		{13, 225, 29, 253},
+		EditText {
+			enabled,
+			""
+		},
+		/* [5] */
+		{12, 264, 32, 307},
+		StaticText {
+			disabled,
+			"pixels"
 		}
 	}
 };
@@ -321,19 +356,19 @@ resource 'DITL' (1100, purgeable) {
 		{40, 8, 56, 313},
 		CheckBox {
 			enabled,
-			"Show only loaded members"
+			"N'afficher que les membres chargés"
 		},
 		/* [2] */
 		{57, 8, 73, 313},
 		CheckBox {
 			enabled,
-			"Check masks when saving"
+			"Vérifier les masques 8-bit et 1-bit"
 		},
 		/* [3] */
 		{74, 8, 90, 313},
 		CheckBox {
 			enabled,
-			"Dither when working with lower depths"
+			"Pixelliser"
 		},
 		/* [4] */
 		{93, 9, 167, 189},
@@ -345,22 +380,22 @@ resource 'DITL' (1100, purgeable) {
 		{108, 16, 124, 181},
 		RadioButton {
 			enabled,
-			"Create a new icon"
+			"Créer une nouvelle icone"
 		},
 		/* [6] */
 		{126, 16, 142, 181},
 		RadioButton {
 			enabled,
-			"Open an existing icon"
+			"Ouvrir une icone"
 		},
 		/* [7] */
 		{144, 16, 160, 181},
 		RadioButton {
 			enabled,
-			"Do nothing"
+			"Ne rien faire"
 		},
 		/* [8] */
-		{93, 198, 167, 381},
+		{93, 194, 167, 377},
 		Control {
 			enabled,
 			1019
@@ -369,19 +404,19 @@ resource 'DITL' (1100, purgeable) {
 		{108, 204, 124, 364},
 		RadioButton {
 			enabled,
-			"Full size"
+			"Taille réelle"
 		},
 		/* [10] */
 		{126, 204, 142, 364},
 		RadioButton {
 			enabled,
-			"Scaled"
+			"Réduit"
 		},
 		/* [11] */
-		{144, 218, 160, 251},
+		{144, 210, 160, 251},
 		StaticText {
 			disabled,
-			"Size:"
+			"Taille:"
 		},
 		/* [12] */
 		{144, 253, 160, 343},
@@ -396,10 +431,10 @@ resource 'DITL' (1100, purgeable) {
 			"64"
 		},
 		/* [14] */
-		{177, 99, 197, 277},
+		{177, 79, 197, 297},
 		Button {
 			enabled,
-			"Reset Palette Locations"
+			"Position des palettes par défaut"
 		},
 		/* [15] */
 		{180, 76, 194, 88},
@@ -425,7 +460,7 @@ resource 'DITL' (1101, purgeable) {
 		{45, 9, 63, 308},
 		StaticText {
 			disabled,
-			"Default zoom level:"
+			"Niveau de zoom par défaut:"
 		},
 		/* [2] */
 		{47, 319, 58, 359},
@@ -533,16 +568,16 @@ resource 'DITL' (1101, purgeable) {
 			1105
 		},
 		/* [21] */
-		{143, 14, 157, 52},
+		{143, 14, 157, 64},
 		StaticText {
 			disabled,
-			"Hints"
+			"Tailles"
 		},
 		/* [22] */
 		{143, 111, 155, 140},
 		StaticText {
 			disabled,
-			"Icon:"
+			"Icone:"
 		},
 		/* [23] */
 		{143, 147, 155, 178},
@@ -569,10 +604,10 @@ resource 'DITL' (1101, purgeable) {
 			"1-bit"
 		},
 		/* [27] */
-		{143, 280, 155, 315},
+		{143, 277, 155, 317},
 		StaticText {
 			disabled,
-			"Mask:"
+			"Masque:"
 		},
 		/* [28] */
 		{143, 314, 155, 345},
@@ -724,10 +759,10 @@ resource 'DITL' (1101, purgeable) {
 resource 'DITL' (1102, purgeable) {
 	{	/* array DITLarray: 7 elements */
 		/* [1] */
-		{45, 10, 62, 119},
+		{45, 10, 62, 125},
 		StaticText {
 			disabled,
-			"External editor: "
+			"Editeur externe:"
 		},
 		/* [2] */
 		{42, 179, 63, 379},
@@ -739,7 +774,7 @@ resource 'DITL' (1102, purgeable) {
 		{72, 10, 89, 149},
 		StaticText {
 			disabled,
-			"Editor key shortcut:"
+			"Raccourci-clavier:"
 		},
 		/* [4] */
 		{69, 179, 90, 379},
@@ -754,10 +789,10 @@ resource 'DITL' (1102, purgeable) {
 			1016
 		},
 		/* [6] */
-		{120, 9, 136, 169},
+		{120, 9, 136, 229},
 		CheckBox {
 			enabled,
-			"Export icon and mask"
+			"Exporter le masque et l'icone"
 		},
 		/* [7] */
 		{152, 148, 162, 156},
@@ -815,6 +850,18 @@ data 'DLGX' (1012) {
 	$"0000 0000 0000 0007 0000 0000 0000 0000"            /* ................ */
 	$"0000 0006 0000 0000 0000 0000 0000 0006"            /* ................ */
 	$"0000 0000 0000 0000 0000"                           /* .......... */
+};
+
+data 'DLGX' (1020) {
+	$"054F 7361 6B61 0000 0000 0000 0000 0000"            /* .Osaka.......... */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
+	$"0005 0000 0000 0000 0000 0000 0000 0001"            /* ................ */
+	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
+	$"0000 0000 0000 0007 0000 0000 0000 0000"            /* ................ */
+	$"0000 0006 0000 0000 0000 0000 0000"                 /* .............. */
 };
 
 data 'DLGX' (1100) {
@@ -934,13 +981,24 @@ resource 'DLOG' (1011, "Adjust: Hue and Saturation", purgeable) {
 };
 
 resource 'DLOG' (1012, "Adjust: Brightness and Contrast", purgeable) {
-	{337, 600, 549, 1015},
+	{326, 357, 538, 772},
 	1024,
 	visible,
 	goAway,
 	0x0,
 	1012,
 	"",
+	noAutoCenter
+};
+
+resource 'DLOG' (1020, "Expand/Contract", purgeable) {
+	{494, 197, 570, 511},
+	1043,
+	invisible,
+	noGoAway,
+	0x0,
+	1020,
+	"Dilater/Contracter la sélection...",
 	noAutoCenter
 };
 
@@ -956,7 +1014,7 @@ resource 'DLOG' (1100, "Preferences: General Pane", purgeable) {
 };
 
 resource 'DLOG' (1101, "Preferences: Defaults", purgeable) {
-	{300, 200, 597, 588},
+	{405, 927, 702, 1315},
 	dBoxProc,
 	visible,
 	goAway,
@@ -978,6 +1036,51 @@ resource 'DLOG' (1102, "Preferences: External Editing", purgeable) {
 };
 
 resource 'dctb' (1000) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
+	}
+};
+
+resource 'dctb' (1010) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
+	}
+};
+
+resource 'dctb' (1012) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
+	}
+};
+
+resource 'dctb' (1020) {
 	{	/* array ColorSpec: 5 elements */
 		/* [1] */
 		wContentColor, 65535, 65535, 65535,
@@ -1049,6 +1152,12 @@ resource 'dlgx' (1010) {
 	}
 };
 
+resource 'dlgx' (1020) {
+	versionZero {
+		15
+	}
+};
+
 data 'ictb' (1000) {
 	$"0000 0000 0000 0000 0000 0000"                      /* ............ */
 };
@@ -1066,6 +1175,11 @@ data 'ictb' (1011) {
 data 'ictb' (1012) {
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000"                      /* ............ */
+};
+
+data 'ictb' (1020) {
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000"                                          /* .... */
 };
 
 data 'ictb' (1100) {
@@ -1133,13 +1247,13 @@ resource 'tab#' (1007, "Preferences Tabs") {
 		{	/* array TabInfo: 3 elements */
 			/* [1] */
 			0,
-			"General",
+			"Général",
 			/* [2] */
 			0,
-			"Defaults",
+			"Défaut",
 			/* [3] */
 			0,
-			"External Editing"
+			"Editeur externe"
 		}
 	}
 };
@@ -1149,10 +1263,10 @@ resource 'tab#' (1010, "Hue & Saturation Tabs") {
 		{	/* array TabInfo: 2 elements */
 			/* [1] */
 			0,
-			"Hue & Saturation",
+			"Teinte & Saturation",
 			/* [2] */
 			0,
-			"Brightness & Contrast"
+			"Lminosité & contraste"
 		}
 	}
 };

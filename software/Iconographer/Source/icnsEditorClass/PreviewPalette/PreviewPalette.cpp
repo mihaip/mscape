@@ -15,6 +15,8 @@ PreviewPalette::PreviewPalette()
 	
 	settingsMenu = GetMenu(rPPSettingsMenu);
 	
+	previousBackground = -1;
+	
 	CreateControls();
 	
 	NumToString(GetControlValue(controls.slider), sizeAsString);
@@ -34,8 +36,9 @@ void PreviewPalette::Activate()
 	Update();
 }
 
-void PreviewPalette::DoIdle()
+void PreviewPalette::DoIdle(MWindowPtr windowUnderMouse)
 {
+#pragma unused (windowUnderMouse)
 	if (oscillating)
 	{
 		int newTicks, delta;
@@ -184,21 +187,22 @@ void PreviewPalette::HandleKeyDown(EventRecord* eventPtr)
 void PreviewPalette::CreateControls()
 {
 	ControlFontStyleRec			controlStyle;
-	SAVEGWORLD;
-	
-	SetPort();
-	TextFont(applFont);
-	TextSize(9);
-	
+
+#if TARGET_API_MAC_CARBON
 	controlStyle.flags = kControlUseFontMask;
 	controlStyle.font = kControlFontSmallSystemFont;
+#else
+	controlStyle.flags = kControlUseFontMask | kControlUseSizeMask | kControlAddToMetaFontMask;
+	controlStyle.font = kControlFontSmallSystemFont;
+	controlStyle.size = 9;
+#endif
 	
 	CreateRootControl(window, &controls.root);
 	
 #if !TARGET_API_MAC_CARBON
 	controls.background = NewEnhancedPlacard(rPPBackground, window,
 											 enhancedPlacardDrawBorder + enhancedPlacardNoHitTest + enhancedPlacardDrawDialogFrame,
-											 0, 0, "\p",
+											 applFont, 9, "\p",
 											 NULL, false,
 											 NULL,
 											 icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix,
@@ -225,7 +229,8 @@ void PreviewPalette::CreateControls()
 		smallSize = kControlSizeSmall;
 		
 		GetControlBounds(controls.slider, &controlBounds);
-		SizeControl(controls.slider, controlBounds.right - controlBounds.left - 7, sliderHeight);
+		SetRect(&controlBounds, controlBounds.left, controlBounds.top + 2, controlBounds.right - 7, controlBounds.top + 2 + sliderHeight);
+		SetControlBounds(controls.slider, &controlBounds);
 		SetControlData(controls.slider, kControlNoPart, kControlSizeTag, sizeof(ControlSize), &smallSize);
 		
 		GetControlBounds(controls.text, &controlBounds);
@@ -234,16 +239,12 @@ void PreviewPalette::CreateControls()
 	}
 #endif
 	
-	
-	
 	controls.settings = NewEnhancedPlacard(rPPSettings, window,
-										   enhancedPlacardDrawBorder + enhancedPlacardLargeArrow, 0, 0, "\p",
+										   enhancedPlacardDrawBorder + enhancedPlacardLargeArrow, applFont, 9, "\p",
 										   NULL, false,
 										   settingsMenu,
 										   icnsEditorClass::statics.canvasGW, icnsEditorClass::statics.canvasPix,
 										   PreviewPalette::SettingsUpdate, this);
-
-	RESTOREGWORLD;
 }
 
 void PreviewPalette::Update()
@@ -321,38 +322,19 @@ void PreviewPalette::SettingsUpdate(struct EnhancedPlacardData* data, int flags)
 		AppendString(data->title, menuItemText);
 		AppendString(data->title, "\p, ");
 		
-		switch (icnsEditorClass::statics.preferences.GetPreviewBackground())
-		{
-			case iPPWhite:
-				GetMenuItemText(data->menu, iPPWhite, menuItemText);
-				CheckMenuItem(data->menu, iPPWhite, true);
-				CheckMenuItem(data->menu, iPPBlack, false);
-				CheckMenuItem(data->menu, iPPListView, false);
-				CheckMenuItem(data->menu, iPPDesktop, false);
-				break;
-			case iPPBlack:
-				GetMenuItemText(data->menu, iPPBlack, menuItemText);
-				CheckMenuItem(data->menu, iPPWhite, false);
-				CheckMenuItem(data->menu, iPPBlack, true);
-				CheckMenuItem(data->menu, iPPListView, false);
-				CheckMenuItem(data->menu, iPPDesktop, false);
-				break;
-			case iPPListView:
-				GetMenuItemText(data->menu, iPPListView, menuItemText);
-				CheckMenuItem(data->menu, iPPWhite, false);
-				CheckMenuItem(data->menu, iPPBlack, false);
-				CheckMenuItem(data->menu, iPPListView, true);
-				CheckMenuItem(data->menu, iPPDesktop, false);
-				break;
-			default:
-				GetMenuItemText(data->menu, iPPDesktop, menuItemText);
-				CheckMenuItem(data->menu, iPPWhite, false);
-				CheckMenuItem(data->menu, iPPBlack, false);
-				CheckMenuItem(data->menu, iPPListView, false);
-				CheckMenuItem(data->menu, iPPDesktop, true);
-				break;
-		}
 		
+		if (parent->previousBackground != -1)
+		{
+			CheckMenuItem(data->menu, parent->previousBackground, false);
+			parent->previousBackground = -1;
+		}
+		CheckMenuItem(data->menu, icnsEditorClass::statics.preferences.GetPreviewBackground(), true);
+		
+		GetMenuItemText(data->menu, icnsEditorClass::statics.preferences.GetPreviewBackground(), menuItemText);
+		
+		// get rid of any ellipses or periods
+		while (menuItemText[menuItemText[0]] == 0xC9 || menuItemText[menuItemText[0]] == '.')
+			menuItemText[0]--;
 		AppendString(data->title, menuItemText);
 	}
 	else
@@ -361,7 +343,26 @@ void PreviewPalette::SettingsUpdate(struct EnhancedPlacardData* data, int flags)
 		{
 			case iPPSelected: icnsEditorClass::statics.preferences.EnableFeature(prefsPreviewSelected); break;
 			case iPPNormal: icnsEditorClass::statics.preferences.DisableFeature(prefsPreviewSelected); break;
-			default: icnsEditorClass::statics.preferences.SetPreviewBackground(data->menuValue); break;
+			case iPPCustomColor:
+				RGBColor	newCustomColor;
+				Point 		location = {0, 0};
+				Str255		messageString;
+				
+				GetIndString(messageString, rPPStrings, ePPPickCustomColor);
+				newCustomColor = icnsEditorClass::statics.preferences.GetPreviewBackgroundColor();
+				
+				MWindow::DeactivateAll();
+				GetColor(location,
+						 messageString,
+						 &newCustomColor,
+						 &newCustomColor);
+				MWindow::ActivateAll();
+				
+				icnsEditorClass::statics.preferences.SetPreviewBackgroundColor(newCustomColor);
+			default:
+				icnsEditorClass::statics.previewPalette->previousBackground = icnsEditorClass::statics.preferences.GetPreviewBackground();
+				icnsEditorClass::statics.preferences.SetPreviewBackground(data->menuValue);
+				break;
 		}
 		
 		Draw1Control(parent->controls.preview);
@@ -374,6 +375,9 @@ pascal void PreviewPalette::SliderAction(ControlHandle theControl, SInt16 thePar
 	PreviewPalettePtr	parent;
 		
 	parent = icnsEditorClass::statics.previewPalette;
+	
+	if (theControl != parent->controls.slider)
+		return;
 		
 	if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x10, 0x00))
 	{
@@ -408,8 +412,7 @@ pascal void PreviewPalette::SliderAction(ControlHandle theControl, SInt16 thePar
 		max = GetControlMaximum(theControl);
 		length = max - min;
 		
-		
-		ThemeSoundStart(kThemeDragSoundSliderThumb);
+		MUtilities::sounds.Start(kThemeDragSoundSliderThumb);
 		
 		while (Button())
 		{
@@ -442,7 +445,7 @@ pascal void PreviewPalette::SliderAction(ControlHandle theControl, SInt16 thePar
 			parent->Flush();
 		}
 		
-		ThemeSoundEnd();
+		MUtilities::sounds.End();
 	}
 }
 
@@ -482,7 +485,6 @@ pascal void PreviewPalette::PreviewDraw(ControlHandle theControl, short thePart)
 {
 #pragma unused (thePart)
 	PreviewPalettePtr	parent;
-	int					maskDepth, previewDepth;
 	Rect				controlRect, canvasRect, tempRect;
 	
 	parent = icnsEditorClass::statics.previewPalette;
@@ -506,7 +508,7 @@ pascal void PreviewPalette::PreviewDraw(ControlHandle theControl, short thePart)
 		parent->SetPort();
 	}
 	
-	RESTORECOLORS;
+	SetUpControlBackground(theControl, 32, true);
 	EraseRect(&canvasRect);
 	ForeColor(blackColor);
 	BackColor(whiteColor);
@@ -534,70 +536,11 @@ pascal void PreviewPalette::PreviewDraw(ControlHandle theControl, short thePart)
 	
 	if (parent->parentEditor)
 	{
-		int previewSize;
-		
-		if (masks & parent->parentEditor->currentPixName)
-		{
-			maskDepth = (**parent->parentEditor->currentPix).pixelSize;
-			if (maskDepth == 8)
-			{
-				if (parent->parentEditor->members & icon32)
-					previewDepth = 32;
-				else if (parent->parentEditor->members & icon8)
-					previewDepth = 8;
-				else if (parent->parentEditor->members & icon4)
-					previewDepth = 4;
-				else
-					previewDepth = 1;
-			}
-			else if (parent->parentEditor->members & icon8)
-				previewDepth = 8;
-			else if (parent->parentEditor->members & icon4)
-				previewDepth = 4;
-			else if (parent->parentEditor->members & icon32)
-				previewDepth = 32;
-			else
-				previewDepth = 1;
-		}
-		else
-		{
-			previewDepth = (**parent->parentEditor->currentPix).pixelSize;
-			maskDepth = -1;
-		}
+		int previewSize, maskDepth, previewDepth;
 		
 		previewSize = tempRect.bottom - tempRect.top;
 		
-		if (previewSize != (**parent->parentEditor->currentPix).bounds.bottom)
-		{
-			int members;
-			
-			members = parent->parentEditor->members;
-			
-			if (members & thumbnailSize)
-			{
-				previewSize = 128;
-				previewDepth = 32;
-				maskDepth = 8;
-			}
-			else if (members & hugeSize)
-			{
-				previewSize = 48;
-			}
-			else if (members & largeSize)
-			{
-				previewSize = 32;
-			}
-			else if (members & smallSize)
-			{
-				previewSize = 16;
-			}
-			else
-			{
-				previewSize = 12;
-				if (previewDepth == 32) previewDepth = 8;
-				if (maskDepth == 8) maskDepth = 1;
-			}
-		}
+		parent->parentEditor->GetPreviewSizeAndDepths(&previewSize, &previewDepth, &maskDepth);
 		
 		Str255 temp;
 		DEBUG("\ppreview depth");
@@ -643,12 +586,17 @@ void PreviewPalette::FillRectWithPreviewBackground(Rect targetRect)
 			break;
 		case iPPWhite:
 			BackColor(whiteColor);
-			//SetThemeBackground(kThemeBrushWhite, 32, true);
 			EraseRect(&targetRect);
 			break;
 		case iPPBlack:
 			BackColor(blackColor);
-			//SetThemeBackground(kThemeBrushBlack, 32, true);
+			EraseRect(&targetRect);
+			break;
+		case iPPCustomColor:
+			RGBColor customColor;
+			
+			customColor = icnsEditorClass::statics.preferences.GetPreviewBackgroundColor();
+			RGBBackColor(&customColor);
 			EraseRect(&targetRect);
 			break;
 		default:

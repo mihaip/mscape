@@ -94,7 +94,7 @@ void editorStaticsClass::Load()
 	(**canvasPix).pixelType = RGBDirect;
 	(**canvasPix).cmpCount = 4;
 	
-	icnsClass::SetCanvas(canvasGW, canvasPix);
+	MIcon::SetCanvas(canvasGW, canvasPix);
 
 	dragHiliteRgn = NULL;
 		
@@ -116,7 +116,7 @@ void editorStaticsClass::Load()
 	browserTypeMenu = GetMenu(rIBTypeMenu);
 
 #if TARGET_API_MAC_CARBON
-	icnsClass::LoadInfoDialog();
+	MIcon::LoadInfoDialog();
 #endif
 	preferences.Setup();
 	preferences.SetupPalettes();
@@ -209,7 +209,7 @@ void editorStaticsClass::Dispose()
 	ReclaimEmergencyMemory();
 
 #if TARGET_API_MAC_CARBON
-	icnsClass::DisposeInfoDialog();
+	MIcon::DisposeInfoDialog();
 #endif
 }
 
@@ -481,7 +481,7 @@ bool editorStaticsClass::GetSupportFolder(FSSpec* supportFolder)
 		
 		GetIndString(error, rBasicStrings, eIconographerSupportFolderError);
 		
-		MUtilities::DisplayAlert(error, "\pOK", "\p", "\p", kAlertStopAlert);
+		MUtilities::DisplayAlert(error, NULL, "\pOK", "\p", "\p", kAlertStopAlert, kWindowAlertPositionMainScreen);
 		
 		appSpec = GetApplicationFileSpec();
 		
@@ -604,7 +604,7 @@ void editorPreferencesClass::LoadDialog()
 	GetDialogItemAsControl(preferencesDialog, iEditorShortcutButton, &editorShortcut);
 #if !TARGET_API_MAC_CARBON
 	SetControlFontStyle(defaultZoomLevelField, &smallTextStyle); // set the style too
-	Draw1Control(defaultZoomLevelField);
+	//Draw1Control(defaultZoomLevelField);
 	
 	SetControlFontStyle(editorShortcut, &smallTextStyle);
 	SetControlFontStyle(externalEditor, &smallTextStyle);
@@ -654,7 +654,7 @@ void editorPreferencesClass::LoadDialog()
 	{
 		GetDialogItemAsControl(preferencesDialog, kPrefsSettingsPaneItems[i], &tempControl);
 		EmbedControl(tempControl, tabs);
-		Draw1Control(tempControl);
+		//Draw1Control(tempControl);
 	}
 	
 #if !TARGET_API_MAC_CARBON
@@ -801,8 +801,11 @@ void editorPreferencesClass::Load(int ID)
 			
 			if ((**data).currentColorPicker == kFavoritesPane)
 				(**data).currentColorPicker = kRGBPane;
+		case 0x21:
+			(**data).lastSelectionExpansion = 0;
+			(**data).previewBackgroundColor.red = (**data).previewBackgroundColor.green = (**data).previewBackgroundColor.blue = 0xC000;
 		default:
-			(**data).version = 0x21;
+			(**data).version = 0x22;
 	}	
 	
 	(**data).externalEditorAlias = AliasHandle(Get1Resource('Alis', 128));
@@ -996,12 +999,12 @@ pascal Boolean editorPreferencesClass::PreferencesDialogFilter(DialogPtr dialog,
 					previewSizeSliderUPP = NewControlActionUPP(editorPreferencesClass::PreviewSizeSliderAction);
 					
 					if (part == kControlPageUpPart || part == kControlPageDownPart)
-						ThemeSoundStart(kThemeDragSoundSliderThumb);
+						MUtilities::sounds.Start(kThemeDragSoundSliderThumb);
 					
 					TrackControl(control, theMouse, previewSizeSliderUPP);
 					
 					if (part == kControlPageUpPart || part == kControlPageDownPart)
-						ThemeSoundEnd();
+						MUtilities::sounds.End();
 					
 					DisposeControlActionUPP(previewSizeSliderUPP);
 					handledEvent = true;
@@ -1173,6 +1176,8 @@ void editorPreferencesClass::Edit(int pane)
 				icnsEditorClass::GetMembersCheckboxes(preferencesDialog, &(**data).defaultUsedMembers);
 				
 				(**data).previewSize = GetControlValue(previewSizeSlider);
+				
+				icnsEditorClass::statics.membersPalette->ResizeMemberPanes();
 				dialogDone = true;
 				break;
 			case iCancel:
@@ -1278,7 +1283,8 @@ void editorPreferencesClass::Edit(int pane)
 			case -1:
 				break;
 			default:
-				icnsEditorClass::HandleMembersCheckbox(preferencesDialog, itemHit, &(**data).defaultUsedMembers, (**data).defaultFormat);
+				if (itemHit >= iMiniBox && itemHit <= iicmmBox)
+					icnsEditorClass::HandleMembersCheckbox(preferencesDialog, itemHit, &(**data).defaultUsedMembers, (**data).defaultFormat);
 				break;
 		}
 	}
@@ -1483,6 +1489,7 @@ void editorPreferencesClass::GetEditorShortcutString(Str255 string)
 void editorPreferencesClass::GetNewEditorShortcut()
 {
 	DialogPtr			dialog;
+	MWindowPtr			dialogWindow;
 	ControlFontStyleRec	smallTextStyle;
 	ControlHandle		shortcutDisplay;
 	Str255				shortcutText;
@@ -1490,6 +1497,8 @@ void editorPreferencesClass::GetNewEditorShortcut()
 	int					currentKey;
 	
 	dialog = GetNewDialog(rSetExternalEditorShortcut, NULL, (WindowPtr)-1L);
+	
+	dialogWindow = new MWindow(GetDialogWindow(dialog), kDialogType);
 	
 	smallTextStyle.flags = kControlUseFontMask | kControlUseSizeMask | kControlUseJustMask;
 	smallTextStyle.font = kThemeSmallSystemFont; // this font is installed on all systems
@@ -1504,6 +1513,8 @@ void editorPreferencesClass::GetNewEditorShortcut()
 	ShowWindow(GetDialogWindow(dialog));
 	
 	DrawControls(GetDialogWindow(dialog));
+	
+	dialogWindow->Flush();
 	
 	for (int i=0; i < kMaxExternalEditorShortcutKeys + 1; i++)
 		(**data).externalEditorShortcut[i] = 0xFF;
@@ -1534,6 +1545,7 @@ void editorPreferencesClass::GetNewEditorShortcut()
 				}
 			}
 		} while (currentKey != -1);
+		dialogWindow->Flush();
 	}
 	
 	::DisposeDialog(dialog);
@@ -1541,6 +1553,8 @@ void editorPreferencesClass::GetNewEditorShortcut()
 	FlushEvents(everyEvent, 0);
 	
 	MWindow::ActivateAll();
+	
+	delete dialogWindow;
 }
 
 bool editorPreferencesClass::IsEditorShortcutPressed()
@@ -1626,6 +1640,18 @@ void editorPreferencesClass::SetLineThickness(int thickness)
 
 #pragma mark -
 
+int editorPreferencesClass::GetLastSelectionExpansion()
+{
+	return (**data).lastSelectionExpansion;
+}
+
+void editorPreferencesClass::SetLastSelectionExpansion(int expansion)
+{
+	(**data).lastSelectionExpansion = expansion;
+}
+
+#pragma mark -
+
 int editorPreferencesClass::GetPreviewBackground()
 {
 	return (**data).previewBackground;
@@ -1634,6 +1660,16 @@ int editorPreferencesClass::GetPreviewBackground()
 void editorPreferencesClass::SetPreviewBackground(int background)
 {
 	(**data).previewBackground = background;
+}
+
+RGBColor editorPreferencesClass::GetPreviewBackgroundColor()
+{
+	return (**data).previewBackgroundColor;
+}
+
+void editorPreferencesClass::SetPreviewBackgroundColor(RGBColor color)
+{
+	(**data).previewBackgroundColor = color;
 }
 
 #pragma mark -
@@ -1651,8 +1687,14 @@ FSSpec editorPreferencesClass::GetNthRecentFile(int index)
 	else
 	{
 		Boolean wasChanged;
+		OSErr	err;
 		
-		if (ResolveAlias(NULL, (**data).recentFiles[index], &recentFile, &wasChanged) != noErr)
+		if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x08, 0x50))
+			err = ResolveAliasWithMountFlags(NULL, (**data).recentFiles[index], &recentFile, &wasChanged, kResolveAliasFileNoUI);
+		else
+			err = ResolveAlias(NULL, (**data).recentFiles[index], &recentFile, &wasChanged);
+		
+		if (err != noErr)
 		{
 			CopyString(recentFile.name, "\p");
 			recentFile.vRefNum = -1;
@@ -1681,7 +1723,7 @@ void editorPreferencesClass::AddRecentFile(FSSpec file)
 	for (int i=0; i < (**data).recentFilesCount; i++)
 	{
 		currentFile	= GetNthRecentFile(i);
-		if (SameFile(currentFile, file))
+		if (MFile::SameSpec(currentFile, file))
 			indexToBeDeleted = i;
 	}
 	
@@ -1729,7 +1771,8 @@ bool editorPreferencesClass::IsRegistered(Str255 name)
 {
 	return !(EqualString("\pNot registered", name, true, true) ||
 			 EqualString("\pInpher                  ", name, true, true) ||
-			 EqualString("\pMacintosh               ", name, true, true));
+			 EqualString("\pMacintosh               ", name, true, true) ||
+			 EqualString("\pInpher/nop              ", name, true, true));
 }
 
 void editorPreferencesClass::GenerateRegCode(Str255 name, Str255 regCode)

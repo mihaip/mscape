@@ -130,6 +130,7 @@ OSErr GetIconFile(FSSpec* fileSpec, long* format, bool save)
 	return returnErr;
 }
 
+#if !TARGET_API_MAC_CARBON
 pascal Boolean OpenFileFilter(CInfoPBPtr myCInfoPBPtr, void* dataPtr)
 {
 	bool			visibleFlag = true;		
@@ -215,6 +216,7 @@ pascal Boolean OpenEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short
 		{
 			if (typesMenu != NULL)
 			{
+				DisableMenuItem(typesMenu, formatWindowsXP);
 				DisableMenuItem(typesMenu, formatWindows);
 				DisableMenuItem(typesMenu, formatMacOSXServer);
 				DisableMenuItem(typesMenu, formatMacOSX);
@@ -263,6 +265,7 @@ pascal Boolean OpenEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short
 	
 	return handledEvent;
 }
+#endif
 
 OSErr SaveFile(FSSpec* fileSpec, long* format)
 {
@@ -397,8 +400,13 @@ pascal void NavOpenEventFilter(NavEventCallbackMessage callBackSelector,
 					
 					if (formatPopup != NULL)
 					{
-						NavCustomControl(callBackParms->context, kNavCtlGetLocation, &location);
-						NavCustomControl(callBackParms->context, kNavCtlSetLocation, &location);
+						if (NavLibraryVersion() >= 0x00000200)
+							NavCustomControl(callBackParms->context, kNavCtlBrowserRedraw, NULL);
+						else
+						{
+							NavCustomControl(callBackParms->context, kNavCtlGetLocation, &location);
+							NavCustomControl(callBackParms->context, kNavCtlSetLocation, &location);
+						}
 					}
 					break;
 				/*case keyDown:
@@ -465,6 +473,8 @@ pascal void NavOpenEventFilter(NavEventCallbackMessage callBackSelector,
 					{
 						if (typesMenu != NULL)
 						{
+							DisableMenuItem(typesMenu, formatMacOSX);
+							DisableMenuItem(typesMenu, formatWindowsXP);
 							DisableMenuItem(typesMenu, formatWindows);
 							DisableMenuItem(typesMenu, formatMacOSXServer);
 						}
@@ -563,7 +573,7 @@ pascal void NavSaveEventFilter(NavEventCallbackMessage callBackSelector,
 					
 					NavCustomControl(callBackParms->context,kNavCtlGetEditFileName,&fileName);
 					
-					SyncPopupToName(fileName, formatPopup);
+					SyncPopupToName(NULL, fileName, formatPopup);
 					break;
 				case activateEvt:
 				case updateEvt:
@@ -634,6 +644,7 @@ pascal void NavSaveEventFilter(NavEventCallbackMessage callBackSelector,
 	}
 }
 
+#if !TARGET_API_MAC_CARBON
 pascal Boolean SaveEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short *item, void* dataPtr)
 {
 #pragma unused (item)
@@ -720,7 +731,7 @@ pascal Boolean SaveEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short
 				//GetDialogItemAsControl(theDlgPtr, 13, &formatPopup);
 				GetDialogItem(theDlgPtr, 13, &itemType, (Handle*)&formatPopup, &bounds);
 			
-				SyncPopupToName(fileName, formatPopup);
+				SyncPopupToName(NULL, fileName, formatPopup);
 			}
 			break;
 		default:
@@ -730,21 +741,41 @@ pascal Boolean SaveEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short
 	
 	return handledEvent;
 }
+#endif
 
-void SyncPopupToName(Str255 fileName, ControlHandle formatPopup)
+void SyncPopupToName(FSSpec* file, Str255 fileName, ControlHandle formatPopup)
 {
-	if (IsICOFile(fileName))
-		SetControlValue(formatPopup, formatWindows);
-	else if (IsTIFFFile(fileName))
+	short currentValue;
+		
+	currentValue = GetControlValue(formatPopup);	
+		
+	if (FileHasExtension(fileName, "\p.ico"))
+	{
+		if (currentValue != formatWindows &&
+			currentValue != formatWindowsXP)
+			SetControlValue(formatPopup, formatWindows);
+	}
+	else if (FileHasExtension(fileName, "\p.tiff") || FileHasExtension(fileName, "\p.tif"))
 		SetControlValue(formatPopup, formatMacOSXServer);
-	else if (IsicnsFile(fileName))
-		SetControlValue(formatPopup, formatMacOSX);
+	else if (FileHasExtension(fileName, "\p.icns"))
+	{
+		if (file)
+		{
+			MIcon icon;
+			
+			icon.file.SetAssociatedFile(*file);
+			
+			if (icon.HasNonIconDataFork(true))
+				SetControlValue(formatPopup, formatMacOSUniversal);
+			else
+				SetControlValue(formatPopup, formatMacOSX);
+		}
+		else
+			SetControlValue(formatPopup, formatMacOSX);
+	
+	}
 	else
 	{
-		short currentValue;
-		
-		currentValue = GetControlValue(formatPopup);
-		
 		if (currentValue != formatMacOSUniversal &&
 			currentValue != formatMacOSNew &&
 			currentValue != formatMacOSOld)

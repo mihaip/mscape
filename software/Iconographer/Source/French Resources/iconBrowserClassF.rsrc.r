@@ -123,13 +123,13 @@ data 'DLGX' (301) {
 };
 
 resource 'DLOG' (300, "Icon Browser: Progress", purgeable) {
-	{260, 315, 312, 664},
+	{450, 374, 502, 723},
 	1043,
 	invisible,
 	noGoAway,
 	0x0,
 	300,
-	"Loading Icons: <name>",
+	"Chargement de l'icone : <name>",
 	centerMainScreen
 };
 
@@ -152,44 +152,44 @@ resource 'MENU' (303, "Icon Browser: Icon Types") {
 	"Icon Types",
 	{	/* array: 3 elements */
 		/* [1] */
-		"New", noIcon, noKey, noMark, plain,
+		"Nouveaux", noIcon, noKey, noMark, plain,
 		/* [2] */
-		"Old", noIcon, noKey, noMark, plain,
+		"Ancien", noIcon, noKey, noMark, plain,
 		/* [3] */
-		"Both", noIcon, noKey, noMark, plain
+		"Les deux", noIcon, noKey, noMark, plain
 	}
 };
 
 resource 'STR#' (300, "Icon Browser: Strings", purgeable) {
 	{	/* array StringArray: 13 elements */
 		/* [1] */
-		"Loading Icon: <ID>",
+		"Chargement de l'icone : <ID>",
 		/* [2] */
-		"Loading Icon: <ID> Ò<name>Ó",
+		"Chargement de l'icone : <ID> Ò<name>Ó",
 		/* [3] */
-		"<B>ID:</B> ",
+		"<B>ID :</B> ",
 		/* [4] */
-		"<B>Name:</B> ",
+		"<B>Nom :</B> ",
 		/* [5] */
-		"<B>Type:</B> ",
+		"<B>Type :</B> ",
 		/* [6] */
-		"New",
+		"Nouvelle",
 		/* [7] */
-		"Old",
+		"Ancienne",
 		/* [8] */
-		"<B>Members:</B> ",
+		"<B>Membres :</B> ",
 		/* [9] */
-		"Icon Types: <types>",
+		"Types d'icone : <types>",
 		/* [10] */
-		"<number>/<total> icons",
+		"<number>/<total> icones",
 		/* [11] */
-		"Are you sure you want to delete the icon"
-		" ID: <icon ID> from the file Ò<file name"
+		"Etes-vous sžr de vouloir supprimer l'ico"
+		"ne ID : <icon ID> du fichier Ò<file name"
 		">Ó?",
 		/* [12] */
-		"<name> (Icon Browser)",
+		"<name> (Navigateur d'icone)",
 		/* [13] */
-		"<I>None</I>"
+		"<I>Aucun</I>"
 	}
 };
 
@@ -272,6 +272,23 @@ data 'ictb' (300) {
 data 'ictb' (301) {
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000"                      /* ............ */
+};
+
+resource 'mctb' (303) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
 };
 
 resource 'wctb' (300) {

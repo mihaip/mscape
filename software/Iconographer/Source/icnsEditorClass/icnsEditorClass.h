@@ -9,7 +9,7 @@
 
 // includes
 #include "MDocumentWindow.h"
-#include "icnsClass.h"
+#include "MIcon.h"
 #include "graphicalFunctions.h"
 #include "textTool.h"
 
@@ -67,7 +67,8 @@ enum resources
 	rAddMember = 1003,
 	rAdjust = 1010,
 	rAdjustHuePane = 1011,
-	rAdjustBrightnessPane = 1012
+	rAdjustBrightnessPane = 1012,
+	rExpandContractDialog = 1020
 };
 
 enum addMemberItems
@@ -101,6 +102,13 @@ enum adjustItems
 	iContrastLabel = 17
 };
 
+enum expandContractItems
+{
+	iExpandPrompt = 3,
+	iNoOfPixels = 4,
+	iPixelsLabel = 5
+};
+
 enum basicStrings
 {
 	sUntitledName = 1,
@@ -120,7 +128,9 @@ enum basicStrings
 	eExternalEditorError = 12,
 	eOpenPreferences = 13,
 	
-	eIconClippingName = 14
+	eIconClippingName = 14,
+	
+	eMaskSyncExplanation = 15
 };
 
 enum labelStrings
@@ -161,7 +171,8 @@ enum selectionTypes
 	none = 3,
 	inverse = 4,
 	additive = 5,
-	subtractive = 6
+	subtractive = 6,
+	expandContract = 7
 };
 
 enum pasteTypes
@@ -200,28 +211,29 @@ enum insertionFlags
 enum additionalStatusTypes
 {
 	// 1 is already used for out of memory
-	resized = 1 << 1,
-	needsUpdate = 1 << 2,
-	saveState = 1 << 3,
-	canUndo = 1 << 4,
-	canRedo = 1<< 5,
-	canZoomIn = 1 << 6,
-	canZoomOut = 1 << 7,
-	hasSelection = 1 << 8,
-	selectionFloated = 1 << 9,
-	needToSave = 1 << 10,
-	dontRestoreCurrentPix = 1 << 11,
-	skipState = 1 << 12,
-	mouseInSelection = 1 << 13,
-	canPaste = 1 << 14,
-	canPasteFamily = 1 << 15,
-	canRevert = 1 << 16,
-	currentDepthSupportsColors = 1 << 17,
-	macOSPalette = 1 << 18,
-	mouseInEditArea = 1 << 19,
-	isOptionDown = 1 << 20,
-	isShiftDown = 1 << 21,
-	isCommandDown = 1 << 22
+	resized						= 1 << 1,
+	needsUpdate					= 1 << 2,
+	saveState					= 1 << 3,
+	canUndo						= 1 << 4,
+	canRedo						= 1<< 5,
+	canZoomIn					= 1 << 6,
+	canZoomOut					= 1 << 7,
+	hasSelection				= 1 << 8,
+	selectionFloated			= 1 << 9,
+	needToSave					= 1 << 10,
+	dontRestoreCurrentPix		= 1 << 11,
+	skipState					= 1 << 12,
+	mouseInSelection			= 1 << 13,
+	canPaste					= 1 << 14,
+	canPasteFamily				= 1 << 15,
+	canRevert					= 1 << 16,
+	currentDepthSupportsColors	= 1 << 17,
+	macOSPalette				= 1 << 18,
+	mouseInEditArea				= 1 << 19,
+	isOptionDown				= 1 << 20,
+	isShiftDown					= 1 << 21,
+	isCommandDown				= 1 << 22,
+	currentPixIsIcon			= 1 << 23
 };
 
 const static int kMenuIgnoredStates = ~(resized | needsUpdate | dontRestoreCurrentPix | mouseInSelection | mouseInEditArea | isShiftDown | isCommandDown | isOptionDown);
@@ -273,7 +285,7 @@ typedef drawingStateClass* drawingStatePtr;
 
 class editorStaticsClass;
 
-class icnsEditorClass : public icnsClass, public MDocumentWindow
+class icnsEditorClass : public MIcon, public MDocumentWindow
 {
 	private:
 		OSStatus		CreateControls(void);
@@ -290,10 +302,11 @@ class icnsEditorClass : public icnsClass, public MDocumentWindow
 		void			GetCurrentIconMask(PixMapHandle* iconPix, GWorldPtr* iconGW, long* iconName, 
 										   PixMapHandle* maskPix, GWorldPtr* maskGW, long* maskName,
 										   bool strict);
+		void			GetPreviewSizeAndDepths(int *previewSize, int* previewDepth, int* maskDepth);
 		void			ToggleIconMask(void);
-		void			CheckMaskSync(PixMapHandle basePix, PixMapHandle maskPix, int maskName, int size);
+		void			CheckMaskSync(int basePixName, int maskName, int size);
 		void			GenerateMask(int mask);
-		void			ChangeColorsIconSet(long name, GWorldPtr* gWorld, PixMapHandle* pix, CTabHandle colorTable, bool saveState);
+		void			ChangeColorsIconSet(long name, CTabHandle colorTable, bool saveState);
 		
 		void 			HandleDrawing(Point theMouse);
 		void			HandleMarquee(Point startMouse);
@@ -356,7 +369,7 @@ class icnsEditorClass : public icnsClass, public MDocumentWindow
 		void			InsertFromPicture(PicHandle srcPic, GWorldPtr targetGW, int options);
 		void			PictureToMask(PicHandle srcPic, GWorldPtr maskGW);
 		void			GetSelectionColors(RGBColor** colors, int* noOfColors);
-		void			SaveState(GWorldPtr gWorld, PixMapHandle pix, long name);
+		void			SaveState(long name);
 		void			SaveMembers(void);
 		
 		void			BuildMembersMenu(MenuHandle menu, int startingPoint, int membersToList);
@@ -394,9 +407,7 @@ class icnsEditorClass : public icnsClass, public MDocumentWindow
 		int				hScrollbarValue;
 		int				vScrollbarValue;
 
-#if TARGET_API_MAC_CARBON
-		RgnHandle		scrollUpdateRgn, savedClipRgn;
-#else
+#if !TARGET_API_MAC_CARBON
 		Rect			panUpdateRects[kMaxPanUpdateRects];
 		int				panUpdateRectsCount;
 #endif
@@ -416,7 +427,7 @@ class icnsEditorClass : public icnsClass, public MDocumentWindow
 						
 		void			Refresh(void);
 		void 			HandleContentClick(EventRecord *eventPtr);
-		void			DoIdle(void);
+		void			DoIdle(MWindowPtr windowUnderMouse);
 		void			UpdateCursor(Point theMouse);
 		void			HandleKeyDown(EventRecord *eventPtr);
 		void			Activate();
@@ -456,6 +467,8 @@ class icnsEditorClass : public icnsClass, public MDocumentWindow
 		void			ZoomOut();
 		void			EditIconInfo();
 		void			AddMember();
+		void			GenerateMask();
+		void			CompleteIcon();
 		void			OpenInExternalEditor();
 		void			ReloadFromExternalEditor();
 		

@@ -5361,15 +5361,13 @@ resource 'PICT' (2055, "Windows 8-bit Picker") {
 };
 
 resource 'STR#' (200, "Basic Strings", purgeable) {
-	{	/* array StringArray: 14 elements */
+	{	/* array StringArray: 15 elements */
 		/* [1] */
 		"–¼Ì–¢İ’è",
 		/* [2] */
-		"ƒTƒCƒY <size> ‚Ì 8ƒrƒbƒg‚Æ 1ƒrƒbƒg‚Ìƒ}ƒX"
-		"ƒN‚ªˆÙ‚È‚Á‚Ä‚¢‚é‚Ì‚Å Finder ‚Å‚ÌƒAƒCƒRƒ“"
-		"‚Ì•\\¦‚É–â‘è‚ª”­¶‚·‚é‚©‚à‚µ‚ê‚Ü‚¹‚ñBƒT"
-		"ƒCƒY <size> ‚Ì1ƒrƒbƒg‚Ìƒ}ƒXƒN‚ğ 8ƒrƒbƒg‚"
-		"Ìƒ}ƒXƒN‚©‚çÄ¶¬‚µ‚Ä‚à‚æ‚ë‚µ‚¢‚Å‚·‚©H",
+		"ƒTƒCƒY <size> ‚Ì 8ƒrƒbƒg‚Æ1ƒrƒbƒg‚Ìƒ}ƒXƒ"
+		"N‚ª‡‚Á‚Ä‚¢‚Ü‚¹‚ñB1ƒrƒbƒg‚Ìƒ}ƒXƒN‚ğ©“®"
+		"“I‚É¶¬‚µ‚È‚¨‚µ‚Ü‚·‚©H",
 		/* [3] */
 		"ƒ}ƒXƒN‚ğÄ¶¬",
 		/* [4] */
@@ -5398,7 +5396,11 @@ resource 'STR#' (200, "Basic Strings", purgeable) {
 		/* [13] */
 		"‰Šúİ’è‚ğŠJ‚­",
 		/* [14] */
-		"ƒAƒCƒRƒ“"
+		"ƒAƒCƒRƒ“",
+		/* [15] */
+		"ˆ—‚ªŠ®—¹‚µ‚Ä‚¢‚È‚¢ê‡AFinder ‚Å‚ÌƒAƒ"
+		"CƒRƒ“•\\¦‚É–â‘è‚ª”­¶‚·‚é‚©‚à‚µ‚ê‚Ü‚¹‚ñ"
+		"B"
 	}
 };
 

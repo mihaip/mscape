@@ -50,7 +50,7 @@ resource 'CNTL' (2000, "Types Pop-up", purgeable) {
 	4000,
 	409,
 	0,
-	"Icon Format:"
+	"Format d'icones:"
 };
 
 resource 'CNTL' (2001, "Old Types Pop-up", purgeable) {
@@ -67,37 +67,37 @@ resource 'CNTL' (2001, "Old Types Pop-up", purgeable) {
 resource 'DITL' (129, "Registration") {
 	{	/* array DITLarray: 9 elements */
 		/* [1] */
-		{102, 270, 122, 338},
+		{102, 307, 122, 375},
 		Button {
 			enabled,
 			"OK"
 		},
 		/* [2] */
-		{102, 190, 121, 254},
+		{102, 227, 121, 291},
 		Button {
 			enabled,
-			"Cancel"
+			"Annuler"
 		},
 		/* [3] */
-		{102, 7, 122, 167},
+		{102, 7, 122, 212},
 		Button {
 			enabled,
-			"Purchase Registration"
+			"Application d’enregistrement"
 		},
 		/* [4] */
-		{12, 136, 28, 336},
+		{12, 175, 28, 375},
 		EditText {
 			enabled,
 			""
 		},
 		/* [5] */
-		{40, 136, 56, 336},
+		{40, 175, 56, 375},
 		EditText {
 			enabled,
 			""
 		},
 		/* [6] */
-		{68, 136, 84, 336},
+		{68, 175, 84, 375},
 		EditText {
 			enabled,
 			""
@@ -106,19 +106,19 @@ resource 'DITL' (129, "Registration") {
 		{12, 8, 28, 51},
 		StaticText {
 			disabled,
-			"Name:"
+			"Nom:"
 		},
 		/* [8] */
 		{40, 8, 56, 98},
 		StaticText {
 			disabled,
-			"Organization:"
+			"Organisation:"
 		},
 		/* [9] */
-		{68, 8, 84, 131},
+		{68, 8, 84, 168},
 		StaticText {
 			disabled,
-			"Registration Code:"
+			"Code d’enregistrement:"
 		}
 	}
 };
@@ -140,13 +140,13 @@ resource 'DITL' (3001, "Select Object", purgeable) {
 		{155, 283, 175, 363},
 		Button {
 			enabled,
-			"Open"
+			"Ouvrir"
 		},
 		/* [2] */
 		{124, 283, 144, 363},
 		Button {
 			enabled,
-			"Cancel"
+			"Annuler"
 		},
 		/* [3] */
 		{0, 0, 0, 0},
@@ -165,13 +165,13 @@ resource 'DITL' (3001, "Select Object", purgeable) {
 		{51, 283, 71, 363},
 		Button {
 			enabled,
-			"Eject"
+			"Ejecter"
 		},
 		/* [6] */
 		{79, 283, 99, 363},
 		Button {
 			enabled,
-			"Desktop"
+			"Bureau"
 		},
 		/* [7] */
 		{51, 11, 181, 261},
@@ -193,14 +193,15 @@ resource 'DITL' (3001, "Select Object", purgeable) {
 		{185, 283, 205, 363},
 		Button {
 			enabled,
-			"Select"
+			"Sélectionner"
 		},
 		/* [11] */
-		{6, 9, 23, 392},
+		{6, 15, 23, 300},
 		StaticText {
 			disabled,
-			"Select the file or folder whose icon you"
-			" want to replace."
+			"Sélectionner le fichier, le dossier ou l"
+			"e disque dont vous voulez ouvrir l'icone"
+			" :"
 		},
 		/* [12] */
 		{185, 11, 205, 261},
@@ -217,13 +218,13 @@ resource 'DITL' (3002, purgeable) {
 		{161, 277, 181, 357},
 		Button {
 			enabled,
-			"Save"
+			"Enregister"
 		},
 		/* [2] */
 		{130, 277, 150, 357},
 		Button {
 			enabled,
-			"Cancel"
+			"Annuler"
 		},
 		/* [3] */
 		{0, 0, 0, 0},
@@ -242,13 +243,13 @@ resource 'DITL' (3002, purgeable) {
 		{32, 277, 52, 357},
 		Button {
 			enabled,
-			"Eject"
+			"Ejecter"
 		},
 		/* [6] */
 		{60, 277, 80, 357},
 		Button {
 			enabled,
-			"Desktop"
+			"Bureau"
 		},
 		/* [7] */
 		{29, 12, 127, 261},
@@ -276,7 +277,7 @@ resource 'DITL' (3002, purgeable) {
 		{136, 15, 152, 227},
 		StaticText {
 			disabled,
-			"Save icon as:"
+			"Enregistrer l'icone :"
 		},
 		/* [12] */
 		{88, 277, 108, 357},
@@ -353,13 +354,13 @@ data 'DLGX' (3002) {
 };
 
 resource 'DLOG' (129, "Register") {
-	{178, 612, 313, 962},
+	{178, 612, 313, 1002},
 	1043,
 	invisible,
 	goAway,
 	0x0,
 	129,
-	"Register…",
+	"Enregistrement…",
 	alertPositionMainScreen
 };
 
@@ -565,9 +566,9 @@ resource 'MENU' (128) {
 	apple,
 	{	/* array: 3 elements */
 		/* [1] */
-		"About Iconographer…", noIcon, noKey, noMark, plain,
+		"A propos d'Iconographer…", noIcon, noKey, noMark, plain,
 		/* [2] */
-		"Register…", noIcon, noKey, noMark, plain,
+		"Enregistrement…", noIcon, noKey, noMark, plain,
 		/* [3] */
 		"-", noIcon, noKey, noMark, plain
 	}
@@ -578,30 +579,30 @@ resource 'MENU' (129) {
 	textMenuProc,
 	0x7FFFFDEF,
 	enabled,
-	"File",
+	"Fichier",
 	{	/* array: 11 elements */
 		/* [1] */
-		"New Icon", noIcon, "N", noMark, plain,
+		"Nouvelle icone", noIcon, "N", noMark, plain,
 		/* [2] */
-		"Open Icon…", noIcon, "O", noMark, plain,
+		"Ouvrir une icone...", noIcon, "O", noMark, plain,
 		/* [3] */
-		"Open Recent", noIcon, hierarchicalMenu, "Ç", plain,
+		"Ourvrir récent", noIcon, hierarchicalMenu, "Ç", plain,
 		/* [4] */
-		"Close", noIcon, "W", noMark, plain,
+		"Fermer", noIcon, "W", noMark, plain,
 		/* [5] */
 		"-", noIcon, noKey, noMark, plain,
 		/* [6] */
-		"Save", noIcon, "S", noMark, plain,
+		"Enregistrer", noIcon, "S", noMark, plain,
 		/* [7] */
-		"Save As…", noIcon, "S", noMark, plain,
+		"Enregistrer sous...", noIcon, "S", noMark, plain,
 		/* [8] */
-		"Save Into File…", noIcon, noKey, noMark, plain,
+		"Enregistrer dans un ficher", noIcon, noKey, noMark, plain,
 		/* [9] */
-		"Revert", noIcon, noKey, noMark, plain,
+		"Revenir à la version enregistrée", noIcon, noKey, noMark, plain,
 		/* [10] */
 		"-", noIcon, noKey, noMark, plain,
 		/* [11] */
-		"Quit", noIcon, "Q", noMark, plain
+		"Quitter", noIcon, "Q", noMark, plain
 	}
 };
 
@@ -620,32 +621,32 @@ resource 'MENU' (131) {
 	textMenuProc,
 	0x7FFFFBFB,
 	enabled,
-	"Edit",
+	"Édition",
 	{	/* array: 12 elements */
 		/* [1] */
-		"Undo", noIcon, "Z", noMark, plain,
+		"Annuler", noIcon, "Z", noMark, plain,
 		/* [2] */
-		"Redo", noIcon, "Z", noMark, plain,
+		"Répeter", noIcon, "Z", noMark, plain,
 		/* [3] */
 		"-", noIcon, noKey, noMark, plain,
 		/* [4] */
-		"Cut", noIcon, "X", noMark, plain,
+		"Couper", noIcon, "X", noMark, plain,
 		/* [5] */
-		"Copy", noIcon, hierarchicalMenu, "á", plain,
+		"Copier", noIcon, hierarchicalMenu, "á", plain,
 		/* [6] */
-		"Paste", noIcon, hierarchicalMenu, "Ü", plain,
+		"Coller", noIcon, hierarchicalMenu, "Ü", plain,
 		/* [7] */
-		"Clear", noIcon, noKey, noMark, plain,
+		"Effacer", noIcon, noKey, noMark, plain,
 		/* [8] */
-		"Select", noIcon, hierarchicalMenu, "Ñ", plain,
+		"Sélection", noIcon, hierarchicalMenu, "Ñ", plain,
 		/* [9] */
-		"Transform", noIcon, hierarchicalMenu, "Ö", plain,
+		"Transformation", noIcon, hierarchicalMenu, "Ö", plain,
 		/* [10] */
-		"Adjust Colors…", noIcon, "U", noMark, plain,
+		"Réglages couleurs", noIcon, "U", noMark, plain,
 		/* [11] */
 		"-", noIcon, noKey, noMark, plain,
 		/* [12] */
-		"Preferences…", noIcon, ";", noMark, plain
+		"Préférences…", noIcon, ";", noMark, plain
 	}
 };
 
@@ -655,15 +656,17 @@ resource 'MENU' (132) {
 	allEnabled,
 	enabled,
 	"Select",
-	{	/* array: 4 elements */
+	{	/* array: 5 elements */
 		/* [1] */
-		"All", noIcon, "A", noMark, plain,
+		"Tout sélectionner", noIcon, "A", noMark, plain,
 		/* [2] */
-		"Similar", noIcon, noKey, noMark, plain,
+		"Pixels similaires", noIcon, noKey, noMark, plain,
 		/* [3] */
-		"Deselect", noIcon, "D", noMark, plain,
+		"Tout désélectionner", noIcon, "D", noMark, plain,
 		/* [4] */
-		"Inverse", noIcon, "I", noMark, plain
+		"Intervertir", noIcon, "I", noMark, plain,
+		/* [5] */
+		"Dilater/Contacter", noIcon, "E", noMark, plain
 	}
 };
 
@@ -675,19 +678,19 @@ resource 'MENU' (133) {
 	"Transform",
 	{	/* array: 7 elements */
 		/* [1] */
-		"Rotate CW", noIcon, "T", noMark, plain,
+		"Rotation 90° horaire", noIcon, "T", noMark, plain,
 		/* [2] */
-		"Rotate CCW", noIcon, "T", noMark, plain,
+		"Rotation 90° antihoraire", noIcon, "T", noMark, plain,
 		/* [3] */
 		"-", noIcon, noKey, noMark, plain,
 		/* [4] */
-		"Flip Horizontal", noIcon, "[", noMark, plain,
+		"Symétrie axe horizontal", noIcon, "[", noMark, plain,
 		/* [5] */
-		"Flip Vertical", noIcon, "]", noMark, plain,
+		"Symétrie axe vertical", noIcon, "]", noMark, plain,
 		/* [6] */
 		"-", noIcon, noKey, noMark, plain,
 		/* [7] */
-		"Invert", noIcon, "I", noMark, plain
+		"Négatif", noIcon, "I", noMark, plain
 	}
 };
 
@@ -699,13 +702,13 @@ resource 'MENU' (134) {
 	"Paste",
 	{	/* array: 4 elements */
 		/* [1] */
-		"Normally", noIcon, "V", noMark, plain,
+		"Coller l'image", noIcon, "V", noMark, plain,
 		/* [2] */
-		"As Icon and Mask", noIcon, "V", noMark, plain,
+		"Coller comme masque et icone", noIcon, "V", noMark, plain,
 		/* [3] */
-		"Into Current Selection", noIcon, "V", noMark, plain,
+		"Coller dans la sélection", noIcon, "V", noMark, plain,
 		/* [4] */
-		"Icon Family", noIcon, "V", noMark, plain
+		"Coller la famille d'icones", noIcon, "V", noMark, plain
 	}
 };
 
@@ -717,41 +720,47 @@ resource 'MENU' (135) {
 	"Copy",
 	{	/* array: 3 elements */
 		/* [1] */
-		"Normally", noIcon, "C", noMark, plain,
+		"Copier l'image", noIcon, "C", noMark, plain,
 		/* [2] */
-		"Icon and Mask", noIcon, "C", noMark, plain,
+		"Copier l'icone et le masque", noIcon, "C", noMark, plain,
 		/* [3] */
-		"Icon Family", noIcon, "C", noMark, plain
+		"Copier la famille d'icones", noIcon, "C", noMark, plain
 	}
 };
 
 resource 'MENU' (136) {
 	136,
 	textMenuProc,
-	0x7FFFFEEB,
+	0x7FFFF6EB,
 	enabled,
-	"Icon",
-	{	/* array: 10 elements */
+	"Icone",
+	{	/* array: 13 elements */
 		/* [1] */
-		"Zoom In", noIcon, "=", noMark, plain,
+		"Agrandir", noIcon, "=", noMark, plain,
 		/* [2] */
-		"Zoom Out", noIcon, "-", noMark, plain,
+		"Réduire", noIcon, "-", noMark, plain,
 		/* [3] */
 		"-", noIcon, noKey, noMark, plain,
 		/* [4] */
-		"Colors", noIcon, hierarchicalMenu, "â", plain,
+		"Couleurs", noIcon, hierarchicalMenu, "â", plain,
 		/* [5] */
 		"-", noIcon, noKey, noMark, plain,
 		/* [6] */
-		"Insert…", noIcon, "K", noMark, plain,
+		"Insérer", noIcon, "K", noMark, plain,
 		/* [7] */
-		"Info…", noIcon, "I", noMark, plain,
+		"Informations…", noIcon, "I", noMark, plain,
 		/* [8] */
 		"Show Pixel Grid", noIcon, "G", noMark, plain,
 		/* [9] */
 		"-", noIcon, noKey, noMark, plain,
 		/* [10] */
-		"Open In External Editor", noIcon, noKey, noMark, plain
+		"Créer le masque", noIcon, "M", noMark, plain,
+		/* [11] */
+		"Terminer l’icone", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [13] */
+		"Ouvrir dans l’éditeur externe", noIcon, noKey, noMark, plain
 	}
 };
 
@@ -763,9 +772,9 @@ resource 'MENU' (137) {
 	"Colors",
 	{	/* array: 2 elements */
 		/* [1] */
-		"Mac OS System Palette", noIcon, noKey, noMark, plain,
+		"Palette Mac OS ", noIcon, noKey, noMark, plain,
 		/* [2] */
-		"Windows System Palette", noIcon, noKey, noMark, plain
+		"Palette Windows", noIcon, noKey, noMark, plain
 	}
 };
 
@@ -774,7 +783,7 @@ resource 'MENU' (138) {
 	textMenuProc,
 	0x7FFFFFCF,
 	enabled,
-	"Window",
+	"Fenêtres",
 	{	/* array: 6 elements */
 		/* [1] */
 		"Show Tools", noIcon, "1", noMark, plain,
@@ -783,7 +792,7 @@ resource 'MENU' (138) {
 		/* [3] */
 		"Show Preview", noIcon, "3", noMark, plain,
 		/* [4] */
-		"Show Colors", noIcon, "4", noMark, plain,
+		"Afficher la palette des couleurs", noIcon, "4", noMark, plain,
 		/* [5] */
 		"-", noIcon, noKey, noMark, plain,
 		/* [6] */
@@ -906,262 +915,272 @@ resource 'STR#' (128, "Default Names", purgeable) {
 		/* [3] */
 		"OK",
 		/* [4] */
-		"Save",
+		"Enregistrer",
 		/* [5] */
-		"Cancel",
+		"Annuler",
 		/* [6] */
-		"Don’t Save",
+		"Ne pas enregistrer",
 		/* [7] */
-		"Register",
+		"Enregistrement",
 		/* [8] */
-		"Not Yet",
+		"Pas encore",
 		/* [9] */
-		":Register",
+		":Enregistrement",
 		/* [10] */
 		"http://order.kagi.com/?QEJ",
 		/* [11] */
-		"Register Online",
+		"Enregistrement en-ligne",
 		/* [12] */
-		"Register App",
+		"Application d'enregistrement",
 		/* [13] */
-		"Not Registered",
+		"Non enregistré",
 		/* [14] */
 		"mailto:mihai@mscape.com",
 		/* [15] */
 		"http://www.mscape.com/products/iconograp"
 		"her.html",
 		/* [16] */
-		"Show Colors",
+		"Afficher Couleurs",
 		/* [17] */
-		"Hide Colors",
+		"Masquer Couleurs",
 		/* [18] */
-		"Show Members",
+		"Afficher Membres",
 		/* [19] */
-		"Hide Members",
+		"Masquer Membres",
 		/* [20] */
-		"Show Preview",
+		"Afficher Prévisualisation",
 		/* [21] */
-		"Hide Preview",
+		"Masquer Prévisualisation",
 		/* [22] */
-		"Show Tools",
+		"Afficher Outils",
 		/* [23] */
-		"Hide Tools",
+		"Masquer Outils",
 		/* [24] */
-		"Iconographer Help",
+		"Aide d'Iconographer",
 		/* [25] */
-		"Email Author",
+		"E-mailer l'auteur",
 		/* [26] */
-		"Iconographer Homepage",
+		"Site d'Iconographer",
 		/* [27] */
-		":Iconographer Support:Help:toc.html",
+		":Aide d'Iconographer:Help:toc.html",
 		/* [28] */
-		"Revert",
+		"Revenir",
 		/* [29] */
-		"Show Pixel Grid",
+		"Afficher la grille",
 		/* [30] */
-		"Hide Pixel Grid",
+		"Masquer la grille",
 		/* [31] */
-		"Add Member…",
+		"Ajouter un membre…",
 		/* [32] */
-		"Insert Icon…",
+		"Insérer une icone…",
 		/* [33] */
-		"Open Help",
+		"Ouvrir l'aide",
 		/* [34] */
-		"Continue",
+		"Continuer",
 		/* [35] */
-		"Registered To:"
+		"Enregistré pour :"
 	}
 };
 
 resource 'STR#' (129, "Standard Errors", purgeable) {
-	{	/* array StringArray: 17 elements */
+	{	/* array StringArray: 18 elements */
 		/* [1] */
-		"The file you selected is already open in"
-		" another program.",
+		"Ce fichier est déjà utilisé par un autre"
+		" programme.",
 		/* [2] */
-		"This development copy of <app name> expi"
-		"red on October 1, 2001. Please download "
-		"a newer version from http://www.mscape.c"
-		"om/.",
+		"Cette version de développement de <app n"
+		"ame> a expiré en Octobre 2001. Merci de "
+		"télécharger une nouvelle version sur htt"
+		"p://www.mscape.com/.",
 		/* [3] */
-		"A needed resource is missing. <app name>"
-		" could be corrupted, please reinstall th"
-		"e program.",
+		"Il manque une ressource obligatoire. <ap"
+		"p name> semble être corrompu. Merci de r"
+		"éinstaller le programme.",
 		/* [4] */
-		"<app name> requires System 7.5.3 or abov"
-		"e.",
+		"<app name> nécessite le système 7.5.3 au"
+		" minimum.",
 		/* [5] */
-		"AppleEvents could not be initialized, <a"
-		"pp name> cannot continue.",
+		"Impossible de démarrer les AppleEvents, "
+		"<app name> ne peut pas continuer.",
 		/* [6] */
-		"There was an error while initializing th"
-		"e Appearance Mangler, <app name> cannot "
-		"continue.",
+		"Erreur pendant le démarrage d'Appearance"
+		" Mangler, <app name> ne peut pas continu"
+		"er.",
 		/* [7] */
-		"There was error while initializing the m"
-		"enu bar. <app name>’s resource fork is m"
-		"ost likely corrupted, please reinstall.",
+		"Erreur pendant le démarrage de la barre "
+		"des menus. Les ressource de <app name> s"
+		"ont sûrement corrompues. Merci de le réi"
+		"nstaller",
 		/* [8] */
-		"Cannot launch this URL. Internet Config "
-		"must be installed.",
+		"Impossible d'ouvrir ce lien : Internet C"
+		"onfig doit être installé.",
 		/* [9] */
-		"A new editor could not be created. Most "
-		"likely you are low on memory. Either clo"
-		"se some of the open editors, or give <ap"
-		"p name> more memory.",
+		"Impossible de créer un nouvel éditeur d'"
+		"icone. La mémoire est sûrement saturée. "
+		"Fermez quelques fenêtres pour libérer de"
+		" la mémoire ou augmnetez la mémoire allo"
+		"uée à <app name>.",
 		/* [10] */
-		"<app name> is low on memory. The drawing"
-		" states of this editor will be disposed "
-		"in order to make more room.",
+		"<app name> commence à manquer de mémoire"
+		". L'application va changer la fenêtre po"
+		"ur gagner de la mémoire.",
 		/* [11] */
-		"<app name> has run out of memory. This e"
-		"ditor must be closed in order to make mo"
-		"re room.",
+		"<app name> ne dispose plus d'assez de mé"
+		"moire pour continuer. Cet éditeur va êtr"
+		"e fermé pour gagner de la mémoire.",
 		/* [12] */
-		"The “Register” application could not be "
-		"found. Please reinstall <app name>.",
+		"L'application “Enregistrement” est intro"
+		"uvable. Merci de réinstaller <app name>.",
 		/* [13] */
-		"The registration code that you have type"
-		"d is incorrect. Please enter it EXACTLY "
-		"as it is shown in the email that you hav"
-		"e received.",
+		"Ce code d'enregistrement est incorrect. "
+		"Merci de le raper EXACTEMENT comme il es"
+		"t indiqué sur l'e-mail que vous avez reç"
+		"u.",
 		/* [14] */
-		"Thank you for registering <app name>.",
+		"Merci d'avoir enregistré <app name>.",
 		/* [15] */
-		"<app name> requires the Appearance Manag"
-		"er to be installed. Please install Mac O"
-		"S 8.0 and higher, or get the Appearance "
-		"Manager SDK from Apple.",
+		"<app name> nécessite Appearance Manager."
+		" Merci d'installer MacOS 8.0 ou supérieu"
+		"r, ou installez l'Appearance Manager SDK"
+		" d'Apple.",
 		/* [16] */
-		"Cannot launch this URL. Internet Config "
-		"must be installed.\n\nIf you wish to regis"
-		"ter you must visit http://order.kagi.com"
-		"/?QEJ with your web browser.",
+		"Impossible d'ouvrir ce lien : Internet C"
+		"onfig doit être installé.\n\nPour vous enr"
+		"egistrer, visitez le site http://order.k"
+		"agi.com/?QEJ avec votre navigateur inter"
+		"net.",
 		/* [17] */
-		"The file “<file name>” could not be open"
-		"ed because an error (Type <error type>) "
-		"occurred. "
+		"Le fichier “<file name>” car une erreur "
+		"(Type <error type>) est survenue. ",
+		/* [18] */
+		"<app name> X nécessite Mac OS X 10.0 ou "
+		"sup."
 	}
 };
 
 resource 'STR#' (130, "Prompts", purgeable) {
-	{	/* array StringArray: 13 elements */
+	{	/* array StringArray: 14 elements */
 		/* [1] */
-		"Do you want to save changes to the <app "
-		"name> document “<file name>” before clos"
-		"ing it?",
+		"Voulez-vous enregistrer les modification"
+		"s apportée au document “<file name>” ava"
+		"nt de fermer ?",
 		/* [2] */
-		"Select the file or folder whose icon you"
-		" want to edit.",
+		"Sélectionnez le fichier ou le dossier do"
+		"nt vous voulez éditer l'icone.",
 		/* [3] */
-		"Select a name and location for the icon "
-		"to be saved in.",
+		"Sélectionner un nom et un emplacement po"
+		"ur enregistrer l'icone.",
 		/* [4] */
-		"Select the file or folder whose icon you"
-		" want to replace.",
+		"Selectionner le dossier ou le fichier do"
+		"nt vous voulez remplacer l'icone.",
 		/* [5] */
-		"Save Into File",
+		"Enregistrer dans le fichier",
 		/* [6] */
-		"Open Icon",
+		"Ouvrir l'icone",
 		/* [7] */
-		"You have used <app name> to create <no o"
-		"f icons> icons. If you continue to use i"
-		"t, please pay the $15 shareware fee. Thi"
-		"s can be done online, or by using the en"
-		"closed Register application.",
+		"Vous avez utilisé <app name> pour créer "
+		"<no of icons> icones. Si vous continuez "
+		"de l'utiliser, merci de payer les 15$ d'"
+		"enregistrement. Vous pouvez le faire en "
+		"ligne ou en utilisant l'application Enre"
+		"gistrement",
 		/* [8] */
-		"Select the Windows icon (.ico file) you "
-		"want to edit.",
+		"Sélectionnez l'icone Windows (fichier .i"
+		"co) à éditer.",
 		/* [9] */
-		"Select the Mac OS X Server icon (.tiff f"
-		"ile) you want to edit.",
+		"Sélectionnez l'icone MacOS X Server (fic"
+		"hier .tiff) à éditer.",
 		/* [10] */
-		"An icon with the ID <ID> already exists "
-		"in the file “<file name>.” Do you wish t"
-		"o replace it?",
+		"Une icone avec l'ID <ID> existe déjà dan"
+		"s le fichier “<file name>.” Voulez-vous "
+		"la remplacer ?",
 		/* [11] */
-		"Do you want to revert to the previously "
-		"saved version of the <app name> document"
+		"Voulez-vous revenir à la dernière versio"
+		"n enregistrée par <app name> du document"
 		" “<file name>”?",
 		/* [12] */
-		"<app name> can be registered online or t"
-		"hrough mail with various payment methods"
-		". Please select the way in which you wou"
-		"ld like to order your <app name> registr"
-		"ation code.",
+		"<app name> peut être enregistré en-ligne"
+		" ou par courrier, avec diverses techniqu"
+		"es. Choisissez la solution que vous dési"
+		"rez pour enregistrer <app name>.",
 		/* [13] */
-		"Welcome to <app name> 2.1. If this is yo"
-		"ur first time using it, and you would li"
-		"ke to get more information on its operat"
-		"ion, extensive documentation is availabl"
-		"e. Would you like to open the documentat"
-		"ion or get started right away?"
+		"Bienvenue dans <app name> 2.1. Si c'est "
+		"la première fois que vous l'utilisez, et"
+		" que vous souhaitez plus d'informations,"
+		" une aide abondante est disponible. Voul"
+		"ez-vous lancer l'aide ou commencer à uti"
+		"liser le logiciel ?",
+		/* [14] */
+		"Si vous n'enregistrez pas, vos modificat"
+		"ions seront perdues."
 	}
 };
 
 resource 'STR#' (150, "App Balloon Help", purgeable) {
 	{	/* array StringArray: 1 elements */
 		/* [1] */
-		"Iconographer\n\nUse this application to ed"
-		"it the icons of files and folders. Drag "
-		"an item onto the application in order to"
-		" edit its icon."
+		"Iconographer\n\nUtilisez cette application"
+		" pour éditer des icones. Glissez un élém"
+		"ent sur cette application pour éditer so"
+		"n icone."
 	}
 };
 
 resource 'STR#' (151, "Apple Menu Balloon Help", purgeable) {
 	{	/* array StringArray: 4 elements */
 		/* [1] */
-		"Displays information about this version "
-		"of Iconographer.",
+		"Informations sur cette version d'Iconogr"
+		"apher.",
 		/* [2] */
-		"Displays information about this version "
-		"of Iconographer.\n\nNot available because "
-		"the about box cannot be shown at this ti"
-		"me.",
+		"Informations sur cette version d'Iconogr"
+		"apher.\n\nDésactivé car la fenêtre d'infor"
+		"mation n'est pas accessible pour le mome"
+		"nt.",
 		/* [3] */
-		"Allows you to register Iconographer, thu"
-		"s removing the shareware reminder.",
+		"Enregistrer Iconographer, afin de suppri"
+		"mer le rappel de shareware.",
 		/* [4] */
-		"Allows you to register Iconographer, thu"
-		"s removing the shareware reminder.\n\nNot "
-		"available because the registration dialo"
-		"g cannot be shown at this time."
+		"Enregistrer Iconographer, afin de suppri"
+		"mer le rappel de shareware.\n\nDésactivé c"
+		"ar le dialogue d'enregistrement n'est pa"
+		"s accessible pour le moment."
 	}
 };
 
 resource 'STR#' (152, "File Balloon Help", purgeable) {
 	{	/* array StringArray: 18 elements */
 		/* [1] */
-		"File Menu\n\nUse this menu to perform oper"
-		"ations with files and folders.",
+		"Menu Fichier\n\nUtilisez ce menu pour effe"
+		"ctuer des opérations sur des fichiers et"
+		" des dossiers.",
 		/* [2] */
-		"File Menu\n\nUse this menu to perform oper"
-		"ations with files and folders.\n\nNot avai"
-		"lable because file operations cannot be "
-		"performed at the moment.",
+		"Menu Fichier\n\nUtilisez ce menu pour effe"
+		"ctuer des opérations sur des fichiers et"
+		" des dossiers.\n\nDésactivé car ce type d'"
+		"opérations est impossible à réaliser pou"
+		"r le moment.",
 		/* [3] */
-		"Creates a new editor window with an empt"
-		"y icon.",
+		"Crée un nouvel éditeur avec une icone vi"
+		"erge.",
 		/* [4] */
-		"Creates a new editor window with an empt"
-		"y icon.\n\nNot available because no more e"
-		"ditors can be created.",
+		"Crée un nouvel éditeur avec une icone vi"
+		"erge.\n\nDésactivé car il n'est pas possib"
+		"le de créer plus d'éditeurs.",
 		/* [5] */
-		"Opens an item’s icon into a new editor w"
-		"indow. Different icon formats (Mac OS, W"
-		"indows, Mac OS X Server) can be chosen.",
+		"Ouvre une icone dans un nouvel éditeur. "
+		"plusieurs formats (Mac OS, Windows, Mac "
+		"OS X Server) peuvent être choisis.",
 		/* [6] */
-		"Opens an item’s icon into a new editor w"
-		"indow. Different icon formats (Mac OS, W"
-		"indows, Mac OS X Server) can be chosen.\n"
-		"\nNot available because no more icons can"
-		" be opened.",
+		"Ouvre une icone dans un nouvel éditeur. "
+		"plusieurs formats (Mac OS, Windows, Mac "
+		"OS X Server) peuvent être choisis.\n\nDésa"
+		"ctivé car il est impossible d'ouvrir plu"
+		"s d'icone.",
 		/* [7] */
-		"Closes the front-most icon.",
+		"Ferme l'éditeur au premier plan.",
 		/* [8] */
-		"Closes the front-most icon.\n\nNot availab"
-		"le because no icons are opened.",
+		"Ferme l'éditeur au premier plan.\n\nDésact"
+		"ivé car il n'y a pas d'icone ouverte.",
 		/* [9] */
 		"Saves the front-most icon.",
 		/* [10] */
@@ -1170,406 +1189,437 @@ resource 'STR#' (152, "File Balloon Help", purgeable) {
 		"cause the front-most icon doesn’t need t"
 		"o be saved.",
 		/* [11] */
-		"Saves the front-most icon in a different"
-		" file.",
+		"Enregistre l'icone au premier plan.",
 		/* [12] */
-		"Saves the front-most icon in a different"
-		" file.\n\nNot available because there are "
-		"no open icons.",
+		"Enregistre l'icone au premier plan.\n\nDés"
+		"activé car il n'y a pas d'icone ouverte.",
 		/* [13] */
-		"Inserts the front-most icon into a diffe"
-		"rent file (without replacing the file’s "
-		"contents).",
+		"Insert l'icone au premier-plan dans un f"
+		"ichier différent (sans remplacer son con"
+		"tenu).",
 		/* [14] */
-		"Inserts the front-most icon into a diffe"
-		"rent file (without replacing the file’s "
-		"contents).\n\nNot available because there "
-		"are no open icons.",
+		"Insert l'icone au premier-plan dans un f"
+		"ichier différent (sans remplacer son con"
+		"tenu).\n\nDésactivé car il n'y a pas d'ico"
+		"ne ouverte.",
 		/* [15] */
-		"Restore the front-most icon to the last "
-		"saved version.",
+		"Restaure la dernière version enregistrée"
+		" de l'icone au premier-plan.",
 		/* [16] */
-		"Restore the front-most icon to the last "
-		"saved version.\n\nNot available because th"
-		"ere are no open icons or because the fro"
-		"nt-most icon has not been saved yet.",
+		"Restaure la dernière version enregistrée"
+		" de l'icone au premier-plan.\n\nDésactivé "
+		"car il n'y a pas d'icone ou parce que l'"
+		"icone n'a pas encore été enregistrée.",
 		/* [17] */
-		"Exits Iconographer, first asking if any "
-		"unsaved changes should be saved.",
+		"Quitte Iconographer, après avoir proposé"
+		" d'enregistrer tout travail non-enregist"
+		"ré.",
 		/* [18] */
-		"Exits Iconographer, first asking if any "
-		"unsaved changes should be saved.\n\nNot av"
-		"ailable because Iconographer cannot be e"
-		"xited at this time."
+		"Quitte Iconographer, après avoir proposé"
+		" d'enregistrer tout travail non-enregist"
+		"ré.\n\nDésactivé car Iconographer ne peut "
+		"pas quitter en ce moment."
 	}
 };
 
 resource 'STR#' (153, "Edit Balloon Help", purgeable) {
 	{	/* array StringArray: 22 elements */
 		/* [1] */
-		"Edit Menu\n\nUse this menu to undo and red"
-		"o actions, to cut and paste or to set th"
-		"e Iconographer preferences.",
+		"Menu Edition\n\nUtilisez ce menu pour annu"
+		"ler ou rétablir des actions, pour copier"
+		", coller ou régler les préférences d'Ico"
+		"nographer.",
 		/* [2] */
-		"Edit Menu\n\nUse this menu to undo and red"
-		"o actions, to cut and paste or to set th"
-		"e Iconographer preferences.\n\nNot availab"
-		"le because the front-most window does no"
-		"t support these operations.",
+		"Menu Edition\n\nUtilisez ce menu pour annu"
+		"ler ou rétablir des actions, pour copier"
+		", coller ou régler les préférences d'Ico"
+		"nographer.\n\nDésactivé parce que la fenêt"
+		"re de premier plan ne supporte pas ces o"
+		"pérations.",
 		/* [3] */
-		"Reverses the effects of the previous act"
-		"ion.",
+		"Annule la dernière opération.",
 		/* [4] */
-		"Reverses the effects of the previous act"
-		"ion.\n\nNot available because all of the a"
-		"ctions have been undone, or because the "
-		"last action cannot be undone.",
+		"Annule la dernière opération.\n\nDésactivé"
+		" parce que toutes les actions ont été an"
+		"nulée ou parce que la dernière opération"
+		" ne peut pas être annulée.",
 		/* [5] */
-		"Reapplies the effects of the action that"
-		" was just un-done.",
+		"Rétablit la dernière opération annulée.",
 		/* [6] */
-		"Reapplies the effects of the action that"
-		" was just un-done.\n\nNot available becaus"
-		"e no action was undone.",
+		"Rétablit la dernière opération annulée.\n"
+		"\nDésactivé parce qu'aucune opération n'a"
+		" été annulée.",
 		/* [7] */
-		"Deletes the current selection and places"
-		" its contents in the clipboard.",
+		"Supprime la sélection et la place dans l"
+		"e presse-papiers.",
 		/* [8] */
-		"Deletes the current selection and places"
-		" its contents in the clipboard.\n\nNot ava"
-		"ilable because there is no selection or "
-		"there are no open editors.",
+		"Supprime la sélection et la place dans l"
+		"e presse-papiers.\n\nDésactivé parce qu'il"
+		" n'y a pas de sélection ou pas d'éditeur"
+		" ouvert.",
 		/* [9] */
-		"Places the contents of the current selec"
-		"tion in the clipboard.",
+		"Copie la sélection dans le presse-papier"
+		"s.",
 		/* [10] */
-		"Places the contents of the current selec"
-		"tion in the clipboard.\n\nNot available be"
-		"cause there is no selection or there are"
-		" no open editors.",
+		"Copie la sélection dans le presse-papier"
+		"s.\n\nDésactivé parce qu'il n'y a pas de s"
+		"élection ou pas d'éditeur ouvert.",
 		/* [11] */
-		"Inserts the contents of the clipboard in"
-		"to the current editor.",
+		"Colle le contenu du presse-papiers dans "
+		"l'éditeur ouvert.",
 		/* [12] */
-		"Inserts the contents of the clipboard in"
-		"to the current editor.\n\nNot available be"
-		"cause the clipboard is does not contain "
-		"any image data, or because there are no "
-		"open editors.",
+		"Colle le contenu du presse-papiers dans "
+		"l'éditeur ouvert.\n\nDésactivé parce que l"
+		"e presse-papiers ne contient pas d'image"
+		", ou parce qu'il n'y a pas d'éditeur ouv"
+		"ert.",
 		/* [13] */
-		"Deletes the contents of the current sele"
-		"ction.",
+		"Efface le contenu de la sélection.",
 		/* [14] */
-		"Deletes the contents of the current sele"
-		"ction.\n\nNot available because there is n"
-		"o selection or there are no open editors"
-		".",
+		"Efface le contenu de la sélection.\n\nDésa"
+		"ctivé parce qu'il n'y a pas de sélection"
+		"\"\n\t\t\" ou parce qu'il n'y a pas d'éditeur"
+		" ouvert.",
 		/* [15] */
-		"Performs various selection operations.",
+		"Effectue différentes opérations de sélec"
+		"tion.",
 		/* [16] */
-		"Performs various selection operations.\n\n"
-		"Not available because there are no open "
-		"icons.",
+		"Effectue différentes opérations de sélec"
+		"tion.\n\nDésactivé car aucune icone n'est "
+		"ouverte.",
 		/* [17] */
-		"Performs various transformations on imag"
-		"es.",
+		"Effectue différentes opérations de trans"
+		"formation.",
 		/* [18] */
-		"Performs various transformations on imag"
-		"es.\n\nNot available because there are no "
-		"open icons.",
+		"Effectue différentes opérations de trans"
+		"formation.\n\nDésactivé car aucune icone n"
+		"'est ouverte.",
 		/* [19] */
-		"Makes color adjustements to the icon.",
+		"Effectue différentes opération sur les c"
+		"ouleurs de l'icone.",
 		/* [20] */
-		"Makes color adjustements to the icon.\n\nN"
-		"ot available because there are no open i"
-		"cons.",
+		"Effectue différentes opération sur les c"
+		"ouleurs de l'icone.\n\nDésactivé car aucun"
+		"e icone n'est ouverte.",
 		/* [21] */
-		"Opens a dialog box which allows you to c"
-		"ustomize various aspects of Iconographer"
-		"’s operation.",
+		"Ouvre une fenêtre vous permettant de rég"
+		"ler différents aspects des opérations d'"
+		"Iconographer.",
 		/* [22] */
-		"Opens a dialog box which allows you to c"
-		"ustomize various aspects of Iconographer"
-		"’s operation.\n\nNot available because the"
-		" preferences cannot be edited at this mo"
-		"ment."
+		"Ouvre une fenêtre vous permettant de rég"
+		"ler différents aspects des opérations d'"
+		"Iconographer.\n\nDésactivé car les préfére"
+		"nces ne peuvent pas être modifiées en ce"
+		" moment."
 	}
 };
 
 resource 'STR#' (154, "Select Balloon Help", purgeable) {
 	{	/* array StringArray: 8 elements */
 		/* [1] */
-		"Selects the entire icon.",
+		"Sélectionne toute l'icone.",
 		/* [2] */
-		"Selects the entire icon.\n\nNot available "
-		"because a selection cannot be made at th"
-		"is time.",
+		"Sélectionne toute l'icone.\n\nDésactivé ca"
+		"r il est impossible de sélectionner l'ic"
+		"one en ce moment.",
 		/* [3] */
-		"Selects colors similar to the ones found"
-		" in the current selection.",
+		"Sélectionne les pixels de la même couleu"
+		"r que la sélection actuelle.",
 		/* [4] */
-		"Selects colors similar to the ones found"
-		" in the current selection.\n\nNot availabl"
-		"e because there is no selection availabl"
-		"e.",
+		"Sélectionne les pixels de la même couleu"
+		"r que la sélection actuelle.\n\nDésactivé "
+		"parce qu'aucune sélection n'est disponib"
+		"le en ce moment.",
 		/* [5] */
-		"Removes the current selection.",
+		"Déselectionne l'icone.",
 		/* [6] */
-		"Removes the current selection.\n\nNot avai"
-		"lable because there is no selection avai"
-		"lable.",
+		"Déselectionne l'icone.\n\nDésactivé parce "
+		"qu'aucune sélection n'est disponible en "
+		"ce moment.",
 		/* [7] */
-		"Selects what is not currently selected a"
-		"nd vice-versa.",
+		"Sélectionne les zones non-sélectionnées "
+		"et vice-versa.",
 		/* [8] */
-		"Selects what is not currently selected a"
-		"nd vice-versa.\n\nNot available because th"
-		"ere is no selection available."
+		"Sélectionne les zones non-sélectionnées "
+		"et vice-versa.\n\nDésactivé parce qu'aucun"
+		"e sélection n'est disponible en ce momen"
+		"t."
 	}
 };
 
 resource 'STR#' (155, "Transform Balloon Help", purgeable) {
 	{	/* array StringArray: 5 elements */
 		/* [1] */
-		"Rotates the current selection (or the en"
-		"tire image if a selection is not availab"
-		"le) 90 degrees in a clockwise direction.",
+		"Tourne la sélection (ou l'image s'il n'y"
+		" a pas de sélection) de 90 degrés dans l"
+		"e sens des aiguilles d'une montre.",
 		/* [2] */
-		"Rotates the current selection (or the en"
-		"tire image if a selection is not availab"
-		"le) 90 degrees in a counter-clockwise di"
-		"rection.",
+		"Tourne la sélection (ou l'image s'il n'y"
+		" a pas de sélection) de 90 degrés dans l"
+		"e sens contraire aux aiguilles d'une mon"
+		"tre.",
 		/* [3] */
-		"Mirrors the current selection (or the en"
-		"tire image if a selection is not availab"
-		"le) across the vertical axis.",
+		"Retourne la sélection (ou l'image s'il n"
+		"'y a pas de sélection) en suivant l'axe "
+		"vertical.",
 		/* [4] */
-		"Mirrors the current selection (or the en"
-		"tire image if a selection is not availab"
-		"le) across the horizontal axis.",
+		"Retourne la sélection (ou l'image s'il n"
+		"'y a pas de sélection) en suivant l'axe "
+		"horizontal.",
 		/* [5] */
-		"Inverts (makes “negative”) the current s"
-		"election (or the entire image if a selec"
-		"tion is not available)."
+		"Inverse les couleurs de la sélection (ou"
+		" de l'image s'il n'y a pas de sélection)"
+		", comme un négatif."
 	}
 };
 
 resource 'STR#' (156, "Paste Balloon Help", purgeable) {
 	{	/* array StringArray: 6 elements */
 		/* [1] */
-		"Pastes the clipboard contents into a flo"
-		"ated selection.",
+		"Colle le presse-papiers dans une sélecti"
+		"on flottante.",
 		/* [2] */
-		"Separates the clipboard contents as an i"
-		"con and as mask, which will be merged wi"
-		"th the current icon and mask contents.",
+		"Sépare le presse-papiers en une icone et"
+		" un masque, qui vont être fusionnés avec"
+		" l'icone et le masque déjà présents dans"
+		" cet éditeur.",
 		/* [3] */
-		"Pastes the clipboard contents scaled to "
-		"the dimensions of the current selection.",
+		"Colle le presse-papiers en mettant à l'é"
+		"chelle de la sélection.",
 		/* [4] */
-		"Pastes the clipboard contents scaled to "
-		"the dimensions of the current selection."
-		"\n\nNot available because no selection has"
-		" been made.",
+		"Colle le presse-papiers en mettant à l'é"
+		"chelle de la sélection.\n\nDésactivé car i"
+		"l n'y a pas de sélection disponible.",
 		/* [5] */
-		"Pastes an entire icon family into the cu"
-		"rrent open icon.",
+		"Colle toute une famille d'icones dans l'"
+		"éditeur.",
 		/* [6] */
-		"Pastes an entire icon family into the cu"
-		"rrent open icon.\n\nNot available because "
-		"the clipboard does not contain an icon f"
-		"amily."
+		"Colle toute une famille d'icones dans l'"
+		"éditeur.\n\nDésactivé car le presse-papier"
+		"s ne contient pas de famille d'icones."
 	}
 };
 
 resource 'STR#' (157, "Copy Balloon Help", purgeable) {
 	{	/* array StringArray: 6 elements */
 		/* [1] */
-		"Places the contents of the current selec"
-		"tion in the clipboard.",
+		"Copie la sélection dans le presse-papier"
+		"s.",
 		/* [2] */
-		"Places the contents of the current selec"
-		"tion in the clipboard.\n\nNot available be"
-		"cause there is no selection or there are"
-		" no open editors.",
+		"Copie la sélection dans le presse-papier"
+		"s.\n\nDésactivé car il n'y a pas de sélect"
+		"ion disponible ou d'éditeur ouvert.",
 		/* [3] */
-		"Places the contents of the current icon "
-		"and mask into the clipboard.",
+		"Copie l'icone et le masque dans le press"
+		"e-papiers.",
 		/* [4] */
-		"Places the contents of the current icon "
-		"and mask into the clipboard.\n\nNot availa"
-		"bles because there are no open icons.",
+		"Copie l'icone et le masque dans le press"
+		"e-papiers.\n\nDésactivé car il n'y a pas d"
+		"'icone ouverte.",
 		/* [5] */
-		"Places all of the depths and sizes of th"
-		"e open icon into the clipboard.",
+		"Copie toutes les icones (toutes tailles "
+		"et toutes couleurs) dans le presse-papie"
+		"rs.",
 		/* [6] */
-		"Places all of the depths and sizes of th"
-		"e open icon into the clipboard.\n\nNot ava"
-		"ilable because there are no open icons."
+		"Copie toutes les icones (toutes tailles "
+		"et toutes couleurs) dans le presse-papie"
+		"rs.\n\nDésactivé  car il n'y a pas d'icone"
+		" ouverte."
 	}
 };
 
 resource 'STR#' (158, "Icon Balloon Help", purgeable) {
 	{	/* array StringArray: 15 elements */
 		/* [1] */
-		"Icon Menu\n\nThis menu can be used to modi"
-		"fy certain attributes of the front-most "
-		"icon.",
+		"Menu Icone\n\nUtilisez ce menu pour change"
+		"r certains attributs de l'icone au premi"
+		"er plan.",
 		/* [2] */
-		"Icon Menu\n\nThis menu can be used to modi"
-		"fy certain attributes of the front-most "
-		"icon.\n\nNot available because there are n"
-		"o open editors.",
+		"Menu Icone\n\nUtilisez ce menu pour change"
+		"r certains attributs de l'icone au premi"
+		"er plan.\n\nDésactivé car il n'y a pas d'é"
+		"diteur ouvert.",
 		/* [3] */
-		"This command increases the magnification"
-		" level of the front-most icon.",
+		"Cette commande augmente le facteur de zo"
+		"om de l'icone au premier plan.",
 		/* [4] */
-		"This command increases the magnification"
-		" level of the front-most icon.\n\nNot avai"
-		"lable because the icon is at maximum mag"
-		"nification, or because there are no open"
-		" icons.",
+		"Cette commande augmente le facteur de zo"
+		"om de l'icone au premier plan.\n\nDésactiv"
+		"é car le niveau maximal de zoom est atte"
+		"int ou parce qu'il n'y a pas d'icone",
 		/* [5] */
-		"This command decreases the magnification"
-		" level of the front-most icon.",
+		"Cette commande réduit le facteur de zoom"
+		" de l'icone au premier plan.",
 		/* [6] */
-		"This command decreases the magnification"
-		" level of the front-most icon.\n\nNot avai"
-		"lable because the icon is at minimum mag"
-		"nification, or because there are no open"
-		" icons.",
+		"Cette commande réduit le facteur de zoom"
+		" de l'icone au premier plan.\n\nDésactivé "
+		"car le niveau minimal de zoom est attein"
+		"t ou parce qu'il n'y a pas d'icone.",
 		/* [7] */
-		"This command allows you to change the co"
-		"lor palette used for the current icon.\n\n"
-		"Not available because the current depth "
-		"does not support different color depths,"
-		" or because there are no open icons.",
+		"Cette commande permet de modifier la pro"
+		"fondeur des couleurs pour cette icone.\n\n"
+		"Désactivé parce qu'il est impossible de "
+		"changer les profondeurs de couleurs de c"
+		"ette icone, ou parce qu'il n'y a pas d'i"
+		"cone ouverte.",
 		/* [8] */
-		"Displays a dialog which allows you to in"
-		"sert a new icon into the current file.",
+		"Affiche un dialogue permettant d'insérer"
+		" une nouvelle icone dans le fichier actu"
+		"el.",
 		/* [9] */
-		"Displays a dialog which allows you to in"
-		"sert a new icon into the current file.\n\n"
-		"Not available because no file is open (t"
-		"he front-most window must be an icon bro"
-		"wser).",
+		"Affiche un dialogue permettant d'insérer"
+		" une nouvelle icone dans le fichier actu"
+		"el.\n\nDésactivé car il n'y a pas de fichi"
+		"er ouvert (la fenêtre au premier-plan do"
+		"it être un navigateur d'icone).",
 		/* [10] */
-		"Displays a dialog which allows you to ch"
-		"ange the ID, name and flags of the curre"
-		"nt icon.",
+		"Affiche une fenêtre vous permettant de m"
+		"ofidier le nom, l'ID et les attributs de"
+		" l'icone.",
 		/* [11] */
-		"Displays a dialog which allows you to ch"
-		"ange the ID, name and flags of the curre"
-		"nt icon.\n\nNot available because there ar"
-		"e no open icons.",
+		"Affiche une fenêtre vous permettant de m"
+		"ofidier le nom, l'ID et les attributs de"
+		" l'icone.\n\nDésactivé car il n'y a pas de"
+		" fenêtre ouverte.",
 		/* [12] */
-		"Toggles the visibily of the pixel grid ("
-		"thin white lines which separate one magn"
-		"ified pixel from another).",
+		"Affiche ou masque la grille (fine ligne "
+		"séparant deux pixels aggrandis).",
 		/* [13] */
-		"Toggles the visibily of the pixel grid ("
-		"thin white lines which separate one magn"
-		"ified pixel from another).\n\nNot availabl"
-		"e because no icons are open.",
+		"Affiche ou masque la grille (fine ligne "
+		"séparant deux pixels aggrandis).\n\nDésact"
+		"ivé car il n'y a pas d'éditeur ouvert.",
 		/* [14] */
-		"Opens the current icon into the external"
-		" that has been selected in the preferenc"
-		"es dialog.",
+		"Ouvre l'icone actuelle dans l'éditeur ex"
+		"terne sélectionné dans les préférences.",
 		/* [15] */
-		"Opens the current icon into the external"
-		" that has been selected in the preferenc"
-		"es dialog.\n\nNot available because there "
-		"are no icons open."
+		"Ouvre l'icone actuelle dans l'éditeur ex"
+		"terne sélectionné dans les préférences.\n"
+		"\nDésactivé car il n'y a pas d'icone ouve"
+		"rt."
 	}
 };
 
 resource 'STR#' (159, "Colors Balloon Help", purgeable) {
 	{	/* array StringArray: 2 elements */
 		/* [1] */
-		"The standard colors used by the Macintos"
-		"h. When the display is set to 16 colors,"
-		" only these shades will be visible.",
+		"Couleurs standards du Macintosh. Si l'éc"
+		"ran est réglé sur 16 couleurs, seules ce"
+		"s nuances seront visibles.",
 		/* [2] */
-		"The standard colors used by Windows. Whe"
-		"n a PC display is set to 16 colors, only"
-		" these shades will be visible."
+		"Couleurs standards de Windows. Si l'écra"
+		"n du PC est réglé sur 16 couleurs, seule"
+		"s ces nuances seront visibles."
 	}
 };
 
 resource 'STR#' (160, "About Balloon Help", purgeable) {
 	{	/* array StringArray: 3 elements */
 		/* [1] */
-		"Click here to e-mail the author (require"
-		"s Internet Config).",
+		"Cliquez-ici pour envoyer un e-mail à l'a"
+		"uteur (nécessite Internet Config).",
 		/* [2] */
-		"Click here to visit the Mscape Software "
-		"homepage (requires Internet Config).",
+		"Cliquez ici pour visiter le site de Msca"
+		"pe software (nécessite Internet Config)."
+		"\"",
 		/* [3] */
-		"If you’ve paid, thank your very much. If"
-		" you haven’t, perhaps you should conside"
-		"r it."
+		"Si vous avez payé, merci beaucoup ! Dans"
+		" le cas contraire, vous devriez peut-êtr"
+		"e y réfléchir."
 	}
 };
 
 resource 'STR#' (161, "Registration Balloon Help", purgeable) {
 	{	/* array StringArray: 6 elements */
 		/* [1] */
-		"Click here to verify your registration c"
-		"ode. If it is valid then Iconographer wi"
-		"ll be registered.",
+		"Cliquez ici pour vérifier votre code d'e"
+		"nregistrement. S'il est valide, Iconogra"
+		"pher sera enregistré.",
 		/* [2] */
-		"This button will abort the registration.",
+		"Cliquez ici pour annuler l'enregistremen"
+		"t.",
 		/* [3] */
-		"Click here to open up the Register appli"
-		"cation. You can then fill out the form, "
-		"send it to Kagi and pay for Iconographer"
-		", thus removing the shareware messsages.",
+		"Cliquez ici pour ouvrir l'application d'"
+		"enregistrement. Vous pourrez ainsi rempl"
+		"ir le formulaire, l'envoyer à Kagi et pa"
+		"yer votre enregistrement. Les dialogue S"
+		"hareware disparaitront.",
 		/* [4] */
-		"Your name should be entered here. Please"
-		" make sure to type it in exactly as it a"
-		"ppears in the registration e-mail, since"
-		" the serial number is based on it.",
+		"Entrez votre nom ici. Recopiez-le tel qu"
+		"'il est écrit dans l'e-mail d'enregistre"
+		"ment, car le code est basé sur l'orthogr"
+		"aphe du nom.",
 		/* [5] */
-		"Optionally, your company name can be ent"
-		"ered here.",
+		"Vous pouvez entrer le nom de votre compa"
+		"gnie ici (optionnel).",
 		/* [6] */
-		"The registration number you received goe"
-		"s here. "
+		"Inscrivez ici le code d'enregistrement i"
+		"ci."
 	}
 };
 
 resource 'STR#' (162, "Windows Balloon Help", purgeable) {
 	{	/* array StringArray: 6 elements */
 		/* [1] */
-		"Windows Menu\n\nThis menu can be used to s"
-		"how and hide the palettes used by Iconog"
-		"rapher, and to move among the icons open"
-		".",
+		"Menu Fenêtres\n\nCe menu permet d'afficher"
+		" et masquer les palettes utilisées par I"
+		"conographer, et de se déplacer parmi les"
+		" fenêtres ouvertes.",
 		/* [2] */
-		"Windows Menu\n\nThis menu can be used to s"
-		"how and hide the palettes used by Iconog"
-		"rapher, and to move among the icons open"
-		".\n\nNot available because windows cannot "
-		"be manipulated at the moment.",
+		"Menu Fenêtres\n\nCe menu permet d'afficher"
+		" et masquer les palettes utilisées par I"
+		"conographer, et de se déplacer parmi les"
+		" fenêtres ouvertes.\n\nDésactivé car les f"
+		"enêtres ne peuvent être manipulées pour "
+		"le moment.",
 		/* [3] */
-		"Toggles the visibility of the tools pale"
-		"tte, a floating window which contains al"
-		"l of the drawing tools that can be used "
-		"to manipulate icons.",
+		"Masque/Affiche la fenêtre d'Outils, une "
+		"palette flottante qui contient tous les "
+		"outils pour manipuler les icones.",
 		/* [4] */
-		"Toggles the visibility of the members pa"
-		"lette, a floating window which contains "
-		"all of the members (parts at various siz"
-		"es and depths) of the front-most icon.",
+		"Masque/Affiche la fenêtre des Membres, u"
+		"ne palette flottante qui contient tous l"
+		"es membres (de différentes tailles et pr"
+		"ofondeurs de couleurs) de l'icone de pre"
+		"mier-plan.",
 		/* [5] */
-		"Toggles the visibility of the preview pa"
-		"lette, a floating window which displays "
-		"the front-most icon at various sizes aga"
-		"inst varied backgrounds.",
+		"Affiche/Masque la fenêtre de Prévisualis"
+		"ation, une palette flottante qui présent"
+		"e l'icone actuelle à différentes tailles"
+		" sur différents fonds.",
 		/* [6] */
-		"Toggles the visibility of the colors pal"
-		"ette, a floating window which contains v"
-		"arious devices used to select colors."
+		"Affiche/Masque la fenêtre de Couleurs, u"
+		"ne palette flottante utilisée pour manip"
+		"uler les couleurs."
+	}
+};
+
+resource 'dctb' (3001) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
+	}
+};
+
+resource 'dctb' (3002, purgeable) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
 	}
 };
 
@@ -2186,7 +2236,126 @@ resource 'kind' (128) {
 	}
 };
 
+resource 'mctb' (129) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
 resource 'mctb' (131) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (132) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (133) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (135) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (136) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (137) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (138) {
 	{	/* array MCTBArray: 1 elements */
 		/* [1] */
 		mctbLast, 0,
@@ -2223,22 +2392,22 @@ resource 'open' (128) {
 
 resource 'vers' (1) {
 	0x2,
-	0x10,
+	0x20,
 	release,
 	0x0,
-	0,
-	"2.1",
-	"Iconographer 2.1\n©1998-2001 Mihai Parpar"
+	1,
+	"2.2",
+	"Iconographer 2.2\n©1998-2001 Mihai Parpar"
 	"ita"
 };
 
 resource 'vers' (2) {
 	0x2,
-	0x10,
+	0x20,
 	release,
 	0x0,
-	0,
-	"2.1",
+	1,
+	"2.2",
 	"http://www.mscape.com/"
 };
 

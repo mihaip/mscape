@@ -7,6 +7,8 @@
 
 #pragma once
 
+class MIcon;
+
 // type definitions
 
 typedef unsigned long MType;
@@ -37,6 +39,8 @@ class MUtilities
 		static short	currentCursor;
 		static bool		cursorChanged;
 		
+		static MIcon*	applicationIcon;
+		
 	public:
 		static void		InitToolbox();
 		
@@ -54,8 +58,8 @@ class MUtilities
 								 	 float x1, float y1, float z1,
 								 	 float* xN, float* yN, float* zN);
 								 	 
-		static short	DisplayAlert(Str255 message,
-								Str255 button1, Str255 button2, Str255 button3, int type);
+		static short	DisplayAlert(Str255 message, Str255 explanation,
+								Str255 button1, Str255 button2, Str255 button3, int type, int position);
 		
 		
 		static FSSpec	GetCurrentProcessSpec();
@@ -73,7 +77,6 @@ class MUtilities
 		static void		SetCreatorAndType(FSSpec file, OSType creator, OSType type);
 		static void		WaitForFileUpdate(FSSpec fileSpec);
 		static void		TouchFile(FSSpec file);
-		static bool		IsFileFolder(FSSpec file);
 		
 		static bool		IsValidFileSpec(FSSpec* spec);
 		static void		ResetFileSpec(FSSpec* spec);
@@ -102,6 +105,8 @@ class MUtilities
 		static int 		CountVisibleMenuItems(MenuRef menu);
 		
 		static Rect		GetUsableScreenRect();
+		
+		static pascal void ApplicationIconDraw(ControlHandle iconControl, SInt16 controlPart);
 		
 		static MSounds	sounds;
 };

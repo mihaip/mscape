@@ -51,7 +51,7 @@ resource 'CNTL' (1120, "Add Member Type Menu", purgeable) {
 	1120,
 	401,
 	0,
-	"Member type:"
+	"Type de membre:"
 };
 
 resource 'CNTL' (1121, "Add Member Source Menu", purgeable) {
@@ -62,7 +62,7 @@ resource 'CNTL' (1121, "Add Member Source Menu", purgeable) {
 	1121,
 	401,
 	0,
-	"Copy from:"
+	"D'après:"
 };
 
 resource 'CNTL' (1410, "Font Popup", purgeable) {
@@ -73,7 +73,7 @@ resource 'CNTL' (1410, "Font Popup", purgeable) {
 	1410,
 	405,
 	1179602500,
-	"Font:"
+	"Police:"
 };
 
 resource 'CNTL' (1411, "Size Popup", purgeable) {
@@ -104,9 +104,8 @@ resource 'DITL' (1002, purgeable) {
 		{2, 2, 34, 346},
 		StaticText {
 			disabled,
-			"Press all of the keys you intend to use "
-			"as a shortcut. Let go of all of them to "
-			"set it."
+			"Appuyez sur les touches composant le rac"
+			"courci. Relachez-les pour enregistrer."
 		},
 		/* [2] */
 		{38, 2, 55, 346},
@@ -120,24 +119,24 @@ resource 'DITL' (1002, purgeable) {
 resource 'DITL' (1003, purgeable) {
 	{	/* array DITLarray: 5 elements */
 		/* [1] */
-		{116, 270, 136, 338},
+		{116, 256, 136, 336},
 		Button {
 			enabled,
-			"Add"
+			"Ajouter"
 		},
 		/* [2] */
-		{116, 190, 136, 254},
+		{116, 155, 136, 235},
 		Button {
 			enabled,
-			"Cancel"
+			"Annuler"
 		},
 		/* [3] */
 		{4, 4, 52, 344},
 		StaticText {
 			disabled,
-			"Select the new member you wish to add, a"
-			"nd optionally the current member you wis"
-			"h it to be based upon."
+			"Sélectionnez le nouveau membre à ajouter"
+			", et éventuellement le membre d'après le"
+			"quel il faut le créer."
 		},
 		/* [4] */
 		{56, 4, 76, 338},
@@ -309,7 +308,7 @@ resource 'DLOG' (1003, "Add Member", purgeable) {
 	noGoAway,
 	0x0,
 	1003,
-	"Add Member...",
+	"Ajouter un membre...",
 	noAutoCenter
 };
 
@@ -360,7 +359,7 @@ resource 'MENU' (1016) {
 	textMenuProc,
 	allEnabled,
 	enabled,
-	"Image Format",
+	"Image format",
 	{	/* array: 4 elements */
 		/* [1] */
 		"PICT", noIcon, noKey, noMark, plain,
@@ -391,9 +390,9 @@ resource 'MENU' (1121) {
 	"Source",
 	{	/* array: 3 elements */
 		/* [1] */
-		"None", noIcon, noKey, noMark, 2,
+		"Aucun", noIcon, noKey, noMark, 2,
 		/* [2] */
-		"Current", noIcon, noKey, noMark, 2,
+		"Actuelle", noIcon, noKey, noMark, 2,
 		/* [3] */
 		"-", noIcon, noKey, noMark, plain
 	}
@@ -449,19 +448,19 @@ resource 'MENU' (1412) {
 	"Style",
 	{	/* array: 7 elements */
 		/* [1] */
-		"Plain", noIcon, noKey, noMark, plain,
+		"Normal", noIcon, noKey, noMark, plain,
 		/* [2] */
-		"Bold", noIcon, noKey, noMark, 1,
+		"Gras", noIcon, noKey, noMark, 1,
 		/* [3] */
-		"Italic", noIcon, noKey, noMark, 2,
+		"Italique", noIcon, noKey, noMark, 2,
 		/* [4] */
-		"Underline", noIcon, noKey, noMark, 4,
+		"Souligné", noIcon, noKey, noMark, 4,
 		/* [5] */
-		"Shadow", noIcon, noKey, noMark, 16,
+		"Ombré", noIcon, noKey, noMark, 16,
 		/* [6] */
-		"Condensed", noIcon, noKey, noMark, 32,
+		"Condensé", noIcon, noKey, noMark, 32,
 		/* [7] */
-		"Extended", noIcon, noKey, noMark, 64
+		"Etendu", noIcon, noKey, noMark, 64
 	}
 };
 
@@ -5363,80 +5362,81 @@ resource 'PICT' (2055, "Windows 8-bit Picker") {
 };
 
 resource 'STR#' (200, "Basic Strings", purgeable) {
-	{	/* array StringArray: 14 elements */
+	{	/* array StringArray: 15 elements */
 		/* [1] */
-		"Untitled",
+		"Sans-titre",
 		/* [2] */
-		"The <size> 8-bit and 1-bit masks do not "
-		"seem to match. This can cause problems w"
-		"hen viewing the icon in the Finder. Shou"
-		"ld the <size> 1-bit mask be regenerated?",
+		"Les <size> masques 8-bits and 1-bit ne s"
+		"emblent pas correspondre. Faut-il recrée"
+		"r un nouveau masque 1-bit ?",
 		/* [3] */
-		"Regenerate Mask",
+		"Recréer le masque",
 		/* [4] */
-		"Yes",
+		"Oui",
 		/* [5] */
-		"No",
+		"Non",
 		/* [6] */
-		"The <size> size does not have a mask. Wi"
-		"thout one the icon will not be displayed"
-		" properly. Do you wish one to be created"
-		" for you?",
+		"La <size> taille n'a pas de masque. Sans"
+		" celui-ci, l'icone sera mal affichée. Vo"
+		"ulez-vous qu'il soit créé ?",
 		/* [7] */
-		"Generate Mask",
+		"Créer le masque",
 		/* [8] */
-		"Click to choose a shortcut",
+		"Cliquer pour choisir un raccourci.",
 		/* [9] */
-		"Click to choose an external editor",
+		"Cliquez pour choisir un éditeur externe.",
 		/* [10] */
-		"Iconographer Support",
+		"Aide d'Iconographer",
 		/* [11] */
-		"The folder “Iconographer Support” could "
-		"not be found. It has been recreated, but"
-		" certain features such as the help will "
-		"not be available until Iconographer is r"
-		"einstalled.",
+		"Le dossier “Aide d'Iconographer” est int"
+		"rouvable. Il a été recréé, mais une réin"
+		"stallation du logiciel sera nécessaire p"
+		"our avoir accès à certaines options, com"
+		"me l'aide.",
 		/* [12] */
-		"An external edtor has not been selected."
-		" Please choose one in the preferences di"
-		"alog.",
+		"Aucun éditeur externe n'a été sélectionn"
+		"é. Veuillez en choisir un dans les préfé"
+		"rences.",
 		/* [13] */
-		"Open Preferences",
+		"Ouvrir les préférences",
 		/* [14] */
-		"icon"
+		"icon",
+		/* [15] */
+		"En l'absence de correction, l'affichage "
+		"dans le Finder pourrait être incorrect."
 	}
 };
 
 resource 'STR#' (201, "Labels", purgeable) {
 	{	/* array StringArray: 7 elements */
 		/* [1] */
-		"Icon",
+		"Icone",
 		/* [2] */
-		"Mask",
+		"Masque",
 		/* [3] */
-		"Preview",
+		"Prévisualisation",
 		/* [4] */
-		"Pick a foreground color:",
+		"Choisissez une couleur de premier plan :",
 		/* [5] */
-		"Pick a background color:",
+		"Choisissez une couleur d'arrière-plan:",
 		/* [6] */
-		"Name: “<name>” ID: <ID>",
+		"Nom : “<name>” ID : <ID>",
 		/* [7] */
-		"ID: <ID>"
+		"ID : <ID>"
 	}
 };
 
 resource 'STR#' (203, "Editor Balloon Help", purgeable) {
 	{	/* array StringArray: 2 elements */
 		/* [1] */
-		"This main editing area.\n\nThe current ico"
-		"n is displayed at a magnified size here.",
+		"Surface de travail. L'icone est affichée"
+		" en aggrandi.",
 		/* [2] */
-		"The magnification level is displayed her"
-		"e.\n\nTo change it, you either use the Zoo"
-		"m In and Zoom Out commands from the View"
-		" menu, or the pop-up menu that apears wh"
-		"en you click"
+		"Niveau de zoom. Pour le modifier, utilis"
+		"ez les commandes Aggrandir ou Réduire du"
+		" menu Visualisation ou la case de redime"
+		"nsionnement en bas à droite de la fenêtr"
+		"e."
 	}
 };
 
@@ -5448,6 +5448,21 @@ resource 'WIND' (200, purgeable) {
 	0x0,
 	"",
 	noAutoCenter
+};
+
+resource 'dctb' (1003) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
+	}
 };
 
 resource 'dlgx' (1002) {
@@ -5492,5 +5507,22 @@ data 'ictb' (1410) {
 
 data 'ictb' (9999) {
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+};
+
+resource 'mctb' (1412) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
 };
 
