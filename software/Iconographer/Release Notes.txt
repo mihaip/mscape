@@ -1,26 +1,36 @@
 TODO
-2.5
+2.6
+- rotate can crash
+- close/command-W still enabled even when all windows are closed
+- pressing command-W twice in quick succession causes a crash
+- if command is held when switching members, preserve selection
+- use (apparently) true 4-bit windows palette
+- color picker in Color Tint effect is wonky (esp. pre-10.2)
+- paypal payment option
+- make diskimage automatically open window when mounted
+- make sure that 128 x 128 .ico size maps to right member
+- change external editor so that it launches the app first and then sends an open (for cases where multiple versions are installed)
+- fix icon rotation issue with "Toggle Window Size" sample icon
+- clear up docs about os x finder's .icns displaying abilities (and other formats)
+- saving into yourself with mac os new option when file is .icns causes crash
+- .ico 8-bit member regeneration more trouble than its worth
+- handle dual fork files and files with empty resource fork and stuff in the data fork
 - double check that sync event is sent to folder, not to 'Icon\r' file
-- pen tool fore/back color inversion not intuitive for big brushes
-- have nearest neighbor/bilinear/bicubic scaling
 - look into windows icons still have 1-bit members when not necessary
-- scroll wheel over members palette should do the right thing (use SetUserFocusWindow)
 - when saving and having permission problems attempt to authenticate (os x)
-- option-multiplier for scrolling in icon browser should go one cell at a time
-- dragging minimized windows in os 9 doesn't work
-- zoom box for icon browser
-- live resizing with carbon events for all windows
 - tweak effects preview (don't scale/use custom area)
 - deal with files being in use better
-- include list of cool qt effects
-- register help book (might require rearrangement of bundle hierarchy)
 - option while closing should close all windows
 - preview against desktop should use actual desktop background on os x 10.1 +
-- redo colors palette (bring back favorites)
-- use control hiding trick when switching tab panes
+- add tip for ichat icon editing, icon factory style
+- http://iconfactory.com/graphics/iconbuilder/IB_Chart_0224.gif
+
+
 
 FUTURE RELEASE
-- make customized text drawing (esp. in members palette) use drawthemetextbox
+- simple icon state support
+- 24 x 24 pixel size
+- drop shadow effect
 - merge all language versions for Carbon version by using bundle
 - look into optimizing display of lines/gradient feedback by updating less pixels
 - make prefs dialog movable modeless
@@ -36,10 +46,18 @@ FUTURE RELEASE
 - transformations (at least scaling and rotation)
 - contextual menus
 - insertion/saving into .ICL/.DLL files
-- integration with glypher
+- glypher-like functionality
 - simultaneous editing of icon and mask
 - multiple views
-- proper .tiff and .png support for linux icons
+- updates list subscription option
+- services support
+- redo colors palette (bring back favorites)
+- use quartz for drawing of anti-aliased lines
+- use QD-Quartz AA text in enhancedplacard, members palette, etc.
+- zoom box for icon browser
+- live resizing with carbon events for all windows
+- register help book (might require rearrangement of bundle hierarchy)
+- look into jaguar's multiple icon states
 
 OPTIMIZATION
 - calling UpdatePalettes twice when closing editors
@@ -52,7 +70,33 @@ OPTIMIZATION
 - add caching to other palettes too, not just members one
 
 CHANGES
-2.4
+2.5
+- "copy icon and mask" causes color shifts when going to photoshop
+- option + complete icon should force fill in everything
+- freeze when reverting after changing icon format
+- fixed bug with IsEmptyPixMap
+- about box isn't preloaded at startup
+- evaluated SetControlVisibility trick for prefs pane switching, showed no improvement
+- much faster quitting when no windows need saving
+- command-V would still work (and not crash) when clipboard contained TEXT (OS X bug, worked around)
+- resource-specific items stay disabled when doing repeated Get Info's of non-Mac OS icons
+- added a few more icon IDs
+- pen tool fore/back color inversion is more intuitive for big brushes
+- have nearest neighbor/bilinear/bicubic scaling (use QT6? see http://www.worldserver.com/turk/quicktime/WWDC2002RawCodec2/)
+- resolution change detection thrown off by dock shrinking/expanding when too many icons are in
+- option to keep window size the same
+- "copy icon and mask" allows merging/replacing selectively
+- better icon updating (from Stereotyper work)
+- reset palettes when all are hidden doesn't behave quite right (members palette too tall)
+- icon browser doesn't display some icons right (-21720 in SystemIcons.rsrc in Jaguar)
+- arrow up/down in icon browser should bring current selection to view if not already
+- typing detection of extension in save dialogs works again under 10.2.x
+- import/export command
+- palette visibility remembering thrown off (when quitting from dock context menu)
+- make customized text drawing (esp. in members palette) use drawthemetextbox
+- There is an error made by Iconographer when applying an icon, by using the "Save Into File..." menu command. The resulting resource file has the wrong codes: creator/type: icon/MACS, they should be reversed.
+
+2.4 April 18, 2002
 - quicktime effects
 - help tags (and updated balloon help under os 8.x/9.x)
 - palette position snapping (OS X Only)
@@ -78,7 +122,7 @@ CHANGES
 - files like HIToolbox.rsrc won't occasionally crash the icon browser anymore
 - stroke selection uses foreground color
 
-2.3
+2.3 February 27, 2002
 - added "fit on screen" and "actual pixels" to icon menu
 - added mac os x IDs to the icon info popup menu
 - stroke selection command
@@ -428,7 +472,7 @@ CHANGES
 1.0d3 February 21 1999
 - cursor isn't set when the application is in the background
 - old style icons are displayed in the Icon Browser
-- lots undo bugs fixed
+- lots of undo bugs fixed
 - drag and drop bug when dragging into current size/depth fixed
 - "Do you want to save..." dialog added
 - each instance of the editor takes up 15K less of memory

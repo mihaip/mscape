@@ -964,6 +964,9 @@ void icnsEditorClass::CompleteIcon()
 	long			iconName, maskName, targetName;
 	GWorldPtr		iconGW, maskGW, targetGW;
 	PixMapHandle	iconPix, maskPix, targetPix;
+	bool			regenerate;
+	
+	regenerate = ISOPTIONDOWN;
 	
 	SAVEGWORLD;
 	SAVECOLORS;
@@ -979,7 +982,7 @@ void icnsEditorClass::CompleteIcon()
 	{
 		targetName = kMembers[i].name;
 		
-		if ((targetName & usedMembers) && !(targetName & members))
+		if ((targetName & usedMembers) && (!(targetName & members) || regenerate))
 		{
 			GetGWorldAndPix(targetName, &targetGW, &targetPix);
 			
@@ -1043,7 +1046,7 @@ void icnsEditorClass::RepositionControls()
 	
 	SAVEGWORLD;
 	SetPort(); // we'll be changing controls in this window, so the coordinates must
-					 // be local to here
+			   // be local to here
 	
 	windowRect = GetPortRect();
 	OffsetRect(&windowRect, -windowRect.left, -windowRect.top);
@@ -1076,6 +1079,32 @@ void icnsEditorClass::RepositionControls()
 	SetRect(&controlRect, windowRect.right, -1, windowRect.right + 16, windowRect.bottom + 1);
 	SetControlBounds(controls.vScrollbar, &controlRect);
 	
+	UpdateScrollbars();
+	
+	SetControlBounds(controls.editArea, &editAreaRect);
+	
+	SetControlVisibility(controls.rootControl, true, true);
+	
+	if (editAreaRect.top != 0 || editAreaRect.left != 0)
+	{
+		if (IsControlActive(controls.rootControl))
+			SetThemeWindowBackground(window, kThemeBrushDialogBackgroundActive, true);
+		else
+			SetThemeWindowBackground(window, kThemeBrushDialogBackgroundInactive, true);
+			
+		DrawControls(window);
+	}
+
+	RESTOREGWORLD;
+}
+
+void icnsEditorClass::UpdateScrollbars()
+{
+	int h, v;
+	
+	h = magnification * ((**currentPix).bounds.right - (**currentPix).bounds.left);
+	v = magnification * (**currentPix).bounds.bottom - (**currentPix).bounds.top;
+	
 	SetControlMaximum(controls.hScrollbar, h - (editAreaRect.right - editAreaRect.left));
 	SetControlMaximum(controls.vScrollbar, v - (editAreaRect.bottom - editAreaRect.top));
 	
@@ -1087,18 +1116,6 @@ void icnsEditorClass::RepositionControls()
 		SetControlViewSize(controls.hScrollbar, editAreaRect.right - editAreaRect.left);
 		SetControlViewSize(controls.vScrollbar, editAreaRect.bottom - editAreaRect.top);
 	}
-	
-	SetControlBounds(controls.editArea, &editAreaRect);
-	
-	SetControlVisibility(controls.rootControl, true, true);
-	
-	if (editAreaRect.top != 0 || editAreaRect.left != 0)
-		if (IsControlActive(controls.rootControl))
-			SetThemeWindowBackground(window, kThemeBrushDialogBackgroundActive, true);
-		else
-			SetThemeWindowBackground(window, kThemeBrushDialogBackgroundInactive, true);
-
-	RESTOREGWORLD;
 }
 
 void icnsEditorClass::MakeEditAreaRect(int h, int v, Rect* areaRect)
@@ -1133,11 +1150,13 @@ void icnsEditorClass::MakeEditAreaRect(int h, int v, Rect* areaRect)
 	}
 }
 
-void icnsEditorClass::PostZoom()
+void icnsEditorClass::PostZoom(bool resizeAnyway)
 {
 	zoomPosition.h = zoomPosition.v = zoomDimensions.h = zoomDimensions.v = -1;
 	
-	ZoomFitWindow();
+	if (resizeAnyway || statics.preferences.FeatureEnabled(prefsAutomaticallyResize))
+		ZoomFitWindow();
+	
 	ClampScrollValues();
 	RepositionControls();
 	UpdateZoom();
@@ -1250,11 +1269,14 @@ void icnsEditorClass::HandleGrow(Point where)
 	currentDimensions.h = growSize & 0x0000FFFF;
 	currentDimensions.v = (growSize >> 16) & 0x0000FFFF;
 
-#else	
+#else
 	initial = where;
 	
 	maxDimensions.h = magnification * (**currentPix).bounds.right + 15;
 	maxDimensions.v = magnification * (**currentPix).bounds.bottom + 15;
+	
+	if (maxDimensions.h < initialDimensions.h) maxDimensions.h = initialDimensions.h;
+	if (maxDimensions.v < initialDimensions.v) maxDimensions.v = initialDimensions.v;
 	
 	usableRect = MUtilities::GetUsableScreenRect();
 	
@@ -1394,7 +1416,7 @@ void icnsEditorClass::ZoomIn(void)
 	{
 		magnification++;
 		
-		PostZoom();
+		PostZoom(false);
 	}
 }
 
@@ -1411,7 +1433,7 @@ void icnsEditorClass::ZoomOut(void)
 	{
 		magnification--;
 		
-		PostZoom();
+		PostZoom(false);
 	}
 }
 
@@ -1419,7 +1441,7 @@ void icnsEditorClass::ZoomActual()
 {
 	magnification = 1;
 			
-	PostZoom();
+	PostZoom(true);
 }
 
 void icnsEditorClass::ZoomFit()
@@ -1433,7 +1455,7 @@ void icnsEditorClass::ZoomFit()
 
 	magnification = GetMaxMagnification();
 	
-	PostZoom();			
+	PostZoom(true);			
 }
 
 void icnsEditorClass::ToggleZoom()
@@ -1582,7 +1604,7 @@ void icnsEditorClass::LoadSaveInfo(bool* setCurrentMember)
 		
 	*setCurrentMember = false;
 	
-	SetupFileSpec(false);
+	SetupFileSpec();
 	
 	oldFile = CurResFile();
 	targetFile = file.OpenResourceFork(fsRdWrPerm);
@@ -1607,7 +1629,7 @@ void icnsEditorClass::LoadSaveInfo(bool* setCurrentMember)
 					if (magnification != (**info).magnification)
 					{
 						magnification = (**info).magnification;
-						PostZoom();
+						PostZoom(true);
 					}
 					SetCurrentMember((**info).currentPixName, 0);
 					*setCurrentMember = true;
@@ -1635,7 +1657,7 @@ void icnsEditorClass::StoreSaveInfo()
 	IconSaveInfoHandle	info;
 	Handle				old;
 	
-	SetupFileSpec(false);
+	SetupFileSpec();
 	
 	oldFile = CurResFile();
 	targetFile = file.OpenResourceFork(fsRdWrPerm);
@@ -1751,6 +1773,9 @@ OSErr icnsEditorClass::Save(void)
 	OSErr	err;
 	int		membersCount;
 	
+	if (status & selectionFloated)
+		DefloatSelection(false);
+	
 	if (!statics.preferences.FeatureEnabled(prefsDontCheckMasks))
 	{
 		RefreshIconMembers();
@@ -1788,9 +1813,6 @@ OSErr icnsEditorClass::Save(void)
 	if ((format != formatWindows && format != formatWindowsXP) && colors == winColors)
 		ChangeColors(macOSColors, false);
 	
-	if (status & selectionFloated)
-		DefloatSelection(false);
-	
 	err = MIcon::Save(); // this is from the base class
 	RefreshWindowTitle();
 	
@@ -1798,7 +1820,10 @@ OSErr icnsEditorClass::Save(void)
 		currentState->RestoreState(this);
 	
 	if (err != noErr)
+	{
+		DisplayValue(err);
 		return err;
+	}
 	
 	if (statics.preferences.FeatureEnabled(prefsSaveExtraInfo))
 		StoreSaveInfo();
@@ -1813,6 +1838,472 @@ OSErr icnsEditorClass::Save(void)
 	SetAssociatedFile(&file);
 	
 	return noErr;
+}
+
+#pragma mark -
+
+void icnsEditorClass::Import(int mode)
+{
+	Str255	importPrompt; 
+	switch (mode)
+	{
+		case currentMember:
+			
+			FSSpec	importSpec;
+			
+			GetIndString(importPrompt, rBasicStrings, eImportCurrentMember);
+			
+			if (MUtilities::GetFileSpec(importPrompt, NULL, &importSpec, '****', kImportFormatsCount, kImportFileTypes))
+			{
+				ImportQTFileToGWorld(importSpec, currentGW);
+				
+				currentState = new drawingStateClass(currentState, this);
+				status |= (needToSave | needsUpdate);
+			}
+			
+			break;
+		case entireIcon:
+			FSSpec	*chosenSpecs;
+			long	chosenSpecsCount;
+			
+			GetIndString(importPrompt, rBasicStrings, eImportEntirePrompt);
+			
+			if (MUtilities::GetObjects(importPrompt, &chosenSpecs, &chosenSpecsCount, kImportFormatsCount, kImportFileTypes))
+			{
+				FSSpec 	*importSpecs;
+				int		importSpecsCount;
+				int		memberMatchups[kMembersCount];
+				
+				GetImportSpecs(chosenSpecs, chosenSpecsCount, &importSpecs, &importSpecsCount);
+				
+				GetImportMatchups(importSpecs, importSpecsCount, memberMatchups);
+				
+				free(importSpecs);
+				delete chosenSpecs;
+			}
+			break;
+	}
+}
+
+void icnsEditorClass::GetImportMatchups(FSSpec *importSpecs, int importSpecsCount, int memberMatchups[])
+{
+	DialogPtr			matchupDialog;
+	ModalFilterUPP		eventFilterUPP;
+	MWindowPtr			matchupDialogWindow;
+	short				itemHit = 0;
+	ControlHandle		tempControl, iconsHeader, masksHeader;
+	Rect				controlRect, baselineRect;
+	Handle				matchupControls[kMembersCount] = {NULL};
+	int					matchupControlNos[kMembersCount] = {0};
+	int					iconLoadedControls = 0, maskLoadedControls = 0;
+	Point				dialogSize;
+	ControlFontStyleRec	controlStyle, headerStyle;
+	int					lastIconDepth = -1;
+	
+	// make guesses as to initial matchups
+	GuessImportMatchups(memberMatchups, importSpecs, importSpecsCount);
+	
+	// setup label style
+	controlStyle.flags = kControlUseFontMask | kControlUseJustMask | kControlAddToMetaFontMask;
+	controlStyle.font = kControlFontSmallSystemFont;
+#if TARGET_API_MAC_CARBON
+	controlStyle.just = teFlushRight;
+#else
+	controlStyle.just = teFlushLeft;
+#endif
+
+	// setup dialog
+	matchupDialog = GetNewDialog(rImportMatchupDialog, NULL, (WindowPtr)-1L);
+
+	SetDialogDefaultItem(matchupDialog, iOK);
+	SetDialogCancelItem(matchupDialog, iCancel);
+
+	matchupDialogWindow = new MWindow(GetDialogWindow(matchupDialog), kDialogType);
+	
+	// setup headers
+	GetDialogItemAsControl(matchupDialog, iIconsHeader, &iconsHeader);
+	GetDialogItemAsControl(matchupDialog, iMasksHeader, &masksHeader);
+	headerStyle.flags = kControlUseFontMask;
+	headerStyle.font = kControlFontSmallBoldSystemFont;
+	SetControlFontStyle(iconsHeader, &headerStyle);
+	SetControlFontStyle(masksHeader, &headerStyle);
+	
+	GetControlBounds(iconsHeader, &baselineRect);
+	
+	for (int i=0; i < kMembersCount; i++)
+		if (usedMembers & kMembers[i].name) // if this member needs a menu
+		{
+			Str255				labelText;
+			ControlHandle		popup, label;
+			int					popupNo, labelNo;
+			int*				loadedControls;
+			int					hOffset;
+			Str255				replacementString;
+			
+			if (kMembers[i].name & icons)
+			{
+				GetIndString(replacementString, rMiscIconStrings, eIcon);
+				loadedControls = &iconLoadedControls;
+				hOffset = 0;
+			}
+			else
+			{
+				GetIndString(replacementString, rMiscIconStrings, eMask);
+				loadedControls = &maskLoadedControls;
+				hOffset = kSecondColumnOffset;
+			}
+			
+			// load the controls
+			matchupControls[i] = Get1Resource('DITL', rImportMatchupPopupDialog);
+			AppendDITL(matchupDialog, matchupControls[i], overlayDITL);
+			
+			labelNo = iFirstMatchupLabel + iconLoadedControls + maskLoadedControls;
+			popupNo = iFirstMatchupPopup + iconLoadedControls + maskLoadedControls;
+	
+			GetDialogItemAsControl(matchupDialog, labelNo, &label); AutoEmbedControl(label, GetDialogWindow(matchupDialog));
+			GetDialogItemAsControl(matchupDialog, popupNo, &popup); AutoEmbedControl(popup, GetDialogWindow(matchupDialog));
+			
+			matchupControlNos[i] = popupNo;
+			
+			// put them in the right place
+			GetControlBounds(label, &controlRect);
+			MoveDialogItem(matchupDialog, labelNo,
+						   controlRect.left + hOffset,
+						   baselineRect.bottom + kInitialOffset + (*loadedControls)/2 * kMatchupPopupOffset + controlRect.top);
+			GetControlBounds(popup, &controlRect);
+			MoveDialogItem(matchupDialog, popupNo,
+						   controlRect.left + hOffset,
+						   baselineRect.bottom + kInitialOffset + (*loadedControls)/2 * kMatchupPopupOffset + controlRect.top);
+			
+			// give them the right text
+			GetIndString(labelText, rIconNames, i + 1);
+			SubstituteString(labelText, replacementString, "\p:");
+			SubstituteString(labelText, "\p :", "\p:");
+			SetControlText(label, labelText);
+			
+			SetControlFontStyle(label, &controlStyle);
+			SetControlFontStyle(popup, &controlStyle);
+			
+			// and setup its popup menu
+			SetupImportMatchupMenu(popup, importSpecs, importSpecsCount, memberMatchups[i]);
+			
+			(*loadedControls) += 2;
+		}
+		else
+			matchupControls[i] = NULL;
+		
+	//DebugNValues("\picon/mask controls: ", 2, iconLoadedControls, maskLoadedControls);
+		
+	// move the OK/Cancel buttons
+	GetDialogItemAsControl(matchupDialog, iOK, &tempControl);
+	GetControlBounds(tempControl, &controlRect);
+	MoveDialogItem(matchupDialog, iOK,
+				   controlRect.left,
+				   controlRect.top + iconLoadedControls/2 * kMatchupPopupOffset);
+	
+	GetDialogItemAsControl(matchupDialog, iCancel, &tempControl);
+	GetControlBounds(tempControl, &controlRect);
+	MoveDialogItem(matchupDialog, iCancel,
+				   controlRect.left,
+				   controlRect.top + iconLoadedControls/2 * kMatchupPopupOffset);
+	
+	// resize dialog	
+	dialogSize = matchupDialogWindow->GetDimensions();
+	dialogSize.v += kMatchupPopupOffset * (iconLoadedControls/2);
+	matchupDialogWindow->SetDimensions(dialogSize);
+	
+	MWindow::CenterOnScreen(matchupDialogWindow);
+
+	MWindow::DeactivateAll();
+
+	ShowWindow(GetDialogWindow(matchupDialog));
+
+	eventFilterUPP = NewModalFilterUPP(MWindow::StandardDialogFilter);
+
+	do
+	{
+		ModalDialog(eventFilterUPP, &itemHit);
+	}
+	while (itemHit != iOK && itemHit != iCancel);
+	
+	if (itemHit == iOK)
+	{
+		// extract the matchups
+		for (int i=0; i < kMembersCount; i++)
+			if (matchupControlNos[i])
+			{
+				ControlHandle popup;
+				
+				GetDialogItemAsControl(matchupDialog, matchupControlNos[i], &popup);
+				
+				if (GetControlValue(popup) - 1> importSpecsCount)
+					memberMatchups[i] = -1;
+				else
+					memberMatchups[i] = GetControlValue(popup) - 1;
+			}
+			
+		// apply them
+		ApplyImportMatchups(memberMatchups, importSpecs);
+		
+		// save state
+		currentState = new drawingStateClass(currentState, this);
+		status |= (needToSave | needsUpdate);
+	}
+
+	DisposeModalFilterUPP(eventFilterUPP);
+	DisposeDialog(matchupDialog);
+	
+	for (int i=0; i < kMembersCount; i++)
+		if (matchupControls[i])
+			ReleaseResource(matchupControls[i]);
+
+	MWindow::ActivateAll();
+
+	delete matchupDialogWindow;
+}
+
+void icnsEditorClass::ApplyImportMatchups(int memberMatchups[], FSSpec *importSpecs)
+{
+	GWorldPtr		memberGW;
+	PixMapHandle	memberPix;
+	
+	for (int i=0; i < kMembersCount; i++)
+		if (memberMatchups[i] != -1)
+		{
+			SaveState(kMembers[i].name);
+			
+			GetGWorldAndPix(kMembers[i].name, &memberGW, &memberPix);
+			
+			ImportQTFileToGWorld(importSpecs[memberMatchups[i]], memberGW);
+			
+			SaveState(kMembers[i].name);
+		}
+}
+
+void icnsEditorClass::GuessImportMatchups(int memberMatchups[], FSSpec *importSpecs, int importSpecsCount)
+{
+	Rect	*fileBounds;
+	int		*fileDepths;
+	
+	fileBounds = (Rect*)calloc(importSpecsCount, sizeof(Rect));
+	fileDepths = (int*)calloc(importSpecsCount, sizeof(int));
+				
+	for (int i=0; i < kMembersCount; i++)
+		if (kMembers[i].name & usedMembers)	
+		{
+			Str255 memberName;
+			
+			GetIndString(memberName, rIconNames, i + 1);
+			
+			memberMatchups[i] = -1;
+			
+			// first try to match by file name
+			for (int j=0; j < importSpecsCount; j++)
+			{
+				Str255 fileName;
+				
+				CopyString(fileName, importSpecs[j].name);
+				MUtilities::StripExtension(fileName);
+				
+				if (EqualString(fileName, memberName, 0, 0))
+				{
+					memberMatchups[i] = j;
+					break;
+				}
+			}
+			
+			// if that doesn't work, go for size/depth
+			if (memberMatchups[i] == -1)
+			{
+				for (int j=0; j < importSpecsCount; j++)
+				{
+					if (fileDepths[j] == 0)
+						GetQTFileInfo(importSpecs[j], &fileBounds[j], &fileDepths[j]);
+					
+					if (fileBounds[j].right - fileBounds[j].left == kMembers[i].width &&
+						fileBounds[j].bottom - fileBounds[j].top == kMembers[i].height &&
+						(fileDepths[j] == kMembers[i].depth || (fileDepths[j] == 24 && kMembers[i].depth == 32)))
+					{
+						memberMatchups[i] = j;
+						break;
+					}
+				}
+			}
+		}
+		else
+			memberMatchups[i] = -1;
+			
+	free(fileBounds);
+	free(fileDepths);
+}
+
+void icnsEditorClass::SetupImportMatchupMenu(ControlHandle popup, FSSpec *importSpecs, int importSpecsCount, int matchup)
+{
+	MenuHandle menu;
+	
+	menu = GetControlPopupMenuHandle(popup);
+	for (int i=0; i < importSpecsCount; i++)
+		InsertMenuItem(menu, importSpecs[i].name, i);
+		
+	SetControlMaximum(popup, GetControlMaximum(popup) + importSpecsCount);
+	
+	if (matchup == -1)
+		SetControlValue(popup, GetControlMaximum(popup));
+	else
+		SetControlValue(popup, matchup + 1);
+}
+
+void icnsEditorClass::GetImportSpecs(FSSpec *chosenSpecs, int chosenSpecsCount, FSSpec **importSpecs, int *importSpecsCount)
+{
+	*importSpecs = NULL;
+	*importSpecsCount = 0;
+	
+	for (int i=0; i < chosenSpecsCount; i++)
+	{
+		MFile chosenFile;
+		
+		chosenFile.SetAssociatedFile(chosenSpecs[i]);
+		if (chosenFile.IsFolder())
+		{
+			FSSpec	*contents;
+			int		contentsCount;
+			
+			chosenFile.GetFolderContents(&contents, &contentsCount);
+			
+			for (int j=0; j < contentsCount; j++)
+				AddToImportListIfTypeOK(contents[j], importSpecs, importSpecsCount);
+				
+			free(contents);
+		}
+		else
+			AddToImportListIfTypeOK(chosenSpecs[i], importSpecs, importSpecsCount);
+	}
+}
+
+void icnsEditorClass::AddToImportListIfTypeOK(FSSpec spec, FSSpec **importSpecs, int* importSpecsCount)
+{
+	FInfo info;
+	
+	FSpGetFInfo(&spec, &info);
+	
+	for (int i=0; i < kImportFormatsCount; i++)
+		if (kImportFileTypes[i] == info.fdType)
+		{
+			*importSpecs = (FSSpec*)realloc(*importSpecs, (*importSpecsCount + 1) * sizeof(FSSpec));
+			(*importSpecs)[(*importSpecsCount)++] = spec;
+			break;
+		}
+}
+
+void icnsEditorClass::Export(int mode)
+{
+	Str255	formats[kExportFormatsCount],
+			extensions[kExportFormatsCount],
+			exportName, exportPrompt, exportFormatMenuLabel;
+	FSSpec	exportSpec;
+	int		exportFormat;
+			
+	exportFormat = statics.preferences.GetLastImportExportFormat();
+			
+	for (int i=0; i < kExportFormatsCount; i++)
+	{
+		GetIndString(formats[i], rImportExportFormats, i + 1);
+		GetIndString(extensions[i], rImportExportFormatExtensions, i + 1);
+	}
+	
+	GetIndString(exportFormatMenuLabel, rBasicStrings, eExportFormatMenuLabel);
+	
+	switch (mode)
+	{
+		case currentMember:
+			GetIndString(exportPrompt, rBasicStrings, eExportCurrentPrompt);
+			
+			if (MUtilities::NewFileSpecWithFormats(exportPrompt, file.GetName(exportName), exportFormatMenuLabel,
+													kExportFormatsCount, formats, extensions, kForceExtension | kPutFile,
+													&exportSpec, &exportFormat))
+			{
+				ExportMemberToFile(currentPixName, exportSpec, exportFormat);
+				
+				statics.preferences.SetLastImportExportFormat(exportFormat);
+			}
+			break;
+		case entireIcon:
+			GetIndString(exportPrompt, rBasicStrings, eExportEntirePrompt);
+			
+			if (MUtilities::NewFileSpecWithFormats(exportPrompt, file.GetName(exportName), exportFormatMenuLabel,
+													kExportFormatsCount, formats, extensions, kNewFolder,
+													&exportSpec, &exportFormat))
+			{
+				MFile	exportFile;
+				long	folderID;
+				
+				exportFile.SetAssociatedFile(exportSpec);
+				// if there's already a folder at that location, then just
+				// get its directory ID
+				if (exportFile.IsFolder())
+				{
+					CInfoPBRec  info;
+					
+					info.dirInfo.ioVRefNum = exportSpec.vRefNum;
+					info.dirInfo.ioNamePtr = exportSpec.name;
+					info.dirInfo.ioDrDirID = exportSpec.parID;
+					info.dirInfo.ioFDirIndex = 0;
+					
+					PBGetCatInfoSync(&info);
+					
+					folderID = info.dirInfo.ioDrDirID;
+				}
+				else
+					FSpDirCreate(&exportSpec, 0, &folderID);
+				
+				RefreshIconMembers();
+				
+				for (int i=0; i < kMembersCount; i++)
+					if (members & kMembers[i].name)
+					{
+						Str255 	currentMemberName;
+						FSSpec	currentMemberSpec;
+						
+						GetIndString(currentMemberName, rIconNames, i + 1);
+						
+						MUtilities::SetFileExtension(currentMemberName, extensions[exportFormat]);
+						
+						FSMakeFSSpec(exportSpec.vRefNum, folderID, currentMemberName, &currentMemberSpec);
+						
+						ExportMemberToFile(kMembers[i].name, currentMemberSpec, exportFormat);
+					}
+			}
+			break;
+	}
+}
+
+void icnsEditorClass::ExportMemberToFile(int memberName, FSSpec exportSpec, int exportFormat)
+{
+	GWorldPtr 		memberGW;
+	PixMapHandle	memberPix;
+	int				pixelSize;
+	
+	GetGWorldAndPix(memberName, &memberGW, &memberPix);
+	pixelSize = (**memberPix).pixelSize;
+	if (pixelSize == 32) pixelSize = 24;
+	
+	switch (kExportFileTypes[exportFormat])
+	{
+		case kQTFileTypePicture:
+			PicHandle exportPic = NULL;
+			
+			PixMapToPicture(memberPix, NULL, &exportPic);
+			
+			ExportPictureToPICTFile(exportPic, exportSpec, '****');
+			
+			DisposeHandle((Handle)exportPic);
+			break;
+		default:
+			ExportGWToQTFile(memberGW, exportSpec,
+							 '****', kExportFileTypes[exportFormat],
+							 pixelSize);
+			break;
+	}
 }
 
 #pragma mark -
@@ -2074,8 +2565,16 @@ void icnsEditorClass::SetCurrentMember(long memberName, int fancinessLevel)
 	
 	if (resize)
 	{
-		ZoomFitWindow();
-		RepositionControls();
+		if (statics.preferences.FeatureEnabled(prefsAutomaticallyResize))
+		{
+			ZoomFitWindow();
+			RepositionControls();
+		}
+		else
+		{
+			RepositionControls();
+			UpdateScrollbars();
+		}
 	}
 	
 	if (fancinessLevel && statics.previewPalette)
@@ -2724,16 +3223,19 @@ void icnsEditorClass::Paste(int pasteType)
 			switch (pasteType)
 			{
 				case normally:
-					InsertFromPicture(clipPicture, currentGW, insertCentered); // and we insert it into the drawing
+					InsertPictureIntoMember(clipPicture, currentPixName, NULL, insertCentered); // and we insert it into the drawing
 					break;
 				case asIconAndMask:
 					InsertPicIntoIcon(this, clipPicture);
 					break;
 				case intoSelection:
+					Rect	targetRect;
+					
+					GetRegionBounds(selectionRgn, &targetRect);
 					if (status & selectionFloated)
 						DefloatSelection(true);
-					GetRegionBounds(selectionRgn, &(**clipPicture).picFrame);
-					InsertFromPicture(clipPicture, currentGW, 0);
+					
+					InsertPictureIntoMember(clipPicture, currentPixName, &targetRect, insertScaled);
 					break;
 			}
 			
@@ -2750,7 +3252,7 @@ void icnsEditorClass::Paste(int pasteType)
 }
 
 // __________________________________________________________________________________________
-// Name			: icnsEditorClass::InsertFromPicture
+// Name			: icnsEditorClass::InsertPictureIntoMember
 // Input		: srcPic: handle to the picture that should be drawn into the GWorld
 //				  scale: true if the picture should be expanded/shrunk to fit the gworld
 //				  boundary, if false then the picture will be centered.
@@ -2759,15 +3261,112 @@ void icnsEditorClass::Paste(int pasteType)
 //				  GWorld is the current one, then the picture is placed into a selection,
 //				  otherwise it is drawn straight into the GWorld
 
-
-void icnsEditorClass::InsertFromPicture(PicHandle srcPic, GWorldPtr targetGW, int options)
+void icnsEditorClass::InsertPictureIntoMember(PicHandle srcPic, int targetName, Rect* targetRect, int options)
 {
-	Rect	picRect, // the dimensions of the picture
-			currentBounds, // the size of the current GWorld
-			targetGWBounds;
+	GWorldPtr		targetGW;
+	PixMapHandle	targetPix;
+	Rect			targetGWRect, destRect;
 
+	GetGWorldAndPix(targetName, &targetGW, &targetPix);
+	
 	SAVEGWORLD;
 	SAVECOLORS;
+	
+	if (targetRect)
+		targetGWRect = *targetRect;
+	else
+		targetGWRect = (**targetPix).bounds;
+	
+	destRect = (**srcPic).picFrame;
+	OffsetRect(&destRect, -destRect.left, -destRect.top);
+	
+	if (options & insertCentered)
+	{
+		if (targetGW == currentGW)
+		{
+			Rect visibleRect;
+			
+			if (status & hasSelection)
+			{
+				GetRegionBounds(selectionRgn, &visibleRect);
+			}
+			else
+			{
+				visibleRect = editAreaRect;
+				OffsetRect(&visibleRect,
+						   -editAreaRect.left + hScrollbarValue,
+						   -editAreaRect.top + vScrollbarValue);
+				SetRect(&visibleRect,
+						visibleRect.left / magnification,
+						visibleRect.top / magnification,
+						visibleRect.right / magnification + 1,
+						visibleRect.bottom / magnification + 1);
+			}
+			
+			OffsetRect(&destRect,
+					   visibleRect.left + (visibleRect.right - visibleRect.left - destRect.right)/2,
+					   visibleRect.top + (visibleRect.bottom - visibleRect.top - destRect.bottom)/2);
+		}
+		else	
+			OffsetRect(&destRect,
+					   (targetGWRect.right - destRect.right)/2,
+					   (targetGWRect.bottom - destRect.bottom)/2);
+	}
+	else if (options & insertScaled)
+	{
+		destRect = targetGWRect;
+	}
+	
+	if (targetName == currentPixName)
+	{
+		if (status & selectionFloated)
+			DefloatSelection(true);
+			
+		status |= (selectionFloated | hasSelection);
+		
+		if (selectionPix && selectionGW)
+		{
+			UnlockPixels(selectionPix);
+			DisposeGWorld(selectionGW);
+		}
+		NewGWorldUnpadded(&selectionGW,
+						 (**currentPix).pixelSize,
+						 &destRect,
+						 (**currentPix).pmTable);
+		selectionPix = GetGWorldPixMap(selectionGW);
+		LockPixels(selectionPix);
+		
+		PictureTransferScaled(srcPic, (**srcPic).picFrame,
+							  selectionGW, destRect,
+							  statics.preferences.FeatureEnabled(prefsDither),
+							  statics.preferences.GetScaling());
+							  
+		PictureToRegion(srcPic, destRect, selectionRgn);
+		MagnifySelectionRgn();
+		
+		statics.toolPalette->SetCurrentTool(toolMove);
+	}
+	else
+	{
+		PictureTransferScaled(srcPic, (**srcPic).picFrame,
+							  targetGW, destRect,
+							  statics.preferences.FeatureEnabled(prefsDither),
+							  statics.preferences.GetScaling());
+	}
+	
+		status |= needsUpdate; // we need updating
+	
+	if (!EmptyRgn(selectionRgn)) // checking for selections
+		status |= hasSelection;
+	else
+		status &= ~hasSelection;
+}
+
+/*
+{	
+	Rect			picRect, // the dimensions of the picture
+					currentBounds, // the size of the current GWorld
+					targetGWBounds;
 	
 	GetPortBounds(targetGW, &targetGWBounds);
 	
@@ -2801,8 +3400,8 @@ void icnsEditorClass::InsertFromPicture(PicHandle srcPic, GWorldPtr targetGW, in
 			}
 			
 			OffsetRect(&picRect,
-				   visibleRect.left + (visibleRect.right - visibleRect.left - picRect.right)/2,
-				   visibleRect.top + (visibleRect.bottom - visibleRect.top - picRect.bottom)/2);
+					   visibleRect.left + (visibleRect.right - visibleRect.left - picRect.right)/2,
+					   visibleRect.top + (visibleRect.bottom - visibleRect.top - picRect.bottom)/2);
 		}
 		else	
 			OffsetRect(&picRect,
@@ -2833,11 +3432,14 @@ void icnsEditorClass::InsertFromPicture(PicHandle srcPic, GWorldPtr targetGW, in
 		
 		// now that we have the selection GWorld set up, we can draw the picture in it
 		SetGWorld(selectionGW, NULL);
+		ForeColor(blackColor);
+		BackColor(whiteColor);
 		EraseRect(&picRect);
-		if (statics.preferences.FeatureEnabled(prefsDither))
-			DrawPictureDithered(srcPic, &picRect);
-		else
-			DrawPicture(srcPic, &picRect);
+		
+		PictureTransferScaled(srcPic, (**srcPic).picFrame,
+							  selectionGW, picRect,
+							  statics.preferences.FeatureEnabled(prefsDither),
+							  statics.preferences.GetScaling());
 		
 		// the selection shape should be the region which is the picture shape  
 		PictureToRegion(srcPic, picRect, selectionRgn);
@@ -2856,10 +3458,12 @@ void icnsEditorClass::InsertFromPicture(PicHandle srcPic, GWorldPtr targetGW, in
 		SetGWorld(targetGW, NULL);
 		ForeColor(blackColor);
 		BackColor(whiteColor);
-		if (statics.preferences.FeatureEnabled(prefsDither))
-			DrawPictureDithered(srcPic, &picRect);
-		else
-			DrawPicture(srcPic, &picRect);
+		
+		
+		PictureTransferScaled(srcPic, (**srcPic).picFrame,
+							  targetGW, picRect,
+							  statics.preferences.FeatureEnabled(prefsDither),
+							  statics.preferences.GetScaling());
 			
 		RESTOREGWORLD;
 		RESTORECOLORS;
@@ -2873,6 +3477,7 @@ void icnsEditorClass::InsertFromPicture(PicHandle srcPic, GWorldPtr targetGW, in
 	else
 		status &= ~hasSelection;
 }
+*/
 
 // __________________________________________________________________________________________
 // Name			: icnsEditorClass::PictureToMask

@@ -389,10 +389,10 @@ resource 'MENU' (128) {
 resource 'MENU' (129) {
 	129,
 	textMenuProc,
-	0x7FFFFDEF,
+	0x7FFFEDEF,
 	enabled,
 	"File",
-	{	/* array: 11 elements */
+	{	/* array: 14 elements */
 		/* [1] */
 		"New Icon", noIcon, "N", noMark, plain,
 		/* [2] */
@@ -414,6 +414,12 @@ resource 'MENU' (129) {
 		/* [10] */
 		"-", noIcon, noKey, noMark, plain,
 		/* [11] */
+		"Import", noIcon, hierarchicalMenu, "å", plain,
+		/* [12] */
+		"Export", noIcon, hierarchicalMenu, "ç", plain,
+		/* [13] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [14] */
 		"Quit", noIcon, "Q", noMark, plain
 	}
 };
@@ -632,8 +638,32 @@ resource 'MENU' (139) {
 	}
 };
 
-data 'Mcmd' (1) {
-	$"0000"                                               /* .. */
+resource 'MENU' (140) {
+	140,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Import",
+	{	/* array: 2 elements */
+		/* [1] */
+		"Current Member…", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Entire Icon…", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (141) {
+	141,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Export",
+	{	/* array: 2 elements */
+		/* [1] */
+		"Current Member…", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Entire Icon…", noIcon, noKey, noMark, plain
+	}
 };
 
 data 'Mcmd' (131) {
@@ -753,7 +783,7 @@ data 'Pref' (129, "Default Preferences") {
 };
 
 resource 'STR#' (128, "Default Names", purgeable) {
-	{	/* array StringArray: 37 elements */
+	{	/* array StringArray: 38 elements */
 		/* [1] */
 		"Iconographer",
 		/* [2] */
@@ -828,7 +858,9 @@ resource 'STR#' (128, "Default Names", purgeable) {
 		/* [36] */
 		"Reposition",
 		/* [37] */
-		"Reaplly “<effect name>”"
+		"Reaplly “<effect name>”",
+		/* [38] */
+		"Remember selection"
 	}
 };
 
@@ -962,7 +994,7 @@ resource 'STR#' (130, "Prompts", purgeable) {
 		"ld like to order your <app name> registr"
 		"ation code.",
 		/* [13] */
-		"Welcome to <app name> 2.4. If this is yo"
+		"Welcome to <app name> 2.5. If this is yo"
 		"ur first time using it, and you would li"
 		"ke to get more information on its operat"
 		"ion, extensive documentation is availabl"

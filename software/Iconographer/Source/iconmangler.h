@@ -83,7 +83,8 @@ enum defaultNames
 	eContinue = 34,
 	eRegisteredTo = 35,
 	eRepositionButton = 36,
-	eReapplyMenuItem = 37
+	eReapplyMenuItem = 37,
+	eRememberSelection = 38
 };
 
 enum stdErrors
@@ -177,7 +178,9 @@ enum menus
 	mIcon = 136,
 	mColors = 137,
 	mEffects = 138,
-	mWindows = 139
+	mWindows = 139,
+	mImport = 140,
+	mExport = 141
 };
 
 enum appleMenu
@@ -196,7 +199,21 @@ enum fileMenu
 	iSaveAs = 7,
 	iSaveInto = 8,
 	iRevert = 9,
-	iQuit = 11
+	iImport = 11,
+	iExport = 12,
+	iQuit = 14
+};
+
+enum importMenu
+{
+	iImportCurrentMember = 1,
+	iImportEntireIcon = 2
+};
+
+enum exportMenu
+{
+	iExportCurrentMember = 1,
+	iExportEntireIcon = 2
 };
 
 enum editMenu

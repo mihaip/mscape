@@ -173,12 +173,6 @@ void Initialize()
 	DEBUGTIMING("\pSetup the palettes: ");
 	
 	MUtilities::ChangeCursor(rArrow);
-
-#if TARGET_API_MAC_CARBON
-	gAboutBox = new AboutBox;
-#endif
-
-	DEBUGTIMING("\pCreated the about box: ");
 }
 
 
@@ -259,6 +253,18 @@ OSErr InitMenuBar()
 	else
 		return resNotFound;
 #endif
+
+	menu = GetMenu(mImport);
+	if(menu != NULL)
+		InsertMenu(menu,kInsertHierarchicalMenu);
+	else
+		return resNotFound;
+		
+	menu = GetMenu(mExport);
+	if(menu != NULL)
+		InsertMenu(menu,kInsertHierarchicalMenu);
+	else
+		return resNotFound;
 	
 	menu = GetMenu(mSelect);
 	if(menu != NULL)
@@ -302,8 +308,11 @@ OSErr InitMenuBar()
 		return resNotFound;
 		
 	DEBUGTIMING("\pSetup the hierarchical menus: ");	
-		
-	RebuildRecentFilesMenu();
+	
+//	for (int i=0; i < 100; i++)
+		RebuildRecentFilesMenu();
+	
+	DEBUGTIMING("\pRebuilt the recent files menu: ");
 
 	SetupPixelGrid();
 	
@@ -318,6 +327,8 @@ OSErr InitMenuBar()
 	}
 	else
 		return resNotFound;
+		
+	DEBUGTIMING("\pMisc. menu tweaking: ");
 	
 	// help menu
 #if TARGET_API_MAC_CARBON
@@ -801,7 +812,13 @@ void UpdateMenuBar(int status)
 				MyEnableMenuItem(mPaste, iPasteIconFamily);
 			}
 			else /* scrap has nothing */
+			{
 				MyDisableMenuItem(mEdit, iPaste);
+				MyDisableMenuItem(mPaste, iPasteNormally);
+				MyDisableMenuItem(mPaste, iPasteAsIconAndMask);
+				MyDisableMenuItem(mPaste, iPasteIntoSelection);
+				MyDisableMenuItem(mPaste, iPasteIconFamily);
+			}
 	
 		if (status & needToSave) // if there are unsaved chages...
 			MyEnableMenuItem(mFile, iSave);
@@ -816,6 +833,9 @@ void UpdateMenuBar(int status)
 		MyEnableMenuItem(mFile, iClose);
 		MyEnableMenuItem(mFile, iSaveAs);
 		MyEnableMenuItem(mFile, iSaveInto);
+		
+		MyEnableMenuItem(mFile, iImport);
+		MyEnableMenuItem(mFile, iExport);
 		
 		MyEnableMenuItem(mEdit, iSelect);
 		MyEnableMenuItem(mEdit, iTransform);
@@ -966,6 +986,9 @@ void UpdateMenuBar(int status)
 		MyDisableMenuItem(mFile, iSave);
 		MyDisableMenuItem(mFile, iSaveAs);
 		MyDisableMenuItem(mFile, iSaveInto);
+		
+		MyDisableMenuItem(mFile, iImport);
+		MyDisableMenuItem(mFile, iExport);
 		
 		MyDisableMenuItem(mEdit, iUndo);
 		MyDisableMenuItem(mEdit, iRedo);
@@ -1435,6 +1458,26 @@ void DoMenuCommand(long menuResult)
 					OpenIcon(&fileToOpen);
 					
 				break;
+			case mImport:
+				if (frontEditor != NULL)
+				{
+					switch (item)
+					{
+						case iImportCurrentMember: frontEditor->Import(currentMember); break;
+						case iImportEntireIcon: frontEditor->Import(entireIcon); break;
+					}
+				}
+				break;
+			case mExport:
+				if (frontEditor != NULL)
+				{
+					switch (item)
+					{
+						case iExportCurrentMember: frontEditor->Export(currentMember); break;
+						case iExportEntireIcon: frontEditor->Export(entireIcon); break;
+					}
+				}
+				break;
 			case mEdit :
 				if (frontEditor != NULL)
 					switch (item)
@@ -1729,43 +1772,68 @@ pascal void ResolutionChangeNotification(void *userData, short theMessage, void 
 
 void HandleResolutionChange(bool fromEvent)
 {
-	MAlert		alert;
-	Str255		text;
-	MString		temp;
-	
-	if (fromEvent)
-		GetIndString(text, rStdErrors, eRezChangeEvent); 
-	else
-		GetIndString(text, rStdErrors, eRezChangeStartup);
-		
-	SubstituteString(text, "\p<app name>", gAppName);
-	SubstituteString(text, "\p<app name>", gAppName);
-	
-	alert.SetButtonName(kMAOK, rDefaultNames, eRepositionButton);
-	alert.SetButtonName(kMACancel, rDefaultNames, eCancelButton);
-	
-	temp = text;
-	
-	alert.SetError(temp);
-	alert.SetBeep(false);
-	alert.SetMovable(true);
-	alert.SetPosition(kWindowCenterMainScreen);
-		
-	switch (alert.Display())
+	if (icnsEditorClass::statics.preferences.FeatureEnabled(prefsAutomaticallyReposition))
 	{
-		case kMAOK:
-			icnsEditorClass::statics.preferences.ResetPaletteLocations();
-			icnsEditorClass::statics.preferences.SetupPaletteLocations();
-			
-			for (MWindowPtr currentWindow = MWindow::GetFirst(); currentWindow; currentWindow = currentWindow->GetNext())
-				if (currentWindow->GetType() == kEditorType)
-					icnsEditorPtr(currentWindow)->EnsureOnScreenPosition();			
-			break;
-		case kMACancel:
-			break;
+		icnsEditorClass::statics.preferences.ResetPaletteLocations();
+		icnsEditorClass::statics.preferences.SetupPaletteLocations();
+		
+		for (MWindowPtr currentWindow = MWindow::GetFirst(); currentWindow; currentWindow = currentWindow->GetNext())
+			if (currentWindow->GetType() == kEditorType)
+				icnsEditorPtr(currentWindow)->EnsureOnScreenPosition();
+				
+		icnsEditorClass::statics.preferences.SetLastScreenBounds(MUtilities::GetUsableScreenRect());
 	}
-	
-	icnsEditorClass::statics.preferences.SetLastScreenBounds(MUtilities::GetUsableScreenRect());
+	else if (icnsEditorClass::statics.preferences.FeatureEnabled(prefsIgnoreResolutionChange))
+	{
+		; // do nothing
+	}
+	else
+	{
+		MAlert		alert;
+		Str255		text;
+		MString		temp;
+		
+		if (fromEvent)
+			GetIndString(text, rStdErrors, eRezChangeEvent); 
+		else
+			GetIndString(text, rStdErrors, eRezChangeStartup);
+			
+		SubstituteString(text, "\p<app name>", gAppName);
+		SubstituteString(text, "\p<app name>", gAppName);
+		
+		alert.SetButtonName(kMAOK, rDefaultNames, eRepositionButton);
+		alert.SetButtonName(kMACancel, rDefaultNames, eCancelButton);
+		alert.SetButtonName(kMAOther, rDefaultNames, eRememberSelection);
+		alert.MakeOtherIntoCheckbox();
+		
+		temp = text;
+		
+		alert.SetError(temp);
+		alert.SetBeep(false);
+		alert.SetMovable(true);
+		alert.SetPosition(kWindowCenterMainScreen);
+			
+		switch (alert.Display())
+		{
+			case kMAOK:
+				if (alert.GetCheckboxState())
+					icnsEditorClass::statics.preferences.EnableFeature(prefsAutomaticallyReposition);
+						
+				icnsEditorClass::statics.preferences.ResetPaletteLocations();
+				icnsEditorClass::statics.preferences.SetupPaletteLocations();
+				
+				for (MWindowPtr currentWindow = MWindow::GetFirst(); currentWindow; currentWindow = currentWindow->GetNext())
+					if (currentWindow->GetType() == kEditorType)
+						icnsEditorPtr(currentWindow)->EnsureOnScreenPosition();			
+				break;
+			case kMACancel:
+				if (alert.GetCheckboxState())
+					icnsEditorClass::statics.preferences.EnableFeature(prefsIgnoreResolutionChange);
+				break;
+		}
+		
+		icnsEditorClass::statics.preferences.SetLastScreenBounds(MUtilities::GetUsableScreenRect());
+	}
 	
 }
 
@@ -1851,6 +1919,9 @@ void SetupPalette(MFloaterPtr palette, int flag, int menuItem, int showStringInd
 void ShowAboutBox()
 {
 	Str255 name, company, regCode;
+	
+	if (gAboutBox == NULL)
+		gAboutBox = new AboutBox;
 	
 	if (icnsEditorClass::statics.preferences.IsRegistered())
 		icnsEditorClass::statics.preferences.GetRegistrationInfo(name, company, regCode);
@@ -2392,6 +2463,8 @@ void Revert()
 		alert.SetError(temp);
 		
 		if (alert.Display() != kMAOK) return;
+		
+		frontEditor->format = frontEditor->loadedFormat;
 
 		switch (frontEditor->loadedID)
 		{
@@ -2405,7 +2478,6 @@ void Revert()
 				break;
 			default:
 				frontEditor->ID = frontEditor->loadedID;
-				frontEditor->loadedFormat = frontEditor->loadedFormat;
 				frontEditor->Load();
 				break;
 		}
@@ -3045,15 +3117,24 @@ pascal Boolean AlertEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *
 void CleanUp(void)
 {
 	ProcessSerialNumber		currentPSN;
+	bool					windowsNeedSaving = false;
 	
-	// note that we don't do this by looping through the list since the list order
-	// might not be the order in which the windows are stacked in
-	while (MWindow::GetFront() != NULL)
-		if (!Close(MWindow::GetFront()->GetWindow(), 0))
+	for (MWindowPtr current = MWindow::GetFirst(); current != NULL; current = current->GetNext())
+		if (current->GetType() == kEditorType && icnsEditorPtr(current)->status & needToSave)
 		{
-			gIsDone = false;
-			EventLoop();
+			windowsNeedSaving = true;
+			break;
 		}
+	
+	
+	if (windowsNeedSaving)
+		while (MWindow::GetFront() != NULL)
+			if (!Close(MWindow::GetFront()->GetWindow(), 0))
+			{
+				gIsDone = false;
+				EventLoop();
+			}
+	
 		
 	MacGetCurrentProcess(&currentPSN);
 	DMRemoveExtendedNotifyProc(gRezChangeNotificationUPP, NULL, &currentPSN, 0);

@@ -1,6 +1,7 @@
 #include "icnsEditorClass.h"
 #include "drawingStateClass.h"
 #include "editorStaticsClass.h"
+#include "MAlert.h"
 
 pascal OSErr ApproveDragReference (DragReference theDragRef, bool *approved, icnsEditorPtr parentEditor)
 {
@@ -232,28 +233,18 @@ pascal OSErr DragReceiveHandler (WindowPtr theWindow, void *, DragReference theD
 			{
 				GetFlavorData (theDragRef,theItem,'Icon',&iconType,&typeSize,0);
 				if (iconType == selection)
-					parentEditor->InsertFromPicture(pic, targetGW, insertCentered);
+					parentEditor->InsertPictureIntoMember(pic, targetName, NULL, insertCentered);
 				else
-					switch (targetName)
-					{
-						case h8mk: case l8mk: case s8mk: case ichm: case icnm: case icsm:
-							GetFlavorData (theDragRef,theItem,'Icon',&iconType,&typeSize,0);
-							switch (iconType)
-							{
-								case h8mk: case l8mk: case s8mk: case ichm: case icnm: case icsm:
-									parentEditor->InsertFromPicture(pic, targetGW, insertCentered + insertScaled);
-									break;
-								default:
-									parentEditor->PictureToMask(pic, targetGW);
-							}
-							break;
-						default:
-							parentEditor->InsertFromPicture(pic, targetGW, insertCentered + insertScaled);
-							break;
-					}
+				{
+					if ((targetName & masks) && !(iconType & masks) ||
+						(targetName & mask1) && (iconType & mask8))
+						parentEditor->PictureToMask(pic, targetGW);
+					else
+						parentEditor->InsertPictureIntoMember(pic, targetName, NULL, insertScaled);
+				}
 			}
 			else
-				parentEditor->InsertFromPicture(pic, targetGW, insertCentered);
+				parentEditor->InsertPictureIntoMember(pic, targetName, NULL, insertCentered);
 				
 			
 			parentEditor->members |= targetName;
@@ -287,6 +278,7 @@ void InsertPicIntoIcon(icnsEditorPtr parentEditor, PicHandle pic)
 	long			targetIconName, targetMaskName;
 	Rect			srcRect, targetRect;
 	CTabHandle		grayscaleTable;
+	bool			merge;
 	
 	srcRect = (**pic).picFrame;
 	
@@ -322,8 +314,78 @@ void InsertPicIntoIcon(icnsEditorPtr parentEditor, PicHandle pic)
 	
 	(**iconPix).bounds = targetRect;
 	(**maskPix).bounds = targetRect;
-			   
-	MergePix(targetIconPix, targetMaskPix, iconPix, maskPix, targetIconPix, targetMaskPix);
+	
+	if (!IsEmptyPixMap(targetIconPix) || !IsEmptyPixMap(targetMaskPix))
+	{
+		if (icnsEditorClass::statics.preferences.FeatureEnabled(prefsAutomaticallyMerge))
+		{
+			merge = true;
+		}
+		else if (icnsEditorClass::statics.preferences.FeatureEnabled(prefsAutomaticallyOverwrite))
+		{
+			merge = false;
+		}
+		else
+		{
+			MAlert		alert;
+			
+			alert.SetButtonName(kMAOK, rBasicStrings, eMergeButton);
+			alert.SetButtonName(kMACancel, rBasicStrings, eMergeOverwriteButton);
+			alert.SetButtonName(kMAOther, rBasicStrings, eMergeRememberCheckbox);
+			alert.MakeOtherIntoCheckbox();
+			
+			alert.SetError(rBasicStrings, eMergeError);
+			alert.SetBeep(false);
+			alert.SetMovable(true);
+			alert.SetPosition(kWindowCenterParentWindow);
+			
+			switch (alert.Display())
+			{
+				case kMAOK:
+					if (alert.GetCheckboxState())
+						icnsEditorClass::statics.preferences.EnableFeature(prefsAutomaticallyMerge);
+							
+					merge = true;
+					break;
+				case kMACancel:
+					if (alert.GetCheckboxState())
+						icnsEditorClass::statics.preferences.EnableFeature(prefsAutomaticallyOverwrite);
+						
+					merge = false;
+					break;
+			}
+		}
+	}
+	else
+		merge = false;
+	
+	if (!merge)
+	{
+		// clear icon
+		{
+			SAVEGWORLD;
+			SetGWorld(targetIconGW, NULL);
+			SAVECOLORS;
+			EraseRect(&(**targetIconPix).bounds);
+			RESTORECOLORS;
+			RESTOREGWORLD;
+		}
+		
+		// and mask
+		{
+			SAVEGWORLD;
+			SetGWorld(targetMaskGW, NULL);
+			SAVECOLORS;
+			EraseRect(&(**targetIconPix).bounds);
+			RESTORECOLORS;
+			RESTOREGWORLD;
+		}
+	}
+	
+	// we actually merge regardless, just with an empty pixmap		   
+	MergePix(targetIconPix, targetMaskPix,
+			 iconPix, maskPix,
+			 targetIconPix, targetMaskPix);
 
 	parentEditor->members |= (targetIconName | targetMaskName);
 

@@ -88,10 +88,13 @@ enum preferencesDialogItems
 	iShowOnlyLoadedMembers = 62,
 	iCheckSync = 63,
 	iDither = 64,
+	iAutomaticallyResize = 66,
+	
 	iStartupDivider = 65,
-	iStartupCreateNewEditor = 66,
-	iStartupOpenIcon = 67,
-	iStartupDoNothing = 68,
+	
+	iStartupPopup = 67,
+	iScalingPopup = 68,
+	
 	iMembersPaletteDivider = 69,
 	iPreviewFullSize = 70,
 	iPreviewScaled = 71,
@@ -102,7 +105,9 @@ enum preferencesDialogItems
 	iMembersPaletteLabel = 76,
 	iStartupLabel = 77,
 	iSettingsLabel = 78,
-	iSaveExtraInfo = 79
+	iSaveExtraInfo = 79,
+	
+	iScalingLabel = 80
 };
 
 enum preferencesTabs
@@ -130,6 +135,13 @@ enum prefsStrokeLocations
 	strokeInside = 1,
 	strokeCenter = 2,
 	strokeOutside = 3
+};
+
+enum prefsStartupOptions
+{
+	kPrefsNewIcon = 1,
+	kPrefsOpenIcon = 2,
+	kPrefsDoNothing = 3
 };
 
 typedef struct preferencesStruct
@@ -168,6 +180,9 @@ typedef struct preferencesStruct
 	int			lastSelectionStrokeAmount;
 	int			lastSelectionStrokeLocation;
 	Rect		lastScreenBounds;
+	int			startupOptions;
+	int			scaling;
+	int			lastImportExportFormat;
 } PreferencesStruct;
 
 typedef PreferencesStruct** PreferencesHandle;
@@ -189,9 +204,9 @@ class editorPreferencesClass
 							checkSync,
 							dither,
 							saveExtraInfo,
-							newEditor,
-							openIcon,
-							doNothing,
+							automaticallyResize,
+							startupOptions,
+							scaling,
 							defaultFormat,
 							tabs,
 							externalEditor,
@@ -202,6 +217,7 @@ class editorPreferencesClass
 							previewScaled,
 							previewSizeLabel,
 							previewSizeSlider,
+							resetPaletteLocations,
 							previewSizeField;
 		Handle				generalControls, defaultsControls, externalEditorControls;
 		MenuHandle			typesMenu;
@@ -243,6 +259,8 @@ class editorPreferencesClass
 		int					GetDefaultZoomLevel();
 		/*int					GetSaveFork();*/
 		int					GetPreviewSize();
+		int					GetStartupOptions();
+		int					GetScaling();
 		
 		void				GetEditorShortcutString(Str255 string);
 		void				GetNewEditorShortcut();
@@ -285,6 +303,9 @@ class editorPreferencesClass
 		Rect				GetLastScreenBounds();
 		void				SetLastScreenBounds(Rect bounds);
 		
+		int					GetLastImportExportFormat();
+		void				SetLastImportExportFormat(int format);
+		
 		void				IncrementTimesUsed();
 		int					GetTimesUsed();
 		
@@ -300,22 +321,27 @@ enum preferencesFlags
 {
 	prefsDrawGrid = 				1 << 0,
 	prefsDontCheckMasks = 			1 << 1,
-	prefsDither =					1 << 2,
-	prefsDontMakeNewEditor =		1 << 3,
-	prefsOpenIcon = 				1 << 4,
+	prefsDither =					1 << 2, //
+	prefsDontMakeNewEditorOld =		1 << 3,
+	prefsOpenIconOld = 				1 << 4,
 	prefsGenerateOldStyle = 		1 << 5,
-	prefsRealTimePreviews = 		1 << 6,
-	prefsAntiAlias = 				1 << 7,
+	prefsRealTimePreviews = 		1 << 6, //
+	prefsAntiAlias = 				1 << 7, //
 	prefsColorsPaletteVisible = 	1 << 8,
 	prefsMembersPaletteVisible =	1 << 9,
 	prefsPreviewPaletteVisible =	1 << 10,
 	prefsToolPaletteVisible = 		1 << 11,
-	prefsExportIconAndMask =		1 << 12,
+	prefsExportIconAndMask =		1 << 12, //
 	prefsFilled = 					1 << 13,
 	prefsPreviewScaled = 			1 << 14,
 	prefsShowOnlyLoadedMembers = 	1 << 15,
 	prefsPreviewSelected =			1 << 16,
-	prefsSaveExtraInfo = 			1 << 17
+	prefsSaveExtraInfo = 			1 << 17,
+	prefsAutomaticallyResize =		1 << 18, //
+	prefsAutomaticallyReposition = 	1 << 19,
+	prefsIgnoreResolutionChange =	1 << 20,
+	prefsAutomaticallyMerge =		1 << 21,
+	prefsAutomaticallyOverwrite = 	1 << 22
 };
 
 typedef struct textSettings

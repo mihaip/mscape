@@ -98,7 +98,8 @@ void icnsEditorClass::HandleZoom(Point startMouse)
 	
 	UpdateZoom();
 	
-	ZoomFitWindow();
+	if (statics.preferences.FeatureEnabled(prefsAutomaticallyResize))
+		ZoomFitWindow();
 	
 	x = magnification * ((**currentPix).bounds.right - (**currentPix).bounds.left);
 	y = magnification * ((**currentPix).bounds.bottom - (**currentPix).bounds.top);
@@ -2345,11 +2346,26 @@ void icnsEditorClass::HandlePen(Point initialMouse)
 		if (((status & selectionFloated) && PtInRgn(mouseLoc, selectionRgn)) ||
 			!(status & selectionFloated))
 		{
-			GetCPixel(oldX - xOffset, oldY - yOffset, &temp);
+			bool	sampleIsForegroundColor = true;
 			
 			statics.toolPalette->GetColors(&foreColor, NULL);
 			
-			if (AreEqualRGB(temp, foreColor))
+			for (int sampleX = oldX - xOffset; sampleX < oldX - xOffset + statics.preferences.GetLineThickness(); sampleX++)
+			{
+				for (int sampleY = oldY - yOffset; sampleY < oldY - yOffset + statics.preferences.GetLineThickness(); sampleY++)
+				{
+					GetCPixel(sampleX, sampleY, &temp);
+					if (!AreEqualRGB(temp, foreColor))
+					{
+						sampleIsForegroundColor = false;
+						break;
+					}
+				}
+				if (!sampleIsForegroundColor)
+					break;
+			}
+			
+			if (sampleIsForegroundColor)
 				statics.toolPalette->GetColors(NULL, &penColor);
 			else
 				penColor = foreColor;

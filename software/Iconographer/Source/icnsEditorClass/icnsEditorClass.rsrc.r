@@ -44,7 +44,7 @@ resource 'CNTL' (203, "Horizontal Scrollbar", purgeable) {
 };
 
 resource 'CNTL' (1120, "Add Member Type Menu", purgeable) {
-	{56, 4, 76, 338},
+	{71, 19, 91, 353},
 	0,
 	visible,
 	100,
@@ -55,7 +55,7 @@ resource 'CNTL' (1120, "Add Member Type Menu", purgeable) {
 };
 
 resource 'CNTL' (1121, "Add Member Source Menu", purgeable) {
-	{82, 4, 102, 338},
+	{97, 19, 117, 353},
 	0,
 	visible,
 	100,
@@ -120,19 +120,19 @@ resource 'DITL' (1002, purgeable) {
 resource 'DITL' (1003, purgeable) {
 	{	/* array DITLarray: 5 elements */
 		/* [1] */
-		{116, 270, 136, 339},
+		{131, 285, 151, 354},
 		Button {
 			enabled,
 			"Add"
 		},
 		/* [2] */
-		{116, 187, 136, 256},
+		{131, 202, 151, 271},
 		Button {
 			enabled,
 			"Cancel"
 		},
 		/* [3] */
-		{4, 4, 52, 344},
+		{19, 19, 67, 359},
 		StaticText {
 			disabled,
 			"Select the new member you wish to add, a"
@@ -140,13 +140,13 @@ resource 'DITL' (1003, purgeable) {
 			"h it to be based upon."
 		},
 		/* [4] */
-		{56, 4, 76, 338},
+		{71, 19, 91, 353},
 		Control {
 			enabled,
 			1120
 		},
 		/* [5] */
-		{82, 4, 102, 338},
+		{97, 19, 117, 353},
 		Control {
 			enabled,
 			1121
@@ -266,7 +266,7 @@ resource 'DLOG' (1002, "Set External Editor Shortcut", purgeable) {
 };
 
 resource 'DLOG' (1003, "Add Member", purgeable) {
-	{475, 627, 623, 977},
+	{400, 600, 561, 974},
 	1043,
 	invisible,
 	noGoAway,
@@ -4670,7 +4670,7 @@ resource 'PICT' (2055, "Windows 8-bit Picker") {
 };
 
 resource 'STR#' (200, "Basic Strings", purgeable) {
-	{	/* array StringArray: 18 elements */
+	{	/* array StringArray: 27 elements */
 		/* [1] */
 		"Untitled",
 		/* [2] */
@@ -4723,7 +4723,36 @@ resource 'STR#' (200, "Basic Strings", purgeable) {
 		"2000. Would you like to continue with th"
 		"e saving or delete some members?",
 		/* [18] */
-		"Continue"
+		"Continue",
+		/* [19] */
+		"The icon and mask pair you are attemptin"
+		"g to insert into already contains pixel "
+		"data. Would you like to merge with the e"
+		"xisting contents or overwrite them?",
+		/* [20] */
+		"Merge",
+		/* [21] */
+		"Overwrite",
+		/* [22] */
+		"Remember selection",
+		/* [23] */
+		"Select a graphics file you would like to"
+		" import into the current icon member.",
+		/* [24] */
+		"Select a name and location for the graph"
+		"ics file you would like to export the cu"
+		"rrent icon member to.",
+		/* [25] */
+		"Export Format:",
+		/* [26] */
+		"Select a name and location for the folde"
+		"r in which you wish to export the curren"
+		"t icon’s members as several graphics fil"
+		"es.",
+		/* [27] */
+		"Select a folder or some graphics files t"
+		"hat you would like to import into the cu"
+		"rrent icon."
 	}
 };
 
@@ -4752,6 +4781,36 @@ resource 'STR#' (203, "Editor Help", purgeable) {
 		"Main (magnified) editing area",
 		/* [2] */
 		"Current magnification level"
+	}
+};
+
+resource 'STR#' (204, "Import/Export Formats", purgeable) {
+	{	/* array StringArray: 5 elements */
+		/* [1] */
+		"TIFF",
+		/* [2] */
+		"Photoshop",
+		/* [3] */
+		"BMP",
+		/* [4] */
+		"PNG",
+		/* [5] */
+		"PICT"
+	}
+};
+
+resource 'STR#' (205, "Import/Export Format Extensions", purgeable) {
+	{	/* array StringArray: 5 elements */
+		/* [1] */
+		"tiff",
+		/* [2] */
+		"psd",
+		/* [3] */
+		"bmp",
+		/* [4] */
+		"png",
+		/* [5] */
+		"pict"
 	}
 };
 
@@ -4948,6 +5007,21 @@ resource 'WIND' (200, purgeable) {
 	noAutoCenter
 };
 
+resource 'dctb' (1003) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
+	}
+};
+
 resource 'dlgx' (1002) {
 	versionZero {
 		15
@@ -4970,5 +5044,10 @@ resource 'dlgx' (9999) {
 	versionZero {
 		15
 	}
+};
+
+data 'ictb' (1003) {
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000"                                          /* .... */
 };
 

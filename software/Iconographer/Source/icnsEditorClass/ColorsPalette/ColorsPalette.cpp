@@ -283,11 +283,13 @@ void ColorsPalette::UpdateReadout(int x, int y, RGBColor color)
 	
 	readoutChanged = true;
 	
+	// don't update if values are the same
 	if (x == currentX &&
 		y == currentY &&
 		AreEqualRGB(color, currentReadoutColor))
 		return;
 	
+	// position readout
 	CopyString(finalString, "\p");
 	if (x != -1)
 	{
@@ -295,10 +297,12 @@ void ColorsPalette::UpdateReadout(int x, int y, RGBColor color)
 		AppendString(finalString, "\p\r");
 		NumToString(y, numberAsString);
 		AppendString(finalString, numberAsString);
+		AppendString(finalString, "\p\r"); // final newline needed, otherwise justification is messy
 	}
 	SetControlText(controls.positionReadoutData, finalString);
 	Draw1Control(controls.positionReadoutData);
 	
+	// color readout
 	CopyString(finalString, "\p");
 	if (!AreEqualRGB(color, kPickerNeverUsedColor))
 	{
@@ -309,7 +313,7 @@ void ColorsPalette::UpdateReadout(int x, int y, RGBColor color)
 		AppendString(finalString, "\p%\r");
 		NumToString(round(float(color.blue)/65535.0 * 100), numberAsString);
 		AppendString(finalString, numberAsString);
-		AppendString(finalString, "\p%");
+		AppendString(finalString, "\p%\r"); // ditto on the new line
 	}
 	
 	SetControlText(controls.colorReadoutData, finalString);
@@ -326,17 +330,13 @@ void ColorsPalette::CreateControls()
 	Rect						tempRect, backgroundPaneRect;
 	ControlFontStyleRec			readoutStyle;
 	
-	readoutStyle.flags = kControlUseJustMask;
+	readoutStyle.flags = kControlUseJustMask | kControlUseFontMask | kControlUseSizeMask;
 	readoutStyle.just = teFlushRight;
-	
-	SAVEGWORLD;
-	SetPort();
-	TextFont(applFont);
-	TextSize(9);
-	RESTOREGWORLD;
+	readoutStyle.font = kControlFontSmallSystemFont;
 	
 	CreateRootControl(window, &controls.root);
 	
+	// background pane
 	controls.backgroundPane = GetNewControl(rCPBackgroundPane, window);
 	backgroundPaneRect = GetPortRect();
 	InsetRect(&backgroundPaneRect, -1, -1);
@@ -344,6 +344,7 @@ void ColorsPalette::CreateControls()
 	SetControlUserPaneDraw(controls.backgroundPane, CPBackgroundPaneDraw);
 	SetControlUserPaneHitTest(controls.backgroundPane, CPBackgroundPaneHitTest);
 				   
+	// color swatch
 	controls.swatch = GetNewControl(rCPSwatch, window);
 	EmbedControl(controls.swatch, controls.backgroundPane);
 	SetControlUserPaneDraw(controls.swatch, CPSwatchDraw);
@@ -366,24 +367,29 @@ void ColorsPalette::CreateControls()
 	InsetRgn(foreColorRgn, 3, 3);
 	InsetRgn(backColorRgn, 3, 3);
 	
+	// tabs
 	controls.tabs = GetNewControl(rCPTabs, window);
 	EmbedControl(controls.tabs, controls.backgroundPane);
 	MHelp::SetControlHelp(controls.tabs, rCPHelp, hCPTabs);
+	SetControlFontStyle(controls.tabs, &readoutStyle);
 	
-	controls.separator1 = GetNewControl(rCPSeparator1, window);
+	// position readout
 	controls.positionReadoutLabel = GetNewControl(rCPPositionReadoutLabel, window);
 	ResetStaticTextTitle(controls.positionReadoutLabel);
 	controls.positionReadoutData = GetNewControl(rCPPositionReadoutData, window);
 	SetControlFontStyle(controls.positionReadoutData, &readoutStyle);
 	MHelp::SetControlHelp(controls.positionReadoutData, rCPHelp, hCPPosReadout);
 	
-	//controls.separator2 = GetNewControl(rCPSeparator2, window);
+	controls.separator1 = GetNewControl(rCPSeparator1, window);
+	
+	// color readout
 	controls.colorReadoutLabel = GetNewControl(rCPColorReadoutLabel, window);
 	ResetStaticTextTitle(controls.colorReadoutLabel);
 	controls.colorReadoutData = GetNewControl(rCPColorReadoutData, window);
 	SetControlFontStyle(controls.colorReadoutData, &readoutStyle);
 	MHelp::SetControlHelp(controls.colorReadoutData, rCPHelp, hCPColorReadout);
 	
+	// color picker area
 	controls.colorPickerArea = GetNewControl(rCPColorPickerArea, window);
 	EmbedControl(controls.colorPickerArea, controls.tabs);
 	SetControlUserPaneHitTest(controls.colorPickerArea, GenericHitTest);
@@ -727,34 +733,45 @@ HSVColorPicker::~HSVColorPicker()
 
 void HSVColorPicker::CreateControls()
 {
+	ControlFontStyleRec			labelStyle;
+	
+	labelStyle.flags =  kControlUseFontMask | kControlUseSizeMask;
+	labelStyle.font = kControlFontSmallSystemFont;
+	
 	parentControl = GetNewControl(rHSVCPBaseControl, parentWindow->GetWindow());
 	EmbedControl(parentControl, displayAreaControl);
 	
+	// hue
 	hueSlider = GetNewControl(rHSVCPHueSlider, parentWindow->GetWindow());
 	EmbedControl(hueSlider, parentControl);
 	hueLabel = GetNewControl(rHSVCPHueLabel, parentWindow->GetWindow());
 	ResetStaticTextTitle(hueLabel);
 	EmbedControl(hueLabel, parentControl);
+	SetControlFontStyle(hueLabel, &labelStyle);
 	huePreview = GetNewControl(rHSVCPHuePreview, parentWindow->GetWindow());
 	EmbedControl(huePreview, parentControl);
 	SetControlUserPaneDraw(huePreview, HSVColorPicker::PreviewDraw);
 	SetControlUserPaneHitTest(huePreview, GenericHitTest);
 	
+	// saturation
 	saturationSlider = GetNewControl(rHSVCPSaturationSlider, parentWindow->GetWindow());
 	EmbedControl(saturationSlider, parentControl);
 	saturationLabel = GetNewControl(rHSVCPSaturationLabel, parentWindow->GetWindow());
 	ResetStaticTextTitle(saturationLabel);
 	EmbedControl(saturationLabel, parentControl);
+	SetControlFontStyle(saturationLabel, &labelStyle);
 	saturationPreview = GetNewControl(rHSVCPSaturationPreview, parentWindow->GetWindow());
 	EmbedControl(saturationPreview, parentControl);
 	SetControlUserPaneDraw(saturationPreview, HSVColorPicker::PreviewDraw);
 	SetControlUserPaneHitTest(saturationPreview, GenericHitTest);
-		
+	
+	// value
 	valueSlider = GetNewControl(rHSVCPValueSlider, parentWindow->GetWindow());
 	EmbedControl(valueSlider, parentControl);
 	valueLabel = GetNewControl(rHSVCPValueLabel, parentWindow->GetWindow());
 	ResetStaticTextTitle(valueLabel);
 	EmbedControl(valueLabel, parentControl);
+	SetControlFontStyle(valueLabel, &labelStyle);
 	valuePreview = GetNewControl(rHSVCPValuePreview, parentWindow->GetWindow());
 	EmbedControl(valuePreview, parentControl);
 	SetControlUserPaneDraw(valuePreview, HSVColorPicker::PreviewDraw);

@@ -29,7 +29,7 @@ resource 'CNTL' (130, "About Box: Version", purgeable) {
 	0,
 	288,
 	0,
-	"Version 2.4"
+	"Version 2.5"
 };
 
 resource 'CNTL' (131, "About Box: Registration Info", purgeable) {

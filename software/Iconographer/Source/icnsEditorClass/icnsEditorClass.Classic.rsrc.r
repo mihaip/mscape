@@ -11,14 +11,14 @@ resource 'CNTL' (1000, "Zoom Level Arrows", purgeable) {
 };
 
 resource 'CNTL' (1003, "Startup Options Group Box", purgeable) {
-	{111, 9, 185, 189},
+	{232, 8, 322, 380},
 	0,
 	visible,
 	120,
 	0,
 	160,
 	0,
-	"At startup"
+	"Other Option"
 };
 
 resource 'CNTL' (1004, "Default Format", purgeable) {
@@ -32,8 +32,19 @@ resource 'CNTL' (1004, "Default Format", purgeable) {
 	"Default icon format:"
 };
 
+resource 'CNTL' (1005, "Settings Group Box", purgeable) {
+	{40, 8, 148, 380},
+	0,
+	visible,
+	120,
+	0,
+	160,
+	0,
+	"Settings"
+};
+
 resource 'CNTL' (1007, "Preferences Tabs", purgeable) {
-	{9, 0, 271, 388},
+	{9, 0, 329, 388},
 	1007,
 	visible,
 	100,
@@ -154,18 +165,18 @@ resource 'CNTL' (1018, "External Editor Shortcut", purgeable) {
 };
 
 resource 'CNTL' (1019, "Members Palette Box", purgeable) {
-	{111, 198, 185, 381},
+	{152, 8, 228, 380},
 	0,
 	visible,
 	100,
 	0,
 	160,
 	0,
-	"Display members palette"
+	"Membes Palette Display"
 };
 
 resource 'CNTL' (1020, "Members Palette Display Slider", purgeable) {
-	{162, 253, 178, 343},
+	{207, 91, 223, 331},
 	64,
 	visible,
 	64,
@@ -186,22 +197,55 @@ resource 'CNTL' (1021, "Stroke Location Box", purgeable) {
 	"Location"
 };
 
+resource 'CNTL' (1022, "Startup Options Popup", purgeable) {
+	{252, 12, 268, 372},
+	0,
+	visible,
+	120,
+	1022,
+	401,
+	0,
+	"At startup:"
+};
+
+resource 'CNTL' (1023, "Scaling Popup", purgeable) {
+	{275, 12, 291, 372},
+	0,
+	visible,
+	120,
+	1023,
+	401,
+	0,
+	"Scaling:"
+};
+
+resource 'CNTL' (1024, "Import Popup", purgeable) {
+	{94, 416, 111, 568},
+	0,
+	visible,
+	0,
+	1024,
+	401,
+	0,
+	""
+};
+
 resource 'DITL' (1000, "Preferences", purgeable) {
 	{	/* array DITLarray: 3 elements */
 		/* [1] */
-		{284, 306, 304, 374},
+		{341, 306, 361, 374},
 		Button {
 			enabled,
 			"OK"
 		},
 		/* [2] */
-		{284, 226, 304, 290},
+		{341, 226, 361, 290},
 		Button {
 			enabled,
 			"Cancel"
 		},
 		/* [3] */
-		{9, 0, 271, 388},
+		{9, 0, 329, 388},
 		Control {
 			enabled,
 			1007
@@ -420,109 +464,167 @@ resource 'DITL' (1021, purgeable) {
 	}
 };
 
+resource 'DITL' (1023, purgeable) {
+	{	/* array DITLarray: 5 elements */
+		/* [1] */
+		{101, 498, 121, 568},
+		Button {
+			enabled,
+			"Import"
+		},
+		/* [2] */
+		{101, 410, 121, 480},
+		Button {
+			enabled,
+			"Cancel"
+		},
+		/* [3] */
+		{20, 20, 72, 568},
+		StaticText {
+			disabled,
+			"Iconographer has attempted to match up t"
+			"he files you selected to the icon member"
+			"s in the following way. If you’d like di"
+			"fferent files to be mapped to different "
+			"members, please select them from the pop"
+			"up menu."
+		},
+		/* [4] */
+		{76, 27, 90, 87},
+		StaticText {
+			disabled,
+			"Icons"
+		},
+		/* [5] */
+		{76, 303, 90, 363},
+		StaticText {
+			disabled,
+			"Masks"
+		}
+	}
+};
+
+resource 'DITL' (1024, purgeable) {
+	{	/* array DITLarray: 2 elements */
+		/* [1] */
+		{1, 20, 17, 136},
+		StaticText {
+			disabled,
+			"Static text"
+		},
+		/* [2] */
+		{0, 140, 17, 292},
+		Control {
+			enabled,
+			1024
+		}
+	}
+};
+
 resource 'DITL' (1100, purgeable) {
 	{	/* array DITLarray: 18 elements */
 		/* [1] */
-		{40, 8, 56, 313},
+		{56, 16, 72, 321},
 		CheckBox {
 			enabled,
 			"Show only loaded members"
 		},
 		/* [2] */
-		{57, 8, 73, 313},
+		{73, 16, 89, 321},
 		CheckBox {
 			enabled,
 			"Check masks when saving"
 		},
 		/* [3] */
-		{74, 8, 90, 313},
+		{90, 16, 106, 321},
 		CheckBox {
 			enabled,
-			"Dither when working with lower depths"
+			"Dither at lower depths"
 		},
 		/* [4] */
-		{111, 9, 185, 189},
+		{232, 8, 322, 380},
 		Control {
 			enabled,
 			1003
 		},
 		/* [5] */
-		{126, 16, 142, 181},
-		RadioButton {
+		{124, 16, 140, 321},
+		CheckBox {
 			enabled,
-			"Create a new icon"
+			"Automatically resize windows"
 		},
 		/* [6] */
-		{144, 16, 160, 181},
-		RadioButton {
+		{252, 12, 268, 372},
+		Control {
 			enabled,
-			"Open an existing icon"
+			1022
 		},
 		/* [7] */
-		{162, 16, 178, 181},
-		RadioButton {
+		{275, 12, 291, 372},
+		Control {
 			enabled,
-			"Do nothing"
+			1023
 		},
 		/* [8] */
-		{111, 198, 185, 381},
+		{152, 8, 228, 380},
 		Control {
 			enabled,
 			1019
 		},
 		/* [9] */
-		{126, 204, 142, 364},
+		{169, 16, 185, 136},
 		RadioButton {
 			enabled,
 			"Full size"
 		},
 		/* [10] */
-		{144, 204, 160, 364},
+		{188, 16, 204, 136},
 		RadioButton {
 			enabled,
 			"Scaled"
 		},
 		/* [11] */
-		{162, 218, 178, 251},
+		{206, 56, 222, 89},
 		StaticText {
 			disabled,
 			"Size:"
 		},
 		/* [12] */
-		{162, 253, 178, 343},
+		{207, 91, 223, 331},
 		Control {
 			enabled,
 			1020
 		},
 		/* [13] */
-		{164, 351, 176, 367},
+		{210, 339, 220, 364},
 		EditText {
 			enabled,
 			"64"
 		},
 		/* [14] */
-		{195, 99, 215, 277},
+		{297, 105, 317, 283},
 		Button {
 			enabled,
 			"Reset Palette Locations"
 		},
 		/* [15] */
-		{198, 76, 212, 88},
-		UserItem {
-			enabled
+		{40, 8, 148, 380},
+		Control {
+			enabled,
+			1005
 		},
 		/* [16] */
-		{198, 76, 212, 88},
+		{304, 316, 318, 328},
 		UserItem {
 			enabled
 		},
 		/* [17] */
-		{198, 76, 212, 88},
+		{304, 316, 318, 328},
 		UserItem {
 			enabled
 		},
 		/* [18] */
-		{91, 8, 107, 313},
+		{107, 16, 123, 321},
 		CheckBox {
 			enabled,
 			"Save extra information with icons"
@@ -977,6 +1079,28 @@ data 'DLGX' (1021) {
 	$"0000 0004 0000 0001 0000 0000 0000"                 /* .............. */
 };
 
+data 'DLGX' (1023) {
+	$"0843 6861 7263 6F61 6C00 0000 0000 0000"            /* .Charcoal....... */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
+	$"0005 0000 0000 0000 0000 0000 0000 0001"            /* ................ */
+	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
+	$"0000 0000 0000 0006 0000 0000 0000 0000"            /* ................ */
+	$"0000 0006 0000 0000 0000 0000 0000"                 /* .............. */
+};
+
+data 'DLGX' (1024) {
+	$"0843 6861 7263 6F61 6C00 0000 0000 0000"            /* .Charcoal....... */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
+	$"0002 0006 0000 0000 0000 0000 0000 0005"            /* ................ */
+	$"0000 0000 0000 0000 0000"                           /* .......... */
+};
+
 data 'DLGX' (1100) {
 	$"0654 6563 686E 6F00 0000 0000 0000 0000"            /* .Techno......... */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
@@ -986,14 +1110,14 @@ data 'DLGX' (1100) {
 	$"0012 0003 0000 0000 0000 0000 0000 0003"            /* ................ */
 	$"0000 0000 0000 0000 0000 0003 0000 0000"            /* ................ */
 	$"0000 0000 0000 0005 0000 0000 0000 0000"            /* ................ */
-	$"0000 0004 0000 0001 0000 0000 0000 0004"            /* ................ */
-	$"0000 0001 0000 0000 0000 0004 0000 0001"            /* ................ */
+	$"0000 0003 0000 0000 0000 0000 0000 0005"            /* ................ */
+	$"0000 0000 0000 0000 0000 0005 0000 0000"            /* ................ */
 	$"0000 0000 0000 0005 0000 0000 0000 0000"            /* ................ */
 	$"0000 0004 0000 0001 0000 0000 0000 0004"            /* ................ */
 	$"0000 0001 0000 0000 0000 0006 0000 0000"            /* ................ */
 	$"0000 0000 0000 0005 0000 0000 0000 0000"            /* ................ */
 	$"0000 0007 0000 0000 0000 0000 0000 0002"            /* ................ */
-	$"0000 0000 0000 0000 0000 000A 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0005 0000 0000"            /* ................ */
 	$"0000 0000 0000 000A 0000 0000 0000 0000"            /* ................ */
 	$"0000 000A 0000 0000 0000 0000 0000 0003"            /* ................ */
 	$"0000 0000 0000 0000 0000"                           /* .......... */
@@ -1088,7 +1212,7 @@ data 'DLGX' (9999) {
 };
 
 resource 'DLOG' (1000, "Preferences", purgeable) {
-	{264, 331, 579, 719},
+	{264, 331, 636, 719},
 	1043,
 	invisible,
 	goAway,
@@ -1154,8 +1278,30 @@ resource 'DLOG' (1021, "Stroke", purgeable) {
 	noAutoCenter
 };
 
+resource 'DLOG' (1023, "Import Members Match-up", purgeable) {
+	{299, 243, 440, 831},
+	1043,
+	invisible,
+	goAway,
+	0x0,
+	1023,
+	"Import Entire Icon",
+	noAutoCenter
+};
+
+resource 'DLOG' (1024, "Import Matchup Single Popup", purgeable) {
+	{566, 969, 638, 1361},
+	dBoxProc,
+	visible,
+	goAway,
+	0x0,
+	1024,
+	"",
+	noAutoCenter
+};
+
 resource 'DLOG' (1100, "Preferences: General Pane", purgeable) {
-	{264, 260, 561, 648},
+	{521, 954, 937, 1346},
 	dBoxProc,
 	visible,
 	goAway,
@@ -1185,6 +1331,63 @@ resource 'DLOG' (1102, "Preferences: External Editing", purgeable) {
 	1102,
 	"",
 	noAutoCenter
+};
+
+resource 'MENU' (1022, "Startup Options") {
+	1022,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Untitled",
+	{	/* array: 3 elements */
+		/* [1] */
+		"Create a New Icon", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Open an Existing Icon", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Do Nothing", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (1023, "Scaling") {
+	1023,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Untitled",
+	{	/* array: 2 elements */
+		/* [1] */
+		"Blocky", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Smooth", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (1024, "Importing Menu") {
+	1024,
+	textMenuProc,
+	0x7FFFFFFE,
+	enabled,
+	"Untitled",
+	{	/* array: 2 elements */
+		/* [1] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"No File", noIcon, noKey, noMark, 2
+	}
+};
+
+resource 'cctb' (1024) {
+	{	/* array ColorSpec: 4 elements */
+		/* [1] */
+		cFrameColor, 0, 0, 0,
+		/* [2] */
+		cBodyColor, 65535, 65535, 65535,
+		/* [3] */
+		cTextColor, 0, 0, 0,
+		/* [4] */
+		cElevatorColor, 65535, 65535, 65535
+	}
 };
 
 resource 'dctb' (1000) {
@@ -1218,6 +1421,36 @@ resource 'dctb' (1020) {
 };
 
 resource 'dctb' (1021) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
+	}
+};
+
+resource 'dctb' (1023) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
+	}
+};
+
+resource 'dctb' (1024) {
 	{	/* array ColorSpec: 5 elements */
 		/* [1] */
 		wContentColor, 65535, 65535, 65535,
@@ -1301,6 +1534,18 @@ resource 'dlgx' (1021) {
 	}
 };
 
+resource 'dlgx' (1023) {
+	versionZero {
+		15
+	}
+};
+
+resource 'dlgx' (1100) {
+	versionZero {
+		15
+	}
+};
+
 data 'ictb' (1000) {
 	$"0000 0000 0000 0000 0000 0000"                      /* ............ */
 };
@@ -1339,6 +1584,15 @@ data 'ictb' (1021) {
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000"                                          /* .... */
+};
+
+data 'ictb' (1023) {
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000"                                          /* .... */
+};
+
+data 'ictb' (1024) {
+	$"0000 0000 0000 0000"                                /* ........ */
 };
 
 data 'ictb' (1100) {
@@ -1409,6 +1663,40 @@ data 'ictb' (1410) {
 
 data 'ictb' (9999) {
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+};
+
+resource 'mctb' (1023) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (1024) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
 };
 
 resource 'tab#' (1007, "Preferences Tabs") {

@@ -896,18 +896,18 @@ pascal OSErr MembersPalette::DragReceiveHandler(WindowPtr theWindow, void *, Dra
 		{
 			GetFlavorData(theDragRef, firstItem, 'Icon', &iconType, &typeSize, 0);
 			if (iconType == selection)
-				frontEditor->InsertFromPicture(pic, targetGW, insertCentered);
+				frontEditor->InsertPictureIntoMember(pic, targetName, NULL, insertCentered);
 			else if (targetName & masks)
 				if ((targetName & mask1) && (iconType & mask1) ||
 					(targetName & mask8) && (iconType & mask8))
-					frontEditor->InsertFromPicture(pic, targetGW, insertCentered + insertScaled);
+					frontEditor->InsertPictureIntoMember(pic, targetName, NULL, insertScaled);
 				else
 					frontEditor->PictureToMask(pic, targetGW);
 			else
-				frontEditor->InsertFromPicture(pic, targetGW, insertCentered + insertScaled);
+				frontEditor->InsertPictureIntoMember(pic, targetName, NULL, insertScaled);
 		}
 		else
-			frontEditor->InsertFromPicture(pic, targetGW, insertCentered);
+			frontEditor->InsertPictureIntoMember(pic, targetName, NULL, insertCentered);
 			
 		frontEditor->members |= targetName;
 			
@@ -1224,7 +1224,6 @@ pascal void MembersPalette::MemberPaneDraw(ControlHandle theControl, short thePa
 	
 	TextFont(0);
 	TextSize(12);
-	
 		
 	RESTOREGWORLD;
 	
@@ -1241,6 +1240,7 @@ pascal void MembersPalette::MemberPaneDraw(ControlHandle theControl, short thePa
 		
 		DisposeRgn(clipRegion);
 	}
+	
 	RESTORECOLORS;
 }
 

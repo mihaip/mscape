@@ -60,10 +60,12 @@ pascal OSErr AEOpenApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long 
 	
 	if (MWindow::GetFront() == NULL)
 	{
-		if (icnsEditorClass::statics.preferences.FeatureEnabled(prefsOpenIcon))
-			OpenIcon(NULL);
-		else if (!icnsEditorClass::statics.preferences.FeatureEnabled(prefsDontMakeNewEditor))
-			NewIcon(true);
+		switch (icnsEditorClass::statics.preferences.GetStartupOptions())
+		{
+			case kPrefsNewIcon: NewIcon(true); break;
+			case kPrefsOpenIcon: OpenIcon(NULL); break;
+			case kPrefsDoNothing: break;
+		}
 	}
 	
 	PostOpen();

@@ -565,13 +565,17 @@ pascal void NavSaveEventFilter(NavEventCallbackMessage callBackSelector,
 						NavCustomControl(callBackParms->context,kNavCtlSetEditFileName,&fileName);
 					}
 					break;
-				case keyDown:
-					NavCustomControl(callBackParms->context,kNavCtlGetFirstControlID,&firstItem);	// ask NavServices for our first control ID
-					GetDialogItemAsControl(navDialog, firstItem + 1, &formatPopup);
-					
-					NavCustomControl(callBackParms->context,kNavCtlGetEditFileName,&fileName);
-					
-					SyncPopupToName(NULL, fileName, formatPopup);
+				case keyUp: // keyUp seems to be required for OS X, keyDown isn't passed on
+				case keyDown: // on the other hand, OS 9's Nav. Services only give us keyDown
+					//NavCustomControl(callBackParms->context,kNavCtlGetFirstControlID,&firstItem);	// ask NavServices for our first control ID
+					//GetDialogItemAsControl(navDialog, firstItem + 1, &formatPopup);
+				
+					if (saveData->formatPopup)
+					{	
+						NavCustomControl(callBackParms->context,kNavCtlGetEditFileName,&fileName);
+						
+						SyncPopupToName(NULL, fileName, saveData->formatPopup);
+					}
 					break;
 				case activateEvt:
 				case updateEvt:
@@ -747,15 +751,15 @@ void SyncPopupToName(FSSpec* file, Str255 fileName, ControlHandle formatPopup)
 		
 	currentValue = GetControlValue(formatPopup);	
 		
-	if (FileHasExtension(fileName, "\p.ico"))
+	if (MUtilities::FileHasExtension(fileName, "\pico"))
 	{
 		if (currentValue != formatWindows &&
 			currentValue != formatWindowsXP)
 			SetControlValue(formatPopup, formatWindows);
 	}
-	else if (FileHasExtension(fileName, "\p.tiff") || FileHasExtension(fileName, "\p.tif"))
+	else if (MUtilities::FileHasExtension(fileName, "\ptiff") || MUtilities::FileHasExtension(fileName, "\ptif"))
 		SetControlValue(formatPopup, formatMacOSXServer);
-	else if (FileHasExtension(fileName, "\p.icns"))
+	else if (MUtilities::FileHasExtension(fileName, "\picns"))
 	{
 		if (file)
 		{

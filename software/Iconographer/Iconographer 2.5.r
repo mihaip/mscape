@@ -1,4 +1,4 @@
-/* Resource fork of software/Iconographer/Iconographer 2.4 */
+/* Resource fork of software/Iconographer/Iconographer 2.5 */
 resource 'CNTL' (200, "Icon Edit Well", purgeable) {
 	{0, 0, 194, 194},
 	0,
@@ -891,14 +891,14 @@ resource 'CNTL' (1000, "Zoom Level Arrows", purgeable) {
 };
 
 resource 'CNTL' (1003, "Startup Options Group Box", purgeable) {
-	{111, 9, 185, 189},
+	{232, 8, 322, 380},
 	0,
 	visible,
 	120,
 	0,
 	160,
 	0,
-	"At startup"
+	"Other Option"
 };
 
 resource 'CNTL' (1004, "Default Format", purgeable) {
@@ -912,8 +912,19 @@ resource 'CNTL' (1004, "Default Format", purgeable) {
 	"Default icon format:"
 };
 
+resource 'CNTL' (1005, "Settings Group Box", purgeable) {
+	{40, 8, 148, 380},
+	0,
+	visible,
+	120,
+	0,
+	160,
+	0,
+	"Settings"
+};
+
 resource 'CNTL' (1007, "Preferences Tabs", purgeable) {
-	{9, 0, 271, 388},
+	{9, 0, 329, 388},
 	1007,
 	visible,
 	100,
@@ -1034,18 +1045,18 @@ resource 'CNTL' (1018, "External Editor Shortcut", purgeable) {
 };
 
 resource 'CNTL' (1019, "Members Palette Box", purgeable) {
-	{111, 198, 185, 381},
+	{152, 8, 228, 380},
 	0,
 	visible,
 	100,
 	0,
 	160,
 	0,
-	"Display members palette"
+	"Membes Palette Display"
 };
 
 resource 'CNTL' (1020, "Members Palette Display Slider", purgeable) {
-	{162, 253, 178, 343},
+	{207, 91, 223, 331},
 	64,
 	visible,
 	64,
@@ -1064,6 +1075,39 @@ resource 'CNTL' (1021, "Stroke Location Box", purgeable) {
 	160,
 	0,
 	"Location"
+};
+
+resource 'CNTL' (1022, "Startup Options Popup", purgeable) {
+	{252, 12, 268, 372},
+	0,
+	visible,
+	120,
+	1022,
+	401,
+	0,
+	"At startup:"
+};
+
+resource 'CNTL' (1023, "Scaling Popup", purgeable) {
+	{275, 12, 291, 372},
+	0,
+	visible,
+	120,
+	1023,
+	401,
+	0,
+	"Scaling:"
+};
+
+resource 'CNTL' (1024, "Import Popup", purgeable) {
+	{94, 416, 111, 568},
+	0,
+	visible,
+	0,
+	1024,
+	401,
+	0,
+	""
 };
 
 resource 'CNTL' (1001, "Flags Group Box", purgeable) {
@@ -1086,17 +1130,6 @@ resource 'CNTL' (1002, "ID Popup", purgeable) {
 	400,
 	0,
 	""
-};
-
-resource 'CNTL' (1005, "Icon Info: Icon Format", purgeable) {
-	{70, 10, 90, 378},
-	0,
-	visible,
-	-1,
-	4000,
-	401,
-	0,
-	"Icon Format:"
 };
 
 resource 'CNTL' (1006, "Members Group Box", purgeable) {
@@ -1251,6 +1284,17 @@ resource 'CNTL' (10100, "User Pane", purgeable) {
 	256,
 	0,
 	""
+};
+
+resource 'CNTL' (6000, "Format Popup", purgeable) {
+	{6, 8, 26, 371},
+	0,
+	visible,
+	94,
+	6000,
+	409,
+	0,
+	"Get String Here:"
 };
 
 resource 'DITL' (1002, purgeable) {
@@ -1920,19 +1964,19 @@ resource 'DITL' (128, "About Box") {
 resource 'DITL' (1000, "Preferences", purgeable) {
 	{	/* array DITLarray: 3 elements */
 		/* [1] */
-		{284, 306, 304, 374},
+		{341, 306, 361, 374},
 		Button {
 			enabled,
 			"OK"
 		},
 		/* [2] */
-		{284, 226, 304, 290},
+		{341, 226, 361, 290},
 		Button {
 			enabled,
 			"Cancel"
 		},
 		/* [3] */
-		{9, 0, 271, 388},
+		{9, 0, 329, 388},
 		Control {
 			enabled,
 			1007
@@ -2151,109 +2195,167 @@ resource 'DITL' (1021, purgeable) {
 	}
 };
 
+resource 'DITL' (1023, purgeable) {
+	{	/* array DITLarray: 5 elements */
+		/* [1] */
+		{101, 498, 121, 568},
+		Button {
+			enabled,
+			"Import"
+		},
+		/* [2] */
+		{101, 410, 121, 480},
+		Button {
+			enabled,
+			"Cancel"
+		},
+		/* [3] */
+		{20, 20, 72, 568},
+		StaticText {
+			disabled,
+			"Iconographer has attempted to match up t"
+			"he files you selected to the icon member"
+			"s in the following way. If you’d like di"
+			"fferent files to be mapped to different "
+			"members, please select them from the pop"
+			"up menu."
+		},
+		/* [4] */
+		{76, 27, 90, 87},
+		StaticText {
+			disabled,
+			"Icons"
+		},
+		/* [5] */
+		{76, 303, 90, 363},
+		StaticText {
+			disabled,
+			"Masks"
+		}
+	}
+};
+
+resource 'DITL' (1024, purgeable) {
+	{	/* array DITLarray: 2 elements */
+		/* [1] */
+		{1, 20, 17, 136},
+		StaticText {
+			disabled,
+			"Static text"
+		},
+		/* [2] */
+		{0, 140, 17, 292},
+		Control {
+			enabled,
+			1024
+		}
+	}
+};
+
 resource 'DITL' (1100, purgeable) {
 	{	/* array DITLarray: 18 elements */
 		/* [1] */
-		{40, 8, 56, 313},
+		{56, 16, 72, 321},
 		CheckBox {
 			enabled,
 			"Show only loaded members"
 		},
 		/* [2] */
-		{57, 8, 73, 313},
+		{73, 16, 89, 321},
 		CheckBox {
 			enabled,
 			"Check masks when saving"
 		},
 		/* [3] */
-		{74, 8, 90, 313},
+		{90, 16, 106, 321},
 		CheckBox {
 			enabled,
-			"Dither when working with lower depths"
+			"Dither at lower depths"
 		},
 		/* [4] */
-		{111, 9, 185, 189},
+		{232, 8, 322, 380},
 		Control {
 			enabled,
 			1003
 		},
 		/* [5] */
-		{126, 16, 142, 181},
-		RadioButton {
+		{124, 16, 140, 321},
+		CheckBox {
 			enabled,
-			"Create a new icon"
+			"Automatically resize windows"
 		},
 		/* [6] */
-		{144, 16, 160, 181},
-		RadioButton {
+		{252, 12, 268, 372},
+		Control {
 			enabled,
-			"Open an existing icon"
+			1022
 		},
 		/* [7] */
-		{162, 16, 178, 181},
-		RadioButton {
+		{275, 12, 291, 372},
+		Control {
 			enabled,
-			"Do nothing"
+			1023
 		},
 		/* [8] */
-		{111, 198, 185, 381},
+		{152, 8, 228, 380},
 		Control {
 			enabled,
 			1019
 		},
 		/* [9] */
-		{126, 204, 142, 364},
+		{169, 16, 185, 136},
 		RadioButton {
 			enabled,
 			"Full size"
 		},
 		/* [10] */
-		{144, 204, 160, 364},
+		{188, 16, 204, 136},
 		RadioButton {
 			enabled,
 			"Scaled"
 		},
 		/* [11] */
-		{162, 218, 178, 251},
+		{206, 56, 222, 89},
 		StaticText {
 			disabled,
 			"Size:"
 		},
 		/* [12] */
-		{162, 253, 178, 343},
+		{207, 91, 223, 331},
 		Control {
 			enabled,
 			1020
 		},
 		/* [13] */
-		{164, 351, 176, 367},
+		{210, 339, 220, 364},
 		EditText {
 			enabled,
 			"64"
 		},
 		/* [14] */
-		{195, 99, 215, 277},
+		{297, 105, 317, 283},
 		Button {
 			enabled,
 			"Reset Palette Locations"
 		},
 		/* [15] */
-		{198, 76, 212, 88},
-		UserItem {
-			enabled
+		{40, 8, 148, 380},
+		Control {
+			enabled,
+			1005
 		},
 		/* [16] */
-		{198, 76, 212, 88},
+		{304, 316, 318, 328},
 		UserItem {
 			enabled
 		},
 		/* [17] */
-		{198, 76, 212, 88},
+		{304, 316, 318, 328},
 		UserItem {
 			enabled
 		},
 		/* [18] */
-		{91, 8, 107, 313},
+		{107, 16, 123, 321},
 		CheckBox {
 			enabled,
 			"Save extra information with icons"
@@ -3045,7 +3147,7 @@ resource 'DITL' (4002, purgeable) {
 };
 
 resource 'DITL' (5000, purgeable) {
-	{	/* array DITLarray: 8 elements */
+	{	/* array DITLarray: 9 elements */
 		/* [1] */
 		{58, 288, 78, 356},
 		Button {
@@ -3093,6 +3195,23 @@ resource 'DITL' (5000, purgeable) {
 		Icon {
 			disabled,
 			1
+		},
+		/* [9] */
+		{60, 68, 76, 148},
+		CheckBox {
+			enabled,
+			"Check box"
+		}
+	}
+};
+
+resource 'DITL' (6000, purgeable) {
+	{	/* array DITLarray: 1 elements */
+		/* [1] */
+		{6, 8, 26, 371},
+		Control {
+			enabled,
+			6000
 		}
 	}
 };
@@ -3281,6 +3400,28 @@ data 'DLGX' (1021) {
 	$"0000 0004 0000 0001 0000 0000 0000"                 /* .............. */
 };
 
+data 'DLGX' (1023) {
+	$"0843 6861 7263 6F61 6C00 0000 0000 0000"            /* .Charcoal....... */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
+	$"0005 0000 0000 0000 0000 0000 0000 0001"            /* ................ */
+	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
+	$"0000 0000 0000 0006 0000 0000 0000 0000"            /* ................ */
+	$"0000 0006 0000 0000 0000 0000 0000"                 /* .............. */
+};
+
+data 'DLGX' (1024) {
+	$"0843 6861 7263 6F61 6C00 0000 0000 0000"            /* .Charcoal....... */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
+	$"0002 0006 0000 0000 0000 0000 0000 0005"            /* ................ */
+	$"0000 0000 0000 0000 0000"                           /* .......... */
+};
+
 data 'DLGX' (1100) {
 	$"0654 6563 686E 6F00 0000 0000 0000 0000"            /* .Techno......... */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
@@ -3290,14 +3431,14 @@ data 'DLGX' (1100) {
 	$"0012 0003 0000 0000 0000 0000 0000 0003"            /* ................ */
 	$"0000 0000 0000 0000 0000 0003 0000 0000"            /* ................ */
 	$"0000 0000 0000 0005 0000 0000 0000 0000"            /* ................ */
-	$"0000 0004 0000 0001 0000 0000 0000 0004"            /* ................ */
-	$"0000 0001 0000 0000 0000 0004 0000 0001"            /* ................ */
+	$"0000 0003 0000 0000 0000 0000 0000 0005"            /* ................ */
+	$"0000 0000 0000 0000 0000 0005 0000 0000"            /* ................ */
 	$"0000 0000 0000 0005 0000 0000 0000 0000"            /* ................ */
 	$"0000 0004 0000 0001 0000 0000 0000 0004"            /* ................ */
 	$"0000 0001 0000 0000 0000 0006 0000 0000"            /* ................ */
 	$"0000 0000 0000 0005 0000 0000 0000 0000"            /* ................ */
 	$"0000 0007 0000 0000 0000 0000 0000 0002"            /* ................ */
-	$"0000 0000 0000 0000 0000 000A 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0005 0000 0000"            /* ................ */
 	$"0000 0000 0000 000A 0000 0000 0000 0000"            /* ................ */
 	$"0000 000A 0000 0000 0000 0000 0000 0003"            /* ................ */
 	$"0000 0000 0000 0000 0000"                           /* .......... */
@@ -3459,18 +3600,27 @@ data 'DLGX' (4002) {
 };
 
 data 'DLGX' (5000) {
-	$"054F 7361 6B61 0000 0000 0000 0000 0000"            /* .Osaka.......... */
+	$"0843 6861 7263 6F61 6C00 0000 0000 0000"            /* .Charcoal....... */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
-	$"0008 0000 0000 0000 0000 0000 0000 0001"            /* ................ */
+	$"0009 0000 0000 0000 0000 0000 0000 0001"            /* ................ */
 	$"0000 0000 0000 0000 0000 0002 0000 0000"            /* ................ */
 	$"0000 0000 0000 0008 0000 0000 0000 0000"            /* ................ */
 	$"0000 0006 0000 0000 0000 0000 0000 0006"            /* ................ */
 	$"0000 0000 0000 0000 0000 0008 0000 0000"            /* ................ */
 	$"0000 0000 0000 0008 0000 0000 0000 0000"            /* ................ */
-	$"0000"                                               /* .. */
+	$"0000 0003 0000 0000 0000 0000 0000"                 /* .............. */
+};
+
+data 'DLGX' (6000) {
+	$"0654 6563 686E 6F00 0000 0000 0000 0000"            /* .Techno......... */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
+	$"0001 0005 0000 0000 0000 0000 0000"                 /* .............. */
 };
 
 resource 'DLOG' (1002, "Set External Editor Shortcut", purgeable) {
@@ -3650,7 +3800,7 @@ resource 'DLOG' (128, "About") {
 };
 
 resource 'DLOG' (1000, "Preferences", purgeable) {
-	{264, 331, 579, 719},
+	{264, 331, 636, 719},
 	1043,
 	invisible,
 	goAway,
@@ -3716,8 +3866,30 @@ resource 'DLOG' (1021, "Stroke", purgeable) {
 	noAutoCenter
 };
 
+resource 'DLOG' (1023, "Import Members Match-up", purgeable) {
+	{299, 243, 440, 831},
+	1043,
+	invisible,
+	goAway,
+	0x0,
+	1023,
+	"Import Entire Icon",
+	noAutoCenter
+};
+
+resource 'DLOG' (1024, "Import Matchup Single Popup", purgeable) {
+	{566, 969, 638, 1361},
+	dBoxProc,
+	visible,
+	goAway,
+	0x0,
+	1024,
+	"",
+	noAutoCenter
+};
+
 resource 'DLOG' (1100, "Preferences: General Pane", purgeable) {
-	{264, 260, 561, 648},
+	{521, 954, 937, 1346},
 	dBoxProc,
 	visible,
 	goAway,
@@ -3801,6 +3973,17 @@ resource 'DLOG' (5001, "MAlert: Non Movable", purgeable) {
 	0x0,
 	5000,
 	"",
+	noAutoCenter
+};
+
+resource 'DLOG' (6000, "Format Custom Items", purgeable) {
+	{253, 278, 285, 666},
+	1024,
+	visible,
+	goAway,
+	0x0,
+	6000,
+	"DITL 2000 from iconmangler.µ.rsrc",
 	noAutoCenter
 };
 
@@ -3969,10 +4152,10 @@ resource 'MENU' (128) {
 resource 'MENU' (129) {
 	129,
 	textMenuProc,
-	0x7FFFFDEF,
+	0x7FFFEDEF,
 	enabled,
 	"File",
-	{	/* array: 11 elements */
+	{	/* array: 14 elements */
 		/* [1] */
 		"New Icon", noIcon, "N", noMark, plain,
 		/* [2] */
@@ -3994,6 +4177,12 @@ resource 'MENU' (129) {
 		/* [10] */
 		"-", noIcon, noKey, noMark, plain,
 		/* [11] */
+		"Import", noIcon, hierarchicalMenu, "å", plain,
+		/* [12] */
+		"Export", noIcon, hierarchicalMenu, "ç", plain,
+		/* [13] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [14] */
 		"Quit", noIcon, "Q", noMark, plain
 	}
 };
@@ -4058,9 +4247,9 @@ resource 'MENU' (132) {
 		/* [4] */
 		"Inverse", noIcon, "I", noMark, plain,
 		/* [5] */
-		"Expand/Contract", noIcon, "E", noMark, plain,
+		"Expand/Contract…", noIcon, "E", noMark, plain,
 		/* [6] */
-		"Stroke", noIcon, noKey, noMark, plain
+		"Stroke…", noIcon, noKey, noMark, plain
 	}
 };
 
@@ -4212,6 +4401,34 @@ resource 'MENU' (139) {
 	}
 };
 
+resource 'MENU' (140) {
+	140,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Import",
+	{	/* array: 2 elements */
+		/* [1] */
+		"Current Member…", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Entire Icon…", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (141) {
+	141,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Export",
+	{	/* array: 2 elements */
+		/* [1] */
+		"Current Member…", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Entire Icon…", noIcon, noKey, noMark, plain
+	}
+};
+
 resource 'MENU' (400, "Icon States") {
 	400,
 	textMenuProc,
@@ -4315,6 +4532,50 @@ resource 'MENU' (625) {
 		"Unfilled", noIcon, noKey, noMark, plain,
 		/* [2] */
 		"Filled", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (1022, "Startup Options") {
+	1022,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Untitled",
+	{	/* array: 3 elements */
+		/* [1] */
+		"Create a New Icon", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Open an Existing Icon", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Do Nothing", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (1023, "Scaling") {
+	1023,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Untitled",
+	{	/* array: 2 elements */
+		/* [1] */
+		"Blocky", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Smooth", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (1024, "Importing Menu") {
+	1024,
+	textMenuProc,
+	0x7FFFFFFE,
+	enabled,
+	"Untitled",
+	{	/* array: 2 elements */
+		/* [1] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"No File", noIcon, noKey, noMark, 2
 	}
 };
 
@@ -4521,10 +4782,10 @@ resource 'MENU' (204, "System Folders") {
 resource 'MENU' (205, "Generic") {
 	205,
 	textMenuProc,
-	0x7FFFDFBF,
+	0x7FFF7FBF,
 	enabled,
 	"Generic Icons",
-	{	/* array: 53 elements */
+	{	/* array: 56 elements */
 		/* [1] */
 		"–21701 CD-RW", noIcon, noKey, noMark, plain,
 		/* [2] */
@@ -4540,97 +4801,103 @@ resource 'MENU' (205, "Generic") {
 		/* [7] */
 		"-", noIcon, noKey, noMark, plain,
 		/* [8] */
-		"–21672 Mounted Disk Image", noIcon, noKey, noMark, plain,
+		"–21800 File Icon Placeholder", noIcon, noKey, noMark, plain,
 		/* [9] */
-		"–20800 Disk Image", noIcon, noKey, noMark, plain,
+		"–21674 Window", noIcon, noKey, noMark, plain,
 		/* [10] */
-		"–21651 Jaz Disk", noIcon, noKey, noMark, plain,
+		"–21672 Mounted Disk Image", noIcon, noKey, noMark, plain,
 		/* [11] */
-		"–21650 FireWire Drive", noIcon, noKey, noMark, plain,
+		"–20800 Disk Image", noIcon, noKey, noMark, plain,
 		/* [12] */
-		"–21649 SCSI Drive", noIcon, noKey, noMark, plain,
+		"–21651 Jaz Disk", noIcon, noKey, noMark, plain,
 		/* [13] */
-		"–21648 Hard Drive", noIcon, noKey, noMark, plain,
+		"–21650 FireWire Drive", noIcon, noKey, noMark, plain,
 		/* [14] */
-		"-", noIcon, noKey, noMark, plain,
+		"–21649 SCSI Drive", noIcon, noKey, noMark, plain,
 		/* [15] */
-		"–21671 Font", noIcon, noKey, noMark, plain,
+		"–21648 Hard Drive", noIcon, noKey, noMark, plain,
 		/* [16] */
-		"–21670 Clipping", noIcon, noKey, noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [17] */
-		"–21666 Home", noIcon, noKey, noMark, plain,
+		"–21671 Font", noIcon, noKey, noMark, plain,
 		/* [18] */
-		"–20799 Generic PC Card", noIcon, noKey, noMark, plain,
+		"–21670 Clipping", noIcon, noKey, noMark, plain,
 		/* [19] */
-		"–20794 TrueType Multi Flat Font", noIcon, noKey, noMark, plain,
+		"–21666 Home", noIcon, noKey, noMark, plain,
 		/* [20] */
-		"–20752 Generic Font Scaler", noIcon, noKey, noMark, plain,
+		"–20799 PC Card", noIcon, noKey, noMark, plain,
 		/* [21] */
-		"–20743 LaserWriter", noIcon, noKey, noMark, plain,
+		"–20794 TrueType Multi Flat Font", noIcon, noKey, noMark, plain,
 		/* [22] */
-		"–20732 TrueType Flat Font", noIcon, noKey, noMark, plain,
+		"–20752 Font Scaler", noIcon, noKey, noMark, plain,
 		/* [23] */
-		"–16415 Generic Extension", noIcon, noKey, noMark, plain,
+		"–20743 LaserWriter", noIcon, noKey, noMark, plain,
 		/* [24] */
-		"–4000 Generic Document", noIcon, noKey, noMark, plain,
+		"–20732 TrueType Flat Font", noIcon, noKey, noMark, plain,
 		/* [25] */
-		"–3998 Floppy", noIcon, noKey, noMark, plain,
+		"–16415 Extension", noIcon, noKey, noMark, plain,
 		/* [26] */
-		"–3996 Generic App", noIcon, noKey, noMark, plain,
+		"–4000 Document", noIcon, noKey, noMark, plain,
 		/* [27] */
-		"–3995 Apple HD", noIcon, noKey, noMark, plain,
+		"–3998 Floppy", noIcon, noKey, noMark, plain,
 		/* [28] */
-		"–3991 Generic DA", noIcon, noKey, noMark, plain,
+		"–3996 Application", noIcon, noKey, noMark, plain,
 		/* [29] */
-		"–3989 Edition File", noIcon, noKey, noMark, plain,
+		"–3995 Apple HD", noIcon, noKey, noMark, plain,
 		/* [30] */
-		"–3988 RAM Disk", noIcon, noKey, noMark, plain,
+		"–3991 Generic DA", noIcon, noKey, noMark, plain,
 		/* [31] */
-		"–3987 CD", noIcon, noKey, noMark, plain,
+		"–3989 Edition File", noIcon, noKey, noMark, plain,
 		/* [32] */
-		"–3985 Stationery", noIcon, noKey, noMark, plain,
+		"–3988 RAM Disk", noIcon, noKey, noMark, plain,
 		/* [33] */
-		"–3971 Generic Preferences", noIcon, noKey, noMark, plain,
+		"–3987 CD", noIcon, noKey, noMark, plain,
 		/* [34] */
-		"–3970 Generic Suitcase", noIcon, noKey, noMark, plain,
+		"–3985 Stationery", noIcon, noKey, noMark, plain,
 		/* [35] */
-		"–3969 Generic DA Document", noIcon, noKey, noMark, plain,
+		"–3971 Preferences", noIcon, noKey, noMark, plain,
 		/* [36] */
-		"–3967 Shared Library", noIcon, noKey, noMark, plain,
+		"–3970 Suitcase", noIcon, noKey, noMark, plain,
 		/* [37] */
-		"–3851 Generic Control Strip Module", noIcon, noKey, noMark, plain,
+		"–3969 DA Document", noIcon, noKey, noMark, plain,
 		/* [38] */
-		"–3850 Generic Codec", noIcon, noKey, noMark, plain,
+		"–3967 Shared Library", noIcon, noKey, noMark, plain,
 		/* [39] */
-		"–3832 PC Disk", noIcon, noKey, noMark, plain,
+		"–3851 Control Strip Module", noIcon, noKey, noMark, plain,
 		/* [40] */
-		"–3831 Apple II Disk", noIcon, noKey, noMark, plain,
+		"–3850 QuickTime Codec", noIcon, noKey, noMark, plain,
 		/* [41] */
-		"–3824 Generic Control Panel", noIcon, noKey, noMark, plain,
+		"–3832 PC Disk", noIcon, noKey, noMark, plain,
 		/* [42] */
-		"–3817 Removable Disk", noIcon, noKey, noMark, plain,
+		"–3831 Apple II Disk", noIcon, noKey, noMark, plain,
 		/* [43] */
-		"–3810 Sound", noIcon, noKey, noMark, plain,
+		"–3824 Control Panel", noIcon, noKey, noMark, plain,
 		/* [44] */
-		"–3809 International Script", noIcon, noKey, noMark, plain,
+		"–3817 Removable Disk", noIcon, noKey, noMark, plain,
 		/* [45] */
-		"–3808 TrueType Font", noIcon, noKey, noMark, plain,
+		"–3810 Sound", noIcon, noKey, noMark, plain,
 		/* [46] */
-		"–3807 Bitmap Font", noIcon, noKey, noMark, plain,
+		"–3809 International Script", noIcon, noKey, noMark, plain,
 		/* [47] */
-		"–3806 Keyboard Layout", noIcon, noKey, noMark, plain,
+		"–3808 TrueType Font", noIcon, noKey, noMark, plain,
 		/* [48] */
-		"–3805 DA Suitcase", noIcon, noKey, noMark, plain,
+		"–3807 Bitmap Font", noIcon, noKey, noMark, plain,
 		/* [49] */
-		"–3804 Font Suitcase", noIcon, noKey, noMark, plain,
+		"–3806 Keyboard Layout", noIcon, noKey, noMark, plain,
 		/* [50] */
-		"–3803 Sound Clipping", noIcon, noKey, noMark, plain,
+		"–3805 DA Suitcase", noIcon, noKey, noMark, plain,
 		/* [51] */
-		"–3802 Text Clipping", noIcon, noKey, noMark, plain,
+		"–3804 Font Suitcase", noIcon, noKey, noMark, plain,
 		/* [52] */
-		"–3801 Picture Clipping", noIcon, noKey, noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [53] */
-		"–3800 Generic Clipping", noIcon, noKey, noMark, plain
+		"–3803 Sound Clipping", noIcon, noKey, noMark, plain,
+		/* [54] */
+		"–3802 Text Clipping", noIcon, noKey, noMark, plain,
+		/* [55] */
+		"–3801 Picture Clipping", noIcon, noKey, noMark, plain,
+		/* [56] */
+		"–3800 Other Clipping", noIcon, noKey, noMark, plain
 	}
 };
 
@@ -4640,7 +4907,7 @@ resource 'MENU' (206, "Internet") {
 	allEnabled,
 	enabled,
 	"Internet Icons",
-	{	/* array: 15 elements */
+	{	/* array: 16 elements */
 		/* [1] */
 		"–20804 Web Share", noIcon, noKey, noMark, plain,
 		/* [2] */
@@ -4670,6 +4937,8 @@ resource 'MENU' (206, "Internet") {
 		/* [14] */
 		"–20731 IP File Server", noIcon, noKey, noMark, plain,
 		/* [15] */
+		"–20727 Network Browser", noIcon, noKey, noMark, plain,
+		/* [16] */
 		"–20726 AppleTalk", noIcon, noKey, noMark, plain
 	}
 };
@@ -4785,10 +5054,10 @@ resource 'MENU' (210, "Dock Icons") {
 resource 'MENU' (211, "Others") {
 	211,
 	textMenuProc,
-	0x57F6FF6D,
+	0x2FF6FF6D,
 	enabled,
 	"Others",
-	{	/* array: 45 elements */
+	{	/* array: 46 elements */
 		/* [1] */
 		"–16386 Apple Menu Icon", noIcon, noKey, noMark, plain,
 		/* [2] */
@@ -4844,40 +5113,42 @@ resource 'MENU' (211, "Others") {
 		/* [27] */
 		"–20721 Forwards Arrow (OS X)", noIcon, noKey, noMark, plain,
 		/* [28] */
-		"-", noIcon, noKey, noMark, plain,
+		"–21720 Column View Arrow", noIcon, noKey, noMark, plain,
 		/* [29] */
-		"–20271 Help Icon", noIcon, noKey, noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [30] */
-		"-", noIcon, noKey, noMark, plain,
+		"–20271 Help Icon", noIcon, noKey, noMark, plain,
 		/* [31] */
-		"–16509 Clipboard", noIcon, noKey, noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [32] */
-		"–16494 System Suitcase", noIcon, noKey, noMark, plain,
+		"–16509 Clipboard", noIcon, noKey, noMark, plain,
 		/* [33] */
-		"–16482 Finder", noIcon, noKey, noMark, plain,
+		"–16494 System Suitcase", noIcon, noKey, noMark, plain,
 		/* [34] */
-		"–3828 MacOS Logo", noIcon, noKey, noMark, plain,
+		"–16482 Finder", noIcon, noKey, noMark, plain,
 		/* [35] */
-		"-", noIcon, noKey, noMark, plain,
+		"–3828 MacOS Logo", noIcon, noKey, noMark, plain,
 		/* [36] */
-		"–3822 Stop Icon", noIcon, noKey, noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [37] */
-		"–3821 Caution Icon", noIcon, noKey, noMark, plain,
+		"–3822 Stop Icon", noIcon, noKey, noMark, plain,
 		/* [38] */
-		"–3820 Note Icon", noIcon, noKey, noMark, plain,
+		"–3821 Caution Icon", noIcon, noKey, noMark, plain,
 		/* [39] */
-		"-", noIcon, noKey, noMark, plain,
+		"–3820 Note Icon", noIcon, noKey, noMark, plain,
 		/* [40] */
-		"–3816 Group", noIcon, noKey, noMark, plain,
-		/* [41] */
-		"–3815 Owner", noIcon, noKey, noMark, plain,
-		/* [42] */
-		"–3813 Guest User", noIcon, noKey, noMark, plain,
-		/* [43] */
-		"–3814 User", noIcon, noKey, noMark, plain,
-		/* [44] */
 		"-", noIcon, noKey, noMark, plain,
+		/* [41] */
+		"–3816 Group", noIcon, noKey, noMark, plain,
+		/* [42] */
+		"–3815 Owner", noIcon, noKey, noMark, plain,
+		/* [43] */
+		"–3813 Guest User", noIcon, noKey, noMark, plain,
+		/* [44] */
+		"–3814 User", noIcon, noKey, noMark, plain,
 		/* [45] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [46] */
 		"Custom ID", noIcon, noKey, noMark, 2
 	}
 };
@@ -4907,6 +5178,16 @@ resource 'MENU' (4000, "Icon Formats") {
 		"-", noIcon, noKey, noMark, plain,
 		/* [9] */
 		"Mac OS X Server 1.x (.tiff file)", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (6000, "Format Menu") {
+	6000,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Untitled",
+	{	/* array: 0 elements */
 	}
 };
 
@@ -13121,7 +13402,7 @@ resource 'PICT' (128, "About Pic") {
 };
 
 resource 'STR#' (200, "Basic Strings", purgeable) {
-	{	/* array StringArray: 18 elements */
+	{	/* array StringArray: 27 elements */
 		/* [1] */
 		"Untitled",
 		/* [2] */
@@ -13174,7 +13455,36 @@ resource 'STR#' (200, "Basic Strings", purgeable) {
 		"2000. Would you like to continue with th"
 		"e saving or delete some members?",
 		/* [18] */
-		"Continue"
+		"Continue",
+		/* [19] */
+		"The icon and mask pair you are attemptin"
+		"g to insert into already contains pixel "
+		"data. Would you like to merge with the e"
+		"xisting contents or overwrite them?",
+		/* [20] */
+		"Merge",
+		/* [21] */
+		"Overwrite",
+		/* [22] */
+		"Remember selection",
+		/* [23] */
+		"Select a graphics file you would like to"
+		" import into the current icon member.",
+		/* [24] */
+		"Select a name and location for the graph"
+		"ics file you would like to export the cu"
+		"rrent icon member to.",
+		/* [25] */
+		"Export Format:",
+		/* [26] */
+		"Select a name and location for the folde"
+		"r in which you wish to export the curren"
+		"t icon’s members as several graphics fil"
+		"es.",
+		/* [27] */
+		"Select a folder or some graphics files t"
+		"hat you would like to import into the cu"
+		"rrent icon."
 	}
 };
 
@@ -13203,6 +13513,36 @@ resource 'STR#' (203, "Editor Help", purgeable) {
 		"Main (magnified) editing area",
 		/* [2] */
 		"Current magnification level"
+	}
+};
+
+resource 'STR#' (204, "Import/Export Formats", purgeable) {
+	{	/* array StringArray: 5 elements */
+		/* [1] */
+		"TIFF",
+		/* [2] */
+		"Photoshop",
+		/* [3] */
+		"BMP",
+		/* [4] */
+		"PNG",
+		/* [5] */
+		"PICT"
+	}
+};
+
+resource 'STR#' (205, "Import/Export Format Extensions", purgeable) {
+	{	/* array StringArray: 5 elements */
+		/* [1] */
+		"tiff",
+		/* [2] */
+		"psd",
+		/* [3] */
+		"bmp",
+		/* [4] */
+		"png",
+		/* [5] */
+		"pict"
 	}
 };
 
@@ -13423,7 +13763,7 @@ resource 'STR#' (300, "Icon Browser: Strings", purgeable) {
 };
 
 resource 'STR#' (128, "Default Names", purgeable) {
-	{	/* array StringArray: 37 elements */
+	{	/* array StringArray: 38 elements */
 		/* [1] */
 		"Iconographer",
 		/* [2] */
@@ -13498,7 +13838,9 @@ resource 'STR#' (128, "Default Names", purgeable) {
 		/* [36] */
 		"Reposition",
 		/* [37] */
-		"Reaplly “<effect name>”"
+		"Reaplly “<effect name>”",
+		/* [38] */
+		"Remember selection"
 	}
 };
 
@@ -13632,7 +13974,7 @@ resource 'STR#' (130, "Prompts", purgeable) {
 		"ld like to order your <app name> registr"
 		"ation code.",
 		/* [13] */
-		"Welcome to <app name> 2.4. If this is yo"
+		"Welcome to <app name> 2.5. If this is yo"
 		"ur first time using it, and you would li"
 		"ke to get more information on its operat"
 		"ion, extensive documentation is availabl"
@@ -14678,7 +15020,7 @@ resource 'STR#' (4001, "Icon Part Names", purgeable) {
 };
 
 resource 'STR#' (4002, "Misc. Icon Strings", purgeable) {
-	{	/* array StringArray: 6 elements */
+	{	/* array StringArray: 8 elements */
 		/* [1] */
 		"<I>None</I>",
 		/* [2] */
@@ -14694,7 +15036,11 @@ resource 'STR#' (4002, "Misc. Icon Strings", purgeable) {
 		/* [5] */
 		"No",
 		/* [6] */
-		"Choose Another File"
+		"Choose Another File",
+		/* [7] */
+		"Icon",
+		/* [8] */
+		"Mask"
 	}
 };
 
@@ -15030,6 +15376,18 @@ resource 'dlgx' (1021) {
 	}
 };
 
+resource 'dlgx' (1023) {
+	versionZero {
+		15
+	}
+};
+
+resource 'dlgx' (1100) {
+	versionZero {
+		15
+	}
+};
+
 resource 'dlgx' (4000) {
 	versionZero {
 		15
@@ -15065,10 +15423,6 @@ resource 'MBAR' (128) {
 	}
 };
 
-data 'Mcmd' (1) {
-	$"0000"                                               /* .. */
-};
-
 data 'Mcmd' (131) {
 	$"000C 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
@@ -15088,6 +15442,32 @@ data 'Mcmd' (202) {
 	$"0009 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000"                                     /* ...... */
+};
+
+data 'Mcmd' (205) {
+	$"0038 0000 0000 0000 0000 0000 0000 0000"            /* .8.............. */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000"                                               /* .. */
+};
+
+data 'Mcmd' (206) {
+	$"0000"                                               /* .. */
+};
+
+data 'Mcmd' (211) {
+	$"0000"                                               /* .. */
 };
 
 data 'Pref' (129, "Default Preferences") {
@@ -15237,6 +15617,36 @@ resource 'dctb' (1020) {
 };
 
 resource 'dctb' (1021) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
+	}
+};
+
+resource 'dctb' (1023) {
+	{	/* array ColorSpec: 5 elements */
+		/* [1] */
+		wContentColor, 65535, 65535, 65535,
+		/* [2] */
+		wFrameColor, 0, 0, 0,
+		/* [3] */
+		wTextColor, 0, 0, 0,
+		/* [4] */
+		wHiliteColor, 0, 0, 0,
+		/* [5] */
+		wTitleBarColor, 65535, 65535, 65535
+	}
+};
+
+resource 'dctb' (1024) {
 	{	/* array ColorSpec: 5 elements */
 		/* [1] */
 		wContentColor, 65535, 65535, 65535,
@@ -15420,6 +15830,15 @@ data 'ictb' (1021) {
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 	$"0000 0000"                                          /* .... */
+};
+
+data 'ictb' (1023) {
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000"                                          /* .... */
+};
+
+data 'ictb' (1024) {
+	$"0000 0000 0000 0000"                                /* ........ */
 };
 
 data 'ictb' (1100) {
@@ -15658,7 +16077,75 @@ resource 'mctb' (138) {
 	}
 };
 
+resource 'mctb' (1023) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (1024) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
 resource 'mctb' (202) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (206) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (211) {
 	{	/* array MCTBArray: 1 elements */
 		/* [1] */
 		mctbLast, 0,
@@ -22149,20 +22636,17 @@ resource 'icm8' (252, "Item Icon") {
 	$"0000 00FF FFFF FFFF FFFF FFFF FFFF"
 };
 
-resource 'ALRT' (3000) {
-	{40, 40, 134, 416},
-	3000,
-	{	/* array: 4 elements */
+resource 'cctb' (1024) {
+	{	/* array ColorSpec: 4 elements */
 		/* [1] */
-		OK, visible, sound1,
+		cFrameColor, 0, 0, 0,
 		/* [2] */
-		OK, visible, sound1,
+		cBodyColor, 65535, 65535, 65535,
 		/* [3] */
-		OK, visible, sound1,
+		cTextColor, 0, 0, 0,
 		/* [4] */
-		OK, visible, sound1
-	},
-	alertPositionMainScreen
+		cElevatorColor, 65535, 65535, 65535
+	}
 };
 
 resource 'cctb' (1001) {
@@ -22228,6 +22712,35 @@ resource 'cctb' (1103) {
 		/* [4] */
 		cElevatorColor, 65535, 65535, 65535
 	}
+};
+
+resource 'cctb' (6000) {
+	{	/* array ColorSpec: 4 elements */
+		/* [1] */
+		cFrameColor, 0, 0, 0,
+		/* [2] */
+		cBodyColor, 65535, 65535, 65535,
+		/* [3] */
+		cTextColor, 0, 0, 0,
+		/* [4] */
+		cElevatorColor, 65535, 65535, 65535
+	}
+};
+
+resource 'ALRT' (3000) {
+	{40, 40, 134, 416},
+	3000,
+	{	/* array: 4 elements */
+		/* [1] */
+		OK, visible, sound1,
+		/* [2] */
+		OK, visible, sound1,
+		/* [3] */
+		OK, visible, sound1,
+		/* [4] */
+		OK, visible, sound1
+	},
+	alertPositionMainScreen
 };
 
 data 'clut' (4000, "Windows 4-bit Colors") {

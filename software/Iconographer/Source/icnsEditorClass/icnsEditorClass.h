@@ -63,6 +63,8 @@ enum resources
 	rBasicStrings = 200,
 	rLabelStrings = 201,
 	rEditorHelp = 203,
+	rImportExportFormats = 204,
+	rImportExportFormatExtensions = 205,
 	rAddMemberHelp = 1003,
 	
 	// dialogs
@@ -71,7 +73,9 @@ enum resources
 	rAdjustHuePane = 1011,
 	rAdjustBrightnessPane = 1012,
 	rExpandContractDialog = 1020,
-	rStrokeDialog = 1021
+	rStrokeDialog = 1021,
+	rImportMatchupDialog = 1023,
+	rImportMatchupPopupDialog = 1024
 };
 
 enum addMemberItems
@@ -121,6 +125,19 @@ enum strokeItems
 	iOutside = 9
 };
 
+enum importMatchupItems
+{
+	iMatchupText = 3,
+	iIconsHeader = 4,
+	iMasksHeader = 5,
+	iFirstMatchupLabel = 6,
+	iFirstMatchupPopup = 7,
+	
+	kInitialOffset = 3,
+	kSecondColumnOffset = 276,
+	kMatchupPopupOffset = 17 + 8
+};
+
 enum basicStrings
 {
 	sUntitledName = 1,
@@ -147,7 +164,18 @@ enum basicStrings
 	eWindowsTooManyMembersError = 16,
 	eWindowsTooManyMembersExplanation = 17,
 	
-	eContinueButton = 18
+	eContinueButton = 18,
+	
+	eMergeError = 19,
+	eMergeButton = 20,
+	eMergeOverwriteButton = 21,
+	eMergeRememberCheckbox = 22,
+	
+	eImportCurrentMember = 23,
+	eExportCurrentPrompt = 24,
+	eExportFormatMenuLabel = 25,
+	eExportEntirePrompt = 26,
+	eImportEntirePrompt = 27
 };
 
 enum labelStrings
@@ -166,6 +194,27 @@ enum editorHelp
 	hEditingArea = 1,
 	hZoomPlacard = 2
 };
+
+enum importExportFormatStrings
+{
+	kImportFormatsCount = 8,
+	kExportFormatsCount = 5
+};
+
+const static OSType kImportFileTypes[kImportFormatsCount] = {kQTFileTypeTIFF,
+															 kQTFileTypePhotoShop,
+															 kQTFileTypeBMP,
+															 'BMP ',
+															 kQTFileTypePNG,
+															 'PNG ',
+															 kQTFileTypePicture,
+															 kQTFileTypeQuickTimeImage};
+
+const static OSType kExportFileTypes[kExportFormatsCount] = {kQTFileTypeTIFF,
+															 kQTFileTypePhotoShop,
+															 kQTFileTypeBMP,
+															 kQTFileTypePNG,
+															 kQTFileTypePicture};
 
 enum controlIDs
 {
@@ -266,6 +315,12 @@ enum modes
 {
 	previewNormal,
 	previewSelected
+};
+
+enum importExportModes
+{
+	currentMember,
+	entireIcon
 };
 
 typedef struct controlList
@@ -385,21 +440,30 @@ class icnsEditorClass : public MIcon, public MDocumentWindow
 		void 			DragSelection(Point startMouse, int anchorX, int anchorY);
 		//void			ResizeWindow();
 		
-		void			PostZoom();
+		void			PostZoom(bool resizeAnyway);
 		void			ZoomFitWindow();
 		void 			ClampScrollValues();
 		void			MakeEditAreaRect(int h, int v, Rect* areaRect);
 		Point			GetMaxDimensions();
 		int				GetMaxMagnification();
 		void			UpdateZoom();
+		void			UpdateScrollbars();
 		
 		void			CopyDepth(int oldDepth, int newDepth, int iconOrMask);
 		void 			GetDisplayPix(Point theMouse, GWorldPtr *clickedGW, PixMapHandle *clickedPix, long *clickedName, Rect *clickedRect);
-		void			InsertFromPicture(PicHandle srcPic, GWorldPtr targetGW, int options);
+		void			InsertPictureIntoMember(PicHandle srcPic, int targetName, Rect* targetRect, int options);
 		void			PictureToMask(PicHandle srcPic, GWorldPtr maskGW);
 		void			GetSelectionColors(RGBColor** colors, int* noOfColors);
 		void			SaveState(long name);
 		void			SaveMembers(void);
+		
+		void			GetImportSpecs(FSSpec *chosenSpecs, int chosenSpecsCount, FSSpec **importSpecs, int *importSpecsCount);
+		void			ApplyImportMatchups(int memberMatchups[], FSSpec *importSpecs);
+		void			GetImportMatchups(FSSpec *importSpecs, int importSpecsCount, int memberMatchups[]);
+		void			SetupImportMatchupMenu(ControlHandle popup, FSSpec *importSpecs, int importSpecsCount, int matchup);
+		void			GuessImportMatchups(int memberMatchups[], FSSpec *importSpecs, int importSpecsCount);
+		void			AddToImportListIfTypeOK(FSSpec spec, FSSpec **importSpecs, int* importSpecsCount);
+		void			ExportMemberToFile(int memberName, FSSpec exportSpec, int exportFormat);
 		
 		void			ExpandContract();
 		void			Stroke();
@@ -498,6 +562,9 @@ class icnsEditorClass : public MIcon, public MDocumentWindow
 		void 			LoadFileIcon();
 		void			LoadDataFork();
 		OSErr			Save(void);
+		
+		void			Import(int mode);
+		void			Export(int mode);
 		
 		void			Show();
 		void			Hide();
