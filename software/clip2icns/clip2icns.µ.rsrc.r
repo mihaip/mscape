@@ -1,4 +1,519 @@
 /* Resource fork of software/clip2icns/clip2icns.¬µ.rsrc */
+resource 'ALRT' (300) {
+	{40, 40, 155, 402},
+	300,
+	{	/* array: 4 elements */
+		/* [1] */
+		OK, visible, sound1,
+		/* [2] */
+		OK, visible, sound1,
+		/* [3] */
+		OK, visible, sound1,
+		/* [4] */
+		OK, visible, sound1
+	},
+	alertPositionMainScreen
+};
+
+resource 'BNDL' (128) {
+	'c2ic',
+	0,
+	{	/* array TypeArray: 2 elements */
+		/* [1] */
+		'ICN#',
+		{	/* array IDArray: 3 elements */
+			/* [1] */
+			0, 128,
+			/* [2] */
+			1, 0,
+			/* [3] */
+			2, 0
+		},
+		/* [2] */
+		'FREF',
+		{	/* array IDArray: 3 elements */
+			/* [1] */
+			0, 128,
+			/* [2] */
+			1, 129,
+			/* [3] */
+			2, 130
+		}
+	}
+};
+
+resource 'CNTL' (200) {
+	{0, 0, 20, 230},
+	0,
+	visible,
+	50,
+	200,
+	401,
+	0,
+	"Type:"
+};
+
+resource 'CNTL' (201) {
+	{0, 0, 20, 230},
+	0,
+	visible,
+	50,
+	201,
+	401,
+	0,
+	"Icon:"
+};
+
+resource 'DITL' (128, "About Box") {
+	{	/* array DITLarray: 8 elements */
+		/* [1] */
+		{181, 212, 201, 270},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{10, 10, 125, 270},
+		UserItem {
+			enabled
+		},
+		/* [3] */
+		{76, 144, 89, 226},
+		StaticText {
+			disabled,
+			"Registered to:"
+		},
+		/* [4] */
+		{90, 152, 104, 269},
+		StaticText {
+			disabled,
+			"Not registered"
+		},
+		/* [5] */
+		{104, 152, 118, 269},
+		StaticText {
+			disabled,
+			""
+		},
+		/* [6] */
+		{125, 10, 143, 270},
+		StaticText {
+			disabled,
+			"by Mihai Parparita"
+		},
+		/* [7] */
+		{159, 10, 177, 270},
+		StaticText {
+			enabled,
+			"http://www.mscape.com/"
+		},
+		/* [8] */
+		{142, 10, 160, 270},
+		StaticText {
+			enabled,
+			"mihai@mscape.com"
+		}
+	}
+};
+
+resource 'DITL' (129, "Editing") {
+	{	/* array DITLarray: 11 elements */
+		/* [1] */
+		{159, 181, 179, 239},
+		Button {
+			enabled,
+			"Insert"
+		},
+		/* [2] */
+		{159, 25, 179, 83},
+		Button {
+			enabled,
+			"Close"
+		},
+		/* [3] */
+		{74, 9, 94, 239},
+		Control {
+			enabled,
+			200
+		},
+		/* [4] */
+		{100, 9, 120, 239},
+		Control {
+			enabled,
+			201
+		},
+		/* [5] */
+		{131, 186, 147, 236},
+		EditText {
+			enabled,
+			"-16455"
+		},
+		/* [6] */
+		{130, 31, 145, 51},
+		StaticText {
+			disabled,
+			"ID:"
+		},
+		/* [7] */
+		{8, 25, 56, 121},
+		UserItem {
+			enabled
+		},
+		/* [8] */
+		{9, 133, 57, 229},
+		UserItem {
+			enabled
+		},
+		/* [9] */
+		{58, 52, 70, 95},
+		StaticText {
+			disabled,
+			"clipboard"
+		},
+		/* [10] */
+		{59, 143, 71, 220},
+		StaticText {
+			disabled,
+			"current contents"
+		},
+		/* [11] */
+		{159, 117, 179, 175},
+		Button {
+			enabled,
+			"Extract"
+		}
+	}
+};
+
+resource 'DITL' (130, "Registration") {
+	{	/* array DITLarray: 9 elements */
+		/* [1] */
+		{102, 270, 122, 338},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{102, 190, 122, 254},
+		Button {
+			enabled,
+			"Cancel"
+		},
+		/* [3] */
+		{102, 7, 122, 158},
+		Button {
+			enabled,
+			"Launch Register App"
+		},
+		/* [4] */
+		{12, 136, 28, 336},
+		EditText {
+			enabled,
+			""
+		},
+		/* [5] */
+		{40, 136, 56, 336},
+		EditText {
+			enabled,
+			""
+		},
+		/* [6] */
+		{68, 136, 84, 336},
+		EditText {
+			enabled,
+			""
+		},
+		/* [7] */
+		{12, 8, 28, 51},
+		StaticText {
+			disabled,
+			"Name:"
+		},
+		/* [8] */
+		{40, 8, 56, 98},
+		StaticText {
+			disabled,
+			"Organization:"
+		},
+		/* [9] */
+		{68, 8, 84, 131},
+		StaticText {
+			disabled,
+			"Registration Code:"
+		}
+	}
+};
+
+resource 'DITL' (131, "Preferences") {
+	{	/* array DITLarray: 8 elements */
+		/* [1] */
+		{108, 212, 128, 280},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{108, 132, 128, 196},
+		Button {
+			enabled,
+			"Cancel"
+		},
+		/* [3] */
+		{8, 8, 24, 263},
+		CheckBox {
+			enabled,
+			"Include old style resources (if any)"
+		},
+		/* [4] */
+		{40, 8, 56, 213},
+		CheckBox {
+			enabled,
+			"Set bits Kaleidoscope-style"
+		},
+		/* [5] */
+		{24, 8, 40, 263},
+		CheckBox {
+			enabled,
+			"Generate old style resources"
+		},
+		/* [6] */
+		{56, 8, 72, 213},
+		CheckBox {
+			enabled,
+			"Name resources"
+		},
+		/* [7] */
+		{72, 8, 88, 213},
+		CheckBox {
+			enabled,
+			"Dither when making lower bit-depths"
+		},
+		/* [8] */
+		{88, 8, 104, 213},
+		CheckBox {
+			enabled,
+			"Remember last ID selection"
+		}
+	}
+};
+
+resource 'DITL' (300, "Reminder") {
+	{	/* array DITLarray: 3 elements */
+		/* [1] */
+		{82, 272, 102, 352},
+		Button {
+			enabled,
+			"Register"
+		},
+		/* [2] */
+		{8, 60, 74, 352},
+		StaticText {
+			disabled,
+			"You’ve used clip2icns to create ^0 icons"
+			". If you continue to use it, please pay "
+			"the $10 shareware fee. This can be done "
+			"online, or by using the enclosed Registe"
+			"r application."
+		},
+		/* [3] */
+		{82, 179, 102, 259},
+		Button {
+			enabled,
+			"Not Yet"
+		}
+	}
+};
+
+data 'DLGX' (128) {
+	$"0743 6869 6361 676F 0000 0000 0000 0000"            /* .Chicago........ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
+	$"0008 0000 0000 0000 0000 0000 0000 000A"            /* ................ */
+	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
+	$"0000 0000 0000 0006 0000 0000 0000 0000"            /* ................ */
+	$"0000 0006 0000 0000 0000 0000 0000 0006"            /* ................ */
+	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
+	$"0000 0000 0000 0006 0000 0000 0000 0000"            /* ................ */
+	$"0000"                                               /* .. */
+};
+
+data 'DLGX' (129) {
+	$"0654 6563 686E 6F00 0000 0000 0000 0000"            /* .Techno......... */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
+	$"000B 0002 0000 0000 0000 0000 0000 0001"            /* ................ */
+	$"0000 0000 0000 0000 0000 0005 0000 0000"            /* ................ */
+	$"0000 0000 0000 0005 0000 0000 0000 0000"            /* ................ */
+	$"0000 0007 0000 0000 0000 0000 0000 0006"            /* ................ */
+	$"0000 0000 0000 0000 0000 000A 0000 0000"            /* ................ */
+	$"0000 0000 0000 000A 0000 0000 0000 0000"            /* ................ */
+	$"0000 0006 0000 0000 0000 0000 0000 0006"            /* ................ */
+	$"0000 0000 0000 0000 0000 0002 0000 0000"            /* ................ */
+	$"0000 0000 0000"                                     /* ...... */
+};
+
+data 'DLGX' (130) {
+	$"0654 6563 686E 6F00 0000 0000 0000 0000"            /* .Techno......... */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
+	$"0009 0000 0000 0000 0000 0000 0000 0001"            /* ................ */
+	$"0000 0000 0000 0000 0000 0002 0000 0000"            /* ................ */
+	$"0000 0000 0000 0007 0000 0000 0000 0000"            /* ................ */
+	$"0000 0007 0000 0000 0000 0000 0000 0007"            /* ................ */
+	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
+	$"0000 0000 0000 0006 0000 0000 0000 0000"            /* ................ */
+	$"0000 0006 0000 0000 0000 0000 0000"                 /* .............. */
+};
+
+data 'DLGX' (131) {
+	$"0654 6563 686E 6F00 0000 0000 0000 0000"            /* .Techno......... */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
+	$"0006 0000 0000 0000 0000 0000 0000 0001"            /* ................ */
+	$"0000 0000 0000 0000 0000 0003 0000 0000"            /* ................ */
+	$"0000 0000 0000 0003 0000 0000 0000 0000"            /* ................ */
+	$"0000 0003 0000 0000 0000 0000 0000 0003"            /* ................ */
+	$"0000 0000 0000 0000 0000"                           /* .......... */
+};
+
+resource 'DLOG' (128) {
+	{88, 131, 296, 411},
+	dBoxProc,
+	invisible,
+	noGoAway,
+	0x0,
+	128,
+	"",
+	centerMainScreen
+};
+
+resource 'DLOG' (129) {
+	{54, 42, 244, 295},
+	1043,
+	invisible,
+	goAway,
+	0x0,
+	129,
+	"Edit Icons",
+	alertPositionMainScreen
+};
+
+resource 'DLOG' (130) {
+	{259, 337, 395, 687},
+	dBoxProc,
+	visible,
+	goAway,
+	0x0,
+	130,
+	"",
+	alertPositionParentWindowScreen
+};
+
+resource 'DLOG' (131) {
+	{259, 339, 394, 627},
+	dBoxProc,
+	visible,
+	goAway,
+	0x0,
+	131,
+	"DITL 131 from clip2icns.µ.rsrc",
+	alertPositionMainScreen
+};
+
+resource 'FREF' (128) {
+	'APPL',
+	0,
+	""
+};
+
+resource 'FREF' (129) {
+	'****',
+	1,
+	""
+};
+
+resource 'FREF' (130) {
+	'Icon',
+	2,
+	""
+};
+
+resource 'ICN#' (128) {
+	{	/* array: 2 elements */
+		/* [1] */
+		$"0000 0000 0000 0000 0010 2000 0008 4000"
+		$"0004 8000 0003 0000 0700 0000 0A80 0000"
+		$"7070 0000 9FC8 0FFF 8488 0FF7 8848 0FEE"
+		$"9028 0FFC A048 8FD0 908B CF68 890B EEC0"
+		$"860B EB00 8008 8D80 8008 0800 8008 0800"
+		$"8008 0000 7FF0 0008 0060 0010 0020 0020"
+		$"0010 0040 0008 0080 0004 0100 0002 0200"
+		$"0001 0400 0000 8800 0000 5000 0000 20",
+		/* [2] */
+		$"0000 0000 001F F000 003F F800 007F FC00"
+		$"00FF FE00 01FF FF00 0FFF FF80 0FFF FFC0"
+		$"FFFF FFE0 FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF 7FFF FFFE 00FF FFFE 007F FFFF"
+		$"003F FFFF 001F FFFE 000F FFF8 0007 FFF8"
+		$"0003 FFF0 0001 FFC0 0000 FF00 0000 7F"
+	}
+};
+
+resource 'MBAR' (128) {
+	{	/* array MenuArray: 3 elements */
+		/* [1] */
+		128,
+		/* [2] */
+		129,
+		/* [3] */
+		130
+	}
+};
+
+resource 'MENU' (128) {
+	128,
+	textMenuProc,
+	0x7FFFFFFB,
+	enabled,
+	apple,
+	{	/* array: 3 elements */
+		/* [1] */
+		"About clip2icns…", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Register…", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"-", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (129) {
+	129,
+	textMenuProc,
+	0x7FFFFFFB,
+	enabled,
+	"File",
+	{	/* array: 4 elements */
+		/* [1] */
+		"New Icon File…", noIcon, "N", noMark, plain,
+		/* [2] */
+		"Open Icon File…", noIcon, "O", noMark, plain,
+		/* [3] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"Quit", noIcon, "Q", noMark, plain
+	}
+};
+
 resource 'MENU' (130) {
 	130,
 	textMenuProc,
@@ -27,34 +542,6 @@ resource 'MENU' (130) {
 	}
 };
 
-resource 'MENU' (201) {
-	201,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"Item Icon",
-	{	/* array: 1 elements */
-		/* [1] */
-		"–16455 Item Icon", noIcon, noKey, noMark, plain
-	}
-};
-
-resource 'MENU' (128) {
-	128,
-	textMenuProc,
-	0x7FFFFFFB,
-	enabled,
-	apple,
-	{	/* array: 3 elements */
-		/* [1] */
-		"About clip2icns…", noIcon, noKey, noMark, plain,
-		/* [2] */
-		"Register…", noIcon, noKey, noMark, plain,
-		/* [3] */
-		"-", noIcon, noKey, noMark, plain
-	}
-};
-
 resource 'MENU' (200) {
 	200,
 	textMenuProc,
@@ -79,23 +566,137 @@ resource 'MENU' (200) {
 	}
 };
 
-resource 'MENU' (206) {
-	206,
+resource 'MENU' (201) {
+	201,
 	textMenuProc,
 	allEnabled,
 	enabled,
-	"Badges",
-	{	/* array: 5 elements */
+	"Item Icon",
+	{	/* array: 1 elements */
 		/* [1] */
-		"–20789 Alias Badge", noIcon, noKey, noMark, plain,
+		"–16455 Item Icon", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (202) {
+	202,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"System Folders",
+	{	/* array: 56 elements */
+		/* [1] */
+		"–20803 Language & Region Support", noIcon, noKey, noMark, plain,
 		/* [2] */
-		"–20788 Mounted Badge", noIcon, noKey, noMark, plain,
+		"–20801 Internet Search Sites", noIcon, noKey, noMark, plain,
 		/* [3] */
-		"–20787 Shared Badge", noIcon, noKey, noMark, plain,
+		"–20797 Scripts", noIcon, noKey, noMark, plain,
 		/* [4] */
-		"–20786 Locked Badge", noIcon, noKey, noMark, plain,
+		"–20792 ColorSync Profiles", noIcon, noKey, noMark, plain,
 		/* [5] */
-		"–20740 Script Badge", noIcon, noKey, noMark, plain
+		"–20744 Internet", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"–20729 Favorites", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"–20724 Speakable Items", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"–20723 Appearance", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"–3999 Generic Folder", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"–3997 Open Folder", noIcon, noKey, noMark, plain,
+		/* [11] */
+		"–3994 Private Folder", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"–3993 Trash Empty", noIcon, noKey, noMark, plain,
+		/* [13] */
+		"–3992 Desktop", noIcon, noKey, noMark, plain,
+		/* [14] */
+		"–3984 Trash Full", noIcon, noKey, noMark, plain,
+		/* [15] */
+		"–3983 System Folder", noIcon, noKey, noMark, plain,
+		/* [16] */
+		"–3982 Apple Menu Items", noIcon, noKey, noMark, plain,
+		/* [17] */
+		"–3981 Startup Items", noIcon, noKey, noMark, plain,
+		/* [18] */
+		"–3980 Shared Folder", noIcon, noKey, noMark, plain,
+		/* [19] */
+		"–3979 Drop Folder", noIcon, noKey, noMark, plain,
+		/* [20] */
+		"–3978 Share Point", noIcon, noKey, noMark, plain,
+		/* [21] */
+		"–3977 Mounted Folder", noIcon, noKey, noMark, plain,
+		/* [22] */
+		"–3976 Control Panels", noIcon, noKey, noMark, plain,
+		/* [23] */
+		"–3975 Print Spool", noIcon, noKey, noMark, plain,
+		/* [24] */
+		"–3974 Preferences", noIcon, noKey, noMark, plain,
+		/* [25] */
+		"–3973 Extensions", noIcon, noKey, noMark, plain,
+		/* [26] */
+		"–3972 File Server", noIcon, noKey, noMark, plain,
+		/* [27] */
+		"–3968 Fonts", noIcon, noKey, noMark, plain,
+		/* [28] */
+		"–3966 Recent Documents", noIcon, noKey, noMark, plain,
+		/* [29] */
+		"–3965 Recent Applications", noIcon, noKey, noMark, plain,
+		/* [30] */
+		"–3964 Recent Servers", noIcon, noKey, noMark, plain,
+		/* [31] */
+		"–3963 MacOS Read Me Files", noIcon, noKey, noMark, plain,
+		/* [32] */
+		"–3962 Control Strip Modules", noIcon, noKey, noMark, plain,
+		/* [33] */
+		"–3961 Sounds", noIcon, noKey, noMark, plain,
+		/* [34] */
+		"–3960 Help", noIcon, noKey, noMark, plain,
+		/* [35] */
+		"–3959 Scripting Additions", noIcon, noKey, noMark, plain,
+		/* [36] */
+		"–3958 Internet Plug-ins", noIcon, noKey, noMark, plain,
+		/* [37] */
+		"–3957 Language Support", noIcon, noKey, noMark, plain,
+		/* [38] */
+		"–3956 Shared Libraries", noIcon, noKey, noMark, plain,
+		/* [39] */
+		"–3955 Text Encodings", noIcon, noKey, noMark, plain,
+		/* [40] */
+		"–3954 Printer Drivers", noIcon, noKey, noMark, plain,
+		/* [41] */
+		"–3953 Printer Descriptions", noIcon, noKey, noMark, plain,
+		/* [42] */
+		"–3952 Voices", noIcon, noKey, noMark, plain,
+		/* [43] */
+		"–3951 Control Panels (Disabled)", noIcon, noKey, noMark, plain,
+		/* [44] */
+		"–3950 Extensions (Disabled)", noIcon, noKey, noMark, plain,
+		/* [45] */
+		"–3949 Startup Items (Disabled)", noIcon, noKey, noMark, plain,
+		/* [46] */
+		"–3948 Shutdown Items (Disabled)", noIcon, noKey, noMark, plain,
+		/* [47] */
+		"–3947 System Extensions (Disabled)", noIcon, noKey, noMark, plain,
+		/* [48] */
+		"–3946 Assistants", noIcon, noKey, noMark, plain,
+		/* [49] */
+		"–3945 Utilities", noIcon, noKey, noMark, plain,
+		/* [50] */
+		"–3944 Application Support", noIcon, noKey, noMark, plain,
+		/* [51] */
+		"–3943 Apple Extras", noIcon, noKey, noMark, plain,
+		/* [52] */
+		"–3942 Contextual Menu Items", noIcon, noKey, noMark, plain,
+		/* [53] */
+		"–3812 Workgroup", noIcon, noKey, noMark, plain,
+		/* [54] */
+		"–3811 User", noIcon, noKey, noMark, plain,
+		/* [55] */
+		"–3774 System Folder (protected)", noIcon, noKey, noMark, plain,
+		/* [56] */
+		"–3773 Applications Folder (protected)", noIcon, noKey, noMark, plain
 	}
 };
 
@@ -183,6 +784,40 @@ resource 'MENU' (203) {
 	}
 };
 
+resource 'MENU' (204) {
+	204,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Internet Icons",
+	{	/* array: 12 elements */
+		/* [1] */
+		"–20796 AppleTalk Zone", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"–20795 FTP Server", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"–20793 AppleShare Server", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"–20739 Generic Location", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"–20738 Newsgroup Location", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"–20737 E-mail Location", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"–20736 File Location", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"–20735 AppleShare Location", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"–20734 FTP Location", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"–20733 HTTP Location", noIcon, noKey, noMark, plain,
+		/* [11] */
+		"–20731 IP File Server", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"–20726 AppleTalk", noIcon, noKey, noMark, plain
+	}
+};
+
 resource 'MENU' (205) {
 	205,
 	textMenuProc,
@@ -231,177 +866,23 @@ resource 'MENU' (205) {
 	}
 };
 
-resource 'MENU' (129) {
-	129,
+resource 'MENU' (206) {
+	206,
 	textMenuProc,
-	0x7FFFFFF7,
+	allEnabled,
 	enabled,
-	"File",
+	"Badges",
 	{	/* array: 5 elements */
 		/* [1] */
-		"New Icon From Clipboard…", noIcon, "N", noMark, plain,
+		"–20789 Alias Badge", noIcon, noKey, noMark, plain,
 		/* [2] */
-		"Insert Icon Into File…", noIcon, "I", noMark, plain,
+		"–20788 Mounted Badge", noIcon, noKey, noMark, plain,
 		/* [3] */
-		"Extract Icon to Clipboard", noIcon, "E", noMark, plain,
+		"–20787 Shared Badge", noIcon, noKey, noMark, plain,
 		/* [4] */
-		"-", noIcon, noKey, noMark, plain,
+		"–20786 Locked Badge", noIcon, noKey, noMark, plain,
 		/* [5] */
-		"Quit", noIcon, "Q", noMark, plain
-	}
-};
-
-resource 'MENU' (202) {
-	202,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"System Folders",
-	{	/* array: 55 elements */
-		/* [1] */
-		"–20801 Internet Search Sites", noIcon, noKey, noMark, plain,
-		/* [2] */
-		"–20797 Scripts", noIcon, noKey, noMark, plain,
-		/* [3] */
-		"–20792 ColorSync Profiles", noIcon, noKey, noMark, plain,
-		/* [4] */
-		"–20744 Internet", noIcon, noKey, noMark, plain,
-		/* [5] */
-		"–20729 Favorites", noIcon, noKey, noMark, plain,
-		/* [6] */
-		"–20724 Speakable Items", noIcon, noKey, noMark, plain,
-		/* [7] */
-		"–20723 Appearance", noIcon, noKey, noMark, plain,
-		/* [8] */
-		"–3999 Generic Folder", noIcon, noKey, noMark, plain,
-		/* [9] */
-		"–3997 Open Folder", noIcon, noKey, noMark, plain,
-		/* [10] */
-		"–3994 Private Folder", noIcon, noKey, noMark, plain,
-		/* [11] */
-		"–3993 Trash Empty", noIcon, noKey, noMark, plain,
-		/* [12] */
-		"–3992 Desktop", noIcon, noKey, noMark, plain,
-		/* [13] */
-		"–3984 Trash Full", noIcon, noKey, noMark, plain,
-		/* [14] */
-		"–3983 System Folder", noIcon, noKey, noMark, plain,
-		/* [15] */
-		"–3982 Apple Menu Items", noIcon, noKey, noMark, plain,
-		/* [16] */
-		"–3981 Startup Items", noIcon, noKey, noMark, plain,
-		/* [17] */
-		"–3980 Shared Folder", noIcon, noKey, noMark, plain,
-		/* [18] */
-		"–3979 Drop Folder", noIcon, noKey, noMark, plain,
-		/* [19] */
-		"–3978 Share Point", noIcon, noKey, noMark, plain,
-		/* [20] */
-		"–3977 Mounted Folder", noIcon, noKey, noMark, plain,
-		/* [21] */
-		"–3976 Control Panels", noIcon, noKey, noMark, plain,
-		/* [22] */
-		"–3975 Print Spool", noIcon, noKey, noMark, plain,
-		/* [23] */
-		"–3974 Preferences", noIcon, noKey, noMark, plain,
-		/* [24] */
-		"–3973 Extensions", noIcon, noKey, noMark, plain,
-		/* [25] */
-		"–3972 File Server", noIcon, noKey, noMark, plain,
-		/* [26] */
-		"–3968 Fonts", noIcon, noKey, noMark, plain,
-		/* [27] */
-		"–3966 Recent Documents", noIcon, noKey, noMark, plain,
-		/* [28] */
-		"–3965 Recent Applications", noIcon, noKey, noMark, plain,
-		/* [29] */
-		"–3964 Recent Servers", noIcon, noKey, noMark, plain,
-		/* [30] */
-		"–3963 MacOS Read Me Files", noIcon, noKey, noMark, plain,
-		/* [31] */
-		"–3962 Control Strip Modules", noIcon, noKey, noMark, plain,
-		/* [32] */
-		"–3961 Sounds", noIcon, noKey, noMark, plain,
-		/* [33] */
-		"–3960 Help", noIcon, noKey, noMark, plain,
-		/* [34] */
-		"–3959 Scripting Additions", noIcon, noKey, noMark, plain,
-		/* [35] */
-		"–3958 Internet Plug-ins", noIcon, noKey, noMark, plain,
-		/* [36] */
-		"–3957 Language Support", noIcon, noKey, noMark, plain,
-		/* [37] */
-		"–3956 Shared Libraries", noIcon, noKey, noMark, plain,
-		/* [38] */
-		"–3955 Text Encodings", noIcon, noKey, noMark, plain,
-		/* [39] */
-		"–3954 Printer Drivers", noIcon, noKey, noMark, plain,
-		/* [40] */
-		"–3953 Printer Descriptions", noIcon, noKey, noMark, plain,
-		/* [41] */
-		"–3952 Voices", noIcon, noKey, noMark, plain,
-		/* [42] */
-		"–3951 Control Panels (Disabled)", noIcon, noKey, noMark, plain,
-		/* [43] */
-		"–3950 Extensions (Disabled)", noIcon, noKey, noMark, plain,
-		/* [44] */
-		"–3949 Startup Items (Disabled)", noIcon, noKey, noMark, plain,
-		/* [45] */
-		"–3948 Shutdown Items (Disabled)", noIcon, noKey, noMark, plain,
-		/* [46] */
-		"–3947 System Extensions (Disabled)", noIcon, noKey, noMark, plain,
-		/* [47] */
-		"–3946 Assistants", noIcon, noKey, noMark, plain,
-		/* [48] */
-		"–3945 Utilities", noIcon, noKey, noMark, plain,
-		/* [49] */
-		"–3944 Application Support", noIcon, noKey, noMark, plain,
-		/* [50] */
-		"–3943 Apple Extras", noIcon, noKey, noMark, plain,
-		/* [51] */
-		"–3942 Contextual Menu Items", noIcon, noKey, noMark, plain,
-		/* [52] */
-		"–3812 Workgroup", noIcon, noKey, noMark, plain,
-		/* [53] */
-		"–3811 User", noIcon, noKey, noMark, plain,
-		/* [54] */
-		"–3774 System Folder (protected)", noIcon, noKey, noMark, plain,
-		/* [55] */
-		"–3773 Applications Folder (protected)", noIcon, noKey, noMark, plain
-	}
-};
-
-resource 'MENU' (204) {
-	204,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"Internet Icons",
-	{	/* array: 12 elements */
-		/* [1] */
-		"–20796 AppleTalk Zone", noIcon, noKey, noMark, plain,
-		/* [2] */
-		"–20795 FTP Server", noIcon, noKey, noMark, plain,
-		/* [3] */
-		"–20793 AppleShare Server", noIcon, noKey, noMark, plain,
-		/* [4] */
-		"–20739 Generic Location", noIcon, noKey, noMark, plain,
-		/* [5] */
-		"–20738 Newsgroup Location", noIcon, noKey, noMark, plain,
-		/* [6] */
-		"–20737 E-mail Location", noIcon, noKey, noMark, plain,
-		/* [7] */
-		"–20736 File Location", noIcon, noKey, noMark, plain,
-		/* [8] */
-		"–20735 AppleShare Location", noIcon, noKey, noMark, plain,
-		/* [9] */
-		"–20734 FTP Location", noIcon, noKey, noMark, plain,
-		/* [10] */
-		"–20733 HTTP Location", noIcon, noKey, noMark, plain,
-		/* [11] */
-		"–20731 IP File Server", noIcon, noKey, noMark, plain,
-		/* [12] */
-		"–20726 AppleTalk", noIcon, noKey, noMark, plain
+		"–20740 Script Badge", noIcon, noKey, noMark, plain
 	}
 };
 
@@ -501,482 +982,13 @@ resource 'MENU' (207) {
 	}
 };
 
-resource 'DLOG' (130) {
-	{259, 337, 395, 687},
-	dBoxProc,
-	visible,
-	goAway,
-	0x0,
-	130,
-	"",
-	alertPositionParentWindowScreen
+data 'Mcmd' (129) {
+	$"0004 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000"                                               /* .. */
 };
 
-resource 'DLOG' (129) {
-	{54, 42, 240, 295},
-	dBoxProc,
-	visible,
-	goAway,
-	0x0,
-	129,
-	"",
-	alertPositionMainScreen
-};
-
-resource 'DLOG' (132, purgeable) {
-	{291, 388, 478, 636},
-	dBoxProc,
-	visible,
-	goAway,
-	0x0,
-	132,
-	"DITL 132 from clip2icns.µ.rsrc",
-	alertPositionMainScreen
-};
-
-resource 'DLOG' (131) {
-	{259, 339, 367, 629},
-	dBoxProc,
-	visible,
-	goAway,
-	0x0,
-	131,
-	"DITL 131 from clip2icns.µ.rsrc",
-	alertPositionMainScreen
-};
-
-resource 'DLOG' (128) {
-	{88, 131, 296, 411},
-	dBoxProc,
-	invisible,
-	noGoAway,
-	0x0,
-	128,
-	"",
-	centerMainScreen
-};
-
-resource 'FREF' (128) {
-	'APPL',
-	0,
-	""
-};
-
-resource 'FREF' (129) {
-	'****',
-	1,
-	""
-};
-
-resource 'FREF' (130) {
-	'Icon',
-	2,
-	""
-};
-
-resource 'icl4' (128) {
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 000D CDCD CDCC 0000 0000 0000"
-	$"0000 0000 00DD 0000 0CFD C000 0000 0000"
-	$"0000 0000 0DC0 D000 CFDC DC00 0000 0000"
-	$"0000 0000 DC00 0D0C FDCC CDC0 0000 0000"
-	$"0000 000D C000 00DF DC00 00DC 0000 0000"
-	$"0000 CEEE CC00 000D C000 000D C000 0000"
-	$"0000 E0FC ECC0 0000 0000 0000 DC00 0000"
-	$"CDDE C000 CADD 0C00 0000 00C0 CDC0 0000"
-	$"D00A AAAA AADC FCC0 0000 3333 3333 BBBB"
-	$"D000 CE00 FDCC FDC0 0000 3333 3323 2BBB"
-	$"D00C E000 CFDC FDC0 0000 3333 32B2 BBB2"
-	$"D0CE 0000 0CFC FDC0 000C 3333 2BBB B222"
-	$"D0E0 0000 CFDC FDC0 3CC0 3333 B222 2B22"
-	$"D0CE 000C FDCC FD33 33CC 2323 2BB2 B2B2"
-	$"D0CC E0CF DCCC FD33 333C 33B2 2B2B 2B21"
-	$"D0CC CEFD CCCC FD33 33DC 32B2 22B2 22B2"
-	$"D0CC CCDC CCCC FDCC 3DDC 322B 2222 B111"
-	$"D0CC CCCC CCCC FDCC CCCC B222 222B 1211"
-	$"D0CC CCCC CCCC FDC0 CCC0 2222 2222 1111"
-	$"DCCC CCCC CCCC FDC0 CCCC 22BB 2211 1111"
-	$"0FFF FFFA FFFF DDCC 00CC CCCC CCCC ED00"
-	$"0000 0000 CEDD DCC0 CC0C CCCC CCCE DC00"
-	$"0000 0000 0CEC CCCC 0CCC CCCC CCED CCC0"
-	$"0000 0000 00CE CC0C CCCC CCCC CEDC CC00"
-	$"0000 0000 000C ECC0 C0CC CCCC EDCC C000"
-	$"0000 0000 0000 CECC CCCC CCCE DCCC 0000"
-	$"0000 0000 0000 0CEC CCCC CCED CCC0 0000"
-	$"0000 0000 0000 00CE CCCC CEDC CC00 0000"
-	$"0000 0000 0000 000C ECCC EDCC C000 0000"
-	$"0000 0000 0000 0000 CECE DCC0 0000 0000"
-	$"0000 0000 0000 0000 0CED CC"
-};
-
-resource 'icl4' (-16455) {
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 000D CDCD CDCC 0000 0000 0000"
-	$"0000 0000 00DD 0000 0CFD C000 0000 0000"
-	$"0000 0000 0DC0 D000 CFDC DC00 0000 0000"
-	$"0000 0000 DC00 0D0C FDCC CDC0 0000 0000"
-	$"0000 000D C000 00DF DC00 00DC 0000 0000"
-	$"0000 CEEE CC00 000D C000 000D C000 0000"
-	$"0000 E0FC ECC0 0000 0000 0000 DC00 0000"
-	$"CDDE C000 CADD 0C00 0000 00C0 CDC0 0000"
-	$"D00A AAAA AADC FCC0 0000 3333 3333 BBBB"
-	$"D000 CE00 FDCC FDC0 0000 3333 3323 2BBB"
-	$"D00C E000 CFDC FDC0 0000 3333 32B2 BBB2"
-	$"D0CE 0000 0CFC FDC0 000C 3333 2BBB B222"
-	$"D0E0 0000 CFDC FDC0 3CC0 3333 B222 2B22"
-	$"D0CE 000C FDCC FD33 33CC 2323 2BB2 B2B2"
-	$"D0CC E0CF DCCC FD33 333C 33B2 2B2B 2B21"
-	$"D0CC CEFD CCCC FD33 33DC 32B2 22B2 22B2"
-	$"D0CC CCDC CCCC FDCC 3DDC 322B 2222 B111"
-	$"D0CC CCCC CCCC FDCC CCCC B222 222B 1211"
-	$"D0CC CCCC CCCC FDC0 CCC0 2222 2222 1111"
-	$"DCCC CCCC CCCC FDC0 CCCC 22BB 2211 1111"
-	$"0FFF FFFA FFFF DDCC 00CC CCCC CCCC ED00"
-	$"0000 0000 CEDD DCC0 CC0C CCCC CCCE DC00"
-	$"0000 0000 0CEC CCCC 0CCC CCCC CCED CCC0"
-	$"0000 0000 00CE CC0C CCCC CCCC CEDC CC00"
-	$"0000 0000 000C ECC0 C0CC CCCC EDCC C000"
-	$"0000 0000 0000 CECC CCCC CCCE DCCC 0000"
-	$"0000 0000 0000 0CEC CCCC CCED CCC0 0000"
-	$"0000 0000 0000 00CE CCCC CEDC CC00 0000"
-	$"0000 0000 0000 000C ECCC EDCC C000 0000"
-	$"0000 0000 0000 0000 CECE DCC0 0000 0000"
-	$"0000 0000 0000 0000 0CED CC"
-};
-
-resource 'icl8' (128) {
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 0056 F856 F856"
-	$"F856 F8F6 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 F9FA F500 0000"
-	$"F5F6 FEF9 F600 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 00F9 F6F5 FAF5 0000"
-	$"2BFE F9F7 F9F6 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 F92B F500 F5FA F5F7"
-	$"FEF9 F6F6 F7F9 F600 0000 0000 0000 0000"
-	$"0000 0000 0000 00F9 F6F5 00F5 00F5 FAFE"
-	$"F9F6 F5F5 F5F5 F9F6 0000 0000 0000 0000"
-	$"0000 0000 F6FC FCFC F6F6 F500 F500 F5F9"
-	$"F6F5 F5F5 F5F5 F5F9 F600 0000 0000 0000"
-	$"0000 0000 FBF5 FF2B FCF8 F6F5 F5F5 F5F5"
-	$"F5F5 F5F5 F5F5 F5F5 F9F6 0000 0000 0000"
-	$"F681 81AC 2BF5 F5F5 F6FD 8181 F5F6 F5F5"
-	$"F5F5 F5F5 F5F5 F6F5 F6F9 F600 0000 0000"
-	$"8100 00FD FDFD FDFD FDFD F92B FEF8 F6F5"
-	$"F5F5 F5F5 4646 4640 4040 4040 3A3A 3A3A"
-	$"8100 F5F5 F6FC F5F5 FEF9 F8F8 FEF9 F6F5"
-	$"F5F5 F5F5 4646 4022 4040 1C40 173A 3A3A"
-	$"8100 F5F6 FCF5 0000 F6FE F9F8 FEF9 F6F5"
-	$"F5F5 F5F5 4640 2240 401D 3A17 3A3A 3A10"
-	$"81F5 F6FC F500 0000 00F6 FEF8 FEF9 F6F5"
-	$"F5F5 F5F6 4022 4040 1C3A 3A3A 3A3B 1035"
-	$"8100 FCF5 0000 0000 F6FE F9F8 FEF9 F6F5"
-	$"D8F6 F6F5 4040 4041 3A1D 173B 1034 1110"
-	$"81F5 F8FC F500 00F6 FEF9 F8F8 FEF9 D8D8"
-	$"D8D8 2BF6 1C40 1C40 173A 3A17 3A11 3410"
-	$"81F5 F6F8 FCF5 F6FE F9F8 2BF8 FEF9 D8D8"
-	$"D8D8 D8F7 4041 3A17 3B3A 1734 1134 100B"
-	$"81F5 F62B F8FC FEF9 F82B 2BF8 FEF9 D8D8"
-	$"D8D8 FAF8 4017 3A3B 1710 3411 1011 2E11"
-	$"81F5 F62B 2BF8 F9F8 2B2B F7F8 FEF9 F6F8"
-	$"D8F9 56F7 403B 173A 3B17 3510 340B 0A0A"
-	$"81F5 2B2B 2B2B 2B2B F72B 2BF8 FEF9 F62B"
-	$"F7F8 2BF6 3A17 1017 1035 1034 0B10 2F0B"
-	$"81F5 2B2B 2B2B 2B2B 2B2B F7F8 FEF9 F6F5"
-	$"F6F6 F6F5 3B17 1010 3510 1011 0A0B 0A0A"
-	$"812B F7F7 F8F8 F8F8 F8F8 F8F8 FEF9 F6F5"
-	$"F6F6 F6F6 1710 3434 1035 0A2F 0A2F 0A0A"
-	$"00FE FEFE FEFE FEFD FEFE FEFE F9F9 F6F6"
-	$"F5F5 F6F6 F6F7 F7F7 F7F7 F7F7 FCF9 F500"
-	$"0000 0000 0000 0000 F6AC FAF9 F9F6 F6F5"
-	$"F6F6 F5F6 F6F6 F6F6 F6F6 F8AC F92B F500"
-	$"0000 0000 0000 0000 00F6 FBF8 F6F6 F6F6"
-	$"F5F6 F6F6 F6F6 F6F6 F6F8 FCF9 F72B F6F5"
-	$"0000 0000 0000 0000 0000 F6FB F7F6 F5F6"
-	$"F6F6 F6F6 F6F6 F6F6 F8FC F9F7 2BF6 F5F5"
-	$"0000 0000 0000 0000 0000 00F6 FBF7 F6F5"
-	$"F6F5 F6F6 F6F6 F6F8 FCF9 F72B F6F5 F500"
-	$"0000 0000 0000 0000 0000 0000 F6FB F7F6"
-	$"F6F6 F6F6 F6F6 F8FC F9F7 2BF6 F500 0000"
-	$"0000 0000 0000 0000 0000 0000 00F6 FBF7"
-	$"F6F6 F6F6 F6F8 FCF9 F72B F6F5 F500 0000"
-	$"0000 0000 0000 0000 0000 0000 0000 F6FB"
-	$"F7F6 F6F6 F8FC F9F7 2BF6 F5F5 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 0000 00F6"
-	$"FBF7 F6F8 FCF9 F72B F6F5 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-	$"F6FB F8FC F9F7 2BF5 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-	$"00F6 FBF9 F7F6 F5F5"
-};
-
-resource 'icl8' (-16455, "Item Icon ") {
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 0056 F856 F856"
-	$"F856 F8F6 0000 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 F9FA F500 0000"
-	$"00F6 FCF9 F600 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 00F9 2B00 FAF5 0000"
-	$"2BFB F8F7 F9F6 0000 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 F9F6 00F5 00FA F5F7"
-	$"8156 F7F6 F7F9 F600 0000 0000 0000 0000"
-	$"0000 0000 0000 00F9 2B00 F5F5 00F5 FA81"
-	$"56F7 F6F5 F5F5 F9F6 0000 0000 0000 0000"
-	$"0000 0000 F5FC FCFC F5F6 F500 F500 F5F8"
-	$"F6F5 F5F5 F5F5 F5F9 F600 0000 0000 0000"
-	$"0000 0000 FBF5 FFF6 ACF8 F6F5 F5F5 F500"
-	$"F5F5 F5F5 F5F5 F5F5 F9F6 0000 0000 0000"
-	$"F581 81AC 2BF5 F5F5 F5FE 8181 F5F6 F5F5"
-	$"F5F5 F5F5 F5F5 F5F6 F5F9 F600 0000 0000"
-	$"8100 00FD FDFD FDFD FEFD F92B FFF8 F6F5"
-	$"F5F5 F5F5 4646 D840 4640 1D40 4016 3B16"
-	$"8100 F5F5 F5AC 00F5 FEF9 F8F6 EA56 2BF5"
-	$"F5F5 F5F5 4646 4640 1D40 4017 3A3A 1635"
-	$"8100 F5F5 ACF5 0000 F5FE F9F8 FEF9 F6F5"
-	$"F5F5 F500 D846 401D 4040 1C3A 3B16 3516"
-	$"8100 F6AC 0000 0000 00F6 F4F8 FE56 2BF5"
-	$"F5F5 F5F6 4040 2240 4017 3A16 163B 1035"
-	$"8100 AC00 0000 0000 F6FE F9F8 FEF9 F6F5"
-	$"D8F6 F624 2241 4041 163A 173A 3B10 3410"
-	$"8100 F8AC 0000 00F6 FFF9 F7F8 FF56 D8D8"
-	$"D8D8 2BF6 401C 403A 4116 3A11 3A11 1035"
-	$"81F5 F6F7 ACF5 F6FE F9F8 2BF8 FEF9 D8D8"
-	$"D8D8 D82B 4040 173A 163A 113A 1010 350A"
-	$"81F5 F62B F8FC FFF9 F82B 2B56 FE56 D8D8"
-	$"D8D8 FAF8 413A 4017 3A10 3A11 3411 0A35"
-	$"8100 2B2B F6F8 F9F8 2B2B 2B56 FEF9 F7F8"
-	$"D8FA 562B 403B 163A 113A 1134 0B34 0B0A"
-	$"81F5 F62B 2B2B 2B2B 2B2B F756 FE56 2B2B"
-	$"2BF8 2BF6 163A 173A 1035 1010 350A 2E0B"
-	$"81F5 2B2B 2B2B 2B2B 2BF7 2B56 EAF9 2BF5"
-	$"F6F6 F6F6 3A17 3A10 3510 102F 0A0B 0B0A"
-	$"81F6 F7F8 F8F8 5656 F956 F9F9 FEF9 2BF5"
-	$"F6F6 F5F6 1734 1635 1035 0A10 2F0A 0505"
-	$"00FE FEFE FEFE FEFD FEFE FEFE FA56 2BF5"
-	$"F6F5 F6F6 2A56 F9F9 FAF9 F981 FCF7 F500"
-	$"0000 0000 0000 0000 F6AC FA56 562B F6F6"
-	$"F5F6 F6F6 25F6 F72B 2B2B 56FC 562B F500"
-	$"0000 0000 0000 0000 00F6 FB56 F6F6 F5F5"
-	$"F6F5 F6F6 06F6 F6F6 F6F7 FC56 F72B F6F5"
-	$"0000 0000 0000 0000 0000 F6FB F7F5 F6F6"
-	$"F6F6 F6F6 25F6 F6F6 2BAC F8F7 2BF6 F500"
-	$"0000 0000 0000 0000 0000 00F5 FCF7 F5F6"
-	$"F5F6 F601 2AF6 F6F6 ACF8 F72B F6F5 0000"
-	$"0000 0000 0000 0000 0000 0000 F6FB F7F6"
-	$"F6F5 F62B F6F6 2BAC F8F7 2BF6 F500 0000"
-	$"0000 0000 0000 0000 0000 0000 00F6 FBF7"
-	$"F6F6 F6F6 F6F6 ACF8 F72B F6F5 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 0000 F6FB"
-	$"F7F6 F6F6 2BAC F8F7 2BF6 F500 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 0000 00F6"
-	$"FBF7 F6F6 ACF8 F72B F6F5 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-	$"F6FB F7AC F8F7 2BF5 0000 0000 0000 0000"
-	$"0000 0000 0000 0000 0000 0000 0000 0000"
-	$"00F6 FCF8 F7F6 F5"
-};
-
-resource 'ICN#' (128) {
-	{	/* array: 2 elements */
-		/* [1] */
-		$"0000 0000 0000 0000 0010 2000 0008 4000"
-		$"0004 8000 0003 0000 0700 0000 0A80 0000"
-		$"7070 0000 9FC8 0FFF 8488 0FF7 8848 0FEE"
-		$"9028 0FFC A048 8FD0 908B CF68 890B EEC0"
-		$"860B EB00 8008 8D80 8008 0800 8008 0800"
-		$"8008 0000 7FF0 0008 0060 0010 0020 0020"
-		$"0010 0040 0008 0080 0004 0100 0002 0200"
-		$"0001 0400 0000 8800 0000 5000 0000 20",
-		/* [2] */
-		$"0000 0000 001F F000 003F F800 007F FC00"
-		$"00FF FE00 01FF FF00 0FFF FF80 0FFF FFC0"
-		$"FFFF FFE0 FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF 7FFF FFFE 00FF FFFE 007F FFFF"
-		$"003F FFFF 001F FFFE 000F FFF8 0007 FFF8"
-		$"0003 FFF0 0001 FFC0 0000 FF00 0000 7F"
-	}
-};
-
-resource 'ICN#' (-16455, "Item Icon ") {
-	{	/* array: 2 elements */
-		/* [1] */
-		$"0000 0000 0004 9000 0030 2800 0048 6400"
-		$"0004 8A00 0083 0100 0F00 8080 0AC0 0040"
-		$"F070 1040 9FCC 0FBA 84A9 0ACA 884C 0DB5"
-		$"902A 0A92 A06C C76C 909B 4A92 894D B6A4"
-		$"869A C952 A90C D6A4 8454 2912 9089 02A8"
-		$"8A6C 0C44 7FF8 119A 00A4 0455 0050 402B"
-		$"0028 08DC 0018 20AA 0005 0374 0006 12C8"
-		$"0003 0570 0000 CEC0 0000 5500 0000 3B",
-		/* [2] */
-		$"0000 0000 001F F000 003F F800 007F FC00"
-		$"00FF FE00 01FF FF00 0FFF FF80 0FFF FFC0"
-		$"FFFF FFE0 FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF 7FFF FFFE 00FF FFFF 007F FFFF"
-		$"003F FFFF 001F FFFE 000F FFFC 0007 FFF8"
-		$"0003 FFF0 0001 FFE0 0000 FF80 0000 7F"
-	}
-};
-
-resource 'ics#' (128) {
-	{	/* array: 2 elements */
-		/* [1] */
-		$"0000 0000 0000 1000 2800 063F 0638 0BB0"
-		$"12A8 0210 7E00 0404",
-		/* [2] */
-		$"07C0 0FE0 3FF0 FFF8 FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF 07FF 03FE 01FC 00F8"
-	}
-};
-
-resource 'ics#' (-16455, "Item Icon ") {
-	{	/* array: 2 elements */
-		/* [1] */
-		$"0000 00A0 0910 3000 DA28 0A1B 84AC AB52"
-		$"12A9 A514 5A2A 0405 048A 0114 00A8 0050",
-		/* [2] */
-		$"07C0 0FE0 1FF0 3FF8 FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF 0FFF 07FF 03FE 01FC 00F8"
-	}
-};
-
-resource 'ics4' (128) {
-	$"0000 0CCC CC00 0000 0000 CCC0 DDC0 0000"
-	$"00CC C0CD CCCC 0000 0CDD CC00 000C C000"
-	$"CDDD EDD0 00BB BB22 C0DC DDD0 0C33 33BB"
-	$"CD00 DDEC C033 B222 CCCD DCE3 3C23 22BB"
-	$"CCDD CCEB 3DB2 2B21 CCCC CDEC CC22 2211"
-	$"DDDD DEDC 0CDB BDB1 0CCC DDC0 CCCC CDC0"
-	$"0000 0CC0 CCCC DCC0 0000 00CC 0CCD DC00"
-	$"0000 000D C0DD C000 0000 0000 CDDC"
-};
-
-resource 'ics4' (-16455) {
-	$"0000 0CCC CC00 0000 0000 CCC0 DDC0 0000"
-	$"00CC C0CD CCCC 0000 0CDD CC00 000C C000"
-	$"CDDD EDD0 00BB BB22 C0DC DDD0 0C33 33BB"
-	$"CD00 DDEC C033 B222 CCCD DCE3 3C23 22BB"
-	$"CCDD CCEB 3DB2 2B21 CCCC CDEC CC22 2211"
-	$"DDDD DEDC 0CDB BDB1 0CCC DDC0 CCCC CDC0"
-	$"0000 0CC0 CCCC DCC0 0000 00CC 0CCD DC00"
-	$"0000 000D C0DD C000 0000 0000 CDDC"
-};
-
-resource 'ics8' (128) {
-	$"0000 0000 00F7 2B2B 2BF8 0000 0000 0000"
-	$"0000 0000 2B2B 2BF5 5656 F700 0000 0000"
-	$"0000 F6F8 2B00 F656 F8F6 F6F7 0000 0000"
-	$"F52B 56FA F82B 00F5 F5F5 00F6 2B00 0000"
-	$"F7F9 81F9 FCF9 F9F5 F5F5 3939 3939 0F0F"
-	$"F7F5 56F6 F9FA 81F5 00F6 46D8 4041 3A3A"
-	$"F856 0000 5681 FB2B 32F5 4040 3A16 1710"
-	$"F7F8 F756 FAF8 FBD7 D732 1C40 1617 342E"
-	$"F7F6 56FA 2BF8 FB39 40F9 3A16 3B34 110A"
-	$"F8F6 2B2B 2B56 FB2B 2B2B 163B 1011 0B0A"
-	$"56FA FAFA 81FB 81F6 F5F6 3334 3457 3403"
-	$"F52B 2B2B F981 F7F5 F6F6 F62B F7FA F8F5"
-	$"0000 0000 00F8 F7F5 F6F6 F6F6 F9F8 F6F5"
-	$"0000 0000 0000 F8F7 F5F6 F656 56F6 F500"
-	$"0000 0000 0000 0056 F7F5 F956 F6F5 0000"
-	$"0000 0000 0000 0000 F8F9 56F6 F5"
-};
-
-resource 'ics8' (-16455, "Item Icon ") {
-	$"0000 0000 00F5 2BF6 2B2B 0000 0000 0000"
-	$"0000 0000 F5F8 F600 F7F9 5600 0000 0000"
-	$"0000 00F5 F700 2BF8 56F6 2BF9 0000 0000"
-	$"0000 FCAC F8F5 00F6 F5F5 F5F6 5600 0000"
-	$"FCFC F9F9 FBF9 56F5 F5F5 3839 3939 080E"
-	$"FAF5 F900 81F8 FCF6 F5F5 461C 4016 4035"
-	$"FA56 0000 F8FA FBF5 32F5 4140 163B 1016"
-	$"F956 2BF8 FAF7 FBD8 D832 1C40 3B16 3A0B"
-	$"FAF6 56FA F7F7 FC39 4750 4016 3411 340A"
-	$"FA2B 2B2B 2BF8 FB2B F6F6 163A 1134 0A0B"
-	$"FAFB FBFC FBFC FAF6 2AF6 3334 5734 582D"
-	$"0000 0000 FAF9 2BF6 01F6 F62A 2B81 56F6"
-	$"0000 0000 00F9 F8F5 2A25 F6F6 81F8 2BF5"
-	$"0000 0000 0000 F956 01F6 F681 F82B F500"
-	$"0000 0000 0000 00F9 5507 8156 2BF5 0000"
-	$"0000 0000 0000 0000 F981 F82B"
-};
-
-resource 'MBAR' (128) {
-	{	/* array MenuArray: 3 elements */
-		/* [1] */
-		128,
-		/* [2] */
-		129,
-		/* [3] */
-		130
-	}
-};
-
-resource 'vers' (1) {
-	0x1,
-	0x11,
-	release,
-	0x0,
-	14,
-	"1.1.1",
-	"©1998 Mihai Parparita"
-};
-
-resource 'vers' (2) {
-	0x1,
-	0x11,
-	release,
-	0x0,
-	14,
-	"1.1.1",
-	"clip2icns 1.1.1"
-};
-
-resource 'dlgx' (-6043) {
-	versionZero {
-		9
-	}
-};
-
-resource 'dlgx' (-6042) {
-	versionZero {
-		9
-	}
-};
-
-resource 'dlgx' (129) {
-	versionZero {
-		9
-	}
-};
-
-resource 'dlgx' (130) {
-	versionZero {
-		9
-	}
-};
-
-resource 'dlgx' (131) {
-	versionZero {
-		9
-	}
-};
-
-resource 'dlgx' (132) {
-	versionZero {
-		9
-	}
-};
-
-resource 'dlgx' (128) {
-	versionZero {
-		11
-	}
+data 'Mcmd' (207) {
+	$"0000"                                               /* .. */
 };
 
 resource 'PICT' (128) {
@@ -1382,7 +1394,7 @@ resource 'PICT' (128) {
 };
 
 resource 'PICT' (129) {
-	11246,
+	11250,
 	{0, 0, 115, 260},
 	$"0011 02FF 0C00 FFFE 0000 0048 0000 0048"
 	$"0000 0000 0000 0073 0104 0000 0000 00A1"
@@ -1755,342 +1767,670 @@ resource 'PICT' (129) {
 	$"070A 0D10 1663 D0F3 FF06 CE6C 6D70 7586"
 	$"FCDE FF0A E3D9 D2CB C3BA B1A6 9B8F 820F"
 	$"7568 5B4D 4135 2B21 1913 0D09 0604 0201"
-	$"9100 FD00 0059 F600 FD01 FF02 FE03 FE04"
+	$"9100 FD00 005C F600 FD01 FF02 FE03 FE04"
 	$"FA05 FD06 FE05 FF04 0203 0202 FB01 FF02"
 	$"0903 0406 080A 0D13 4BB3 FDF3 FF07 FA8F"
 	$"7473 7477 7BC3 E0FF 0CEB DBD4 CEC6 BEB5"
 	$"ACA2 978C 8174 0F68 5C50 4439 2E25 1D16"
-	$"100B 0805 0302 01EB 00FF 1CA9 00FD 0000"
-	$"70F7 00FE 0107 0203 0304 0405 0606 FE07"
-	$"FD08 FA09 0708 0707 0605 0403 03FC 0209"
-	$"0304 0506 080B 0E1F 33E9 F1FF 08D4 807D"
-	$"7A79 797A 80FE E3FF 0EF4 DCD6 D0C9 C1B9"
-	$"B0A6 9C92 877C 7166 105A 4F44 3A30 271F"
-	$"1812 7EA4 1404 033C A12A EC00 FFCE EA00"
-	$"0158 A1F9 0001 58A1 F900 0158 A1D6 00FD"
-	$"0000 7AF8 00FF 01FF 020B 0304 0506 0708"
-	$"090A 0B0B 0C0C FE0D FB0E 080D 0C0B 0A09"
-	$"0806 0504 FC03 0904 0507 090C 1B76 D459"
-	$"9EF2 FF09 FEAD 8A86 817D 7B7A 7BA5 E5FF"
-	$"10FB DED8 D2CB C3BB B2A9 A096 8C81 776C"
-	$"6257 0F4D 4239 3028 2019 140F 7DDE 4E03"
-	$"0285 CEEB 00FF 77EB 0002 B3DD DDFA 0002"
-	$"B3DD DDFA 0002 B3DD DDD6 00FD 0000 A7F9"
-	$"00FF 0112 0203 0405 0608 090B 0C0E 0F10"
-	$"1112 1213 1314 14FD 15FF 1408 1211 0F0D"
-	$"0B09 0806 05FE 040B 0506 0709 0C1A BAFF"
-	$"FFC1 48E5 F3FF 0AEE 9E94 8D86 807C 7978"
-	$"7AE7 E7FF 11E5 DAD3 CDC5 BDB5 ACA3 998F"
-	$"857B 7066 5C52 490F 3F37 2E27 2019 140F"
-	$"0B31 DE87 0201 CE85 FE00 1B65 CEDD C058"
-	$"0000 A177 A1DD 7700 2AB3 DDDD 5800 A177"
-	$"0000 65CE DDC0 4AFE 0005 A177 77DD B30E"
-	$"FB00 023B B3DD FA00 023B B3DD FA00 023B"
-	$"B3DD D600 FD00 00A8 FA00 FF01 2202 0304"
-	$"0507 090B 0E10 1214 1517 1819 1A1B 1B20"
-	$"3E3A 211E 1D1D 1B1A 1815 1310 0D0B 0907"
-	$"FE06 0B07 080A 3F66 19A7 FFFF FE76 87F3"
-	$"FF0A DDA2 9B93 8B83 7C77 7474 93E9 FF13"
-	$"EEDB D5CF C7BF B7AE A59C 9288 7E74 6A60"
-	$"564D 443B 3733 2C25 1E19 140F 0C09 06C1"
-	$"CF02 3CDD 4A00 0065 DD65 0093 DD4A 00DD"
-	$"CE77 CEDD 0093 C00E 001C 00DD A100 65DD"
-	$"6500 93DD 3B00 00DD DD77 93DD 65FA 0001"
-	$"A1DD F900 01A1 DDF9 0001 A1DD D600 FD00"
-	$"00AC FA00 FF01 3202 0405 070A 1148 573E"
-	$"201B 1E20 2123 2425 5EBA EAE6 B55D 2827"
-	$"2523 201D 1916 120F 0D0B 0908 0909 0B52"
-	$"F4F4 4438 E4FF FFDB 5CD9 F4FF 0BCD A9A1"
-	$"978D 837B 7470 6E70 CCEC FF15 F6DD D7D0"
-	$"C9C2 B9B1 A89E 948B 8177 6D63 5950 473E"
-	$"362F 3728 221C 1713 0F0B 0806 0479 DD4B"
-	$"78DD 0E00 00C0 DD0E 003B DD93 00DD A100"
-	$"2A3B 00A1 CE65 1C00 00DD A100 CEDD 0E00"
-	$"4ADD 9300 00DD A100 3BDD 65FA 0001 A1DD"
-	$"F900 01A1 DDF9 0001 A1DD D600 FD00 00AC"
-	$"FB00 FF01 1202 0305 070A 4AC3 F5FC ECBA"
-	$"4F28 2A2D 2F4F A9F5 FDFF 17E9 5733 312E"
-	$"2A26 221D 1915 110E 0C0B 1511 0E42 EAFF"
-	$"B424 88FE FF02 A187 FEF6 FF0D FEC2 ADA3"
-	$"988D 8278 706A 6768 72FC EFFF 17FC E0D8"
-	$"D2CB C4BC B3AA A197 8D83 796F 655C 524A"
-	$"4139 322B 240E 1F19 1511 0D0A 0806 0403"
-	$"2CDD 85C0 93FE 00FB DD03 A100 DDA1 FD00"
-	$"174A CEDD DD65 00DD A100 DDDD 0000 3BDD"
-	$"A100 00DD A100 3BDD 65FA 0001 A1DD F900"
-	$"01A1 DDF9 0001 A1DD D600 FD00 00A8 FC00"
-	$"FF01 0602 0305 070A 55F5 FCFF 05D7 4D37"
-	$"4893 E5FA FF1C BE42 3F3B 3631 2B26 201B"
-	$"1613 111D BC80 1215 8AFF FA6A 39D5 FFFF"
-	$"F07C CCF6 FF0D F9BF AEA3 978B 7F74 6B64"
-	$"605F 62B4 F0FF 18E7 DAD4 CDC6 BEB5 ADA3"
-	$"9A90 867C 7268 5E55 4C43 3B34 2D26 211B"
-	$"0E17 130F 0C09 0705 0403 0201 C0CE DD58"
-	$"FE00 FFDD FB00 01DD A1FC 0016 0E58 CECE"
-	$"00DD A100 DDDD 0000 3BDD A100 00DD A100"
-	$"3BDD 65FA 0001 A1DD F900 01A1 DDF9 0001"
-	$"A1DD D600 FD00 00B7 FC00 FF01 0503 0406"
+	$"100B 0805 0302 01ED 0003 043B 201C A900"
+	$"FD00 0070 F700 FE01 0702 0303 0404 0506"
+	$"06FE 07FD 08FA 0907 0807 0706 0504 0303"
+	$"FC02 0903 0405 0608 0B0E 1F33 E9F1 FF08"
+	$"D480 7D7A 7979 7A80 FEE3 FF0E F4DC D6D0"
+	$"C9C1 B9B0 A69C 9287 7C71 6610 5A4F 443A"
+	$"3027 1F18 12BF DD2E 0000 33DD 33EE 0002"
+	$"6EFF 6EEB 0002 0459 19FA 0003 2173 8040"
+	$"CC00 FD00 0079 F800 FF01 FF02 0B03 0405"
+	$"0607 0809 0A0B 0B0C 0CFE 0DFB 0E08 0D0C"
+	$"0B0A 0908 0605 04FC 0309 0405 0709 0C1B"
+	$"76D4 599E F2FF 09FE AD8A 8681 7D7B 7A7B"
+	$"A5E5 FF10 FBDE D8D2 CBC3 BBB2 A9A0 968C"
+	$"8177 6C62 570F 4D42 3930 2820 1914 0F91"
+	$"FF7F 0000 83E6 ED00 0233 BA33 EC00 0351"
+	$"C8FF 3BFB 0004 54FB FFFF A2CC 00FD 0000"
+	$"A3F9 00FF 0112 0203 0405 0608 090B 0C0E"
+	$"0F10 1112 1213 1314 14FD 15FF 1408 1211"
+	$"0F0D 0B09 0806 05FE 040B 0506 0709 0C1A"
+	$"BAFF FFC1 48E5 F3FF 0AEE 9E94 8D86 807C"
+	$"7978 7AE7 E7FF 11E5 DAD3 CDC5 BDB5 ACA3"
+	$"998F 857B 7066 5C52 4935 3F37 2E27 2019"
+	$"140F 0B40 FFCB 0000 D99D 0000 44BF DDC3"
+	$"5100 00BA 9D7B D990 007B D4D9 7A00 5DBA"
+	$"4800 0065 C7DD BF55 0000 BA9D 61CB CB3C"
+	$"FB00 038B DDFF 3BFC 0005 19F3 CC19 081D"
+	$"CC00 FD00 00A6 FA00 FF01 2202 0304 0507"
+	$"090B 0E10 1214 1517 1819 1A1B 1B20 3E3A"
+	$"211E 1D1D 1B1A 1815 1310 0D0B 0907 FE06"
+	$"0B07 080A 3F66 19A7 FFFF FE76 87F3 FF0A"
+	$"DDA2 9B93 8B83 7C77 7474 93E9 FF13 EEDB"
+	$"D5CF C7BF B7AE A59C 9288 7E74 6A60 564D"
+	$"443B 3533 2C25 1E19 140F 0C09 04EA FF1D"
+	$"2EFF 4400 37FB D044 9EFF 3B00 FFFB 99DD"
+	$"FF61 FF5E 4455 0080 FF5D 0073 FFAF 40C3"
+	$"FF55 00FF FBAE 9DFF C7FA 0002 80FF 3BFC"
+	$"0005 6EFF 96B2 B25D CC00 FD00 00AB FA00"
+	$"FF01 3202 0405 070A 1148 573E 201B 1E20"
+	$"2123 2425 5EBA EAE6 B55D 2827 2523 201D"
+	$"1916 120F 0D0B 0908 0909 0B52 F4F4 4438"
+	$"E4FF FFDB 5CD9 F4FF 0BCD A9A1 978D 837B"
+	$"7470 6E70 CCEC FF15 F6DD D7D0 C9C2 B9B1"
+	$"A89E 948B 8177 6D63 5950 473E 362F 3528"
+	$"221C 1713 0F0B 0806 009D FF66 7FEE 0400"
+	$"A1FF 4C00 11FF A100 FFDD 0025 3B59 FF91"
+	$"2E00 0080 FF5D 00DD FF21 0038 FFBF 00FF"
+	$"E200 00FF DDFA 0002 80FF 3BFC 0006 AEFF"
+	$"EEAA EAFF 6ACD 00FD 0000 AEFB 00FF 0112"
+	$"0203 0507 0A4A C3F5 FCEC BA4F 282A 2D2F"
+	$"4FA9 F5FD FF17 E957 3331 2E2A 2622 1D19"
+	$"1511 0E0C 0B15 110E 42EA FFB4 2488 FEFF"
+	$"02A1 87FE F6FF 0DFE C2AD A398 8D82 7870"
+	$"6A67 6872 FCEF FF17 FCE0 D8D2 CBC4 BCB3"
+	$"AAA1 978D 8379 6F65 5C52 4A41 3932 2B24"
+	$"111F 1915 110D 0A08 0604 0048 FFB7 D0A5"
+	$"0000 BAFC FF03 BA00 FFDD FE00 1711 D4FF"
+	$"FFAA 0080 FF5D 00FF FF00 0022 FFDD 00FF"
+	$"DD00 00FF DDFA 0002 80FF 3BFC 0006 BAFF"
+	$"4800 48FF CBCD 00FD 0000 ABFC 00FF 0106"
+	$"0203 0507 0A55 F5FC FF05 D74D 3748 93E5"
+	$"FAFF 1CBE 423F 3B36 312B 2620 1B16 1311"
+	$"1DBC 8012 158A FFFA 6A39 D5FF FFF0 7CCC"
+	$"F6FF 0DF9 BFAE A397 8B7F 746B 6460 5F62"
+	$"B4F0 FF18 E7DA D4CD C6BE B5AD A39A 9086"
+	$"7C72 685E 554C 433B 342D 2621 1B13 1713"
+	$"0F0C 0907 0504 0300 08F3 F7FF 5100 00B2"
+	$"FF5E FE22 0319 00FF DDFC 0015 40C7 FF33"
+	$"80FF 5D00 F3FF 0C00 2EFF D000 FFDD 0000"
+	$"FFDD FA00 0280 FF3B FC00 06B6 FF22 0022"
+	$"FFDD CD00 FD00 00B1 FC00 FF01 0503 0406"
 	$"0916 D4FA FF02 BC83 D2F8 FF1D FA81 4E49"
 	$"433D 362F 2822 1D19 1521 C5F0 331A 35D4"
 	$"FFCC 3E80 FBFF FFC2 91F9 F9FF 10FE FFF4"
 	$"B9AB A094 877A 6E64 5D58 5759 60EC F3FF"
 	$"1AEF DAD5 CEC8 C0B8 AFA6 9C93 897F 756B"
-	$"6157 4E46 3D36 2F28 221D 1814 0E10 0D0B"
-	$"0806 0504 0302 0101 77DD DD1C FE00 0293"
-	$"DD65 FE00 030E 00DD A1FD 0017 0E00 00B3"
-	$"CE00 DDA1 0085 DD4A 0077 DD58 0000 DDA1"
-	$"003B DD65 FA00 01A1 DDFE 00FF DDFE 0001"
-	$"A1DD FE00 FFDD FE00 01A1 DDD6 00FD 0000"
-	$"B8FD 00FF 0106 0203 0508 0C48 FAF9 FF00"
-	$"FDF6 FF1C D964 5852 4A42 3A32 2B7E 521B"
-	$"1951 F9A6 1E23 76FD FE90 49C8 FFFF FB9C"
-	$"C6FB FF12 FCE0 D8FF F3B3 A69B 8E81 7468"
-	$"5D55 504E 5055 82F5 FF1C F5D7 D4CF C9C2"
-	$"BAB1 A89F 958B 8177 6D63 5A51 4840 3830"
-	$"2A24 1E19 1511 0E0D 0B09 0705 0403 0202"
-	$"0101 004A DDB3 FD00 090E A1DD B3A1 DD2A"
-	$"00DD A1FD 000E DDA1 C0DD 5800 DDA1 000E"
-	$"A1CE A1DD 85FE 0005 DDA1 003B DD65 FA00"
-	$"01A1 DDFE 00FF DDFE 0001 A1DD FE00 FFDD"
-	$"FE00 01A1 DDD6 00FD 0000 86FE 00FF 0106"
-	$"0203 0507 0A0F 61EB FF1C A969 6159 4F46"
-	$"3C33 B8CF 251E 1E9F FD55 2835 C2FF E561"
-	$"7AF5 FFFF DD9B F2FD FF14 E9C9 BAB9 E8F4"
-	$"AD9E 9286 796C 6055 4D47 4546 4B53 E0F8"
-	$"FF1E FCD4 CECC C7C2 BBB3 AAA1 988E 847A"
-	$"7066 5C53 4A42 3A32 2C25 201B 1612 0F0C"
-	$"0A05 0806 0503 0202 FE01 F600 021C 3B3B"
-	$"F800 031C 3B3B 0EFA 0002 2A3B 1CAF 00FD"
-	$"0000 75FE 00FF 0107 0304 0609 0D12 4DFB"
-	$"ECFF 17ED 8571 675D 5247 3D51 F176 2422"
-	$"43EC C62F 336E F7FF B05D BFFE FF1B B3BF"
-	$"FFFF F0CB B2B3 B2B0 C1F0 A994 887C 6F63"
-	$"574D 443F 3D3D 4249 73FD FAFF 1FD3 C1C2"
-	$"C1BE B9B3 ABA3 9A90 877D 7369 5F56 4D44"
-	$"3C34 2D27 211C 1713 100D 0A08 0603 0504"
-	$"0302 FE01 8800 FD00 0076 FF00 FF01 0802"
-	$"0305 080C 1016 21BD EBFF 35C7 8076 6A5E"
-	$"5347 3E9C E437 2828 8BFF 7637 40B6 FFF2"
-	$"7F7C EDFF FFEC A6DF D1AB A7A9 A9A8 A5A1"
-	$"CDA7 877C 7165 594E 443C 3734 3539 4049"
-	$"B0FC FF21 D7AA B0B3 B4B2 AFAA A39B 9289"
-	$"7F75 6B62 584F 463E 362F 2923 1D18 1411"
-	$"0E0B 0907 0504 0403 0202 0101 8600 FD00"
-	$"0076 0C00 0101 0203 0507 0A0E 141B 238F"
-	$"EBFF 17F8 A384 786B 5E52 474B E79C 2E2D"
-	$"3ED6 E147 4269 ECFF CB6A AFFE FF1A B199"
-	$"989B 9D9E 9D9B 9792 9387 7A6F 6459 4E44"
-	$"3B34 2F2D 2D31 373F 4FFE FF23 E689 939B"
-	$"A1A4 A4A2 9E99 9289 8177 6E64 5B51 4940"
-	$"3831 2A24 1F1A 1512 0E0C 0907 0604 0302"
-	$"0002 FE01 8500 FD00 0073 0C00 0101 0304"
-	$"0609 0D12 1830 87E4 EAFF 5BDC 9285 776A"
-	$"5D51 4787 F351 3233 79FF 9A44 4BA6 FFFA"
-	$"9677 E1E4 A789 8C8F 9192 918F 8C88 837C"
-	$"746B 6258 4E44 3A32 2C27 2526 292E 3640"
-	$"9FFF 7E70 7B84 8C91 9393 918D 8780 786F"
-	$"665D 544B 423A 332C 2620 1B16 130F 0C0A"
-	$"0806 0504 0302 01FF 0183 00FD 0000 6EFF"
-	$"0108 0203 0508 0C10 1963 CBE8 FF58 FDB9"
-	$"9184 7568 5B50 4AD2 B937 373E C7F3 5C4C"
-	$"63E0 FFE0 7788 827C 8083 8485 8483 807D"
-	$"7873 6C65 5D54 4B42 3931 2A25 211F 1F22"
-	$"272E 3742 4C57 626C 757B 8082 827F 7B75"
-	$"6E66 5E55 4D44 3C35 2E28 221C 1814 100D"
-	$"0A08 0605 0403 02FE 0181 00FD 0000 6D09"
-	$"0102 0305 070A 0E44 AFF9 E6FF 5AEB A28F"
-	$"8172 6559 4E72 F76D 3B3B 6BF8 B94B 5196"
-	$"F0BB 706C 7073 7677 7878 7674 716D 6862"
-	$"5C55 4E47 3F37 2F29 231E 1B19 191C 2026"
-	$"2E37 414B 555E 656B 6F70 706D 6964 5D56"
-	$"4E46 3E37 3029 231E 1915 110E 0B09 0705"
-	$"0403 0202 0101 0000 8100 FD00 0068 0701"
-	$"0204 0609 148A EBE3 FF17 CC9A 8C7D 6F62"
-	$"574D BED5 423E 3FAD FE77 4E5C 755D 6164"
-	$"6769 FE6B 386A 6865 615D 5853 4D47 403A"
-	$"332D 2621 1C18 1514 1416 1A1F 262E 363F"
-	$"484F 565B 5E5F 5E5C 5853 4D46 3F38 312B"
-	$"251F 1A16 120F 0C09 0706 0403 0202 FE01"
-	$"FE00 8100 FD00 0064 0502 0305 070B 8AE1"
-	$"FF16 F5AE 9687 796B 5F54 66F1 8B40 405A"
-	$"EAB4 4B4F 5356 595C 5EFE 5F37 5E5C 5956"
-	$"524E 4944 3F39 342E 2923 1E1A 1613 1110"
-	$"1012 1519 1F25 2D34 3B42 474B 4E4F 4E4B"
-	$"4843 3E38 322C 2620 1C17 1310 0D0A 0806"
-	$"0504 0302 FE01 FC00 8100 FD00 0062 0502"
-	$"0306 0921 E4E0 FF51 DAA0 9182 7467 5C52"
-	$"A4E9 5241 416C 5B47 494C 4F51 5253 5453"
-	$"5250 4E4B 4743 3F3B 3632 2D28 241F 1B17"
-	$"1411 0E0D 0C0C 0E10 1418 1E24 2A30 353A"
-	$"3D3F 3F3E 3C39 3530 2B26 211C 1814 100D"
-	$"0B09 0705 0403 0202 0101 FA00 8100 FD00"
-	$"0060 0502 0407 0A45 F9E0 FF2A FBB9 9B8C"
-	$"7D6F 6358 58E7 A741 4040 4142 4445 4748"
-	$"4949 4847 4643 413D 3A36 322E 2A26 231F"
-	$"1B18 1411 0F0C 0AFE 091F 0A0C 0F13 171C"
-	$"2126 2A2D 3031 3231 2F2C 2925 211D 1815"
-	$"110E 0B09 0706 0403 0202 FE01 F900 8100"
-	$"FD00 005C 0503 0507 0B3D F4DF FF0B E4A5"
-	$"9586 786A 5F55 7F7F 423F FD3D 003E FE3F"
-	$"363E 3D3C 3A37 3531 2E2B 2724 201D 1A17"
-	$"1411 0F0C 0A09 0707 0607 0709 0B0E 1215"
-	$"191D 2023 2526 2625 2421 1E1B 1815 110F"
-	$"0C0A 0806 0503 0202 FE01 F700 8100 FD00"
-	$"005B 0503 0508 0C16 BBDF FF0E FEC5 9E8F"
-	$"8072 655A 5049 423E 3B39 38FE 37FF 3634"
-	$"3533 312F 2D2A 2724 211E 1B18 1512 100E"
-	$"0C0A 0907 0605 0404 0505 0608 0A0D 1013"
-	$"1518 1A1B 1C1C 1B1A 1816 1411 0E0C 0A08"
-	$"0605 0403 02FE 01F5 0081 00FD 0000 5806"
-	$"0305 090D 1349 F6DF FF27 EEAB 9889 7A6C"
-	$"6055 4B44 3E39 3633 3230 2F2E 2D2B 2A28"
-	$"2523 201E 1B18 1613 110F 0D0B 0A08 0706"
-	$"0504 FD03 FF04 0706 0709 0B0D 0F11 13FD"
-	$"140E 1211 0F0E 0C0A 0806 0504 0302 0201"
-	$"01F3 0081 00FD 0000 5406 0306 090E 141D"
-	$"A4DE FF25 D0A0 9182 7466 5A4F 463E 3833"
-	$"2F2D 2A28 2725 2321 1F1D 1B18 1614 120F"
-	$"0D0C 0A09 0706 0504 0403 FB02 0803 0405"
-	$"0608 090B 0C0D FE0E FF0D 090C 0A09 0806"
-	$"0504 0302 02FE 01F2 0081 00FD 0000 5107"
-	$"0406 090E 151D 3DEC DFFF 25F5 B19A 8A7B"
-	$"6D5F 5348 3F37 312C 2825 2220 1E1C 1A18"
-	$"1614 1210 0E0C 0B09 0807 0605 0403 0302"
-	$"02FB 0107 0203 0304 0506 0708 FC09 0808"
-	$"0707 0605 0403 0202 FE01 F000 8100 FD00"
-	$"004E 0703 0609 0E14 1D27 8DDE FF21 DBA2"
-	$"9383 7465 584C 4138 302A 2521 1D1B 1816"
-	$"1412 100E 0D0B 0A08 0706 0504 0303 0202"
-	$"FC01 FF00 FE01 FF02 FF03 FF04 FF05 FE06"
-	$"FE05 0404 0303 0202 FE01 EE00 8100 FD00"
-	$"0044 0803 0509 0D14 1C26 3CDD DFFF 1CFB"
-	$"B99B 8B7C 6C5E 5044 3A31 2923 1E1A 1614"
-	$"110F 0D0C 0A09 0706 0504 0403 FE02 FD01"
-	$"FA00 FD01 FF02 FD03 0004 FD03 FE02 FE01"
-	$"EC00 8100 FD00 003A 0903 0508 0D13 1B24"
-	$"307C FEDF FF1B E4A5 9484 7464 5648 3C32"
-	$"2922 1C17 1310 0D0B 0A08 0706 0504 0303"
-	$"0202 FD01 F500 FC01 FA02 FC01 EA00 8100"
-	$"FD00 0033 0903 0507 0C11 1922 2D3C C9DF"
-	$"FF18 FEC5 9C8C 7B6B 5C4D 4035 2B22 1B15"
-	$"110E 0B09 0706 0504 0302 02FD 01EF 00F6"
-	$"01E7 0081 00FD 0000 2D0A 0204 070A 0F16"
-	$"1F29 366B FADF FF15 EEA7 9484 7363 5345"
-	$"382D 231C 1510 0C09 0705 0403 0202 FD01"
-	$"C800 8100 FD00 002A 0A02 0306 090E 141C"
-	$"2531 3FB5 DEFF 12CE 9D8C 7B6A 5A4B 3D31"
-	$"261D 1610 0C08 0604 0302 FE01 C500 8100"
-	$"FD00 002B 0B02 0305 080C 1118 212C 395B"
-	$"ECDF FF14 F5AE 9483 7261 5142 3529 1F17"
-	$"110C 0806 0402 0201 01C4 0081 00FD 0000"
-	$"290B 0102 0406 0A0F 151D 2732 4098 DEFF"
-	$"12D9 9C8B 7968 5747 392D 2219 120D 0906"
-	$"0402 0101 C300 8100 FD00 002A 0C01 0203"
-	$"0508 0C12 1922 2C39 4FE1 DFFF 12FA B492"
-	$"806F 5D4D 3E31 251B 140E 0906 0402 0101"
-	$"C300 8100 FD00 002A FF01 0B02 0407 0A0F"
-	$"151D 2732 3F85 FEDF FF11 E099 8775 6352"
-	$"4334 281E 150F 0A06 0402 0101 C300 8100"
-	$"FD00 002A 0D00 0102 0305 080C 1219 212B"
-	$"3848 CADF FF11 F0A3 8C7A 6857 4738 2B20"
-	$"1710 0B07 0402 0101 C300 8100 FD00 002B"
-	$"0E00 0101 0204 060A 0E14 1C25 313E 6EFA"
-	$"E0FF 11EA A290 7E6C 5A4A 3A2D 2218 110C"
-	$"0705 0301 01C3 0081 00FD 0000 2BFF 000C"
-	$"0102 0305 080C 1118 202A 3644 B5E0 FF11"
-	$"D5A3 9280 6E5C 4C3C 2F23 1912 0C08 0503"
-	$"0101 C300 8100 FD00 002D FF00 FF01 0B02"
-	$"0406 090E 141B 242F 3C5C ECE2 FF12 EAB7"
-	$"A392 806E 5D4C 3D2F 241A 120C 0805 0301"
-	$"01C3 0081 00FD 0000 2EFE 000C 0102 0305"
-	$"070B 1017 1F29 3442 9AE4 FF14 F9E0 C1AF"
-	$"A08F 7E6C 5B4B 3C2F 231A 120C 0805 0301"
-	$"01C3 0081 00FD 0000 31FE 00FF 010B 0204"
-	$"0609 0D13 1A23 2D3A 50E0 E7FF 16FD EDD6"
-	$"C4B8 AA9B 8A7A 6958 493A 2D22 1912 0C08"
-	$"0503 0101 C300 8100 FD00 0031 FD00 0C01"
-	$"0203 0407 0A0F 151D 2732 4086 E8FF 17F5"
-	$"E2D1 C7BC B0A2 9384 7363 5445 372B 2018"
-	$"110B 0704 0301 01C3 0081 00FD 0000 34FD"
-	$"00FF 010B 0203 0508 0C12 1921 2C38 47CC"
-	$"EBFF 19F9 EAD8 D0C7 BDB2 A698 8A7B 6B5C"
-	$"4D3F 3327 1E16 0F0A 0704 0201 01C3 0081"
-	$"00FD 0000 35FC 00FF 010B 0204 070A 0E14"
-	$"1C25 313E 70F8 EEFF 1AFC EFDF D4CD C5BB"
-	$"B1A6 998C 7E70 6254 4639 2E23 1B13 0E09"
-	$"0604 0201 C200 8100 FD00 0036 FB00 0C01"
-	$"0203 0508 0C11 1720 2A36 44B3 F0FF 1CFE"
-	$"F3E3 D7D0 C9C1 B8AE A398 8C7F 7264 574A"
-	$"3E32 281F 1711 0C08 0503 0201 C200 8100"
-	$"FD00 0038 FB00 FF01 0B02 0406 090E 131B"
-	$"242F 3B5B EEF2 FF1D F7E7 D8D2 CBC4 BBB3"
-	$"A99F 9489 7D71 6458 4C40 352B 221A 140E"
-	$"0A07 0403 0101 C200 8100 FD00 0039 FA00"
-	$"0C01 0203 0507 0B10 161E 2834 419B F4FF"
-	$"1FFA EADA D3CD C6BE B6AD A399 8F84 796D"
-	$"6256 4B40 362D 241C 1610 0C08 0604 0201"
-	$"01C2 0081 00FD 0000 3BFA 00FF 010B 0204"
-	$"0609 0D12 1A22 2D39 4EDD F7FF 20FC ECD9"
-	$"D1CC C6BF B8AF A69D 9388 7E73 695E 5349"
-	$"3F35 2D24 1D17 110D 0906 0403 0201 C100"
-	$"8100 FD00 003D F900 0D01 0203 0407 0A0F"
-	$"151D 2732 3F81 FEFA FF22 FEEC D6CA C8C4"
-	$"BFB8 B1A8 9F96 8C81 776D 6359 4F45 3C33"
-	$"2B24 1D17 120D 0A07 0503 0201 01C1 0081"
-	$"00FD 0000 3DF9 00FF 010B 0203 0508 0C11"
-	$"1821 2B36 44C9 FBFF 01EF D0FE BC1D BAB5"
-	$"B0A8 A098 8E84 7A70 665C 534A 4138 3029"
-	$"221C 1612 0E0A 0705 0402 0101 C000 8100"
-	$"FD00 003E F800 FF01 3202 0406 0A0E 141B"
-	$"242F 3B61 D3FD FFFF F0C8 A9A7 ACAD ADAA"
-	$"A59F 988F 867D 7369 5F56 4D44 3C34 2C26"
-	$"1F1A 1511 0D0A 0705 0402 0201 BF00 8100"
-	$"FD00 003D F700 3301 0203 0508 0B10 171F"
-	$"2833 3F5A 90B6 B492 8991 989B 9D9C 9994"
-	$"8E86 7E75 6B62 594F 473E 362F 2822 1D18"
-	$"130F 0C09 0705 0402 0201 01BF 0081 00FD"
-	$"0000 3CF7 00FF 0130 0204 0609 0D13 1922"
-	$"2B36 414D 5965 707A 8187 8A8B 8A87 827C"
-	$"746C 635B 5249 4139 312B 241F 1A15 110E"
-	$"0B08 0605 0302 0201 01BE 0081 00FD 0000"
-	$"39F6 002D 0102 0305 070A 0F15 1C24 2D37"
-	$"424D 5761 6A71 7679 7978 7570 6A63 5B53"
-	$"4B43 3B33 2D26 201B 1713 0F0C 0A07 0604"
-	$"0302 FE01 BD00 8100 FD00 0038 F600 FF01"
-	$"2C02 0305 080C 1117 1D25 2E37 414A 535A"
-	$"6065 6768 6663 5E59 524B 443C 352E 2822"
-	$"1D18 1410 0D0A 0806 0504 0302 0101 BB00"
-	$"8100 FD00 0036 F500 FF01 2A03 0406 090D"
-	$"1218 1E26 2D35 3D45 4B50 5456 5655 524E"
-	$"4843 3C36 2F29 231E 1915 110E 0B09 0705"
-	$"0403 0202 0101 BA00 8100 FD00 0033 F400"
-	$"2701 0203 0507 0A0E 1318 1E25 2B32 383D"
-	$"4245 4646 4542 3E3A 352F 2A24 1F1A 1612"
-	$"0F0C 0A08 0604 0302 02FE 01B9 0081 00FD"
-	$"0000 31F4 00FF 0123 0203 0508 0B0E 1317"
-	$"1D22 272C 3134 3638 3836 3431 2D28 241F"
-	$"1B17 1310 0D0A 0806 0504 0302 FE01 B700"
-	$"8100 FD00 002F F300 FF01 2302 0406 080B"
-	$"0E12 161A 1E22 2528 2A2B 2B2A 2825 221E"
-	$"1B17 1410 0D0B 0907 0504 0302 0201 01B5"
-	$"0081 00FD 0000 2CF2 0020 0102 0304 0608"
-	$"0A0D 1013 1619 1C1E 1F20 201F 1D1B 1916"
-	$"1310 0E0B 0907 0604 0302 02FE 01B4 0081"
-	$"00FD 0000 2AF2 00FF 010B 0203 0406 0709"
-	$"0C0E 1012 1416 FE17 0D16 1513 110F 0D0B"
-	$"0908 0605 0302 02FE 01B2 0081 00FD 0000"
-	$"27F1 00FF 010A 0203 0405 0608 0A0B 0D0E"
-	$"0FFE 100B 0F0E 0D0C 0A09 0706 0504 0302"
-	$"FE01 B000 8100 FD00 0025 F000 FF01 FF02"
-	$"0703 0405 0608 0909 0AFE 0B0C 0A09 0908"
-	$"0706 0504 0302 0201 01AE 0081 00FD 0000"
-	$"20EF 00FE 0106 0203 0304 0506 06FD 07FF"
-	$"06FF 0504 0403 0302 02FE 01AD 0081 00FD"
-	$"0000 00FF"
+	$"6157 4E46 3D36 2F28 221D 1814 1A10 0D0B"
+	$"0806 0504 0302 0000 A5FF F708 0000 66FF"
+	$"B315 083C 1D00 FFDD FE00 172F 1D04 8CFF"
+	$"2980 FF5D 0099 FF72 0495 FF7F 00FF DD00"
+	$"00FF DDFA 000E 80FF 3B00 0048 5D0C 83FF"
+	$"5900 59FF B3CD 00FD 0000 B2FD 00FF 0106"
+	$"0203 0508 0C48 FAF9 FF00 FDF6 FF1C D964"
+	$"5852 4A42 3A32 2B7E 521B 1951 F9A6 1E23"
+	$"76FD FE90 49C8 FFFF FB9C C6FB FF12 FCE0"
+	$"D8FF F3B3 A69B 8E81 7468 5D55 504E 5055"
+	$"82F5 FF1C F5D7 D4CF C9C2 BAB1 A89F 958B"
+	$"8177 6D63 5A51 4840 3830 2A24 1E19 1511"
+	$"0E0D 0B09 0705 0403 0202 0100 0051 FFAE"
+	$"FD00 0884 F3FF FFE1 2900 FFDD FE00 176A"
+	$"FFFF F783 0080 FF5D 000C A6FB FFF7 9504"
+	$"00FF DD00 00FF DDFA 000E 80FF 3B00 00BA"
+	$"FF22 19E6 F7BA F7F3 33CD 00FD 0000 96FE"
+	$"00FF 0106 0203 0507 0A0F 61EB FF1C A969"
+	$"6159 4F46 3C33 B8CF 251E 1E9F FD55 2835"
+	$"C2FF E561 7AF5 FFFF DD9B F2FD FF14 E9C9"
+	$"BAB9 E8F4 AD9E 9286 796C 6055 4D47 4546"
+	$"4B53 E0F8 FF1E FCD4 CECC C7C2 BBB3 AAA1"
+	$"988E 847A 7066 5C53 4A42 3A32 2C25 201B"
+	$"1612 0F0C 0A05 0806 0503 0202 FE01 F700"
+	$"0204 2219 F800 0211 2208 F900 020C 2208"
+	$"F100 0D40 801D 0000 5D80 1100 197F A287"
+	$"21CC 00FD 0000 75FE 00FF 0107 0304 0609"
+	$"0D12 4DFB ECFF 17ED 8571 675D 5247 3D51"
+	$"F176 2422 43EC C62F 336E F7FF B05D BFFE"
+	$"FF1B B3BF FFFF F0CB B2B3 B2B0 C1F0 A994"
+	$"887C 6F63 574D 443F 3D3D 4249 73FD FAFF"
+	$"1FD3 C1C2 C1BE B9B3 ABA3 9A90 877D 7369"
+	$"5F56 4D44 3C34 2D27 211C 1713 100D 0A08"
+	$"0603 0504 0302 FE01 8800 FD00 0076 FF00"
+	$"FF01 0802 0305 080C 1016 21BD EBFF 35C7"
+	$"8076 6A5E 5347 3E9C E437 2828 8BFF 7637"
+	$"40B6 FFF2 7F7C EDFF FFEC A6DF D1AB A7A9"
+	$"A9A8 A5A1 CDA7 877C 7165 594E 443C 3734"
+	$"3539 4049 B0FC FF21 D7AA B0B3 B4B2 AFAA"
+	$"A39B 9289 7F75 6B62 584F 463E 362F 2923"
+	$"1D18 1411 0E0B 0907 0504 0403 0202 0101"
+	$"8600 FD00 0076 0C00 0101 0203 0507 0A0E"
+	$"141B 238F EBFF 17F8 A384 786B 5E52 474B"
+	$"E79C 2E2D 3ED6 E147 4269 ECFF CB6A AFFE"
+	$"FF1A B199 989B 9D9E 9D9B 9792 9387 7A6F"
+	$"6459 4E44 3B34 2F2D 2D31 373F 4FFE FF23"
+	$"E689 939B A1A4 A4A2 9E99 9289 8177 6E64"
+	$"5B51 4940 3831 2A24 1F1A 1512 0E0C 0907"
+	$"0604 0302 0002 FE01 8500 FD00 0073 0C00"
+	$"0101 0304 0609 0D12 1830 87E4 EAFF 5BDC"
+	$"9285 776A 5D51 4787 F351 3233 79FF 9A44"
+	$"4BA6 FFFA 9677 E1E4 A789 8C8F 9192 918F"
+	$"8C88 837C 746B 6258 4E44 3A32 2C27 2526"
+	$"292E 3640 9FFF 7E70 7B84 8C91 9393 918D"
+	$"8780 786F 665D 544B 423A 332C 2620 1B16"
+	$"130F 0C0A 0806 0504 0302 01FF 0183 00FD"
+	$"0000 6EFF 0108 0203 0508 0C10 1963 CBE8"
+	$"FF58 FDB9 9184 7568 5B50 4AD2 B937 373E"
+	$"C7F3 5C4C 63E0 FFE0 7788 827C 8083 8485"
+	$"8483 807D 7873 6C65 5D54 4B42 3931 2A25"
+	$"211F 1F22 272E 3742 4C57 626C 757B 8082"
+	$"827F 7B75 6E66 5E55 4D44 3C35 2E28 221C"
+	$"1814 100D 0A08 0605 0403 02FE 0181 00FD"
+	$"0000 6D09 0102 0305 070A 0E44 AFF9 E6FF"
+	$"5AEB A28F 8172 6559 4E72 F76D 3B3B 6BF8"
+	$"B94B 5196 F0BB 706C 7073 7677 7878 7674"
+	$"716D 6862 5C55 4E47 3F37 2F29 231E 1B19"
+	$"191C 2026 2E37 414B 555E 656B 6F70 706D"
+	$"6964 5D56 4E46 3E37 3029 231E 1915 110E"
+	$"0B09 0705 0403 0202 0101 0000 8100 FD00"
+	$"0068 0701 0204 0609 148A EBE3 FF17 CC9A"
+	$"8C7D 6F62 574D BED5 423E 3FAD FE77 4E5C"
+	$"755D 6164 6769 FE6B 386A 6865 615D 5853"
+	$"4D47 403A 332D 2621 1C18 1514 1416 1A1F"
+	$"262E 363F 484F 565B 5E5F 5E5C 5853 4D46"
+	$"3F38 312B 251F 1A16 120F 0C09 0706 0403"
+	$"0202 FE01 FE00 8100 FD00 0064 0502 0305"
+	$"070B 8AE1 FF16 F5AE 9687 796B 5F54 66F1"
+	$"8B40 405A EAB4 4B4F 5356 595C 5EFE 5F37"
+	$"5E5C 5956 524E 4944 3F39 342E 2923 1E1A"
+	$"1613 1110 1012 1519 1F25 2D34 3B42 474B"
+	$"4E4F 4E4B 4843 3E38 322C 2620 1C17 1310"
+	$"0D0A 0806 0504 0302 FE01 FC00 8100 FD00"
+	$"0062 0502 0306 0921 E4E0 FF51 DAA0 9182"
+	$"7467 5C52 A4E9 5241 416C 5B47 494C 4F51"
+	$"5253 5453 5250 4E4B 4743 3F3B 3632 2D28"
+	$"241F 1B17 1411 0E0D 0C0C 0E10 1418 1E24"
+	$"2A30 353A 3D3F 3F3E 3C39 3530 2B26 211C"
+	$"1814 100D 0B09 0705 0403 0202 0101 FA00"
+	$"8100 FD00 0060 0502 0407 0A45 F9E0 FF2A"
+	$"FBB9 9B8C 7D6F 6358 58E7 A741 4040 4142"
+	$"4445 4748 4949 4847 4643 413D 3A36 322E"
+	$"2A26 231F 1B18 1411 0F0C 0AFE 091F 0A0C"
+	$"0F13 171C 2126 2A2D 3031 3231 2F2C 2925"
+	$"211D 1815 110E 0B09 0706 0403 0202 FE01"
+	$"F900 8100 FD00 005C 0503 0507 0B3D F4DF"
+	$"FF0B E4A5 9586 786A 5F55 7F7F 423F FD3D"
+	$"003E FE3F 363E 3D3C 3A37 3531 2E2B 2724"
+	$"201D 1A17 1411 0F0C 0A09 0707 0607 0709"
+	$"0B0E 1215 191D 2023 2526 2625 2421 1E1B"
+	$"1815 110F 0C0A 0806 0503 0202 FE01 F700"
+	$"8100 FD00 005B 0503 0508 0C16 BBDF FF0E"
+	$"FEC5 9E8F 8072 655A 5049 423E 3B39 38FE"
+	$"37FF 3634 3533 312F 2D2A 2724 211E 1B18"
+	$"1512 100E 0C0A 0907 0605 0404 0505 0608"
+	$"0A0D 1013 1518 1A1B 1C1C 1B1A 1816 1411"
+	$"0E0C 0A08 0605 0403 02FE 01F5 0081 00FD"
+	$"0000 5806 0305 090D 1349 F6DF FF27 EEAB"
+	$"9889 7A6C 6055 4B44 3E39 3633 3230 2F2E"
+	$"2D2B 2A28 2523 201E 1B18 1613 110F 0D0B"
+	$"0A08 0706 0504 FD03 FF04 0706 0709 0B0D"
+	$"0F11 13FD 140E 1211 0F0E 0C0A 0806 0504"
+	$"0302 0201 01F3 0081 00FD 0000 5406 0306"
+	$"090E 141D A4DE FF25 D0A0 9182 7466 5A4F"
+	$"463E 3833 2F2D 2A28 2725 2321 1F1D 1B18"
+	$"1614 120F 0D0C 0A09 0706 0504 0403 FB02"
+	$"0803 0405 0608 090B 0C0D FE0E FF0D 090C"
+	$"0A09 0806 0504 0302 02FE 01F2 0081 00FD"
+	$"0000 5107 0406 090E 151D 3DEC DFFF 25F5"
+	$"B19A 8A7B 6D5F 5348 3F37 312C 2825 2220"
+	$"1E1C 1A18 1614 1210 0E0C 0B09 0807 0605"
+	$"0403 0302 02FB 0107 0203 0304 0506 0708"
+	$"FC09 0808 0707 0605 0403 0202 FE01 F000"
+	$"8100 FD00 004E 0703 0609 0E14 1D27 8DDE"
+	$"FF21 DBA2 9383 7465 584C 4138 302A 2521"
+	$"1D1B 1816 1412 100E 0D0B 0A08 0706 0504"
+	$"0303 0202 FC01 FF00 FE01 FF02 FF03 FF04"
+	$"FF05 FE06 FE05 0404 0303 0202 FE01 EE00"
+	$"8100 FD00 0044 0803 0509 0D14 1C26 3CDD"
+	$"DFFF 1CFB B99B 8B7C 6C5E 5044 3A31 2923"
+	$"1E1A 1614 110F 0D0C 0A09 0706 0504 0403"
+	$"FE02 FD01 FA00 FD01 FF02 FD03 0004 FD03"
+	$"FE02 FE01 EC00 8100 FD00 003A 0903 0508"
+	$"0D13 1B24 307C FEDF FF1B E4A5 9484 7464"
+	$"5648 3C32 2922 1C17 1310 0D0B 0A08 0706"
+	$"0504 0303 0202 FD01 F500 FC01 FA02 FC01"
+	$"EA00 8100 FD00 0033 0903 0507 0C11 1922"
+	$"2D3C C9DF FF18 FEC5 9C8C 7B6B 5C4D 4035"
+	$"2B22 1B15 110E 0B09 0706 0504 0302 02FD"
+	$"01EF 00F6 01E7 0081 00FD 0000 2D0A 0204"
+	$"070A 0F16 1F29 366B FADF FF15 EEA7 9484"
+	$"7363 5345 382D 231C 1510 0C09 0705 0403"
+	$"0202 FD01 C800 8100 FD00 002A 0A02 0306"
+	$"090E 141C 2531 3FB5 DEFF 12CE 9D8C 7B6A"
+	$"5A4B 3D31 261D 1610 0C08 0604 0302 FE01"
+	$"C500 8100 FD00 002B 0B02 0305 080C 1118"
+	$"212C 395B ECDF FF14 F5AE 9483 7261 5142"
+	$"3529 1F17 110C 0806 0402 0201 01C4 0081"
+	$"00FD 0000 290B 0102 0406 0A0F 151D 2732"
+	$"4098 DEFF 12D9 9C8B 7968 5747 392D 2219"
+	$"120D 0906 0402 0101 C300 8100 FD00 002A"
+	$"0C01 0203 0508 0C12 1922 2C39 4FE1 DFFF"
+	$"12FA B492 806F 5D4D 3E31 251B 140E 0906"
+	$"0402 0101 C300 8100 FD00 002A FF01 0B02"
+	$"0407 0A0F 151D 2732 3F85 FEDF FF11 E099"
+	$"8775 6352 4334 281E 150F 0A06 0402 0101"
+	$"C300 8100 FD00 002A 0D00 0102 0305 080C"
+	$"1219 212B 3848 CADF FF11 F0A3 8C7A 6857"
+	$"4738 2B20 1710 0B07 0402 0101 C300 8100"
+	$"FD00 002B 0E00 0101 0204 060A 0E14 1C25"
+	$"313E 6EFA E0FF 11EA A290 7E6C 5A4A 3A2D"
+	$"2218 110C 0705 0301 01C3 0081 00FD 0000"
+	$"2BFF 000C 0102 0305 080C 1118 202A 3644"
+	$"B5E0 FF11 D5A3 9280 6E5C 4C3C 2F23 1912"
+	$"0C08 0503 0101 C300 8100 FD00 002D FF00"
+	$"FF01 0B02 0406 090E 141B 242F 3C5C ECE2"
+	$"FF12 EAB7 A392 806E 5D4C 3D2F 241A 120C"
+	$"0805 0301 01C3 0081 00FD 0000 2EFE 000C"
+	$"0102 0305 070B 1017 1F29 3442 9AE4 FF14"
+	$"F9E0 C1AF A08F 7E6C 5B4B 3C2F 231A 120C"
+	$"0805 0301 01C3 0081 00FD 0000 31FE 00FF"
+	$"010B 0204 0609 0D13 1A23 2D3A 50E0 E7FF"
+	$"16FD EDD6 C4B8 AA9B 8A7A 6958 493A 2D22"
+	$"1912 0C08 0503 0101 C300 8100 FD00 0031"
+	$"FD00 0C01 0203 0407 0A0F 151D 2732 4086"
+	$"E8FF 17F5 E2D1 C7BC B0A2 9384 7363 5445"
+	$"372B 2018 110B 0704 0301 01C3 0081 00FD"
+	$"0000 34FD 00FF 010B 0203 0508 0C12 1921"
+	$"2C38 47CC EBFF 19F9 EAD8 D0C7 BDB2 A698"
+	$"8A7B 6B5C 4D3F 3327 1E16 0F0A 0704 0201"
+	$"01C3 0081 00FD 0000 35FC 00FF 010B 0204"
+	$"070A 0E14 1C25 313E 70F8 EEFF 1AFC EFDF"
+	$"D4CD C5BB B1A6 998C 7E70 6254 4639 2E23"
+	$"1B13 0E09 0604 0201 C200 8100 FD00 0036"
+	$"FB00 0C01 0203 0508 0C11 1720 2A36 44B3"
+	$"F0FF 1CFE F3E3 D7D0 C9C1 B8AE A398 8C7F"
+	$"7264 574A 3E32 281F 1711 0C08 0503 0201"
+	$"C200 8100 FD00 0038 FB00 FF01 0B02 0406"
+	$"090E 131B 242F 3B5B EEF2 FF1D F7E7 D8D2"
+	$"CBC4 BBB3 A99F 9489 7D71 6458 4C40 352B"
+	$"221A 140E 0A07 0403 0101 C200 8100 FD00"
+	$"0039 FA00 0C01 0203 0507 0B10 161E 2834"
+	$"419B F4FF 1FFA EADA D3CD C6BE B6AD A399"
+	$"8F84 796D 6256 4B40 362D 241C 1610 0C08"
+	$"0604 0201 01C2 0081 00FD 0000 3BFA 00FF"
+	$"010B 0204 0609 0D12 1A22 2D39 4EDD F7FF"
+	$"20FC ECD9 D1CC C6BF B8AF A69D 9388 7E73"
+	$"695E 5349 3F35 2D24 1D17 110D 0906 0403"
+	$"0201 C100 8100 FD00 003D F900 0D01 0203"
+	$"0407 0A0F 151D 2732 3F81 FEFA FF22 FEEC"
+	$"D6CA C8C4 BFB8 B1A8 9F96 8C81 776D 6359"
+	$"4F45 3C33 2B24 1D17 120D 0A07 0503 0201"
+	$"01C1 0081 00FD 0000 3DF9 00FF 010B 0203"
+	$"0508 0C11 1821 2B36 44C9 FBFF 01EF D0FE"
+	$"BC1D BAB5 B0A8 A098 8E84 7A70 665C 534A"
+	$"4138 3029 221C 1612 0E0A 0705 0402 0101"
+	$"C000 8100 FD00 003E F800 FF01 3202 0406"
+	$"0A0E 141B 242F 3B61 D3FD FFFF F0C8 A9A7"
+	$"ACAD ADAA A59F 988F 867D 7369 5F56 4D44"
+	$"3C34 2C26 1F1A 1511 0D0A 0705 0402 0201"
+	$"BF00 8100 FD00 003D F700 3301 0203 0508"
+	$"0B10 171F 2833 3F5A 90B6 B492 8991 989B"
+	$"9D9C 9994 8E86 7E75 6B62 594F 473E 362F"
+	$"2822 1D18 130F 0C09 0705 0402 0201 01BF"
+	$"0081 00FD 0000 3CF7 00FF 0130 0204 0609"
+	$"0D13 1922 2B36 414D 5965 707A 8187 8A8B"
+	$"8A87 827C 746C 635B 5249 4139 312B 241F"
+	$"1A15 110E 0B08 0605 0302 0201 01BE 0081"
+	$"00FD 0000 39F6 002D 0102 0305 070A 0F15"
+	$"1C24 2D37 424D 5761 6A71 7679 7978 7570"
+	$"6A63 5B53 4B43 3B33 2D26 201B 1713 0F0C"
+	$"0A07 0604 0302 FE01 BD00 8100 FD00 0038"
+	$"F600 FF01 2C02 0305 080C 1117 1D25 2E37"
+	$"414A 535A 6065 6768 6663 5E59 524B 443C"
+	$"352E 2822 1D18 1410 0D0A 0806 0504 0302"
+	$"0101 BB00 8100 FD00 0036 F500 FF01 2A03"
+	$"0406 090D 1218 1E26 2D35 3D45 4B50 5456"
+	$"5655 524E 4843 3C36 2F29 231E 1915 110E"
+	$"0B09 0705 0403 0202 0101 BA00 8100 FD00"
+	$"0033 F400 2701 0203 0507 0A0E 1318 1E25"
+	$"2B32 383D 4245 4646 4542 3E3A 352F 2A24"
+	$"1F1A 1612 0F0C 0A08 0604 0302 02FE 01B9"
+	$"0081 00FD 0000 31F4 00FF 0123 0203 0508"
+	$"0B0E 1317 1D22 272C 3134 3638 3836 3431"
+	$"2D28 241F 1B17 1310 0D0A 0806 0504 0302"
+	$"FE01 B700 8100 FD00 002F F300 FF01 2302"
+	$"0406 080B 0E12 161A 1E22 2528 2A2B 2B2A"
+	$"2825 221E 1B17 1410 0D0B 0907 0504 0302"
+	$"0201 01B5 0081 00FD 0000 2CF2 0020 0102"
+	$"0304 0608 0A0D 1013 1619 1C1E 1F20 201F"
+	$"1D1B 1916 1310 0E0B 0907 0604 0302 02FE"
+	$"01B4 0081 00FD 0000 2AF2 00FF 010B 0203"
+	$"0406 0709 0C0E 1012 1416 FE17 0D16 1513"
+	$"110F 0D0B 0908 0605 0302 02FE 01B2 0081"
+	$"00FD 0000 27F1 00FF 010A 0203 0405 0608"
+	$"0A0B 0D0E 0FFE 100B 0F0E 0D0C 0A09 0706"
+	$"0504 0302 FE01 B000 8100 FD00 0025 F000"
+	$"FF01 FF02 0703 0405 0608 0909 0AFE 0B0C"
+	$"0A09 0908 0706 0504 0302 0201 01AE 0081"
+	$"00FD 0000 20EF 00FE 0106 0203 0304 0506"
+	$"06FD 07FF 06FF 0504 0403 0302 02FE 01AD"
+	$"0081 00FD 0000 00FF"
 };
 
 resource 'STR ' (128) {
 	"1"
+};
+
+resource 'aete' (0) {
+	0x1,
+	0x0,
+	english,
+	roman,
+	{	/* array Suites: 2 elements */
+		/* [1] */
+		"Required Suite",
+		"Terms that every application should supp"
+		"ort",
+		'reqd',
+		1,
+		1,
+		{	/* array Events: 4 elements */
+			/* [1] */
+			"open",
+			"Open documents",
+			'reqd',
+			'odoc',
+			noReply,
+			"",
+			replyOptional,
+			singleItem,
+			notEnumerated,
+			notTightBindingFunction,
+			enumsAreConstants,
+			enumListCanRepeat,
+			replyIsValue,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			verbEvent,
+			reserved,
+			reserved,
+			reserved,
+			'alis',
+			"list of files to open",
+			directParamRequired,
+			listOfItems,
+			notEnumerated,
+			changesState,
+			enumsAreConstants,
+			enumListCanRepeat,
+			directParamIsValue,
+			directParamIsTarget,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			{	/* array OtherParams: 0 elements */
+			},
+			/* [2] */
+			"print",
+			"Print files",
+			'reqd',
+			'pdoc',
+			noReply,
+			"",
+			replyOptional,
+			singleItem,
+			notEnumerated,
+			notTightBindingFunction,
+			enumsAreConstants,
+			enumListCanRepeat,
+			replyIsValue,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			verbEvent,
+			reserved,
+			reserved,
+			reserved,
+			'alis',
+			"files to print",
+			directParamRequired,
+			listOfItems,
+			notEnumerated,
+			doesntChangeState,
+			enumsAreConstants,
+			enumListCanRepeat,
+			directParamIsValue,
+			directParamIsTarget,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			{	/* array OtherParams: 0 elements */
+			},
+			/* [3] */
+			"quit",
+			"Quit clip2icns",
+			'reqd',
+			'quit',
+			noReply,
+			"",
+			replyOptional,
+			singleItem,
+			notEnumerated,
+			notTightBindingFunction,
+			enumsAreConstants,
+			enumListCanRepeat,
+			replyIsValue,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			verbEvent,
+			reserved,
+			reserved,
+			reserved,
+			noParams,
+			"no parameters required",
+			directParamOptional,
+			singleItem,
+			notEnumerated,
+			changesState,
+			enumsAreConstants,
+			enumListCanRepeat,
+			directParamIsValue,
+			directParamIsTarget,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			{	/* array OtherParams: 0 elements */
+			},
+			/* [4] */
+			"run",
+			"Application startup",
+			'reqd',
+			'oapp',
+			noReply,
+			"",
+			replyOptional,
+			singleItem,
+			notEnumerated,
+			notTightBindingFunction,
+			enumsAreConstants,
+			enumListCanRepeat,
+			replyIsValue,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			verbEvent,
+			reserved,
+			reserved,
+			reserved,
+			noParams,
+			"",
+			directParamOptional,
+			singleItem,
+			notEnumerated,
+			changesState,
+			enumsAreConstants,
+			enumListCanRepeat,
+			directParamIsValue,
+			directParamIsTarget,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			{	/* array OtherParams: 0 elements */
+			}
+		},
+		{	/* array Classes: 0 elements */
+		},
+		{	/* array ComparisonOps: 0 elements */
+		},
+		{	/* array Enumerations: 0 elements */
+		},
+		/* [2] */
+		"clip2icns Suite",
+		"",
+		'c2ci',
+		0,
+		0,
+		{	/* array Events: 1 elements */
+			/* [1] */
+			"insert",
+			"Inserting the clipboard contents into an"
+			" icon",
+			'c2ci',
+			'insr',
+			noReply,
+			"",
+			replyOptional,
+			singleItem,
+			notEnumerated,
+			notTightBindingFunction,
+			enumsAreConstants,
+			enumListCanRepeat,
+			replyIsValue,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			verbEvent,
+			reserved,
+			reserved,
+			reserved,
+			noParams,
+			"",
+			directParamOptional,
+			singleItem,
+			notEnumerated,
+			doesntChangeState,
+			enumsAreConstants,
+			enumListCanRepeat,
+			directParamIsValue,
+			directParamIsTarget,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			reserved,
+			{	/* array OtherParams: 3 elements */
+				/* [1] */
+				"into",
+				'iFil',
+				'alis',
+				"location of the file",
+				required,
+				singleItem,
+				notEnumerated,
+				reserved,
+				enumsAreConstants,
+				enumListCanRepeat,
+				paramIsValue,
+				notParamIsTarget,
+				reserved,
+				reserved,
+				reserved,
+				reserved,
+				prepositionParam,
+				notFeminine,
+				notMasculine,
+				singular,
+				/* [2] */
+				"with ID",
+				'iID ',
+				'long',
+				"ID to insert to, if not present then a d"
+				"ialog will appear",
+				optional,
+				singleItem,
+				notEnumerated,
+				reserved,
+				enumsAreConstants,
+				enumListCanRepeat,
+				paramIsValue,
+				notParamIsTarget,
+				reserved,
+				reserved,
+				reserved,
+				reserved,
+				prepositionParam,
+				notFeminine,
+				notMasculine,
+				singular,
+				/* [3] */
+				"with name",
+				'iNam',
+				'TEXT',
+				"name of the icon (if left out the defaul"
+				"t name for the ID will be used)",
+				optional,
+				singleItem,
+				notEnumerated,
+				reserved,
+				enumsAreConstants,
+				enumListCanRepeat,
+				paramIsValue,
+				notParamIsTarget,
+				reserved,
+				reserved,
+				reserved,
+				reserved,
+				prepositionParam,
+				notFeminine,
+				notMasculine,
+				singular
+			}
+		},
+		{	/* array Classes: 0 elements */
+		},
+		{	/* array ComparisonOps: 0 elements */
+		},
+		{	/* array Enumerations: 0 elements */
+		}
+	}
+};
+
+resource 'alrx' (300) {
+	versionOne {
+		13,
+		0,
+		kUseThemeWindow,
+		""
+	}
 };
 
 data 'c2ic' (0) {
@@ -2098,423 +2438,236 @@ data 'c2ic' (0) {
 	$"7270 6172 6974 61"                                  /* rparita */
 };
 
-resource 'DITL' (130) {
-	{	/* array DITLarray: 9 elements */
+resource 'dctb' (128) {
+	{	/* array ColorSpec: 5 elements */
 		/* [1] */
-		{102, 270, 122, 338},
-		Button {
-			enabled,
-			"OK"
-		},
+		wContentColor, 65535, 65535, 65535,
 		/* [2] */
-		{102, 190, 121, 254},
-		Button {
-			enabled,
-			"Cancel"
-		},
+		wFrameColor, 0, 0, 0,
 		/* [3] */
-		{102, 7, 122, 158},
-		Button {
-			enabled,
-			"Launch Register App"
-		},
+		wTextColor, 0, 0, 0,
 		/* [4] */
-		{12, 136, 28, 336},
-		EditText {
-			enabled,
-			""
-		},
+		wHiliteColor, 0, 0, 0,
 		/* [5] */
-		{40, 136, 56, 336},
-		EditText {
-			enabled,
-			""
-		},
-		/* [6] */
-		{68, 136, 84, 336},
-		EditText {
-			enabled,
-			""
-		},
-		/* [7] */
-		{12, 8, 28, 51},
-		StaticText {
-			disabled,
-			"Name:"
-		},
-		/* [8] */
-		{40, 8, 56, 98},
-		StaticText {
-			disabled,
-			"Organization:"
-		},
-		/* [9] */
-		{68, 8, 84, 131},
-		StaticText {
-			disabled,
-			"Registration Code:"
-		}
+		wTitleBarColor, 65535, 65535, 65535
 	}
 };
 
-resource 'DITL' (129) {
-	{	/* array DITLarray: 10 elements */
+resource 'dctb' (129) {
+	{	/* array ColorSpec: 5 elements */
 		/* [1] */
-		{159, 181, 179, 239},
-		Button {
-			enabled,
-			"Insert"
-		},
+		wContentColor, 65535, 65535, 65535,
 		/* [2] */
-		{159, 111, 179, 169},
-		Button {
-			enabled,
-			"Cancel"
-		},
+		wFrameColor, 0, 0, 0,
 		/* [3] */
-		{74, 9, 94, 239},
-		Control {
-			enabled,
-			200
-		},
+		wTextColor, 0, 0, 0,
 		/* [4] */
-		{100, 9, 120, 239},
-		Control {
-			enabled,
-			201
-		},
+		wHiliteColor, 0, 0, 0,
 		/* [5] */
-		{131, 186, 147, 236},
-		EditText {
-			enabled,
-			"-16455"
-		},
-		/* [6] */
-		{130, 29, 145, 47},
-		StaticText {
-			disabled,
-			"ID:"
-		},
-		/* [7] */
-		{8, 25, 56, 121},
-		UserItem {
-			enabled
-		},
-		/* [8] */
-		{9, 133, 57, 229},
-		UserItem {
-			enabled
-		},
-		/* [9] */
-		{58, 52, 70, 95},
-		StaticText {
-			disabled,
-			"clipboard"
-		},
-		/* [10] */
-		{59, 143, 71, 220},
-		StaticText {
-			disabled,
-			"current contents"
-		}
+		wTitleBarColor, 65535, 65535, 65535
 	}
 };
 
-resource 'DITL' (132) {
-	{	/* array DITLarray: 10 elements */
+resource 'dctb' (131) {
+	{	/* array ColorSpec: 5 elements */
 		/* [1] */
-		{159, 181, 179, 239},
-		Button {
-			enabled,
-			"Extract"
-		},
+		wContentColor, 65535, 65535, 65535,
 		/* [2] */
-		{159, 111, 179, 169},
-		Button {
-			enabled,
-			"Cancel"
-		},
+		wFrameColor, 0, 0, 0,
 		/* [3] */
-		{74, 9, 94, 239},
-		Control {
-			enabled,
-			200
-		},
+		wTextColor, 0, 0, 0,
 		/* [4] */
-		{100, 9, 120, 239},
-		Control {
-			enabled,
-			201
-		},
+		wHiliteColor, 0, 0, 0,
 		/* [5] */
-		{131, 186, 147, 236},
-		EditText {
-			enabled,
-			"-16455"
-		},
-		/* [6] */
-		{130, 29, 145, 47},
-		StaticText {
-			disabled,
-			"ID:"
-		},
-		/* [7] */
-		{8, 25, 56, 121},
-		UserItem {
-			enabled
-		},
-		/* [8] */
-		{9, 133, 57, 229},
-		UserItem {
-			enabled
-		},
-		/* [9] */
-		{58, 64, 70, 84},
-		StaticText {
-			disabled,
-			"icon"
-		},
-		/* [10] */
-		{59, 145, 71, 219},
-		StaticText {
-			disabled,
-			"split-up version"
-		}
+		wTitleBarColor, 65535, 65535, 65535
 	}
 };
 
-resource 'DITL' (131) {
-	{	/* array DITLarray: 6 elements */
-		/* [1] */
-		{82, 212, 102, 280},
-		Button {
-			enabled,
-			"OK"
-		},
-		/* [2] */
-		{82, 132, 102, 196},
-		Button {
-			enabled,
-			"Cancel"
-		},
-		/* [3] */
-		{8, 8, 24, 263},
-		CheckBox {
-			enabled,
-			"Include old style resources (if any)"
-		},
-		/* [4] */
-		{40, 8, 56, 213},
-		CheckBox {
-			enabled,
-			"Set bits Kaleidoscope-style"
-		},
-		/* [5] */
-		{24, 8, 40, 263},
-		CheckBox {
-			enabled,
-			"Generate old style resources"
-		},
-		/* [6] */
-		{56, 8, 72, 213},
-		CheckBox {
-			enabled,
-			"Name resources"
-		}
+resource 'dlgx' (-6043) {
+	versionZero {
+		9
 	}
 };
 
-resource 'DITL' (128) {
-	{	/* array DITLarray: 8 elements */
-		/* [1] */
-		{181, 212, 201, 270},
-		Button {
-			enabled,
-			"OK"
-		},
-		/* [2] */
-		{10, 10, 125, 270},
-		UserItem {
-			enabled
-		},
-		/* [3] */
-		{76, 144, 89, 226},
-		StaticText {
-			disabled,
-			"Registered to:"
-		},
-		/* [4] */
-		{90, 152, 104, 269},
-		StaticText {
-			disabled,
-			"Not registered"
-		},
-		/* [5] */
-		{104, 152, 118, 269},
-		StaticText {
-			disabled,
-			""
-		},
-		/* [6] */
-		{125, 10, 143, 270},
-		StaticText {
-			disabled,
-			"by Mihai Parparita"
-		},
-		/* [7] */
-		{159, 10, 177, 270},
-		StaticText {
-			enabled,
-			"http://www.mscape.com/"
-		},
-		/* [8] */
-		{142, 10, 160, 270},
-		StaticText {
-			enabled,
-			"mihai@mscape.com"
-		}
+resource 'dlgx' (-6042) {
+	versionZero {
+		9
 	}
 };
 
-resource 'CNTL' (200) {
-	{0, 0, 20, 230},
-	0,
-	visible,
-	50,
-	200,
-	401,
-	0,
-	"Type:"
+resource 'dlgx' (128) {
+	versionZero {
+		11
+	}
 };
 
-resource 'CNTL' (201) {
-	{0, 0, 20, 230},
-	0,
-	visible,
-	50,
-	201,
-	401,
-	0,
-	"Icon:"
+resource 'dlgx' (129) {
+	versionZero {
+		13
+	}
 };
 
-data 'DLGX' (130) {
-	$"0654 6563 686E 6F00 0000 0000 0000 0000"            /* .Techno......... */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
+resource 'dlgx' (130) {
+	versionZero {
+		9
+	}
+};
+
+resource 'dlgx' (131) {
+	versionZero {
+		9
+	}
+};
+
+data 'iSNP' (-16455) {
 	$"0000"                                               /* .. */
 };
 
-data 'DLGX' (129) {
-	$"0654 6563 686E 6F00 0000 0000 0000 0000"            /* .Techno......... */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
-	$"000A 0002 0000 0000 0000 0000 0000 0001"            /* ................ */
-	$"0000 0000 0000 0000 0000 0005 0000 0000"            /* ................ */
-	$"0000 0000 0000 0005 0000 0000 0000 0000"            /* ................ */
-	$"0000 0007 0000 0000 0000 0000 0000 0006"            /* ................ */
-	$"0000 0000 0000 0000 0000 000A 0000 0000"            /* ................ */
-	$"0000 0000 0000 000A 0000 0000 0000 0000"            /* ................ */
-	$"0000 0006 0000 0000 0000 0000 0000 0006"            /* ................ */
-	$"0000 0000 0000 0000 0000"                           /* .......... */
-};
-
-data 'DLGX' (132) {
-	$"0654 6563 686E 6F00 0000 0000 0000 0000"            /* .Techno......... */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
-	$"000A 0002 0000 0000 0000 0000 0000 0001"            /* ................ */
-	$"0000 0000 0000 0000 0000 0005 0000 0000"            /* ................ */
-	$"0000 0000 0000 0005 0000 0000 0000 0000"            /* ................ */
-	$"0000 0007 0000 0000 0000 0000 0000 0006"            /* ................ */
-	$"0000 0000 0000 0000 0000 000A 0000 0000"            /* ................ */
-	$"0000 0000 0000 000A 0000 0000 0000 0000"            /* ................ */
-	$"0000 0006 0000 0000 0000 0000 0000 0006"            /* ................ */
-	$"0000 0000 0000 0000 0000"                           /* .......... */
-};
-
-data 'DLGX' (131) {
-	$"0654 6563 686E 6F00 0000 0000 0000 0000"            /* .Techno......... */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
-	$"0006 0000 0000 0000 0000 0000 0000 0001"            /* ................ */
-	$"0000 0000 0000 0000 0000 0003 0000 0000"            /* ................ */
-	$"0000 0000 0000 0003 0000 0000 0000 0000"            /* ................ */
-	$"0000 0003 0000 0000 0000 0000 0000 0003"            /* ................ */
-	$"0000 0000 0000 0000 0000"                           /* .......... */
-};
-
-data 'DLGX' (128) {
-	$"0743 6869 6361 676F 0000 0000 0000 0000"            /* .Chicago........ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"000C 0000 0000 0000 0004 0004 0000 0000"            /* ................ */
-	$"0008 0000 0000 0000 0000 0000 0000 000A"            /* ................ */
-	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
-	$"0000 0000 0000 0006 0000 0000 0000 0000"            /* ................ */
-	$"0000 0006 0000 0000 0000 0000 0000 0006"            /* ................ */
-	$"0000 0000 0000 0000 0000 0006 0000 0000"            /* ................ */
-	$"0000 0000 0000 0006 0000 0000 0000 0000"            /* ................ */
+data 'iSNP' (128) {
 	$"0000"                                               /* .. */
 };
 
-resource 'BNDL' (128) {
-	'c2ic',
-	0,
-	{	/* array TypeArray: 2 elements */
+resource 'icl4' (128) {
+	$"0000 0000 0000 0000 0000 0000 0000 0000"
+	$"0000 0000 000D CDCD CDCC 0000 0000 0000"
+	$"0000 0000 00DD 0000 0CFD C000 0000 0000"
+	$"0000 0000 0DC0 D000 CFDC DC00 0000 0000"
+	$"0000 0000 DC00 0D0C FDCC CDC0 0000 0000"
+	$"0000 000D C000 00DF DC00 00DC 0000 0000"
+	$"0000 CEEE CC00 000D C000 000D C000 0000"
+	$"0000 E0FC ECC0 0000 0000 0000 DC00 0000"
+	$"CDDE C000 CADD 0C00 0000 00C0 CDC0 0000"
+	$"D00A AAAA AADC FCC0 0000 3333 3333 BBBB"
+	$"D000 CE00 FDCC FDC0 0000 3333 3323 2BBB"
+	$"D00C E000 CFDC FDC0 0000 3333 32B2 BBB2"
+	$"D0CE 0000 0CFC FDC0 000C 3333 2BBB B222"
+	$"D0E0 0000 CFDC FDC0 3CC0 3333 B222 2B22"
+	$"D0CE 000C FDCC FD33 33CC 2323 2BB2 B2B2"
+	$"D0CC E0CF DCCC FD33 333C 33B2 2B2B 2B21"
+	$"D0CC CEFD CCCC FD33 33DC 32B2 22B2 22B2"
+	$"D0CC CCDC CCCC FDCC 3DDC 322B 2222 B111"
+	$"D0CC CCCC CCCC FDCC CCCC B222 222B 1211"
+	$"D0CC CCCC CCCC FDC0 CCC0 2222 2222 1111"
+	$"DCCC CCCC CCCC FDC0 CCCC 22BB 2211 1111"
+	$"0FFF FFFA FFFF DDCC 00CC CCCC CCCC ED00"
+	$"0000 0000 CEDD DCC0 CC0C CCCC CCCE DC00"
+	$"0000 0000 0CEC CCCC 0CCC CCCC CCED CCC0"
+	$"0000 0000 00CE CC0C CCCC CCCC CEDC CC00"
+	$"0000 0000 000C ECC0 C0CC CCCC EDCC C000"
+	$"0000 0000 0000 CECC CCCC CCCE DCCC 0000"
+	$"0000 0000 0000 0CEC CCCC CCED CCC0 0000"
+	$"0000 0000 0000 00CE CCCC CEDC CC00 0000"
+	$"0000 0000 0000 000C ECCC EDCC C000 0000"
+	$"0000 0000 0000 0000 CECE DCC0 0000 0000"
+	$"0000 0000 0000 0000 0CED CC"
+};
+
+resource 'icl8' (128) {
+	$"0000 0000 0000 0000 0000 0000 0000 0000"
+	$"0000 0000 0000 0000 0000 0000 0000 0000"
+	$"0000 0000 0000 0000 0000 0056 F856 F856"
+	$"F856 F8F6 0000 0000 0000 0000 0000 0000"
+	$"0000 0000 0000 0000 0000 F9FA F500 0000"
+	$"F5F6 FEF9 F600 0000 0000 0000 0000 0000"
+	$"0000 0000 0000 0000 00F9 F6F5 FAF5 0000"
+	$"2BFE F9F7 F9F6 0000 0000 0000 0000 0000"
+	$"0000 0000 0000 0000 F92B F500 F5FA F5F7"
+	$"FEF9 F6F6 F7F9 F600 0000 0000 0000 0000"
+	$"0000 0000 0000 00F9 F6F5 00F5 00F5 FAFE"
+	$"F9F6 F5F5 F5F5 F9F6 0000 0000 0000 0000"
+	$"0000 0000 F6FC FCFC F6F6 F500 F500 F5F9"
+	$"F6F5 F5F5 F5F5 F5F9 F600 0000 0000 0000"
+	$"0000 0000 FBF5 FF2B FCF8 F6F5 F5F5 F5F5"
+	$"F5F5 F5F5 F5F5 F5F5 F9F6 0000 0000 0000"
+	$"F681 81AC 2BF5 F5F5 F6FD 8181 F5F6 F5F5"
+	$"F5F5 F5F5 F5F5 F6F5 F6F9 F600 0000 0000"
+	$"8100 00FD FDFD FDFD FDFD F92B FEF8 F6F5"
+	$"F5F5 F5F5 4646 4640 4040 4040 3A3A 3A3A"
+	$"8100 F5F5 F6FC F5F5 FEF9 F8F8 FEF9 F6F5"
+	$"F5F5 F5F5 4646 4022 4040 1C40 173A 3A3A"
+	$"8100 F5F6 FCF5 0000 F6FE F9F8 FEF9 F6F5"
+	$"F5F5 F5F5 4640 2240 401D 3A17 3A3A 3A10"
+	$"81F5 F6FC F500 0000 00F6 FEF8 FEF9 F6F5"
+	$"F5F5 F5F6 4022 4040 1C3A 3A3A 3A3B 1035"
+	$"8100 FCF5 0000 0000 F6FE F9F8 FEF9 F6F5"
+	$"D8F6 F6F5 4040 4041 3A1D 173B 1034 1110"
+	$"81F5 F8FC F500 00F6 FEF9 F8F8 FEF9 D8D8"
+	$"D8D8 2BF6 1C40 1C40 173A 3A17 3A11 3410"
+	$"81F5 F6F8 FCF5 F6FE F9F8 2BF8 FEF9 D8D8"
+	$"D8D8 D8F7 4041 3A17 3B3A 1734 1134 100B"
+	$"81F5 F62B F8FC FEF9 F82B 2BF8 FEF9 D8D8"
+	$"D8D8 FAF8 4017 3A3B 1710 3411 1011 2E11"
+	$"81F5 F62B 2BF8 F9F8 2B2B F7F8 FEF9 F6F8"
+	$"D8F9 56F7 403B 173A 3B17 3510 340B 0A0A"
+	$"81F5 2B2B 2B2B 2B2B F72B 2BF8 FEF9 F62B"
+	$"F7F8 2BF6 3A17 1017 1035 1034 0B10 2F0B"
+	$"81F5 2B2B 2B2B 2B2B 2B2B F7F8 FEF9 F6F5"
+	$"F6F6 F6F5 3B17 1010 3510 1011 0A0B 0A0A"
+	$"812B F7F7 F8F8 F8F8 F8F8 F8F8 FEF9 F6F5"
+	$"F6F6 F6F6 1710 3434 1035 0A2F 0A2F 0A0A"
+	$"00FE FEFE FEFE FEFD FEFE FEFE F9F9 F6F6"
+	$"F5F5 F6F6 F6F7 F7F7 F7F7 F7F7 FCF9 F500"
+	$"0000 0000 0000 0000 F6AC FAF9 F9F6 F6F5"
+	$"F6F6 F5F6 F6F6 F6F6 F6F6 F8AC F92B F500"
+	$"0000 0000 0000 0000 00F6 FBF8 F6F6 F6F6"
+	$"F5F6 F6F6 F6F6 F6F6 F6F8 FCF9 F72B F6F5"
+	$"0000 0000 0000 0000 0000 F6FB F7F6 F5F6"
+	$"F6F6 F6F6 F6F6 F6F6 F8FC F9F7 2BF6 F5F5"
+	$"0000 0000 0000 0000 0000 00F6 FBF7 F6F5"
+	$"F6F5 F6F6 F6F6 F6F8 FCF9 F72B F6F5 F500"
+	$"0000 0000 0000 0000 0000 0000 F6FB F7F6"
+	$"F6F6 F6F6 F6F6 F8FC F9F7 2BF6 F500 0000"
+	$"0000 0000 0000 0000 0000 0000 00F6 FBF7"
+	$"F6F6 F6F6 F6F8 FCF9 F72B F6F5 F500 0000"
+	$"0000 0000 0000 0000 0000 0000 0000 F6FB"
+	$"F7F6 F6F6 F8FC F9F7 2BF6 F5F5 0000 0000"
+	$"0000 0000 0000 0000 0000 0000 0000 00F6"
+	$"FBF7 F6F8 FCF9 F72B F6F5 0000 0000 0000"
+	$"0000 0000 0000 0000 0000 0000 0000 0000"
+	$"F6FB F8FC F9F7 2BF5 0000 0000 0000 0000"
+	$"0000 0000 0000 0000 0000 0000 0000 0000"
+	$"00F6 FBF9 F7F6 F5F5"
+};
+
+resource 'ics#' (128) {
+	{	/* array: 2 elements */
 		/* [1] */
-		'ICN#',
-		{	/* array IDArray: 3 elements */
-			/* [1] */
-			0, 128,
-			/* [2] */
-			1, 0,
-			/* [3] */
-			2, 0
-		},
+		$"0000 0000 0000 1000 2800 063F 0638 0BB0"
+		$"12A8 0210 7E00 0404",
 		/* [2] */
-		'FREF',
-		{	/* array IDArray: 3 elements */
-			/* [1] */
-			0, 128,
-			/* [2] */
-			1, 129,
-			/* [3] */
-			2, 130
-		}
+		$"07C0 0FE0 3FF0 FFF8 FFFF FFFF FFFF FFFF"
+		$"FFFF FFFF FFFF FFFF 07FF 03FE 01FC 00F8"
 	}
 };
 
-data 'ictb' (129) {
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0007 0028 8007 003C 0001 0000 0009 0000"            /* ...(Ä..<........ */
-	$"0000 0000 FFFF FFFF FFFF 0000 0050 0000"            /* ....ˇˇˇˇˇˇ...P.. */
-	$"0009 0000 0000 0000 FFFF FFFF FFFF 0000"            /* ........ˇˇˇˇˇˇ.. */
-	$"0647 656E 6576 61"                                  /* .Geneva */
+resource 'ics4' (128) {
+	$"0000 0CCC CC00 0000 0000 CCC0 DDC0 0000"
+	$"00CC C0CD CCCC 0000 0CDD CC00 000C C000"
+	$"CDDD EDD0 00BB BB22 C0DC DDD0 0C33 33BB"
+	$"CD00 DDEC C033 B222 CCCD DCE3 3C23 22BB"
+	$"CCDD CCEB 3DB2 2B21 CCCC CDEC CC22 2211"
+	$"DDDD DEDC 0CDB BDB1 0CCC DDC0 CCCC CDC0"
+	$"0000 0CC0 CCCC DCC0 0000 00CC 0CCD DC00"
+	$"0000 000D C0DD C000 0000 0000 CDDC"
 };
 
-data 'ictb' (132) {
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0007 0028 8007 003C 0001 0000 0009 0000"            /* ...(Ä..<........ */
-	$"0000 0000 FFFF FFFF FFFF 0000 0050 0000"            /* ....ˇˇˇˇˇˇ...P.. */
-	$"0009 0000 0000 0000 FFFF FFFF FFFF 0000"            /* ........ˇˇˇˇˇˇ.. */
-	$"0647 656E 6576 61"                                  /* .Geneva */
-};
-
-data 'ictb' (131) {
-	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
-	$"0000 0000 0000 0000"                                /* ........ */
+resource 'ics8' (128) {
+	$"0000 0000 00F7 2B2B 2BF8 0000 0000 0000"
+	$"0000 0000 2B2B 2BF5 5656 F700 0000 0000"
+	$"0000 F6F8 2B00 F656 F8F6 F6F7 0000 0000"
+	$"F52B 56FA F82B 00F5 F5F5 00F6 2B00 0000"
+	$"F7F9 81F9 FCF9 F9F5 F5F5 3939 3939 0F0F"
+	$"F7F5 56F6 F9FA 81F5 00F6 46D8 4041 3A3A"
+	$"F856 0000 5681 FB2B 32F5 4040 3A16 1710"
+	$"F7F8 F756 FAF8 FBD7 D732 1C40 1617 342E"
+	$"F7F6 56FA 2BF8 FB39 40F9 3A16 3B34 110A"
+	$"F8F6 2B2B 2B56 FB2B 2B2B 163B 1011 0B0A"
+	$"56FA FAFA 81FB 81F6 F5F6 3334 3457 3403"
+	$"F52B 2B2B F981 F7F5 F6F6 F62B F7FA F8F5"
+	$"0000 0000 00F8 F7F5 F6F6 F6F6 F9F8 F6F5"
+	$"0000 0000 0000 F8F7 F5F6 F656 56F6 F500"
+	$"0000 0000 0000 0056 F7F5 F956 F6F5 0000"
+	$"0000 0000 0000 0000 F8F9 56F6 F5"
 };
 
 data 'ictb' (128) {
@@ -2530,41 +2683,24 @@ data 'ictb' (128) {
 	$"0000 0006 0000 0000"                                /* ........ */
 };
 
-resource 'mctb' (204) {
-	{	/* array MCTBArray: 1 elements */
-		/* [1] */
-		mctbLast, 0,
-		{	/* array: 4 elements */
-			/* [1] */
-			0, 0, 0,
-			/* [2] */
-			0, 0, 0,
-			/* [3] */
-			0, 0, 0,
-			/* [4] */
-			0, 0, 0
-		}
-	}
+data 'ictb' (129) {
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0007 002C 8007 0040 0000 0000 0001 0000"            /* ...,Ä..@........ */
+	$"0009 0000 0000 0000 FFFF FFFF FFFF 0000"            /* ........ˇˇˇˇˇˇ.. */
+	$"0054 0000 0009 0000 0000 0000 FFFF FFFF"            /* .T..........ˇˇˇˇ */
+	$"FFFF 0000 0647 656E 6576 61"                        /* ˇˇ...Geneva */
 };
 
-resource 'mctb' (207) {
-	{	/* array MCTBArray: 1 elements */
-		/* [1] */
-		mctbLast, 0,
-		{	/* array: 4 elements */
-			/* [1] */
-			0, 0, 0,
-			/* [2] */
-			0, 0, 0,
-			/* [3] */
-			0, 0, 0,
-			/* [4] */
-			0, 0, 0
-		}
-	}
+data 'ictb' (131) {
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
+	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */
 };
 
-resource 'mctb' (203) {
+data 'ictb' (132) {
+};
+
+resource 'mctb' (129, "File menu") {
 	{	/* array MCTBArray: 1 elements */
 		/* [1] */
 		mctbLast, 0,
@@ -2598,6 +2734,40 @@ resource 'mctb' (202) {
 	}
 };
 
+resource 'mctb' (203) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
+resource 'mctb' (204) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
 resource 'mctb' (205) {
 	{	/* array MCTBArray: 1 elements */
 		/* [1] */
@@ -2615,7 +2785,7 @@ resource 'mctb' (205) {
 	}
 };
 
-resource 'mctb' (129, "File menu") {
+resource 'mctb' (207) {
 	{	/* array MCTBArray: 1 elements */
 		/* [1] */
 		mctbLast, 0,
@@ -2632,445 +2802,23 @@ resource 'mctb' (129, "File menu") {
 	}
 };
 
-resource 'dctb' (131) {
-	{	/* array ColorSpec: 5 elements */
-		/* [1] */
-		wContentColor, 65535, 65535, 65535,
-		/* [2] */
-		wFrameColor, 0, 0, 0,
-		/* [3] */
-		wTextColor, 0, 0, 0,
-		/* [4] */
-		wHiliteColor, 0, 0, 0,
-		/* [5] */
-		wTitleBarColor, 65535, 65535, 65535
-	}
+resource 'vers' (1) {
+	0x1,
+	0x60,
+	release,
+	0x0,
+	14,
+	"1.6",
+	"©1998-9 Mihai Parparita"
 };
 
-resource 'dctb' (129) {
-	{	/* array ColorSpec: 5 elements */
-		/* [1] */
-		wContentColor, 65535, 65535, 65535,
-		/* [2] */
-		wFrameColor, 0, 0, 0,
-		/* [3] */
-		wTextColor, 0, 0, 0,
-		/* [4] */
-		wHiliteColor, 0, 0, 0,
-		/* [5] */
-		wTitleBarColor, 65535, 65535, 65535
-	}
-};
-
-resource 'dctb' (132) {
-	{	/* array ColorSpec: 5 elements */
-		/* [1] */
-		wContentColor, 65535, 65535, 65535,
-		/* [2] */
-		wFrameColor, 0, 0, 0,
-		/* [3] */
-		wTextColor, 0, 0, 0,
-		/* [4] */
-		wHiliteColor, 0, 0, 0,
-		/* [5] */
-		wTitleBarColor, 65535, 65535, 65535
-	}
-};
-
-resource 'dctb' (128) {
-	{	/* array ColorSpec: 5 elements */
-		/* [1] */
-		wContentColor, 65535, 65535, 65535,
-		/* [2] */
-		wFrameColor, 0, 0, 0,
-		/* [3] */
-		wTextColor, 0, 0, 0,
-		/* [4] */
-		wHiliteColor, 0, 0, 0,
-		/* [5] */
-		wTitleBarColor, 65535, 65535, 65535
-	}
-};
-
-data 'Mcmd' (207) {
-	$"0000"                                               /* .. */
-};
-
-resource 'icns' (-16455, "Item Icon ") {
-	{	/* array elementArray: 8 elements */
-		/* [1] */
-		'ICN#',
-		$"0000 0000 0004 9000 0030 2800 0048 6400"
-		$"0004 8A00 0083 0100 0F00 8080 0AC0 0040"
-		$"F070 1040 9FCC 0FBA 84A9 0ACA 884C 0DB5"
-		$"902A 0A92 A06C C76C 909B 4A92 894D B6A4"
-		$"869A C952 A90C D6A4 8454 2912 9089 02A8"
-		$"8A6C 0C44 7FF8 119A 00A4 0455 0050 402B"
-		$"0028 08DC 0018 20AA 0005 0374 0006 12C8"
-		$"0003 0570 0000 CEC0 0000 5500 0000 3B00"
-		$"0000 0000 001F F000 003F F800 007F FC00"
-		$"00FF FE00 01FF FF00 0FFF FF80 0FFF FFC0"
-		$"FFFF FFE0 FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF 7FFF FFFE 00FF FFFF 007F FFFF"
-		$"003F FFFF 001F FFFE 000F FFFC 0007 FFF8"
-		$"0003 FFF0 0001 FFE0 0000 FF80 0000 7F00",
-		/* [2] */
-		'icl8',
-		$"0000 0000 0000 0000 0000 0000 0000 0000"
-		$"0000 0000 0000 0000 0000 0000 0000 0000"
-		$"0000 0000 0000 0000 0000 0056 F856 F856"
-		$"F856 F8F6 0000 0000 0000 0000 0000 0000"
-		$"0000 0000 0000 0000 0000 F9FA F500 0000"
-		$"F5F6 FEF9 F600 0000 0000 0000 0000 0000"
-		$"0000 0000 0000 0000 00F9 F6F5 FAF5 0000"
-		$"2BFE F9F7 F9F6 0000 0000 0000 0000 0000"
-		$"0000 0000 0000 0000 F92B F500 F5FA F5F7"
-		$"FEF9 F6F6 F7F9 F600 0000 0000 0000 0000"
-		$"0000 0000 0000 00F9 F6F5 00F5 00F5 FAFE"
-		$"F9F6 F5F5 F5F5 F9F6 0000 0000 0000 0000"
-		$"0000 0000 F6FC FCFC F6F6 F500 F500 F5F9"
-		$"F6F5 F5F5 F5F5 F5F9 F600 0000 0000 0000"
-		$"0000 0000 FBF5 FF2B FCF8 F6F5 F5F5 F5F5"
-		$"F5F5 F5F5 F5F5 F5F5 F9F6 0000 0000 0000"
-		$"F681 81AC 2BF5 F5F5 F6FD 8181 F5F6 F5F5"
-		$"F5F5 F5F5 F5F5 F6F5 F6F9 F600 0000 0000"
-		$"8100 00FD FDFD FDFD FDFD F92B FEF8 F6F5"
-		$"F5F5 F5F5 4646 4640 4040 4040 3A3A 3A3A"
-		$"8100 F5F5 F6FC F5F5 FEF9 F8F8 FEF9 F6F5"
-		$"F5F5 F5F5 4646 4022 4040 1C40 173A 3A3A"
-		$"8100 F5F6 FCF5 0000 F6FE F9F8 FEF9 F6F5"
-		$"F5F5 F5F5 4640 2240 401D 3A17 3A3A 3A10"
-		$"81F5 F6FC F500 0000 00F6 FEF8 FEF9 F6F5"
-		$"F5F5 F5F6 4022 4040 1C3A 3A3A 3A3B 1035"
-		$"8100 FCF5 0000 0000 F6FE F9F8 FEF9 F6F5"
-		$"D8F6 F6F5 4040 4041 3A1D 173B 1034 1110"
-		$"81F5 F8FC F500 00F6 FEF9 F8F8 FEF9 D8D8"
-		$"D8D8 2BF6 1C40 1C40 173A 3A17 3A11 3410"
-		$"81F5 F6F8 FCF5 F6FE F9F8 2BF8 FEF9 D8D8"
-		$"D8D8 D8F7 4041 3A17 3B3A 1734 1134 100B"
-		$"81F5 F62B F8FC FEF9 F82B 2BF8 FEF9 D8D8"
-		$"D8D8 FAF8 4017 3A3B 1710 3411 1011 2E11"
-		$"81F5 F62B 2BF8 F9F8 2B2B F7F8 FEF9 F6F8"
-		$"D8F9 56F7 403B 173A 3B17 3510 340B 0A0A"
-		$"81F5 2B2B 2B2B 2B2B F72B 2BF8 FEF9 F62B"
-		$"F7F8 2BF6 3A17 1017 1035 1034 0B10 2F0B"
-		$"81F5 2B2B 2B2B 2B2B 2B2B F7F8 FEF9 F6F5"
-		$"F6F6 F6F5 3B17 1010 3510 1011 0A0B 0A0A"
-		$"812B F7F7 F8F8 F8F8 F8F8 F8F8 FEF9 F6F5"
-		$"F6F6 F6F6 1710 3434 1035 0A2F 0A2F 0A0A"
-		$"00FE FEFE FEFE FEFD FEFE FEFE F9F9 F6F6"
-		$"F5F5 F6F6 F6F7 F7F7 F7F7 F7F7 FCF9 F500"
-		$"0000 0000 0000 0000 F6AC FAF9 F9F6 F6F5"
-		$"F6F6 F5F6 F6F6 F6F6 F6F6 F8AC F92B F500"
-		$"0000 0000 0000 0000 00F6 FBF8 F6F6 F6F6"
-		$"F5F6 F6F6 F6F6 F6F6 F6F8 FCF9 F72B F6F5"
-		$"0000 0000 0000 0000 0000 F6FB F7F6 F5F6"
-		$"F6F6 F6F6 F6F6 F6F6 F8FC F9F7 2BF6 F5F5"
-		$"0000 0000 0000 0000 0000 00F6 FBF7 F6F5"
-		$"F6F5 F6F6 F6F6 F6F8 FCF9 F72B F6F5 F500"
-		$"0000 0000 0000 0000 0000 0000 F6FB F7F6"
-		$"F6F6 F6F6 F6F6 F8FC F9F7 2BF6 F500 0000"
-		$"0000 0000 0000 0000 0000 0000 00F6 FBF7"
-		$"F6F6 F6F6 F6F8 FCF9 F72B F6F5 F500 0000"
-		$"0000 0000 0000 0000 0000 0000 0000 F6FB"
-		$"F7F6 F6F6 F8FC F9F7 2BF6 F5F5 0000 0000"
-		$"0000 0000 0000 0000 0000 0000 0000 00F6"
-		$"FBF7 F6F8 FCF9 F72B F6F5 0000 0000 0000"
-		$"0000 0000 0000 0000 0000 0000 0000 0000"
-		$"F6FB F8FC F9F7 2BF5 0000 0000 0000 0000"
-		$"0000 0000 0000 0000 0000 0000 0000 0000"
-		$"00F6 FBF9 F7F6 F5F5 0000 0000 0000 0000",
-		/* [3] */
-		'il32',
-		$"A8FF 859C 0066 93FF 0288 77EF 80FE 04F7"
-		$"DB55 8466 91FF 0C88 D3F6 77EF FEF7 CF55"
-		$"A2BC 8466 8FFF 0188 D180 F609 77F1 C361"
-		$"A2BC D8BC 8466 8CFF 11FE 87D5 F5F6 F6F5"
-		$"F477 61A2 BCD0 F0EF EE84 6689 FF80 0011"
-		$"44E5 E1F0 F5F4 F4F3 AFD0 F1F0 EFEE EDEC"
-		$"8466 88FF 0800 EE00 CC44 ABDF F3F3 80F2"
-		$"09F1 F0EF EEED ECEB EB84 6683 FF81 0000"
-		$"CC80 EE12 DD22 6666 E5DD ECF1 F0EF EEED"
-		$"ECEA EAE9 E883 6682 FE02 00FF FF84 225A"
-		$"88C6 11A8 DCEF EFEE EDEC D2D3 D4D5 D7D9"
-		$"DADC DEE0 E2E3 00FD EEE9 E544 EEEE 1188"
-		$"AAD1 1193 D6EE EEED ECEA D3D4 D5D7 D9DA"
-		$"DCDE E0E2 E3E5 00F9 E9E4 44EE FFFF DD11"
-		$"88AA 1192 D5ED EDEC EBEA D4D5 D7D9 DADC"
-		$"DEE0 E2E3 E5E7 00F8 E544 EE81 FF1A DD11"
-		$"A911 91D4 ECEC EAEB E9D5 D7D9 DADC DEE0"
-		$"E2E3 E5E7 E800 F744 EE81 FF25 DD11 88A9"
-		$"1191 D3EA DDDC E4E8 D7D9 DADC DEE0 E2E3"
-		$"E5E7 E8EA 00F5 AA44 EEFF FFDD 1188 AAA9"
-		$"1190 81DD 1BC6 E1D9 DADC DEE0 E2E3 E5E7"
-		$"E8EA EC00 F3D9 AA44 EEDD 1188 AACA A911"
-		$"8E82 DD1A C4D4 DCDE E0E2 E3E5 E7E8 EAEC"
-		$"EE00 F3D6 D4AA 4411 88AA CAC8 A111 8E81"
-		$"DD7F 7FA9 CEDD E0E2 E3E5 E7E8 EAEC EEF0"
-		$"00F1 D4D2 D0AA 88AA CAC8 C69B 118E BEA1"
-		$"DD7F 95C3 D8E0 E2E3 E5E7 E8EA ECEE F0F1"
-		$"00F1 D2D0 CECD CBC9 C8C7 C596 118E CAD3"
-		$"BFA9 C4DE E0E2 E3E5 E7E8 EAEC EEF0 F1F3"
-		$"00F0 D0CE CCCB C9C8 C6C5 C390 118E CFE5"
-		$"E1D8 DFE3 E2E3 E5E7 E8EA ECEE F0F1 F3F5"
-		$"00D0 BBB1 A9A3 9E9B 9793 908D 118E CEE6"
-		$"E6E4 0EE4 E2E3 E5E7 E8EA ECEE F0F1 F3F5"
-		$"F6FF 8300 8211 127A 9BD3 E5E5 E4E3 E1CE"
-		$"9B89 8887 8786 7241 6666 85FF 14FE 5D3B"
-		$"748D 9BC5 E0E5 E4E3 E2E1 DBCD C7C6 C6C5"
-		$"A73A 8166 85FF 12F9 5D4C AAD3 E0E5 E4E3"
-		$"E2E1 E0E0 DEDD DDDC BB41 8266 86FF 10FE"
-		$"6655 BEE5 E4E3 E2E1 E0E0 DFDE DEDD CD41"
-		$"8366 88FF 0D66 55C0 E3E2 E1E0 E0DF DEDE"
-		$"DDCD 4183 668A FF0B 6655 BFE1 E0E0 DFDE"
-		$"DEDD CD41 8366 8CFF 0966 55BF E0DF DEDE"
-		$"DDCD 4183 668E FF07 6655 B8DE DEDD CD41"
-		$"8366 90FF 0566 55BC DDCD 4183 6692 FF03"
-		$"6655 BC41 8266 95FF 0166 5582 6685 FFA8"
-		$"FF85 A100 6693 FF02 8877 EF80 FF04 F8DB"
-		$"5584 6691 FF0C 88D3 F677 EFFF F8CF 55A3"
-		$"BC84 668F FF01 88D1 80F6 0977 F0C2 62A3"
-		$"BCDA BC84 668C FF11 FE87 D4F5 F6F6 F5F4"
-		$"7762 A3BC D1F0 EFEE 8466 89FF 8000 1144"
-		$"E5E1 F0F5 F4F4 F3AF D1F1 F0EF EEED EC84"
-		$"6688 FF08 00EE 00CC 44AB DFF3 F380 F209"
-		$"F1F0 EFEE EDEC EBEB 8466 83FF 8100 00CC"
-		$"80EE 12DD 2266 66E5 DDEC F1F0 EFEE EDEC"
-		$"EAEA E9E8 8366 82FE 0200 FFFF 8422 5A88"
-		$"C711 A8DC EFEF EEED EC00 060D 1620 2A35"
-		$"414C 5864 6F00 FCEE E9E5 44EE EE11 88AA"
-		$"D111 93D6 EEEE EDEC EA06 0D16 202A 3541"
-		$"4C58 646F 7A00 FAE9 E544 EEFF FFDD 1188"
-		$"AA11 92D5 EDED ECEB EA0D 1620 2A35 414C"
-		$"5864 6F7A 8400 F8E5 44EE 81FF 1ADD 11A9"
-		$"1191 D4EC ECEA EBE9 1620 2A35 414C 5864"
-		$"6F7A 848F 00F6 44EE 81FF 25DD 1188 A911"
-		$"91D3 EA00 DCE4 E820 2A35 414C 5864 6F7A"
-		$"848F 9B00 F6AA 44EE FFFF DD11 88AA A911"
-		$"9081 001B C6E1 2A35 414C 5864 6F7A 848F"
-		$"9BA7 00F4 D9AA 44EE DD11 88AA CAA9 118E"
-		$"8200 1AC4 3441 4C58 646F 7A84 8F9B A7B2"
-		$"00F4 D6D4 AA44 1188 AACA C8A2 118E 8100"
-		$"7F7F A93D 4C58 646F 7A84 8F9B A7B2 BE00"
-		$"F2D4 D2D0 AA88 AAC9 C8C7 9B11 8EBE A100"
-		$"7F95 C34A 5864 6F7A 848F 9BA7 B2BE C900"
-		$"F1D1 CFCE CDCB C9C8 C6C4 9511 8ECA D3BF"
-		$"A9C4 DE58 646F 7A84 8F9B A7B2 BEC9 D300"
-		$"F0D0 CECC CAC9 C8C6 C4C4 9011 8ECF E5E1"
-		$"D8DF E364 6F7A 848F 9BA7 B2BE C9D3 DD00"
-		$"D0BB B1A9 A39F 9A97 9491 8E11 8ECE E6E6"
-		$"E40E E4E2 6F7A 848F 9BA7 B2BE C9D3 DDE6"
-		$"FF83 0082 1112 7A9B D3E5 E5E4 E3E1 CE9B"
-		$"8988 8787 8672 4166 6685 FF14 FE5D 3B74"
-		$"8D9B C5E0 E5E4 E3E2 E1DB CDC7 C6C6 C5A7"
-		$"3A81 6685 FF12 F95D 4CA9 D3E0 E5E4 E3E2"
-		$"E1E0 E0DE DDDD DCBB 4182 6686 FF10 FE66"
-		$"55BE E5E4 E3E2 E1E0 E0DF DEDE DDCD 4183"
-		$"6688 FF0D 6655 BFE3 E2E1 E0E0 DFDE DEDD"
-		$"CD41 8366 8AFF 0B66 55BF E1E0 E0DF DEDE"
-		$"DDCD 4183 668C FF09 6655 BFE0 DFDE DEDD"
-		$"CD41 8366 8EFF 0766 55B9 DEDE DDCD 4183"
-		$"6690 FF05 6655 BCDD CD41 8366 92FF 0366"
-		$"55BC 4182 6695 FF01 6655 8266 85FF A8FF"
-		$"85A4 0066 93FF 0288 77F1 80FF 04F7 DB55"
-		$"8366 91FF 0C88 D3F6 77F1 FFF7 D055 A3BD"
-		$"8366 8FFF 0188 D180 F609 77F1 C361 A3BD"
-		$"DDBD 8366 8CFF 11FE 87D4 F5F6 F6F5 F477"
-		$"61A3 BDD3 F0EF EE83 6689 FF80 0011 44E5"
-		$"E1F0 F5F4 F4F3 AFD3 F1F0 EFEE EDEC 8366"
-		$"88FF 0800 EE00 CC44 ABDF F3F3 80F2 09F1"
-		$"F0EF EEED ECEB EB83 6683 FF81 0000 CC80"
-		$"EE12 DD22 6666 E5DD ECF1 F0EF EEED ECEA"
-		$"EAE9 E882 6682 FE02 00FF FF84 225A 88C5"
-		$"11A8 DCEF EFEE EDEC 2C2C 2B2A 2929 2827"
-		$"2625 2423 00FC EEEA E544 EEEE 1188 AAD0"
-		$"1193 D6EE EEED ECEA 2C2B 2A29 2928 2726"
-		$"2524 2322 00FA E9E5 44EE FFFF DD11 88AA"
-		$"1192 D5ED EDEC EBEA 2B2A 2929 2827 2625"
-		$"2423 2221 00F8 E444 EE81 FF1A DD11 A811"
-		$"91D4 ECEC EAEB E92A 2929 2827 2625 2423"
-		$"2221 2000 F644 EE81 FF25 DD11 88A8 1191"
-		$"D3EA 00DC E4E8 2929 2827 2625 2423 2221"
-		$"201F 00F5 AA44 EEFF FFDD 1188 AAA8 1190"
-		$"8100 1BC6 E129 2827 2625 2423 2221 201F"
-		$"1E00 F4D8 AA44 EEDD 1188 AAC9 A811 8E82"
-		$"001A C427 2726 2524 2322 2120 1F1E 1D00"
-		$"F2D5 D3AA 4411 88AA C9C8 A211 8E81 007F"
-		$"7FA9 2526 2524 2322 2120 1F1E 1D1C 00F2"
-		$"D3D2 CFAA 88AA C9C7 C59B 118E BEA1 007F"
-		$"95C3 2525 2423 2221 201F 1E1D 1C1B 00F1"
-		$"D1CF CECC CAC9 C7C5 C495 118E CAD3 BFA9"
-		$"C4DE 2524 2322 2120 1F1E 1D1C 1B1B 00F0"
-		$"CFCE CCCA C8C7 C5C4 C390 118E CFE5 E1D8"
-		$"DFE3 2423 2221 201F 1E1D 1C1B 1B1A 00CF"
-		$"BBB2 A9A3 9F9B 9794 908D 118E CEE6 E6E4"
-		$"0EE4 E223 2221 201F 1E1D 1C1B 1B1A 19FF"
-		$"8300 8211 127A 9BD3 E5E5 E4E3 E1CE 9B89"
-		$"8887 8786 7341 6666 85FF 14FE 5D3B 748D"
-		$"9BC5 E0E5 E4E3 E2E1 DBCD C7C6 C6C5 A83A"
-		$"8166 85FF 12F9 5D4C A9D3 E0E5 E4E3 E2E1"
-		$"E0E0 DEDD DDDC BC41 8266 86FF 10FE 6655"
-		$"BFE5 E4E3 E2E1 E0E0 DFDE DEDD CD41 8366"
-		$"88FF 0D66 55BF E3E2 E1E0 E0DF DEDE DDCD"
-		$"4183 668A FF0B 6655 BFE1 E0E0 DFDE DEDD"
-		$"CD41 8366 8CFF 0966 55BE E0DF DEDE DDCD"
-		$"4183 668E FF07 6655 B9DE DEDD CD41 8366"
-		$"90FF 0566 55BD DDCD 4183 6692 FF03 6655"
-		$"BD41 8266 95FF 0166 5582 6685 FF",
-		/* [4] */
-		'l8mk',
-		$"0000 0000 0000 0000 0000 0000 0000 0000"
-		$"0000 0000 0000 0000 0000 0000 0000 0000"
-		$"0000 0000 0000 0000 0000 00FF FFFF FFFF"
-		$"FFFF FF36 0000 0000 0000 0000 0000 0000"
-		$"0000 0000 0000 0000 0000 FFFF FFFF FFFF"
-		$"FFFF FFFF 3600 0000 0000 0000 0000 0000"
-		$"0000 0000 0000 0000 00FF FFFF FFFF FFFF"
-		$"FFFF FFFF FF36 0000 0000 0000 0000 0000"
-		$"0000 0000 0000 0000 FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF 3600 0000 0000 0000 0000"
-		$"0000 0000 0000 00FF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FF36 0000 0000 0000 0000"
-		$"0000 0000 1ABB BBFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF 3600 0000 0000 0000"
-		$"0000 0000 AAFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FF36 0000 0000 0000"
-		$"1A99 99CC FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF 3600 0000 0000"
-		$"99FF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"99FF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"99FF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"99FF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"99FF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"99FF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"99FF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"99FF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"99FF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"99FF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"99FF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"99FF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"00EE EEEE EEEE EEEE FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FF77 1C00"
-		$"0000 0000 0000 0000 36FF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF 9E54 240D"
-		$"0000 0000 0000 0000 0036 FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FF9E 7750 3624"
-		$"0000 0000 0000 0000 0000 36FF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF 9E77 5036 240D"
-		$"0000 0000 0000 0000 0000 0036 FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FF9E 7750 3624 0D00"
-		$"0000 0000 0000 0000 0000 0000 36FF FFFF"
-		$"FFFF FFFF FFFF FFFF 9E77 5036 240D 0000"
-		$"0000 0000 0000 0000 0000 0000 0036 FFFF"
-		$"FFFF FFFF FFFF FF9E 7750 3624 0D00 0000"
-		$"0000 0000 0000 0000 0000 0000 0000 36FF"
-		$"FFFF FFFF FFFF 9E77 5036 240D 0000 0000"
-		$"0000 0000 0000 0000 0000 0000 0000 0036"
-		$"FFFF FFFF FF9E 7750 3624 0D00 0000 0000"
-		$"0000 0000 0000 0000 0000 0000 0000 0000"
-		$"36FF FFFF 9E77 5024 0D00 0000 0000 0000"
-		$"0000 0000 0000 0000 0000 0000 0000 0000"
-		$"0036 FF99 7736 1C0D 0000 0000 0000 0000",
-		/* [5] */
-		'ics#',
-		$"0000 00A0 0910 3000 DA28 0A1B 84AC AB52"
-		$"12A9 A514 5A2A 0405 048A 0114 00A8 0050"
-		$"07C0 0FE0 1FF0 3FF8 FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF 0FFF 07FF 03FE 01FC 00F8",
-		/* [6] */
-		'ics8',
-		$"0000 0000 00F5 2BF6 2B2B 0000 0000 0000"
-		$"0000 0000 F5F8 F600 F7F9 5600 0000 0000"
-		$"0000 00F6 2B00 2B56 56F6 2BF9 0000 0000"
-		$"0000 ACFC F8F5 F5F5 F5F5 F5F6 5600 0000"
-		$"FCFC F9F9 FCF9 56F5 F5F5 3839 3939 080E"
-		$"FAF5 5600 81F8 FBF6 F5F5 461C 4016 4035"
-		$"FA56 0000 F8FA FBF6 32F5 4041 163A 1116"
-		$"FA56 2BF8 FAF7 FBD8 D732 1C40 3A17 3A0A"
-		$"FAF6 56FA F7F8 FB39 4156 3A17 3A10 2F10"
-		$"FA2B 2B2B 2BF7 FC2B 2B2A 173A 1035 0A0B"
-		$"FAFB FBFC FBFC FAF6 F5F6 3333 5833 582D"
-		$"0000 0000 FAFA 2BF5 F6F5 F62B 2B81 8181"
-		$"0000 0000 00F9 F8F6 F5F6 F6F6 8181 81F9"
-		$"0000 0000 0000 F9F8 F6F6 F681 8181 F900"
-		$"0000 0000 0000 00F9 F8F6 8181 81F9 0000"
-		$"0000 0000 0000 0000 F981 8181 F600 0000",
-		/* [7] */
-		'is32',
-		$"82FF 00E7 80CE 00C1 87FF 06E2 B3D5 FDBE"
-		$"8E94 85FF 08E1 C9F6 D6A3 99D5 C894 83FF"
-		$"0A3C 44AE EEF4 E2E9 F0EE D294 80FF 6F40"
-		$"4980 8851 879F EAF0 EEDF DFC7 C7EF F17E"
-		$"EA97 F762 AC52 E2EE EBD5 D7DB DEE2 E57C"
-		$"97FB FFB3 7B51 E0E4 E9D7 DBDE E2E5 E97A"
-		$"9DC8 B373 B250 DDDD D3D9 DEE2 E5E9 EC79"
-		$"D49A 73C2 B350 C7C6 A0D9 E2E5 E9EC F079"
-		$"D0CD CAC7 AC50 D5C9 DAE2 E5E9 ECF0 F374"
-		$"5C54 5353 506E DCE5 E3CD B8BA B6A3 D581"
-		$"FF0B 7C7E C5E4 E4E2 DAD2 C962 6666 82FF"
-		$"0A89 AFE4 E2E0 DFDA 6E66 668D 83FF 0889"
-		$"ADE0 DFDA 6E66 668D 85FF 0689 AADA 6E66"
-		$"668D 87FF 0489 6F66 66D9 80FF 82FF 00E8"
-		$"80D0 00C2 87FF 06E2 B3D5 FEBE 8E94 85FF"
-		$"08E1 C9F6 D6A3 9AD6 C894 83FF 0A3C 44AE"
-		$"EEF4 E2E9 F0EE D294 80FF 6F40 4980 8851"
-		$"879F EAF0 EE77 7E6E 77A8 B47E EA97 F762"
-		$"AC52 E2EE EB0E 2036 4D64 7A7C 97FB FFB3"
-		$"7B51 E0AD E920 364D 647A 907B 9DC8 B373"
-		$"B250 0000 9B35 4D64 7A90 A77A D49A 73C2"
-		$"B450 5820 A04B 647A 90A7 BE79 D0CD CAC6"
-		$"AC50 D5C9 DA64 7A90 A7BE D374 5C54 5354"
-		$"516E DCE5 E395 8A94 9A91 CB81 FF0B 7C7E"
-		$"C5E4 E4E2 DAD2 C962 6666 82FF 0A89 AEE4"
-		$"E2E0 DFDA 6E66 668D 83FF 0889 ADE0 DFDA"
-		$"6E66 668D 85FF 0689 AADA 6E66 668D 87FF"
-		$"0489 6F66 66D9 80FF 82FF 00E9 80D2 00C3"
-		$"87FF 06E2 B3D6 FDBE 8E94 85FF 08E1 C9F6"
-		$"D6A3 99D8 C894 83FF 0A3C 44AE EEF4 E2EA"
-		$"F0EE D294 80FF 6F40 4980 8851 879F EAF0"
-		$"EE8C 8B70 6D92 917E EA97 F762 AB52 E2EE"
-		$"EB2C 2A29 2725 237C 97FB FFB3 7B51 E0AD"
-		$"E92A 2927 2523 217B 9CC8 B373 B150 0000"
-		$"9B28 2725 2321 1F79 D49A 73C1 B350 5820"
-		$"A026 2523 211F 1D79 D0CC C9C6 AC50 D5C9"
-		$"DA25 2321 1F1D 1B74 5C54 5354 506E DCE5"
-		$"E36C 5553 4D38 6681 FF0B 7C7E C5E4 E4E2"
-		$"DAD2 C963 6666 82FF 0A89 AEE4 E2E0 DFDA"
-		$"6E66 668D 83FF 0889 ADE0 DFDA 6E66 668D"
-		$"85FF 0689 ABDA 6E66 668D 87FF 0489 6F66"
-		$"66D9 80FF",
-		/* [8] */
-		's8mk',
-		$"0000 0000 00FF FFFF FFFF 0000 0000 0000"
-		$"0000 0000 FFFF FFFF FFFF FF00 0000 0000"
-		$"0000 00FF FFFF FFFF FFFF FFFF 0000 0000"
-		$"0000 FFFF FFFF FFFF FFFF FFFF FF00 0000"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF"
-		$"0000 0000 FFFF FFFF FFFF FFFF FFFF 9E36"
-		$"0000 0000 00FF FFFF FFFF FFFF FF9E 5024"
-		$"0000 0000 0000 FFFF FFFF FFFF 9E50 2400"
-		$"0000 0000 0000 00FF FFFF FF9E 5024 0000"
-		$"0000 0000 0000 0000 FFFF 9E50 0D00 0000"
-	}
+resource 'vers' (2) {
+	0x1,
+	0x60,
+	release,
+	0x0,
+	14,
+	"1.6",
+	"clip2icns 1.6"
 };
 

@@ -8,7 +8,7 @@ bool		navServicesAvailable;
 PreferencesHandle preferences;
 
 // k stuff
-FSSpec		schemeSpec;
+FSSpec		fileSpec;
 short		appFile;
 FSSpec		currentScheme;
 

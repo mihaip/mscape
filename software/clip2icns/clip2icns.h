@@ -2,11 +2,7 @@
 
 #include "commonfunctions.h"
 #include "icnsClass.h"
-#include <PictUtils.h>
-#include <MacMemory.h>
-#include <Controls.h>
-#include <AppleEvents.h>
-#include <Navigation.h>
+#include "AppleEvents.h"
 
 // file types
 
@@ -19,10 +15,10 @@
 
 // app resource IDs
 const static int aboutBoxID = 128;
-const static int inserticnsID = 129;
+const static int editIconID = 129;
 const static int registrationID = 130;
 const static int preferencesID = 131;
-const static int exporticnsID = 132;
+const static int nagID = 300;
 
 const static int aboutPicID = 128;
 const static int aboutPicMaskID = 129;
@@ -39,9 +35,8 @@ const static int iRegister = 2;
 
 const static int mFile = 129;
 const static int iNewIcon = 1;
-const static int iInsertIcns = 2;
-const static int iExportIcns = 3;
-const static int iQuit = 5;
+const static int iOpenIcon = 2;
+const static int iQuit = 4;
 
 const static int mEdit = 130;
 const static int iUndo = 1;
@@ -59,14 +54,17 @@ const static int kHomepageAddress = 7;
 const static int kEmailAddress = 8;
 
 const static int kInsert = 1;
-const static int kCancel = 2;
+const static int kClose = 2;
 const static int kTypesPopup = 3;
 const static int kIconPopup = 4;
 const static int kIDField = 5;
+const static int kIDFieldLabel = 6;
 const static int kClipboardPreview = 7;
 const static int kCurrentIconPreview = 8;
+const static int kExtract = 11;
 
 const static int kRegister = 1;
+const static int kCancel = 2;
 const static int kLaunchRegister = 3;
 const static int kNameField = 4;
 const static int kCompanyField = 5;
@@ -76,17 +74,10 @@ const static int kIncludeOldStyle = 3;
 const static int kSetBits = 4;
 const static int kGenerateOldStyle = 5;
 const static int kNameResources = 6;
-
-const static int kExport = 1;
-const static int kIconPreview = 7;
-const static int kExportPreview = 8;
+const static int kDither = 7;
+const static int kRememberSelection = 8;
 
 // --- Type Definitions -- //
-typedef enum tCicnCreateFlags
-{
-	createFile=1
-} tCicnCreateFlags;
-
 typedef struct tPreferences
 {
 	short timesUsed;
@@ -97,6 +88,9 @@ typedef struct tPreferences
 	bool setBits;
 	bool generateOldStyle;
 	bool nameResources;
+	bool dither;
+	bool rememberSelection;
+	short lastID;
 } tPreferences;
 
 typedef tPreferences** PreferencesHandle;
@@ -130,18 +124,17 @@ void		HandleFileChoice(int item);
 void		NewIcon(void);
 OSStatus	NewIconNav(void);
 OSStatus	NewIconOld(void);
-void		Inserticns(void);
-void		Exporticns(void);
-bool		CheckClipboard(void);
+void		OpenIcon(void);
 void		DrawImageWell(Rect bounds);
 OSStatus	GetFileNav(void);
 OSStatus	GetFileOld(void);
-void		GeticnsID(bool createFile);
+void		EditIcon(bool createFile);
+void		RedrawEditDialog(DialogPtr dialog);
 void		GetIconMenu(int ID, int* group, int* item, Str255 name);
-void		GetExporticns(void);
+void		icns2clip(short ID);
 pascal bool StandardDialogFilter(DialogPtr positionGlyphs, EventRecord* eventPtr, short* itemHit);
-void		clip2icns(short icnsID, Str255 icnsName, int flags);
-void 		CloseScheme(void);
+void		clip2icns(short icnsID, Str255 icnsName);
+void 		Nag(void);
 void		HandleEditChoice(int item);
 void		SetPreferences(void);
 void		CleanUp(void);
@@ -152,7 +145,7 @@ extern bool			isDone;
 extern bool			navServicesAvailable;
 extern CGrafPtr		startupPort;
 extern GDHandle		startupDevice;
-extern FSSpec		schemeSpec;
+extern FSSpec		fileSpec;
 extern FSSpec		currentScheme;
 extern short		appFile;
 extern PreferencesHandle preferences;

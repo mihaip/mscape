@@ -39,7 +39,7 @@ void Initialize()
 
 	InitMenuBar();
 	
-	AppleEventInit();
+	AEInit();
 	
 	isDone = false;
 	navServicesAvailable = NavServicesAvailable();
@@ -85,6 +85,9 @@ void LoadPreferences(void)
 	(**preferences).setBits = true;
 	(**preferences).generateOldStyle = true;
 	(**preferences).nameResources = true;
+	(**preferences).dither = true;
+	(**preferences).rememberSelection = true;
+	(**preferences).lastID = -16455;
 	
 	err = FindFolder(kOnSystemDisk, kPreferencesFolderType, kDontCreateFolder, &myVRef, &myDirID);
 	if (err == noErr)
@@ -103,14 +106,13 @@ void LoadPreferences(void)
 		CopyString((**preferences).regNo, (**preferencesRes).regNo);
 		(**preferences).includeOldStyle = (**preferencesRes).includeOldStyle;
 		(**preferences).setBits = (**preferencesRes).setBits;
-		(**preferences).generateOldStyle = (**preferencesRes).generateOldStyle;
-		(**preferences).nameResources = (**preferencesRes).nameResources;
-		
-		if (GetResourceSizeOnDisk((Handle)preferencesRes) != 774)
+		if (GetResourceSizeOnDisk((Handle)preferencesRes) == 778)
 		{
-			// old preferences, some fields aren't in it	
-			(**preferences).generateOldStyle = true;
-			(**preferences).nameResources = true;
+			(**preferences).generateOldStyle = (**preferencesRes).generateOldStyle;
+			(**preferences).nameResources = (**preferencesRes).nameResources;
+			(**preferences).dither = (**preferencesRes).dither;
+			(**preferences).rememberSelection = (**preferencesRes).rememberSelection;
+			(**preferences).lastID = (**preferencesRes).lastID;
 		}
 		
 		if (!(EqualString((**preferences).name, "\pNot Registered", true, true)))
@@ -161,114 +163,11 @@ void LoadPreferences(void)
 		(**preferences).setBits = true;
 		(**preferences).generateOldStyle = true;
 		(**preferences).nameResources = true;
+		(**preferences).dither = true;
+		(**preferences).rememberSelection = true;
+		(**preferences).lastID = -16455;
 	}
 }
-
-static OSErr MyGotRequiredParams(const AppleEvent *theAppleEvent)
-{
-	DescType returnedType;
-	Size actualSize;
-
-	if ( AEGetAttributePtr(theAppleEvent, keyMissedKeywordAttr, typeWildCard, &returnedType, nil, 0, &actualSize) == errAEDescNotFound )
-		return noErr;
-	else
-		return errAEParamMissed;
-};
-
-#if TARGET_CPU_68K
-pascal static OSErr DoOpenApp(const AppleEvent *theAppleEvent, AppleEvent *reply, unsigned long refCon)
-#else
-OSErr DoOpenApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
-#endif
-{
-	reply;
-	refCon;
-	return MyGotRequiredParams(theAppleEvent);
-};
-
-#if TARGET_CPU_68K
-pascal static OSErr DoOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, unsigned long refCon)
-#else
-OSErr DoOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
-#endif
-{
-	OSErr		err;
-	AEDescList	fileSpecList;
-	short		i;
-	long		count;
-	Size		actual;
-	FSSpec		desc;
-	AEKeyword	keyword;
-	DescType	type;
-
-	reply;
-	refCon;
-
-	err = AEGetParamDesc(theAppleEvent, keyDirectObject, typeAEList, &fileSpecList);
-	
-	err = AECountItems(&fileSpecList, &count);
-	for (i = 1; i <= count; i++)
-	{
-		err = AEGetNthPtr(&fileSpecList, i, typeFSS, &keyword, &type, (Ptr)&desc, sizeof(FSSpec), &actual);
-		if (err == noErr)
-		{
-			if (CheckClipboard())
-			{
-				schemeSpec = desc;
-				GeticnsID(false);	
-			}
-			return MyGotRequiredParams(theAppleEvent);
-		}
-	}
-	return MyGotRequiredParams(theAppleEvent);
-};
-
-#if TARGET_CPU_68K
-pascal static OSErr DoPrintDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, unsigned long refCon)
-#else
-OSErr DoPrintDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
-#endif
-{
-	theAppleEvent;
-	reply;
-	refCon;
-	return errAEEventNotHandled;
-};
-
-#if TARGET_CPU_68K
-pascal static OSErr DoQuitApp(const AppleEvent *theAppleEvent, AppleEvent *reply, unsigned long refCon)
-#else
-OSErr DoQuitApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
-#endif
-{
-	reply;
-	refCon;
-	isDone = true;
-	return MyGotRequiredParams(theAppleEvent);
-};
-
-#if TARGET_CPU_PPC
-RoutineDescriptor DoOpenAppRD = BUILD_ROUTINE_DESCRIPTOR(uppAEEventHandlerProcInfo, DoOpenApp);
-RoutineDescriptor DoOpenDocRD = BUILD_ROUTINE_DESCRIPTOR(uppAEEventHandlerProcInfo, DoOpenDoc);
-RoutineDescriptor DoPrintDocRD = BUILD_ROUTINE_DESCRIPTOR(uppAEEventHandlerProcInfo, DoPrintDoc);
-RoutineDescriptor DoQuitAppRD = BUILD_ROUTINE_DESCRIPTOR(uppAEEventHandlerProcInfo, DoQuitApp);
-#endif
-
-void AppleEventInit()
-{
-		OSErr error;
-#if TARGET_CPU_68K
-	error = AEInstallEventHandler(kCoreEventClass, kAEOpenApplication, DoOpenApp, 0L, false);
-	error = AEInstallEventHandler(kCoreEventClass, kAEOpenDocuments, DoOpenDoc, 0L, false);
-	error = AEInstallEventHandler(kCoreEventClass, kAEPrintDocuments, DoPrintDoc, 0L, false);
-	error = AEInstallEventHandler(kCoreEventClass, kAEQuitApplication, DoQuitApp, 0L, false);
-#else
-	error = AEInstallEventHandler(kCoreEventClass, kAEOpenApplication, &DoOpenAppRD, 0L, false);
-	error = AEInstallEventHandler(kCoreEventClass, kAEOpenDocuments, &DoOpenDocRD, 0L, false);
-	error = AEInstallEventHandler(kCoreEventClass, kAEPrintDocuments, &DoPrintDocRD, 0L, false);
-	error = AEInstallEventHandler(kCoreEventClass, kAEQuitApplication, &DoQuitAppRD, 0L, false);
-#endif
-};
 
 void EventLoop(void)
 {
@@ -606,215 +505,28 @@ void HandleFileChoice(int item)
 	switch (item)
 	{
 		case iNewIcon : NewIcon(); break;
-		case iInsertIcns : Inserticns(); break;
-		case iExportIcns : Exporticns(); break;
+		case iOpenIcon : OpenIcon(); break;
 		case iQuit :isDone = true; break;
 	}
 }
 
 void NewIcon()
 {
-OSStatus	theErr;
-	if (CheckClipboard())
-	{
-		if (navServicesAvailable)
-			theErr = NewIconNav();
-		else
-			theErr = NewIconOld();
-		if (theErr == noErr)
-			GeticnsID(true);
-	}
+	OSStatus	theErr;
+
+	theErr = NewFile("\pclip2icns", 'RSED', 'rsrc', "\pUntitled 32 Bit Icon", "\pSave Icon:",  &fileSpec);
+	if (theErr == noErr)
+		EditIcon(true);
 }
 
-OSStatus NewIconNav()
-{
-	NavDialogOptions	dialogOptions;
-	NavReplyRecord		reply;
-	NavEventUPP			eventUPP;
-	AEDesc				resultDesc;
-	OSStatus			theErr;
-	
-	
-	UseResFile(appFile);
-	
-	eventUPP = NewNavEventProc(DummyFunction);
-	
-	NavGetDefaultDialogOptions ( &dialogOptions );
-	dialogOptions.dialogOptionFlags -= kNavAllowMultipleFiles;
-	dialogOptions.dialogOptionFlags += kNavNoTypePopup;
-	dialogOptions.dialogOptionFlags -= kNavAllowPreviews;
-	CopyString(dialogOptions.clientName, "\pclip2icns");
-	CopyString(dialogOptions.savedFileName, "\p32 Bit Icon");
-	
-	theErr = NavPutFile(NULL,	// use system's default location
-			   &reply,
-			   &dialogOptions,
-			   eventUPP,
-			   'Icon',
-			   'c2ci',
-			   NULL);
-					
-	DisposeRoutineDescriptor(eventUPP);
-	
-	if (reply.validRecord)
-	{
-		AEGetNthDesc( &(reply.selection), 1, typeFSS, NULL, &resultDesc );
-
-		GetFSSpecFromAEDesc(resultDesc, schemeSpec);
-		
-		NavDisposeReply(&reply);
-		AEDisposeDesc(&resultDesc);
-		return noErr;
-	}
-	else
-	{
-		NavDisposeReply(&reply);
-		return paramErr;
-	}		   
-}
-
-OSStatus NewIconOld()
-{
-	StandardFileReply reply;
-
-	StandardPutFile("\pCreate a new icon:", "\p32 Bit Icon", &reply);
-
-	if ( reply.sfGood )
-	{
-		schemeSpec = reply.sfFile;	
-		return noErr;
-	}
-	return paramErr;
-}
-
-
-
-void Inserticns()
-{
-OSStatus	theErr;
-	if (CheckClipboard())
-	{
-		if (navServicesAvailable)
-			theErr = GetFileNav();
-		else
-			theErr = GetFileOld();
-		if (theErr == noErr)
-			GeticnsID(false);
-	}
-}
-
-bool CheckClipboard()
-{
-	Handle				pic;
-	long				offset;
-	PictInfo			picInfo;
-	
-	pic = NewHandle (0);
-	if (GetScrap( pic, 'PICT', &offset ) < 0)
-	{
-		DisplayAlert("The clipboard is either empty", "or doesn't contain a picture");
-		DisposeHandle(pic);
-		return false;
-	}
-	
-	GetPictInfo((PicHandle)pic, &picInfo, 0, 0, 0, 0);
-	
-	if ((picInfo.sourceRect.bottom != 32) ||
-		((picInfo.sourceRect.right != 64) &&
-		(picInfo.sourceRect.right != 80) &&
-		(picInfo.sourceRect.right != 16)))
-	{
-		DisplayAlert("The clipboard picture isn't 80x32,64x32,", "or 16x32");
-		DisposeHandle(pic);
-		return false;
-	}
-	
-	if ((picInfo.hRes != 0x00480000) || (picInfo.vRes != 0x00480000))
-	{
-		DisplayAlert("The clipboard picture must be at", "72 dpi");
-		DisposeHandle(pic);
-		return false;
-	}
-	
-	DisposeHandle(pic);
-	return true;
-}
-
-OSStatus GetFileNav()
-{
-	NavDialogOptions	dialogOptions;
-	NavReplyRecord		reply;
-	NavEventUPP			eventUPP;
-	AEDesc				resultDesc;
-	
-	
-	UseResFile(appFile);
-	
-	eventUPP = NewNavEventProc(DummyFunction);
-	
-	NavGetDefaultDialogOptions ( &dialogOptions );
-	dialogOptions.dialogOptionFlags -= kNavAllowMultipleFiles;
-	dialogOptions.dialogOptionFlags += kNavNoTypePopup;
-	dialogOptions.dialogOptionFlags -= kNavAllowPreviews;
-	CopyString(dialogOptions.clientName, "\pclip2icns");
-	
-	NavGetFile(NULL,
-			   &reply,
-			   &dialogOptions,
-			   eventUPP,
-			   NULL,
-			   NULL,
-			   NULL,
-			   NULL);
-	
-	if (reply.validRecord)
-	{
-		AEGetNthDesc( &(reply.selection), 1, typeFSS, NULL, &resultDesc );
-
-		GetFSSpecFromAEDesc(resultDesc, schemeSpec);
-	
-		NavDisposeReply(&reply);
-		AEDisposeDesc(&resultDesc);
-		DisposeRoutineDescriptor(eventUPP);
-		return noErr;
-	}
-	else
-	{
-		DisposeRoutineDescriptor(eventUPP);
-		NavDisposeReply(&reply);
-		return paramErr;
-	}		   
-}
-
-
-OSStatus GetFileOld()
-{
-	StandardFileReply	reply;
-	//SFTypeList			typeList;
-	
-	//typeList[0] = schemeFileType;
-	
-	StandardGetFile(nil, 1, NULL, &reply);
-	if ( reply.sfGood)
-	{
-		schemeSpec = reply.sfFile;
-		return noErr;
-	}
-	return paramErr;
-}
-
-void Exporticns()
+void OpenIcon()
 {
 	OSStatus	theErr;
 	
-	if (navServicesAvailable)
-		theErr = GetFileNav();
-	else
-		theErr = GetFileOld();
+	theErr = GetFile("\pclip2icns", '****', '****', "\pPick an icon file to edit.", &fileSpec);
 	if (theErr == noErr)
-		GetExporticns();
+		EditIcon(false);
 }
-
 
 void DrawImageWell(Rect bounds)
 {
@@ -861,115 +573,61 @@ void DrawImageWell(Rect bounds)
 	RGBForeColor(&currentForeColor);
 }
 
-#define Refresh()\
-{\
-	if ((selectedType == baseMenuID + menuCount - 1) && (selectedIcns == CountMItems((MenuHandle)Get1Resource('MENU', selectedType))))\
-	{\
-		GetDialogItem(insertIcns, kIDField, &itemType, &item, &itemRect);\
-		GetDialogItemText(item, IDAsString);\
-		StringToNum(IDAsString, &ID);\
-	}\
-	else\
-	{\
-		GetMenuItemText(GetMenu(selectedType), selectedIcns, menuItemText);\
-		CopyString(IDAsString, menuItemText);\
-		for (i=1; IDAsString[i] != ' '; i++){;}\
-		if (IDAsString[1] == 208) IDAsString[1] = '-';\
-		IDAsString[0] = i-1;\
-		GetDialogItem(insertIcns, kIDField, &itemType, &item, &itemRect);\
-		SetDialogItemText(item, IDAsString);\
-		SelectDialogItemText( insertIcns, kIDField, 0, 32767);\
-		StringToNum(IDAsString, &ID);\
-	}\
-	if (!createFile)\
-	{\
-		scheme = FSpOpenResFile(&schemeSpec, fsRdWrPerm);\
-		UseResFile(scheme);\
-		if (Get1Resource('icns', ID) || Get1Resource('icl8', ID) || Get1Resource('ics8', ID))\
-		{\
-			FillCRect(&iconPreviewRect, desktopPattern);\
-			currenticns.ID = ID;\
-			currenticns.Load();\
-			currenticns.Display(currentLargeIconRect);\
-			currenticns.Display(currentSmallIconRect);\
-		}\
-		else\
-		{\
-			GetDialogItem(insertIcns, kCurrentIconPreview, &itemType, &item, &sourceRect);\
-			x = sourceRect.left + (sourceRect.right - sourceRect.left)/2 - StringWidth("\pNot Available")/2;\
-			y = sourceRect.top + (sourceRect.bottom - sourceRect.top)/2 + 6;\
-			FillCRect(&iconPreviewRect, desktopPattern);\
-			MoveTo(x, y);\
-			DrawString("\pNot Available");\
-		}\
-		CloseResFile(scheme);\
-		UseResFile(appFile);\
-	}\
-	else\
-	{\
-		GetDialogItem(insertIcns, kCurrentIconPreview, &itemType, &item, &sourceRect);\
-		x = sourceRect.left + (sourceRect.right - sourceRect.left)/2 - StringWidth("\pNot Available")/2;\
-		y = sourceRect.top + (sourceRect.bottom - sourceRect.top)/2 + 6;\
-		FillCRect(&iconPreviewRect, desktopPattern);\
-		MoveTo(x, y);\
-		DrawString("\pNot Available");\
-	}\
-}
-
 #define ChangeIconPopup()\
 {\
-	GetDialogItem(insertIcns, kIconPopup, &itemType, &item, &itemRect);\
+	GetDialogItem(editIcon, kIconPopup, &itemType, &item, &itemRect);\
 	if ((**(PopupPrivateDataHandle)(**(ControlHandle)item).contrlData).mID != selectedType)\
 	{\
 		DisposeControl((ControlHandle)item);\
-		(ControlHandle)item = NewControl(insertIcns,\
+		(ControlHandle)item = NewControl(editIcon,\
 										 &popupRect,\
 										 "\pIcon:",\
-										 false,\
+										 true,\
 										 0,\
 										 selectedType,\
 										 50,\
 										 popupMenuProc + popupFixedWidth,\
 										 0);\
 		\
-		SetControlValue((ControlHandle)item, selectedIcns);\
-		ShowControl((ControlHandle)item);\
 		(**(PopupPrivateDataHandle)(**(ControlHandle)item).contrlData).mID = selectedType;\
 		(**(PopupPrivateDataHandle)(**(ControlHandle)item).contrlData).mHandle = GetMenu(selectedType);\
 	}\
+	GetDialogItem(editIcon, kIconPopup, &itemType, &item, &itemRect);\
+	SetControlValue((ControlHandle)item, selectedIcns);\
 	\
-	GetDialogItem(insertIcns, kTypesPopup, &itemType, &item, &itemRect);\
+	GetDialogItem(editIcon, kTypesPopup, &itemType, &item, &itemRect);\
 	SetControlValue((ControlHandle)item, selectedType - baseMenuID + 1);\
 }
 				
 
-void GeticnsID(bool createFile)
+void EditIcon(bool createFile)
 {
-	DialogPtr			insertIcns;
+	DialogPtr			editIcon;
 	bool				dialogDone;
 	short				itemHit;
 	Rect				itemRect;
 	long				ID;
 	Handle				item;
 	short				itemType;
-	short				scheme;
+	short				file;
 	Str255				errorNumber;
 	Rect				popupRect;
-	int					selectedIcns, i, selectedType=201;
-	Str255				IDAsString, menuItemText, icnsName;
-	Rect				sourceRect, largeIconRect={0,0,32, 32}, smallIconRect = {0, 0, 16, 16};
-	Rect				clipboardPreviewRect, iconPreviewRect, tempRect;
-	PixPatHandle		desktopPattern;
-	Rect				currentLargeIconRect, currentSmallIconRect;
-	icnsClass			currenticns, clipboardicns;
-	int					x, y;
-	FInfo				fileInfo;
+	int					selectedIcns, selectedType=201;
+	Str255				IDAsString, icnsName, windowTitle;
 	ModalFilterUPP		eventFilter;
 	
 	eventFilter = NewModalFilterProc(StandardDialogFilter);
 	
-	scheme = FSpOpenResFile(&schemeSpec, fsRdPerm);
-	if (!createFile && scheme == -1)
+	if (createFile)
+	{
+		FSpDelete(&fileSpec);
+		FSpCreate(&fileSpec, 'RSED', 'rsrc', 0); /*smRoman = 0*/
+		FSpCreateResFile(&fileSpec, 'RSED', 'rsrc', 0); /*smRoman = 0*/
+	}
+	
+	//appFile = CurResFile();
+	file = FSpOpenResFile(&fileSpec, fsRdWrPerm);
+	if (!createFile && file == -1)
 	{
 		switch (ResError())
 		{
@@ -979,11 +637,10 @@ void GeticnsID(bool createFile)
 				DisplayAlert("You can't edit this file since it's currently open in another application.", "Please close it and try again");
 				return;
 				break;
-			case -39:
-				//DisplayAlert("", "This file doesn't have a resource fork and therefore it cannot be edited");
-				//return;
-				FSpGetFInfo(&schemeSpec, &fileInfo);
-				FSpCreateResFile(&schemeSpec, fileInfo.fdCreator, fileInfo.fdType, 0); /*smRoman = 0*/
+			case eofErr:
+				FInfo fileInfo;
+				FSpGetFInfo(&fileSpec, &fileInfo);
+				FSpCreateResFile(&fileSpec, fileInfo.fdCreator, fileInfo.fdType, 0); /*smRoman = 0*/
 				break;
 			default:
 				NumToString(ResError(), errorNumber);
@@ -992,64 +649,37 @@ void GeticnsID(bool createFile)
 				break;
 		}
 	}
-	CloseResFile(scheme);
+	CloseResFile(file);
 	UseResFile(appFile);
 	
-	insertIcns = GetNewDialog (inserticnsID, nil, (WindowPtr)-1L);
-	SetPort( insertIcns);
-	SetDialogDefaultItem(insertIcns, kInsert);
-	SetDialogCancelItem( insertIcns, kCancel );
-	SelectDialogItemText( insertIcns, kIDField, 0, 32767);
+	editIcon = GetNewDialog (editIconID, nil, (WindowPtr)-1L);
 	
-	GetDialogItem(insertIcns, kIconPopup, &itemType, &item, &popupRect);
-		
-	desktopPattern = GetPixPat(16);
-	GetDialogItem(insertIcns, kClipboardPreview, &itemType, &item, &clipboardPreviewRect);
-	DrawImageWell(clipboardPreviewRect);
-	FillCRect(&clipboardPreviewRect, desktopPattern);
-	GetDialogItem(insertIcns, kCurrentIconPreview, &itemType, &item, &iconPreviewRect);
-	DrawImageWell(iconPreviewRect);
-	FillCRect(&iconPreviewRect, desktopPattern);
+	GetWTitle(editIcon, windowTitle);
+	AppendString(windowTitle, "\p: ");
+	AppendString(windowTitle, fileSpec.name);
+	SetWTitle(editIcon, windowTitle);
 	
-	clipboardicns.ImportFromClipboard();
+	SetDialogDefaultItem(editIcon, kInsert);
+	SetDialogCancelItem( editIcon, kCancel );
+	SetDialogTracksCursor(editIcon,true);
 	
-	GetDialogItem(insertIcns, kClipboardPreview, &itemType, &item, &sourceRect);
-	sourceRect.left += (sourceRect.right - sourceRect.left)/2;
-	tempRect = largeIconRect;
-	MakeTargetRect(sourceRect, &tempRect);
-	clipboardicns.Display(tempRect);
+	SelectDialogItemText( editIcon, kIDField, 0, 32767);
 	
-	GetDialogItem(insertIcns, kClipboardPreview, &itemType, &item, &sourceRect);
-	sourceRect.right -= (sourceRect.right - sourceRect.left)/2;
-	tempRect = smallIconRect;
-	MakeTargetRect(sourceRect, &tempRect);
-	clipboardicns.Display(tempRect);
+	GetDialogItem(editIcon, kIconPopup, &itemType, &item, &popupRect);
 	
-	SetPort(insertIcns);
+	ShowWindow( editIcon );
+	
+	if ((**preferences).rememberSelection)
+		ID = (**preferences).lastID;
+	else
+		ID = -16455;
 
-	GetDialogItem(insertIcns, kCurrentIconPreview, &itemType, &item, &sourceRect);
-	sourceRect.left += (sourceRect.right - sourceRect.left)/2;
-	currentLargeIconRect = largeIconRect;
-	MakeTargetRect(sourceRect, &currentLargeIconRect);
-	
-	GetDialogItem(insertIcns, kCurrentIconPreview, &itemType, &item, &sourceRect);
-	sourceRect.right -= (sourceRect.right - sourceRect.left)/2;
-	currentSmallIconRect = smallIconRect;
-	MakeTargetRect(sourceRect, &currentSmallIconRect);
-	
-	if (!createFile)
-	{
-		scheme = FSpOpenResFile(&schemeSpec, fsRdWrPerm);
-		UseResFile(scheme);
-		currenticns.ID = -16455;
-		currenticns.Load();
-		currenticns.Display(currentLargeIconRect);
-		currenticns.Display(currentSmallIconRect);
-		CloseResFile(scheme);
-		UseResFile(appFile);
-	}
-	
-	ShowWindow( insertIcns );
+	GetIconMenu(ID, &selectedType, &selectedIcns, icnsName);
+	ChangeIconPopup();
+	NumToString(ID, IDAsString);
+	GetDialogItem(editIcon, kIDField, &itemType, &item, &itemRect);
+	SetDialogItemText(item, IDAsString);
+	RedrawEditDialog(editIcon);
 
 	dialogDone = false;
 	while (!dialogDone)
@@ -1058,75 +688,89 @@ void GeticnsID(bool createFile)
 		switch (itemHit)
 		{
 			case kIDField:
-				GetDialogItem(insertIcns, kIDField, &itemType, &item, &itemRect);
+				GetDialogItem(editIcon, kIDField, &itemType, &item, &itemRect);
 				GetDialogItemText(item, IDAsString);
 				StringToNum(IDAsString, &ID);
 				GetIconMenu(ID, &selectedType, &selectedIcns, icnsName);
 				ChangeIconPopup();
-				Refresh();
+				RedrawEditDialog(editIcon);
 				break;
 			case kInsert: 
-				GetDialogItem(insertIcns, kIDField, &itemType, &item, &itemRect);
+				GetDialogItem(editIcon, kIDField, &itemType, &item, &itemRect);
 				GetDialogItemText(item, IDAsString);
-				if (!CheckString(IDAsString))
-				{
-					SysBeep(6);
-					break;
-				}
 				StringToNum(IDAsString, &ID);
 				if (!(**preferences).nameResources)
 					CopyString(icnsName, "\p");
 				else
 					GetIconMenu(ID, &selectedType, &selectedIcns, icnsName);
-				dialogDone = true;
-				DisposePixPat(desktopPattern);
-				DisposeDialog( insertIcns );
-				UseResFile(appFile);
-				SetGWorld(startupPort, startupDevice);
-				if (createFile)
-					clip2icns(ID, icnsName, createFile);
-				else
-					clip2icns(ID, icnsName, 0);
-				return;
+				clip2icns(ID, icnsName);
+				RedrawEditDialog(editIcon);
 				break;
-			case kCancel:
+			case kClose:
 				dialogDone = true;
+				break;
+			case kExtract:
+				GetDialogItem(editIcon, kIDField, &itemType, &item, &itemRect);
+				GetDialogItemText(item, IDAsString);
+				StringToNum(IDAsString, &ID);
+				icns2clip(ID);
+				RedrawEditDialog(editIcon);
 				break;
 			case kTypesPopup:
-				GetDialogItem(insertIcns, kTypesPopup, &itemType, &item, &itemRect);
+				GetDialogItem(editIcon, kTypesPopup, &itemType, &item, &itemRect);
 				selectedType = GetControlValue((ControlHandle)item) + baseMenuID - 1;
 				
 				selectedIcns = 1;
 				ChangeIconPopup();
-				Refresh();
+				RedrawEditDialog(editIcon);
 				
 				break;
 			case kIconPopup:
-				GetDialogItem(insertIcns, kIconPopup, &itemType, &item, &itemRect);
+				GetDialogItem(editIcon, kIconPopup, &itemType, &item, &itemRect);
 				selectedIcns = GetControlValue((ControlHandle)item);
 				
-				Refresh();
+				RedrawEditDialog(editIcon);
 				
 				break;
 		}
 	}
-	if (!createFile)
+	
+	if ((**preferences).rememberSelection)
 	{
-		CloseResFile(scheme);
-		UseResFile(appFile);
+		GetDialogItem(editIcon, kIDField, &itemType, &item, &itemRect);
+		GetDialogItemText(item, IDAsString);
+		StringToNum(IDAsString, &ID);
+		(**preferences).lastID = ID;
 	}
-	DisposePixPat(desktopPattern);
-	DisposeDialog(insertIcns);
-	SetGWorld(startupPort, startupDevice);
+	
+	DisposeDialog(editIcon);
 }
 
 pascal bool StandardDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit)
 {
 	char 	key;
 	bool	handledEvent = false;
+	GrafPtr	oldPort;
 	
 	switch (eventPtr->what)
 	{
+		case osEvt:
+			
+		//case activateEvt:
+			GetPort(&oldPort);
+			SetPort(dialog);
+			InvalRect(&dialog->portRect);
+			SetPort(oldPort);
+		case updateEvt:
+			if ((WindowPtr) eventPtr->message != dialog)
+				HandleUpdate(eventPtr);
+			else
+			{
+				if (!IsFrontProcess()) BeginUpdate(dialog);
+				RedrawEditDialog(dialog);
+				if (!IsFrontProcess()) EndUpdate(dialog);
+			}
+			break;
 		case keyDown:
 		case autoKey:
 			key = eventPtr->message & charCodeMask;  
@@ -1147,10 +791,157 @@ pascal bool StandardDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short*
 			}
 			break;
 		default:
+			GetPort(&oldPort);
+			SetPort(dialog);
+			
 			handledEvent = StdFilterProc(dialog,eventPtr,itemHit);
+			SetPort(oldPort);
 		break;
 	}
 	return handledEvent;
+	
+}
+
+void RedrawEditDialog(DialogPtr dialog)
+{
+	icnsClass clipboardicns, currenticns;
+	Rect				itemRect;
+	long				ID;
+	ControlHandle		item;
+	short				itemType, i, file, x, y;
+	Str255				IDAsString = "\p", menuItemText = "\p";
+	short				selectedType, selectedIcns;
+	PixPatHandle		desktopPattern;
+	Rect				clipboardPreviewRect, iconPreviewRect, sourceRect, tempRect, currentLargeIconRect, currentSmallIconRect;
+	CGrafPtr			oldPort;
+	GDHandle			oldDevice;
+	
+	GetGWorld(&oldPort, &oldDevice);
+	SetPort(dialog);
+	
+	if (!IsFrontProcess())
+	{
+		GetDialogItem(dialog, kInsert, &itemType, &((Handle)item), &itemRect);
+		if ((**item).contrlHilite != 255) HiliteControl(item,255);
+		GetDialogItem(dialog, kClose, &itemType, &((Handle)item), &itemRect);
+		if ((**item).contrlHilite != 255) HiliteControl(item,255);
+		GetDialogItem(dialog, kExtract, &itemType, &((Handle)item), &itemRect);
+		if ((**item).contrlHilite != 255) HiliteControl(item,255);
+		GetDialogItem(dialog, kIconPopup, &itemType, &((Handle)item), &itemRect);
+		if ((**item).contrlHilite != 255) HiliteControl(item,255);
+		GetDialogItem(dialog, kTypesPopup, &itemType, &((Handle)item), &itemRect);
+		if ((**item).contrlHilite != 255) HiliteControl(item,255);
+	}
+	else
+	{
+		GetDialogItem(dialog, kInsert, &itemType, &(Handle)item, &itemRect);
+		if (CheckClipboard(false))
+			HiliteControl(item,0);
+		else
+			HiliteControl(item,255);
+		GetDialogItem(dialog, kClose, &itemType, &(Handle)item, &itemRect);
+		if ((**item).contrlHilite != 0) HiliteControl(item,0);
+		GetDialogItem(dialog, kExtract, &itemType, &(Handle)item, &itemRect);
+		if ((**item).contrlHilite != 0) HiliteControl(item,0);
+		GetDialogItem(dialog, kIconPopup, &itemType, &(Handle)item, &itemRect);
+		if ((**item).contrlHilite != 0) HiliteControl(item,0);
+		GetDialogItem(dialog, kTypesPopup, &itemType, &(Handle)item, &itemRect);
+		if ((**item).contrlHilite != 0) HiliteControl(item,0);
+	}
+	
+	GetDialogItem(dialog, kIconPopup, &itemType, &(Handle)item, &itemRect);
+	selectedType = (**(PopupPrivateDataHandle)(**item).contrlData).mID;
+	selectedIcns = GetControlValue(item);
+	
+	desktopPattern = GetPixPat(16);
+	GetDialogItem(dialog, kClipboardPreview, &itemType, &(Handle)item, &clipboardPreviewRect);
+	DrawImageWell(clipboardPreviewRect);
+	FillCRect(&clipboardPreviewRect, desktopPattern);
+	GetDialogItem(dialog, kCurrentIconPreview, &itemType, &(Handle)item, &iconPreviewRect);
+	DrawImageWell(iconPreviewRect);
+	FillCRect(&iconPreviewRect, desktopPattern);
+	
+	if (CheckClipboard(false))
+		clipboardicns.ImportFromClipboard((**preferences).dither);
+	
+	GetDialogItem(dialog, kClipboardPreview, &itemType, &(Handle)item, &sourceRect);
+	sourceRect.left += (sourceRect.right - sourceRect.left)/2;
+	tempRect = largeIconRect;
+	MakeTargetRect(sourceRect, &tempRect);
+	clipboardicns.Display(tempRect);
+	
+	GetDialogItem(dialog, kClipboardPreview, &itemType, &(Handle)item, &sourceRect);
+	sourceRect.right -= (sourceRect.right - sourceRect.left)/2;
+	tempRect = smallIconRect;
+	MakeTargetRect(sourceRect, &tempRect);
+	clipboardicns.Display(tempRect);
+	
+	GetDialogItem(dialog, kCurrentIconPreview, &itemType, &(Handle)item, &sourceRect);
+	sourceRect.left += (sourceRect.right - sourceRect.left)/2;
+	currentLargeIconRect = largeIconRect;
+	MakeTargetRect(sourceRect, &currentLargeIconRect);
+	
+	GetDialogItem(dialog, kCurrentIconPreview, &itemType, &(Handle)item, &sourceRect);
+	sourceRect.right -= (sourceRect.right - sourceRect.left)/2;
+	currentSmallIconRect = smallIconRect;
+	MakeTargetRect(sourceRect, &currentSmallIconRect);
+
+	if ((selectedType == baseMenuID + menuCount - 1) && (selectedIcns == CountMItems((MenuHandle)Get1Resource('MENU', selectedType))))
+	{
+		GetDialogItem(dialog, kIDField, &itemType, &(Handle)item, &sourceRect);
+		GetDialogItemText((Handle)item, IDAsString);
+		StringToNum(IDAsString, &ID);
+	}
+	else
+	{
+		GetMenuItemText(GetMenu(selectedType), selectedIcns, menuItemText);
+		CopyString(IDAsString, menuItemText);
+		for (i=1; IDAsString[i] != ' '; i++){;}
+		if (IDAsString[1] == 208) IDAsString[1] = '-';
+		IDAsString[0] = i-1;
+		GetDialogItem(dialog, kIDField, &itemType, &(Handle)item, &itemRect);
+		SetDialogItemText((Handle)item, IDAsString);
+		SelectDialogItemText( dialog, kIDField, 0, 32767);
+		StringToNum(IDAsString, &ID);
+	}
+	
+	file = FSpOpenResFile(&fileSpec, fsRdWrPerm);
+	UseResFile(file);
+	if (Get1Resource('icns', ID) || Get1Resource('icl8', ID) || Get1Resource('ics8', ID))
+	{
+		FillCRect(&iconPreviewRect, desktopPattern);
+		currenticns.ID = ID;
+		currenticns.srcFileSpec = fileSpec;
+		currenticns.Load();
+		currenticns.Display(currentLargeIconRect);
+		currenticns.Display(currentSmallIconRect);
+		GetDialogItem(dialog, kExtract, &itemType, &(Handle)item, &itemRect);
+		if (item == NULL) SysBeep(6);
+		if (IsFrontProcess())
+			HiliteControl((ControlHandle)item,0);
+		else
+			HiliteControl((ControlHandle)item,255);
+	}
+	else
+	{
+		GetDialogItem(dialog, kCurrentIconPreview, &itemType, &(Handle)item, &sourceRect);
+		x = sourceRect.left + (sourceRect.right - sourceRect.left)/2 - StringWidth("\pNot Available")/2;
+		y = sourceRect.top + (sourceRect.bottom - sourceRect.top)/2 + 6;
+		FillCRect(&iconPreviewRect, desktopPattern);
+		MoveTo(x, y);
+		DrawString("\pNot Available");
+		GetDialogItem(dialog, kExtract, &itemType, &(Handle)item, &itemRect);
+		HiliteControl((ControlHandle)item,255);
+	}
+	CloseResFile(file);
+	UseResFile(appFile);
+	
+	DisposePixPat(desktopPattern);
+	
+	DrawDialog(dialog);
+	
+	SetGWorld(oldPort, oldDevice);
+	
 }
 
 void GetIconMenu(int ID, int* group, int* item, Str255 name)
@@ -1206,290 +997,77 @@ void GetIconMenu(int ID, int* group, int* item, Str255 name)
 	}
 }
 
-#define ToggleExportButton()\
-{\
-	scheme = FSpOpenResFile(&schemeSpec, fsRdPerm);\
-	UseResFile(scheme);\
-	if (Get1Resource('icns', ID) || Get1Resource('icl8', ID) || Get1Resource('ics8', ID))\
-	{\
-		CloseResFile(scheme);\
-		UseResFile(appFile);\
-		GetDialogItem(exporticns, kExport, &itemType, &item, &sourceRect);\
-		HiliteControl((ControlHandle)item,0);\
-	}\
-	else\
-	{\
-		CloseResFile(scheme);\
-		UseResFile(appFile);\
-		GetDialogItem(exporticns, kExport, &itemType, &item, &sourceRect);\
-		HiliteControl((ControlHandle)item,255);\
-	}\
-}
-
-#define ExportTextRefresh()\
-{\
-	DrawImageWell(iconPreviewRect);\
-	DrawImageWell(exportPreviewRect);\
-	GetMenuItemText(GetMenu(selectedType), selectedIcns, menuItemText);\
-	CopyString(IDAsString, menuItemText);\
-	for (i=1; IDAsString[i] != ' '; i++){;}\
-	if (IDAsString[1] == 208) IDAsString[1] = '-';\
-	IDAsString[0] = i-1;\
-	GetDialogItem(exporticns, kIDField, &itemType, &item, &itemRect);\
-	SetDialogItemText(item, IDAsString);\
-	SelectDialogItemText( exporticns, kIDField, 0, 32767);\
-	StringToNum(IDAsString, &ID);\
-}
-
-#define ExportRedraw()\
-{\
-	ToggleExportButton();\
-	scheme = FSpOpenResFile(&schemeSpec, fsRdPerm);\
-	UseResFile(scheme);\
-	if (Get1Resource('icns', ID) || Get1Resource('icl8', ID) || Get1Resource('ics8', ID))\
-	{\
-		FillCRect(&iconPreviewRect, desktopPattern);\
-		currenticns.ID = ID;\
-		currenticns.Load();\
-		currenticns.Display(currentLargeIconRect);\
-		currenticns.Display(currentSmallIconRect);\
-		currenticns.ExportToPixMap(clipboardPix);\
-		LockPixels(clipboardPix);\
-		ForeColor(blackColor);\
-		BackColor(whiteColor);\
-		CopyBits((BitMap*)*clipboardPix, &exporticns->portBits, &clipboardRect, &exportTargetRect, srcCopy, NULL);\
-		RGBForeColor(&oldForeColor);\
-		RGBBackColor(&oldBackColor);\
-		UnlockPixels(clipboardPix);\
-	}\
-	else\
-	{\
-		GetDialogItem(exporticns, kIconPreview, &itemType, &item, &sourceRect);\
-		x = sourceRect.left + (sourceRect.right - sourceRect.left)/2 - StringWidth("\pNot Available")/2;\
-		y = sourceRect.top + (sourceRect.bottom - sourceRect.top)/2 + 6;\
-		FillCRect(&iconPreviewRect, desktopPattern);\
-		MoveTo(x, y);\
-		DrawString("\pNot Available");\
-		GetDialogItem(exporticns, kExportPreview, &itemType, &item, &sourceRect);\
-		x = sourceRect.left + (sourceRect.right - sourceRect.left)/2 - StringWidth("\pNot Available")/2;\
-		y = sourceRect.top + (sourceRect.bottom - sourceRect.top)/2 + 6;\
-		DrawImageWell(exportPreviewRect);\
-		MoveTo(x, y);\
-		DrawString("\pNot Available");\
-	}\
-	CloseResFile(scheme);\
-	UseResFile(appFile);\
-}
-
-#define ChangeExportIconPopup()\
-{\
-	GetDialogItem(exporticns, kIconPopup, &itemType, &item, &itemRect);\
-	DisposeControl((ControlHandle)item);\
-	(ControlHandle)item = NewControl(exporticns,\
-									 &popupRect,\
-									 "\pIcon:",\
-									 false,\
-									 0,\
-									 selectedType,\
-									 50,\
-									 popupMenuProc + popupFixedWidth,\
-									 0);\
-	\
-	SetControlValue((ControlHandle)item, selectedIcns);\
-	ShowControl((ControlHandle)item);\
-	(**(PopupPrivateDataHandle)(**(ControlHandle)item).contrlData).mID = selectedType;\
-	(**(PopupPrivateDataHandle)(**(ControlHandle)item).contrlData).mHandle = GetMenu(selectedType);\
-	if ((ControlHandle)item == NULL)\
-		SysBeep(20);\
-	\
-	GetDialogItem(exporticns, kTypesPopup, &itemType, &item, &itemRect);\
-	SetControlValue((ControlHandle)item, selectedType - baseMenuID + 1);\
-}
-
-
-
-void GetExporticns(void)
+void icns2clip(short ID)
 {
-	DialogPtr			exporticns;
-	bool				dialogDone;
-	short				itemHit;
-	Rect				itemRect;
-	long				ID;
-	Handle				item;
-	short				itemType;
-	short				scheme;
-	Str255				errorNumber, ignored;
-	Rect				popupRect;
-	int					selectedIcns=1, i, selectedType=201;
-	Str255				IDAsString, menuItemText;
-	GWorldPtr			clipboardGWorld;
-	PixMapHandle		clipboardPix;
-	Rect				clipboardRect = {0, 0, 32, 80};
-	Rect				sourceRect, largeIconRect={0,0,32, 32}, smallIconRect = {0, 0, 16, 16};
-	RGBColor			oldForeColor, oldBackColor;
-	Rect				iconPreviewRect, exportPreviewRect, exportTargetRect;
-	PixPatHandle		desktopPattern;
-	Rect				currentLargeIconRect, currentSmallIconRect;
-	icnsClass			currenticns;
-	int					x, y;
+	icnsClass		currenticns;
 	OpenCPicParams		picParams;
 	PicHandle			pic;
+	GWorldPtr			clipboardGW;
+	PixMapHandle		clipboardPix;
+	Rect				clipboardRect = {0, 0, 32, 80};
 	OSStatus			err;
-	ModalFilterUPP		eventFilter;
+	RgnHandle			oldClip;
 	
-	eventFilter = NewModalFilterProc(StandardDialogFilter);
+	SAVEGWORLD;
+	oldClip = NewRgn();
+	 GetClip(oldClip);
 	
-	scheme = FSpOpenResFile(&schemeSpec, fsRdPerm);
-	if (scheme == -1)
-	{
-		switch (ResError())
-		{
-			case noErr:
-				break;
-			case opWrErr:
-				DisplayAlert("You can't edit this file since it's currently open in another application.", "Please close it and try again");
-				return;
-				break;
-			case -39:
-				DisplayAlert("", "This file doesn't have a resource fork and therefore it cannot be edited");
-				return;
-				break;
-			default:
-				NumToString(ResError(), errorNumber);
-				DisplayPAlert("\pSomething happened that wasn't supposed to happen. Error of type: ", errorNumber);
-				return;
-				break;
-		}
-	}
-	CloseResFile(scheme);
-	UseResFile(appFile);
+	NewGWorld(&clipboardGW, 32, &clipboardRect, NULL, NULL, 0);
+	clipboardPix = GetGWorldPixMap(clipboardGW);
+	LockPixels(clipboardPix);
 	
-	exporticns = GetNewDialog (exporticnsID, nil, (WindowPtr)-1L);
-	SetPort(exporticns);
+	currenticns.ID = ID;
+	currenticns.srcFileSpec = fileSpec;
+	currenticns.Load();
+	currenticns.ExportToPixMap(clipboardPix);
 	
-	GetForeColor(&oldForeColor);
-	GetBackColor(&oldBackColor);
+	picParams.srcRect = clipboardRect;
+	picParams.hRes =  0x00480000;
+	picParams.vRes =  0x00480000;
+	picParams.version = -2;
+	picParams.reserved1 = 0;
+	picParams.reserved2 = 0;
+	pic = OpenCPicture(&picParams);
+	ClipRect(&clipboardRect);
+	CopyBits((BitMap*)*clipboardPix, &qd.thePort->portBits, &clipboardRect, &clipboardRect, srcCopy, NULL);
+	ClosePicture();
 	
-	SetDialogDefaultItem(exporticns, kExport);
-	SetDialogCancelItem( exporticns, kCancel );
-	SelectDialogItemText( exporticns, kIDField, 0, 32767);
+	ZeroScrap();
+	int picSize;
+	picSize = GetHandleSize((Handle)pic);
+	err = PutScrap(picSize, 'PICT', *pic);
+	if (err != noErr)
+		DisplayValue(err);
+	KillPicture(pic);
 	
-	GetDialogItem(exporticns, kIconPopup, &itemType, &item, &popupRect);
-		
-	desktopPattern = GetPixPat(16);
-	GetDialogItem(exporticns, kIconPreview, &itemType, &item, &iconPreviewRect);
-	DrawImageWell(iconPreviewRect);
-	FillCRect(&iconPreviewRect, desktopPattern);
-	GetDialogItem(exporticns, kExportPreview, &itemType, &item, &exportPreviewRect);
-	DrawImageWell(exportPreviewRect);
-	exportTargetRect = clipboardRect;
-	MakeTargetRect(exportPreviewRect, &exportTargetRect);
+	RESTOREGWORLD;
 	
-	NewGWorld(&clipboardGWorld, 32, &clipboardRect, NULL, NULL, 0);
-	clipboardPix = GetGWorldPixMap(clipboardGWorld);
+	SetClip(oldClip);
+	
+	UnlockPixels(clipboardPix);
+	DisposeGWorld(clipboardGW);
+	
 
-	GetDialogItem(exporticns, kIconPreview, &itemType, &item, &sourceRect);
-	sourceRect.left += (sourceRect.right - sourceRect.left)/2;
-	currentLargeIconRect = largeIconRect;
-	MakeTargetRect(sourceRect, &currentLargeIconRect);
-	
-	GetDialogItem(exporticns, kIconPreview, &itemType, &item, &sourceRect);
-	sourceRect.right -= (sourceRect.right - sourceRect.left)/2;
-	currentSmallIconRect = smallIconRect;
-	MakeTargetRect(sourceRect, &currentSmallIconRect);
-	
-	ExportTextRefresh();
-	ExportRedraw();
-	
-	ShowWindow( exporticns );
-
-	dialogDone = false;
-	while (!dialogDone)
-	{
-		ModalDialog(eventFilter, &itemHit);
-		switch (itemHit)
-		{
-			case kIDField:
-				GetDialogItem(exporticns, kIDField, &itemType, &item, &itemRect);
-				GetDialogItemText(item, IDAsString);
-				StringToNum(IDAsString, &ID);
-				GetIconMenu(ID, &selectedType, &selectedIcns, ignored);
-				ToggleExportButton();
-				ChangeExportIconPopup();
-				ExportRedraw();
-				break;
-			case kExport:
-				GetDialogItem(exporticns, kIDField, &itemType, &item, &itemRect);
-				GetDialogItemText(item, IDAsString);
-				StringToNum(IDAsString, &ID);
-				dialogDone = true;
-				currenticns.ID = ID;
-				currenticns.LoadFromFile(schemeSpec);
-				currenticns.ExportToPixMap(clipboardPix);
-				picParams.srcRect = clipboardRect;
-				picParams.hRes =  0x00480000;
-				picParams.vRes =  0x00480000;
-				picParams.version = -2;
-				picParams.reserved1 = 0;
-				picParams.reserved2 = 0;
-				pic = OpenCPicture(&picParams);
-				ClipRect(&clipboardRect);
-				ForeColor(blackColor);
-				BackColor(whiteColor);
-				CopyBits((BitMap*)*clipboardPix, &qd.thePort->portBits, &clipboardRect, &clipboardRect, srcCopy, NULL);
-				ClosePicture();
-				ZeroScrap();
-				int picSize;
-				picSize = GetHandleSize((Handle)pic);
-				err = PutScrap(picSize, 'PICT', *pic);
-				if (err != noErr)
-					DisplayValue(err);
-				//KillPicture(pic);
-				break;
-			case kCancel:
-				dialogDone = true;
-				break;
-			case kTypesPopup:
-
-				GetDialogItem(exporticns, kTypesPopup, &itemType, &item, &itemRect);
-				selectedType = GetControlValue((ControlHandle)item) + baseMenuID - 1;
-				selectedIcns = 1;
-				
-				ChangeExportIconPopup();
-				
-				ExportTextRefresh();
-				ExportRedraw();
-				
-				break;
-			case kIconPopup:
-				GetDialogItem(exporticns, kIconPopup, &itemType, &item, &itemRect);
-				selectedIcns = GetControlValue((ControlHandle)item);
-				
-				ExportTextRefresh();
-				ExportRedraw();
-				
-				break;
-		}
-	}
-	DisposeGWorld(clipboardGWorld);
-	DisposePixPat(desktopPattern);
-	DisposeDialog(exporticns);
-	SetGWorld(startupPort, startupDevice);
+	Nag();
 }
 
 
-void clip2icns(short icnsID, Str255 icnsName, int flags)
+void clip2icns(short icnsID, Str255 icnsName)
 {
 	icnsClass	clipboardicns;
-
-	clipboardicns.ImportFromClipboard();
+	long		flags = 0;
 	
-	if (flags & createFile)
+	FInfo		fndrInfo;
+	
+	if (FSpGetFInfo(&fileSpec, &fndrInfo) != noErr)
 	{
-		FSpDelete(&schemeSpec);
-		FSpCreate(&schemeSpec, 'RSED', 'rsrc', 0); /*smRoman = 0*/
-		FSpCreateResFile(&schemeSpec, 'RSED', 'rsrc', 0); /*smRoman = 0*/
+		FSpDelete(&fileSpec);
+		FSpCreate(&fileSpec, 'RSED', 'rsrc', 0);
+		FSpCreateResFile(&fileSpec, 'RSED', 'rsrc', 0);
 	}
+	
+	clipboardicns.ImportFromClipboard((**preferences).dither);
+	
 	
 	if ((**preferences).setBits && icnsID != -16455)
 		clipboardicns.flags =  resSysHeap + resPurgeable;
@@ -1498,15 +1076,35 @@ void clip2icns(short icnsID, Str255 icnsName, int flags)
 	
 	CopyString(clipboardicns.name, icnsName);
 	
-	clipboardicns.SaveToFile(schemeSpec, (**preferences).includeOldStyle, (**preferences).generateOldStyle);
+	clipboardicns.srcFileSpec = fileSpec;
+	if ((**preferences).includeOldStyle)
+		flags |= includeOldStyle;
+	if ((**preferences).generateOldStyle)
+		flags |= generateOldStyle;
+	clipboardicns.Save(flags);
 	
+	Nag();
+}
+
+void Nag(void)
+{
 	(**preferences).timesUsed++;
 	
 	if ((((**preferences).timesUsed % 10 == 0) || ((**preferences).timesUsed >= 50)) && (EqualString((**preferences).name, "\pNot Registered", true, true)))
 	{
-		char	buff[255];
-		sprintf(buff, "You've used clip2icns %d times.", (**preferences).timesUsed);
-		DisplayAlert(buff, "Please consider registering it");
+		short		itemHit;
+		Str255		timesUsedStr;
+		
+		SAVEGWORLD;
+	
+		NumToString((**preferences).timesUsed, timesUsedStr);
+		ParamText(timesUsedStr, nil, nil, nil);
+		itemHit = NoteAlert(nagID, nil);
+		
+		if (itemHit == kRegister)
+			Register();
+			
+		RESTOREGWORLD;
 	}
 }
 
@@ -1522,7 +1120,7 @@ void SetPreferences(void)
 {
 	bool			dialogDone = false;
 	DialogPtr		preferencesDialog;
-	ControlHandle	includeOldStyle, setBits, generateOldStyle, nameResources;
+	ControlHandle	includeOldStyle, setBits, generateOldStyle, nameResources, dither, rememberSelection;
 	Rect			itemRect;
 	short			itemHit, itemType;
 	
@@ -1536,11 +1134,15 @@ void SetPreferences(void)
 	GetDialogItem(preferencesDialog, kSetBits, &itemType, &((Handle)setBits), &itemRect);
 	GetDialogItem(preferencesDialog, kGenerateOldStyle, &itemType, &((Handle)generateOldStyle), &itemRect);
 	GetDialogItem(preferencesDialog, kNameResources, &itemType, &((Handle)nameResources), &itemRect);
+	GetDialogItem(preferencesDialog, kDither, &itemType, &((Handle)dither), &itemRect);
+	GetDialogItem(preferencesDialog, kRememberSelection, &itemType, &((Handle)rememberSelection), &itemRect);
 	
 	SetControlValue(includeOldStyle, (**preferences).includeOldStyle);
 	SetControlValue(setBits, (**preferences).setBits);
 	SetControlValue(generateOldStyle, (**preferences).generateOldStyle);
 	SetControlValue(nameResources, (**preferences).nameResources);
+	SetControlValue(dither, (**preferences).dither);
+	SetControlValue(rememberSelection, (**preferences).rememberSelection);
 	
 	ShowWindow(preferencesDialog);
 	
@@ -1555,12 +1157,16 @@ void SetPreferences(void)
 				(**preferences).setBits = GetControlValue(setBits);
 				(**preferences).generateOldStyle = GetControlValue(generateOldStyle);
 				(**preferences).nameResources = GetControlValue(nameResources);
+				(**preferences).dither = GetControlValue(dither);
+				(**preferences).rememberSelection = GetControlValue(rememberSelection);
 				break;
 			case kCancel: dialogDone = true; break;
 			case kIncludeOldStyle: ToggleCheckbox(includeOldStyle); break;
 			case kSetBits: ToggleCheckbox(setBits); break;
 			case kGenerateOldStyle: ToggleCheckbox(generateOldStyle); break;
 			case kNameResources: ToggleCheckbox(nameResources); break;
+			case kDither: ToggleCheckbox(dither); break;
+			case kRememberSelection: ToggleCheckbox(rememberSelection); break;
 		}
 	}
 
@@ -1584,8 +1190,7 @@ void CleanUp(void)
 	if (err == noErr)
 		preferencesRefNum = FSpOpenResFile(&preferencesFile, fsRdWrPerm);
 	
-	
-	
+
 	if ((preferencesRefNum != -1) && (err == noErr))
 	{
 		UseResFile(preferencesRefNum);

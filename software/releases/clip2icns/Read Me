@@ -1,4 +1,4 @@
-clip2icns 1.5.1
+clip2icns 1.6
 by Mihai Parparita
 $10 Shareware
 mihai@mscape.com
@@ -53,6 +53,9 @@ folder, and extract the icons from that. Then once you've tweaked them to  your 
 Billy Martin
 
 Version History
+1.6 April 25 1999 
+- AppleScript support added, along with script/action pack to integrate with Adobe¨ Photoshop¨
+
 1.5.1 February 27 1999
  - clip2icns should work again under pre 8.5 systems
  - an error message is now displayed if a file that's in use is opened
