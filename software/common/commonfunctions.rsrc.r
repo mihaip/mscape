@@ -2,13 +2,13 @@
 resource 'DITL' (3000, "Basic Alert") {
 	{	/* array DITLarray: 2 elements */
 		/* [1] */
-		{66, 318, 86, 376},
+		{67, 311, 87, 369},
 		Button {
 			enabled,
 			"OK"
 		},
 		/* [2] */
-		{8, 58, 60, 376},
+		{8, 58, 60, 369},
 		StaticText {
 			disabled,
 			"^0 ^1."
@@ -17,7 +17,7 @@ resource 'DITL' (3000, "Basic Alert") {
 };
 
 resource 'ALRT' (3000) {
-	{40, 40, 138, 421},
+	{40, 40, 134, 416},
 	3000,
 	{	/* array: 4 elements */
 		/* [1] */

@@ -55,7 +55,7 @@ char* C2Pas(char* cStr, Str255 pStr)
 
 /*----------------------------------------------------------------------*/
 
-void InitToolBox(void)
+void InitToolbox(void)
 {
 	InitGraf (&qd.thePort);
 	InitFonts();
@@ -120,6 +120,13 @@ void DisplayValue(int value)
 	DisplayAlert(buff, "");
 }
 
+void DisplayFloat(float value)
+{
+	char buff[255];
+	sprintf(buff, "%f", value);
+	DisplayAlert(buff, "");
+}
+
 void DisplayPAlert(Str255 error, Str255 reason)
 {
 	CGrafPtr			curPort;
@@ -133,28 +140,25 @@ void DisplayPAlert(Str255 error, Str255 reason)
 
 
 /*----------------------------------------------------------------------*/
-/* DisplayWindow(windowID) -- draws a window with windowID
+/* GetWindow(windowID) -- creates a window based on the WIND resource with
+						  ID windowID
 /*----------------------------------------------------------------------*/
 
 
-WindowPtr DisplayWindow(int windowID)
+WindowPtr GetWindow(int windowID)
 {
 	WindowPtr	window;
-	char		errorBuffer[256];
+	char		errorString[256];
 	
 	window = GetNewCWindow(windowID, nil, kFrontmost);
 	
-	if (window == nil)
+	if (window == NULL)
 	{
-		sprintf(errorBuffer, "because window ID %d not found", windowID);
-		DisplayAlert("Can't display window ", errorBuffer);
+		sprintf(errorString, "because window ID %d not found", windowID);
+		DisplayAlert("Can't display window ", errorString);
 		
 		ExitApplication();
 	}
-	
-	ShowWindow(window);
-	SetPort(window);
-	
 	return window;
 }
 
@@ -163,14 +167,14 @@ WindowPtr DisplayWindow(int windowID)
 							 most window
 /*----------------------------------------------------------------------*/
 
-void DrawPicture(int pictureID)
+void DrawResPicture(int pictureID)
 {
 	Rect		pictureRect;
-//	WindowPtr	window;
+	WindowPtr	window;
 	PicHandle	picture;
 	char		errorBuffer[256];
 	
-	//window = FrontWindow();
+	window = FrontWindow();
 	
 	pictureRect = qd.thePort->portRect;
 	
@@ -184,7 +188,7 @@ void DrawPicture(int pictureID)
 		ExitApplication();
 	}
 	
-	//CenterPict(picture, &pictureRect);
+	CenterPict(picture, &pictureRect);
 	pictureRect = (**(picture)).picFrame;
 	DrawPicture(picture, &pictureRect);
 }
@@ -288,7 +292,7 @@ void ShowMenubar( void )
 }
 
 
-/*
+
 Boolean IsKeyPressed(short keyCode)
 {
 	unsigned char	ourKeyMap[16];
@@ -296,14 +300,13 @@ Boolean IsKeyPressed(short keyCode)
 	Boolean			isKeyPressed;
 	short			bitToCheck;
 	
-	GetKeys((KeyMap)ourKeyMap);
+	GetKeys((long*)ourKeyMap);
 	keyMapIndex = ourKeyMap[keyCode/8];
 	bitToCheck = keyCode % 8;
 	isKeyPressed = (keyMapIndex >> bitToCheck) & 0x01;
 	
 	return isKeyPressed;
 }
-*/
 // DisplayRect (Rect )
 // displays an alert with the coordinates of the Rect
 // used for debugging
@@ -314,6 +317,19 @@ void DisplayRect(Rect rectToShow)
 	sprintf(buff, "top: %d, left: %d -- bottom: %d, right: %d", rectToShow.top, rectToShow.left, rectToShow.bottom, rectToShow.right);
 	DisplayAlert(buff, "");
 }
+
+// DisplayColor (RGBColor)
+// displays an alert with the components of the color
+// used for debugging
+
+void DisplayColor(RGBColor color)
+{
+	char	buff[256];
+	sprintf(buff, "red: %d, green: %d, blue: %d", color.red, color.green, color.blue);
+	DisplayAlert(buff, "");
+}
+
+
 // short ReadDataByte(Ptr, long)
 // gets a word from the pointer, incremements the offset and returns the data
 // from the Black Art of Mac Programming
@@ -364,9 +380,9 @@ void DrawTranslucentRect(Rect* targetRect)
 
 void CopyString(Str255 dst, const Str255 src)
 {
-	int k, l;
+	short k, l;
 	for (k=0, l=src[0]; k <= l; k++)
-		dst[k] = src[k];
+		dst[k] = (unsigned char) src[k];
 }
 
 void BlockFill(unsigned char *block, int fill, int size)
@@ -374,6 +390,21 @@ void BlockFill(unsigned char *block, int fill, int size)
 	register int k;
 
 	for (k = 0; k < size; k++) block[k] = (unsigned char)fill;
+}
+
+void FillPixMap32(PixMapHandle src, unsigned long fill)
+{
+	register int i, j;
+	register long *rowBaseAddress, rowLongs, noOfRows, noOfPixels;
+	
+	noOfRows = (**src).bounds.bottom - (**src).bounds.top;
+	noOfPixels = (**src).bounds.right - (**src).bounds.left;
+	rowBaseAddress = (long *)(**src).baseAddr;
+	rowLongs = ((**src).rowBytes & 0x3FFF)/4;
+	
+	for (j = 0; j < noOfRows; j++, rowBaseAddress += rowLongs)
+		for (i=0; i < noOfPixels; i++)
+			rowBaseAddress[i] = fill;
 }
 
 GrafPtr CreateGrafPort(Rect* bounds)	/* Originally written by Forrest Tanaka. */
@@ -588,4 +619,541 @@ OSErr SendFinderAEOpen(FSSpec &inFile)
 	if (ae.descriptorType != typeNull) AEDisposeDesc(&ae);
 	if (aeReply.descriptorType != typeNull) AEDisposeDesc(&aeReply);
 	return err;
+}
+
+void ToggleCheckbox(ControlHandle checkbox)
+{
+	Point	mouse;
+	int		value;
+	
+	GetMouse(&mouse);
+
+	if (TrackControl(checkbox, mouse, nil))
+	{
+		value = GetControlValue(checkbox);
+		value = 1 - value;
+		SetControlValue(checkbox, value);
+	}
+}
+
+OSStatus LaunchURL(ConstStr255Param urlStr)
+{
+	OSStatus err;
+	ICInstance inst;
+	long startSel;
+	long endSel;
+	
+	err = ICStart(&inst, '????');			// Use your creator code if you have one!
+	if (err == noErr) {
+		err = ICFindConfigFile(inst, 0, nil);
+			if (err == noErr) {
+				startSel = 0;
+				endSel = urlStr[0];
+				err = ICLaunchURL(inst, "\p", (char *) &urlStr[1], urlStr[0], &startSel, &endSel);
+			}
+		(void) ICStop(inst);
+	}
+	return (err);
+}
+
+bool CheckString(Str255 input)
+{
+	if (input[0] == 0)
+		return false;
+	for (int i = 1; i <= input[0]; i++)
+		if (!((input[i] >= 0x30 && input[i] <= 0x39) || input[i] == 45))
+			return false;
+	
+	return true;
+}
+
+void ToggleMenuItem(int menuID, int itemNo)
+{
+	MenuHandle		menu;
+	menu = GetMenuHandle(menuID);
+	if ((**menu).enableFlags & (1 << itemNo))
+		DisableItem(menu, itemNo);
+	else
+		EnableItem(menu, itemNo);
+}
+
+OSStatus GetFile(Str255 client, long creator, long fileType, FSSpec* file)
+{
+	if (NavServicesAvailable())
+	{
+		NavDialogOptions	dialogOptions;
+		NavReplyRecord		reply;
+		NavEventUPP			eventUPP;
+		AEDesc				resultDesc;
+		NavTypeListHandle	typeList;
+		
+		eventUPP = NewNavEventProc(DummyFunction);
+		
+		NavGetDefaultDialogOptions ( &dialogOptions );
+		dialogOptions.dialogOptionFlags -= kNavAllowMultipleFiles;
+		dialogOptions.dialogOptionFlags += kNavNoTypePopup;
+		dialogOptions.dialogOptionFlags -= kNavAllowPreviews;
+		CopyString(dialogOptions.clientName, client);
+		if (creator == '****' && fileType == '****')
+		{
+			typeList = NULL;
+			dialogOptions.dialogOptionFlags += kNavAllowInvisibleFiles;
+		}
+		else
+			typeList = MakeTypeList (creator, 1, fileType);
+		
+		NavGetFile(NULL,
+				   &reply,
+				   &dialogOptions,
+				   eventUPP,
+				   NULL,
+				   NULL,
+				   typeList,
+				   NULL);
+		
+		if (reply.validRecord)
+		{
+			AEGetNthDesc( &(reply.selection), 1, typeFSS, NULL, &resultDesc );
+
+			GetFSSpecFromAEDesc(resultDesc, *file);
+		
+			NavDisposeReply(&reply);
+			AEDisposeDesc(&resultDesc);
+			DisposeRoutineDescriptor(eventUPP);
+			return noErr;
+		}
+		else
+		{
+			DisposeRoutineDescriptor(eventUPP);
+			NavDisposeReply(&reply);
+			return paramErr;
+		}
+	}
+	else
+	{
+		StandardFileReply	reply;
+		SFTypeList			typeList;
+		
+		typeList[0] = fileType;
+		
+		if (fileType != '****')
+			StandardGetFile(nil, 1, typeList, &reply);
+		else
+			StandardGetFile(nil, -1, typeList, &reply);
+		
+		if ( reply.sfGood)
+		{
+			*file = reply.sfFile;
+			return noErr;
+		}
+		return paramErr;
+	}
+}
+
+OSStatus NewFile(Str255 promptText, Str255 defaultName, Str255 client, long creator, long fileType, FSSpec* file)
+{
+	if (NavServicesAvailable())
+	{
+		NavDialogOptions	dialogOptions;
+		NavReplyRecord		reply;
+		NavEventUPP			eventUPP;
+		AEDesc				resultDesc;
+		OSStatus			theErr;
+		
+		eventUPP = NewNavEventProc(DummyFunction);
+		
+		NavGetDefaultDialogOptions ( &dialogOptions );
+		dialogOptions.dialogOptionFlags -= kNavAllowMultipleFiles;
+		dialogOptions.dialogOptionFlags += kNavNoTypePopup;
+		dialogOptions.dialogOptionFlags -= kNavAllowPreviews;
+		CopyString(dialogOptions.clientName, client);
+		CopyString(dialogOptions.savedFileName, defaultName);
+		
+		theErr = NavPutFile(NULL,	// use system's default location
+				   &reply,
+				   &dialogOptions,
+				   eventUPP,
+				   creator,
+				   fileType,
+				   NULL);
+						
+		DisposeRoutineDescriptor(eventUPP);
+		
+		if (reply.validRecord)
+		{
+			AEGetNthDesc( &(reply.selection), 1, typeFSS, NULL, &resultDesc );
+
+			GetFSSpecFromAEDesc(resultDesc, *file);
+			
+			NavDisposeReply(&reply);
+			AEDisposeDesc(&resultDesc);
+			return noErr;
+		}
+		else
+		{
+			NavDisposeReply(&reply);
+			return paramErr;
+		}
+	}
+	else
+	{
+		StandardFileReply reply;
+
+		StandardPutFile(promptText, defaultName, &reply);
+
+		if ( reply.sfGood )
+		{
+			*file = reply.sfFile;	
+			return noErr;
+		}
+		return paramErr;
+	}
+}
+
+void SetPixel32(int x, int y, long color, PixMapHandle target)
+{
+	char	*pixelAddress;
+	
+	pixelAddress = (**target).baseAddr + (y * ((**target).rowBytes & 0x3FFF)) + 4 * x;
+	*((long *)pixelAddress) = color;
+}
+
+long GetPixel32(int x, int y, PixMapHandle src)
+{
+	char	*pixelAddress;
+	
+	pixelAddress = (**src).baseAddr + (y * ((**src).rowBytes & 0x3FFF)) + 4 * x;
+	return *(long*)pixelAddress;
+}
+
+char GetColorIndex(RGBColor color, CTabHandle colorTable)
+{
+	int closestValue = 0;
+	int smallestDifference = 65535 * 3;
+	int currentDifference;
+	for (int i = 0; i < (**colorTable).ctSize + 1; i++)
+	{
+		currentDifference = abs(color.red - (**colorTable).ctTable[i].rgb.red) +
+							abs(color.green - (**colorTable).ctTable[i].rgb.green) + 
+							abs(color.blue - (**colorTable).ctTable[i].rgb.blue);
+		if (currentDifference < smallestDifference)
+		{
+			smallestDifference = currentDifference;
+			closestValue = i;
+		}
+	}
+	return closestValue;
+}
+
+void SetPixel8(int x, int y, long color, PixMapHandle target)
+{
+	char	*pixelAddress;
+	
+	pixelAddress = (**target).baseAddr + (y * ((**target).rowBytes & 0x3FFF)) + x;
+	pixelAddress[0] = color;
+}
+
+long GetPixel8(int x, int y, PixMapHandle src)
+{
+	char	*pixelAddress;
+	
+	pixelAddress = (**src).baseAddr + (y * ((**src).rowBytes & 0x3FFF)) + x;
+	return pixelAddress[0];
+}
+
+long GetPixel4(int x, int y, PixMapHandle src)
+{
+	char	*pixelAddress;
+	long	pixelValue;
+	
+	pixelAddress = (**src).baseAddr + (y * ((**src).rowBytes & 0x3FFF)) + x/2;
+	if (x & 1) // is odd, change bits 3..0
+	{
+		pixelValue = *pixelAddress & 0x0F; 
+	}
+	else // is even, change bits 7..4
+	{
+		pixelValue = (*pixelAddress >> 4)& 0xF; 
+	}
+	
+	return pixelValue;
+}
+
+void SetPixel4(int x, int y, long color, PixMapHandle target)
+{
+	char	*pixelAddress;
+	
+	pixelAddress = (**target).baseAddr + (y * ((**target).rowBytes & 0x3FFF)) + x/2;
+	if (x & 1) // is odd, change bits 3..0
+	{
+		*pixelAddress = (*pixelAddress & 0xF0) + (color); 
+	}
+	else // is even, change bits 7..4
+	{
+		*pixelAddress = (*pixelAddress & 0x0F) + (color << 4); 
+	}
+}
+
+long GetPixel1(int x, int y, PixMapHandle target)
+{
+	char	*pixelAddress;
+	
+	pixelAddress = (**target).baseAddr + (y * ((**target).rowBytes & 0x3FFF)) + x/8;
+	return (*pixelAddress >> (7 - (x & 7))) & 0x1;
+} 
+
+void SetPixel1(int x, int y, long color, PixMapHandle target)
+{
+	char	*pixelAddress;
+	int		bitMask;
+	
+	pixelAddress = (**target).baseAddr + (y * ((**target).rowBytes & 0x3FFF)) + x/8;
+	bitMask = 1 << (7 - (x & 7));
+	*pixelAddress = ((*pixelAddress) & ~bitMask) + color * bitMask;
+} 
+
+void DrawImageWell(ControlHandle theControl, Rect targetRect)
+{
+	if ((**theControl).contrlHilite == kActiveHilite)
+		DrawThemeGenericWell(&targetRect,true,false);
+	else if ((**theControl).contrlHilite == kInactiveHilite)
+		DrawThemeGenericWell(&targetRect,false,false);
+}
+
+void LocalToGlobalRect(Rect	*theRect)
+{
+	LocalToGlobal((Point*)(&theRect->top));
+	LocalToGlobal((Point*)(&theRect->bottom));
+}
+
+void PixMapToPicture(PixMapHandle srcPix, RgnHandle maskRgn, PicHandle *targetPic)
+{
+	Rect			picRect;
+	OpenCPicParams	picParams;
+	
+	picRect = (**srcPix).bounds;
+	
+	picParams.srcRect = picRect;
+	picParams.hRes =  0x00480000;
+	picParams.vRes =  0x00480000;
+	picParams.version = -2;
+	picParams.reserved1 = 0;
+	picParams.reserved2 = 0;
+	
+	*targetPic = OpenCPicture(&picParams);
+	ClipRect(&picRect);
+	ForeColor(blackColor);
+	BackColor(whiteColor);
+	CopyBits((BitMap*)*srcPix, &qd.thePort->portBits, &picRect, &picRect, srcCopy, maskRgn);
+	ClosePicture();
+}
+
+void FlipVertical(PixMapHandle srcPix)
+{
+	int				rowSize, height;
+	char			*tempRow, *topRow, *bottomRow;
+	
+	rowSize = (**srcPix).rowBytes & 0x3FFF;
+	height = (**srcPix).bounds.bottom - (**srcPix).bounds.top;
+	topRow = (**srcPix).baseAddr;
+	bottomRow = topRow + (height - 1) * rowSize;
+	
+	tempRow = NewPtr(rowSize);
+	if (tempRow == NULL)
+		return;
+	
+	for (int i=0; i < height/2; i++, topRow += rowSize, bottomRow -= rowSize)
+	{
+		BlockMove(topRow, tempRow, rowSize);
+		BlockMove(bottomRow, topRow, rowSize);
+		BlockMove(tempRow, bottomRow, rowSize);
+	}
+	
+	DisposePtr(tempRow);
+}
+
+void FlipHorizontal(PixMapHandle srcPix)
+{
+	int				rowSize, height, width;
+	char			*left, *right, tempChar;
+	long			temp;
+	
+	rowSize = (**srcPix).rowBytes & 0x3FFF;
+	height = (**srcPix).bounds.bottom - (**srcPix).bounds.top;
+	width = (**srcPix).bounds.right - (**srcPix).bounds.left;
+	
+	switch ((**srcPix).pixelSize)
+	{
+		case 1:
+			for(int y= 0; y < height; y++)
+				for (int x = 0; x < width/2; x++)
+				{
+					temp = GetPixel1(x, y, srcPix);
+					SetPixel1(x, y, GetPixel1(width - x - 1, y, srcPix), srcPix);
+					SetPixel1(width - x - 1, y, temp, srcPix);
+				}
+			break;
+		case 4:
+			for(int y= 0; y < height; y++)
+				for (int x = 0; x < width/2; x++)
+				{
+					temp = GetPixel4(x, y, srcPix);
+					SetPixel4(x, y, GetPixel4(width - x - 1, y, srcPix), srcPix);
+					SetPixel4(width - x - 1, y, temp, srcPix);
+				}
+			break;
+		case 8:
+			for(int i= 0; i < height; i++)
+			{
+				left = (**srcPix).baseAddr + i * rowSize;
+				right = left + (width - 1);
+				for (int j = 0; j < width/2; j++, left++, right--)
+				{
+					tempChar = *left;
+					*left = *right;
+					*right = tempChar;
+				}
+			}
+		break;
+		case 32:
+			for(int i= 0; i < height; i++)
+			{
+				left = (**srcPix).baseAddr + i * rowSize;
+				right = left + (width - 1) * 4;
+				for (int j = 0; j < width/2; j++, left+= 4, right-=4)
+				{
+					temp = *(long *)left;
+					*(long *)left = *(long *)right;
+					*(long *)right = temp;
+				}
+			}
+		break;
+	}
+}
+
+void Rotate(int angle, GWorldPtr *srcGW, PixMapHandle *srcPix)
+{
+	GetPixelFuncPtr	GetPixel;
+	SetPixelFuncPtr	SetPixel;
+	int				height, width;
+	GWorldPtr		tempGW;
+	PixMapHandle	tempPix;
+	Rect			bounds, rotatedBounds;
+	Point			savedOffset;
+	
+	savedOffset.h = (***srcPix).bounds.left;
+	savedOffset.v = (***srcPix).bounds.top;
+	
+	OffsetRect(&(***srcPix).bounds, -savedOffset.h, -savedOffset.v);
+	
+	bounds = (***srcPix).bounds;
+	
+	SetRect(&rotatedBounds,
+			bounds.top,
+			bounds.left,
+			bounds.bottom,
+			bounds.right);
+	
+	NewGWorld(&tempGW, (***srcPix).pixelSize, &rotatedBounds, (***srcPix).pmTable, NULL, 0);
+	tempPix = GetGWorldPixMap(tempGW);
+	LockPixels(tempPix);
+	
+	height = bounds.bottom - bounds.top;
+	width = bounds.right - bounds.left;
+	
+	switch ((***srcPix).pixelSize)
+	{
+		case 1: GetPixel = GetPixel1; SetPixel = SetPixel1; break;
+		case 4: GetPixel = GetPixel4; SetPixel = SetPixel4; break;
+		case 8: GetPixel = GetPixel8; SetPixel = SetPixel8; break;
+		case 32: GetPixel = GetPixel32; SetPixel = SetPixel32; break;
+	}
+	
+	switch (angle)
+	{
+		case 90:
+			for(int y= 0; y < height; y++)
+				for (int x = 0; x < width; x++)
+					SetPixel(height - y - 1, x, GetPixel(x, y, *srcPix), tempPix);
+			break;
+		case -90:
+			for(int y= 0; y < height; y++)
+				for (int x = 0; x < width; x++)
+					SetPixel(y, width - x - 1, GetPixel(x, y, *srcPix), tempPix);
+			break;
+	}
+	
+	SAVECOLORS;
+	UnlockPixels(*srcPix);
+	UpdateGWorld(srcGW, (***srcPix).pixelSize, &rotatedBounds, (***srcPix).pmTable, NULL, 0);
+	*srcPix = GetGWorldPixMap(*srcGW);
+	LockPixels(*srcPix);
+	CopyBits((BitMap*)*tempPix,(BitMap*)**srcPix,&rotatedBounds,&rotatedBounds,srcCopy, NULL);
+	RESTORECOLORS;
+	
+	OffsetRect(&(***srcPix).bounds, savedOffset.h, savedOffset.v);
+	
+	UnlockPixels(tempPix);
+	DisposeGWorld(tempGW);
+}
+
+void AppendString(Str255 string1, Str255 string2)
+{
+	int s1Index, s2Index;
+	s1Index = string1[0] + 1;
+	s2Index = 1;
+	while (s2Index <= string2[0] || s2Index > 255)
+		string1[s1Index++] = string2[s2Index++];
+	string1[0]+= string2[0];
+}
+
+void EnableMenuItem(int menuID, int item)
+{
+	MenuHandle menu;
+	
+	menu = GetMenuHandle(menuID);
+	EnableItem(menu, item);
+}
+
+void DisableMenuItem(int menuID, int item)
+{
+	MenuHandle menu;
+	
+	menu = GetMenuHandle(menuID);
+	DisableItem(menu, item);
+}
+
+void SetCursor(int ID)
+{
+	CCrsrHandle		cCursor;
+	CursHandle		cursor;
+	
+	cCursor = GetCCursor(ID);
+	if (cCursor != NULL)
+	{
+		SetCCursor(cCursor);
+		DisposeCCursor(cCursor);
+	}
+	else
+	{
+		cursor = GetCursor(ID);
+		if (cursor != NULL)
+		{
+			SetCursor(*cursor);
+			//DisposeHandle((Handle)cursor);
+		}
+	}
+}
+
+bool IsFrontProcess()
+{
+	ProcessSerialNumber	currentProcess, frontProcess;
+	
+	GetCurrentProcess(&currentProcess);
+	GetFrontProcess(&frontProcess);
+	
+	if (currentProcess.lowLongOfPSN == frontProcess.lowLongOfPSN && currentProcess.highLongOfPSN == frontProcess.highLongOfPSN)
+		return true;
+	else
+		return false;
 }

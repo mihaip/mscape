@@ -1,0 +1,866 @@
+-------------------------------September----------------------------------------
+
+-------------------------------23/09/98-----------------------------------------
+
+These are the programs I'm working on right now:
+
+clip2icns: Tool to take an image from the clipboard and insert it into a 32 bit icon (complete with 8 bit mask). To be released as shareware ($10) when MacOS 8.5 comes out.
+current status: almost complete, registration system done today, currently pondering pre 8.5 compatibility (would require writing of my own functions to replace the system ones)
+
+badger: tool to generate system folders based on a badge (little 16x16 logo) and a base folder. Very useful for Kaleidoscope schemers, but limited applicability elsewhere.
+
+current status: feature complete, currently investigating way to make system use the folder icons (as themes) without needing Kaleidoscope, thus further increasing it's usefulness.
+
+nitro: code name for project to revamp my homepage (GUI Central) so that the entire site is generated from a database file. Done using CGI scripts written in Perl.
+
+current status: basic concept implemented, currently converting items (350+) to new format
+
+Icon Mangler: long term project to make an icon editor for the MacOS 8.5 32 bit icons.
+
+current status: thinking about interface, using clip2icns and badger to familiarize myself with the new icon format.
+
+-------------------------------24/09/98-----------------------------------------
+
+clip2icns: Register command now disables when the program is registered. Wrote some documentation for it, describing how the image is split it up to form the different icons.
+
+-------------------------------25/09/98-----------------------------------------
+
+clip2icns: started work on a photoshop plug-in to replicate c2i's functionality (but taking a selection of the current image). The plan for this is to offer it to registered users as a bonus. Currently it writes out the correct resource (right size, right field labels) but the pixel data is garbage.
+
+-------------------------------26/09/98-----------------------------------------
+
+Icon Mangler: started work on a simple icns class which will be eventually extended into a full editor. Currently attempting to read and display an icns, but it mysteriously gets stuck when copying the data from the resource into a pix map.
+
+-------------------------------27/09/98-----------------------------------------
+
+No programming done at all :p
+
+-------------------------------28/09/98-----------------------------------------
+
+Icon Mangler: icns class seems to work now (on the school computer). Now I'm reading the mask too, and using CopyDeepMask to get the semi transparent effect. (later) Seems to work at home too, I think it was a matter of ordering.
+
+-------------------------------29/09/98-----------------------------------------
+
+All Projects: until now each project had a separate "commonfunctions.c" file which included a bunch of little functions (InitToolBox, DisplayAlert, CopyString) that I've been using in every project since the beginning. When a new project was made the "commonfunctions.c" file from the latest project was copied to the new one. However, since I'm now working on several projects at once the files are getting out of sync. So I've created a separate folder called "common" which contains the common functions, the header file and the needed resources. This way all projects share the same code and I can use a function which I added in project in all the rest.
+
+clip2icns: changed expiration date from October 1 to November 1. My name was mentioned in the Kaleidoscope about box for helping out Arlo Rose (he does the schemes for Kaleidoscope) with making the 32 bit icons.
+
+-------------------------------30/09/98-----------------------------------------
+
+badger: fixed a long standing bug which would cause badges which overlapped anti-aliased edges to have a translucent line going through them. This wasn't fixed earlier since the person that I did the tool for (Arlo) didn't anti-alias the folder edges in the region where they overlapped the badges. Also converted badger to use the new "common" functions.
+
+--------------------------------October-----------------------------------------
+
+-------------------------------01/10/98-----------------------------------------
+
+clip2icns: i wasn't checking the clipboard size (it has to be 80x32, 64x32 or 16x32) when a file was dragged onto the icon.
+
+-------------------------------02/10/98-----------------------------------------
+
+clip2icns: rewrote the documentation, since, according to a person I sent it to, it wasn't clear that you were supposed to copy an image from photoshop, and he was simply copying an icon from the desktop (and since he was probably dragging files onto the application, the bug I fixed yesterday prevented any warnings from appearing).
+
+-------------------------------03/10/98-----------------------------------------
+
+clip2icns: i've started some limited beta testing, and I've decided to make it compatible with MacOS 8.1. This means that I have to roll my own functions to display the icons. I'm going to use the icns class that I started to work on for Icon Mangler, since it does exactly what I need it to do.
+
+icns class: improved displaying function so that it's similar to the Apple one. It now draws the small version when the target rectangle is less than 32x32, looks for old style resources and loads them if the new ones are available. What remains is to draw the correct icon for the current bit depth, but that it is a minor point.
+
+-------------------------------04/10/98-----------------------------------------
+
+clip2icns: switched back to MacOS 8.1 in order to test c2i with older versions. Icon had to be improved since 8.1 uses a different highlighting algorithm. Fixed a bug which would cause a bus error after the icon was inserting (I was disposing of the same GWorld twice). Now the clipboard isn't being previewed, but it's still inserted properly. However it appears that this happens only with MacOS 8.1, and after completely rewriting the code it's still there so I've decided to ignore it for the time being.
+
+nitro: converted more items to the new format, currently I've done 54 out of about 350.
+
+-------------------------------05/10/98-----------------------------------------
+
+no programming done at all, but I thought about a new feature that I should add to clip2icns. I think that a feature which would take an icns if your choice and export it to the clipboard so that it's split up into its icon and mask (and small version too) would be very useful, especially if you were trying to edit icons which you didn't create (like the system ones).
+
+-------------------------------06/10/98-----------------------------------------
+
+clip2icns/icns class: I think that all future improvements to clip2icns should be implemented in the class. I should also add the current capabilities of the tool to the class, and rewrite the program so that it uses it. Then I can have a common code base, which I can use for all my icon related projects
+
+-------------------------------07/10/98-----------------------------------------
+
+no programming done at all
+
+-------------------------------08/10/98-----------------------------------------
+
+worked on the roman numeral assignment, finished it in class.
+
+-------------------------------09/10/98-----------------------------------------
+
+no programming at all, I promise this won't happen again :p
+
+-------------------------------10/10/98-----------------------------------------
+
+nitro: converted more items, now up to 77/355. I've started to think of a few alternate layouts (perhaps even a layout contest) but it's too early for that. All of the fun will begin when I'm done with converting all the items. Perhaps I should make a script...
+
+-------------------------------11/10/98-----------------------------------------
+
+clip2icns: until now if the user wanted to include (or not include) the old style resources (8 bit ones, which MacOS 8.1 and below used) he/she had to set that option for each and every icon. Due to a tester's request, I've made that into a global option. So I had to add a preferences dialog (which is supposed to go under the Edit menu, not the File one like I've seen in some applications). Since I was doing this I added another option so that the flags (which control if a resource is preloaded, if it belongs to the system heap, if it should be unloaded automatically, etc) are set kaleidoscope style (purgeable + system heap) or not. This way I'm attempting to make the tool less Kaleidoscope specific.
+
+I've also added the feature that I mentioned earlier, a function that does the opposite of what clip2icns does now (so it takes an icon and puts in into the clipboard, with the mask and small versions separate). While doing this I've noticed that the system icons aren't displayed right by my icns class. I think this is due to compression/packing, which I haven't taken into account until now.
+
+-------------------------------12/10/98-----------------------------------------
+
+clip2icns/icns class: Spent the day trying to figure out what the compression algorithm is. This was a rather tedious job, which involved making various 1 and 2 color icons (for simplicity's sake) and using the Finder to paste them in (this way they were compressed). It turns out it does a run length encoding on each channel separately. Run length encoding is when you have a multiplier followed by a element, in order to replace a series of the same thing. Detailed description of this particular algorithm (for unpacking, but it gives an idea of the overall format) below:
+
+This all deals with chars (so 2 bytes each).
+
+function DecodeIconData(source, target, final size)
+Read in a char = n
+If n's less than or equal to 127 (or positive if using signed chars) then copy the next n+1 characters directly to the target file.
+If n's above 127 (or negative if using signed chars) then repeat the next character n-125 times in the target file
+repeat until size of final file is equal to the final size
+increment it points to the end of the data that's already been expanded, thus easing the process when there are multiple passes (in this case there are 3, one for each channel).
+
+This is for each channel (so three in total, red, green and blue) so after this I have to combine them and output the final result to a PixMap.
+
+I'll implement this tomorrow, but first I'll try and see if this is the same thing as the system functions PackBits and UnpackBits do, because then it will be greatly simplified (yesterday I tried UnpackBits, but I did it to the whole image instead of to each channel separately).
+
+-------------------------------13/10/98-----------------------------------------
+
+clip2icns: Sent description of serial number algorithm to Kagi, so that they can generate the numbers for me automatically. The explanation wasn't that clear (I guess) so I had send sample output for each step later on. When it's all finished I'll "register" a copy of clip2icns to see if it all works right. Theoretically I should get all my money back (except for Kagi's fee, which is 6.5% plus the credit card processing fee).
+
+-------------------------------14/10/98-----------------------------------------
+
+clip2icns: Tried UnpackBits, doesn't seem to work, so I guess I have to write my own function. (1 hour later) I did it, and it works. Took a lot of tries tho, and it's still rather inefficient (according to my dad). Everything seems to work OK, except that when an item doesn't have an 8 bit mask (but it has a 32 icon) then the display of the dialog gets screwed up. This is due to bad error checking on my part, since I simply return from the Load() class function if an expected member isn't found. I guess it's time to make the code more fool proof :p
+
+-------------------------------15/10/98-----------------------------------------
+
+clip2icns/icns class: spent the day (well, evening) converting clip2icns to use the icns class. I've written two new functions for the class, ImportFromClipboard and SaveToFile, and used those to replace the core of c2i's core. Now it's much neater (down to 10 lines from 4 pages) and the code is reusable (as a matter of fact I'm using the ImportFromClipboard code in the dialog preview too, so I've removed some redundant code). This seems to prove that the class is scaling OK (it started as a simple display class) so adding editing capabilities to it shouldn't be that hard. However, I don't know how specific to make it for editing. In one extreme I could just add SetPixel and GetPixel functions, and write the actual editor as a program which makes calls to the class. In the other extreme I could embed everything in the class, and make each new editing window a new instance of it. But that's still a while away.
+
+-------------------------------16/10/98-----------------------------------------
+
+Attempted to install and use CodeWarrior Professional 4. The release notes claim that it is Appearance Manager-savvy (this means that it'll take the color of the current theme/scheme), but in reality it's not very compliant. When used with Kaleidoscope it yielded very bad results, mostly because only half of the elements were patched while the others weren't yielding an unusable mishmash. Also, when I attempted to convert clip2icns to the new format, I had to include a few extra header files, since apparently it doesn't include them automatically anymore. This resulted in an increased compile time, and the final application was bigger by 50K.
+
+clip2icns: After the aborted attempt mentioned above, I went back to Pro3. I added the error checking that mentioned two days ago. I've just found that the IconFactory people (who also have an icns tool, a Photoshop export plug-in) are planning to release theirs (they're calling in IconBuilder) in a few weeks. I've looked at some of the icons that they've released and they seem to be compressed, so I guess I better add that too. Here's my current plan for that:
+
+-split up the pixmap in three arrays, one for each component
+-call a compression function with each one
+-the function would have a main loop that does the following:
+	go through the data until 3 or pixels of the same color in a row are found,
+	then first write out the non repeating pixels, then the multiplier and the
+	repeated pixel
+
+I've just said publically that I will release the program on Tuesday, so I guess I better hurry. There also seem to be some problems with the export to clipboard function, I think because I'm setting the resolution of the output to the right value (I assumed that it defaulted to 72, but I guess not). 
+
+-------------------------------17/10/98-----------------------------------------
+
+clip2icns: apparently the resolution was a long, but it was a "fixed" value. in a fixed value the first 4 bits are the integer part, and last 4 are the decimal part, so simply setting it to 72 won't work. I had to set it by hand to 0x00480000. I also finished the compression routine, it now seems to work with any icon. I've selected a group of 10 people for beta testing, and sent them a version to check out.
+
+-------------------------------18/10/98-----------------------------------------
+
+clip2icns: Got some beta tester feedback. I forgot to set some of the dialogs to center automatically, but I didn't notice since they looked OK on my 17 inch monitor. I also found a bug which happened when an icon only had a small version. The big version, instead of being erased, was left over from the previous icon. A simple SetGWorld/EraseRect call fixed this. There's also a bug report that, for the export to keyboard dialog, the colors of the whole dialog are getting screwed up. Unfortunately I can't reproduce this, so I've asked for screenshots to determine exactly what is happening. Also got some feedback on some mistyped IDs in the menu, and some spelling errors in the read me.
+
+-------------------------------19/10/98-----------------------------------------
+
+clip2icns: The online registration has been setup, so now people can order straight on the web (it has a secure option too). Also fixed the dialog colors bug at school. It turned out that it only happened if the screen depth was less than millions (which I never go to, lazy me :p). I was doing a SetGWorld, which turned out that it wasn't necessary (this seemed to confuse the Appearance Manager, even though it was supposed to since I was doing a SetPort back to the dialog port).
+
+-------------------------------20/10/98-----------------------------------------
+
+clip2icns: I've announced the program to the world, and did a test order using Kagi's test credit card number. I hope everything works OK (no time for programming today, had to set up a homepage, write a press release and sent it to all the major mac news homepages).
+
+-------------------------------21/10/98-----------------------------------------
+
+clip2icns: Woohoo! I have one registration (not my test order) and everything seems to work OK. I've gotten mentioned on a few sites, hopefully this (shortlived) spotlight will be enough to spread word about the program. No bug reports yet. I've started commenting the source, since part of it (the icns class) will end up in my IB Dossier project.
+
+-------------------------------22/10/98-----------------------------------------
+
+clip2icns: Got another registration, still getting more than the average amount of visits. A while ago I changed the about box code, making it more effient using my newly aquired expertise with CopyDeepMask (all my icon drawing functions use that). The new version appeared to work OK, so I left it in. Unfortunately it refuses to draw with MacOS 8.1, and after fooling around with it for an hour or so I've gone back to the old code. I'll look into it when I have time.
+
+-------------------------------23/10/98-----------------------------------------
+
+no programming done today (although I did demonstrate clip2icns)
+
+-------------------------------24/10/98-----------------------------------------
+
+clip2icns: Fixed a very weird crashing bug in clip2icns (the application itself wasn't crashing, but the finder was getting stuck once in a while while trying to display an icon). It was a compound problem in the compression routine, it was stopping too early (so the resource was too small) and it was interpreting and it had problems with compressing the last few pixels (it was interpreting them as a repeat area instead of copying them as is).
+
+-------------------------------25/10/98-----------------------------------------
+
+clip2icns: found yet another bug (which I induced yesterday when I rewrote part of the compression function). The bug happened when I had large flat regions. The multiplier that came before the pixel would be one pixel more that it was supposed to be. This was especially apparent when the flat area was more than 130 pixels, because instead of the multiplied being written as FF (see the description of the format earlier) it would be represented as 00 (the multiplier is an unsigned char). This would really screw up the decompression, since it would go looking for pixels beyong the end of the resource. But it's been fixed, and hopefully this is the last compression bug.
+
+-------------------------------26/10/98-----------------------------------------
+
+clip2icns: no bug reports from the beta testers about compression bugs, so I guess I nailed that one. I better release an update soon, otherwise people will start to wonder why they're getting so many crashes when using icons done with my tool.
+
+-------------------------------27/10/98-----------------------------------------
+
+no programming done at all...
+
+-------------------------------28/10/98-----------------------------------------
+
+clip2icns: received a request to name the resources properly even when the ID typed straight in (instead of using the menus). This is a bit of a pain, since until now I was extracting the name from the menu title. I guess I'll have to do a simple search function (the menu name also contains the ID).
+
+(later) The search function isn't working at all....very very weird...
+
+-------------------------------29/10/98-----------------------------------------
+
+No programming done at all (dance night....)
+
+-------------------------------30/10/98-----------------------------------------
+
+clip2icns: Tried to get the search function to work. I had this variable called IDLength in which I was trying to store the length of a string. Well, it was totally skipping that line. Changing the order doesn't help. In the end changing the name did it. Another weird thing is that I was using GetMenuHandle to access the menu, but that kept returning NULL. When I changed that to Get1Resource (and did a type cast of the result to MenuHandle) it worked. Anyway, the function worked, and now people can type in the IDs (how some people manage to memorize 100+ of them is beyond me tho). Since I was changing the naming function, I added another option in the preferences for turning off the resource naming. This adds another field to the preferences resource (which is stored in the "clip2icns Preferences" file in the Preferences folder in the System Folder. When I load the preferences I simply to a Get1Resource and type cast the result, so if the user had a preferences file from an older version it would try load the new field too, and since it wasn't in the file it would fill it with whatever happened to be in memory at that time. Since I didn't begin the resource with a version number (or some kind of identifier to separate the different versions) I resorted to using the resource size to separate between the different versions. Since I just added another boolean, the resource is now one bit bigger, so I check for that and if it's the old version I set the new option to the default value. 
+
+-------------------------------31/10/98-----------------------------------------
+
+clip2icns: fixed a very minor bug which caused the a button not to be enabled and disabled properly. This was caused by the fact that I was opening a file, checking for the existence of a resource, enabling/disabling the button according to that result, and then closing the file. Closing the file before changing the button fixed it. I guess the dialog resource got purged from memory when the file was openened, and when it tried to redraw it, it couldn't because it couldn't get the button description.
+
+I've made it so that when the user types in the ID, it selects the proper item in the menu, and it previews it too. I guess I'm starting to get "feature creep", I think it's time to move on to the real project, the icon editor (although in a way I've already been workin on in (ie on the icns class))
+
+-------------------------------November-----------------------------------------
+
+-------------------------------01/11/98-----------------------------------------
+
+clip2icns: removed some flickering when chaging the menu (I'm not changing it unnecessarely). Also added input checking for the ID.
+
+did the towers of hanoi recusrsion exercise. I ended up making a class, ringStack, with a few functions like TakeTopPiece and AddPiece, and using the sample recursion algorithm.
+
+icon mangler: I think I know how I'll implement the basic framework for the editor. I'll make a new class, icnsEditor, make it inherit the stuff from the icns class I've already done. When the user selects open or new icon, I can make a new instance of it, and keep them all together in a linked list.
+
+-------------------------------02/11/98-----------------------------------------
+
+clip2icns: this program was announced on macintouch today (I've made a separate page for it at http://www.mscape.com/ (Mscape Software, my so called company)).
+
+On the Mscape page, I also showed a preview of badger, my system folder icon generator. I got this mail from a company saying that the name was already in use. Apparently they have a photo ID system called Badger (available at http://www.badges.com/). I'm probably going to change the name to glypher.
+
+-------------------------------03/11/98-----------------------------------------
+
+glyher: I've converted the old source code (which was a few revisions behind the clip2icns one) to making it use the icns class that I developed. That way it got automatic access to the compression/decompression routines, the clipboard importing/exporting, and anything else that I might add in the future. Now I just have bring in all the other bug fixes and the registration code (although I think that I'll just make it free to clip2icns users, perhaps even make it check for the existence of the other's preference file, and make sure it contains a valid serial number/name).
+
+-------------------------------04/11/98-----------------------------------------
+
+glypher: I think I know what I'll do for the icon, a hieroglyph. Did some test designs, but nothing seems to really work.
+
+-------------------------------05/11/98-----------------------------------------
+
+no programming today, finished homework at 11 and did final preparations for the SAT test
+
+-------------------------------06/11/98-----------------------------------------
+
+hanoi: did a better display function, which display the towers as ascii generated stacks, so you can visually see the size of the pieces, rather having to look at the number of the rings.
+
+-------------------------------07/11/98-----------------------------------------
+
+glypher/icns class: Improved saving of the icns. If the user doesn't specify a small size, rather than generating it and saving that too, I'm going just save the large version, and let the Finder do the interpolation of the small one. Same thing when the large size isn't specified. I've also added handling of icns which only contain one size to the display function. Also cleaned up the loading code, split it up into two functions (one for loading from the icns resource, and one from loading from the old style icons, if the icns isn't present).
+
+The messiest part of glypher (and clip2icns too) is the handling of refreshes for dialogs. Right now I have this macro set up, which is called in the beginning, when the user chooses something from a menu or when an ID is typed in. But the macro is really ugly because it's not meant to have line breaks, so I have to put in a back slash at the end of each line. Plus it's impossible to debug, since it all gets put together in one line (the backslash makes the compiler ignore the line break after it). The only reason why I didn't make it a function was because I'm using so many local variables, so passing them as parameters would be a pain. The only think I can think of right now would be to make the whole dialog handling a class, and make the refresh a function of it, and then I can just access some variables within the class. But that's really misusing classes, since each class would have to be specialized for it's particular dialog, so reuse would be kinda of hard. Perhaps I could make a generic class using inheritance, but I think that's overkill. Hopefully I'll figure something out by the time I have to make the icon editor (although there each editing window will be a class in it's own, and since I can have many of them then I'm using the class in many places, so there's no misuse).
+
+-------------------------------08/11/98-----------------------------------------
+
+No programming done today, but I did find this really cool program that lets you connect to a central database (at http://www.cddb.com) and load cd track title data from there. If we could find some basic networking classes (realbasic has some I think, and so does PowerPlant) then it would be cool to write a simple client.
+
+-------------------------------09/11/98-----------------------------------------
+
+hanoi: I've discovered that the hanoi display would slow down after a while because a text buffer was filling up. Since I can't figure out how to increase its size, I'm simply told the user that s/he should resize the window to the smallest size possible (I also displayed a set of guides for the appropriate size of the window). 
+
+icon mangler: now that I've pretty much finished everything (although glypher might still need some fixes) I'm finally going to start to work on my main project, the icon editor (currently going under the name "Icon Mangler"). I've established a set of steps that I need to take, so here they are (this is really important stuff).
+
+1) make a new class (editorClass?) which is inherited from my current icnsClass. Allow it to be a member of a linked list, add a variable for storing a window pointer along with it, and whatever else is necessary.
+2) Figure out how to make new instances from this class dynamically. This should mean using the new operator, and adding it on to the list. For the actual application, I hope to have it so that you can selected Open/New from the the File menu, and it will make a new icon/open a new one, display it in it's separate window, support refreshes, and allow to have as many icons open as memory allows.
+3) Figure out how to have and keep track of controls in a window (until now I've been using modal dialogs, which really simplified things). A simple button for closing the window will do for testing purposes.
+4) Make the application appearance savvy (so that it takes the colors of the current scheme/theme, and it can use of all the new controls, such as tabs, sliders and bevel buttons). Until now I've been able to get away with an improper implementation, but this application is much bigger.
+5) Make a very simple editing tool (so a pencil). Figure out how to support Undos (do we need multiple undos? how would that work?).
+6) Figure out how to do selections (drawing the marching ants is going to be pretty tricky, but hopefully I can find some sample code).
+7) Add as many editing tools as I can (brushes, circles, rectangles, text tool, gradients, etc).
+8) Keep the code as neat as possible, and comment it while it's being written, so that I don't have to do a long "commenting session" the week before this is due.
+
+Here is a very rough schedule of the timing for this:
+1) 11/14/98
+2) 11/21/98
+3) 12/03/09
+4) 12/24/98
+5a) 12/31/98 -- this is the most important checkpoint, I want to get some "editing" done before the year is over
+5b) 01/07/98 -- hopefully I can figure out a strategy for undos
+6) 02/06/98 -- exams are around this time, so I can't that much work done
+7) depends on how much time I have until the project is due, must allow a couple of weeks for writing documentation
+
+-------------------------------10/11/98-----------------------------------------
+
+icon mangler: this have been progressing better than expected. I've figured out inheritance and the new operator. Right now I can select new icon and it makes a new window (staggered from the position of the last one), and can keep on doing that until it runs out of memory. I need to clean up the linked list structure, but other than that it's great.
+
+-------------------------------11/11/98-----------------------------------------
+
+icon mangler: i've added actual loading and displaying of icons (well, I already had these functions in the icnsClass). Window refreshing wasn't that hard to do, so now I can say I've made a modeless (these are proper windows, not dialogs) icon viewer. The only problem is that when closing the windows, or the program, there's some crashes. I'm still not sure where they're coming from, but I've already crashed about 7 times from this today, so I'll try again tomorrow.
+
+-------------------------------12/11/98-----------------------------------------
+
+icon mangler: I figured out where I was crashing. When I was disposing of an icon, I was changing the previous and next elements in the linked list, so that there wouldn't be a break in the chain. However I wasn't checking if the next and previous elements actually existed (the first element has the previousEditor pointer set to null, and the last one has the nextEditor pointer set to null too). A simple check for that fixed everything.
+
+-------------------------------13/11/98-----------------------------------------
+
+icon mangler: I moved the closing function from the HandleFileChoice function to the class, so that it's much neater. I also wrote another function for my commonfunctions.c file, ToggleMenuItem. This, as it's name suggests, takes a menu & item name as its parameters, and disables/enables it based on its current state. Previously I had to get the menu handle and use Enable/DisableItem, but now the code is much neater. I've also changed the call for creating the new editor window from NewWindow to NewCWindow, which will prevent some problems that I might have in the future when I'm trying to draw within it.
+
+-------------------------------14/11/98-----------------------------------------
+
+no programming done today, day 1 of invitational swim meet (although I wasn't swimming, I'm in charge of the timing system, and the whole meet depends on my :p Therefore I'm exhausted from the pressure, and could not work).
+
+-------------------------------15/11/98-----------------------------------------
+
+day 2 of the meet, see above for excuse
+
+-------------------------------16/11/98-----------------------------------------
+
+no programming done, had a physics lab and a french essay due.
+
+-------------------------------17/11/98-----------------------------------------
+
+icon mangler: added a close box to the window (before I just had a close command in the menu) and the appropriate calls in my event handling code to handle it properly. My next step is to add a grow box to the window, thus letting the user resize it. Then I would draw the icon at the size the user has chosen. I want to be able to restrict the resizing so that it's only in a 1:1 ratio (because icons are 32x32). Even better, I want to limit the resizing to multiples of 32, so that the icon will be enlarged evenly. I know this is possible (Resourcerer does it for example) but hopefully it doesn't require too much custom code. All of this will be useful later on, because then the resize box can act as a way to magnify the icon (since icons are so small they don't require a magnifying glass tool for zooming in to a specific area, since there are no scrollbars and the whole icon is visible at the same time). I think I'll also provide a display in the status bar, where the percentage magnification will be displayed (and perhaps when the user clicks on it a popup menu will show up, allowing one to choose values from 100% to 800%). However that will have to wait until I implement controls within windows, but the grow box is a good step towards that too.
+
+(later)
+
+I've got the windows to resize (no size constraints yet tho), but I can't get it to refresh properly. I'm setting the update region to the whole window, and yet it only draws the new icon in the newly revealed area. I have no idea why this is happening, but like most problems this will probably be rather clear to me tomorrow :p
+
+-------------------------------18/11/98-----------------------------------------
+
+icon mangler: Fixed a potential bug in my linked list routines, when I was adding an item to the list I wasn't making the previous last item in the list point to the new one.
+
+With the help of someone (whyte) on #macdev (an irc channel on EFNet) I fixed the resize bug mentioned above too. It turned out I need to do a SetPort to the window, in order for the invalidate function to work. Now I'm gonna make it restrict the resizing.
+
+Actually nevermind, I think controls are more important. Using controls in windows isn't that much harder than in dialogs, it's just you have to create them one by one from a CNTL resource (actually you don't have to use a resource, but it wouldn't be very Mac-like then). Then in your event loop, when there's a click in the content area you can use FindControl to determine if there was a control where the user clicked, and then TrackControl to determine if the user actually let go of the mouse over the control (this takes care of the highlighting too). I've added four buttons (for the four editing tools I'm planning to implement initially: pen, brush, fill and eraser). They don't do anything yet, they just beep when they're clicked on. The icon is still drawn using the whole window rect, so it looks rather weird with the controls overlapping it. But it's a start.
+
+-------------------------------19/11/98-----------------------------------------
+
+(from now on all journal entries will refer to icon mangler unless otherwise stated)
+
+I've improved the handling of controls. They now disable when they are in the background. I've also added an image well, where the icon is drawn (the image well has a nice bevel around it, which serves as a delimiter between the rest of the window and the icon). I've made it so that the control is resized dynamically when the window is resized, but there's some ugly flickering. I'll look into it later. Right now I want to do the resize constraining, because it'll look pretty impressive. Basically instead of using the system GrowWindow function I have to write my own (using DragGrayRgn to display the gray outline when resizing) and then I can do all the constraints I want.
+
+(a bit later) I found some sample code on Apple's developer homepage showing how to "grow a window constrained to a grid (i.e. only allow a window to grow or shrink by 30 pixels, or whatever)." This is pretty close to what I'm looking for, hopefully it'll help me out.
+
+Nope, that doesn't help me out, it doesn't use the method I was looking for, and it doesn't draw the resizing outline properly either. I guess I'll have to do it myself.
+
+Eek! DragGrayRgn is apparently for moving windows, not for resizing them. I have no idea what to do now, drawing the gray outline by hand doesn't sound very exciting.... I guess what I'll do is let the system draw the gray outline with no constraints, but when I actually resize the window I'll apply the constraints. Not as neat as I'd like it to be, but this isn't the main point of the application, so I can do it properly later.
+
+Well, that worked, the windows are resizing nicely now. I ran into a problem that caused the icon to dissapear when (de)activating the window, but that was because when an image well is (de)activated, apparently it does an erase rect, and thus cleared the contents. A call to Refresh fixed that, but it's not nice how it flickers. Oh well...
+
+Next step is to add a small placard that contains the current level of magnification. Shouldn't be that hard, I just have to set it's text to the current magnification level.
+
+(a bit later) Well, for some reason I couldn't figure out how to set the item text, so I'm using DrawString to draw over the placard. Not very neat, and the text doesn't take on the active color. Hopefully I'll be able to fix this tomorrow.
+
+-------------------------------20/11/98-----------------------------------------
+
+Well, I've started to add a basic pen tool (this is more exciting than setting the text of a placard :p). It flickers horribly, but it's a start.
+
+(later) I've removed most of the flickering by restricting the drawing only to the areas that actually need updating. However this isn't working out that well, the update restriction code is a few pixels off. I'm going to leave this to tomorrow, when I have more time to dedicate to the problem, and a few hours to reflect about it on the bus to/from Brain Bowl.
+
+-------------------------------21/11/98-----------------------------------------
+
+no work done today, other than some minor tweaks to clip2cicn, to bring it up to speed with the newest resources in the latest version of Kaleidoscope. There's a long standing bug in it which causes the last couple of pixels come up as weird colors once in a while. I've been looking into fixing it, but no luck so far...
+
+-------------------------------22/11/98-----------------------------------------
+
+I've set up a basic shell for the prime numbers assignment, so that I can test different functions. I think I've come up with a nice solution, one that combines a kind of Eratostene's sieve without the huge memory requirememnts. Basically, at the moment, my IsPrime function tries all the numbers between 2 and the square root of the test number as divisiors, and if none of them divide evenly it returns 0. However, when using this, if I divide by 2 and it doesn't work, I still divide by 4, 8, and so on. So it would work even faster if I could only test the prime numbers between 2 and sqrt(n) as the divisiors. To get these prime numbers I could create a table, which is generated as the program runs (so when I determine that a number is prime, I add it onto the table). This way I don't divide uselessly, and the table needs to have only 6543 numbers (that's the number of primes between 1 and the square root of 2^32, or the max a long can store, thus the maximum divisor). Implementation will be left to tomorrow, unless I get bored tonight :p
+
+-------------------------------23/11/98-----------------------------------------
+
+no time to program, homework overload
+
+-------------------------------24/11/98-----------------------------------------
+
+i've got a problem with the refreshing, when I redraw the control which defines the border for the area where I'm actually displaying the icon, it clears the contents (to white) then when I draw on top of it the new version, it flickers because it alternates from the white to the icon. But I think I know how to get around this. I'm going to restrict the clipping region (the area that's actually drawn) so that it can't draw (and thus clear) within the area where the icon is displayed. However this isn't quite working. I'll look into it tomorrow.
+
+-------------------------------25/11/98-----------------------------------------
+
+I've fixed the clipping problem, but I'm not sure that it's very efficient. I'm creating and disposing regions everytime I need to refresh the icon display. Not problems on the G3, but things might be different on a 6100/60 :p
+I've also fixed a problem with the zooming, but I'm still using DrawString to display the zoom text, instead of using a control (which is Appearance Manager savvy and respects the enabled/disabled state of the windwo).
+
+-------------------------------26/11/98-----------------------------------------
+-------------------------------27/11/98-----------------------------------------
+-------------------------------28/11/98-----------------------------------------
+-------------------------------29/11/98-----------------------------------------
+
+For some reason or other I didn't do a journal entry each day of the Thanksgiving holiday, so I'm gonna group all of them together like this...
+
+Icon Mangler (Thursday & Friday):
+
+Some progress, but now I'm stuck...
+
+All of Thursday was spent trying to figure out how to do a text inside of a placard. I quickly realized that this wasn't possible, and the best way to fake it would be to use a static text field right over the placard. I added that, but for some reason the text was overwriting the placard underneath it, so it didn't look very seamless. I spent an hour fooling around with text modes, thinking that it was something to do with that (text modes let you do inverted text, text where the white space behind the letters is transparent, etc). It turned out that the Control Manager determines the drawing order by the relative positions and sizes of the controls. I had made my text field the same size as the placard, and the Control Manager interpreted that as the text field totally covering the placard (instead of showing the placard through the gaps in the letters). I made it a few pixels smaller, turned on the control hierarchy, made the static text a member of the placard, and everything worked.
+
+The next day I was trying to improve the refereshing. First I focused on making the controls disable/enable properly when the application was put into the background. It turns out that this event isn't included in the activate event, so I had to add another event handler, the suspendResumeEvent. Then I went to improve the control drawing process. I got it so that it only used one region instead of two, and made it so that it refreshed properly when the window was in the background (before this I wasn't clipping, and the icon would get redrawn and overwrite stuff in the foreground). But then weird things have started to happen. I have to call Refresh() twice in the beginning in order to get the zoom display to draw properly. But event when I leave in one Refresh(), there's a problem with the initial drawing of an icon opened. It flashes on the screen for a split second, the the image well where it's supposed to be displayed goes white. If I cause the window to refresh again (by collapsing and expading the window, or by resizing it) then it draws properly. I wasn't able to figure out why this happened....
+
+Glypher (Saturday and Sunday):
+
+Many miscellaneous enhancemenets. First I redid my file open/saving routines, so that I don't have to write a new function for each file type that I want to save/open. Now I have two functions, NewFile and GetFile, which use the Navigation Services where possible (if the library is installed) and return a file spec for the file selected/created. I've added them to my commonfunctions.c set of functions, but I have to redo the rest of my programs to use them.
+
+I've made is so that you can reposition the little badge on top of the icon by using the mouse or the arrow keys, in addition to using the buttons in the dialog. This isn't as easy as sounds, I ended up having to write an event filter for the dialog, so that it caught the key down events and processed them as necessary. Ironically a couple of days later I found this article in MacTech about the exact same thing, but I think that it was more meaningful to me because I figured it out myself (well, with the help of Inside Macintosh and the Macintosh C reference).
+
+I've also started working towards the finalized version. Since I'm going to make this program free for clip2icns users, I've made it check at startup for the existence of a registered copy of clip2icns (by looking for a "clip2icns Preferences" file). If the file isn't there the icons that the program outputs have a little G in the corner, so that the user can get an idea of how the program works before actually registering. I've also done the about box, and it looks really cool (I just had to add an easter-egg for it now).
+
+-------------------------------30/11/98-----------------------------------------
+
+No time for programming today, had a French essay and CAS sheets to fill out.
+
+-------------------------------December-----------------------------------------
+
+-------------------------------01/12/98-----------------------------------------
+
+I've converted Icon Mangler to use the new file handling code, and added support for dropping an icon onto the application's icon in order to edit it. I've cleaned up some of the refreshing code, but no luck in removing the weird bugs. I'm going to go step by step with the debugger to see what I'm doing wrong...
+
+No luck doing that. I've changed around the drawing of the image well, so that I don't have to use clipping regions anymore. It turns out that if you use the DrawThemeWell function, you can control whether or not the content should be cleared to white. I changed the image well into a user pane, and associated a drawing function to it, which uses the DrawThemeWell function. It looks good, but now I've run into even bigger problems. Now the image well refuses to handle clicks, and the refreshing doesn't work either. Oh well, hopefully I can find a way out of this mess.
+
+(later)
+
+I've fixed things up a bit. It turned out I had to do my own routine to handle clicks within in the control. It's a very simple one (it automatically returns true) because the control is rectangular, so a click withing the control rect automatically equals a click within the control (this wouldn't be so easy if I had rounded corners, or an irregular shape). But the refreshing is still very weird, and I'm not much better off than I was before I decided to change my method. 
+
+-------------------------------02/12/98-----------------------------------------
+
+Things are improving. I've greatly simplified my activating and deactivating functions, because I figured out how to use the control hierarchy properly. Instead of having to (de)activate each control by hand, I can just toggle the state of the root control, and the rest of the controls within the window will follow suit. I've also fixed most of the refreshing problems, windows now draw properly in the background. I was passing NULL to the control clipping region, but instead of I was supposed to pass the clipping region of the parent window. Also, the icon finally displays properly when first opening it (which was the main reason why I rewrote my control refreshing). The only glitch remaining is that the icon view does not refresh properly when I activate it. It simply refuses to draw inside the area that has been newly revealed. Hopefully I can solve this tonight, and be able to start moving forward again.
+
+(a bit later)
+
+Weirdly enough that was fixed by calling EndUpdate (in between BeginUpdate/EndUpdate the drawing is restricted to the region that needs to be updated) before I called the icon drawing function. But this is a kludge, so I'm going to try a solution that makes more sense; I'm going to call InvalidateRect (with the rectangle of the icon display region as a parameter) when I have an activate event. If it works then the solution will make more sense.....That didn't work. I'll leave it as it is for now, and fix it later (hopefully this won't cause any bugs that take manifest themselves in extremely weird ways and take me a week to track down back to this).
+
+I've finally added file saving (I already had saving, because I needed this when I first wrote the icnsClass, I only had to add a wrapper around it). I've also enhanced the speed of the refreshing by not redrawing if the user's mouse hasn't moved to a new position.
+
+Eventually I'll have to redo the whole "redrawing as the user's button is down" architecture. Right now I have a while(Button()) loop, in which I get the position, set the pixel and refresh the display. However, if the user moves the mouse really fast, I might miss some position while I'm refreshing. But real drawing applications do not behave this way. What I need to do is have an asynchronous refreshing algorithm. This way I can keep sampling the mouse and setting the pixel, and refresh only when I have enough time to do so (this is visible in Photoshop, where if you draw with a really large brush you can see that the updating of the screen lags behind the movements of the mouse).
+
+-------------------------------03/12/98-----------------------------------------
+
+clip2icns: A tester found another bug. When I exported to the clipboard, I assumed that the size of the picture that was to be placed in the clipboard would never changed. However, a kind of compression seems to be used, so the size varied somewhat. This would cause an unexpected end-of-file when trying to paste in the image in Photoshop, and a complete crash within the Finder. This took so long to track down because it only happened with some icons (ones where the size different by a large amount when compared with the size I previously hardcoded). I ended doing what I tried to do in the beginning, to set the size of the clipboard based on the size of the picture. But before I simply looked for a PictureSize function, and not finding one I had decided to hard code the size to 4662, the size of the my 80x32 test image. In the end it turned out that a PictureSize function is unnecessary, the GetHandleSize function is what I was looking for.
+
+Also, I used my newly-gained experience with dialog event filters to write one for the icon import/export dialog. Basically it maps return to a click on the default button, escape or command period to the cancel button, and rejects all non-number keys (the only field where text can be typed in is the ID field, which is supposed to contain only numbers.)
+
+Glypher: A (different) tester requested that I add an option for the glyph to be moved in 10 pixel increments when the shift key was held down (like Photoshop) so I did that (it was simply a matter if adding an IsKeyDown function, which changed the increment from 1 to 10 if the shift key was down).
+
+Icon Mangler: I've changed my handling of resizing a bit. Now I have two functions, one which handles the user's clicks on the grow box and gets the nearest window size which conforms to the size ratio, and based on this sets a magnification variable within the editor class. Then another function gets the magnification variable and actually resizes the window to the proper size and repositions the controls. The reason why I did this is because this greatly simplifies the adding of a "Zoom In" and "Zoom Out" command, since I can simply increment/decrement the magnification variable and call the second function mentioned above. The only problem that I have is that it is not refreshing quite properly (some of the controls are not getting redrawn properly). Time to fix this...
+
+Fixing that wasn't that hard. When I split up the resize the function into two, I left in the setting of the ports in the function that handled clicking in the grox box. So when I was resiging by using the grow box, everything worked ok, but when I used the menu the ports weren't set properly, and so the window wasn't refreshing properly (because InvalRect wasn't invalidating the proper places). I've also added two more constants, kMaxMagnification and kMinMagnification (current set to 10 and 4 respectively). These to constants are used to restrict the size of the window when resizing, and to disable the zoom in/out menu commands.
+
+Then I started to add the setting of the foreground and background colors. I used a custom control, in which I'm drawing two overlapping squares (like Photoshop does it), and fill then with the fore/background colors. I want both of those color swatches to be drawn using the proper 3D border, so I used the DrawThemeGenericWell function, which draws the inner bevel. One of my problems was that the background color square is clipped off by the foreground color one, but I still want it to have a nice 3D border. In the end I used GetCPixel to get the colors of the bevels, and dre the one around the overlap region by hand. The reason why I had to do this was because I couldn't find a function/system global to obtain the bevel colors.
+
+The handling of mouse clicks at this stage was pretty rudimentary. I simply returned a click in the kImageWellControlPart, no matter where within the control the user clicked. But it was enough for me to test the setting of the foreground color by using the system color picker (which can be done with one call, Apple is so nice :p).
+
+-------------------------------04/12/98-----------------------------------------
+
+First thing I worked on today was to improve the handling of the clicks within the fore/background color control. Since it is a custom control, I get to write it's HitTest routine. I get as the parameters the place where the user clicked, and I can do whatever I want with that. I used two PtInRect calls to determine which rectangle the user clicked in, and returned part code I had defined (part codes are just integers, so I just made two new constants, kForeColorPart and kBackColorPart to represent the two rectangles). Then in the HandleContentClick routine I look at which part code was returned (until now I was just looking to see if a part code was returned at all, now I'm looking at which one) and call the color picker for the appropriate color. In this way I can add other gadgets to the custom control (like Photoshop's switch colors widget, and the reset colors one too) by simply adding a new part code and the appropriate hit test checks.
+
+Then I made the color swatches be actually drawn in the current icon's fore/background colors. Since the drawing function couldn't be part of the class, I had to go through a more roundabout way to get the colors. The control has a contrlOwner field, which stores a pointer to the window it belongs to. When I create the window for an editor I put in its WRefCon field a pointer to the instance of the class which represents this editor. Then when I need to find which class the window belongs to I just do a GetWRefCon, cast it as a icnsEditorPtr and I've got the class (this is used in many places, like in my event loop, to determine how to refresh a window, etc). So in the end I obtained the pointer to the parent class, and got its foreColor and backColor fields, and did a PaintRect with them. Then whenever the user changes the colors I just call a Draw1Control to refresh it.
+
+Now that I added color picking I discovered that my pixel-setting function wasn't working. This was because in the RGBColor structure the component values were up to 65535, but in a 32 bit image they go to 255. In end I got the most significant byte of each color, and "added" all of them in a long, which corresponded to the address of the pixel in the pix map. Of course I could of used the system function SetCPixel, but it would have been rather slow (or so I was lead to believe, from what the Black Art of Macintosh Game Programming book says).
+
+-------------------------------05/12/98-----------------------------------------
+
+icnsClass (so it relates to all three of my icon programs): I've found another compression bug (from an icon that a user that kept crashing). However this one is very rare, so it's not as important as the previous ones. It happens when you have n * 130 + 1 or 2 pixels. Basically the maximum pixel repeat count is 130, so I have to divide up continuous areas into chunks of repeat pixels, then at the end I say to repeat whatever's left over. However if there are only one or two pixels left over they should be specified as "copy these pixels as they are" blocks, because there are to 1 and 2 pixel repeat blocks (I don't think that made much sense, but anyway, it was a simple matter of adding an if statement).
+
+Icon Mangler: the image wells that I'm drawing didn't disable properly when I was putting the app in the background. In the end it turned out that I was checking whether or not to draw in the activate state by comparing the window the control belonged to and what FrontWindow() returned. However, when a program is in the background it still has a frontmost window, but it still should be drawn in a disabled state. I switched the check to comparing the hilghted state to the disabled state (which is set automatically when I disable the controls). I guess I should of done that from the beginning.
+
+[my journal has just crossed the 10,000 word boundary :p]
+
+The next step for Icon Mangler is to to able to edit the mask, the other bit depths (1, 4, 8) and the small size. I need to think of an interface for this, because I want the user to be able to drag and drop between them (so that the small size and other depths can be generated automatically). I'll fool around with Resorcerer/RealBasic for a while, and try to come up with a decent user interface.
+
+-------------------------------06/12/98-----------------------------------------
+
+Still can't find a decent interface. I could just put all the icons on the screen on the side (like ResEdit does it) but it would look really crowded. Still thinking about this one.
+
+Fooled around with MkLinux. I downloaded AfterStep, a window manager (window managers handle windows (duh), and this one resembles the NeXTSTEP look). I really like the way it is distributed. Since Linux exists for many (all?) platforms, having a binary for each one would be prohibitive. Instead you download the source code, with a make file. The make file uses autoconf (a tool that's part of all Linux distrubutions) to determine the current platform and what libraries are needed. Then it compiles the source code (using gcc, a free compiler that's on all Linux distributions) and sets up everything for you. It's still not completely user friendly (some applications do not come with a script to do all that at once, so you have to do each step by hand) but it really impressed me when everything worked. If only Linux had a decent (read Mac-like) user interface (and 32 bit icons, since I really like them, and I don't want to throw away my editor), I'd switch. Perhaps Rhapsody (or MacOS X) will provide the best of both worlds...
+
+-------------------------------07/12/98-----------------------------------------
+
+I think that I'll do a ui similar to ResEdit's/Resorcerer's. People are used to that the most, so there won't be any need to adjust to a new interface when switching. The only problem is that adding support for 48x48 icons when the Finder starts to use them will require me to design the whole interface. So this interface isn't very scalable, but it's familiar.
+
+I started to implement this. The first step was to change the refreshing/editing from being hardcoded (of editing the 32 bit icon) to editing any selected pix map. I'll have two write 4 set pixel routines, for each of the bit depths (32, 8, 4 and 1). I also started to work on the user interface. I added a couple of controls, one which represents the 32 bit icon, and the other one the 8 bit mask. Then I added control tracking, so that when you click on one the 32 bit icon is set for editing, and for the other the 8 bit mask. However I haven't written the SetPixel8 routine, so you can only view the mask, attempting to edit it will result in a crash. But it's a start, and implementing the rest of the depths/sizes will simply be a mechanical job.
+
+-------------------------------08/12/98-----------------------------------------
+
+I changed my mind about the user interface. I'll use a more scalable interface, which will be different from ResEdit's. I'm making it so that there is only one depth visible at the same time (you can switch between them by using a pop-up menu). Then I have enough room to display all the sizes, and the number of items that I choose to display can be flexible (so that theoretically I could add an option to turn off the displaying/editing of huge and mini icons, since they're not used very often). I've done a mockup in RealBasic, and all I have to do now is implement it using CodeWarrior.
+
+-------------------------------09/12/98-----------------------------------------
+
+I've started to implement the user interface. At first I was going to do each image well as a separate control, but it would have been a pain to keep track of all of them. Instead I'm doing it similarly to the fore/background color one, a single control that's divided into many sections. In my case there's 4, one for each size. Then I should be able to simply have another control of the same kind for the mask.
+
+(a bit later)
+
+Looks like the implementation won't be as neat as I wanted it to be. Ideally I'd have an encapsulated control, as a class. But it turns out that won't work since when the refresh/hit test function is called the context is lost (the app doesn't know to which class the control belongs to) so I can't access the private data. I guess I'll have to do it like I did it before, a separate function, which is a friend to the parent editor class, and can access it's data.
+
+(even later)
+
+I've got it to work like I said above, but it's really messy, I'll have to clean it up a bit tomorrow.
+
+-------------------------------10/12/98-----------------------------------------
+
+(no programming done due to big math test and history quiz tomorrow)
+
+-------------------------------11/12/98-----------------------------------------
+
+I've cleaned up the implementation a bit, and added proper hit testing. Now you can select and view all the depths & sizes of an icon. I've also implemented the pop-up menu to the top of the display, which lets you toggle between the depths. However you can only edit the 32 bit ones, since I haven't done the SetPixel8/4/1 functions yet.
+
+(a bit later)
+
+I've implemented a SetPixel8 function. It's pretty interesting. It receives an RGBColor as a parameter, but and 8 bit image is made up char's, which represent indexes in a color lookup table. So I wrote another function, GetColorIndex, which takes an RGBColor and a color table as parameters and returns the index of the closest color. To get the closest color I loop thru the color table, and add up the absolute values of the differences of the red, green and blue components. The smallest difference is the closest color. I guess that algorithm would work for 4 bit and 1 bit colors too, except setting the pixel is more tricky since i have to work with a nibble and a bit respectively, so it'll involve masking & shifting...but that can be done tomorrow...
+
+-------------------------------12/12/98-----------------------------------------
+
+First thing I did today was to add 48x48 (huge) icon support. It wasn't that hard, just a menial task of looking for places where I had previously ignored the user's clicks and hooking up the code. Of course first I had to add the properly GWorlds/PixMaps to the base icns class, but that was a matter of looking for the proper 4 letter resource codes. This is all rather useless of course, since the Finder doesn't support 48x48 icons yet, but I found some Rhapsody screenshots with 48x48 icons, and they look really cool, so it's worth it...
+
+The rest of the day I dedicated to tackling the mouse sampling problem. My initial drawing loop looked something like this:
+while the button was down
+ - get mouse position
+ - set pixel at the position
+ - refresh
+However this didn't work very well since I was missing points because the drawing took too long and the mouse moved a lot, especially if it was at above average speeds. Obviously this didn't happen in all the other editors I have tried. I tried to optimize my pixel setting and drawing functions, but it didn't work very well. Then I tried to restrict the refreshing to once ever 10 ticks, but that didn't help either.
+
+As a test I decided to completely take out the pixel setting and refreshing, and have a simple loop which got the mouse position, and stored it in an array if it wasn't different from the last one. It turned out that even when I did this the sampling wasn't done often enough for the sampled points to be next to each other. So I arrived at the conclusion that instead of setting pixels one by one I should be drawing lines to connect from the last sampled point to the current one. This did it, and it's not noticeable at all. Theoretically it should be when drawing curved lines very quickly, but that's very hard and I don't see any reason why people would do that when drawing an icon.
+
+In the end I might write my own DrawLine function, but until then the system one works very well, and I don't have to worry about writing a function for each bith depth (it was bad enough for setting pixels, for lines it'd be even worse).
+
+-------------------------------13/12/98-----------------------------------------
+
+I was at school all day (11:30 to 7:30) finishing up the Diplomat since we're going printing tomorrow.
+
+-------------------------------14/12/98-----------------------------------------
+
+We went printing today, and when I got back I had to do all the homework I didn't do over the weekend (since I was programming :p) so I didn't get a chance to work on Icon Mangler.
+
+-------------------------------15/12/98-----------------------------------------
+
+I finished up the line drawing interpolation that I started on saturday. You can now draw in any icon (before it was only in the 48x48 32 bit one, since I was just testing to see if it works).
+
+I've started to work on the fill too. It's pretty easy, because I don't have to write my own fill algorithm, rather I can just a system one, SeedCFill, which returns a black and white mask showing which pixels should be filled and which shouldn't. It works too, but in the process I was also trying to improve my position getting function (actually I was trying to _turn_ it into a function, but it didn't work, and when I tried to turn it back it didn't work there either). Oh well, I have a backup on a zip disk, so I can take a look into it tomorrow.
+
+-------------------------------16/12/98-----------------------------------------
+
+I found out what was wrong with the location getting function. GetMouse returns the coordinates in relation to the current port, and I had placed a SetGWorld before I called it. To make sure that I'll always get the right coordinates I've done my GetClickLocation function like this
+SAVEGWORLD
+SetPort(window) // this is the parent window 
+<get coordinate>
+RESTOREGWORLD
+I don't think that setting and restoring the current port is very cpu intensive, so it shouldn't make much of a difference.
+
+Using this I fixed the pen drawing code, and finished the filling one too. Then I split up the HandleDrawing function into different ones, one for each tool.
+
+The last thing I did was to add an eye dropper tool. It was simply a matter of setting the port to the current icon, doing a GetCPixel, and putting the returned value into the foreground color of the parent class.
+
+-------------------------------17/12/98-----------------------------------------
+
+Today I worked on two miscellaneous things, cursors and key shortcuts. Cursors are rather easy to implement, there are two functions, SetCCursor and GetCCursor (get loads it from a resource, set actually sets the current cursor to a particular cursor handle). However, if you keep on doing SetCCursor with the same cursor value it flickers, so I added a currentCursor field to the class, and I only change the cursor if the value I'm setting it to isn't equal to the currerCursor's value.
+
+Key shortcuts let you switch among tools by using the keyboard. Since I'm trying to make the editor very easy to use for those used to Photoshop, I'm using the shortcuts that Photoshop uses (N for pen, E for eraser, I for eye dropper, K for fill (bucKet), etc. There's also an additional photoshop shortcut, if you hold down the option key the tool changes temporarely to the eye dropper (this is very useful if you're using the pencil tool to edit, and need to switch among colors that already somewhere in the picture).
+
+-------------------------------18/12/98-----------------------------------------
+
+Today, after much procrastination I started to work on selections. The first step was to figure out how to draw the marching ants. Somehow the method of drawing little lines on the border of a rectangle by hand didn't seem right. So I made a photoshop image, in which I had a layer with a little one pixel wide "slit", behing which I could place a pattern. It turned out that if you had a pattern of diagonal stripes, and moved it slowly sideways, you got the effect of marching ants. Surely enough, in the resource fork of the Photoshop application, there was such a pattern.
+
+The next step was to figure out the shape of the selection. I decided that regions would be most appropriate for storing it, since they allow many operations to be done to them, like union, difference, etc. which would be useful in the future when I add additive/substractive selections (again, just like photoshop). It turned out that I needed two regions, one to store the shape at the real size, and one for displaying it at a magnified size. To get the outline of a selection I simply made a copy, did an InsetRegion, and then a difference between the two. Then I filled it with the pattern, and I got the marching ants. I added a currentMarqueePattern counter to the class, and used that to cycle among them. It worked beautifully, except the drawing was too fast (and this was just on my 8500, it would have been even faster on a G3). So I added another counter, which measure the ticks from the last time the pattern counter was incremented, and limited it so that it would move once every two ticks. This way there should be a constant speed on all machines (unless they're so slow that it takes more than two ticks to update the marquee, then it would still draw as fast as it can).
+
+So, I got my selections to draw, but you can't move them around (yet).
+
+I think I should create a global structure in which I should store all the frequently used resources, like the marquee patterns and the cursors, so that I don't have to keep on loading them everytime....
+
+-------------------------------19/12/98-----------------------------------------
+
+Moving selections weren't that hard. First I had to differentiate between floated selections and nonfloated ones. As the names suggest, the floated ones glide above the rest of the image, while nonfloated ones have nothing behind then, and must be floated before they can be moved (the region where they used to be is filled with the background color).
+
+The actual moving wasn't that hard. At first I did an OffsetRgn for the selection regions, and did a ScrollRect to move the selection contents around. However, that didn't work so well, since when the selection was moved to the outside of the boundaries of the image, it would get cut off. So instead of using ScrollRect I used OffsetRect, to simply change the bounding rectangle of the selection.
+
+The last thing that I did was to add support for pasting. Theoretically this shouldn't be that hard, it simply imvolves defloating the current selection (if any), copying the clipboard contents to the selection contents, and setting the appropriate region for the selection outline. However, the last part was rather tricky. But the last part was rather tricky. The simplest case would be to get a bounding rectangle of the clipboard image, and have that as the selection shape. However, this wouldn't be so nice when working with irregular shapes (such as icons copied in from the Finder, or lasso selections from other applications). The problem is that there is no easy way to get the outline of a picture. I looked at three programs, the Finder, Adobe Photoshop and Icon Machine, and they all used different formats. The one used by Icon Machine was the easiest to interpret, mostly because he described it in general terms on the homepage (he stores the picture shape in the clipboard under the data type 'Mask', as a picture, so I could just call BitMapToRegion to get the selection shape). However, in the Finder and Photoshop's case it is stored within the picture itself, but in different ways (the Finder has an actual clipping region, while photoshop has a "matte channel"). The problem is that parsing pictures by hand is not reccommended by Apple, and thus not very well documented. 
+
+-------------------------------20/12/98-----------------------------------------
+
+I've thought a bit about the irregular selection problem, and I think I can come up with a generic method of getting the shape. When calling DrawPicture, the mask is always taken into account, and the pixels that are outside the mask are left alone. So I could fill them with a special pattern, draw the picture, and look at which pixels were left untouched. However the special pattern can't be just a color, since I'm working in 32 bits thus all colors can be theoretically be used in an image. Instead I think I'll use the fact that the image contains a dummy byte (since each pixel is 32 bits, but each of the three components only wants 8 bits). When QuickDraw sets a pixel, it sets the dummy bit to zero, so if I were to set it to something else I could detect which pixels were left untouched.
+
+(a bit later)
+
+My implementation worked, and stuff copied from the Finder and Icon Machine is pasting in properly, with the correct selection shape. However it doesn't work for selections from Photoshop. This is because when the image from Photoshop is drawn, even for pixels which are supposed to be left untouched the dummy byte is reset to zero. I guess I'll have to use a color, since this is the only way to make it work from all source. There's the risk that the image will contain that color, but if I choose a very rare one (such as 0xFFFFFE) chances are very small that the user will set it on purpose, and it'll only show up if the image was processed.
+
+I've also added copying and cutting of the current selection. This wasn't very hard, since I had dealt with exporting to the clipboard earlier (clip2icns has an export icon to clipboard option). The only tricky part was to get the image data from the selection if it was floated, or from the image if it wasn't. Finally I did a bunch of miscellaneous stuff, like adding select all/none/inverse commands, and deleting the current selection when the user selected clear or pressed the delete key. I also added proper menu item enabling/disabling for all the clipboard and selection commands.
+
+The plan for tomorrow is to add support for additive/substractive selections (again, like Photoshop's) and a lasso selection tool, if I have the time (perhaps initially I'll just make it draw an irregular selection, and not shrink down just yet).
+
+-------------------------------21/12/98-----------------------------------------
+
+First thing I did today was to support the moving of the selection by using the arrow keys. This was very easy, but I tried to replicate Photoshop's behavior as much as possible. This means that when the move tool is selected and the arrow keys are pressed, the whole selection (including it's contents) are offseted. When the marquee tool is selected and the selection isn't floated, only the selection shape is offseted.
+
+There's a bunch of other little things I want to add, such as option dragging (if you have a selection, hold down the option key and move it around, a copy will be left behind at your starting point), x/y axis moving constraints when holding down the shift key, and support for moving around the selection shape with the marquee tool, but I think that I should do the additive/substractive selections first, since they're my main goal for the day.
+
+Doing them shouldn't be that hard. I simply have to save the original selection shape, get the new one, and use either AddRgn or DiffRgn to perform the operations on them. There are little touches such as changing the cursor so that it has a little plus/minus sign, but those can come later.
+
+(15 min later)
+
+That was too easy. I even added the cursor changing. It turns out that it wasn't called AddRgn, it's UnionRgn, but that simply meant a look in the headers. I guess planning ahead takes the fun out of programming :p
+
+Anyway, now I'll work on handling the constraints. This mean limiting the selection to a square when shift is held down, using the anchor point as the center of the selection instead of the corner when option is held down, and for the move tool constraining movement to the x or y axis when shift is held down. And adding option-dragging support too.
+
+(later on)
+
+That was more interesting, mostly because I underestimated what would be involved. Until now I didn't have to worry about the selections going outside the image, since my GetClickPosition function automatically contrained the returned coordinates to the bounding box of the current icon. However, when using the anchor point as the center of the selection, one can go outside the boundaries of the image, since one corner could be within and the rest outside. Clipping it isn't quite as easy as it sounds, since you cannot just cut off the outside portions. Rather you must restrict the expansion to the border, so that the selection is still symmetrical in relation to the center. Add this to the fact that the user can also be holding down shift at the same time (to restrict the selection to a square) and you get a big bunch of if statements. But now it's all done, except for the restriction to the x/y axis. But I think I'll work on the lasso next, since that was one of my original goals for today. 
+
+(even later on)
+
+First I did the magic wand, since that seemed much easier than the lasso. And it was, it's simply a variation on the fill tool, instead of filling with a color a region which is a plain color, it just selects it. I even added additive/subtractive options for this too (just like Photoshop). But then I got bogged down when doing the lasso. I know the basic steps in which I want to do it. I should get the shape of the selection shape the user draws, get it's bounding rectangle, call CalcCMask to find out which areas the lasso can "tighten" on, and set that as the current selection. But I wasn't too sure how I wanted to get the selection shape. At first I tried to use a polygon. But apparently you cannot easily append a point to the polygon, and there is no function for converting it into a region. So then I tried to use regions. But again, you cannot simply append a point to a region. In the end I decided that I should use GWorlds. I would have something similar to the pencil tool (except that it would draw it at the magnified scale, so that the lasso lines don't come out 4-10 pixels thick). Then I can use BitMapToRegion to convert it to a region, and set that as the selection. But I'm rather sick of Icon Mangler today, so I'll work on that tomorrow. Once I get the lasso done, I think I'm done with selections. A few miscellaneous tools remain, like the text one, the rectangle/circle and the line one, but those shouldn't take more than a day to implement (all together). The next major step is to add drag and drop support. This is both inside the app (dragging from different sizes/depths/mask to icon) and from/to other applications (I've always liked applications which implemented drag and drop, especially with translucent dragging, so I don't have an excuse for not implementing them in my application). I downloaded the SDK from Apple, but it's not particularly new (I think it's from pre-System 7.5 days). There's a few technotes which cover the changes since, but there aren't any definitive resources. After I do that, I should add undo support, then theoretically I should be done (my god, the end is actually in sight :p).
+
+-------------------------------22/12/98-----------------------------------------
+
+Today I worked on the lasso. The plan I described yesterday worked pretty well, except for CalcCMask. The function does the opposite of what I wanted it to, instead of returning the regions which do not contain a color (in my case white) it returns the ones that do. However the good people at Apple foresaw this, and they provided a parameter where you can specify your own color searching function (as pointer to it, of course). The function receives an RGBColor record, and returns an long and bool (the bool is actually returned, the long is part of the parameter list). The bool specifies if the color was handled or not (if it wasn't it's passed on to the default system function). The long tells the parent function if the respective color is supposed to be transparent (return 0) or is supposed to be part of the final bitmap (return 1). This worked, and now I have a tightening lasso.
+
+CalcCMask has a sister function, SeedCFill, which I'm using for the fill and magic wand tools. In Photoshop, both of these tools have a tolerance setting, which specify if areas should be filled/selected even if they're not exactly the same color as the starting point. Using a custom color search function, I could also implement this. I think I definitely want to do this for the final version, but I'm not sure if I have enough time for the one that's going to part of my dossier. The issue isn't one of knowing how to do it (after all I just did a color search function), but one of the user interface. Since the tollerance can be chosen by the user, this would mean that I have to figure out how to let the user do this. Photoshop has a floating palette (one of many) called tool settings, whose contents change depending on the current tool. This would require a lot of work, and I don't think the IB will appreciate all the work that went into it.
+
+-------------------------------23/12/98-----------------------------------------
+
+Right now the lasso tightens only if it's on a white background. However, that's not the proper way, it's supposed to tighten if it's on the current background color. The color search procedure can receive parameters from the parent function, but it's really in a roundabout way. The parent GDevice of it has a field called gdRefCon which can be cast to a MatchRecPtr data type, and there is stored the color with which the CalcCMask function was called. So theoretically all I have to do is call CalcCMask with the backColor field of the class, and then in the color search function get the color and use that for the comparison instead of white.
+
+(a bit later)
+
+That didn't work, it crashed horribly, but we're going Christmas shopping so it'll have to wait.
+
+(late in the evening) I fooled around with MkLinux and AfterStep, so I didn't have time to solve the bug. But there's always tomorrow..
+
+-------------------------------24/12/98-----------------------------------------
+
+I found out what I did wrong. I was lazy, so instead of defining two variables and calling GetGWorld (which also returns the current GDevice) I used the macro I usually use called SAVEGWORLD, which does all that, plus some more stuff (save the current fore/back colors and set the to black). Apparently the color things are not suppposed to be done in the middle of a color search procedure, so when I took those out (so instead of using the macro I actually defined the variables and called GetGWorld myself) it worked.
+
+The rest of the day was spent implementing a line tool (that was really easy) and setting up AfterStep on MkLinux.
+
+-------------------------------25/12/98-----------------------------------------
+
+(I managed to really screw up MkLinux when I tried to install WindowMaker, a window manager that's I want to replace AfterStep with).
+
+I implemented a rectangle tool, which was a simple variation to the marquee tool (a simplified one actually, since there are no additive or subtractive rectangles).
+
+I only have two more tools left, the text tool and the polygon tool, and neither of those sound particularly exciting. Instead I think I will start work on drag and drop, which should be a lot more interesting (unless it turns out I have to reimplement my whole program).
+
+(later on)
+
+The documentation for the Drag Manager is more of a reference, so it can't be used as a guide to adding drag and drop support. Instead I decided to take the other route, copying and pasting code from the example programs, modifying it as necessary and looking up things in the reference when I needed it. I decided that the first step should be drop support, since it seemed the easier. Adding this involves specifying some handlers for tracking and releasing. Since they're function pointers, they can't be memeber functions of the main editor class. Since it looked like I needed quite a few of them for the whole implementation, I decided to create a separate file, draganddrop.cp, which included all the functions necessary.
+
+I found an example program that was simple enough, copied its drop handling routines, and tried to modify them so that they fit with my program. However it didn't work (I'm not sure where things went wrong), and it's late so debugging will have to be left to tomorrow.
+
+-------------------------------26/12/98-----------------------------------------
+
+I found out what I did wrong. When dragging, you can have multiple items selected, and you can pick among them. I wanted the first one, so I called GetFlavorData (more about flavors later) with an index of 0. However it turned out that the first item is represented by 1.
+
+Flavors show the data types contained in the dragged item. There can be more than one flavor. For example, when dragging a picture clipping from the desktop there can be a 'PICT' flavor for the contents of the data, and an 'hfs ' flavor for the file spec of the clipping file. I'm planning to use this feature within my application, since I can have the icons that is being dragged have a flavor type of it's resource type (ie 'icl8' so I can tell when depth and size it is, and if it's to be dropped on the mask container I can generate the mask instead of simply inserting the picture) and a 'PICT' flavor if the user is trying to export it to another program.
+
+The next step was to add drop handling for all the regions in the editor (right now the only region being handled was the main drawing area, but things can be dropped onto the icon and mask displays to the right too). This resulted in a rather messy piece of code, since I had 3 collections of similar if statements, to determine over which area the mouse was (one for determining if it was a valid one, one for the drawing of the hilight rectangle, and one for determining over which area it was dropped). I'm sure it can be simplified, but I want to get it working first.
+
+Then I ran into a weird problem. When dropping a picture onto the drawing area, a selection was supposed to be created, which contained the image data that was just dropped. This was drawn OK, but when attempting to move the selection, cut it, or choose another tool, there were drawing problems. After selectively commenting out pieces of code it turned out that this was caused by installing the drag handler procedures. Reading the docs carefully, it was mentioned that within those procedures the current port was set to the parent window, but no mention was made of it being restored when the procedure exited. Apparently the port was not being restored. To fix this I thought I should add a startupPort field to the class, so that I could explicitly call that at the end of the procedure. Since the startup port would be the same for all class instances, I thought I should make it static, so that it would be shared by all of them and not waste memory. However I ran into implementation problems. It turned out that simply declaring the static field in the class does not allocate it, you must do that by hand. But CodeWarrior reported this as a link error, saying the variable was undefined when I tried to access. I wasted half an hour tracking this down, since my C++ book, Practical C++ made no mention of this...
+
+-------------------------------27/12/98-----------------------------------------
+
+Today I worked on the dragging half of drag and drop. This turned out to be much easier, since it doesn't require installing and handler procedures. You simply create a new DragReference, attach data of a certain flavor to it, give it a shape (so that it can draw an outline) and call TrackDrag. I really wanted to add translucent dragging, since it looks so cool (although it doesn't have that much use), and that required another line to the code, SetDragImage, with a pixmap and region as parameters. Since I was dragging an image already, getting the pix map was no problem, and neither was the region, which is always the square the contains the current icon.
+
+The only problem I ran into was the fact that I could drag from my application to others and to the desktop, and from the desktop to my application (that's what I worked on yesterday), but I couldn't drag within my app (say from the 48x48 icon to the 48x48 mask). But this turned out to be a line left over from the sample code I had based by ApproveDrag procedure on. It didn't approve it if the target window as the same as the source one. This might make sense when your whole window is a container (the way it is in the Finder) but in my case it wasn't appropriate.
+
+I also trimmed down some of the collections of case statements I had yesterday, and my code is a lot cleaner. However, I'm not sure if it's clear at first glance what I'm trying to do, and that's an important thing (I think) for the IB.
+
+(later on)
+
+I added support for scaling and mask generation when dragging within the application. This way different sizes can be created by simply dragging from one image well to another. Same thing for mask generation. These two features are what transform Icon Mangler from being a simple image editor to becoming more like a real icon editor.
+
+Here's a list of things that remain to be done, in no particular order:
+
+- (multiple) undo support (double linked list?)
+- constrain movement of selection to x/y axis when holding down shift
+- when moving a selection beyond the edge of the window allow it to be drag and dropped onto other applications
+- when holding down shift constrain line drawing to right angles
+- add preview which combines current icon and mask (this should go right underneath the icon and mask displays)
+- when dragging, don't show a hilite rect if the cursor is over the container that is its source
+- add option to choose folders, not just files for icon editing
+- extract icons from any file, not just ones with custom icons
+- when opening a file with more than one icon resource, put up an "Icon Browser" to let the user pick which one to edit (even allow multiple selections, since I can have more than one editor open at the same time?)
+- flip horizontal/vertical and rotate clockwise/counterclockwise (at 90¡) commands
+- select similar command (depends on how much time I have)
+- add a "Icon modified since last save, do you want to save" dialog when closing and quitting (quitting is my chance to add recursion to the app, since I can go through the linked list recursively).
+- contextual menu support (unlikely in IB version, probable in final one since the competition (Icon Machine) has it)
+- add circle, text drawing, polygon tools
+- when dragging a file from the Finder, instead of rejecting the drag take the file's icon and place it (this ties in with getting any file's icon)
+- when holding down option and selecting a different bit depth from the menu, transfer the current depth to that depth (most editors do this with drag and drop, but because I implemented 48x48 support too, I don't have the screen space to have all of the on the screen at the same time).
+- 68K version (not an issue for IB)
+- 8.5 features (proxy icons)?
+- importing from .tiff/.xpm files, which are used to store NeXT/UNIX icons (unlikely, unless I can find some libraries to parse the icons)
+
+
+Going back and looking at my original schedule, I realize that I over estimated how long things would take me (although I think things will slow down once school starts again, plus there's a history project which I should be working during the holidays, and that will be next week).
+
+-------------------------------28/12/98-----------------------------------------
+
+Today I worked on adding multiple undos. My original idea was to have a linked list, in which the constructor would also store the current state, and have a different function to restore. Then the undo and redo functions can simply move forwards and backwards through the list and restore the state. In the beginning the storing function took in 3 paramenters, because that's what I thought represented the current state. But then I noticed that I needed to add another variable (whether or not the selection was floated) and I realized that this could get out of control. So I decided that instead I should pass it a pointer to the current editor, and then the function could extract whatever data it needed, and if I wanted to extract more I just had to change the re/storing functions. This was when my problems started. The definitions for the state storing class and the editor class are stored in different files, but they both include pointers to each other and themselves. It took me a while to realize what was going on, since the compiler simply said "illegal argument" about the icnsEditorPtr variable in the constructor of the state class. In the end I had to include "stubs" in the icnsEditorClass.h file, which only gave the name of the class, but not the actual description.
+
+Now it works, but it's rather flaky, especially when it comes to selections and drag and drop. But I can finally say that I'm done with all the major features of the editor. What will follow now is probably a gruelling month and a half in which I'll be fixing bugs, tweaking things, and realizing that I should start all over again
+
+I'm already beginning to have thoughts of that, after I read a design section in "The C++ Language" (by Bjarne Stroustrup, C++'s creator). It said that one should focus more on the generalized view, and to look into the future and make the classes so that they can be reused. I realized that I could have done this project by having a generic editor class, from which I could derive an icnsEditorClass, but still be free to have others (such as a cursor editor, etc.) Perhaps the IB will appreciate the fact that I'll mention this in my "planned improvements" section, and not take too many points off :p
+
+I also switched to a new "status" system. Before I had a few booleans, which told if I the window had just been resized, if the selection was floated and if it needed redrawing. However I decided that combine all of these into a long, and have specific bits in it signify states. Then I could use masks, and use a bitwise "and" to determine if the bit was on or not. Then adding new states, such as if the undo or redo commands could be executed would only involve adding a new flag, and not a whole new variable.
+
+-------------------------------29/12/98-----------------------------------------
+
+The undo states take up a lot of memory (17K each when editing 32x32 32 bit icons). I realized that a selection GWorld is unecessary if there is no current selection (actually it's not even necessary then if the selection isn't floated) so that cuts down the size to 7K in those cases. The reason why the state takes up 7K, instead of the 4K that a 32x32 32 bit pixmap takes up is because QuickDraw has this annoying habit of adding 16 pixels to each row as padding (don't know why). If I can find a way to eliminate that I'll save even more space. I don't know what to do when the memory fills up however (I haven't even added any checks). I can warn the user that the memory is full, and start deleting the earliest states, which are unlikely to be used anyway. Or I could limit the number of undo steps from the beginning, perhaps by having a setting in the preferences. But that will limit some of the usefullness of the linked list, and the user isn't likely to want to go in change it.
+
+This reminds me that I must start adding error checks, since my program currently relies on the fact that all resource are available, and there is free memory (there aren't any potentially negative user actions that I need to worry about, since this is a GUI-based program). I guess this is just one more step in the things I must do in the coming month.
+
+I think I'll have to spin off my todo list as a separate file, and use it to keep track of what I need to work on. This wasn't necessary before, since I just had to work on any one of the main features, and I could be sure that I was moving ahead. I'll copy any new entries and status updates into here, but I'll use that file to be able to tell at a glance what I'm supposed to be doing.
+
+Today I worked on improving the undo support, and started to work on the preview. One of the probles that I had was that when dragging from one icon to another, the undo wouldn't work. This was because I wasn't storing the initial state of the icon I was dragging to (since it wasn't the current icon, and thus it didn't get saved as the drawing went along). I also had a problem with the selections not getting erased after I undid one. It turned out that in my DoIdle i was doing a status -= needsUpdate even if the needsUpdate bit wasn't on (updates can also be executed if there is a selection) therefore the status variable was getting smaller and smaller (so instead of doing a status -= needsUpdate I changed it to status &= ~needsUpdate, which should set the bit off it it was on, and leave it off if it was already off).
+
+I also worked on adding the preview today. The preview combines the currently display icons and masks, and displays the merged result in an image well with the desktop as the background. This works well, except if there is a floating selection it is not displayed.
+
+Found another bug in the undo routines. When I create an icon, I save the current state. However, when opening the file, the first state isn't a blank canvas, but the initial contents of the icon. There's two ways in which I can fix this. I can rewrite part of the file loading routines, so that the icon is loaded before the state is saved. Or I could add a couple of lines to the loading function to delete the current state and resave it. Right now I'll choose the latter, since I don't see what can be gained by choosing the former.
+
+Fixed a bug in the file handling routines that would cause no files to show up in the file selection dialog if the older style open/save dialogs were used. I took this opportunity to add the proper flags so that invisible files would show up in the dialogs (this way folder icons can be edited too).
+
+I've made two interface prototypes for the planned Icon Browser, which will show up when a file that has more than one icon is opened. I'm using REALBasic for the prototyping, since it has a nice WYSIWYG window/control editor, thus it's very easy to do layouts. Then I took a screenshot of the windows, imported them into Photoshop and added the icon previews, as a mockup of what the final version will look like. I uploaded both copies to a hotline server I go to often, and requested feedback (as to which one was better).
+
+Added items to TODO file:
+
+- GWorld updates: Draw to an external GWorld first, and then copy to the window, so that there will be no flickering when updating (this applies to the icon and mask display, as well as the preview)
+
+-------------------------------30/12/98-----------------------------------------
+
+The first I thing I worked on today was to constrain the line drawing when the shift key is held down. I had originally planned to simply restrict it to the x/y axis, but in the end I decided to do it at 45 degree intervals. This took a lot longer, since I had to use trig (I don't like trig), but in the end I got something that worked. I also reused this code to make the movement of the selection be constrained too (only when holding shift of course).
+
+Then I started to work on adding the transformations. Flip vertical was the easiest, since I could operate on entire rows at the same time, and I didn't have to worry about the bit depths. Flip horizontal was trickier, because for each depth the pixel has a different size. For the 8 bit and 32 bit icons this was easy since the pixels were a char and long respectively. For the 1 and 4 bit depths however, it looked a lot more complicated. But then I decided that instead of having to worry about where in the char the pixel fell, I could use my SetPixel1/4 functions together with GetPixel1/4 functions, and then I could swap values easily.
+
+After I did the flips the next step was to do rotations. I decided that rotations at arbitrary angles were unnecessary in an icon editor (besides, I didn't really know how to do them), so I just had to do a 90 degrees clockwise/counter-clockwise. I decided that swapping values in this case was a lot harder, since I had to keep track of which pixels were rotated already, and which weren't, so I used a second GWorld, which I copied back onto the first when I was done.
+
+-------------------------------31/12/98-----------------------------------------
+
+I just realized that I had completely forgotten about selections. When you transform a selection no only do you transform its contents (I was already doing that), but you also have to do the same transformation to the selection shape. However, I'm storing the selection shape as a region, and the region format is an opaque data type, which I cannot access directly. Apple has provided no flip/rotate commands for regions. But I discovered I could draw the region into a temporary GWorld, do the transformation on that GWorld, and then use BitMapToRegion to convert it back to a region. This should of worked in theory, but when I tried to implement it it failed miserably (causing hard crashes too). I guess I'll have to leave this matter to next year :p
+
+--------------------------------January-----------------------------------------
+
+-------------------------------01/01/99-----------------------------------------
+
+It turned out I was making a fundamental mistake when rotating the GWorld. When rotating, unlike when you're flipping, the dimensions of the GWorld change (unless it's a square, which is why I didn't catch this earlier, because I was rotating the whole icon). After I did this the rotation of the selections improved, but the shape of the selection refused to rotate. The weird thing was that when I commented out the line that rotated the contents, then the shape would rotate. In the end it turned out that this was because I had an if statement, if (rotatePix == selectionPix), which determined if the selection shape should be rotated too. However, when I was rotating the contents of the selection I was resizing the PixMap, and so it's location in memory could have changed.
+
+Since I was done with the transformations I decided to work on drawing in selections next. Right now all the drawing tools only work in the current icon, and ignore the fact that there is a selection (this is because most of them were implemented before I did selections). 
+
+I've discovered that there are three possible states:
+- no selection, the target gworld is the current gworld
+- an unfloated selection, the target gworld is the current gworld but drawing is clipping to the selection region
+- a floated selection, the target gworld is the selection gworld with the drawing clipped to the selection region
+
+For the fill tool it's not only a matter of clipping, but clicks outside the selection must be rejected as well.
+
+-------------------------------02/01/99-----------------------------------------
+
+The first thing I did today was to clean up the menus (since I had been adding commands for a while, but didn't add the proper enabling/disabling). Since I'm using the Appearance Manager, it is rather easy to add additional modifiers (such as option and shift) to the command. So the command for inverting the current selection is shift-command-I, for counter-clockwise rotation its shift-command-T, and so on. The Clear menu item serves the same function as the delete key, so I gave it that shortcut (there's a special icon for the delete key), and removed the command key symbol from the menu (that's one of the other things that the appearance manager provides that earlier systems didn't). The new status system that I had previously added also helped in determining which items should or shouldn't be enabled.
+
+Then I made it so that a drag would not be accepted (and thus a hilite rectangle note drawn) if the mouse was over the starting rectangle. This was one of the items on my todo list.
+
+Then I added drawing of selections in the previews. The previes combine both the icon and the mask, and the can selection belong to one of those, so it's not simply a matter of drawing the selection on top. In the end I had to have two temporary GWorlds, where I drew the icon and mask respectively, then the selection on top if necessary, and finally merged them using CopyDeepMask to get the final result.
+
+Then I started to finish up the drawing in selections that I had added previously. After I did that the line tool I noticed that there was a problem. The drawing in the selection seemed to be clipped to the rectangle of the original position of the selection. I commented out all calls to SetClip, and yet it was still happening. Then I thought that in my move command I was only doing an OffsetRect for the bounds of the selection PixMap, and not the selection GWorld. But that wasn't it either. So now I'm stuck, and I have no idea where to look next for the solution...
+
+Well, apparently I needed to offset the visRgn of the selection GWorld too. I actually tried that earlier, but at the same time I offseted the clipRgn too. For some reason if I do both, then it doesn't work.
+
+I just realized that I wasn't disposing of all the saved states when closing an editor, and this would have resulted in a huge memory leak. However, a simple traversal of the state linked lists, and deletetion of each element solved this.
+
+I'm not too sure what to work on next. I have the Icon Browser, which is one of the last major things I need to do, and litlle things like adding a "do you want to save?" alert when closing.
+
+I've decided to work on the browser, since I'm not going to be able to dedicated entire days to this project much longer, but I can work on the smaller things after school starts too. I've started to look at how movable modal dialogs are handled (I want to use one for the browser window), and it doesn't look that hard.
+
+(later on)
+
+I've implemented a simple (and empty, except for OK/Cancel buttons) movable modal that shows up when you open a scheme. Everything seems to work (the dialog is movable) except that if there already was an editor open, it's not disabled.
+
+-------------------------------03/01/99-----------------------------------------
+
+I fixed the disabling bug, I simply added a check in the Refresh function to disabled the editor if it wasn't in the front. Then I worked on the main part of the Icon Browser, having a list in the dialog which contains all the icon IDs and names, and a preview of the currently selected icon.
+
+I found some sample code at the Macintosh C website for dealing with lists, and using that it wasn't hard at all. The trickies parts were to sort the list by ID and displaying multiple icon types. Icons can be stored using either new style resource ('icns') or old style ones ('icl8', 'ICN#', etc.), or both. When building the list there shouldn't be any duplicate IDs, but all the types should be listed. This involved having a search function to see which icons were already in the list, and I used a sequential search algorithm for this. However I might consider re-implementing it as a binary search, since that's probably one of the things the IB is looking for.
+
+Right now the Icon Browser is implemented as a collection of functions, but I keep passing similar things to the functions (list handle, IDs) so it might make more sense as a class. However I'm only going to use one instance in my program, although it might have applicability in other programs too.
+
+I'll decide on that later. In the meantime I'll work on adding a grid, which are simply a bunch of lines to separate the magnified pixels. I'm thinking of extending this concept so that the interval and grid colors can be set by the user. It would be useful in aligning things.
+
+-------------------------------04/01/99-----------------------------------------
+
+Didn't do much work today (school's starting day after tomorrow, depression is setting in). Main thing I did today was to handle window positioning properly. Until now I was offsetting each window by a hard coded offset, and things wouldn't have looked so great with schemes/themes. I found some sample code which let you find the thickness of the border, but it only worked if the window was visible. So I had to show the window, figure out the proper offset, and then move it. However this caused some nasty flickering. But in the end it turned out that this was all for nothing. Window resources have a special setting which makes them be staggered, so I simply had to turn that on and use a WIND resource to create my window instead of calling NewCWindow with the dimensions/title. And it's more mac-like too.
+
+Then I worked some more on cleaning up the code. I thought that I should have a "globals" class, in which I should store all the global variables, like the startup port, patterns used for drawing the marquee, etc. But the implementation didn't come out very neatly, since it makes toolbox calls in its constructor, so I had to move InitMacToolbox from my Initialize function into the constructor for the class. I also had some problems with the scope of the variable, so I'm including my main .h file in yet anoter place.
+
+I've started reading about static variables and functions, and they look like the thing I need to use. But that can be implemented tomorrow...
+
+Oh, and I did work on the grid which I mentioned yesteday, but I ran into some problems because the grid is supposed to be displayed under the selection/lasso shape but over the actual image. So I decided to leave that out in the IB version. Actually I've decided to go into a feature-freeze, so that I can just focus on making the program more ellegant and stable. Then when I'm done with that, I can save a copy (as the IB reference version) and go back to adding features (like more tools, and better handling of files with no custom icons).
+
+-------------------------------05/01/99-----------------------------------------
+
+Today I worked on the statics. I pondered if I should make the firstElement and lastElement pointers of my linked list of editors part of the static struct too, but in the end I decided not to, since they were used in a lot of places in my main.cp file, and then I'd have to make the structure public, or add lots of friends to the class, both of which I'd rather limit. Now I only have 3 global variables, the bool to see if I should quit or not, and the endpoints of the linked list. To make it more obvious I've added a g in front of their name, so they're called gIsDone, gFirstEditor and gLastEditor, and then hopefully the IB will understand that I know globals aren't normally supposed to be accessed in functions, but that I had no choice.
+
+Implementing the static structure wasn't that hard, only problem I ran into was having a a static function to initialize them. For some reason the scope of the static function is limited to the file its defined in, so I couldn't do that in the icnsEditorClass.cp file, and had to include the function body itself in the .h file, which is included everywhere. Perhaps there's a work around, because it looks rather weird to have just one function there, while the rest are only prototypes.
+
+I also improved the Icon Browser, so that it's not displayed when there are only 1 or 0 icons. When there's 1 icon then that's chosen by default to be edited, and where there are zero an error message is displayed saying that the file does not contain any icons (although I have to think of a mechanism to allow the user to create an icon for a file that doesn't have one yet).
+
+I also did some house cleaning for the menu enabling/disabling part of my DoIdle function. The toolbox function DisableItem wants a menu handle and an item number, and it gets rather annoying to have to make a MenuHandle variable, call GetMenuHandle with the proper ID, and then call DisableItem when all I'm trying to do is disable only one command in a menu. So I added two more simple functions to my commonfunctions.cp file, EnableMenuItem and DisableMenuItem. They take as parameters an ID and an item number, and take care of the MenuHandle business. I know this is a very minor point, but I think that little things like this make a program seem more elegant.
+
+[my journal has doubled in size in only a month, it's 20,000 words now...should make for some fun reading over the summer :p]
+
+-------------------------------06/01/99-----------------------------------------
+
+[school has started, so things will most likely slow down]
+
+I went in after school and demonstrated the work I did over the holidays. Although it wasn't a horrible demonstration, more things went wrong then than they should have. I noticed three major bugs: when using the icon browser, the selected icon isn't displayed in the editor window (although its ID is transferred); there are menu enabling/disabling problems with the Edit menu, and the contents of the selection are not restored properly when undoing.
+
+[later on at home]
+
+Good news, clip2icns is mentioned in MacPeople, and they even have a sidebar on how to use it. MacLife had a screenshot and a copy on the CD too, but they didn't write more than two lines about it. I've had quite a few registrations from Japanese people, and this should increase that number even more. I forgot to mention a few days ago that the lead engineer of Virtual PC registered clip2icns, maybe the latest version (or perhaps the newly announced Virtual Game Station) will have a 32 bit icon :p
+
+I can't reproduce the Icon Browser bug, but I managed to eliminate the other two. They were rather stubborn, but in the end they turned out to be rather foolish mistakes on my part. The menu problem was caused by the fact that in my haste yesterday to redo the menu enabling/disabling I didn't change some of the IDs when copying and pasting, so the class to enable/disable the View menu still had the ID of the Edit menu. The undo/selection contents problem was more tricky, but apparently when restoring the selection state I wasn't resizing the selection pix to the proper dimensions, and so when restoring there would be garbage if the selection had been moved.
+
+-------------------------------07/01/99-----------------------------------------
+
+I've figured out when the Icon Browser bug happens. If you drag a file onto the application's icon (like I usually do) then the selected icon shows up OK in the editor window. But if you use the standard open file dialog, then it doesn't work. Not too sure why, but I have a couple of tests tomorrow, so I can't do much work today.
+
+-------------------------------08/01/99-----------------------------------------
+
+I've fixed the bug mentioned above. My NewIcon procedure takes a pointer to a FSSpec as its parameter, and it a file is dragged onto the icon then pointer points to the file that was dragged, otherwise it points to nothing. If it's not poiting to anything, then I call the GetFile function to to choose a file. But it's not poiting to anything, then it hasn't been allocated, so callign GetFile would end up writing in random areas in the memory. I called NewPtr before GetFile, and that solved everything.
+
+Then I worked on improving my Display function. Originally, it created a temporary GWorld, copied all the necessary stuff into it, and then copied it into the target rect on the screen. However, when there wasn't enough memory to create this gworld (it could be up to 480x480 at 32 bits) then there would be garbage written on the screen, so I'd have to take this into account when determining if there was enough memory to make a new icon. So instead I decided to switch to having a permament "canvas" gworld where I could composite stuff. This could go into the statics struct I added a few days ago, because it can be shared by all the icons.
+
+-------------------------------09/01/99-----------------------------------------
+
+Didn't have time to do too much, but I started to work on one of the final features needed to make the editor complete. Most normal editors use drag and drop as a means to transfer between depths. However, in my case not all the depths are visible at the same time, since the new 48x48 size takes up too much space and displaying all the sizes would be prohibitive. That's why I have a popup menu. So for the transferring among depths I decided to make it so that the user could hold down option (the standard copy modifier) when selecting a size from the the menu and then the contents of the current depth would be transferred (and dithered down if necessary) to the newly selected depth.
+
+I decided that to make it very obvious that holding down the option would trasnfer the depths I should change the cursor to the standard copy cursor (the arrow with a little plus sign). This cursor is stored in the system folder with an ID of -20486. So I added the cursor setting to my HandleContentClick if option was held down and the user had clicked on the popup menu.
+
+-------------------------------10/01/99-----------------------------------------
+
+Today I finished the transferring of depths, it simply required determining the source pixmaps and target pixmaps for all three sizes, and doing a CopyBits between them.
+
+Then I fooled around with a pretty interesting product called Spotlight. It's supposed to aid you in finding memory leaks, access of unlocked handles, access of null pointers/handles, and other hard to track down but serious bugs. They have a demo version, which has all the features except it expires in a month. Using it requires no change of code, you simply point to the symbol map of your program (an .xSYM file that's generated by default by CodeWarrior) and then you run your program (albeit more slowly, since it has to log all the errors).
+
+With this tool I found a bunch of handles I wasn't disposing, and places where I was accessing NULL handles. I also found a very weird bug with it. When saving the state for the first time the program is run, it uses up an extra 64K of memory, which are never disposed of. Using FreeMem() I added a check right before I called new and right after, and it said that it took up 70K. However if I added a check within the constructor of the drawingStateClass, it always said 6K. But I have no idea where the extra 64K are coming from, and why they only show up the first time...
+
+-------------------------------11/01/99-----------------------------------------
+-------------------------------12/01/99-----------------------------------------
+-------------------------------13/01/99-----------------------------------------
+-------------------------------14/01/99-----------------------------------------
+-------------------------------15/01/99-----------------------------------------
+-------------------------------16/01/99-----------------------------------------
+
+Didn't have time to program on these days because I was preparing for the semester exams. However, by G3 upgrade card did get here, and I was able to tweak it up to 443 Mhz. Compile times are much shorter now.
+
+-------------------------------17/01/99-----------------------------------------
+
+There was a bug which caused the front-most window to be left enabled when the application was put into the background. This was because I had recently added a check to automatically enable the controls when the current was the front one. However, when a application is put into the background the window was still considered to be in the front. So I added another check, to compare the process serial number of the front app to the process SN of the current one.
+
+I also tried the Apple Developer FTP Seeding Site, and downloaded Apple Share IP 6.1. The only problem was that I was limited to 3 connections, and the FTP client I used (Netscape Communicator) was using multiple connections, so after the download was finished my password expired. I wish I could of used Fetch, or another client which didn't use multiple connections, but Netscape's is the only one that can go through a proxy.
+
+Then I worked on making Icon Mangler more robust. I've started with checking to see if there was enough memory when making a new editor, so that application doesn't simply quit when the creation fails.
+
+-------------------------------18/01/99-----------------------------------------
+-------------------------------19/01/99-----------------------------------------
+
+Had exams again, but I did receive the latest copy of MacTech and my first shipment of the Apple Developer CD Mailing. Among them are 6 CDs that contain MacOS 8.5 in most languages, so I installed the Japanese version. This should make testing with foreign systems much easier.
+
+-------------------------------20/01/99-----------------------------------------
+
+Uploaded a development version for feedback, and i've got a few bugs reported already:
+- cursor changes even when application is in the background: fixed by checking first if the current process is the front one
+- old style icons aren't displayed properly in the Icon Builder: fixed, i hadn't updated the code in the old style loader for setting the available sizes properly.
+- mask display turns black if the depth is thousands, not millions: not fixed, but I think I know what I need to do
+- open command doesn't do anything: can't reproduce on my machine (could be tied in with a similar bug I had while I was working on clip2icns, which I also couldn't reproduce at home. unfortunately this was before I was writing my journal, so I have no record of I fixed it.)
+
+-------------------------------21/01/99-----------------------------------------
+-------------------------------22/01/99-----------------------------------------
+-------------------------------23/01/99-----------------------------------------
+-------------------------------24/01/99-----------------------------------------
+-------------------------------25/01/99-----------------------------------------
+-------------------------------26/01/99-----------------------------------------
+-------------------------------27/01/99-----------------------------------------
+-------------------------------28/01/99-----------------------------------------
+-------------------------------29/01/99-----------------------------------------
+-------------------------------30/01/99-----------------------------------------
+-------------------------------31/01/99-----------------------------------------
+
