@@ -1,4 +1,4 @@
-/* Resource fork of software/Badger/picture clipping */
+/* Resource fork of software/Glypher/picture clipping */
 resource 'PICT' (256) {
 	4456,
 	{0, 0, 32, 80},

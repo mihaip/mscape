@@ -1,4 +1,4 @@
-/* Resource fork of software/Badger/badger.µ.rsrc */
+/* Resource fork of software/Glypher/badger 1.0d6 */
 resource 'MENU' (130) {
 	130,
 	textMenuProc,
@@ -1872,6 +1872,23 @@ resource 'DITL' (130) {
 	}
 };
 
+resource 'DITL' (3000, "Basic Alert") {
+	{	/* array DITLarray: 2 elements */
+		/* [1] */
+		{66, 318, 86, 376},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{8, 58, 60, 376},
+		StaticText {
+			disabled,
+			"^0 ^1."
+		}
+	}
+};
+
 resource 'icns' (128, "created with clip2icns") {
 	{	/* array elementArray: 4 elements */
 		/* [1] */
@@ -3030,5 +3047,59 @@ resource 'mctb' (200) {
 			0, 0, 0
 		}
 	}
+};
+
+resource 'ALRT' (3000) {
+	{40, 40, 138, 421},
+	3000,
+	{	/* array: 4 elements */
+		/* [1] */
+		OK, visible, sound1,
+		/* [2] */
+		OK, visible, sound1,
+		/* [3] */
+		OK, visible, sound1,
+		/* [4] */
+		OK, visible, sound1
+	},
+	alertPositionMainScreen
+};
+
+resource 'cfrg' (0) {
+	{	/* array memberArray: 1 elements */
+		/* [1] */
+		kPowerPCCFragArch,
+		kIsCompleteCFrag,
+		kNoVersionNum,
+		kNoVersionNum,
+		131072,
+		kNoAppSubFolder,
+		kApplicationCFrag,
+		kDataForkCFragLocator,
+		kZeroOffset,
+		kSegIDZero,
+		"badger 1.0d5"
+	}
+};
+
+resource 'SIZE' (-1) {
+	reserved,
+	acceptSuspendResumeEvents,
+	reserved,
+	canBackground,
+	multiFinderAware,
+	backgroundAndForeground,
+	dontGetFrontClicks,
+	ignoreChildDiedEvents,
+	is32BitCompatible,
+	isHighLevelEventAware,
+	onlyLocalHLEvents,
+	notStationeryAware,
+	dontUseTextEditServices,
+	notDisplayManagerAware,
+	reserved,
+	reserved,
+	1048576,
+	1048576
 };
 
