@@ -257,21 +257,28 @@ resource 'WIND' (300, purgeable) {
 };
 
 resource 'STR#' (300, "Icon Browser: Strings", purgeable) {
-	{	/* array StringArray: 7 elements */
+	{	/* array StringArray: 11 elements */
 		/* [1] */
 		"Loading Icon: <ID>",
 		/* [2] */
 		"Loading Icon: <ID> Ò<name>Ó",
 		/* [3] */
-		"ID: <ID> Type: <type> family",
+		"<B>ID:</B> ",
 		/* [4] */
-		"ID: <ID> Name: Ò<name>Ó Type: <type> fam"
-		"ily",
+		"<B>Name:</B> ",
 		/* [5] */
-		"Icon Types: <types>",
+		"<B>Type:</B> ",
 		/* [6] */
-		"<number> icons",
+		"New",
 		/* [7] */
+		"Old",
+		/* [8] */
+		"<B>Members:</B> ",
+		/* [9] */
+		"Icon Types: <types>",
+		/* [10] */
+		"<number>/<total> icons",
+		/* [11] */
 		"Are you sure you want to delete the icon"
 		" ID: <icon ID> from the file Ò<file name"
 		">Ó?"

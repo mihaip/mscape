@@ -20,7 +20,9 @@ OSStatus CompressPixMap(PixMapHandle srcPix, char** target, long *targetSize)
 	OSErr err;
 	switch ((**srcPix).pixelSize)
 	{
-		case 32: err = CompressPixMap32(srcPix, target, targetSize); break;
+		case 32:
+			err = CompressPixMap32(srcPix, target, targetSize);
+			break;
 		default:
 			int sourceSize;
 			
@@ -28,10 +30,14 @@ OSStatus CompressPixMap(PixMapHandle srcPix, char** target, long *targetSize)
 			
 			*target = NewPtr(sourceSize + 1 + sourceSize/64);
 			
-			PackData((unsigned char*)(**srcPix).baseAddr, sourceSize, (unsigned char*)*target, targetSize);
-			
-			SetPtrSize(*target, *targetSize);
-			
+			if (*target == NULL)
+				err = memFullErr;
+			else
+			{
+				err = noErr;
+				PackData((unsigned char*)(**srcPix).baseAddr, sourceSize, (unsigned char*)*target, targetSize);
+				SetPtrSize(*target, *targetSize);
+			}
 			break;
 	}
 	

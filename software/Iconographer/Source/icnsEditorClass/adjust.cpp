@@ -10,12 +10,16 @@ void icnsEditorClass::Adjust(void)
 	Handle			hueControls, brightnessControls;
 	ControlHandle	tempControl, tabs;
 	AdjustDialogData dialogData;
+	Point			dialogLocation;
+	MWindowPtr		adjustDialogWindow;			
 	
 	SAVECOLORS;
 	
 	//long mem = FreeMem();
 	
 	adjustDialog = GetNewDialog(rAdjust, NULL, (WindowPtr)-1L);
+	
+	adjustDialogWindow = new MWindow(adjustDialog, kDialogType);
 	
 	eventFilterUPP = NewModalFilterProc(AdjustDialogFilter);
 	
@@ -76,7 +80,12 @@ void icnsEditorClass::Adjust(void)
 	FieldToSlider(dialogData.brightnessField, dialogData.brightnessSlider);
 	FieldToSlider(dialogData.contrastField, dialogData.contrastSlider);
 			
-	SetWRefCon(adjustDialog, long(&dialogData));
+	adjustDialogWindow->SetRefCon(int(&dialogData));
+	
+	dialogLocation = statics.preferences.GetAdjustDialogLocation();
+	
+	if (dialogLocation.h != -1)
+		adjustDialogWindow->SetPosition(dialogLocation);
 	
 	MWindow::DeactivateAll();
 	
@@ -95,6 +104,8 @@ void icnsEditorClass::Adjust(void)
 					statics.preferences.EnableFeature(prefsRealTimePreviews);
 				else
 					statics.preferences.DisableFeature(prefsRealTimePreviews);
+				statics.preferences.SetAdjustDialogLocation(adjustDialogWindow->GetPosition());	
+				
 				UpdateEffects(&dialogData);
 				dialogDone = true;
 				break;
@@ -207,6 +218,8 @@ void icnsEditorClass::Adjust(void)
 	
 	DisposeDialog(adjustDialog);
 	
+	delete adjustDialogWindow;
+	
 	MWindow::ActivateAll();
 	
 	//DisplayValue(FreeMem() - mem);
@@ -242,8 +255,11 @@ pascal bool AdjustDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* i
 	char 				key;
 	ControlHandle		theControl;
 	AdjustDialogDataPtr dialogData;
+	MWindowPtr			adjustDialogWindow;
+	short				part;
 	
-	dialogData = AdjustDialogDataPtr(GetWRefCon(dialog));
+	adjustDialogWindow = MWindowPtr(GetWRefCon(dialog));
+	dialogData = AdjustDialogDataPtr(adjustDialogWindow->GetRefCon());
 	
 	switch (eventPtr->what)
 	{
@@ -253,13 +269,22 @@ pascal bool AdjustDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* i
 			Point theMouse;
 			theMouse = eventPtr->where;
 			GlobalToLocal(&theMouse);
-			if(FindControl(theMouse, dialog,&theControl))
+			if((part = FindControl(theMouse, dialog,&theControl)) && part)
 			{
 				if(theControl == dialogData->hueSlider ||
 				   theControl == dialogData->saturationSlider ||
 				   theControl == dialogData->brightnessSlider ||
 				   theControl == dialogData->contrastSlider)
+				{
+					if (part == kControlPageUpPart || part == kControlPageDownPart)
+						ThemeSoundStart(kThemeDragSoundSliderThumb);
+					
 					TrackControl(theControl,theMouse,dialogData->sliderActionFunctionUPP);
+					
+					if (part == kControlPageUpPart || part == kControlPageDownPart)
+						ThemeSoundEnd();
+				}						
+					
 				UpdateEffects(dialogData);
 			}
 			
@@ -355,25 +380,38 @@ void UpdateEffects(AdjustDialogDataPtr dialogData)
 			   clippingRgn);
 	
 	
+	Draw1Control(dialogData->parentEditor->controls.editArea);
 	
-	Draw1Control(dialogData->parentEditor->controls.iconEditWell);
-	Draw1Control(dialogData->parentEditor->controls.display.iconDisplay);
-	Draw1Control(dialogData->parentEditor->controls.display.maskDisplay);
-	Draw1Control(dialogData->parentEditor->controls.display.preview);
+	icnsEditorClass::statics.UpdatePalettes(dialogData->parentEditor, 0);
 	
 	RESTORECOLORS;
 }
 
-pascal void SliderActionFunction(ControlHandle theControl,short partCode)
+pascal void SliderActionFunction(ControlHandle theControl, short thePart)
 {
-#pragma unused (partCode)
-
 	AdjustDialogDataPtr dialogData;
 	Str255	tempString;
 	ControlHandle field;
 	short		fieldNo;
+	MWindowPtr	adjustDialogWindow;
 	
-	dialogData = AdjustDialogDataPtr(GetWRefCon(GetControlOwner(theControl)));
+	if (thePart == kControlPageUpPart || thePart == kControlPageDownPart)
+	{
+		Rect controlRect;
+		Point	where;
+		
+		GetControlBounds(theControl, &controlRect);
+		
+		GetMouse(&where);
+		
+		if (where.h < controlRect.left + kSliderEndcap) where.h = controlRect.left + kSliderEndcap;
+		else if (where.h > controlRect.right - kSliderEndcap) where.h = controlRect.right - kSliderEndcap;
+		
+		SetControlValue(theControl, GetControlMinimum(theControl) + float(where.h - (controlRect.left + kSliderEndcap))/float(controlRect.right - controlRect.left - kSliderEndcap * 2) * (GetControlMaximum(theControl) - GetControlMinimum(theControl)));
+	}
+	
+	adjustDialogWindow = MWindowPtr(GetWRefCon(GetControlOwner(theControl)));
+	dialogData = AdjustDialogDataPtr(adjustDialogWindow->GetRefCon());
 	
 	NumToString(GetControlValue(theControl), tempString);
 	
@@ -390,19 +428,5 @@ pascal void SliderActionFunction(ControlHandle theControl,short partCode)
 	
 	if (GetControlValue(dialogData->preview))
 		UpdateEffects(dialogData);
-
-	/*NumToString((SInt32) GetControlValue(controlHdl),theString);
-
-	dialogPtr = (*controlHdl)->contrlOwner;
-
-	if(controlHdl == gSlider3Hdl)
-		staticTextItem = iSlider3StaticText;
-	else if(controlHdl == gSlider4Hdl)
-		staticTextItem = iSlider4StaticText;
-
-	GetDialogItemAsControl(dialogPtr,staticTextItem,&controlHdl);
-	SetControlData(controlHdl,kControlNoPart,kControlStaticTextTextTag,theString[0],
-								 (Ptr) &theString[1]);
-	Draw1Control(controlHdl);*/
 }
 

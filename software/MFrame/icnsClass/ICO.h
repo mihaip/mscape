@@ -52,5 +52,15 @@ typedef struct
     ICONDIRENTRY*   		 idEntries; // An entry for each image (idCount of 'em)
 } ICONDIR, *LPICONDIR;
 
+typedef unsigned char (*SwapFunctionPtr)(unsigned char in);
+
+enum ICOFlags
+{
+	invert = 1
+};
+
 void LoadIconDirFromFile(ICONDIR* iconDir, FSSpec srcFileSpec);
+void AddIndexedICOMember(short file, PixMapHandle iconPix, GWorldPtr iconGW, PixMapHandle maskPix, long *dataOffset);
 void AddICOMember(short file, int width,int height, int colorCount, long* dataOffset, int bps, CTabHandle colorTable, PixMapHandle iconPix, PixMapHandle maskPix);
+void ReverseCopyPadded(unsigned char* source, unsigned char* target, int size, int width, int rowBytes, SwapFunctionPtr Swap, int flags);
+void ReverseCopyUnpadded(unsigned char* source, unsigned char* target, int sourceSize, int width, SwapFunctionPtr Swap, int flags);

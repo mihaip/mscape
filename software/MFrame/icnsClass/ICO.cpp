@@ -3,13 +3,14 @@
 
 void icnsClass::LoadICO()
 {
-	ICONDIR	iconDir;
-	unsigned char *targetCursor, *targetMaskCursor;
-	long	sourceSize;
-	GWorldPtr tempGW;
-	PixMapHandle tempPix;
-	CTabHandle tempTable;
-	long noOfColors;
+	ICONDIR			iconDir;
+	unsigned char	*iconCursor, *maskCursor;
+	long			sourceSize;
+	GWorldPtr		tempGW, maskGW;
+	PixMapHandle	tempPix = NULL, maskPix = NULL, targetIconPix, targetMaskPix;
+	CTabHandle		tempTable;
+	long			noOfColors;
+	Rect			iconRect;
 	
 	LoadIconDirFromFile(&iconDir, srcFileSpec);
 	
@@ -21,69 +22,62 @@ void icnsClass::LoadICO()
 	
 	for (int i=0; i < iconDir.idCount; i++)
 	{
+		SetRect(&iconRect,
+			 	0, 0,
+			 	iconDir.idEntries[i].iconImage->icHeader.biWidth,
+			 	iconDir.idEntries[i].iconImage->icHeader.biHeight/2);
+			 	
 		switch (iconDir.idEntries[i].iconImage->icHeader.biBitCount)
 		{
 			// 24 bit
 			case 24:
-							
-				switch (iconDir.idEntries[i].bWidth)
-				{
-					case 32:
-						targetCursor = (unsigned char*)(**il32Pix).baseAddr;
-						targetMaskCursor = (unsigned char*)(**icnmPix).baseAddr;
-						members |= il32;
-						members |= icnm;
-						break;
-					case 16:
-						targetCursor = (unsigned char*)(**is32Pix).baseAddr;
-						targetMaskCursor = (unsigned char*)(**icsmPix).baseAddr;
-						members |= is32;
-						members |= icsm;
-						break;
-				}
+				
+				NewGWorldUnpadded(&tempGW, 32, &iconRect, NULL);
+				tempPix = GetGWorldPixMap(tempGW);
+				LockPixels(tempPix);
+				iconCursor = (unsigned char*)(**tempPix).baseAddr;
+				
+				NewGWorldUnpadded(&maskGW, 1, &iconRect, NULL);
+				maskPix = GetGWorldPixMap(maskGW);
+				LockPixels(maskPix);
+				maskCursor = (unsigned char*)(**maskPix).baseAddr;
 				
 				sourceSize = iconDir.idEntries[i].iconImage->icHeader.biWidth *
 							 iconDir.idEntries[i].iconImage->icHeader.biHeight/2 *
 							 iconDir.idEntries[i].iconImage->icHeader.biBitCount/8;
 				
-				targetCursor += sourceSize * 4/3 - 4;
+				iconCursor += sourceSize * 4/3 - 4;
 								     
-				for (int j=0; j < sourceSize; j += 3)
+				for (int j=0; j < sourceSize; j+=3)
 				{
-					targetCursor[1] = iconDir.idEntries[i].iconImage->icXOR[j + 2];
-					targetCursor[2] = iconDir.idEntries[i].iconImage->icXOR[j + 1];
-					targetCursor[3] = iconDir.idEntries[i].iconImage->icXOR[j];
-					targetCursor -= 4;
+					iconCursor[1] = iconDir.idEntries[i].iconImage->icXOR[j + 2];
+					iconCursor[2] = iconDir.idEntries[i].iconImage->icXOR[j + 1];
+					iconCursor[3] = iconDir.idEntries[i].iconImage->icXOR[j];
+					iconCursor -=4;
 				}
 				
-				sourceSize = iconDir.idEntries[i].iconImage->icHeader.biWidth *
-						     iconDir.idEntries[i].iconImage->icHeader.biHeight/2/8;
 				
+				sourceSize = ((**maskPix).rowBytes & 0x3FFF) * ((**maskPix).bounds.bottom - (**maskPix).bounds.top);
 				
-				if (sourceSize < 128)
-					for (int j=0, k=0; j < sourceSize; j+=2, k+=4)
-					{
-						targetMaskCursor[sourceSize - j - 1] = ~SwapBits(iconDir.idEntries[i].iconImage->icAND[k]);
-						targetMaskCursor[sourceSize - j - 2] = ~SwapBits(iconDir.idEntries[i].iconImage->icAND[k + 1]);
-					}
+				ReverseCopyPadded(iconDir.idEntries[i].iconImage->icAND, maskCursor, 
+								  sourceSize, iconDir.idEntries[i].iconImage->icHeader.biWidth, (**maskPix).rowBytes & 0x3FFF,
+								  SwapBits, invert);
+				
+				if (iconDir.idEntries[i].bWidth <= 16)
+				{
+					members |= (icsm | is32);
+					targetMaskPix = icsmPix; targetIconPix = is32Pix;
+				}
+				else if (iconDir.idEntries[i].bWidth <= 32)
+				{
+					members |= (icnm | il32);
+					targetMaskPix = icnmPix; targetIconPix = il32Pix;
+				}
 				else
-					for (int j=0; j < sourceSize; j++)
-						targetMaskCursor[sourceSize - j - 1] = ~SwapBits(iconDir.idEntries[i].iconImage->icAND[j]);
-				
-				switch (iconDir.idEntries[i].bWidth)
 				{
-					case 32:
-						CopyPixMap(icnmPix, il32Pix, &largeIconRect, &largeIconRect, notSrcXor, NULL);
-						FlipHorizontal(il32Pix);
-						FlipHorizontal(icnmPix);
-						break;
-					case 16:
-						CopyPixMap(icsmPix, is32Pix, &smallIconRect, &smallIconRect, notSrcXor, NULL);
-						FlipHorizontal(is32Pix);
-						FlipHorizontal(icsmPix);
-						break;
+					members |= (ichm | ih32);
+					targetMaskPix = ichmPix; targetIconPix = ih32Pix;
 				}
-				
 				break;
 			
 			// 8 bit
@@ -91,7 +85,7 @@ void icnsClass::LoadICO()
 				if (iconDir.idEntries[i].iconImage->icHeader.biClrUsed != 0)
 					noOfColors = iconDir.idEntries[i].iconImage->icHeader.biClrUsed;
 				else noOfColors = 256;
-				
+
 				tempTable = (CTabHandle)NewHandle(sizeof(ColorTable) + (noOfColors - 1 ) * sizeof(ColorSpec));
 				(**tempTable).ctSeed = 231654213;
 				(**tempTable).ctFlags = 0;
@@ -103,85 +97,118 @@ void icnsClass::LoadICO()
 					(**tempTable).ctTable[j].rgb.green = iconDir.idEntries[i].iconImage->icColors[j].rgbGreen << 8;
 					(**tempTable).ctTable[j].rgb.blue = iconDir.idEntries[i].iconImage->icColors[j].rgbBlue << 8;
 				}
-				
-				switch (iconDir.idEntries[i].bWidth)
-				{
-					case 32:
-						NewGWorldUnpadded(&tempGW, 8, &largeIconRect, tempTable);
-						tempPix = GetGWorldPixMap(tempGW);
-						LockPixels(tempPix);
-						targetCursor = (unsigned char*)(**tempPix).baseAddr;
-						targetMaskCursor = (unsigned char*)(**icnmPix).baseAddr;
-						members |= icl8;
-						members |= icnm;
-						break;
-					case 16:
-						NewGWorldUnpadded(&tempGW, 8, &smallIconRect, tempTable);
-						tempPix = GetGWorldPixMap(tempGW);
-						LockPixels(tempPix);
-						targetCursor = (unsigned char*)(**tempPix).baseAddr;
-						targetMaskCursor = (unsigned char*)(**icsmPix).baseAddr;
-						members |= ics8;
-						members |= icsm;
-						break;
-				}
-				
+
+				NewGWorldUnpadded(&tempGW, 8, &iconRect, tempTable);
+				tempPix = GetGWorldPixMap(tempGW);
+				LockPixels(tempPix);
+				iconCursor = (unsigned char*)(**tempPix).baseAddr;
+
+				NewGWorldUnpadded(&maskGW, 1, &iconRect, NULL);
+				maskPix = GetGWorldPixMap(maskGW);
+				LockPixels(maskPix);
+				maskCursor = (unsigned char*)(**maskPix).baseAddr;
+
 				sourceSize = iconDir.idEntries[i].iconImage->icHeader.biWidth *
 							 iconDir.idEntries[i].iconImage->icHeader.biHeight/2 *
 							 iconDir.idEntries[i].iconImage->icHeader.biBitCount/8;
-				
+
 								     
 				for (int j=0; j < sourceSize; j++)
-					targetCursor[sourceSize - j - 1] = iconDir.idEntries[i].iconImage->icXOR[j];
+					iconCursor[sourceSize - j - 1] = iconDir.idEntries[i].iconImage->icXOR[j];
+
+				sourceSize = ((**maskPix).rowBytes & 0x3FFF) * ((**maskPix).bounds.bottom - (**maskPix).bounds.top);
 				
-				sourceSize = iconDir.idEntries[i].iconImage->icHeader.biWidth *
-						     iconDir.idEntries[i].iconImage->icHeader.biHeight/2/8;
+				ReverseCopyPadded(iconDir.idEntries[i].iconImage->icAND, maskCursor, 
+								  sourceSize, iconDir.idEntries[i].iconImage->icHeader.biWidth, (**maskPix).rowBytes & 0x3FFF,
+								  SwapBits, invert);
 				
-				
-				if (sourceSize < 128)
-					for (int j=0, k=0; j < sourceSize; j+=2, k+=4)
-					{
-						targetMaskCursor[sourceSize - j - 1] = ~SwapBits(iconDir.idEntries[i].iconImage->icAND[k]);
-						targetMaskCursor[sourceSize - j - 2] = ~SwapBits(iconDir.idEntries[i].iconImage->icAND[k + 1]);
-					}
-				else
-					for (int j=0; j < sourceSize; j++)
-						targetMaskCursor[sourceSize - j - 1] = ~SwapBits(iconDir.idEntries[i].iconImage->icAND[j]);
-				
-				switch (iconDir.idEntries[i].bWidth)
+					
+				if (iconDir.idEntries[i].bWidth <= 16)
 				{
-					case 32:
-						FlipHorizontal(icnmPix);
-						FlipHorizontal(tempPix);
-						CopyPixMap(tempPix, icl8Pix, &largeIconRect, &largeIconRect, srcCopy + ditherCopy, NULL);
-						CopyPixMap(icnmPix, icl8Pix, &largeIconRect, &largeIconRect, notSrcBic, NULL);
-						if (!(members & il32))
-						{
-							CopyPixMap(tempPix, il32Pix, &largeIconRect, &largeIconRect, srcCopy + ditherCopy, NULL);
-							CopyPixMap(icnmPix, il32Pix, &largeIconRect, &largeIconRect, notSrcBic, NULL);
-							members |= il32;
-						}
-						UnlockPixels(tempPix);
-						DisposeGWorld(tempGW);
-						
-						break;
-					case 16:
-						FlipHorizontal(tempPix);
-						FlipHorizontal(icsmPix);
-						CopyPixMap(tempPix, ics8Pix, &largeIconRect, &largeIconRect, srcCopy + ditherCopy, NULL);
-						CopyPixMap(icsmPix, ics8Pix, &smallIconRect, &smallIconRect, notSrcBic, NULL);
-						if (!(members & is32))
-						{
-							CopyPixMap(tempPix, is32Pix, &smallIconRect, &smallIconRect, srcCopy + ditherCopy, NULL);
-							CopyPixMap(icsmPix, is32Pix, &smallIconRect, &smallIconRect, notSrcBic, NULL);
-							members |= is32;
-						}
-						UnlockPixels(tempPix);
-						DisposeGWorld(tempGW);
-						break;
+					CTabHandle		colorTable;
+					PixMapHandle	tempPix2;
+					GWorldPtr		tempGW2;
+					
+					colorTable = GetCTable(rWindows8BitColors);
+					
+					NewIconSet(&tempGW2, &tempPix2, smallIconRect, 8, colorTable);
+					
+					DisposeCTable(colorTable);
+					
+					UnlockPixels(ics8Pix);
+					DisposeGWorld(ics8GW);
+					
+					ics8Pix = tempPix2;
+					ics8GW = tempGW2;
+					
+					members |= (icsm | ics8);
+					targetMaskPix = icsmPix; targetIconPix = ics8Pix;
+					if (!(members & is32))
+					{
+						CopyPixMap(tempPix, is32Pix, &iconRect, &smallIconRect, srcCopy + ditherCopy, NULL);
+						CopyPixMap(maskPix, is32Pix, &iconRect, &smallIconRect, notSrcBic, NULL);
+						FlipHorizontal(is32Pix);
+						members |= is32;
+					}
 				}
+				else if (iconDir.idEntries[i].bWidth <= 32)
+				{
+					CTabHandle		colorTable;
+					PixMapHandle	tempPix2;
+					GWorldPtr		tempGW2;
+					
+					colorTable = GetCTable(rWindows8BitColors);
+					
+					NewIconSet(&tempGW2, &tempPix2, largeIconRect, 8, colorTable);
+					
+					DisposeCTable(colorTable);
+					
+					UnlockPixels(icl8Pix);
+					DisposeGWorld(icl8GW);
+					
+					icl8Pix = tempPix2;
+					icl8GW = tempGW2;
+					
+					members |= (icnm | icl8);
+					targetMaskPix = icnmPix; targetIconPix = icl8Pix;
+					if (!(members & il32))
+					{
+						CopyPixMap(tempPix, il32Pix, &iconRect, &largeIconRect, srcCopy + ditherCopy, NULL);
+						CopyPixMap(maskPix, il32Pix, &iconRect, &largeIconRect, notSrcBic, NULL);
+						FlipHorizontal(il32Pix);
+						members |= il32;
+					}
+				}
+				else
+				{
+					CTabHandle		colorTable;
+					PixMapHandle	tempPix2;
+					GWorldPtr		tempGW2;
+					
+					colorTable = GetCTable(rWindows8BitColors);
+					
+					NewIconSet(&tempGW2, &tempPix2, hugeIconRect, 8, colorTable);
+					
+					DisposeCTable(colorTable);
+					
+					UnlockPixels(ich8Pix);
+					DisposeGWorld(ich8GW);
+					
+					ich8Pix = tempPix2;
+					ich8GW = tempGW2;
+					
+					members |= (ichm | ich8);
+					targetMaskPix = ichmPix; targetIconPix = ich8Pix;
+					if (!(members & ih32))
+					{
+						CopyPixMap(tempPix, ih32Pix, &iconRect, &hugeIconRect, srcCopy + ditherCopy, NULL);
+						CopyPixMap(maskPix, ih32Pix, &iconRect, &hugeIconRect, notSrcBic, NULL);
+						FlipHorizontal(ih32Pix);
+						members |= ih32;
+					}
+				}
+
 				DisposeCTable(tempTable);
-						
 				break;
 			
 			// 4 bit
@@ -189,7 +216,7 @@ void icnsClass::LoadICO()
 				if (iconDir.idEntries[i].iconImage->icHeader.biClrUsed != 0)
 					noOfColors = iconDir.idEntries[i].iconImage->icHeader.biClrUsed;
 				else noOfColors = 16;
-				
+
 				tempTable = (CTabHandle)NewHandle(sizeof(ColorTable) + (noOfColors - 1 ) * sizeof(ColorSpec));
 				(**tempTable).ctSeed = 231654213;
 				(**tempTable).ctFlags = 0;
@@ -201,133 +228,105 @@ void icnsClass::LoadICO()
 					(**tempTable).ctTable[j].rgb.green = iconDir.idEntries[i].iconImage->icColors[j].rgbGreen << 8;
 					(**tempTable).ctTable[j].rgb.blue = iconDir.idEntries[i].iconImage->icColors[j].rgbBlue << 8;
 				}
-				
-				switch (iconDir.idEntries[i].bWidth)
-				{
-					case 32:
-						NewGWorldUnpadded(&tempGW, 4, &largeIconRect, tempTable);
-						tempPix = GetGWorldPixMap(tempGW);
-						LockPixels(tempPix);
-						targetCursor = (unsigned char*)(**tempPix).baseAddr;
-						targetMaskCursor = (unsigned char*)(**icnmPix).baseAddr;
-						members |= icl4;
-						members |= icnm;
-						break;
-					case 16:
-						NewGWorldUnpadded(&tempGW, 4, &smallIconRect, tempTable);
-						tempPix = GetGWorldPixMap(tempGW);
-						LockPixels(tempPix);
-						targetCursor = (unsigned char*)(**tempPix).baseAddr;
-						targetMaskCursor = (unsigned char*)(**icsmPix).baseAddr;
-						members |= ics4;
-						members |= icsm;
-						break;
-				}
-				
+
+				NewGWorldUnpadded(&tempGW, 4, &iconRect, tempTable);
+				tempPix = GetGWorldPixMap(tempGW);
+				LockPixels(tempPix);
+				iconCursor = (unsigned char*)(**tempPix).baseAddr;
+
+				NewGWorldUnpadded(&maskGW, 1, &iconRect, NULL);
+				maskPix = GetGWorldPixMap(maskGW);
+				LockPixels(maskPix);
+				maskCursor = (unsigned char*)(**maskPix).baseAddr;
+
 				sourceSize = iconDir.idEntries[i].iconImage->icHeader.biWidth *
 							 iconDir.idEntries[i].iconImage->icHeader.biHeight/2 *
 							 iconDir.idEntries[i].iconImage->icHeader.biBitCount/8;
-				
+
 								     
 				for (int j=0; j < sourceSize; j++)
-					targetCursor[sourceSize - j - 1] = SwapNibble(iconDir.idEntries[i].iconImage->icXOR[j]);
+					iconCursor[sourceSize - j - 1] = SwapNibble(iconDir.idEntries[i].iconImage->icXOR[j]);
+
+				sourceSize = ((**maskPix).rowBytes & 0x3FFF) * ((**maskPix).bounds.bottom - (**maskPix).bounds.top);
 				
-				sourceSize = iconDir.idEntries[i].iconImage->icHeader.biWidth *
-						     iconDir.idEntries[i].iconImage->icHeader.biHeight/2/8;
-				
-				
-				if (sourceSize < 128)
-					for (int j=0, k=0; j < sourceSize; j+=2, k+=4)
-					{
-						targetMaskCursor[sourceSize - j - 1] = ~SwapBits(iconDir.idEntries[i].iconImage->icAND[k]);
-						targetMaskCursor[sourceSize - j - 2] = ~SwapBits(iconDir.idEntries[i].iconImage->icAND[k + 1]);
-					}
-				else
-					for (int j=0; j < sourceSize; j++)
-						targetMaskCursor[sourceSize - j - 1] = ~SwapBits(iconDir.idEntries[i].iconImage->icAND[j]);
-				
-				switch (iconDir.idEntries[i].bWidth)
+				ReverseCopyPadded(iconDir.idEntries[i].iconImage->icAND, maskCursor, 
+								  sourceSize, iconDir.idEntries[i].iconImage->icHeader.biWidth, (**maskPix).rowBytes & 0x3FFF,
+								  SwapBits, invert);
+								  
+				if (iconDir.idEntries[i].bWidth <= 16)
 				{
-					case 32:
-						CTabHandle colorTable;
-						PixMapHandle	tempPix2;
-						GWorldPtr		tempGW2;
-						
-						colorTable = GetCTable(2054);
-						
-						NewIconSet(&tempGW2, &tempPix2, largeIconRect, 4, colorTable);
-						
-						DisposeCTable(colorTable);
-						
-						UnlockPixels(icl4Pix);
-						DisposeGWorld(icl4GW);
-						
-						icl4Pix = tempPix2;
-						icl4GW = tempGW2;
+					CTabHandle colorTable;
+					PixMapHandle	tempPix2;
+					GWorldPtr		tempGW2;
 					
-						FlipHorizontal(tempPix);
-						FlipHorizontal(icnmPix);
-						CopyPixMap(tempPix, icl4Pix, &largeIconRect, &largeIconRect, srcCopy, NULL);
-						CopyPixMap(icnmPix, icl4Pix, &largeIconRect, &largeIconRect, notSrcBic, NULL);
-						/*if (!(members & icl8))
-						{
-							CopyPixMap(tempPix, icl8Pix, &largeIconRect, &largeIconRect, srcCopy + ditherCopy, NULL);
-							CopyPixMap(icnmPix, icl8Pix, &largeIconRect, &largeIconRect, notSrcXor, NULL);
-							members |= icl8;
-						}
-						if (!(members & il32))
-						{
-							CopyPixMap(tempPix, il32Pix, &largeIconRect, &largeIconRect, srcCopy + ditherCopy, NULL);
-							CopyPixMap(icnmPix, il32Pix, &largeIconRect, &largeIconRect, notSrcXor, NULL);
-							members |= il32;
-						}*/
-						UnlockPixels(tempPix);
-						DisposeGWorld(tempGW);
+					colorTable = GetCTable(rWindows4BitColors);
+					
+					NewIconSet(&tempGW2, &tempPix2, smallIconRect, 4, colorTable);
+					
+					DisposeCTable(colorTable);
+					
+					UnlockPixels(ics4Pix);
+					DisposeGWorld(ics4GW);
+					
+					ics4Pix = tempPix2;
+					ics4GW = tempGW2;
+					
+					members |= (icsm | ics4);
+					targetMaskPix = icsmPix; targetIconPix = ics4Pix;
 						
-						break;
-					case 16:
-						colorTable = GetCTable(2054);
-						
-						NewIconSet(&tempGW2, &tempPix2, smallIconRect, 4, colorTable);
-						
-						DisposeCTable(colorTable);
-						
-						UnlockPixels(ics4Pix);
-						DisposeGWorld(ics4GW);
-						
-						ics4Pix = tempPix2;
-						ics4GW = tempGW2;
-						
-						FlipHorizontal(icsmPix);
-						FlipHorizontal(tempPix);
-						CopyPixMap(tempPix, ics4Pix, &smallIconRect, &smallIconRect, srcCopy + ditherCopy, NULL);
-						CopyPixMap(icsmPix, ics4Pix, &smallIconRect, &smallIconRect, notSrcBic, NULL);
-						/*if (!(members & ics8))
-						{
-							CopyPixMap(tempPix, ics8Pix, &smallIconRect, &smallIconRect, srcCopy + ditherCopy, NULL);
-							CopyPixMap(icsmPix, ics8Pix, &smallIconRect, &smallIconRect, notSrcXor, NULL);
-							members |= ics8;
-						}
-						if (!(members & is32))
-						{
-							CopyPixMap(tempPix, is32Pix, &smallIconRect, &smallIconRect, srcCopy + ditherCopy, NULL);
-							CopyPixMap(icsmPix, is32Pix, &smallIconRect, &smallIconRect, notSrcXor, NULL);
-							members |= is32;
-						}*/
-						UnlockPixels(tempPix);
-						DisposeGWorld(tempGW);
-						break;
+				}
+				else if (iconDir.idEntries[i].bWidth <= 32)
+				{
+					CTabHandle colorTable;
+					PixMapHandle	tempPix2;
+					GWorldPtr		tempGW2;
+					
+					colorTable = GetCTable(rWindows4BitColors);
+					
+					NewIconSet(&tempGW2, &tempPix2, largeIconRect, 4, colorTable);
+					
+					DisposeCTable(colorTable);
+					
+					UnlockPixels(icl4Pix);
+					DisposeGWorld(icl4GW);
+					
+					icl4Pix = tempPix2;
+					icl4GW = tempGW2;
+
+					members |= (icnm | icl4);
+					targetMaskPix = icnmPix; targetIconPix = icl4Pix;
+				}
+				else
+				{
+					CTabHandle colorTable;
+					PixMapHandle	tempPix2;
+					GWorldPtr		tempGW2;
+					
+					colorTable = GetCTable(rWindows4BitColors);
+					
+					NewIconSet(&tempGW2, &tempPix2, hugeIconRect, 4, colorTable);
+					
+					DisposeCTable(colorTable);
+					
+					UnlockPixels(ich4Pix);
+					DisposeGWorld(ich4GW);
+					
+					ich4Pix = tempPix2;
+					ich4GW = tempGW2;
+
+					members |= (ichm | ich4);
+					targetMaskPix = ichmPix; targetIconPix = ich4Pix;
 				}
 				DisposeCTable(tempTable);
 						
 				break;
-				
+			
 			// 1 bit
 			case 1:
 				if (iconDir.idEntries[i].iconImage->icHeader.biClrUsed != 0)
 					noOfColors = iconDir.idEntries[i].iconImage->icHeader.biClrUsed;
 				else noOfColors = 2;
-				
+
 				tempTable = (CTabHandle)NewHandle(sizeof(ColorTable) + (noOfColors - 1 ) * sizeof(ColorSpec));
 				(**tempTable).ctSeed = 231654213;
 				(**tempTable).ctFlags = 0;
@@ -339,121 +338,71 @@ void icnsClass::LoadICO()
 					(**tempTable).ctTable[j].rgb.green = iconDir.idEntries[i].iconImage->icColors[j].rgbGreen << 8;
 					(**tempTable).ctTable[j].rgb.blue = iconDir.idEntries[i].iconImage->icColors[j].rgbBlue << 8;
 				}
+
+				NewGWorldUnpadded(&tempGW, 1, &iconRect, tempTable);
+				tempPix = GetGWorldPixMap(tempGW);
+				LockPixels(tempPix);
+				iconCursor = (unsigned char*)(**tempPix).baseAddr;
 				
-				switch (iconDir.idEntries[i].bWidth)
+				NewGWorldUnpadded(&maskGW, 1, &iconRect, NULL);
+				maskPix = GetGWorldPixMap(maskGW);
+				LockPixels(maskPix);
+				maskCursor = (unsigned char*)(**maskPix).baseAddr;
+
+				sourceSize = ((**tempPix).rowBytes & 0x3FFF) * ((**tempPix).bounds.bottom - (**tempPix).bounds.top);
+
+				ReverseCopyPadded(iconDir.idEntries[i].iconImage->icXOR, iconCursor, 
+								  sourceSize, iconDir.idEntries[i].iconImage->icHeader.biWidth, (**tempPix).rowBytes & 0x3FFF,
+								  SwapBits, 0);
+								  
+				
+
+				sourceSize = ((**maskPix).rowBytes & 0x3FFF) * ((**maskPix).bounds.bottom - (**maskPix).bounds.top);
+				
+				ReverseCopyPadded(iconDir.idEntries[i].iconImage->icAND, maskCursor, 
+								  sourceSize, iconDir.idEntries[i].iconImage->icHeader.biWidth, (**maskPix).rowBytes & 0x3FFF,
+								  SwapBits, invert);
+								  
+				if (iconDir.idEntries[i].bWidth <= 16)
 				{
-					case 32:
-						NewGWorldUnpadded(&tempGW, 1, &largeIconRect, tempTable);
-						tempPix = GetGWorldPixMap(tempGW);
-						LockPixels(tempPix);
-						targetCursor = (unsigned char*)(**tempPix).baseAddr;
-						targetMaskCursor = (unsigned char*)(**icnmPix).baseAddr;
-						members |= icni;
-						members |= icnm;
-						break;
-					case 16:
-						NewGWorldUnpadded(&tempGW, 1, &smallIconRect, tempTable);
-						tempPix = GetGWorldPixMap(tempGW);
-						LockPixels(tempPix);
-						CropPixMap(tempPix, 2);
-						targetCursor = (unsigned char*)(**tempPix).baseAddr;
-						targetMaskCursor = (unsigned char*)(**icsmPix).baseAddr;
-						members |= icsi;
-						members |= icsm;
-						break;
+					members |= (icsm | icsi);
+					targetMaskPix = icsmPix; targetIconPix = icsiPix;
 				}
-				
-				sourceSize = iconDir.idEntries[i].iconImage->icHeader.biWidth *
-							 iconDir.idEntries[i].iconImage->icHeader.biHeight/2 *
-							 iconDir.idEntries[i].iconImage->icHeader.biBitCount/8;
-				
-				
-				if (sourceSize < 128)
-					for (int j=0, k=0; j < sourceSize; j+=2, k+=4)
-					{
-						targetCursor[sourceSize - j - 1] = SwapBits(iconDir.idEntries[i].iconImage->icXOR[k]);
-						targetCursor[sourceSize - j - 2] = SwapBits(iconDir.idEntries[i].iconImage->icXOR[k + 1]);
-					}
-				else
-					for (int j=0; j < sourceSize; j++)
-						targetCursor[sourceSize - j - 1] = SwapBits(iconDir.idEntries[i].iconImage->icXOR[j]);
-				
-				
-				sourceSize = iconDir.idEntries[i].iconImage->icHeader.biWidth *
-						     iconDir.idEntries[i].iconImage->icHeader.biHeight/2/8;
-				
-				
-				if (sourceSize < 128)
-					for (int j=0, k=0; j < sourceSize; j+=2, k+=4)
-					{
-						targetMaskCursor[sourceSize - j - 1] = ~SwapBits(iconDir.idEntries[i].iconImage->icAND[k]);
-						targetMaskCursor[sourceSize - j - 2] = ~SwapBits(iconDir.idEntries[i].iconImage->icAND[k + 1]);
-					}
-				else
-					for (int j=0; j < sourceSize; j++)
-						targetMaskCursor[sourceSize - j - 1] = ~SwapBits(iconDir.idEntries[i].iconImage->icAND[j]);
-				
-				switch (iconDir.idEntries[i].bWidth)
+				else if (iconDir.idEntries[i].bWidth <= 32)
 				{
-					case 32:
-						FlipHorizontal(icnmPix);
-						FlipHorizontal(tempPix);
-						CopyPixMap(tempPix, icniPix, &largeIconRect, &largeIconRect, srcCopy + ditherCopy, NULL);
-						CopyPixMap(icnmPix, icniPix, &largeIconRect, &largeIconRect, notSrcBic, NULL);
-						if (!(members & icl4))
-						{
-							CopyPixMap(tempPix, icl4Pix, &largeIconRect, &largeIconRect, srcCopy + ditherCopy, NULL);
-							CopyPixMap(icnmPix, icl4Pix, &largeIconRect, &largeIconRect, notSrcBic, NULL);
-							members |= icl4;
-						}
-						if (!(members & icl8))
-						{
-							CopyPixMap(tempPix, icl8Pix, &largeIconRect, &largeIconRect, srcCopy + ditherCopy, NULL);
-							CopyPixMap(icnmPix, icl8Pix, &largeIconRect, &largeIconRect, notSrcBic, NULL);
-							members |= icl8;
-						}
-						if (!(members & il32))
-						{
-							CopyPixMap(tempPix, il32Pix, &largeIconRect, &largeIconRect, srcCopy + ditherCopy, NULL);
-							CopyPixMap(icnmPix, il32Pix, &largeIconRect, &largeIconRect, notSrcBic, NULL);
-							members |= il32;
-						}
-						UnlockPixels(tempPix);
-						DisposeGWorld(tempGW);
-						break;
-					case 16:
-						FlipHorizontal(tempPix);
-						FlipHorizontal(icsmPix);
-						CopyPixMap(tempPix, icsiPix, &smallIconRect, &smallIconRect, srcCopy + ditherCopy, NULL);
-						CopyPixMap(icsmPix, icsiPix, &smallIconRect, &smallIconRect, notSrcBic, NULL);
-						if (!(members & ics4))
-						{
-							CopyPixMap(tempPix, ics4Pix, &smallIconRect, &smallIconRect, srcCopy + ditherCopy, NULL);
-							CopyPixMap(icsmPix, ics4Pix, &smallIconRect, &smallIconRect, notSrcBic, NULL);
-							members |= ics4;
-						}
-						if (!(members & ics8))
-						{
-							CopyPixMap(tempPix, ics8Pix, &smallIconRect, &smallIconRect, srcCopy + ditherCopy, NULL);
-							CopyPixMap(icsmPix, ics8Pix, &smallIconRect, &smallIconRect, notSrcBic, NULL);
-							members |= ics8;
-						}
-						if (!(members & is32))
-						{
-							CopyPixMap(tempPix, is32Pix, &smallIconRect, &smallIconRect, srcCopy + ditherCopy, NULL);
-							CopyPixMap(icsmPix, is32Pix, &smallIconRect, &smallIconRect, notSrcBic, NULL);
-							members |= is32;
-						}
-						UnlockPixels(tempPix);
-						DisposeGWorld(tempGW);
-						break;
+					members |= (icnm | icni);
+					targetMaskPix = icnmPix; targetIconPix = icniPix;
+				}
+				else
+				{
+					members |= (ichm | ichi);
+					targetMaskPix = ichmPix; targetIconPix = ichiPix;
 				}
 				DisposeCTable(tempTable);
-						
+					
+				break;
+			default:
+				tempPix = NULL; maskPix = NULL;
 				break;
 		}
+		if (tempPix != NULL && maskPix != NULL)
+		{
+			FlipHorizontal(maskPix);
+			FlipHorizontal(tempPix);
+			CopyPixMap(tempPix, targetIconPix, &iconRect, &(**targetIconPix).bounds, srcCopy, NULL);
+			CopyPixMap(maskPix, targetMaskPix, &iconRect, &(**targetIconPix).bounds, srcCopy, NULL);
+			
+			CopyPixMap(targetMaskPix, targetIconPix, &(**targetMaskPix).bounds, &(**targetIconPix).bounds, notSrcBic, NULL);
+					
+			UnlockPixels(tempPix);
+			DisposeGWorld(tempGW);
+			
+			UnlockPixels(maskPix);
+			DisposeGWorld(maskGW);
+		}
+						
 	}
-	
+
 	
 	for (int i=0; i < iconDir.idCount; i++)
 	{
@@ -481,10 +430,10 @@ void icnsClass::SaveICO(void)
 	SetFPos(file, fsFromStart, 0);
 	
 	iconCount = 0;
-	if (members & il32) iconCount++; if (members & is32) iconCount++;
-	if (members & icl8) iconCount++; if (members & ics8) iconCount++;
-	if (members & icl4) iconCount++; if (members & ics4) iconCount++;
-	if (members & icni) iconCount++; if (members & icsi) iconCount++;
+	if (members & ih32) iconCount++; if (members & il32) iconCount++; if (members & is32) iconCount++;
+	if (members & ich8) iconCount++; if (members & icl8) iconCount++; if (members & ics8) iconCount++;
+	if (members & ich4) iconCount++; if (members & icl4) iconCount++; if (members & ics4) iconCount++;
+	if (members & ichi) iconCount++; if (members & icni) iconCount++; if (members & icsi) iconCount++;
 	
 	writeLength = sizeof(short);
 	tempShort = 0; FSWriteLE(file, &writeLength, &tempShort); // reserved, must be zero
@@ -493,90 +442,78 @@ void icnsClass::SaveICO(void)
 	
 	dataOffset = 6 + iconCount * 16;
 	
+	if (members & ih32)
+		AddICOMember(file, 48, 48, 0, &dataOffset, 24, NULL, ih32Pix, ichmPix);
 	if (members & il32)
 		AddICOMember(file, 32, 32, 0, &dataOffset, 24, NULL, il32Pix, icnmPix);
 	if (members & is32)
 		AddICOMember(file, 16, 16, 0, &dataOffset, 24, NULL, is32Pix, icsmPix);
-		
+	
+	if (members & ich8)
+		if (members & ih32)
+			AddIndexedICOMember(file, ih32Pix, ih32GW, ichmPix, &dataOffset);
+		else
+			AddICOMember(file, 48, 48, 0, &dataOffset, 8, (**ich8Pix).pmTable, ich8Pix, ichmPix);
+			
 	if (members & icl8)
 		if (members & il32)
-		{
-			GWorldPtr 		tempGW;
-			PixMapHandle	tempPix;
-			CTabHandle		colorTable;
-			PictInfo		pictInfo;
-			
-			GetPixMapInfo(il32Pix, &pictInfo, returnColorTable, 256, systemMethod, 0);
-			
-			colorTable = pictInfo.theColorTable;
-			
-			NewGWorldUnpadded(&tempGW, 8, &largeIconRect, colorTable);
-			tempPix = GetGWorldPixMap(tempGW);
-			LockPixels(tempPix);
-			
-			SAVEGWORLD;
-			SAVECOLORS;
-			
-			SetGWorld(il32GW, NULL);
-			
-			CopyPixMap(il32Pix, tempPix, &largeIconRect, &largeIconRect, srcCopy, NULL);
-			
-			AddICOMember(file, 32, 32, 0, &dataOffset, 8, colorTable, tempPix, icnmPix);
-	
-			UnlockPixels(tempPix);
-			DisposeGWorld(tempGW);
-			
-			RESTORECOLORS;
-			RESTOREGWORLD;
-		}
+			AddIndexedICOMember(file, il32Pix, il32GW, icnmPix, &dataOffset);
 		else
 			AddICOMember(file, 32, 32, 0, &dataOffset, 8, (**icl8Pix).pmTable, icl8Pix, icnmPix);
+			
 	if (members & ics8)
 		if (members & is32)
-			{
-				GWorldPtr 		tempGW;
-				PixMapHandle	tempPix;
-				CTabHandle		colorTable;
-				PictInfo		pictInfo;
-				
-				GetPixMapInfo(is32Pix, &pictInfo, returnColorTable, 256, systemMethod, 0);
-				
-				colorTable = pictInfo.theColorTable;
-				
-				NewGWorldUnpadded(&tempGW, 8, &smallIconRect, colorTable);
-				tempPix = GetGWorldPixMap(tempGW);
-				LockPixels(tempPix);
-				
-				SAVEGWORLD;
-				SAVECOLORS;
-				
-				SetGWorld(is32GW, NULL);
-				
-				CopyPixMap(is32Pix, tempPix, &smallIconRect, &smallIconRect, srcCopy, NULL);
-				
-				AddICOMember(file, 16, 16, 0, &dataOffset, 8, colorTable, tempPix, icsmPix);
-		
-				UnlockPixels(tempPix);
-				DisposeGWorld(tempGW);
-				
-				RESTORECOLORS;
-				RESTOREGWORLD;
-			}
+			AddIndexedICOMember(file, is32Pix, is32GW, icsmPix, &dataOffset);
 		else
 			AddICOMember(file, 16, 16, 0, &dataOffset, 8, (**ics8Pix).pmTable, ics8Pix, icsmPix);
-		
+	
+	if (members & ich4)
+		AddICOMember(file, 48, 48, 0, &dataOffset, 4, (**ich4Pix).pmTable, ich4Pix, ichmPix);
 	if (members & icl4)
 		AddICOMember(file, 32, 32, 0, &dataOffset, 4, (**icl4Pix).pmTable, icl4Pix, icnmPix);
 	if (members & ics4)
 		AddICOMember(file, 16, 16, 0, &dataOffset, 4, (**ics4Pix).pmTable, ics4Pix, icsmPix);
-		
+	
+	if (members & ichi)
+		AddICOMember(file, 48, 48, 0, &dataOffset, 1, (**ichiPix).pmTable, ichiPix, ichmPix);
 	if (members & icni)
 		AddICOMember(file, 32, 32, 0, &dataOffset, 1, (**icniPix).pmTable, icniPix, icnmPix);
 	if (members & icsi)
 		AddICOMember(file, 16, 16, 0, &dataOffset, 1, (**icsiPix).pmTable, icsiPix, icsmPix);
 		
 	FSClose(file);
-}	
+}
+
+void AddIndexedICOMember(short file, PixMapHandle iconPix, GWorldPtr iconGW, PixMapHandle maskPix, long *dataOffset)
+{
+	GWorldPtr 		tempGW;
+	PixMapHandle	tempPix;
+	CTabHandle		colorTable;
+	PictInfo		pictInfo;
+	
+	GetPixMapInfo(iconPix, &pictInfo, returnColorTable, 256, systemMethod, 0);
+	
+	colorTable = pictInfo.theColorTable;
+	
+	NewGWorldUnpadded(&tempGW, 8, &(**iconPix).bounds, colorTable);
+	tempPix = GetGWorldPixMap(tempGW);
+	LockPixels(tempPix);
+	
+	SAVEGWORLD;
+	SAVECOLORS;
+	
+	SetGWorld(iconGW, NULL);
+	
+	CopyPixMap(iconPix, tempPix, &(**iconPix).bounds, &(**iconPix).bounds, srcCopy, NULL);
+	
+	AddICOMember(file, (**iconPix).bounds.right, (**iconPix).bounds.bottom, 0, dataOffset, 8, colorTable, tempPix, maskPix);
+
+	UnlockPixels(tempPix);
+	DisposeGWorld(tempGW);
+	
+	RESTORECOLORS;
+	RESTOREGWORLD;
+}
 
 void AddICOMember(short file, int width,int height, int colorCount, long* dataOffset, int bps, CTabHandle colorTable, PixMapHandle iconPix, PixMapHandle maskPix)
 {
@@ -585,7 +522,7 @@ void AddICOMember(short file, int width,int height, int colorCount, long* dataOf
 	unsigned char 	tempChar;
 	unsigned long	tempLong;
 	unsigned char *buff, *srcCursor;
-	long			imageSize, maskSize, colorsSize, structSize, oldPos;
+	long			imageSize, maskSize, colorsSize, structSize, oldPos, size;
 	OSErr			err;
 	
 	GWorldPtr		tempGW;
@@ -613,13 +550,15 @@ void AddICOMember(short file, int width,int height, int colorCount, long* dataOf
 	UnlockPixels(tempPix);
 	DisposeGWorld(tempGW);
 	
-	if ((width * bps / 8) < 4)
-		imageSize = 4 * height;
-	else
-		imageSize = width * height * bps/8;
 	
-	if (width/8 < 4) // less than 4 bytes per row, needs padding....
-		maskSize = 4 * height;
+	
+	if (width * bps % 32 != 0)
+		imageSize = height * (width * bps / 32 + 1) * 32 / 8;
+	else
+		imageSize = height * width * bps/8;
+	
+	if (width % 32 != 0)
+		maskSize = height * (width / 32 + 1) * 32 / 8;
 	else
 		maskSize = width * height / 8;
 		
@@ -667,7 +606,7 @@ void AddICOMember(short file, int width,int height, int colorCount, long* dataOf
 	tempLong = 0; FSWriteLE(file, &writeLength, &tempLong); // colors used
 	tempLong = 0; FSWriteLE(file, &writeLength, &tempLong); // colors important
 	
-	// colors would go here, but not in this case
+	// colors
 	if (colorTable != NULL)
 	{
 		writeLength = sizeof(char);
@@ -704,18 +643,8 @@ void AddICOMember(short file, int width,int height, int colorCount, long* dataOf
 				buff[i] = SwapNibble(srcCursor[writeLength - i - 1]);
 			break;
 		case 1:
-			if (width/8 < 4)
-			{
-				imageSize = width * height / 8;
-				for (int i=0, k=0; i < imageSize; i+=2, k += 4)
-				{
-					buff[k    ] = SwapBits(srcCursor[imageSize - i - 1]);
-					buff[k + 1] = SwapBits(srcCursor[imageSize - i - 2]);
-				}
-			}
-			else 
-				for (int i=0; i < writeLength; i++)
-					buff[i] = SwapBits(srcCursor[writeLength - i - 1]);
+			size = ((**iconPix).rowBytes & 0x3FFF) * ((**iconPix).bounds.bottom - (**iconPix).bounds.top);
+			ReverseCopyUnpadded(srcCursor, buff, size, width, SwapBits, 0); 
 			break;
 	}
 	FSWrite(file, &writeLength, buff);
@@ -728,18 +657,8 @@ void AddICOMember(short file, int width,int height, int colorCount, long* dataOf
 	FlipHorizontal(maskPix);
 	srcCursor = (unsigned char*)(**maskPix).baseAddr;
 	
-	if (width/8 < 4)
-	{
-		maskSize = width * height / 8;
-		for (int i=0, k=0; i < maskSize; i+=width/8, k += 4)
-		{
-			buff[k    ] = ~SwapBits(srcCursor[maskSize - i - 1]);
-			buff[k + 1] = ~SwapBits(srcCursor[maskSize - i - 2]);
-		}
-	}
-	else 
-		for (int i=0; i < writeLength; i++)
-			buff[i] = ~SwapBits(srcCursor[writeLength - i - 1]);
+	size = ((**maskPix).rowBytes & 0x3FFF) * ((**maskPix).bounds.bottom - (**maskPix).bounds.top);
+	ReverseCopyUnpadded(srcCursor, buff, size, width, SwapBits, invert); 
 	
 	FSWrite(file, &writeLength, buff);
 	FlipHorizontal(maskPix);
@@ -751,7 +670,7 @@ void AddICOMember(short file, int width,int height, int colorCount, long* dataOf
 	tempPix = GetGWorldPixMap(tempGW);
 	LockPixels(tempPix);
 	SetGWorld(tempGW, NULL);
-	EraseRect(&largeIconRect);
+	EraseRect(&(**maskPix).bounds);
 
 	CopyMask((BitMap*)*iconPix,
 			 (BitMap*)*maskPix,
@@ -846,37 +765,88 @@ void LoadIconDirFromFile(ICONDIR* iconDir, FSSpec srcFileSpec)
 			FSReadLE(file, &readLength, &iconDir->idEntries[i].iconImage->icColors[j].rgbReserved);
 		}
 		
-		if (iconDir->idEntries[i].iconImage->icHeader.biWidth * iconDir->idEntries[i].iconImage->icHeader.biBitCount/8 < 4)
-			readLength = 4 * iconDir->idEntries[i].iconImage->icHeader.biHeight/2 * 2; // icon and mask are the same size
-		else
-		{
-			readLength = (iconDir->idEntries[i].iconImage->icHeader.biWidth *
-		    			  iconDir->idEntries[i].iconImage->icHeader.biHeight/2 *
-		    			  iconDir->idEntries[i].iconImage->icHeader.biBitCount/8);
-		    if (iconDir->idEntries[i].iconImage->icHeader.biWidth/8 < 4)
-				readLength += 4 * iconDir->idEntries[i].iconImage->icHeader.biHeight/2; // icon and mask are the same size
-			else
-				readLength += (iconDir->idEntries[i].iconImage->icHeader.biWidth *
-		    			       iconDir->idEntries[i].iconImage->icHeader.biHeight/2/8);
-		}
+		readLength = 0;
 		
+		int iconSize, width, height, bps;
+		
+		width = iconDir->idEntries[i].iconImage->icHeader.biWidth;
+		height = iconDir->idEntries[i].iconImage->icHeader.biHeight/2;
+		bps = iconDir->idEntries[i].iconImage->icHeader.biBitCount;
+		
+		if (width * bps % 32 != 0)
+			readLength += (iconSize = (width/32 + 1) * 32 * height * bps / 8);
+		else
+			readLength += (iconSize = width * height * bps / 8);	
+		
+		if (width % 32 != 0)
+			readLength += (width/32 + 1) * 32 * height / 8;
+		else
+			readLength += width * height / 8;
 		
 		iconDir->idEntries[i].iconImage->icXOR = new unsigned char[readLength];
 		
 		// this actually should take care of both icon and mask
 		err = noErr;
 		err = FSRead(file, &readLength, iconDir->idEntries[i].iconImage->icXOR);
-		if (iconDir->idEntries[i].iconImage->icHeader.biWidth * iconDir->idEntries[i].iconImage->icHeader.biBitCount/8 < 4)
-			iconDir->idEntries[i].iconImage->icAND = iconDir->idEntries[i].iconImage->icXOR +
-													 4 * iconDir->idEntries[i].iconImage->icHeader.biHeight/2;
-		else
-			iconDir->idEntries[i].iconImage->icAND = iconDir->idEntries[i].iconImage->icXOR +
-													 (iconDir->idEntries[i].iconImage->icHeader.biWidth *
-									    			 iconDir->idEntries[i].iconImage->icHeader.biHeight/2 *
-									    			 iconDir->idEntries[i].iconImage->icHeader.biBitCount/8);
+		
+		// the mask is part of the icon
+		iconDir->idEntries[i].iconImage->icAND = iconDir->idEntries[i].iconImage->icXOR + iconSize;
 		
 		SetFPos(file, fsFromStart, savedPos);
 	}
 	
 	FSClose(file);
+}
+
+void ReverseCopyPadded(unsigned char* source, unsigned char* target, int sourceSize, int width, int targetRowBytes, SwapFunctionPtr Swap, int flags)
+{
+	if (width % 32 != 0)
+	{
+		int maskIncrement, dataIncrement, padding = 0;
+	
+		maskIncrement = width/8;
+		if (maskIncrement != targetRowBytes)
+		{
+			padding = targetRowBytes - maskIncrement;
+			maskIncrement = targetRowBytes;
+		}
+		dataIncrement = (width/32 + 1) * 32 / 8;
+		
+		for (int j=0, k=0; j < sourceSize; j += maskIncrement, k += dataIncrement)
+			for (int l=0; l < maskIncrement; l++)
+				if (flags & invert)
+					target[sourceSize - j - (l + 1) - padding] = ~Swap(source[k + l]);
+				else
+					target[sourceSize - j - (l + 1) - padding] = Swap(source[k + l]);
+	}
+	else
+		for (int j=0; j < sourceSize; j++)
+			if (flags & invert)
+				target[sourceSize - j - 1] = ~Swap(source[j]);
+			else
+				target[sourceSize - j - 1] = Swap(source[j]);
+}
+
+void ReverseCopyUnpadded(unsigned char* source, unsigned char* target, int sourceSize, int width, SwapFunctionPtr Swap, int flags)
+{
+	if (width % 32 != 0)
+	{
+		int maskIncrement, dataIncrement;
+	
+		maskIncrement = (width/32 + 1) * 32 / 8;
+		dataIncrement = width/8;
+		
+		for (int j=0, k=0; k < sourceSize; j += maskIncrement, k += dataIncrement)
+			for (int l=0; l < dataIncrement; l++)
+				if (flags & invert)
+					target[j + l] = ~Swap(source[sourceSize - (k + l + 1)]);
+				else
+					target[j + l] = Swap(source[sourceSize - (k + l + 1)]);
+	}
+	else
+		for (int j=0; j < sourceSize; j++)
+			if (flags & invert)
+				target[j] = ~Swap(source[sourceSize - j - 1]);
+			else
+				target[j] = Swap(source[sourceSize - j - 1]);
 }

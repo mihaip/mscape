@@ -64,250 +64,8 @@ resource 'CNTL' (1013, "Lightness Slider", purgeable) {
 	"Luminosité :"
 };
 
-resource 'CNTL' (128, "Pen Tool", purgeable) {
-	{51, 5, 73, 31},
-	0,
-	visible,
-	128,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (129, "Eyedropper Tool", purgeable) {
-	{51, 31, 73, 57},
-	0,
-	visible,
-	129,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (130, "Fill Tool", purgeable) {
-	{73, 5, 95, 31},
-	0,
-	visible,
-	130,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (131, "Eraser Tool", purgeable) {
-	{73, 31, 95, 57},
-	0,
-	visible,
-	131,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (132, "Marquee Tool", purgeable) {
-	{7, 5, 29, 31},
-	0,
-	visible,
-	132,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (133, "Move Tool", purgeable) {
-	{7, 31, 29, 57},
-	0,
-	visible,
-	133,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (134, "Lasso Tool", purgeable) {
-	{29, 5, 51, 31},
-	0,
-	visible,
-	134,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (135, "Wand Tool", purgeable) {
-	{29, 31, 51, 57},
-	0,
-	visible,
-	135,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (136, "Line Tool", purgeable) {
-	{117, 5, 139, 31},
-	0,
-	visible,
-	136,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (137, "Rectangle Tool", purgeable) {
-	{95, 5, 117, 31},
-	0,
-	visible,
-	137,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (138, "Oval Tool", purgeable) {
-	{95, 31, 117, 57},
-	0,
-	visible,
-	138,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (139, "Polygon Tool", purgeable) {
-	{117, 31, 139, 57},
-	0,
-	visible,
-	139,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (140, "Gradient Tool", purgeable) {
-	{139, 5, 161, 31},
-	0,
-	visible,
-	140,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (141, "Text Tool", purgeable) {
-	{139, 31, 161, 57},
-	0,
-	visible,
-	141,
-	258,
-	32,
-	0,
-	""
-};
-
 resource 'CNTL' (200, "Icon Edit Well", purgeable) {
 	{8, 64, 202, 258},
-	0,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (204, "Icon Display", purgeable) {
-	{24, 296, 124, 356},
-	0,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (205, "Mask Display", purgeable) {
-	{24, 360, 124, 420},
-	0,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (208, "Icon Label", purgeable) {
-	{126, 298, 138, 352},
-	0,
-	visible,
-	100,
-	0,
-	288,
-	0,
-	"Icone"
-};
-
-resource 'CNTL' (209, "Mask Label", purgeable) {
-	{126, 366, 138, 420},
-	0,
-	visible,
-	100,
-	0,
-	288,
-	0,
-	"Masque"
-};
-
-resource 'CNTL' (210, "Preview", purgeable) {
-	{141, 296, 195, 420},
-	32,
-	visible,
-	0,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (211, "Preview Label", purgeable) {
-	{196, 296, 208, 420},
-	0,
-	visible,
-	100,
-	0,
-	288,
-	0,
-	"Prévisualisation"
-};
-
-resource 'CNTL' (212, "Patterns", purgeable) {
-	{167, 7, 181, 55},
-	0,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (203, "Fore/Back Color", purgeable) {
-	{187, 11, 227, 51},
 	0,
 	visible,
 	100,
@@ -322,28 +80,6 @@ resource 'CNTL' (201, "Zoom Placard", purgeable) {
 	32,
 	visible,
 	0,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (202, "Info Placard", purgeable) {
-	{241, 62, 257, 418},
-	32,
-	visible,
-	0,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (213, "Background Pane", purgeable) {
-	{-1, -1, 4, 4},
-	0,
-	visible,
-	100,
 	0,
 	256,
 	0,
@@ -394,17 +130,6 @@ resource 'CNTL' (1015, "Contrast Slider", purgeable) {
 	"Contraste :"
 };
 
-resource 'CNTL' (214, "Toolbar Well", purgeable) {
-	{7, 5, 161, 57},
-	0,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
 resource 'CNTL' (1010, "Adjust Tabs", purgeable) {
 	{8, 0, 141, 367},
 	1010,
@@ -412,28 +137,6 @@ resource 'CNTL' (1010, "Adjust Tabs", purgeable) {
 	100,
 	0,
 	128,
-	0,
-	""
-};
-
-resource 'CNTL' (206, "Icon Popup", purgeable) {
-	{5, 296, 21, 356},
-	0,
-	visible,
-	0,
-	200,
-	401,
-	0,
-	""
-};
-
-resource 'CNTL' (207, "Mask Popup", purgeable) {
-	{5, 360, 21, 420},
-	0,
-	visible,
-	0,
-	201,
-	401,
 	0,
 	""
 };
@@ -911,44 +614,36 @@ resource 'CNTL' (256, "Colors Palette: Position Readout Data", purgeable) {
 	"128\n67"
 };
 
-resource 'STR#' (202, "Icon Part Names", purgeable) {
-	{	/* array StringArray: 18 elements */
-		/* [1] */
-		"Grande icone 32-bit",
-		/* [2] */
-		"Petite icone 32-bit",
-		/* [3] */
-		"Grand masque 8-bit",
-		/* [4] */
-		"Petit masque 8-bit",
-		/* [5] */
-		"Grande icone 8-bit",
-		/* [6] */
-		"Petite icone 8-bit",
-		/* [7] */
-		"Grande icone 4-bit",
-		/* [8] */
-		"Petite icone 4-bit",
-		/* [9] */
-		"Grande icone 1-bit",
-		/* [10] */
-		"Petite icone 1-bit",
-		/* [11] */
-		"Grand masque 1-bit",
-		/* [12] */
-		"Petit masque 1-bit",
-		/* [13] */
+resource 'STR#' (4001, "Icon Part Names", purgeable) {
+	{	/* array StringArray: 24 elements */
+		"Thumbnail 32-bit Icon",
+		"Thumbnail 8-bit Mask",
+		
 		"Très grande icone 32-bit",
-		/* [14] */
-		"Très grand masque 8-bit",
-		/* [15] */
-		"Très grande icone 1-bit",
-		/* [16] */
-		"Très grand masque 1-bit",
-		/* [17] */
 		"Très grande icone 8-bit",
-		/* [18] */
-		"Très grande icone 4-bit"
+		"Très grande icone 4-bit",
+		"Très grande icone 1-bit",
+		"Très grand masque 8-bit",
+		"Très grand masque 1-bit",
+		
+		"Grande icone 32-bit",
+		"Grande icone 8-bit",
+		"Grande icone 4-bit",
+		"Grande icone 1-bit",
+		"Grand masque 8-bit",
+		"Grand masque 1-bit",
+		
+		"Petite icone 32-bit",
+		"Petite icone 8-bit",
+		"Petite icone 4-bit",
+		"Petite icone 1-bit",
+		"Petit masque 8-bit",
+		"Petit masque 1-bit",
+		
+		"Mini 8-bit Icon",
+		"Mini 4-bit Icon",
+		"Mini 1-bit Icon",
+		"Mini 1-bit Mask"
 	}
 };
 
@@ -1106,7 +801,7 @@ resource 'STR#' (300, "Icon Browser: Strings", purgeable) {
 		/* [5] */
 		"Types d'icone : <types>",
 		/* [6] */
-		"<number> icones",
+		"<number>/<total> icones",
 		/* [7] */
 		"Voulez-vous vraiment effacer l'icone ID: <icon ID> du fichier “<file name>”?"
 	}

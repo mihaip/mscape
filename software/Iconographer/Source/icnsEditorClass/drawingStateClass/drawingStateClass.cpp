@@ -196,12 +196,7 @@ void drawingStateClass::RestoreState(icnsEditorPtr editor)
 	// do this when we the gworld we're restoring to was simply dragged to, and so it wasn't
 	// the current pix).
 	if (!(status & dontRestoreCurrentPix))
-	{
-		editor->currentPixName = drawingPixName;
-		editor->currentGW = targetGW;
-		editor->currentPix = targetPix;
-		editor->RefreshPopups();
-	}
+		editor->SetCurrentMember(drawingPixName, false);
 	
 	// restoring the status
 	editor->status = status;

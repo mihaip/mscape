@@ -7,11 +7,15 @@
 //				  interaction and the cleaning up in the end.
 
 #include "iconmangler.h"
+#include "MHTMLHelp.h"
+
+#define EXPIRES
 
 // globals, only the minimum necessary
 bool			gIsDone; // true when the application is ready to quit
 Str255			gAppName; // the name of the application (loaded from a resource)
 MWindowPtr		gLastFrontWindow = (MWindow*)-1;
+Str255			gLastFrontWindowTitle = "\p";
 
 
 // __________________________________________________________________________________________
@@ -48,8 +52,6 @@ void Initialize()
 	OSErr			err; // used to check if functions returned errors or not
 	
 	gIsDone = false; // we're not ready to quit...
-	MenuHandle	windowsMenu;
-	Str255 		menuItemText;
 	
 	
 	GetIndString(gAppName, rDefaultNames, eAppName);
@@ -62,7 +64,7 @@ void Initialize()
 	
 #ifdef EXPIRES	
 	GetTime(&theDate); // and if we haven't expired
-	if (theDate.month >= 9 && theDate.day >= 1 && theDate.year >= 1999)
+	if (theDate.month >= 9 && theDate.day >= 1 && theDate.year >= 2000)
 	{
 		DoError(rStdErrors, eExpired);
 		gIsDone = true;
@@ -102,22 +104,31 @@ void Initialize()
 		DeleteMenuItem(menu, iRegister);
 	}
 	
-	if (icnsEditorClass::statics.preferences.FeatureEnabled(prefsColorsPaletteVisible))
-	{
-		icnsEditorClass::statics.colorsPalette->GrabColors();
-		icnsEditorClass::statics.colorsPalette->Show();
-		GetIndString(menuItemText, rDefaultNames, eHideColorsPalette);
-	}
-	else
-	{
-		icnsEditorClass::statics.colorsPalette->Hide();
-		GetIndString(menuItemText, rDefaultNames, eShowColorsPalette);
-	}
+	SetupPalette(icnsEditorClass::statics.colorsPalette,
+				 prefsColorsPaletteVisible,
+				 iToggleColorsPalette,
+				 eShowColorsPalette,
+				 eHideColorsPalette);
+				 
+	SetupPalette(icnsEditorClass::statics.membersPalette,
+				 prefsMembersPaletteVisible,
+				 iToggleMembersPalette,
+				 eShowMembersPalette,
+				 eHideMembersPalette);
 	
-	windowsMenu = GetMenu(mWindows);
-	SetMenuItemText(windowsMenu, iToggleColorsPalette, menuItemText);
+	SetupPalette(icnsEditorClass::statics.previewPalette,
+				 prefsPreviewPaletteVisible,
+				 iTogglePreviewPalette,
+				 eShowPreviewPalette,
+				 eHidePreviewPalette);
 	
-	icnsEditorClass::statics.ChangeCursor(rArrow);
+	SetupPalette(icnsEditorClass::statics.toolPalette,
+				 prefsToolPaletteVisible,
+				 iToggleToolPalette,
+				 eShowToolPalette,
+				 eHideToolPalette);
+	
+	MUtilities::ChangeCursor(rArrow);
 }
 
 // __________________________________________________________________________________________
@@ -166,6 +177,8 @@ OSErr InitMenuBar()
 {
 	Handle		menuBar; // handle to the menubar resource
 	MenuHandle	menu; // handle to individual menu resources
+	Str255		menuItemText;
+	int			menuItemCount;
 	
 	menuBar = GetNewMBar( rMenuBarID ); // we load the menu bar resource...
 	if (menuBar != NULL)
@@ -226,8 +239,22 @@ OSErr InitMenuBar()
 	}
 	else
 		return resNotFound;
-		
-	//ToggleMenus(); // we disable what's not needed
+	
+	// help menu	
+	HMGetHelpMenuHandle(&menu);
+	menuItemCount = CountMItems(menu);
+	
+	GetIndString(menuItemText, rDefaultNames, eIconographerHelp);
+	InsertMenuItem(menu, menuItemText, menuItemCount++);
+	SetItemCmd(menu, menuItemCount, '?');
+	
+	InsertMenuItem(menu, "\p-", menuItemCount++);
+	
+	GetIndString(menuItemText, rDefaultNames, eEmailAuthor);
+	InsertMenuItem(menu, menuItemText, menuItemCount++);
+	
+	GetIndString(menuItemText, rDefaultNames, eIconographerHomepage);
+	InsertMenuItem(menu, menuItemText, menuItemCount++);
 	
 	DrawMenuBar(); // and draw the menubar
 	
@@ -266,6 +293,8 @@ void LoadPreferences(void)
 	CloseResFile(preferencesRefNum);
 	UseResFile(oldFile);
 }
+
+#pragma mark -
 
 // __________________________________________________________________________________________
 // Name			: EventLoop
@@ -321,18 +350,26 @@ void DoEvent(EventRecord *eventPtr)
 
 void DoIdle(void)
 {
-	MWindowPtr		currentWindow;
+	MWindowPtr		currentWindow, frontWindow;
 	icnsEditorPtr	currentEditor, // variable used to go through all the open editors
 					frontEditor; // pointer to the editor class belonging to the front most window
 	Handle			pic, // handle the picture in the clipboard (if any)
 					iconFamily;
 	MenuHandle		menu; // handle to various menu resources...
 	long			offset; // used when calling GetScrap, ignored here
+	Str255			currentTitle = "\p";
 	
-	if (gLastFrontWindow != MWindow::GetFront())
+	
+	frontWindow = MWindow::GetFront();
+	
+	if (frontWindow != NULL)
+		frontWindow->GetTitle(currentTitle);
+	
+	if (gLastFrontWindow != frontWindow || !EqualString(currentTitle, gLastFrontWindowTitle, true, true))
 		RebuildWindowsMenu();
 	
-	gLastFrontWindow = MWindow::GetFront();
+	gLastFrontWindow = frontWindow;
+	CopyString(gLastFrontWindowTitle, currentTitle);
 	
 	currentWindow = MWindow::GetFirst();
 	
@@ -361,7 +398,7 @@ void DoIdle(void)
 					// we must make some room in memory in order to be able to display the error
 					// message
 					DoError(rStdErrors, eOutOfMemory);
-					MWindowPtr(currentEditor)->Select();
+					currentEditor->Select();
 					Close(noCancel);
 					icnsEditorClass::statics.AllocateEmergencyMemory();
 					// we take the emergency memory back, so that it can be used in the future
@@ -411,6 +448,13 @@ void DoIdle(void)
 			EnableMenuItem(mFile, iSave);
 		else
 			DisableMenuItem(mFile, iSave);
+			
+		if (frontEditor->status & needToSave &&
+			(frontEditor->srcFileSpec.vRefNum != 0 ||
+			frontEditor->srcFileSpec.parID != 0))
+			EnableMenuItem(mFile, iRevert);
+		else
+			DisableMenuItem(mFile, iRevert);
 		
 		EnableMenuItem(mFile, iClose);
 		EnableMenuItem(mFile, iSaveAs);
@@ -477,6 +521,7 @@ void DoIdle(void)
 			DisableMenuItem(mIcon, iZoomOut);
 			
 		DisableMenuItem(mIcon, iInsertIcon);
+		EnableMenuItem(mIcon, iIconInfo);
 			
 		if (frontEditor->CurrentDepthSupportsColors())
 		{
@@ -553,17 +598,17 @@ void DoIdle(void)
 	
 	
 	currentWindow = MWindow::GetFirst();
-	icnsEditorClass::statics.cursorChanged = false;
+	MUtilities::ResetCursorChanged();
 	while (currentWindow != NULL)
 	{
-		if (currentWindow == MWindow::GetFront() ||
+		if (currentWindow == frontWindow ||
 			currentWindow->GetType() == kFloaterType)
 			currentWindow->DoIdle();
 			
 		currentWindow = currentWindow->GetNext();
 	}
-	if (!icnsEditorClass::statics.cursorChanged)
-		icnsEditorClass::statics.ChangeCursor(rArrow);
+	if (!MUtilities::CursorChanged())
+		MUtilities::ChangeCursor(rArrow);
 	
 	if (icnsEditorClass::statics.colorsPalette->IsVisible())
 		if (!icnsEditorClass::statics.colorsPalette->readoutChanged)
@@ -608,9 +653,36 @@ void HandleMouseDown(EventRecord *eventPtr)
 			if (TrackGoAway(theWindow, eventPtr->where)) // if he release it...
 				if (currentWindow != NULL)
 					if (currentWindow->GetType() == kFloaterType)
-						ToggleColorsPalette();
+					{
+						if (currentWindow == icnsEditorClass::statics.colorsPalette)
+							TogglePalette(icnsEditorClass::statics.colorsPalette,
+									  iToggleColorsPalette,
+									  eShowColorsPalette,
+									  eHideColorsPalette);
+						else if (currentWindow == icnsEditorClass::statics.previewPalette)
+							TogglePalette(icnsEditorClass::statics.previewPalette,
+										  iTogglePreviewPalette,
+										  eShowPreviewPalette,
+										  eHidePreviewPalette);
+						else if (currentWindow == icnsEditorClass::statics.toolPalette)
+							TogglePalette(icnsEditorClass::statics.toolPalette,
+									  iToggleToolPalette,
+									  eShowToolPalette,
+									  eHideToolPalette);
+						else
+							TogglePalette(icnsEditorClass::statics.membersPalette,
+									  iToggleMembersPalette,
+									  eShowMembersPalette,
+									  eHideMembersPalette);
+					}
 					else
 						Close(0); // we close the icon
+			break;
+		case inZoomIn:
+		case inZoomOut:
+			if (TrackBox(theWindow, eventPtr->where, part)) // if he release it...
+				if (currentWindow != NULL)
+					currentWindow->ToggleZoom();
 			break;
 		case inContent: // if it's a contect click we pass it on the class
 			if (currentWindow != NULL)
@@ -634,16 +706,27 @@ void HandleMouseDown(EventRecord *eventPtr)
 void HandleKeyDown(EventRecord *eventPtr)
 {
 	long			menuEvent; // the key which was pressed
-	MWindowPtr	frontWindow; // the editor class belonging to the front most window
+	char			key;
 	
-	menuEvent = MenuEvent(eventPtr);
+	key = eventPtr->message & charCodeMask;
+	
+	if ((key == kHelpCharCode) || 
+	    ((eventPtr->modifiers & cmdKey) && (key == '/')))
+	{
+		menuEvent = ((kHMHelpMenuID << 16) & 0xFFFF0000) + iIconographerHelp;
+	}
+	else
+	{
+		menuEvent = MenuEvent(eventPtr);
+	}
+	
 	if (((menuEvent & 0xFFFF0000) >> 16) != 0)
+	{
 		DoMenuCommand(menuEvent);
+	}
 	else // otherwise we pass it onto the editor
 	{
-		frontWindow = MWindow::GetFront();
-		if (frontWindow != NULL)
-			frontWindow->HandleKeyDown(eventPtr);
+		MWindow::SendKeyDown(eventPtr);
 	}
 }
 
@@ -712,6 +795,8 @@ void HandleOSEvent(EventRecord *eventPtr)
 				WindowPtr	theWindow;
 				MWindowPtr	currentWindow;
 				
+				MUtilities::ResetCursor();
+				
 				MWindow::ShowFloaters();
 				MWindow::ActivateAll();
 				
@@ -719,10 +804,7 @@ void HandleOSEvent(EventRecord *eventPtr)
 				currentWindow = GetWindow(theWindow);
 				
 				if (part == inDrag)
-				{
 					currentWindow->Select();
-				}
-				
 			}
 			else
 			{
@@ -859,6 +941,7 @@ void DoMenuCommand(long menuResult)
 					case iSave: SaveIcon(0); break;
 					case iSaveAs : SaveIcon(saveAs); break;
 					case iSaveInto : SaveIcon(saveInto); break;
+					case iRevert : Revert(); break;
 					case iQuit :gIsDone = true; break;
 				}
 				break;
@@ -885,10 +968,10 @@ void DoMenuCommand(long menuResult)
 				if (frontEditor != NULL)
 					switch (item)
 					{
-						case iAll : frontEditor->Select(all); break;
-						case iSimilar : frontEditor->Select(similar); break;
-						case iNone : frontEditor->Select(none); break;
-						case iInverse : frontEditor->Select(inverse); break;
+						case iAll : frontEditor->MakeSelection(all); break;
+						case iSimilar : frontEditor->MakeSelection(similar); break;
+						case iNone : frontEditor->MakeSelection(none); break;
+						case iInverse : frontEditor->MakeSelection(inverse); break;
 					}
 				break;
 			case mTransform:
@@ -931,6 +1014,7 @@ void DoMenuCommand(long menuResult)
 						case iZoomIn : frontEditor->ZoomIn(); break;
 						case iZoomOut : frontEditor->ZoomOut(); break;
 						case iIconInfo : frontEditor->EditIconInfo(kIconInfo); break;
+						case iOpenInExternalEditor: frontEditor->OpenInExternalEditor(); break;
 					}
 				else if (GetFrontBrowser != NULL)
 					switch (item)
@@ -964,25 +1048,70 @@ void DoMenuCommand(long menuResult)
 			case mWindows:
 				switch (item)
 				{
+					case iToggleToolPalette:
+						TogglePalette(icnsEditorClass::statics.toolPalette,
+									  iToggleToolPalette,
+									  eShowToolPalette,
+									  eHideToolPalette);
+						break;
+					case iToggleMembersPalette:
+						TogglePalette(icnsEditorClass::statics.membersPalette,
+									  iToggleMembersPalette,
+									  eShowMembersPalette,
+									  eHideMembersPalette);
+						break;
+					case iTogglePreviewPalette:
+						TogglePalette(icnsEditorClass::statics.previewPalette,
+									  iTogglePreviewPalette,
+									  eShowPreviewPalette,
+									  eHidePreviewPalette);
+						break;
 					case iToggleColorsPalette:
-						ToggleColorsPalette();
+						TogglePalette(icnsEditorClass::statics.colorsPalette,
+									  iToggleColorsPalette,
+									  eShowColorsPalette,
+									  eHideColorsPalette);
 						break;
 					default:
 						MenuHandle		windowsMenu;
-						//unsigned long	windowID;
 						MWindowPtr		selectedWindow;
 						
 						
 						windowsMenu = GetMenu(mWindows);
 						
 						GetMenuItemRefCon(windowsMenu, item, (UInt32*)&selectedWindow);
-						//selectedWindow = MWindow::GetWindow(windowID);
 						
 						selectedWindow->Select();
-						
-						//RebuildWindowsMenu();
 						break;
 				}	
+				break;
+			case kHMHelpMenuID:
+				switch (item)
+				{
+					case iIconographerHelp:
+						Str255			helpPath;
+						MHTMLHelpPtr	help;
+						
+						GetIndString(helpPath, rDefaultNames, eHelpPath);
+						
+						help = new MHTMLHelp(helpPath);
+						
+						help->Open();
+						
+						delete help;
+						break;
+					case iEmailAuthor:
+						Str255	address;
+						GetIndString(address, rDefaultNames, eEmailAddress);
+						if (LaunchURL((ConstStr255Param)address) != noErr)
+							DoError(rStdErrors, eNeedInternetConfig);
+						break;
+					case iVisitHomepage:
+						GetIndString(address, rDefaultNames, eHomepageAddress);
+						if (LaunchURL((ConstStr255Param)address) != noErr)
+							DoError(rStdErrors, eNeedInternetConfig);
+						break;
+				}
 				break;
 		}
 		
@@ -992,25 +1121,49 @@ void DoMenuCommand(long menuResult)
 	}
 }
 
-void ToggleColorsPalette()
+#pragma mark -
+
+void TogglePalette(MFloaterPtr palette, int menuItem, int showStringIndex, int hideStringIndex)
 {
 	MenuHandle	windowsMenu;
 	Str255 		menuItemText;
 						
-	if (icnsEditorClass::statics.colorsPalette->IsVisible())
+	if (palette->IsVisible())
 	{
-		icnsEditorClass::statics.colorsPalette->Hide();
-		GetIndString(menuItemText, rDefaultNames, eShowColorsPalette);
+		palette->Hide();
+		GetIndString(menuItemText, rDefaultNames, showStringIndex);
 	}
 	else
 	{
-		icnsEditorClass::statics.colorsPalette->GrabColors();
-		icnsEditorClass::statics.colorsPalette->Show();
-		GetIndString(menuItemText, rDefaultNames, eHideColorsPalette);
+		palette->Show();
+		GetIndString(menuItemText, rDefaultNames, hideStringIndex);
 	}
+	
 	windowsMenu = GetMenu(mWindows);
-	SetMenuItemText(windowsMenu, iToggleColorsPalette, menuItemText);
+	SetMenuItemText(windowsMenu, menuItem, menuItemText);
 }
+
+void SetupPalette(MFloaterPtr palette, int flag, int menuItem, int showStringIndex, int hideStringIndex)
+{
+	MenuHandle	windowsMenu;
+	Str255 		menuItemText;
+	
+	if (icnsEditorClass::statics.preferences.FeatureEnabled(flag))
+	{
+		palette->Show();
+		GetIndString(menuItemText, rDefaultNames, hideStringIndex);
+	}
+	else
+	{
+		palette->Hide();
+		GetIndString(menuItemText, rDefaultNames, showStringIndex);
+	}
+	
+	windowsMenu = GetMenu(mWindows);
+	SetMenuItemText(windowsMenu, menuItem, menuItemText);
+}
+
+#pragma mark -
 
 void InsertIcon()
 {
@@ -1045,7 +1198,7 @@ void InsertIcon()
 		DoIdle();
 		DrawMenuBar();
 		
-		RefreshIconBrowser(true);
+		RefreshIconBrowser(true, kIDNone, 0);
 	}
 	else
 	{
@@ -1248,7 +1401,10 @@ void Register(void)
 					DeleteMenuItem(menu, iRegister);
 				}
 				else
+				{
 					DoError(rStdErrors, eBadRegCode);
+					itemHit = 0;
+				}
 				break;	
 			case iCancel: dialogDone = true; break;
 			case iLaunchRegister:
@@ -1358,7 +1514,7 @@ bool HandleSimpleCases(FSSpec fileSpec, long* ID)
 			
 	if (isFolder)
 	{
-		*ID = 820127;
+		*ID = kIDUseFileIcon;
 		return true;
 	}
 		
@@ -1366,7 +1522,10 @@ bool HandleSimpleCases(FSSpec fileSpec, long* ID)
 	file = FSpOpenResFile(&fileSpec, fsRdPerm);
 	if (file == -1 && ResError() == eofErr)
 	{
-		*ID = 820127;
+		if (FindSubstring(fileSpec.name, "\p.icns") != -1)
+			*ID = kIDLoadDataFork;
+		else
+			*ID = kIDUseFileIcon;
 		return true;
 	}
 	UseResFile(file);
@@ -1383,7 +1542,10 @@ bool HandleSimpleCases(FSSpec fileSpec, long* ID)
 	
 	if (count == 0)
 	{
-		*ID = 820127;
+		if (FindSubstring(fileSpec.name, "\p.icns") != -1)
+			*ID = kIDLoadDataFork;
+		else
+			*ID = kIDUseFileIcon;
 		simpleCase = true;
 	}
 	else if (count == 1)
@@ -1416,10 +1578,10 @@ icnsEditorPtr GetEmptyEditor(FSSpec fileToOpen, long ID, int format)
 		
 		if (currentEditor != NULL)
 			if (SameFile(currentEditor->srcFileSpec, fileToOpen) &&
-			    (currentEditor->ID == ID || (ID == 820127 && currentEditor->ID == -16455)) &&
+			    (currentEditor->loadedID == ID) &&
 			    (currentEditor->format == format))
 			{
-			    MWindowPtr(currentEditor)->Select();
+			    currentEditor->Select();
 			    return NULL;
 			}
 			else if (currentEditor->srcFileSpec.vRefNum == 0 &&
@@ -1439,6 +1601,62 @@ icnsEditorPtr GetEmptyEditor(FSSpec fileToOpen, long ID, int format)
 		return GetEditor(MWindow::GetLast()->GetWindow());
 	else
 		return NULL;
+}
+
+void Revert()
+{
+	icnsEditorPtr	frontEditor;
+	
+	frontEditor = GetFrontEditor();
+	
+	if (frontEditor != NULL)
+	{
+		MAlert					alert;
+		Str255					text;
+		MString					temp;
+			
+		GetIndString(text, rPrompts, eRevert); // we get the message
+		
+		SubstituteString(text, "\p<app name>", gAppName); // substitute for the place holders
+		SubstituteString(text, "\p<file name>", frontEditor->srcFileSpec.name);
+		
+		alert.SetButtonName(kMAOK, rDefaultNames, eRevertButton);
+		alert.SetButtonName(kMACancel, rDefaultNames, eCancelButton);
+		
+		alert.SetMovable(true);
+		alert.SetType(kAlertStopAlert);
+		
+		alert.SetPosition(kWindowCenterParentWindow); // we want the error to be centered on the
+		
+		temp = text;
+		
+		alert.SetError(temp);
+		
+		if (alert.Display() != kMAOK) return;
+
+		switch (frontEditor->loadedID)
+		{
+			case kIDUseFileIcon:
+				frontEditor->ID = -16455;
+				frontEditor->LoadFileIcon();
+				break;
+			case kIDLoadDataFork:
+				frontEditor->ID = -16455;
+				frontEditor->LoadDataFork();
+				break;
+			default:
+				frontEditor->ID = frontEditor->loadedID;
+				frontEditor->Load();
+				break;
+		}
+		
+		frontEditor->status &= ~needToSave;
+		frontEditor->Invalidate();
+		frontEditor->Refresh();
+		
+		DoIdle();
+		DrawMenuBar();
+	}
 }
 
 void OpenIcon(FSSpec *inFile)
@@ -1476,25 +1694,27 @@ void OpenIcon(FSSpec *inFile)
 	if (newEditor != NULL)
 	{
 		newEditor->srcFileSpec = fileToOpen;
-		
+		newEditor->loadedID = ID;
 		newEditor->format = format;
-		if (ID != 820127)
+		newEditor->usedMembers = kDefaultMembers[format];
+		switch (ID)
 		{
-			newEditor->ID = ID;
-			newEditor->Load();
-		}
-		else
-		{
-			newEditor->ID = -16455;
-			newEditor->LoadFileIcon();
+			case kIDUseFileIcon:
+				newEditor->ID = -16455;
+				newEditor->LoadFileIcon();
+				break;
+			case kIDLoadDataFork:
+				newEditor->ID = -16455;
+				newEditor->LoadDataFork();
+				break;
+			default:
+				newEditor->ID = ID;
+				newEditor->Load();
+				break;
 		}
 		
-		SAVEGWORLD;
-		SetPort(newEditor->GetWindow()); // we must invalidate the window so that it can be
-		InvalRgn(newEditor->GetWindow()->visRgn); // redrawn
+		newEditor->Invalidate();
 		newEditor->Refresh();
-		
-		RESTOREGWORLD;
 		
 		newEditor->Show();
 		
@@ -1505,7 +1725,7 @@ void OpenIcon(FSSpec *inFile)
 	//RebuildWindowsMenu();
 }
 
-void OpenIconFromBrowser(FSSpec *fileToOpen, short ID, long format, long member)
+void OpenIconFromBrowser(FSSpec *fileToOpen, long ID, long format, long member)
 {
 	icnsEditorPtr newEditor;
 
@@ -1514,41 +1734,38 @@ void OpenIconFromBrowser(FSSpec *fileToOpen, short ID, long format, long member)
 	if (newEditor != NULL)
 	{		
 		newEditor->srcFileSpec = *fileToOpen;
-			
-		if (ID == 820127)
+		newEditor->loadedID = ID;
+		
+		if (ID == kIDUseFileIcon)
 		{
 			newEditor->ID = -16455;
-			newEditor->format = formatMacOSUniversal;
+			newEditor->format = format;
+			newEditor->usedMembers = kDefaultMembers[format];
 			newEditor->LoadFileIcon();
 		}
 		else
 		{
 			newEditor->ID = ID;
 			newEditor->format = format;
+			newEditor->usedMembers = kDefaultMembers[format];
 			newEditor->Load();
 		}
 		
 		if (member != -1)
 		{
-			newEditor->SetCurrentMember(member);
+			newEditor->SetCurrentMember(member, false);
 			newEditor->ResetStates();
 		}
 		
-		SAVEGWORLD;
-		SetPort(newEditor->GetWindow()); // we must invalidate the window so that it can be
-		InvalRgn(newEditor->GetWindow()->visRgn); // redrawn
+		newEditor->Invalidate();
 		newEditor->Refresh();
 		
-		RESTOREGWORLD;
-		
 		newEditor->Show();
-		MWindowPtr(newEditor)->Select();
+		newEditor->Select();
 		
 		DoIdle();
 		DrawMenuBar();
 	}
-	
-	//RebuildWindowsMenu();
 }
 
 // __________________________________________________________________________________________
@@ -1616,6 +1833,8 @@ bool Close(int flags)
 	DoIdle();
 	DrawMenuBar();
 	
+	
+	icnsEditorClass::statics.UpdatePalettes(updateAll);
 		
 	return closed; // return what the user actually chose to do
 }
@@ -1636,6 +1855,8 @@ OSErr SaveIcon(int flags)
 	icnsEditorPtr	frontEditor; // pointer to the front most editor, this is the one that the
 							     // saving will be done on
 	bool			newIcon = false;
+	OSErr			err;
+	int				deletedIcon = kIDNone, deletedIconFormat = -1;
 	
 	frontEditor = GetFrontEditor(); // we get the pointer to it
 	
@@ -1646,14 +1867,16 @@ OSErr SaveIcon(int flags)
 			FSSpec	oldSpec;
 			Handle	icnsHandle;
 			short 	oldFile, file;
-			OSErr	err;
 			
 			oldSpec = frontEditor->srcFileSpec;
 			
 			if (frontEditor->format == formatWindows ||
 				frontEditor->format == formatMacOSXServer)
+			{
 				frontEditor->format = formatMacOSUniversal;
-			
+				frontEditor->usedMembers = kDefaultMembers[formatMacOSUniversal];
+			}
+				
 			err = GetIconFile(&frontEditor->srcFileSpec, &frontEditor->format, true);
 			
 			if (err != noErr) return err;
@@ -1702,10 +1925,10 @@ OSErr SaveIcon(int flags)
 			(frontEditor->srcFileSpec.vRefNum == 0 &&
 			frontEditor->srcFileSpec.parID == 0)) // or if there isn't one chosen yet
 		{
-			OSErr	err; // used for testing for errors
 			long	fileType;
 			
 			frontEditor->format = icnsEditorClass::statics.preferences.GetDefaultFormat();
+			frontEditor->usedMembers = kDefaultMembers[frontEditor->format];
 			
 			err = SaveFile(&frontEditor->srcFileSpec, &frontEditor->format);
 						  		
@@ -1725,19 +1948,32 @@ OSErr SaveIcon(int flags)
 			frontEditor->RefreshWindowTitle(); // must update the title of the window with the
 			// new file name
 		}
+		else if (frontEditor->IDChanged())
+		{
+			newIcon = true;
+			deletedIcon = frontEditor->loadedID;
+			deletedIconFormat = frontEditor->format;
+		}
 		
-		frontEditor->Save();
+		err = frontEditor->Save();
+		RefreshIconBrowser(newIcon, deletedIcon, deletedIconFormat);
+		
+		if (err == fnOpnErr)
+		{
+			frontEditor->srcFileSpec.vRefNum = 0;
+			frontEditor->srcFileSpec.parID = 0;
+			
+			SaveIcon(flags);
+		}
 		
 		if (!(icnsEditorClass::statics.preferences.IsRegistered()))
 			Nag(false);
 	}
 	
-	RefreshIconBrowser(newIcon);
-	
 	return noErr;
 }
 
-void RefreshIconBrowser(bool newIcon)
+void RefreshIconBrowser(bool newIcon, int deletedIcon, int deletedIconFormat)
 {
 	MWindowPtr		currentWindow = NULL;
 	icnsEditorPtr	frontEditor;
@@ -1765,69 +2001,40 @@ void RefreshIconBrowser(bool newIcon)
 	{
 		if (newIcon)
 		{
-			Str255 tableString, IDAsString;
-			ListDrawingData*	cellDrawingData;
 			
 			if (frontEditor->format == formatMacOSUniversal ||
 				frontEditor->format == formatMacOSNew)
-			{
-				if (frontEditor->name[0] != 0)
-					GetIndString(tableString, rIBStrings, eIBListName);
-				else
-					GetIndString(tableString, rIBStrings, eIBListNoName);
-					
-				NumToString(frontEditor->ID, IDAsString);
-				SubstituteString(tableString, "\p<ID>", IDAsString);
-				
-				if (frontEditor->name[0] != 0)
-					SubstituteString(tableString, "\p<name>", frontEditor->name);
-					
-				SubstituteString(tableString, "\p<type>", "\picns");
-				
-				cellDrawingData = new ListDrawingData;
-				
-				cellDrawingData->parentBrowser = currentBrowser;
-				cellDrawingData->icon = &currentBrowser->drawIcon;
-				cellDrawingData->members = frontEditor->members;
-				cellDrawingData->newType = true;
-				
-				currentBrowser->theList.InsertSorted(tableString,
-									 20 + frontEditor->GetLargestSize(),
-									 cellDrawingData);
-			}
-			
+				currentBrowser->AddIcon(frontEditor->ID, frontEditor->name, frontEditor->members, true);
+
 			if (frontEditor->format == formatMacOSUniversal ||
 				frontEditor->format == formatMacOSOld)
+				currentBrowser->AddIcon(frontEditor->ID, frontEditor->name, frontEditor->members & ~(ih32 | h8mk | ich8 | ichi | ichm | il32 | l8mk | is32 | s8mk), false);
+		}
+		
+		if (deletedIcon != kIDNone)
+		{
+			ListDrawingData	cellData;
+			int				row, col;
+			
+			if (deletedIconFormat == formatMacOSUniversal ||
+				deletedIconFormat == formatMacOSNew)
 			{
-				if (frontEditor->name[0] != 0)
-					GetIndString(tableString, rIBStrings, eIBListName);
-				else
-					GetIndString(tableString, rIBStrings, eIBListNoName);
-					
-				NumToString(frontEditor->ID, IDAsString);
-				SubstituteString(tableString, "\p<ID>", IDAsString);
-				
-				if (frontEditor->name[0] != 0)
-					SubstituteString(tableString, "\p<name>", frontEditor->name);
-				
-				if (frontEditor->members & icni)
-					SubstituteString(tableString, "\p<type>", "\pICN#");
-				else
-					SubstituteString(tableString, "\p<type>", "\pics#");
-				
-				cellDrawingData = new ListDrawingData;
-				
-				cellDrawingData->parentBrowser = currentBrowser;
-				cellDrawingData->icon = &currentBrowser->drawIcon;
-				cellDrawingData->members = frontEditor->members;
-				cellDrawingData->members &= ~(ih32 | h8mk | ich8 | ichi | ichm | il32 | l8mk | is32 | s8mk);
-				cellDrawingData->newType = false;
-				
-				currentBrowser->theList.InsertSorted(tableString,
-									 20 + frontEditor->GetLargestSize(),
-									 cellDrawingData);
+				cellData.ID = deletedIcon;
+				cellData.newType = true;
+				if (currentBrowser->theList.FindValue(NULL, &cellData, &row, &col) == noErr)
+					currentBrowser->theList.Remove(row, col);
+			}
+			
+			if (deletedIconFormat == formatMacOSUniversal ||
+				deletedIconFormat == formatMacOSOld)
+			{
+				cellData.ID = deletedIcon;
+				cellData.newType = false;
+				if (currentBrowser->theList.FindValue(NULL, &cellData, &row, &col) == noErr)
+					currentBrowser->theList.Remove(row, col);
 			}
 		}
+		
 		currentBrowser->RefreshList();
 	}
 }
@@ -1927,7 +2134,6 @@ void DoError(int resourceID, int stringNo)
 {
 	Str255	text;
 	MAlert	alert;
-	MString	temp;
 	
 	GetIndString(text, resourceID, stringNo); // the message is loaded from the specified
 	// string in the specified resource
@@ -1939,8 +2145,7 @@ void DoError(int resourceID, int stringNo)
 	alert.SetBeep(true);
 	alert.SetButtonName(kMAOK, rDefaultNames, eOKButton);
 	
-	temp = text;
-	alert.SetError(temp);
+	alert.SetError(text);
 	
 	alert.Display();
 }
@@ -2103,7 +2308,6 @@ void CleanUp(void)
 	short		preferencesRefNum, oldFile;
 	short		myVRef;
 	long		myDirID;
-	Handle		oldPrefs;
 	Str255		prefsFileName;
 
 	GetIndString(prefsFileName, rDefaultNames, ePrefsName);
@@ -2111,6 +2315,10 @@ void CleanUp(void)
 	err = FindFolder(kOnSystemDisk, kPreferencesFolderType, kDontCreateFolder, &myVRef, &myDirID);
 	if (err == noErr)
 		err = FSMakeFSSpec(myVRef, myDirID, prefsFileName, &preferencesFile);
+	
+	FSpDelete(&preferencesFile);
+	FSpCreate(&preferencesFile, creatorCode, prefFileType, 0);
+	FSpCreateResFile(&preferencesFile, creatorCode, prefFileType, 0);
 	
 	oldFile = CurResFile();
 	
@@ -2121,16 +2329,6 @@ void CleanUp(void)
 	if ((preferencesRefNum != -1) && (err == noErr))
 	{
 		UseResFile(preferencesRefNum);
-		oldPrefs = Get1Resource('Pref', rPrefs);
-		if (oldPrefs != NULL)
-		{
-			RemoveResource(oldPrefs);
-			UpdateResFile(preferencesRefNum);
-			CloseResFile(preferencesRefNum);
-			UseResFile(oldFile);
-			preferencesRefNum = FSpOpenResFile(&preferencesFile, fsRdWrPerm);
-			UseResFile(preferencesRefNum);
-		}
 		icnsEditorClass::statics.preferences.Save(rPrefs);
 		UpdateResFile(preferencesRefNum);
 		CloseResFile(preferencesRefNum);

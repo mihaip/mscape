@@ -23,9 +23,6 @@ const static long prefFileType = 'pref';
 
 // --- Constants --- //
 
-// application constants
-const static int kPalette = 27;
-
 // app resource IDs
 enum errorResources
 {
@@ -50,7 +47,18 @@ enum defaultNames
 	eEmailAddress = 11,
 	eHomepageAddress = 12,
 	eShowColorsPalette = 13,
-	eHideColorsPalette = 14
+	eHideColorsPalette = 14,
+	eShowMembersPalette = 15,
+	eHideMembersPalette = 16,
+	eShowPreviewPalette = 17,
+	eHidePreviewPalette = 18,
+	eShowToolPalette = 19,
+	eHideToolPalette = 20,
+	eIconographerHelp = 21,
+	eEmailAuthor = 22,
+	eIconographerHomepage = 23,
+	eHelpPath = 24,
+	eRevertButton = 25
 };
 
 enum stdErrors
@@ -83,7 +91,8 @@ enum prompts
 	eRegistrationReminder = 7,
 	eSelectICO = 8,
 	eSelectTIFF = 9,
-	eIconAlreadyExists = 10
+	eIconAlreadyExists = 10,
+	eRevert = 11
 };
 
 enum saveOptions
@@ -143,7 +152,8 @@ enum fileMenu
 	iSave = 5,
 	iSaveAs = 6,
 	iSaveInto = 7,
-	iQuit = 9
+	iRevert = 8,
+	iQuit = 10
 };
 
 enum editMenu
@@ -198,7 +208,8 @@ enum iconMenu
 	iZoomOut = 2,
 	iColors = 4,
 	iInsertIcon = 6,
-	iIconInfo = 7
+	iIconInfo = 7,
+	iOpenInExternalEditor = 9
 };
 
 enum colorsMenu
@@ -209,9 +220,19 @@ enum colorsMenu
 
 enum windowsMenu
 {
-	iToggleColorsPalette = 1,
-	iEditorsInsertionPoint = 2,
-	iBrowsersInsertionPoint = 3
+	iToggleToolPalette = 1,
+	iToggleMembersPalette = 2,
+	iTogglePreviewPalette = 3,
+	iToggleColorsPalette = 4,
+	iEditorsInsertionPoint = 5,
+	iBrowsersInsertionPoint = 6
+};
+
+enum helpMenu
+{
+	iIconographerHelp = 5,
+	iEmailAuthor = 7,
+	iVisitHomepage = 8
 };
 
 // dialog items
@@ -277,13 +298,15 @@ int			WantToSave(FSSpec fileSpec, int flags);
 void		Nag(bool startup);
 pascal bool	AlertEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *itemHit);
 OSErr		SaveIcon(int flags);
-void RefreshIconBrowser(bool newIcon);
+void		Revert();
+void 		RefreshIconBrowser(bool newIcon, int deletedIcon, int deletedIconFormat);
 void		CleanUp(void);
 extern void	DoError(int resourceID, int stringNo);
-void		OpenIconFromBrowser(FSSpec *fileToOpen, short ID, long format, long member);
+void		OpenIconFromBrowser(FSSpec *fileToOpen, long ID, long format, long member);
 icnsEditorPtr GetEmptyEditor(FSSpec fileToOpen, long ID, int format);
 void		RebuildWindowsMenu();
-void		ToggleColorsPalette();
+void 		TogglePalette(MFloaterPtr palette, int menuItem, int showStringIndex, int hideStringIndex);
+void 		SetupPalette(MFloaterPtr palette, int flag, int menuItem, int showStringIndex, int hideStringIndex);
 void		InsertIcon();
 
 // file stuff

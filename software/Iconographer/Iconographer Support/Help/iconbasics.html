@@ -1,0 +1,50 @@
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="content-type" CONTENT="text/html;charset=iso-8859-1">
+	<TITLE>Icon Basics</TITLE>
+	<META NAME="DP" CONTENT="1.9.1/3.1.1">
+</HEAD>	
+<BODY BGCOLOR="#ffffff" link="#CC6600" alink="#AA33A00" vlink="#AA3300">
+<TABLE WIDTH=350><TR><TD valign=top>
+<FONT FACE="Helvetica,Arial" SIZE="4" COLOR="#993300"><B>Icon Sizes</B></FONT>
+<UL>
+	<FONT FACE="Geneva,Arial" SIZE="2">
+	<P>As it is visible in the Finder, icons can be displayed at more than one size. The most common ones are the large view (32 by 32 pixels) and the small view (16 by 16 pixels). Although you can just create one size, and let it be scaled automatically, better results are yielded if you draw each size by hand.</P>
+	<P>In addition to the above mentioned sizes, there are two additional ones which are not normally used. The huge size (48 by 48 pixels) isn't used at all by the current Mac OS Finder, but it does show up in Mac OS X Server (and presumably will be used in the consumer release of Mac OS X). The mini size (16 by 12 pixels) is used very rarely, and thus no support for it is provided in the current version of Iconographer.</P>
+	</FONT>
+</UL>
+<FONT FACE="Helvetica,Arial" SIZE="4" COLOR="#993300"><B>Icon Depths</B></FONT>
+<UL>
+	<FONT FACE="Geneva,Arial" SIZE="2">
+	Within each icon size, there can be various bit depths. This means that you can have a separate icon for black and white, 16 colors, 256 colors and millions of colors. The Finder automatically chooses the depth based on the number of colors available on the screen. Again, although you can simply draw one depth and leave it to the OS to extrapolate the others, you will usually get better results by drawing all the depths by hand.
+	</FONT>
+</UL>
+<FONT FACE="Helvetica,Arial" SIZE="4" COLOR="#993300"><B>Icon Masks</B></FONT>
+<UL>
+	<FONT FACE="Geneva,Arial" SIZE="2">
+	<P>It may not be immediately apparent that each icon is actually composed of two parts, the icon picture itself, and a mask. This mask acts as a cutout, determining which pixels of the icon show through, and which ones are left alone. The picture below shows an icon mask in action:<BR>
+<CENTER><IMG SRC="images/1bitmask.gif" HEIGHT="111" WIDTH="248" ALT="1 Bit Mask Example"></CENTER>
+	<BR>
+	As you can see, the desktop is visible though the parts of the mask which have been left out. This simple mask only has two possible values, black, where the icon shows through, and white where the background is visible. Mac OS 8.5 introduces an additional mask, an 8-bit one. This new mask allows 256 possible values, ranging from white to black. As before, white means that the background is completely visible while black means that the icon shows through. The gray values in-between are used to blend the background and the icon. For example, a dark gray would yield a blend of the background and icon which would be weighed towards the icon. The picture below shows an example of an 8-bit mask:<BR>
+<CENTER><IMG SRC="images/8bitmask.gif" HEIGHT="111" WIDTH="248" ALT="8 Bit Mask Example"></CENTER>
+	<BR>
+	It is clearly visible that the edge of the circle blends in with the desktop. If the icon were to be moved onto a different background, then it would blend in with that. The 8 bit mask can be used to create visual effects such as semi-transparency/translucency, anti-aliasing and drop shadows.
+</FONT>
+</UL>
+
+<FONT FACE="Helvetica,Arial" SIZE="4" COLOR="#993300"><B>Icon Formats</B></FONT>
+<UL>
+	<FONT FACE="Geneva,Arial" SIZE="2">
+	<P><FONT COLOR="#330000"><B>Old:</B></FONT> This is the format used by systems previous to Mac OS 8.5. They support only 1-bit through 8-bit icons, at the sizes of 32 x 32 and 16 x 16 pixels. This format is still required for document icons and for maximum compatibility (Mac OS 8.5 and above can still display this format) at a minimum size.</P>
+	
+	<P><FONT COLOR="#330000"><B>New:</B></FONT> This is the format introduced by Mac OS 8.5. It supports 32-bit icons with 8-bit masks, as well as the additional 48 x 48 size (which, although it is not used by the Finder directly, does appear in other places, like Sherlock 2's search button). These icons use a completely different method of storage, and thus they are not visible on older systems.</P>
+	
+	<P><FONT COLOR="#330000"><B>Universal:</B></FONT> This is a pseudo-format which combines both the Old and the New resources into the same file with the same ID. The result is that the icon is visible on both systems, although usually things will look better when viewed in Mac OS 8.5 and above. This results in a slight increase in file size.</P>
+	</FONT>
+</UL>
+
+<CENTER><FONT FACE="Geneva,Arial" SIZE="2"><B><A HREF="toc.html">Table of Contents</A></B><FONT></CENTER>
+</TD></TR></TABLE>
+</BODY>
+</HTML>
+

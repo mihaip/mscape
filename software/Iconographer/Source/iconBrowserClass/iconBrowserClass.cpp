@@ -4,7 +4,7 @@
 
 iconBrowserClass::iconBrowserClass(FSSpec file, OpenFuncPtr OpenFunc, int format) :
 				  MWindow(rBrowserWind, kBrowserType),
-				  theList(BrowserStringCompare, IconDraw, IconHitTest, IconFilter, IconUpdate)
+				  theList(BrowserStringCompare, IconDraw, NULL, IconFilter, IconUpdate)
 {
 	Str255 title;
 	
@@ -54,6 +54,8 @@ iconBrowserClass::iconBrowserClass(FSSpec file, OpenFuncPtr OpenFunc, int format
 	GetWTitle(window, title);
 	SubstituteString(title, "\p<name>", srcFileSpec.name);
 	SetWTitle(window, title);
+	
+	icnsEditorClass::statics.Stagger(this);
 	
 	Show();
 	
@@ -123,6 +125,7 @@ OSErr iconBrowserClass::BuildIconList()
 	Str255		dialogTitle;
 	
 	theList.SetDisplayFont(applFont, 9);
+	theList.SetCustomAreaWidth(kIBPreviewHeight + kIBExtraHeight);
 	
 	progressDialog = GetNewDialog(rBrowserProgressDialog, NULL, (WindowPtr)-1L);
 	GetDialogItemAsControl(progressDialog, iIBProgressBar, &progressBar);
@@ -148,103 +151,33 @@ OSErr iconBrowserClass::BuildIconList()
 	file = FSpOpenResFile(&srcFileSpec, fsRdPerm);
 	UseResFile(file);
 	
-	LoadNew(oldFile, file, progressBar, progressText);
-	LoadOld(oldFile, file, progressBar, progressText);
+	LoadFamily('icns', true, oldFile, file, progressBar, progressText);
+	LoadFamily('ICN#', false, oldFile, file, progressBar, progressText);
+	LoadFamily('ics#', false, oldFile, file, progressBar, progressText);
+	
+	drawIcon.LoadFileIcon();
+	AddIcon(kIDUseFileIcon, "\p", drawIcon.members, drawIcon.members & il32);
+	
 	
 	CloseResFile(file);
 	UseResFile(oldFile);
 	
 	DisposeDialog(progressDialog);
 	
-	scrollingIncrement = theList.GetAverageHeight();
+	scrollingIncrement = 16;
 	
 	return noErr;
 }
 
-void iconBrowserClass::LoadNew(short oldFile, short file, ControlHandle progressBar, ControlHandle progressText)
+void iconBrowserClass::LoadFamily(OSType type, bool newType, short oldFile, short file, ControlHandle progressBar, ControlHandle progressText)
 {
-	int iconCount, cellHeight, counter;
-	short ID;
-	Str255 tableString, name, IDAsString;
-	OSType type;
-	Handle icon;
+	int 				iconCount, cellHeight, counter;
+	long				members;
+	short 				ID;
+	Str255 				name, progressString, IDAsString;
+	Handle 				icon;
 	
-	iconCount = Count1Resources('icns');
-	newCellDrawingData = new ListDrawingData[iconCount];
-
-	
-	for (int i=1; i <= iconCount; i++)
-	{
-		icon = Get1IndResource('icns', i);
-		
-		GetResInfo(icon, &ID, &type, name);
-		
-		newCellDrawingData[i - 1].parentBrowser = this;
-		GeticnsInfo((IconFamilyHandle)icon, &newCellDrawingData[i - 1].members, &cellHeight);
-		newCellDrawingData[i - 1].icon = &drawIcon;
-		newCellDrawingData[i - 1].newType = true;
-		
-		ReleaseResource(icon);
-		
-		UseResFile(oldFile);
-		
-		if (name[0] != 0)
-			GetIndString(tableString, rIBStrings, eIBListName);
-		else
-			GetIndString(tableString, rIBStrings, eIBListNoName);
-		
-		NumToString(ID, IDAsString);
-		SubstituteString(tableString, "\p<ID>", IDAsString);
-		
-		if (name[0] != 0)
-			SubstituteString(tableString, "\p<name>", name);
-		
-		SubstituteString(tableString, "\p<type>", "\picns");
-		
-		theList.InsertSorted(tableString,
-							 20 + cellHeight,
-							 &newCellDrawingData[i - 1]);
-		
-		counter = GetControlValue(progressBar);
-		SetControlValue(progressBar, ++counter);
-		
-		if (name[0] != 0)
-			GetIndString(tableString, rIBStrings, eIBProgressName);
-		else
-			GetIndString(tableString, rIBStrings, eIBProgressNoName);
-			
-		SubstituteString(tableString, "\p<ID>", IDAsString);
-		
-		if (name[0] != 0)
-			SubstituteString(tableString, "\p<name>", name);
-			
-		SetControlText(progressText, tableString);
-		Draw1Control(progressText);
-		
-		UseResFile(file);
-	}
-}
-
-void iconBrowserClass::LoadOld(short oldFile, short file, ControlHandle progressBar, ControlHandle progressText)
-{
-	LoadOldFamily('ICN#', &icnCellDrawingData, oldFile, file, progressBar, progressText);
-	LoadOldFamily('ics#', &icsCellDrawingData, oldFile, file, progressBar, progressText);
-}
-
-void iconBrowserClass::LoadOldFamily(OSType type,
-									 ListDrawingData** drawingData,
-									 short oldFile, short file,
-									 ControlHandle progressBar,
-									 ControlHandle progressText)
-{
-	int counter, iconCount, cellHeight, row, col;
-	short ID;
-	Str255 tableString, name, IDAsString, typeAsString;
-	Handle icon;
-	
-
 	iconCount = Count1Resources(type);
-	*drawingData = new ListDrawingData[iconCount];
 	
 	for (int i=1; i <= iconCount; i++)
 	{
@@ -252,65 +185,61 @@ void iconBrowserClass::LoadOldFamily(OSType type,
 		
 		GetResInfo(icon, &ID, &type, name);
 		
-		(*drawingData)[i - 1].parentBrowser = this;
-		GetICNInfo(ID, name, &(*drawingData)[i - 1].members, &cellHeight);
-		(*drawingData)[i - 1].icon = &drawIcon;
-		(*drawingData)[i - 1].newType = false;
+		if (newType)
+			GeticnsInfo((IconFamilyHandle)icon, &members, &cellHeight);
+		else
+			GetICNInfo(ID, name, &members, &cellHeight);
 		
 		ReleaseResource(icon);
 		
 		UseResFile(oldFile);
 		
-		if (name[0] != 0)
-			GetIndString(tableString, rIBStrings, eIBListName);
-		else
-			GetIndString(tableString, rIBStrings, eIBListNoName);
+		AddIcon(ID, name, members, newType);
 		
-		NumToString(ID, IDAsString);
-		SubstituteString(tableString, "\p<ID>", IDAsString);
-		
-		if (name[0] != 0)
-			SubstituteString(tableString, "\p<name>", name);
-		
-		typeAsString[0] = 4;
-		typeAsString[1] = (type & 0xFF000000) >> 24;
-		typeAsString[2] = (type & 0x00FF0000) >> 16;
-		typeAsString[3] = (type & 0x0000FF00) >> 8;
-		typeAsString[4] = (type & 0x000000FF) >> 0;
-		
-		SubstituteString(tableString, "\p<type>", typeAsString);
-		
-		
-		if (theList.FindValue(tableString, &(*drawingData)[i - 1], &row, &col) != noErr)		
-			theList.InsertSorted(tableString,
-								 20 + cellHeight,
-								 &(*drawingData)[i - 1]);
-							
 		counter = GetControlValue(progressBar);
 		SetControlValue(progressBar, ++counter);
 		
 		if (name[0] != 0)
-			GetIndString(tableString, rIBStrings, eIBProgressName);
+			GetIndString(progressString, rIBStrings, eIBProgressName);
 		else
-			GetIndString(tableString, rIBStrings, eIBProgressNoName);
-			
-		SubstituteString(tableString, "\p<ID>", IDAsString);
+			GetIndString(progressString, rIBStrings, eIBProgressNoName);
+		
+		NumToString(ID, IDAsString);	
+		SubstituteString(progressString, "\p<ID>", IDAsString);
 		
 		if (name[0] != 0)
-			SubstituteString(tableString, "\p<name>", name);
+			SubstituteString(progressString, "\p<name>", name);
 			
-		SetControlText(progressText, tableString);
+		SetControlText(progressText, progressString);
 		Draw1Control(progressText);
 		
 		UseResFile(file);
 	}
 }
 
+void iconBrowserClass::AddIcon(int ID, Str255 name, long members, bool newType)
+{
+	ListDrawingData*	cellDrawingData;
+	MStringPtr			cellString;
+			
+	iconBrowserClass::GetIconString(ID, name, members, newType, &cellString);
+				
+	cellDrawingData = new ListDrawingData;
+	
+	cellDrawingData->parentBrowser = this;
+	cellDrawingData->icon = &drawIcon;
+	cellDrawingData->members = members;
+	cellDrawingData->newType = newType;
+	cellDrawingData->ID = ID;
+	
+	theList.InsertSorted(cellString,
+						 kIBPreviewHeight + kIBExtraHeight,
+						 cellDrawingData);
+}
+
 iconBrowserClass::~iconBrowserClass()
 {
-	delete newCellDrawingData;
-	delete icnCellDrawingData;
-	delete icsCellDrawingData;
+	;
 }
 
 void iconBrowserClass::Close()
@@ -423,6 +352,8 @@ void iconBrowserClass::RefreshList()
 	GetIndString(iconCountLabel, rIBStrings, eIBIconCountLabel);
 	NumToString(theList.CountVisible(), iconCount);
 	SubstituteString(iconCountLabel, "\p<number>", iconCount);
+	NumToString(theList.CountTotal(), iconCount);
+	SubstituteString(iconCountLabel, "\p<total>", iconCount);
 	SetControlTitle(controls.infoPlacard, iconCountLabel);
 	Draw1Control(controls.infoPlacard);
 	
@@ -448,7 +379,7 @@ void iconBrowserClass::HandleContentClick(EventRecord* eventPtr)
 	
 	if (MWindow::GetFront() != this)
 	{
-		MWindowPtr(this)->Select();
+		Select();
 		return;
 	}
 	
@@ -493,13 +424,11 @@ void iconBrowserClass::HandleContentClick(EventRecord* eventPtr)
 			if (((LMGetTicks() - lastSelectionTime) < LMGetDoubleTime())
 				&& (currentSelection == lastSelection))
 			{
-				Str255 choice;
 				long ID;
 				ListDrawingData* cellData;
 				
-				theList.GetValue(currentSelection, 0, choice);
 				theList.GetCellClientData(currentSelection, 0, &cellData);
-				ID = GetCellID(choice);
+				ID = cellData->ID;
 				if (cellData->newType)
 					Open(&srcFileSpec, ID, formatMacOSNew, part);
 				else
@@ -555,13 +484,12 @@ void iconBrowserClass::RefreshIconTypes()
 		
 		Draw1Control(controls.list);
 			
-		scrollingIncrement = theList.GetAverageHeight();
-		
 		GetIndString(iconCountLabel, rIBStrings, eIBIconCountLabel);
 		
 		NumToString(theList.CountVisible(), iconCountAsString);
-		
 		SubstituteString(iconCountLabel, "\p<number>", iconCountAsString);
+		NumToString(theList.CountTotal(), iconCountAsString);
+		SubstituteString(iconCountLabel, "\p<total>", iconCountAsString);
 		
 		SetControlTitle(controls.infoPlacard, iconCountLabel);
 		
@@ -587,23 +515,45 @@ void iconBrowserClass::HandleGrow(Point where)
 	h = growSize & 0x0000FFFF;
 	v = (growSize >> 16) & 0x0000FFFF;
 	
-	SAVEGWORLD;
-	SetPort(window);
+	if (SizeSupported(h, v))
+	{	
+		SAVEGWORLD;
+		SetPort(window);
+		
+		updateRgn = NewRgn(); // we must invalidate the old window region...
+		CopyRgn(window->visRgn, updateRgn);
+		InvalRgn(updateRgn);
+		
+		SizeWindow(window, h, v, true); //...do the resizing
+		
+		CopyRgn(window->visRgn, updateRgn); // and invalidate the new one as well
+		InvalRgn(updateRgn);
+		
+		DisposeRgn(updateRgn); // and now we're done with the region
+		
+		RESTOREGWORLD;
+		
+		RepositionControls();
+	}
+}
+
+bool iconBrowserClass::SizeSupported(int newWidth, int newHeight)
+{
+	int currentWidth, currentHeight;
+	int additionalMemoryRequired;
+	Rect	browserRect;
 	
-	updateRgn = NewRgn(); // we must invalidate the old window region...
-	CopyRgn(window->visRgn, updateRgn);
-	InvalRgn(updateRgn);
+	GetControlBounds(controls.list, &browserRect);
 	
-	SizeWindow(window, h, v, true); //...do the resizing
+	currentWidth = browserRect.right - browserRect.left;
+	currentHeight = browserRect.bottom - browserRect.top;
+
+	additionalMemoryRequired = newWidth * newHeight * 32/8 -
+							   currentWidth * currentHeight * 32/8;
+							   
+	additionalMemoryRequired *= 1.1;
 	
-	CopyRgn(window->visRgn, updateRgn); // and invalidate the new one as well
-	InvalRgn(updateRgn);
-	
-	DisposeRgn(updateRgn); // and now we're done with the region
-	
-	RESTOREGWORLD;
-	
-	RepositionControls();
+	return (FreeMem() > additionalMemoryRequired);
 }
 
 int iconBrowserClass::GetSelection()
@@ -613,19 +563,20 @@ int iconBrowserClass::GetSelection()
 
 void iconBrowserClass::Clear()
 {
-	Str255	message;
-	MString	temp;
-	MAlert alert;
-	int		ID;
-	Str255 IDAsString;
+	Str255				message;
+	MString				temp;
+	MAlert 				alert;
+	int					ID;
+	Str255 				IDAsString;
+	ListDrawingData*	drawingData;
 	
 	if (theList.GetSelection() == -1)
 		return;
 	
 	GetIndString(message, rIBStrings, eIBDeleteWarning);
 	
-	theList.GetValue(theList.GetSelection(), 0, IDAsString);
-	ID = GetCellID(IDAsString);
+	theList.GetCellClientData(theList.GetSelection(), 0, &drawingData);
+	ID = drawingData->ID;
 	NumToString(ID, IDAsString);
 	
 	SubstituteString(message, "\p<icon ID>", IDAsString);
@@ -686,7 +637,70 @@ void iconBrowserClass::Clear()
 	}
 }
 
-bool IconFilter(Str255 cellString, void *clientData)
+void iconBrowserClass::GetIconString(int ID, Str255 name, long members, bool newType, MStringPtr* iconString)
+{
+	MString part("");
+	bool	defaultName = false;
+	Str255	localName;
+	
+	*iconString = new MString("");
+	
+	part.LoadFromResource(rIBStrings, eIBListID);
+	(**iconString) += part;
+	if (ID != kIDUseFileIcon)
+		(**iconString) += ID;
+	else
+	{
+		part.LoadFromResource(rMiscIconStrings, eNone);
+		(**iconString) += part;
+	}
+	(**iconString) += "<BR>";
+	
+	if (name[0] || ID == kIDUseFileIcon)
+		CopyString(localName, name);
+	else
+	{
+		GetIDMenu(ID, NULL, NULL, localName);
+		if (localName[0]) defaultName = true;
+	}
+	
+	if (localName[0] || ID == kIDUseFileIcon)
+	{
+		part.LoadFromResource(rIBStrings, eIBListName);
+		(**iconString) += part;
+		if (ID == kIDUseFileIcon)
+		{
+			part.LoadFromResource(rMiscIconStrings, eFinderIcon);
+			(**iconString) += part;
+		}
+		else
+		{
+			if (defaultName) (**iconString) += "<I>";
+		
+			(**iconString) += localName;
+			
+			if (defaultName) (**iconString) += "</I>";
+		}
+		(**iconString) += "<BR>";
+	}
+	
+	part.LoadFromResource(rIBStrings, eIBListType);
+	(**iconString) += part;
+	if (newType)
+		part.LoadFromResource(rIBStrings, eIBListNewType);
+	else
+		part.LoadFromResource(rIBStrings, eIBListOldType);
+	(**iconString) += part;
+	(**iconString) += "<BR>";
+	
+	part.LoadFromResource(rIBStrings, eIBListMembers);
+	(**iconString) += part;
+	part = icnsClass::GetMembersListNames(members);
+	(**iconString) += part;
+}
+		
+
+bool IconFilter(MStringPtr cellString, void *clientData)
 {
 #pragma unused (cellString)
 	ListDrawingData*	drawingData;
@@ -703,68 +717,14 @@ bool IconFilter(Str255 cellString, void *clientData)
 	return false;
 }
 
-short IconHitTest(Rect targetRect, Point theMouse, void *clientData)
+void IconUpdate(MStringPtr cellString, int* height, void* clientData)
 {
-	Rect				currentRect;
+#pragma unused (cellString, height)
 	ListDrawingData*	drawingData;
-	int					thePart = -1;
 	
 	drawingData = (ListDrawingData*)clientData;
 	
-	currentRect = targetRect;
-	currentRect.bottom -= 16;
-	
-	if (IconHitTestMember(drawingData->members, ih32, 48, theMouse, &currentRect, &thePart) ||
-		IconHitTestMember(drawingData->members, ich8, 48, theMouse, &currentRect, &thePart) ||
-		IconHitTestMember(drawingData->members, ich4, 48, theMouse, &currentRect, &thePart) ||
-		IconHitTestMember(drawingData->members, ichi, 48, theMouse, &currentRect, &thePart) ||
-	
-		IconHitTestMember(drawingData->members, il32, 32, theMouse, &currentRect, &thePart) ||
-		IconHitTestMember(drawingData->members, icl8, 32, theMouse, &currentRect, &thePart) ||
-		IconHitTestMember(drawingData->members, icl4, 32, theMouse, &currentRect, &thePart) ||
-		IconHitTestMember(drawingData->members, icni, 32, theMouse, &currentRect, &thePart) ||
-	
-		IconHitTestMember(drawingData->members, is32, 16, theMouse, &currentRect, &thePart) ||
-		IconHitTestMember(drawingData->members, ics8, 16, theMouse, &currentRect, &thePart) ||
-		IconHitTestMember(drawingData->members, ics4, 16, theMouse, &currentRect, &thePart) ||
-		IconHitTestMember(drawingData->members, icsi, 16, theMouse, &currentRect, &thePart))
-	{
-		;
-	}
-	
-	return thePart;
-}
-
-bool IconHitTestMember(long members, long member, int height, Point theMouse, Rect* currentRect, int* thePart)
-{
-	bool found = false;
-	
-	if (members & member)
-	{
-		currentRect->right = currentRect->left + height;
-		currentRect->top = currentRect->bottom - height;
-		
-		if (PtInRect(theMouse, currentRect))
-		{
-			*thePart = member;
-			found = true;
-		}
-		
-		currentRect->left = currentRect->right + 2;
-	}
-	
-	return found;
-}
-
-void IconUpdate(Str255 cellString, int* height, void* clientData)
-{
-	ListDrawingData*	drawingData;
-	int					ID;
-	
-	drawingData = (ListDrawingData*)clientData;
-	
-	ID = GetCellID(cellString);
-	drawingData->icon->ID = ID;
+	drawingData->icon->ID = drawingData->ID;
 	if (drawingData->newType)
 		drawingData->icon->LoadNew();
 	else
@@ -774,87 +734,49 @@ void IconUpdate(Str255 cellString, int* height, void* clientData)
 		drawingData->icon->members != 0)
 		drawingData->members = drawingData->icon->members;
 		
-	if (drawingData->icon->GetLargestSize() != (*height - 20) &&
+	/*if (drawingData->icon->GetLargestSize() != (*height - 20) &&
 		drawingData->icon->GetLargestSize() != 0)
-		*height = drawingData->icon->GetLargestSize() + 20;
+		*height = drawingData->icon->GetLargestSize() + 20;*/
 }
 
-void IconDraw(Rect targetRect, Str255 cellString, bool selected, int part, void *clientData)
+void IconDraw(Rect targetRect, MStringPtr cellString, bool selected, int part, void *clientData)
 {
+#pragma unused(cellString, part)
 	Rect				displayRect;
-	ListDrawingData* drawingData;
-	int					ID;
+	ListDrawingData* 	drawingData;
 	
 	drawingData = (ListDrawingData*)clientData;
 	
 	displayRect = targetRect;
-	displayRect.bottom -= 16;
+	InsetRect(&displayRect, kIBExtraHeight/2, kIBExtraHeight/2);
 	
-	ID = GetCellID(cellString);
-	drawingData->icon->ID = ID;
-	if (drawingData->newType)
+	drawingData->icon->ID = drawingData->ID;
+	if (drawingData->ID == kIDUseFileIcon)
+		drawingData->icon->LoadFileIcon();
+	else if (drawingData->newType)
 		drawingData->icon->LoadNew();
 	else
 		drawingData->icon->LoadOld();
 	
-	if (selected && part == -1)
-		if (drawingData->members & ih32) part = ih32;
-		else if (drawingData->members & ich8) part = ich8;
-		else if (drawingData->members & ich4) part = ich4;
-		else if (drawingData->members & ichi) part = ichi;
-		
-		else if (drawingData->members & il32) part = il32;
-		else if (drawingData->members & icl8) part = icl8;
-		else if (drawingData->members & icl4) part = icl4;
-		else if (drawingData->members & icni) part = icni;
-		
-		else if (drawingData->members & is32) part = is32;
-		else if (drawingData->members & ics8) part = ics8;
-		else if (drawingData->members & ics4) part = ics4;
-		else if (drawingData->members & icsi) part = icsi;
-	
-	IconDrawMember(drawingData, ih32, 48, &displayRect, selected && part == ih32);
-	IconDrawMember(drawingData, ich8, 48, &displayRect, selected && part == ich8);
-	IconDrawMember(drawingData, ich4, 48, &displayRect, selected && part == ich4);
-	IconDrawMember(drawingData, ichi, 48, &displayRect, selected && part == ichi);
-	
-	IconDrawMember(drawingData, il32, 32, &displayRect, selected && part == il32);
-	IconDrawMember(drawingData, icl8, 32, &displayRect, selected && part == icl8);
-	IconDrawMember(drawingData, icl4, 32, &displayRect, selected && part == icl4);
-	IconDrawMember(drawingData, icni, 32, &displayRect, selected && part == icni);
-	
-	IconDrawMember(drawingData, is32, 16, &displayRect, selected && part == is32);
-	IconDrawMember(drawingData, ics8, 16, &displayRect, selected && part == ics8);
-	IconDrawMember(drawingData, ics4, 16, &displayRect, selected && part == ics4);
-	IconDrawMember(drawingData, icsi, 16, &displayRect, selected && part == icsi);
+	drawingData->icon->Display(displayRect, selected);
 }
 
-void IconDrawMember(ListDrawingData* drawingData, long member, int height, Rect* displayRect, bool selected)
+long BrowserStringCompare(MStringPtr string1, MStringPtr string2, void* clientData1, void *clientData2)
 {
-	if (drawingData->members & member)
-	{
-		displayRect->right = displayRect->left + height;
-		displayRect->top = displayRect->bottom - height;
-		drawingData->icon->DisplayMember(member, *displayRect, selected);
-		displayRect->left = displayRect->right + 2;
-	}
-}
-
-short BrowserStringCompare(Str255 string1, Str255 string2, void* clientData1, void *clientData2)
-{
+#pragma unused (string1, string2)
+	ListDrawingData *drawingData1, *drawingData2;
+		
+	drawingData1 = (ListDrawingData*)clientData1;
+	drawingData2 = (ListDrawingData*)clientData2;
+		
 	int difference;
 	
-	difference = GetCellID(string1) - GetCellID(string2);
+	difference = drawingData1->ID - drawingData2->ID;
 	
 	if (difference != 0)
 		return difference;
 	else if ((clientData1 != NULL) && (clientData2 != NULL))
-	{
-		ListDrawingData *drawingData1, *drawingData2;
-		
-		drawingData1 = (ListDrawingData*)clientData1;
-		drawingData2 = (ListDrawingData*)clientData2;
-		
+	{	
 		if (drawingData1->newType == drawingData2->newType)
 			return 0;
 		else
@@ -862,44 +784,6 @@ short BrowserStringCompare(Str255 string1, Str255 string2, void* clientData1, vo
 	}
 	else
 		return 0;
-}
-
-
-int GetCellID(Str255 cellText)
-{
-	long ID, stringStart = -1, stringEnd = -1;
-	Str255 string;
-	
-	CopyString(string, cellText);
-	
-	for (int i=1; i < string[0]; i++)
-	{
-		if (string[i] == '-' ||
-			string[i] == '1' ||
-			string[i] == '2' ||
-			string[i] == '3' ||
-			string[i] == '4' ||
-			string[i] == '5' ||
-			string[i] == '6' ||
-			string[i] == '7' ||
-			string[i] == '8' ||
-			string[i] == '9' ||
-			string[i] == '0')
-		{
-			if (stringStart == -1)
-				stringStart = i;
-		}
-		else if (stringStart != -1)
-		{
-			stringEnd = i - 1;
-			break;
-		}
-	}
-	
-	
-	string[stringStart - 1] = stringEnd - stringStart + 1;
-	StringToNum(&string[stringStart - 1], &ID);
-	return ID;
 }
 
 iconBrowserPtr GetBrowser(WindowPtr window)
@@ -998,7 +882,6 @@ pascal void ScrollBarAction(ControlHandle theControl, SInt16 thePart)
 	}
 	
 	Draw1Control(parentBrowser->controls.list);
-
 }
 
 pascal void InfoPlacardDraw(ControlHandle theControl,SInt16 thePart)

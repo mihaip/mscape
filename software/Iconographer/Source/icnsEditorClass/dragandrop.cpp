@@ -6,31 +6,19 @@ pascal OSErr ApproveDragReference (DragReference theDragRef, bool *approved, icn
 {
 	OSErr 			err = noErr;
 	UInt16			index = 1;
-	DragAttributes	dragAttrs;
 	FlavorType		flavorType;
 	Point			theMouse;
 	ItemReference	theItem;
-	Rect			wellRect, previewRect;
+	Rect			wellRect;
 	
 	GetDragMouse(theDragRef, &theMouse, 0);
 	GlobalToLocal(&theMouse);
 	
-	GetControlBounds(parentEditor->controls.iconEditWell, &wellRect);
-	GetControlBounds(parentEditor->controls.display. preview, &previewRect);
+	wellRect = parentEditor->editAreaRect;
 	
 	*approved = false;
-	if (PtInRect(theMouse, &wellRect) ||
-		PtInRect(theMouse, &parentEditor->controls.display.iconHugeRect)		||
-		PtInRect(theMouse, &parentEditor->controls.display.iconLargeRect)		||
-		PtInRect(theMouse, &parentEditor->controls.display.iconSmallRect)		||
-		PtInRect(theMouse, &parentEditor->controls.display.maskHugeRect)		||
-		PtInRect(theMouse, &parentEditor->controls.display.maskLargeRect)		||
-		PtInRect(theMouse, &parentEditor->controls.display.maskSmallRect)		||
-		PtInRect(theMouse, &previewRect))
-	if (!(err = GetDragAttributes (theDragRef,&dragAttrs)))
+	if (PtInRect(theMouse, &wellRect))
 	if (!(PtInRect(theMouse, &parentEditor->dragSrcRect)))
-	//if (!(dragAttrs & kDragInsideSenderWindow))
-	//if (!(err = CountDragItems (theDragRef,&itemCount)) && itemCount == 1)
 	if (!(err = (GetDragItemReferenceNumber(theDragRef, 1, &theItem))))
 	{
 		GetFlavorType(theDragRef,theItem,index,&flavorType);
@@ -54,13 +42,12 @@ pascal OSErr DrawDragHilite(DragReference theDragRef, icnsEditorPtr parentEditor
 	OSErr err = noErr;
 	Point	theMouse;
 	bool	approved;
-	Rect	wellRect, previewRect;
+	Rect	wellRect;
 	
 	GetDragMouse(theDragRef, &theMouse, 0);
 	GlobalToLocal(&theMouse);
 	
-	GetControlBounds(parentEditor->controls.iconEditWell, &wellRect);
-	GetControlBounds(parentEditor->controls.display. preview, &previewRect);
+	wellRect = parentEditor->editAreaRect;
 
 	RgnHandle hiliteRgn = NewRgn ( );
 	if (!hiliteRgn)
@@ -74,23 +61,6 @@ pascal OSErr DrawDragHilite(DragReference theDragRef, icnsEditorPtr parentEditor
 		}
 		else if (PtInRect(theMouse, &wellRect))
 			RectRgn(hiliteRgn,&wellRect);
-		else if (PtInRect(theMouse, &parentEditor->controls.display.iconHugeRect))
-			RectRgn(hiliteRgn,&parentEditor->controls.display.iconHugeRect);
-		else if (PtInRect(theMouse, &parentEditor->controls.display.iconLargeRect))
-			RectRgn(hiliteRgn, &parentEditor->controls.display.iconLargeRect);
-		else if (PtInRect(theMouse, &parentEditor->controls.display.iconSmallRect))
-			RectRgn(hiliteRgn, &parentEditor->controls.display.iconSmallRect);
-		else if (PtInRect(theMouse, &parentEditor->controls.display.maskHugeRect))
-			RectRgn(hiliteRgn, &parentEditor->controls.display.maskHugeRect);
-		else if (PtInRect(theMouse, &parentEditor->controls.display.maskLargeRect))
-			RectRgn(hiliteRgn, &parentEditor->controls.display.maskLargeRect);
-		else if (PtInRect(theMouse, &parentEditor->controls.display.maskSmallRect))
-			RectRgn(hiliteRgn, &parentEditor->controls.display.maskSmallRect);
-		else if (PtInRect(theMouse, &previewRect))
-		{
-			RectRgn(hiliteRgn, &previewRect);
-			InsetRgn(hiliteRgn, 1, 1);
-		}
 		else
 		{
 			Rect	tempRect = {-1, -1, 0, 0};
@@ -192,12 +162,11 @@ pascal OSErr DragReceiveHandler (WindowPtr theWindow, void *, DragReference theD
 	Point			theMouse, localMouse;
 	long			targetName;
 	long			iconType, typeSize=sizeof(long);
-	bool			approved, replaceIcon = false;
+	bool			approved;
 	PicHandle		pic;
 	long			picSize;
 	Rect			targetRect = {0, 0, 0, 0};
 	RgnHandle		updateRgn;
-	Rect			previewRect;
 	
 	GetDragMouse(theDragRef, &theMouse, 0);
 	localMouse = theMouse;
@@ -222,21 +191,12 @@ pascal OSErr DragReceiveHandler (WindowPtr theWindow, void *, DragReference theD
 			err = GetFlavorDataSize(theDragRef, theItem, 'PICT', &picSize);
 			pic = (PicHandle)NewHandle(picSize);			
 			err = GetFlavorData (theDragRef,theItem,'PICT',(void*)*pic,&picSize,0);
-			GetControlBounds(parentEditor->controls.display.preview, &previewRect);
-			if (PtInRect(localMouse, &parentEditor->editWellRect))
+			if (PtInRect(localMouse, &parentEditor->editAreaRect))
 			{
 				targetGW = parentEditor->currentGW;
 				targetPix = parentEditor->currentPix;
 				targetName = parentEditor->currentPixName;
 			}
-			else if (PtInRect(localMouse, &previewRect))
-			{
-				replaceIcon = true;
-				targetGW = parentEditor->il32GW;
-				targetPix = parentEditor->il32Pix;
-				targetName = il32;
-			}
-			else parentEditor->GetDisplayPix(theMouse, &targetGW, &targetPix, &targetName, &targetRect);
 			updateRgn = NewRgn();
 			RectRgn(updateRgn, &targetRect);
 			if (targetPix == parentEditor->currentPix)
@@ -256,11 +216,7 @@ pascal OSErr DragReceiveHandler (WindowPtr theWindow, void *, DragReference theD
 				parentEditor->SaveState(targetGW, targetPix, targetName);
 			
 			GetFlavorType(theDragRef,theItem,2,&flavorType);
-			if (replaceIcon)
-			{
-				InsertPicIntoIcon(parentEditor, pic);
-			}
-			else if (flavorType == 'Icon')
+			if (flavorType == 'Icon')
 			{
 				GetFlavorData (theDragRef,theItem,'Icon',&iconType,&typeSize,0);
 				if (iconType == selection)
@@ -340,7 +296,8 @@ void InsertPicIntoIcon(icnsEditorPtr parentEditor, PicHandle pic)
 									 &targetIconName,
 									 &targetMaskPix,
 									 &targetMaskGW,
-									 &targetMaskName);
+									 &targetMaskName,
+									 false);
 	
 	if (targetIconName != parentEditor->currentPixName)
 		parentEditor->SaveState(targetIconGW, targetIconPix, targetIconName);
@@ -356,6 +313,8 @@ void InsertPicIntoIcon(icnsEditorPtr parentEditor, PicHandle pic)
 			   
 	MergePix(targetIconPix, targetMaskPix, iconPix, maskPix, targetIconPix, targetMaskPix);
 
+	parentEditor->members |= (targetIconName | targetMaskName);
+
 	if (targetIconName != parentEditor->currentPixName)
 		parentEditor->SaveState(targetIconGW, targetIconPix, targetIconName);
 	else
@@ -367,7 +326,8 @@ void InsertPicIntoIcon(icnsEditorPtr parentEditor, PicHandle pic)
 	DisposeGWorld(maskGW);
 }
 
-void DragPixMap(EventRecord *eventPtr,
+void DragPixMap(Rect* dragSourceRect,
+				EventRecord *eventPtr,
 				PixMapHandle dragPix,
 				RgnHandle dragShapeRgn,
 				PixMapHandle dragContentsPix,
@@ -399,11 +359,20 @@ void DragPixMap(EventRecord *eventPtr,
 	AddDragItemFlavor(dragRef, 0, 'PICT', *dragPic,  GetHandleSize((Handle)dragPic), 0);
 	AddDragItemFlavor(dragRef, 0, 'Icon', &dragType, sizeof(long), 0);
 	
-	offsetPt = eventPtr->where;
-	offsetPt.h -= (**dragPix).bounds.right/2;
-	offsetPt.v -= (**dragPix).bounds.bottom/2;
+	if (dragSourceRect != NULL)
+	{
+		offsetPt.h = dragSourceRect->left;
+		offsetPt.v = dragSourceRect->top;
+		LocalToGlobal(&offsetPt);
+	}
+	else
+	{
+		offsetPt = eventPtr->where;
+		offsetPt.h -= ((**dragPix).bounds.right - (**dragPix).bounds.left)/2;
+		offsetPt.v -= ((**dragPix).bounds.bottom - (**dragPix).bounds.top)/2;
+	}
 	
-	if (RegionArea(maskRgn) < 9216)
+	if (RegionArea(maskRgn) <= 128 * 128)
 		SetDragImage(dragRef, dragPix, maskRgn, offsetPt, kDragStandardTranslucency);
 	
 	tempRgn = NewRgn();
@@ -413,7 +382,7 @@ void DragPixMap(EventRecord *eventPtr,
 
 	OffsetRgn(tempRgn, offsetPt.h, offsetPt.v);
 	
-	TrackDrag(dragRef,eventPtr,tempRgn);
+	TrackDrag(dragRef, eventPtr, tempRgn);
 	
 	DisposeRgn(maskRgn);
 	DisposeRgn(dragRgn);

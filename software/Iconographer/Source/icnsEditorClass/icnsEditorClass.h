@@ -14,7 +14,14 @@
 #include "textTool.h"
 
 // constants
-const static Rect kDefaultSizeRect = {0, 0, 256, 426}; // normal size
+const static int kScrollbarHeight = 16 - 1;
+const static int kScrollbarWidth = 16 - 1;
+
+const static int kZoomPlacardWidth = 64;
+const static int kMinScrollbarLength = 16 * 4;
+
+const static int kMinWidth = 80;
+const static int kMinHeight = 80;
 
 const static int kDeleteKey = 0x08;
 const static char kDeleteGlyph = '';
@@ -25,13 +32,17 @@ const static int kSelectionDrawingDelay = 2;
 const static short rEditorWind = 200;
 const static long kEditorType = 'IcEd';
 
-// menu items
-const static int k32BitIcon = 1;
-const static int k8BitIcon = 2;
-const static int k4BitIcon = 3;
-const static int k1BitIcon = 4;
-const static int k8BitMask = 1;
-const static int k1BitMask = 2;
+const static long kPreferredMembers[] = {it32, il32, ih32, is32,
+										 icl8, ich8, ics8, icm8,
+										 icl4, ich4, ics4, icm4,
+										 icni, ichi, icsi, icsm,
+										 t8mk, l8mk, h8mk, s8mk,
+										 icnm, ichm, icsm, icmm};
+const static int kPreferredMembersCount = sizeof(kPreferredMembers)/sizeof(long);
+
+const static int kMaxPanUpdateRects = 10;
+
+const static int kZoomMenuItemCount = 5;
 
 // resource IDs
 
@@ -61,8 +72,11 @@ enum resources
 
 enum iconInfoItems
 {
+	iIconIDLabel = 3,
 	iIconIDField = 4,
+	iIconNameLabel = 5,
 	iIconNameField = 6,
+	iFlagsGroupBox = 7,
 	iIconSizeField = 8,
 	iPurgeable = 9,
 	iPreload = 10,
@@ -70,7 +84,51 @@ enum iconInfoItems
 	iProtected = 12,
 	iSystemHeap = 13,
 	iIDMenu = 15,
-	iFormatPopup = 16
+	iFormatPopup = 16,
+	
+	iThumbnailBox = 19,
+	
+	iHugeBox = 20,
+	iih32Box = 33,
+	iich8Box = 36,
+	iich4Box = 40,
+	iichiBox = 44,
+	ih8mkBox = 48,
+	iichmBox = 51,
+	
+	iLargeBox = 21,
+	iil32Box = 34,
+	iicl8Box = 37,
+	iicl4Box = 41,
+	iicniBox = 45,
+	il8mkBox = 49,
+	iicnmBox = 52,
+	
+	iSmallBox = 22,
+	iis32Box = 35,
+	iics8Box = 38,
+	iics4Box = 42,
+	iicsiBox = 46,
+	is8mkBox = 50,
+	iicsmBox = 53,
+	
+	iMiniBox = 18,
+	iicm8Box = 39,
+	iicm4Box = 43,
+	iicmiBox = 47,
+	iicmmBox = 54,
+	
+	iMembersGroupBox = 17,
+	iMembersDivider = 23,
+	iHintsLabel = 24,
+	iIconLabel = 25,
+	i32BitIconLabel = 26,
+	i8BitIconLabel = 27,
+	i4BitIconLabel = 28,
+	i1BitIconLabel = 29,
+	iMaskLabel = 30,
+	i8BitMaskLabel = 31,
+	i1BitMaskLabel = 32
 };
 
 enum adjustItems
@@ -105,7 +163,12 @@ enum basicStrings
 	eHugeMaskSync = 7,
 	eYesButton = 8,
 	eNoButton = 9,
-	eInsertIconTitle = 10
+	eInsertIconTitle = 10,
+	eNonIconDataFork = 11,
+	eChooseAnotherFile = 12,
+	eClickToChooseAShortcut = 13,
+	eClickToChooseAnEditor = 14,
+	eIconographerSupportFolder = 15
 };
 
 enum labelStrings
@@ -120,83 +183,13 @@ enum labelStrings
 	sInfoLabelNoName = 8
 };
 
-enum toolIDs
-{
-	rCopyCursor = -20486,
-	rPen = 128,
-	rEyeDropper = 129,
-	rFill = 130,
-	rEraser = 131,
-	
-	rMarquee = 132,
-	rMarqueeAdditive = 200,
-	rMarqueeSubtractive = 201,
-	
-	rMove = 133,
-	rMoveSelectionOutline = 206,
-	rMoveSelectionContents = 207,
-	rMoveFloatSelection = 208,
-	
-	rLasso = 134,
-	rLassoAdditive = 202,
-	rLassoSubtractive = 203,
-	
-	rLassoPolygonal = 154,
-	rLassoPolygonalAdditive = 209,
-	rLassoPolygonalSubtractive = 210,
-	
-	rMagicWand = 135,
-	rMagicWandAdditive = 204,
-	rMagicWandSubtractive = 205,
-	
-	rLine = 136,
-	
-	rRectangle = 137,
-	rRectangleFilled = 150,
-	
-	rOval = 138,
-	rOvalFilled = 151,
-	
-	rPolygon = 139,
-	rPolygonFilled = 152,
-	
-	rGradient = 140,
-	rGradientRadial = 153,
-	
-	rText = 141
-};
-
 enum controlIDs
 {
-	rIconEditWell = 200,
+	rEditArea = 200,
 	rZoomPlacard = 201,
-	rInfoPlacard = 202,
-	rForeBackColors = 203,
-	rIconDisplay = 204,
-	rMaskDisplay = 205,
-	rIconPopup = 206,
-	rMaskPopup = 207,
-	rIconLabel = 208,
-	rMaskLabel = 209,
-	rPreview = 210,
-	rPreviewLabel = 211,
-	rPatterns = 212,
-	rBackgroundPane = 213,
-	rToolbarWell = 214
+	rVScrollbar = 202,
+	rHScrollbar = 203
 };
-
-// control parts
-
-const static int kForeColorPart = 100;
-const static int kBackColorPart = 101;
-const static int kSwapColorsPart = 102;
-const static int kResetColorsPart = 103;
-
-const static int kDisplayHugePart = 110;
-const static int kDisplayLargePart = 111;
-const static int kDisplaySmallPart = 112;
-
-const static int kPatternsPart = 120;
 
 enum iconOrMask
 {
@@ -247,25 +240,6 @@ enum insertionFlags
 	insertScaled = 2
 };
 
-enum tools
-{
-	noTool = 0,
-	pen = 1,
-	eyeDropper = 2,
-	fill = 3,
-	eraser = 4,
-	marquee = 5,
-	move = 6,
-	lasso = 7,
-	magicWand = 8,
-	line = 9,
-	rectangle = 10,
-	oval = 11,
-	polygon = 12,
-	gradient = 13,
-	text = 14
-};
-
 enum additionalStatusTypes
 {
 	// 1 is already used for out of memory
@@ -291,14 +265,8 @@ enum colors
 
 enum modes
 {
-	frame = 0,
-	filled = 1,
-	previewNormal = 2,
-	previewSelected = 3,
-	linear = 4,
-	radial = 5,
-	freehand = 6,
-	polygonal = 7
+	previewNormal,
+	previewSelected
 };
 
 enum iconInfoModes
@@ -307,75 +275,13 @@ enum iconInfoModes
 	kInsertIcon
 };
 
-// type definitions
-
-typedef struct toolbarControls
-{
-	ControlHandle	pen;
-	ControlHandle	eyeDropper;
-	ControlHandle	fill;
-	ControlHandle	eraser;
-	ControlHandle	marquee;
-	ControlHandle	move;
-	ControlHandle	lasso;
-	ControlHandle	magicWand;
-	ControlHandle	line;
-	ControlHandle	rectangle;
-	ControlHandle	oval;
-	ControlHandle	polygon;
-	ControlHandle	gradient;
-	ControlHandle	text;
-	
-	long			lastTool;
-	long			lastToolClickTicks;
-	long			toolMode;
-	long			gradientMode;
-	long			lassoMode;
-	long			oldLassoMode;
-} toolbarsControls;
-
-typedef struct display
-{
-	ControlHandle	iconDisplay;
-	ControlHandle	iconPopup;
-	ControlHandle	iconLabel;
-	Rect			iconHugeRect, iconLargeRect, iconSmallRect;
-	ControlHandle	maskDisplay;
-	ControlHandle	maskPopup;
-	ControlHandle	maskLabel;
-	Rect			maskHugeRect, maskLargeRect, maskSmallRect;
-	ControlHandle	preview;
-	ControlHandle	previewLabel;
-	long			previewMode;
-} display;
-
-typedef struct colorSwatch
-{
-	ControlHandle	control;
-	Rect			foreColorRect;
-	Rect			backColorRect;
-	Rect			swapColorsRect;
-	Rect			resetColorsRect;
-} colorSwatch;
-
-typedef struct PlacardControl
-{
-	ControlHandle	control;
-	Str255			text;
-} PlacardControl;
-
 typedef struct controlList
 {
-	ControlHandle	rootControl;
-	toolbarControls	toolbar;
-	display			display;
-	ControlHandle	iconEditWell;
-	PlacardControl	zoomPlacard;
-	PlacardControl	infoPlacard;
-	colorSwatch		colorSwatch;
-	ControlHandle	patterns;
-	ControlHandle	backgroundPane;
-	ControlHandle	toolbarWell;
+	ControlHandle	rootControl,
+					editArea,
+					zoomPlacard,
+					vScrollbar,
+					hScrollbar;
 } controlList;
 
 // classes
@@ -409,27 +315,23 @@ class icnsEditorClass : public icnsClass, public MWindow
 	private:
 		OSStatus		CreateControls(void);
 		void			InstallDraggingHandlers(void);
-		void			UpdateToolbar(void);
 		void			RepositionControls(void);
 		void			InvalidateDrawingArea(void);
 		
 		void			PostLoad();
+		void			PostSave();
+		void			LoadUsedMembers();
+		void			SaveUsedMembers();
+		bool			HasNonIconDataFork();
 		
-		void			HandleDisplayClick(EventRecord* eventPtr);
-		bool 			HandleToolClick(ControlHandle clickedControl);
 		void			HandleToolDoubleClick(long tool);
-		void			HandleSwatchClick(int controlPart, Point where);
-		void			GetColor(RGBColor* color, Point where, Str255 messageString);
-		void			HandlePatternsClick(Point where);
-		void			RefreshPopups();
-		void			UpdateInfoPlacard();
 		void			GetCurrentIconMask(PixMapHandle* iconPix, GWorldPtr* iconGW, long* iconName, 
-										   PixMapHandle* maskPix, GWorldPtr* maskGW, long* maskName);
+										   PixMapHandle* maskPix, GWorldPtr* maskGW, long* maskName,
+										   bool strict);
 		void			ToggleIconMask(void);
 		void			CheckMaskSync(PixMapHandle basePix, PixMapHandle maskPix, int errorString);
 		void			ChangeColorsIconSet(long name, GWorldPtr* gWorld, PixMapHandle* pix, CTabHandle colorTable, bool saveState);
-		void			GetGWorldAndPix(long pixName, GWorldPtr* gW, PixMapHandle* pix);
-
+		
 		void 			HandleDrawing(Point theMouse);
 		void			HandleMarquee(Point startMouse);
 		bool			HandleMove(Point startMouse);
@@ -446,19 +348,45 @@ class icnsEditorClass : public icnsClass, public MWindow
 		void			HandlePolygon(Point startMouse);
 		void			HandleGradient(Point startMouse);
 		void			HandleText(Point theMouse);
-		void			SwapForeBackColors(void);
-		void			ResetForeBackColors(void);
-		void			ColorsChanged();
+		void			HandlePan(Point startMouse);
+		void			HandleZoom(Point startMouse);
+		
+		void 			DrawMember(int pixName, Rect targetRect);
+		void			PreviewDisplay(int height, int depth, int maskDepth, Rect targetRect, bool selected);
 		
 		inline void 	GetDrawingMousePosition(int *x, int *y, Point* theMouse, int flags);
-		void			Display(Rect targetRect, long flags);
-		void			DrawSelection(GWorldPtr targetGW, Rect targetRect, int source, bool drawGrid);
-		void			DrawGrid(GWorldPtr targetGW, Rect targetRect);
+		inline void		DrawingPointToWindowPoint(Point* point, int flags);
+		
+		void			UpdateEditArea();
+		void			UpdateEditArea(Rect updateRect);
+		void			UpdateEditArea(Point point1, Point point2, Point point3, int flags);
+		void			UpdateEditArea(Point point1, Point point2, int flags);
+		void			UpdateEditArea(Rect rect1, Rect rect2, int flags);
+		
+		void			PaintEditAreaRect(Rect targetRect);
+		void			AddPanUpdateRect(Rect updateRect);
+		void			StartPan();
+		void			PanEditArea(int dH, int dV);
+		void			FinishPan();
+		void			DrawSelection(Rect sourceRect, Rect targetRect, int dX, int dY);
+		void 			DrawOverlay(Rect sourceRect, Rect targetRect, int dX, int dY);
+
+		
+		void			DrawGrid(Rect targetRect);
 		void			FloatSelection(void);
 		void			DefloatSelection(void);
 		void			MagnifySelectionRgn(void);
 		void 			DragSelection(int anchorX, int anchorY);
-		void			ResizeWindow();
+		//void			ResizeWindow();
+		
+		void			ZoomFitWindow();
+		void 			ClampScrollValues();
+		void			MakeEditAreaRect(int h, int v, Rect* areaRect);
+		Point			GetMaxDimensions();
+		int				GetMaxMagnification();
+		void			UpdateZoom();
+		
+		void			UpdatePreview();
 		void			CopyDepth(int oldDepth, int newDepth, int iconOrMask);
 		void 			GetDisplayPix(Point theMouse, GWorldPtr *clickedGW, PixMapHandle *clickedPix, long *clickedName, Rect *clickedRect);
 		void			InsertFromPicture(PicHandle srcPic, GWorldPtr targetGW, int options);
@@ -468,39 +396,51 @@ class icnsEditorClass : public icnsClass, public MWindow
 		void			SaveMembers(void);
 		void			UpdateCursor(Point theMouse);
 		
+		static pascal void	ScrollbarAction(ControlHandle theControl, SInt16 thePart);
+		
 		drawingStatePtr	firstState;
 		drawingStatePtr	currentState;
 	
 		controlList		controls;
-		int				oldTool;
-		int				currentTool;
 		
 		Rect			dragSrcRect;
-		Rect			editWellRect;
+		Rect			editAreaRect;
 		
 		PixMapHandle	currentPix;
 		GWorldPtr		currentGW;
 		long			currentPixName;
 		
 		RgnHandle		selectionRgn;
-		RgnHandle		selectionMagnifiedRgn;
+		RgnHandle		selectionContentsMagnifiedRgn;
+		RgnHandle		selectionOutlineMagnifiedRgn;
 		int				currentSelectionPattern;
 		long			lastSelectionTicks;
 		GWorldPtr		selectionGW;
 		PixMapHandle	selectionPix;
+		bool			cycleSelectionPattern;
 		
 		GWorldPtr		overlayGW;
 		PixMapHandle	overlayPix;
 		
 		int				magnification;
 		
-		RGBColor		foreColor;
-		RGBColor		backColor;
-		
-		int				pattern;
-		
 		int				colors;
 		
+		int				hScrollbarValue;
+		int				vScrollbarValue;
+		
+		Rect			panUpdateRects[kMaxPanUpdateRects];
+		int				panUpdateRectsCount;
+		
+		bool			exportMode;
+		unsigned long	exportDate;
+		FSSpec			exportFile;
+		
+		int				oldToggleMember, currentToggleMember;
+		
+		Point			zoomPosition;
+		Point			zoomDimensions;
+		int				zoomMagnification;
 	public:
 						icnsEditorClass(void);
 						~icnsEditorClass(void);
@@ -512,21 +452,18 @@ class icnsEditorClass : public icnsClass, public MWindow
 		void			Activate();
 		void			Deactivate();
 		void			HandleGrow(Point where);
+		void			Drag(Point startPoint, Rect draggingBounds);		void			ToggleZoom();
 		
 		void			Close();
 		void 			Load();
-		void			LoadNew();
-		void			LoadOld();
 		void 			LoadFileIcon();
-		void			LoadICO();
-		void			LoadTIFF();
-		void			Save(void);
-		void			SaveICO(void);
+		void			LoadDataFork();
+		OSErr			Save(void);
 		
 		void			Show();
 		void			Hide();
 		
-		void			SetCurrentMember(long member);
+		void			SetCurrentMember(long member, bool fancy);
 		void 			SetBestMember();
 		
 		void			ResetStates();
@@ -538,7 +475,7 @@ class icnsEditorClass : public icnsClass, public MWindow
 		void			Paste(int pasteType);
 		void			Clear(void);
 		void			Fill(void);
-		void			Select(int selectionType);
+		void			MakeSelection(int selectionType);
 		void			Rotate(int angle);
 		void			Flip(int flipType);
 		void			Invert(void);
@@ -547,36 +484,34 @@ class icnsEditorClass : public icnsClass, public MWindow
 		void			ZoomIn();
 		void			ZoomOut();
 		int				EditIconInfo(int mode);
+		void			OpenInExternalEditor();
+		void			ReloadFromExternalEditor();
 		
 		bool			CurrentDepthSupportsColors();
 		int				GetColors();
 		void			ChangeColors(int newColors, bool saveState);
 		
-		void			SetColors(RGBColor fore, RGBColor back);
-		void			GetColors(RGBColor* fore, RGBColor* back);
-		
 		void			RefreshWindowTitle();
 		void			DisposeStates(void);
 		
-		RgnHandle		GetControlsRegion(void);
+		static void		SetMembersCheckboxes(DialogPtr dialog, long usedMembers, long format);
+		static void		GetMembersCheckboxes(DialogPtr dialog, long* usedMembers);
+		static void 	HandleMembersCheckbox(DialogPtr dialog, int itemHit, long *usedMembers, int format);
 		
+		static void		ZoomPlacardUpdate(struct EnhancedPlacardData* data, int flags);
+
 		static editorStaticsClass	statics;
 		
-	friend pascal void				ColorSwatchDraw(ControlHandle theControl,SInt16 thePart);
-	friend pascal ControlPartCode	ColorSwatchHitTest(ControlHandle control, Point where);
-	friend pascal void 				SwatchUpdate(RGBColor* color, void *clientData);
-	friend pascal void				PatternsDraw(ControlHandle theControl,SInt16 thePart);
-	friend pascal ControlPartCode 	PatternsHitTest(ControlHandle control, Point where);
-	friend pascal void 				PatternMenuDraw(int number, int x, int y, int width, int height, void* clientData);
-	friend pascal void 				PatternMenuUpdate(int selection, void* clientData);
-	friend pascal void				DisplayDraw(ControlHandle theControl,SInt16 thePart);
-	friend		  void				DrawDisplayItem(icnsEditorPtr parentEditor, Rect targetRect, long targetName);
-	friend pascal ControlPartCode 	DisplayHitTest(ControlHandle theControl, Point where);
-	friend pascal void				PreviewDraw(ControlHandle theControl,SInt16 thePart);
-	friend pascal void				EditWellDraw(ControlHandle theControl,SInt16 thePart);
-	friend pascal void				PlacardDraw(ControlHandle theControl,SInt16 thePart);
-	friend pascal ControlPartCode	PlacardHitTest (ControlHandle control, Point where);
-
+		friend class	ToolPalette;
+		friend class	PreviewPalette;
+		friend class	MembersPalette;
+		
+		friend class drawingStateClass;
+		friend class SystemColorPicker;
+		
+		
+		friend pascal void	EditAreaDraw(ControlHandle theControl, SInt16 thePart);
+	
 	friend void UpdateEffects(AdjustDialogDataPtr dialogData);
 	
 	friend pascal OSErr 	DragTrackingHandler(DragTrackingMessage message, WindowPtr theWindow, void *, DragReference theDragRef);
@@ -584,8 +519,7 @@ class icnsEditorClass : public icnsClass, public MWindow
 	friend pascal OSErr 	ApproveDragReference (DragReference theDragRef, bool *approved, icnsEditorPtr parentEditor);
 	friend pascal OSErr		DrawDragHilite(DragReference dragRef, icnsEditorPtr parentEditor);
 	friend void 			InsertPicIntoIcon(icnsEditorPtr parentEditor, PicHandle pic);
-	friend class drawingStateClass;
-	friend class SystemColorPicker;
+	
 	
 	friend pascal void	CPSwatchDraw(ControlHandle theControl,SInt16 thePart);
 };
@@ -598,7 +532,8 @@ extern pascal OSErr 			DragTrackingHandler(DragTrackingMessage message, WindowPt
 extern pascal OSErr 			DragReceiveHandler (WindowPtr theWindow, void *, DragReference theDragRef);
 extern pascal OSErr 			ApproveDragReference (DragReference theDragRef, bool *approved, icnsEditorPtr parentEditor);
 extern pascal OSErr 			DrawDragHilite(DragReference dragRef, icnsEditorPtr parentEditor);
-extern void						DragPixMap(EventRecord *eventPtr,
+extern void						DragPixMap(Rect* dragSourceRect,
+										   EventRecord *eventPtr,
 										   PixMapHandle dragPix,
 										   RgnHandle dragShapeRgn,
 										   PixMapHandle dragContentsPix,
@@ -613,34 +548,8 @@ extern pascal void				PlacardDraw(ControlHandle theControl,SInt16 thePart);
 extern pascal ControlPartCode	PlacardHitTest(ControlHandle control, Point where);
 extern pascal ControlPartCode	PlacardTracking(ControlHandle thecontrol, Point startPt, ControlActionUPP actionProc);
 
-extern pascal void				EditWellDraw(ControlHandle theControl,SInt16 thePart);
-extern pascal ControlPartCode	EditWellHitTest (ControlHandle control, Point where);
-
-extern pascal void				PreviewDraw(ControlHandle theControl,SInt16 thePart);
-extern pascal ControlPartCode	PreviewHitTest(ControlHandle control, Point where);
-extern pascal ControlPartCode	PreviewTracking(ControlHandle theControl, Point startPt, ControlActionUPP actionProc);
-
-extern void						DrawDisplayItem(icnsEditorPtr parentEditor, Rect targetRect, long targetName);
-extern void						MakeDisplayRects(Rect controlRect, Rect *hugeRect,Rect *largeRect, Rect *smallRect);
-extern pascal void				DisplayDraw(ControlHandle theControl,SInt16 thePart);
-extern pascal ControlPartCode	DisplayHitTest(ControlHandle control, Point where);
-
-extern pascal void				ColorSwatchDraw(ControlHandle theControl,SInt16 thePart);
-extern pascal ControlPartCode 	ColorSwatchHitTest(ControlHandle control, Point where);
-extern void						MakeColorSwatchRects(Rect controlRect, Rect *foreColorRect, Rect *backColorRect, Rect *swapColorsRect, Rect *resetColorsRect);
-extern pascal void				SwatchUpdate(RGBColor* color, void *clientData);
-
-extern pascal void				PatternsDraw(ControlHandle theControl,SInt16 thePart);
-extern pascal ControlPartCode	PatternsHitTest (ControlHandle control, Point where);
-extern pascal void 				PatternMenuDraw(int number, int x, int y, int width, int height, void* clientData);
-extern pascal void 				PatternMenuUpdate(int selection, void* clientData);
-
-extern pascal void				BackgroundPaneDraw(ControlHandle theControl,SInt16 thePart);
-extern pascal ControlPartCode	BackgroundPaneHitTest (ControlHandle control, Point where);
-
-extern pascal void				ToolbarWellDraw(ControlHandle theControl,SInt16 thePart);
-extern pascal ControlPartCode	ToolbarWellHitTest (ControlHandle control, Point where);
-
+extern pascal void				EditAreaDraw(ControlHandle theControl, SInt16 thePart);
+extern pascal ControlPartCode	EditAreaHitTest(ControlHandle control, Point where);
 
 // utility functions
 
@@ -649,6 +558,7 @@ extern icnsEditorPtr			GetEditor(WindowPtr window);
 
 extern pascal bool StandardEditorDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit);
 extern pascal bool IconInfoDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit);
+extern void ToggleNonMacOSItems(DialogPtr infoDialog);
 extern void SplitMenuItem(Str255 text, long* ID, Str255 iconName);
 extern void GetIDMenu(int ID, MenuHandle* menu, int* item, Str255 name);
 extern void SetControlBalloonHelp(ControlHandle theControl, long stringNo);
@@ -657,5 +567,5 @@ extern void HandleBalloons(Point theMouse, WindowPtr window, int strings);
 
 extern pascal bool AdjustDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit);
 extern void FieldToSlider(ControlHandle field, ControlHandle slider);
-extern pascal void SliderActionFunction(ControlHandle theControl,short partCode);
+extern pascal void SliderActionFunction(ControlHandle theControl, short thePart);
 extern void UpdateEffects(AdjustDialogDataPtr dialogData);

@@ -66,6 +66,13 @@ void ColorsPalette::Deactivate()
 	}
 }
 
+void ColorsPalette::Show()
+{
+	GrabColors();
+	
+	MFloater::Show();
+}
+
 void ColorsPalette::DoIdle()
 {
 	Point	theMouse;
@@ -138,34 +145,7 @@ void ColorsPalette::HandleContentClick(EventRecord* eventPtr)
 		if (TrackControl(clickedControl, where, NULL))
 		{
 			if (clickedControl == controls.tabs)
-			{
-				switch (GetControlValue(controls.tabs))
-				{
-					case kRGBPane:
-						rgb.SetColor(currentColorPicker->GetColor());
-						currentColorPicker->Hide();
-						rgb.Show();
-						currentColorPicker = &rgb;
-						break;
-					case kHSVPane:
-						hsv.SetColor(currentColorPicker->GetColor());
-						currentColorPicker->Hide();
-						hsv.Show();
-						currentColorPicker = &hsv;
-						break;
-					case kSystemPane:
-						system.SetColor(currentColorPicker->GetColor());
-						currentColorPicker->Hide();
-						system.Show();
-						currentColorPicker = &system;
-						break;
-					case kFavoritesPane:
-						favorites.SetColor(currentColorPicker->GetColor());
-						currentColorPicker->Hide();
-						favorites.Show();
-						currentColorPicker = &favorites;
-				}
-			}
+				SetCurrentPicker(GetControlValue(controls.tabs));
 			else if (clickedControl == controls.swatch)
 			{
 				currentColor = part;
@@ -182,6 +162,47 @@ void ColorsPalette::HandleContentClick(EventRecord* eventPtr)
 	UpdateColors();
 }
 
+void ColorsPalette::SetCurrentPicker(int picker)
+{
+	if (GetControlValue(controls.tabs) != picker)
+	{
+		SetControlValue(controls.tabs, picker);
+		Draw1Control(controls.tabs);
+	}
+	
+	switch (picker)
+	{
+		case kRGBPane:
+			rgb.SetColor(currentColorPicker->GetColor());
+			currentColorPicker->Hide();
+			rgb.Show();
+			currentColorPicker = &rgb;
+			break;
+		case kHSVPane:
+			hsv.SetColor(currentColorPicker->GetColor());
+			currentColorPicker->Hide();
+			hsv.Show();
+			currentColorPicker = &hsv;
+			break;
+		case kSystemPane:
+			system.SetColor(currentColorPicker->GetColor());
+			currentColorPicker->Hide();
+			system.Show();
+			currentColorPicker = &system;
+			break;
+		case kFavoritesPane:
+			favorites.SetColor(currentColorPicker->GetColor());
+			currentColorPicker->Hide();
+			favorites.Show();
+			currentColorPicker = &favorites;
+	}
+}
+
+int ColorsPalette::GetCurrentPicker()
+{
+	return (GetControlValue(controls.tabs));
+}
+
 void ColorsPalette::SetColors(RGBColor foreColor, RGBColor backColor)
 {
 	fore = foreColor;
@@ -195,39 +216,33 @@ void ColorsPalette::SetColors(RGBColor foreColor, RGBColor backColor)
 
 void ColorsPalette::GrabColors()
 {
-	icnsEditorPtr	frontEditor;
+	ToolPalettePtr	tools;
 	
-	frontEditor = GetFrontEditor();
+	tools = icnsEditorClass::statics.toolPalette;
 	
-	if (frontEditor != NULL)
-	{
-		frontEditor->GetColors(&fore, &back);
-		if (currentColor == kCPFore)
-			currentColorPicker->SetColor(fore);
-		else
-			currentColorPicker->SetColor(back);
-	}
+	tools->GetColors(&fore, &back);
+	if (currentColor == kCPFore)
+		currentColorPicker->SetColor(fore);
 	else
-	{
-		if (currentColor == kCPFore)
-			currentColorPicker->SetColor(fore);
-		else
-			currentColorPicker->SetColor(back);
-	}
+		currentColorPicker->SetColor(back);
 }
 
 void ColorsPalette::UpdateColors()
 {
-	icnsEditorPtr frontEditor;
+	ToolPalettePtr tools;
 	
-	frontEditor = GetFrontEditor();
+	tools = icnsEditorClass::statics.toolPalette;
 	
-	if (frontEditor != NULL)
+	if (tools->IsVisible())
 	{
+		RGBColor	color;
+		
+		color = currentColorPicker->GetColor();
+		
 		if (currentColor == kCPFore)
-			frontEditor->SetColors(currentColorPicker->GetColor(), back);
+			tools->SetColors(&color, &back);
 		else
-			frontEditor->SetColors(fore, currentColorPicker->GetColor());
+			tools->SetColors(&fore, &color);
 	}
 	else
 	{
@@ -236,6 +251,11 @@ void ColorsPalette::UpdateColors()
 		else
 			SetColors(fore, currentColorPicker->GetColor());
 	}
+}
+
+void ColorsPalette::Update()
+{
+	Draw1Control(controls.root);
 }
 
 void ColorsPalette::UpdateReadout(int x, int y, RGBColor color)
@@ -275,10 +295,6 @@ void ColorsPalette::UpdateReadout(int x, int y, RGBColor color)
 
 void ColorsPalette::CreateControls()
 {
-	ControlUserPaneDrawUPP		backgroundPaneDrawUPP,
-								swatchDrawUPP;
-	ControlUserPaneHitTestUPP	backgroundPaneHitTestUPP,
-								swatchHitTestUPP;
 	Rect						backgroundPaneRect, tempRect;
 	ControlFontStyleRec			readoutStyle;
 	
@@ -297,32 +313,12 @@ void ColorsPalette::CreateControls()
 	backgroundPaneRect = window->portRect;
 	InsetRect(&backgroundPaneRect, -1, -1);
 	SetControlBounds(controls.backgroundPane, &backgroundPaneRect);
-	backgroundPaneDrawUPP = NewControlUserPaneDrawProc(CPBackgroundPaneDraw);
-	backgroundPaneHitTestUPP = NewControlUserPaneHitTestProc(CPBackgroundPaneDraw);
-	SetControlData(controls.backgroundPane,
-				   kControlNoPart,
-				   kControlUserPaneDrawProcTag, 
-				   sizeof(backgroundPaneDrawUPP),
-				   (Ptr) &backgroundPaneDrawUPP);
-	SetControlData(controls.backgroundPane,
-				   kControlNoPart,
-				   kControlUserPaneHitTestProcTag, 
-				   sizeof(backgroundPaneHitTestUPP),
-				   (Ptr) &backgroundPaneHitTestUPP);
+	SetControlUserPaneDraw(controls.backgroundPane, CPBackgroundPaneDraw);
+	SetControlUserPaneHitTest(controls.backgroundPane, CPBackgroundPaneHitTest);
 				   
 	controls.swatch = GetNewControl(rCPSwatch, window);
-	swatchDrawUPP = NewControlUserPaneDrawProc(CPSwatchDraw);
-	swatchHitTestUPP = NewControlUserPaneHitTestProc(CPSwatchHitTest);
-	SetControlData(controls.swatch,
-				   kControlNoPart,
-				   kControlUserPaneDrawProcTag, 
-				   sizeof(swatchDrawUPP),
-				   (Ptr) &swatchDrawUPP);
-	SetControlData(controls.swatch,
-				   kControlNoPart,
-				   kControlUserPaneHitTestProcTag, 
-				   sizeof(swatchHitTestUPP),
-				   (Ptr) &swatchHitTestUPP);
+	SetControlUserPaneDraw(controls.swatch, CPSwatchDraw);
+	SetControlUserPaneHitTest(controls.swatch, CPSwatchHitTest);
 	SetControlBalloonHelp(controls.swatch, hCPSwatch);
 	
 
@@ -401,12 +397,6 @@ RGBColorPicker::~RGBColorPicker()
 
 void RGBColorPicker::CreateControls()
 {
-	ControlUserPaneDrawUPP		previewDrawUPP;
-	ControlUserPaneHitTestUPP	previewHitTestUPP;
-	
-	previewDrawUPP = NewControlUserPaneDrawProc(RGBColorPicker::PreviewDraw);
-	previewHitTestUPP = NewControlUserPaneHitTestProc(RGBColorPicker::PreviewHitTest); 
-	
 	parentControl = GetNewControl(rRGBCPBaseControl, parentWindow->GetWindow());
 	EmbedControl(parentControl, displayAreaControl);
 	
@@ -417,16 +407,9 @@ void RGBColorPicker::CreateControls()
 	EmbedControl(redLabel, parentControl);
 	redPreview = GetNewControl(rRGBCPRedPreview, parentWindow->GetWindow());
 	EmbedControl(redPreview, parentControl);
-	SetControlData(redPreview, // we set the drawing function
-				   kControlNoPart,
-				   kControlUserPaneDrawProcTag,
-				   sizeof(previewDrawUPP),
-				   (Ptr) &previewDrawUPP);
-	SetControlData(redPreview, // we set the drawing function
-				   kControlNoPart,
-				   kControlUserPaneHitTestProcTag,
-				   sizeof(previewHitTestUPP),
-				   (Ptr) &previewHitTestUPP);
+	SetControlUserPaneDraw(redPreview, RGBColorPicker::PreviewDraw);
+	SetControlUserPaneHitTest(redPreview, GenericHitTest);
+	
 	
 	greenSlider = GetNewControl(rRGBCPGreenSlider, parentWindow->GetWindow());
 	EmbedControl(greenSlider, parentControl);
@@ -435,16 +418,9 @@ void RGBColorPicker::CreateControls()
 	EmbedControl(greenLabel, parentControl);
 	greenPreview = GetNewControl(rRGBCPGreenPreview, parentWindow->GetWindow());
 	EmbedControl(greenPreview, parentControl);
-	SetControlData(greenPreview, // we set the drawing function
-				   kControlNoPart,
-				   kControlUserPaneDrawProcTag,
-				   sizeof(previewDrawUPP),
-				   (Ptr) &previewDrawUPP);
-	SetControlData(greenPreview, // we set the drawing function
-				   kControlNoPart,
-				   kControlUserPaneHitTestProcTag,
-				   sizeof(previewHitTestUPP),
-				   (Ptr) &previewHitTestUPP);
+	SetControlUserPaneDraw(greenPreview, RGBColorPicker::PreviewDraw);
+	SetControlUserPaneHitTest(greenPreview, GenericHitTest);
+	
 		
 	blueSlider = GetNewControl(rRGBCPBlueSlider, parentWindow->GetWindow());
 	EmbedControl(blueSlider, parentControl);
@@ -453,16 +429,9 @@ void RGBColorPicker::CreateControls()
 	EmbedControl(blueLabel, parentControl);
 	bluePreview = GetNewControl(rRGBCPBluePreview, parentWindow->GetWindow());
 	EmbedControl(bluePreview, parentControl);
-	SetControlData(bluePreview, // we set the drawing function
-				   kControlNoPart,
-				   kControlUserPaneDrawProcTag,
-				   sizeof(previewDrawUPP),
-				   (Ptr) &previewDrawUPP);
-	SetControlData(bluePreview, // we set the drawing function
-				   kControlNoPart,
-				   kControlUserPaneHitTestProcTag,
-				   sizeof(previewHitTestUPP),
-				   (Ptr) &previewHitTestUPP);
+	SetControlUserPaneDraw(bluePreview, RGBColorPicker::PreviewDraw);
+	SetControlUserPaneHitTest(bluePreview, GenericHitTest);
+	
 	
 	SetControlBalloonHelp(redSlider, hRGBCPRedSlider);
 	SetControlBalloonHelp(redPreview, hRGBCPRedPreview);
@@ -532,6 +501,9 @@ void RGBColorPicker::HandleContentClick(EventRecord* eventPtr)
 	
 	controlPart = FindControl(where, parentWindow->GetWindow(), &clickedControl);
 	
+	if (controlPart == kControlPageUpPart || controlPart == kControlPageDownPart)
+		ThemeSoundStart(kThemeDragSoundSliderThumb);
+	
 	if (controlPart != kControlNoPart && TrackControl(clickedControl, where, sliderActionUPP))
 	{
 		if (clickedControl == redSlider)
@@ -541,6 +513,9 @@ void RGBColorPicker::HandleContentClick(EventRecord* eventPtr)
 		else if (clickedControl == blueSlider)
 			color.blue = GetControlValue(blueSlider) << 8;
 	}
+	
+	if (controlPart == kControlPageUpPart || controlPart == kControlPageDownPart)
+		ThemeSoundEnd();
 	
 	RESTOREGWORLD;
 	
@@ -631,15 +606,24 @@ void RGBColorPicker::DrawGradient(Rect targetRect, RGBColor color,
 	DisposeGWorld(tempGW);
 }
 
-pascal ControlPartCode RGBColorPicker::PreviewHitTest(ControlHandle theControl, Point where)
-{	
-	return (PtInRect(where, GetControlBounds(theControl, NULL)));
-}
-
 pascal void RGBColorPicker::SliderAction(ControlHandle theControl, short partCode)
 {
-#pragma unused (partCode)
 	ColorsPalettePtr parentPalette;
+	
+	if (partCode == kControlPageUpPart || partCode == kControlPageDownPart)
+	{
+		Rect controlRect;
+		Point	where;
+		
+		GetControlBounds(theControl, &controlRect);
+		
+		GetMouse(&where);
+		
+		if (where.h < controlRect.left + kSliderEndcap) where.h = controlRect.left + kSliderEndcap;
+		else if (where.h > controlRect.right - kSliderEndcap) where.h = controlRect.right - kSliderEndcap;
+		
+		SetControlValue(theControl, float(where.h - (controlRect.left + kSliderEndcap))/float(controlRect.right - controlRect.left - kSliderEndcap * 2) * GetControlMaximum(theControl));
+	}
 	
 	parentPalette = ColorsPalettePtr(GetWindow(GetControlOwner(theControl)));
 	
@@ -660,12 +644,6 @@ HSVColorPicker::~HSVColorPicker()
 
 void HSVColorPicker::CreateControls()
 {
-	ControlUserPaneDrawUPP		previewDrawUPP;
-	ControlUserPaneHitTestUPP	previewHitTestUPP;
-	
-	previewDrawUPP = NewControlUserPaneDrawProc(HSVColorPicker::PreviewDraw); 
-	previewHitTestUPP = NewControlUserPaneHitTestProc(HSVColorPicker::PreviewHitTest); 
-		
 	parentControl = GetNewControl(rHSVCPBaseControl, parentWindow->GetWindow());
 	EmbedControl(parentControl, displayAreaControl);
 	
@@ -676,16 +654,9 @@ void HSVColorPicker::CreateControls()
 	EmbedControl(hueLabel, parentControl);
 	huePreview = GetNewControl(rHSVCPHuePreview, parentWindow->GetWindow());
 	EmbedControl(huePreview, parentControl);
-	SetControlData(huePreview, // we set the drawing function
-				   kControlNoPart,
-				   kControlUserPaneDrawProcTag,
-				   sizeof(previewDrawUPP),
-				   (Ptr) &previewDrawUPP);
-	SetControlData(huePreview, // we set the drawing function
-				   kControlNoPart,
-				   kControlUserPaneHitTestProcTag,
-				   sizeof(previewHitTestUPP),
-				   (Ptr) &previewHitTestUPP);
+	SetControlUserPaneDraw(huePreview, HSVColorPicker::PreviewDraw);
+	SetControlUserPaneHitTest(huePreview, GenericHitTest);
+	
 	
 	saturationSlider = GetNewControl(rHSVCPSaturationSlider, parentWindow->GetWindow());
 	EmbedControl(saturationSlider, parentControl);
@@ -694,16 +665,8 @@ void HSVColorPicker::CreateControls()
 	EmbedControl(saturationLabel, parentControl);
 	saturationPreview = GetNewControl(rHSVCPSaturationPreview, parentWindow->GetWindow());
 	EmbedControl(saturationPreview, parentControl);
-	SetControlData(saturationPreview, // we set the drawing function
-				   kControlNoPart,
-				   kControlUserPaneDrawProcTag,
-				   sizeof(previewDrawUPP),
-				   (Ptr) &previewDrawUPP);
-	SetControlData(saturationPreview, // we set the drawing function
-				   kControlNoPart,
-				   kControlUserPaneHitTestProcTag,
-				   sizeof(previewHitTestUPP),
-				   (Ptr) &previewHitTestUPP);
+	SetControlUserPaneDraw(saturationPreview, HSVColorPicker::PreviewDraw);
+	SetControlUserPaneHitTest(saturationPreview, GenericHitTest);
 		
 	valueSlider = GetNewControl(rHSVCPValueSlider, parentWindow->GetWindow());
 	EmbedControl(valueSlider, parentControl);
@@ -712,16 +675,8 @@ void HSVColorPicker::CreateControls()
 	EmbedControl(valueLabel, parentControl);
 	valuePreview = GetNewControl(rHSVCPValuePreview, parentWindow->GetWindow());
 	EmbedControl(valuePreview, parentControl);
-	SetControlData(valuePreview, // we set the drawing function
-				   kControlNoPart,
-				   kControlUserPaneDrawProcTag,
-				   sizeof(previewDrawUPP),
-				   (Ptr) &previewDrawUPP);
-	SetControlData(valuePreview, // we set the drawing function
-				   kControlNoPart,
-				   kControlUserPaneHitTestProcTag,
-				   sizeof(previewHitTestUPP),
-				   (Ptr) &previewHitTestUPP);
+	SetControlUserPaneDraw(valuePreview, HSVColorPicker::PreviewDraw);
+	SetControlUserPaneHitTest(valuePreview, GenericHitTest);
 				   
 	SetControlBalloonHelp(hueSlider, hHSVCPHueSlider);
 	SetControlBalloonHelp(huePreview, hHSVCPValuePreview);
@@ -809,6 +764,9 @@ void HSVColorPicker::HandleContentClick(EventRecord* eventPtr)
 	
 	controlPart = FindControl(where, parentWindow->GetWindow(), &clickedControl);
 	
+	if (controlPart == kControlPageUpPart || controlPart == kControlPageDownPart)
+		ThemeSoundStart(kThemeDragSoundSliderThumb);
+	
 	if (controlPart != kControlNoPart && TrackControl(clickedControl, where, sliderActionUPP))
 	{
 		if (clickedControl == hueSlider)
@@ -818,6 +776,9 @@ void HSVColorPicker::HandleContentClick(EventRecord* eventPtr)
 		else if (clickedControl == valueSlider)
 			colorAsHSV.value = float(GetControlValue(valueSlider))/100.0 * 65535;
 	}
+	
+	if (controlPart == kControlPageUpPart || controlPart == kControlPageDownPart)
+		ThemeSoundEnd();
 	
 	RESTOREGWORLD;
 	
@@ -898,17 +859,27 @@ void HSVColorPicker::DrawGradient(Rect targetRect, HSVColor color,
 	DisposeGWorld(tempGW);
 }
 
-pascal ControlPartCode HSVColorPicker::PreviewHitTest(ControlHandle theControl, Point where)
-{	
-	return (PtInRect(where, GetControlBounds(theControl, NULL)));
-}
-
 pascal void HSVColorPicker::SliderAction(ControlHandle theControl, short partCode)
 {
 #pragma unused (partCode)
 	ColorsPalettePtr parentPalette;
 	
 	parentPalette = ColorsPalettePtr(GetWindow(GetControlOwner(theControl)));
+	
+	if (partCode == kControlPageUpPart || partCode == kControlPageDownPart)
+	{
+		Rect controlRect;
+		Point	where;
+		
+		GetControlBounds(theControl, &controlRect);
+		
+		GetMouse(&where);
+		
+		if (where.h < controlRect.left + kSliderEndcap) where.h = controlRect.left + kSliderEndcap;
+		else if (where.h > controlRect.right - kSliderEndcap) where.h = controlRect.right - kSliderEndcap;
+		
+		SetControlValue(theControl, float(where.h - (controlRect.left + kSliderEndcap))/float(controlRect.right - controlRect.left - kSliderEndcap * 2) * GetControlMaximum(theControl));
+	}
 	
 	parentPalette->UpdateColors();
 }
@@ -942,24 +913,10 @@ SystemColorPicker::~SystemColorPicker()
 
 void SystemColorPicker::CreateControls()
 {
-	ControlUserPaneDrawUPP		paletteDrawUPP;
-	ControlUserPaneHitTestUPP	paletteHitTestUPP;
-	
-	paletteDrawUPP = NewControlUserPaneDrawProc(SystemColorPicker::PaletteDraw);
-	paletteHitTestUPP = NewControlUserPaneHitTestProc(SystemColorPicker::PaletteHitTest); 
-	
 	paletteControl = GetNewControl(rSystemCPPaletteControl, parentWindow->GetWindow());
 	EmbedControl(paletteControl, displayAreaControl);
-	SetControlData(paletteControl, // we set the drawing function
-				   kControlNoPart,
-				   kControlUserPaneDrawProcTag,
-				   sizeof(paletteDrawUPP),
-				   (Ptr) &paletteDrawUPP);
-	SetControlData(paletteControl, // we set the drawing function
-				   kControlNoPart,
-				   kControlUserPaneHitTestProcTag,
-				   sizeof(paletteHitTestUPP),
-				   (Ptr) &paletteHitTestUPP);
+	SetControlUserPaneDraw(paletteControl, SystemColorPicker::PaletteDraw);
+	SetControlUserPaneHitTest(paletteControl, GenericHitTest);
 	
 	SetControlBalloonHelp(paletteControl, hSystemCPPalette);
 }
@@ -1207,12 +1164,6 @@ pascal void SystemColorPicker::PaletteDraw(ControlHandle theControl, short thePa
 	RESTORECOLORS; // we're done with the color changing*/
 }
 
-pascal ControlPartCode SystemColorPicker::PaletteHitTest(ControlHandle theControl, Point where)
-{
-	
-	return PtInRect(where, GetControlBounds(theControl, NULL));
-}
-
 #pragma mark -
 
 FavoritesColorPicker::FavoritesColorPicker()
@@ -1227,24 +1178,10 @@ FavoritesColorPicker::~FavoritesColorPicker()
 
 void FavoritesColorPicker::CreateControls()
 {
-	ControlUserPaneDrawUPP		paletteDrawUPP;
-	ControlUserPaneHitTestUPP	paletteHitTestUPP;
-	
-	paletteDrawUPP = NewControlUserPaneDrawProc(FavoritesColorPicker::PaletteDraw);
-	paletteHitTestUPP = NewControlUserPaneHitTestProc(FavoritesColorPicker::PaletteHitTest); 
-	
 	paletteControl = GetNewControl(rFavoritesCPPaletteControl, parentWindow->GetWindow());
 	EmbedControl(paletteControl, displayAreaControl);
-	SetControlData(paletteControl, // we set the drawing function
-				   kControlNoPart,
-				   kControlUserPaneDrawProcTag,
-				   sizeof(paletteDrawUPP),
-				   (Ptr) &paletteDrawUPP);
-	SetControlData(paletteControl, // we set the drawing function
-				   kControlNoPart,
-				   kControlUserPaneHitTestProcTag,
-				   sizeof(paletteHitTestUPP),
-				   (Ptr) &paletteHitTestUPP);
+	SetControlUserPaneDraw(paletteControl, FavoritesColorPicker::PaletteDraw);
+	SetControlUserPaneHitTest(paletteControl, GenericHitTest);
 				   
 	SetControlBalloonHelp(paletteControl, hFavoritesCPPalette);
 }
@@ -1294,11 +1231,11 @@ void FavoritesColorPicker::DoIdle()
 		parentWindow->UpdateReadout(-1, -1, icnsEditorClass::statics.preferences.GetFavoriteColor(colorIndex));
 	
 	if (AreEqualRGB(icnsEditorClass::statics.preferences.GetFavoriteColor(colorIndex), kPickerNeverUsedColor) || ISSHIFTDOWN)
-		icnsEditorClass::statics.ChangeCursor(rFill);
+		MUtilities::ChangeCursor(rTPToolBaseID + toolFill);
 	else if (ISCOMMANDDOWN)
-		icnsEditorClass::statics.ChangeCursor(rFavoritesCPScissors);
+		MUtilities::ChangeCursor(rFavoritesCPScissors);
 	else
-		icnsEditorClass::statics.ChangeCursor(rEyeDropper);
+		MUtilities::ChangeCursor(rTPToolBaseID + toolEyeDropper);
 }
 
 int FavoritesColorPicker::GetPaletteIndex(Point theMouse)
@@ -1356,7 +1293,7 @@ void FavoritesColorPicker::HandleContentClick(EventRecord* eventPtr)
 			{
 				RGBColor	newColor, ignored;
 				
-				frontEditor->GetColors(&newColor, &ignored);
+				icnsEditorClass::statics.toolPalette->GetColors(&newColor, &ignored);
 				
 				icnsEditorClass::statics.preferences.SetFavoriteColor(colorIndex, newColor);
 			}
@@ -1460,11 +1397,6 @@ pascal void FavoritesColorPicker::PaletteDraw(ControlHandle theControl, short th
 	RESTORECOLORS;
 }
 
-pascal ControlPartCode FavoritesColorPicker::PaletteHitTest(ControlHandle theControl, Point where)
-{
-	return PtInRect(where, GetControlBounds(theControl, NULL));
-}
-
 #pragma mark -
 
 pascal void	CPBackgroundPaneDraw(ControlHandle theControl,SInt16 thePart)
@@ -1483,13 +1415,6 @@ pascal void	CPBackgroundPaneDraw(ControlHandle theControl,SInt16 thePart)
 		DrawThemeModelessDialogFrame(&controlRect,true);
 	else
 		DrawThemeModelessDialogFrame(&controlRect,false);
-}
-
-pascal ControlPartCode CPBackgroundPaneHitTest(ControlHandle theControl, Point where)
-{
-#pragma unused (theControl, where)
-	
-	return kControlNoPart;
 }
 
 pascal void	CPSwatchDraw(ControlHandle theControl,SInt16 thePart)
@@ -1580,6 +1505,13 @@ pascal void	CPSwatchDraw(ControlHandle theControl,SInt16 thePart)
 	
 	OffsetRgn(parentPalette->backColorRgn, controlRect.left, controlRect.top);
 	OffsetRgn(parentPalette->foreColorRgn, controlRect.left, controlRect.top);
+}
+
+pascal ControlPartCode CPBackgroundPaneHitTest(ControlHandle theControl, Point where)
+{
+#pragma unused (theControl, where)
+	
+	return kControlNoPart;
 }
 
 // __________________________________________________________________________________________

@@ -4,6 +4,8 @@
 
 const static OSType kColorsPaletteType = 'IcCP';
 
+const static int kSliderEndcap = 4;
+
 enum ColorsPaletteResources
 {
 	rCPWindow = 250,
@@ -139,8 +141,7 @@ class RGBColorPicker : public ColorPicker
 		static pascal void PreviewDraw(ControlHandle theControl, short thePart);
 		static void		DrawGradient(Rect targetRect, RGBColor color,
 								  	 int rIncrement, int gIncrement, int bIncrement);
-		static pascal ControlPartCode PreviewHitTest(ControlHandle theControl, Point where);
-
+		
 
 		static ControlActionUPP sliderActionUPP;
 	
@@ -205,7 +206,6 @@ class HSVColorPicker : public ColorPicker
 		static void		DrawGradient(Rect targetRect, HSVColor color,
 								  	 int hIncrement, int sIncrement, int vIncrement);
 								  	 
-		static pascal ControlPartCode PreviewHitTest(ControlHandle theControl, Point where);
 		
 
 		static ControlActionUPP sliderActionUPP;
@@ -256,8 +256,7 @@ class SystemColorPicker : public ColorPicker
 	
 	private:
 		static pascal void PaletteDraw(ControlHandle theControl, short thePart);
-		static pascal ControlPartCode PaletteHitTest(ControlHandle theControl, Point where);
-
+		
 		
 		int				previousIconName,
 						previousColors;
@@ -317,8 +316,7 @@ class FavoritesColorPicker : public ColorPicker
 		
 	private:
 		static pascal void PaletteDraw(ControlHandle theControl, short thePart);
-		static pascal ControlPartCode PaletteHitTest(ControlHandle theControl, Point where);
-	
+		
 		int 			GetPaletteIndex(Point theMouse);
 	
 		ControlHandle	paletteControl;
@@ -338,14 +336,20 @@ class ColorsPalette : public MFloater
 		void			Deactivate();
 		void			DoIdle();
 		
+		void			Show();
+		
 		void			Refresh();
 		
 		void			HandleContentClick(EventRecord* eventPtr);
+		
+		void			SetCurrentPicker(int picker);
+		int				GetCurrentPicker();
 		
 		void			SetColors(RGBColor foreColor, RGBColor backColor);
 		void			UpdateColors();
 		void			GrabColors();
 		
+		void			Update();
 		void			UpdateReadout(int x, int y, RGBColor color);
 		
 		bool			readoutChanged;
@@ -379,6 +383,5 @@ class ColorsPalette : public MFloater
 
 pascal void	CPBackgroundPaneDraw(ControlHandle theControl,SInt16 thePart);
 pascal ControlPartCode CPBackgroundPaneHitTest(ControlHandle theControl, Point where);
-
 pascal void	CPSwatchDraw(ControlHandle theControl,SInt16 thePart);
 pascal ControlPartCode CPSwatchHitTest(ControlHandle theControl, Point where);

@@ -28,160 +28,6 @@ resource 'WIND' (250, "Colors Palette", purgeable) {
 	noAutoCenter
 };
 
-resource 'CNTL' (128, "Pen Tool", purgeable) {
-	{51, 5, 73, 31},
-	0,
-	visible,
-	128,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (129, "Eyedropper Tool", purgeable) {
-	{51, 31, 73, 57},
-	0,
-	visible,
-	129,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (130, "Fill Tool", purgeable) {
-	{73, 5, 95, 31},
-	0,
-	visible,
-	130,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (131, "Eraser Tool", purgeable) {
-	{73, 31, 95, 57},
-	0,
-	visible,
-	131,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (132, "Marquee Tool", purgeable) {
-	{7, 5, 29, 31},
-	0,
-	visible,
-	132,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (133, "Move Tool", purgeable) {
-	{7, 31, 29, 57},
-	0,
-	visible,
-	133,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (134, "Lasso Tool", purgeable) {
-	{29, 5, 51, 31},
-	0,
-	visible,
-	134,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (135, "Wand Tool", purgeable) {
-	{29, 31, 51, 57},
-	0,
-	visible,
-	135,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (136, "Line Tool", purgeable) {
-	{117, 5, 139, 31},
-	0,
-	visible,
-	136,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (137, "Rectangle Tool", purgeable) {
-	{95, 5, 117, 31},
-	0,
-	visible,
-	137,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (138, "Oval Tool", purgeable) {
-	{95, 31, 117, 57},
-	0,
-	visible,
-	138,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (139, "Polygon Tool", purgeable) {
-	{117, 31, 139, 57},
-	0,
-	visible,
-	139,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (140, "Gradient Tool", purgeable) {
-	{139, 5, 161, 31},
-	0,
-	visible,
-	140,
-	258,
-	32,
-	0,
-	""
-};
-
-resource 'CNTL' (141, "Text Tool", purgeable) {
-	{139, 31, 161, 57},
-	0,
-	visible,
-	141,
-	258,
-	32,
-	0,
-	""
-};
-
 resource 'CNTL' (200, "Icon Edit Well", purgeable) {
 	{8, 64, 202, 258},
 	0,
@@ -198,127 +44,6 @@ resource 'CNTL' (201, "Zoom Placard", purgeable) {
 	32,
 	visible,
 	0,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (202, "Info Placard", purgeable) {
-	{241, 62, 257, 418},
-	32,
-	visible,
-	0,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (203, "Fore/Back Color", purgeable) {
-	{187, 11, 227, 51},
-	0,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (204, "Icon Display", purgeable) {
-	{24, 296, 124, 356},
-	0,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (205, "Mask Display", purgeable) {
-	{24, 360, 124, 420},
-	0,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (208, "－Icon Label", purgeable) {
-	{126, 298, 138, 352},
-	0,
-	visible,
-	100,
-	0,
-	288,
-	0,
-	"アイコン"
-};
-
-resource 'CNTL' (209, "－Mask Label", purgeable) {
-	{126, 366, 138, 420},
-	0,
-	visible,
-	100,
-	0,
-	288,
-	0,
-	"マスク"
-};
-
-resource 'CNTL' (210, "Preview", purgeable) {
-	{141, 296, 195, 420},
-	32,
-	visible,
-	0,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (211, "－Preview Label", purgeable) {
-	{196, 296, 208, 420},
-	0,
-	visible,
-	100,
-	0,
-	288,
-	0,
-	"プレビュー"
-};
-
-resource 'CNTL' (212, "Patterns", purgeable) {
-	{167, 7, 181, 55},
-	0,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (213, "Background Pane", purgeable) {
-	{-1, -1, 4, 4},
-	0,
-	visible,
-	100,
-	0,
-	256,
-	0,
-	""
-};
-
-resource 'CNTL' (214, "Toolbar Well", purgeable) {
-	{7, 5, 161, 57},
-	0,
-	visible,
-	100,
 	0,
 	256,
 	0,
@@ -466,28 +191,6 @@ resource 'CNTL' (1412, "－Size Popup", purgeable) {
 	401,
 	0,
 	"スタイル："
-};
-
-resource 'CNTL' (206, "Icon Popup", purgeable) {
-	{5, 296, 21, 356},
-	0,
-	visible,
-	0,
-	200,
-	401,
-	0,
-	""
-};
-
-resource 'CNTL' (207, "Mask Popup", purgeable) {
-	{5, 360, 21, 420},
-	0,
-	visible,
-	0,
-	201,
-	401,
-	0,
-	""
 };
 
 resource 'CNTL' (300, "Icon Browser: Scroll Bar", purgeable) {
@@ -3167,44 +2870,36 @@ resource 'STR#' (200, "-Basic Strings", purgeable) {
 	}
 };
 
-resource 'STR#' (202, "-Icon Part Names", purgeable) {
-	{	/* array StringArray: 18 elements */
-		/* [1] */
-		" 大サイズ  32 bit アイコン",
-		/* [2] */
-		" 小サイズ  32 bit アイコン",
-		/* [3] */
-		" 大サイズ  8 bit マスク",
-		/* [4] */
-		" 小サイズ  8 bit マスク",
-		/* [5] */
-		" 大サイズ  8 bit アイコン",
-		/* [6] */
-		" 小サイズ  8 bit アイコン",
-		/* [7] */
-		" 大サイズ  4 bit アイコン",
-		/* [8] */
-		" 小サイズ  4 bit アイコン",
-		/* [9] */
-		" 大サイズ  1 bit アイコン",
-		/* [10] */
-		" 小サイズ  1 bit アイコン",
-		/* [11] */
-		" 大サイズ  1 bit マスク",
-		/* [12] */
-		" 小サイズ  1 bit マスク",
-		/* [13] */
+resource 'STR#' (4001, "-Icon Part Names", purgeable) {
+	{	/* array StringArray: 24 elements */
+		"Thumbnail 32-bit Icon",
+		"Thumbnail 8-bit Mask",
+		
 		" 最大サイズ 32 bit アイコン",
-		/* [14] */
-		" 最大サイズ 8 bit マスク",
-		/* [15] */
-		" 最大サイズ 1 bit アイコン",
-		/* [16] */
-		" 最大サイズ 1 bit マスク",
-		/* [17] */
 		" 最大サイズ 8 bit アイコン",
-		/* [18] */
 		" 最大サイズ 4 bit アイコン"
+		" 最大サイズ 1 bit アイコン",
+		" 最大サイズ 8 bit マスク",
+		" 最大サイズ 1 bit マスク",
+		
+		" 大サイズ  32 bit アイコン",
+		" 大サイズ  8 bit アイコン",
+		" 大サイズ  4 bit アイコン",
+		" 大サイズ  1 bit アイコン",
+		" 大サイズ  8 bit マスク",
+		" 大サイズ  1 bit マスク",
+		
+		" 小サイズ  32 bit アイコン",
+		" 小サイズ  8 bit アイコン",
+		" 小サイズ  4 bit アイコン",
+		" 小サイズ  1 bit アイコン",
+		" 小サイズ  8 bit マスク",
+		" 小サイズ  1 bit マスク",
+
+		"Mini 8-bit Icon",
+		"Mini 4-bit Icon",
+		"Mini 1-bit Icon",
+		"Mini 1-bit Mask"
 	}
 };
 
@@ -3333,7 +3028,7 @@ resource 'STR#' (300, "Icon Browser: Strings", purgeable) {
 		/* [5] */
 		"アイコン種別： <types>",
 		/* [6] */
-		"<number> アイコン",
+		"<number>/<total> アイコン",
 		/* [7] */
 		"ファイル名“<file name>”のアイコン ID：<icon ID> を本当に削除してもよろしいですか？"
 	}

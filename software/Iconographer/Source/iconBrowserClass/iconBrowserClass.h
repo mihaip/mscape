@@ -3,8 +3,12 @@
 #include "MList.h"
 #include "icnsClass.h"
 #include "commonFunctions.h"
+#include "MString.h"
 
 const static long kBrowserType = 'IcBr';
+
+const static int kIBPreviewHeight = 64;
+const static int kIBExtraHeight = 4;
 
 typedef struct
 {
@@ -41,11 +45,15 @@ enum IBStrings
 {
 	eIBProgressNoName = 1,
 	eIBProgressName = 2,
-	eIBListNoName = 3,
+	eIBListID = 3,
 	eIBListName = 4,
-	eIBIconTypes = 5,
-	eIBIconCountLabel = 6,
-	eIBDeleteWarning = 7
+	eIBListType = 5,
+	eIBListNewType = 6,
+	eIBListOldType = 7,
+	eIBListMembers = 8,
+	eIBIconTypes = 9,
+	eIBIconCountLabel = 10,
+	eIBDeleteWarning = 11
 };
 
 enum IBTypesMenu
@@ -55,7 +63,7 @@ enum IBTypesMenu
 	mIBBoth = 3
 };
 
-typedef void (*OpenFuncPtr)(FSSpec* srcFileSpec, short ID, long format, long member);
+typedef void (*OpenFuncPtr)(FSSpec* srcFileSpec, long ID, long format, long member);
 
 class iconBrowserClass;
 
@@ -67,6 +75,7 @@ typedef struct
 	icnsClass*		icon;
 	long			members;
 	bool			newType;
+	long			ID;
 } ListDrawingData;
 
 enum browserOpenFlags
@@ -106,21 +115,21 @@ class iconBrowserClass : public MWindow
 		
 		FSSpec				srcFileSpec;
 		
+		static void	GetIconString(int ID, Str255 name, long members, bool newType, MStringPtr* iconString);
+				
 	private:
 		OSErr				CreateControls();
 		void				RepositionControls();
 		
+		bool				SizeSupported(int width, int height);
+		
 		OSErr				BuildIconList();
-		void				LoadOld(short oldFile, short file, ControlHandle progressBar, ControlHandle progressText);
-		void				LoadOldFamily(OSType type, ListDrawingData** drawingData, short oldFile, short file, ControlHandle progressBar, ControlHandle progressText);
-		void				LoadNew(short oldFile, short file, ControlHandle progressBar, ControlHandle progressText);
+		void				LoadFamily(OSType type, bool newType, short oldFile, short file, ControlHandle progressBar, ControlHandle progressText);
+		void 				AddIcon(int ID, Str255 name, long members, bool newType);
 		void				RefreshIconTypes();
 		
 		
 		MList				theList;
-		ListDrawingData*	newCellDrawingData;
-		ListDrawingData*	icnCellDrawingData;
-		ListDrawingData*	icsCellDrawingData;
 		
 		
 		OpenFuncPtr			Open;
@@ -137,23 +146,21 @@ class iconBrowserClass : public MWindow
 	friend pascal void	ListDraw(ControlHandle theControl,SInt16 thePart);
 	friend pascal ControlPartCode ListHitTest(ControlHandle theControl, Point where);
 	
-	friend bool IconFilter(Str255 cellString, void *clientData);
+	friend bool IconFilter(MStringPtr cellString, void *clientData);
 	
 	friend pascal void ScrollBarAction(ControlHandle theControl, SInt16 thePart);
 	
-	friend void RefreshIconBrowser(bool newIcon);
+	friend void RefreshIconBrowser(bool newIcon, int deletedIcon, int deletedIconFormat);
 };
 
 extern iconBrowserPtr GetFrontBrowser(void);
 extern iconBrowserPtr GetBrowser(WindowPtr window);
 
-short BrowserStringCompare(Str255 string1, Str255 string2, void *clientData1, void *clientData2);
-extern int GetCellID(Str255 cellText);
+long BrowserStringCompare(MStringPtr string1, MStringPtr string2, void *clientData1, void *clientData2);
 
-extern void IconDraw(Rect targetRect, Str255 cellString, bool selected, int part, void *clientData);
-extern void IconDrawMember(ListDrawingData* drawingData, long member, int height, Rect* displayRect, bool selected);
-extern bool IconFilter(Str255 cellString, void *clientData);
-extern void IconUpdate(Str255 cellString, int* height, void* clientData);
+extern void IconDraw(Rect targetRect, MStringPtr cellString, bool selected, int part, void *clientData);
+extern bool IconFilter(MStringPtr cellString, void *clientData);
+extern void IconUpdate(MStringPtr cellString, int* height, void* clientData);
 
 
 extern pascal void	ListDraw(ControlHandle theControl,SInt16 thePart);
@@ -163,5 +170,4 @@ extern pascal void ScrollBarAction(ControlHandle theControl, SInt16 thePart);
 
 extern pascal void InfoPlacardDraw(ControlHandle theControl,SInt16 thePart);
 
-short IconHitTest(Rect targetRect, Point theMouse, void *clientData);
-bool IconHitTestMember(long members, long member, int height, Point theMouse, Rect* currentRect, int* thePart);
+int IconHitTest(Rect targetRect, Point theMouse, void *clientData);

@@ -9,23 +9,25 @@ typedef struct
 
 OSErr GetIconFile(FSSpec* fileSpec, long* format, bool save)
 {
+	OSErr			returnErr = noErr;
 	SaveDataStruct	saveData;
 	
 	saveData.formatPopup = NULL;
 	saveData.format = *format;
 	saveData.save = save;
 	
+	MWindow::DeactivateAll();
+	
 	if (NavServicesAvailable())
 	{
 		NavReplyRecord		theReply;
 		NavDialogOptions	dialogOptions;
-		OSErr				theErr = noErr;
 		NavEventUPP			eventUPP = NewNavEventProc(NavOpenEventFilter);
 		NavObjectFilterUPP	filterUPP = NewNavObjectFilterProc(NavOpenFileFilter);
 		Str255				openPromptText;
 		Str255				windowTitle;
 		
-		theErr = NavGetDefaultDialogOptions(&dialogOptions);
+		returnErr = NavGetDefaultDialogOptions(&dialogOptions);
 		
 		dialogOptions.preferenceKey = 'MnOp';
 		
@@ -44,34 +46,30 @@ OSErr GetIconFile(FSSpec* fileSpec, long* format, bool save)
 			GetIndString(openPromptText, rPrompts, eSelectFile);
 		CopyString(dialogOptions.message, openPromptText);
 		
-		theErr = NavChooseObject(NULL,
-								 &theReply,
-								 &dialogOptions,
-								 eventUPP,
-								 filterUPP,
-								 &saveData);
+		returnErr = NavChooseObject(NULL,
+									&theReply,
+									&dialogOptions,
+									eventUPP,
+									filterUPP,
+									&saveData);
 		
 		*format = saveData.format;
 		
 		DisposeRoutineDescriptor(eventUPP);
 		DisposeRoutineDescriptor(filterUPP);
 
-		if ((theReply.validRecord)&&(theErr == noErr))
+		if ((theReply.validRecord) && (returnErr == noErr))
 		{
 			// grab the target FSSpec from the AEDesc:	
 			AEDesc 	resultDesc;
 
-			if ((theErr = AECoerceDesc(&(theReply.selection),typeFSS,&resultDesc)) == noErr)
+			if ((returnErr = AECoerceDesc(&(theReply.selection),typeFSS,&resultDesc)) == noErr)
 			{
 				GetFSSpecFromAEDesc(resultDesc, *fileSpec);
 				FSMakeFSSpec(fileSpec->vRefNum, fileSpec->parID, fileSpec->name, fileSpec);
 			}
 			AEDisposeDesc(&resultDesc);
-			
-			theErr = NavDisposeReply(&theReply);
 		}
-			
-		return theErr;
 	}
 	else
 	{
@@ -105,13 +103,14 @@ OSErr GetIconFile(FSSpec* fileSpec, long* format, bool save)
 		DisposeRoutineDescriptor(modalFilterUPP);
 		
 		if ( theReply.sfGood)
-		{
 			*fileSpec = theReply.sfFile;
-			return noErr;
-		}
 		else
-			return userCanceledErr;
+			returnErr =  userCanceledErr;
 	}
+	
+	MWindow::ActivateAll();
+
+	return returnErr;
 }
 
 pascal bool OpenFileFilter(CInfoPBPtr myCInfoPBPtr, Ptr dataPtr)
@@ -250,6 +249,9 @@ pascal bool OpenEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short *i
 OSErr SaveFile(FSSpec* fileSpec, long* format)
 {
 	SaveDataStruct	saveData;
+	OSErr			returnErr = noErr;
+	
+	MWindow::DeactivateAll();
 	
 	saveData.formatPopup = NULL;
 	saveData.format = *format;
@@ -260,7 +262,6 @@ OSErr SaveFile(FSSpec* fileSpec, long* format)
 		NavDialogOptions	dialogOptions;
 		NavReplyRecord		reply;
 		AEDesc				resultDesc;
-		OSStatus			theErr;
 		NavEventUPP			eventUPP = NewNavEventProc(NavSaveEventFilter);
 		long				fileType;
 		
@@ -273,35 +274,34 @@ OSErr SaveFile(FSSpec* fileSpec, long* format)
 		
 		fileType = iconFormats[*format];
 		
-		theErr = NavPutFile(NULL,
-				   			&reply,
-				   			&dialogOptions,
-				   			eventUPP,
-				   			fileType,
-				   			creatorCode,
-				   			&saveData);
+		returnErr = NavPutFile(NULL,
+					   		   &reply,
+					   		   &dialogOptions,
+					   		   eventUPP,
+					   		   fileType,
+					   		   creatorCode,
+					   		   &saveData);
 		
 		DisposeRoutineDescriptor(eventUPP);
 		
-		if (theErr != noErr)
-			return theErr;
-		
-		*format = saveData.format;
-		
-		if (reply.validRecord)
+		if (returnErr == noErr)
 		{
-			AEGetNthDesc( &(reply.selection), 1, typeFSS, NULL, &resultDesc );
-
-			GetFSSpecFromAEDesc(resultDesc, *fileSpec);
+			*format = saveData.format;
 			
-			NavDisposeReply(&reply);
-			AEDisposeDesc(&resultDesc);
-			return noErr;
-		}
-		else
-		{
-			NavDisposeReply(&reply);
-			return paramErr;
+			if (reply.validRecord)
+			{
+				AEGetNthDesc( &(reply.selection), 1, typeFSS, NULL, &resultDesc );
+
+				GetFSSpecFromAEDesc(resultDesc, *fileSpec);
+				
+				NavDisposeReply(&reply);
+				AEDisposeDesc(&resultDesc);
+			}
+			else
+			{
+				NavDisposeReply(&reply);
+				returnErr = paramErr;
+			}
 		}
 	}
 	else
@@ -333,11 +333,14 @@ OSErr SaveFile(FSSpec* fileSpec, long* format)
 		if (reply.sfGood)
 		{
 			*fileSpec = reply.sfFile;
-			return noErr;
 		}
 		else
-			return userCanceledErr;
+			returnErr = userCanceledErr;
 	}
+	
+	MWindow::ActivateAll();
+	
+	return returnErr;
 }
 
 pascal void NavOpenEventFilter(NavEventCallbackMessage callBackSelector,
@@ -485,11 +488,18 @@ void SetFileName(ControlHandle formatPopup, Str255 fileName)
 		case formatMacOSOld:
 			if (IsICOFile(fileName))
 				fileName[0] -= 4;
+			else if (IsicnsFile(fileName))
+				fileName[0] -= 5;
 			else if (IsTIFFFile(fileName))
 				if (fileName[fileName[0] - 4] == '.')
 					fileName[0] -= 5;
 				else if (fileName[fileName[0] - 3] == '.')
 					fileName[0] -= 4;
+					
+			if (GetControlValue(formatPopup) != formatMacOSOld &&
+				(icnsEditorClass::statics.preferences.GetSaveFork() == dataAndResourceForks ||
+				icnsEditorClass::statics.preferences.GetSaveFork() == dataFork))
+				AppendString(fileName, "\p.icns");
 			break;
 		case formatWindows:
 			if (!IsICOFile(fileName))
@@ -504,11 +514,13 @@ void SetFileName(ControlHandle formatPopup, Str255 fileName)
 					fileName[0] -= 2;
 				else if (fileName[fileName[0]] == '.')
 					fileName[0] -= 1;
-				fileName[fileName[0] + 1] = '.';
+				AppendString(fileName, "\p.ico");	
+					
+				/*fileName[fileName[0] + 1] = '.';
 				fileName[fileName[0] + 2] = 'i';
 				fileName[fileName[0] + 3] = 'c';
 				fileName[fileName[0] + 4] = 'o';
-				fileName[0] += 4;
+				fileName[0] += 4;*/
 			}
 			break;
 		case formatMacOSXServer:
@@ -524,12 +536,15 @@ void SetFileName(ControlHandle formatPopup, Str255 fileName)
 					fileName[0] -= 2;
 				else if (fileName[fileName[0]] == '.')
 					fileName[0] -= 1;
-				fileName[fileName[0] + 1] = '.';
+					
+				
+				AppendString(fileName, "\p.tiff");
+				/*fileName[fileName[0] + 1] = '.';
 				fileName[fileName[0] + 2] = 't';
 				fileName[fileName[0] + 3] = 'i';
 				fileName[fileName[0] + 4] = 'f';
 				fileName[fileName[0] + 5] = 'f';
-				fileName[0] += 5;
+				fileName[0] += 5;*/
 			}
 			break;
 	}
@@ -779,7 +794,16 @@ void SyncPopupToName(Str255 fileName, ControlHandle formatPopup)
 	else if (IsTIFFFile(fileName))
 		SetControlValue(formatPopup, formatMacOSXServer);
 	else
+	{
+		short currentValue;
+		
+		currentValue = GetControlValue(formatPopup);
+		
+		if (currentValue != formatMacOSUniversal &&
+			currentValue != formatMacOSNew &&
+			currentValue != formatMacOSOld)
 		SetControlValue(formatPopup, formatMacOSUniversal);
+	}
 		
 	Draw1Control(formatPopup);
 }

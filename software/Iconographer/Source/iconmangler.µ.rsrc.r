@@ -87,6 +87,46 @@ resource 'MENU' (136) {
 	}
 };
 
+resource 'MENU' (131) {
+	131,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Select",
+	{	/* array: 4 elements */
+		/* [1] */
+		"All", noIcon, "A", noMark, plain,
+		/* [2] */
+		"Similar", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Deselect", noIcon, "D", noMark, plain,
+		/* [4] */
+		"Inverse", noIcon, "I", noMark, plain
+	}
+};
+
+resource 'MENU' (137) {
+	137,
+	textMenuProc,
+	0x7FFFFFCF,
+	enabled,
+	"Windows",
+	{	/* array: 6 elements */
+		/* [1] */
+		"Show Tools", noIcon, "1", noMark, plain,
+		/* [2] */
+		"Show Members", noIcon, "2", noMark, plain,
+		/* [3] */
+		"Show Preview", noIcon, "3", noMark, plain,
+		/* [4] */
+		"Show Colors", noIcon, "4", noMark, plain,
+		/* [5] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"-", noIcon, noKey, noMark, plain
+	}
+};
+
 resource 'MENU' (130) {
 	130,
 	textMenuProc,
@@ -117,17 +157,45 @@ resource 'MENU' (130) {
 		/* [11] */
 		"-", noIcon, noKey, noMark, plain,
 		/* [12] */
-		"Preferences…", noIcon, noKey, noMark, plain
+		"Preferences…", noIcon, ";", noMark, plain
+	}
+};
+
+resource 'MENU' (135) {
+	135,
+	textMenuProc,
+	0x7FFFFF6B,
+	enabled,
+	"Icon",
+	{	/* array: 9 elements */
+		/* [1] */
+		"Zoom In", noIcon, "=", noMark, plain,
+		/* [2] */
+		"Zoom Out", noIcon, "-", noMark, plain,
+		/* [3] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"Colors", noIcon, hierarchicalMenu, "à", plain,
+		/* [5] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"Insert…", noIcon, "K", noMark, plain,
+		/* [7] */
+		"Info…", noIcon, "I", noMark, plain,
+		/* [8] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"Open In External Editor", noIcon, noKey, noMark, plain
 	}
 };
 
 resource 'MENU' (129) {
 	129,
 	textMenuProc,
-	0x7FFFFF77,
+	0x7FFFFEF7,
 	enabled,
 	"File",
-	{	/* array: 9 elements */
+	{	/* array: 10 elements */
 		/* [1] */
 		"New Icon", noIcon, "N", noMark, plain,
 		/* [2] */
@@ -143,67 +211,11 @@ resource 'MENU' (129) {
 		/* [7] */
 		"Save Into File…", noIcon, noKey, noMark, plain,
 		/* [8] */
-		"-", noIcon, noKey, noMark, plain,
+		"Revert", noIcon, noKey, noMark, plain,
 		/* [9] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [10] */
 		"Quit", noIcon, "Q", noMark, plain
-	}
-};
-
-resource 'MENU' (137) {
-	137,
-	textMenuProc,
-	0x7FFFFFF9,
-	enabled,
-	"Windows",
-	{	/* array: 3 elements */
-		/* [1] */
-		"Show Colors Palette", noIcon, noKey, noMark, plain,
-		/* [2] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [3] */
-		"-", noIcon, noKey, noMark, plain
-	}
-};
-
-resource 'MENU' (131) {
-	131,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"Select",
-	{	/* array: 4 elements */
-		/* [1] */
-		"All", noIcon, "A", noMark, plain,
-		/* [2] */
-		"Similar", noIcon, noKey, noMark, plain,
-		/* [3] */
-		"Deselect", noIcon, "D", noMark, plain,
-		/* [4] */
-		"Inverse", noIcon, "I", noMark, plain
-	}
-};
-
-resource 'MENU' (135) {
-	135,
-	textMenuProc,
-	0x7FFFFFEB,
-	enabled,
-	"Icon",
-	{	/* array: 7 elements */
-		/* [1] */
-		"Zoom In", noIcon, "=", noMark, plain,
-		/* [2] */
-		"Zoom Out", noIcon, "-", noMark, plain,
-		/* [3] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [4] */
-		"Colors", noIcon, hierarchicalMenu, "à", plain,
-		/* [5] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [6] */
-		"Insert…", noIcon, "K", noMark, plain,
-		/* [7] */
-		"Info…", noIcon, noKey, noMark, plain
 	}
 };
 
@@ -317,23 +329,23 @@ resource 'FREF' (134) {
 };
 
 resource 'vers' (1) {
-	0x1,
-	0x11,
-	release,
+	0x2,
 	0x0,
+	development,
+	0x1,
 	0,
-	"1.1.1",
-	"Iconographer 1.1.1\n©1998-2000 Mihai Parp"
-	"arita"
+	"2.0",
+	"Iconographer 2.0\n©1998-2000 Mihai Parpar"
+	"ita"
 };
 
 resource 'vers' (2) {
-	0x1,
-	0x11,
-	release,
+	0x2,
 	0x0,
+	development,
+	0x1,
 	0,
-	"1.1.1",
+	"2.0",
 	"http://www.mscape.com/"
 };
 
@@ -1191,67 +1203,6 @@ resource 'STR#' (160, "About Balloon Help", purgeable) {
 	}
 };
 
-resource 'STR#' (129, "Standard Errors", purgeable) {
-	{	/* array StringArray: 15 elements */
-		/* [1] */
-		"The file you selected is already open in"
-		" another program.",
-		/* [2] */
-		"This development copy of <app name> expi"
-		"red on September 1, 1999. Please downloa"
-		"d a newer version.",
-		/* [3] */
-		"A needed resource is missing. <app name>"
-		" could be corrupted, please reinstall th"
-		"e program.",
-		/* [4] */
-		"<app name> requires System 7.5.3 or abov"
-		"e.",
-		/* [5] */
-		"AppleEvents could not be initialized, <a"
-		"pp name> cannot continue.",
-		/* [6] */
-		"There was an error while initializing th"
-		"e Appearance Mangler, <app name> cannot "
-		"continue.",
-		/* [7] */
-		"There was error while initializing the m"
-		"enu bar. <app name>’s resource fork is m"
-		"ost likely corrupted, please reinstall.",
-		/* [8] */
-		"Cannot launch this URL. Internet Config "
-		"must be installed.",
-		/* [9] */
-		"A new editor could not be created. Most "
-		"likely you are low on memory. Either clo"
-		"se some of the open editors, or give <ap"
-		"p name> more memory.",
-		/* [10] */
-		"<app name> is low on memory. The drawing"
-		" states of this editor will be disposed "
-		"in order to make more room.",
-		/* [11] */
-		"<app name> has run out of memory. This e"
-		"ditor must be closed in order to make mo"
-		"re room.",
-		/* [12] */
-		"The “Register” application could not be "
-		"found. Please reinstall <app name>.",
-		/* [13] */
-		"The registration code that you have type"
-		"d is incorrect. Please enter it EXACTLY "
-		"as it is shown in the email that you hav"
-		"e received.",
-		/* [14] */
-		"Thank you for registering <app name>.",
-		/* [15] */
-		"<app name> requires the Appearance Manag"
-		"er to be installed. Please install Mac O"
-		"S 8.0 and higher, or get the Appearance "
-		"Manager SDK from Apple."
-	}
-};
-
 resource 'STR#' (153, "Edit Balloon Help", purgeable) {
 	{	/* array StringArray: 22 elements */
 		/* [1] */
@@ -1583,8 +1534,145 @@ resource 'STR#' (152, "File Balloon Help", purgeable) {
 	}
 };
 
+resource 'STR#' (162, "Windows Balloon Help", purgeable) {
+	{	/* array StringArray: 3 elements */
+		/* [1] */
+		"Windows Menu\n\nThis menu can be used to s"
+		"how and hide the palettes used by Iconog"
+		"rapher, and to move among the icons open"
+		".",
+		/* [2] */
+		"Windows Menu\n\nThis menu can be used to s"
+		"how and hide the palettes used by Iconog"
+		"rapher, and to move among the icons open"
+		".\n\nNot available because windows cannot "
+		"be manipulated at the moment.",
+		/* [3] */
+		"Toggles the visibility of the colors pal"
+		"ette, a floating window which contains v"
+		"arious devices used to select colors."
+	}
+};
+
+resource 'STR#' (129, "Standard Errors", purgeable) {
+	{	/* array StringArray: 15 elements */
+		/* [1] */
+		"The file you selected is already open in"
+		" another program.",
+		/* [2] */
+		"This development copy of <app name> expi"
+		"red on September 1, 2000. Please downloa"
+		"d a newer version.",
+		/* [3] */
+		"A needed resource is missing. <app name>"
+		" could be corrupted, please reinstall th"
+		"e program.",
+		/* [4] */
+		"<app name> requires System 7.5.3 or abov"
+		"e.",
+		/* [5] */
+		"AppleEvents could not be initialized, <a"
+		"pp name> cannot continue.",
+		/* [6] */
+		"There was an error while initializing th"
+		"e Appearance Mangler, <app name> cannot "
+		"continue.",
+		/* [7] */
+		"There was error while initializing the m"
+		"enu bar. <app name>’s resource fork is m"
+		"ost likely corrupted, please reinstall.",
+		/* [8] */
+		"Cannot launch this URL. Internet Config "
+		"must be installed.",
+		/* [9] */
+		"A new editor could not be created. Most "
+		"likely you are low on memory. Either clo"
+		"se some of the open editors, or give <ap"
+		"p name> more memory.",
+		/* [10] */
+		"<app name> is low on memory. The drawing"
+		" states of this editor will be disposed "
+		"in order to make more room.",
+		/* [11] */
+		"<app name> has run out of memory. This e"
+		"ditor must be closed in order to make mo"
+		"re room.",
+		/* [12] */
+		"The “Register” application could not be "
+		"found. Please reinstall <app name>.",
+		/* [13] */
+		"The registration code that you have type"
+		"d is incorrect. Please enter it EXACTLY "
+		"as it is shown in the email that you hav"
+		"e received.",
+		/* [14] */
+		"Thank you for registering <app name>.",
+		/* [15] */
+		"<app name> requires the Appearance Manag"
+		"er to be installed. Please install Mac O"
+		"S 8.0 and higher, or get the Appearance "
+		"Manager SDK from Apple."
+	}
+};
+
+resource 'STR#' (128, "Default Names", purgeable) {
+	{	/* array StringArray: 25 elements */
+		/* [1] */
+		"Iconographer",
+		/* [2] */
+		"Iconographer Preferences",
+		/* [3] */
+		"OK",
+		/* [4] */
+		"Save",
+		/* [5] */
+		"Cancel",
+		/* [6] */
+		"Don’t Save",
+		/* [7] */
+		"Register",
+		/* [8] */
+		"Not Yet",
+		/* [9] */
+		":Register",
+		/* [10] */
+		"Not Registered",
+		/* [11] */
+		"mailto:mihai@mscape.com",
+		/* [12] */
+		"http://www.mscape.com/products/iconograp"
+		"her.html",
+		/* [13] */
+		"Show Colors",
+		/* [14] */
+		"Hide Colors",
+		/* [15] */
+		"Show Members",
+		/* [16] */
+		"Hide Members",
+		/* [17] */
+		"Show Preview",
+		/* [18] */
+		"Hide Preview",
+		/* [19] */
+		"Show Tools",
+		/* [20] */
+		"Hide Tools",
+		/* [21] */
+		"Iconographer Help",
+		/* [22] */
+		"Email Author",
+		/* [23] */
+		"Iconographer Homepage",
+		/* [24] */
+		":Iconographer Support:Help:toc.html",
+		/* [25] */
+		"Revert"
+	}
+};
+
 resource 'STR#' (130, "Prompts", purgeable) {
-	{	/* array StringArray: 10 elements */
+	{	/* array StringArray: 11 elements */
 		/* [1] */
 		"Do you want to save changes to the <app "
 		"name> document “<file name>” before clos"
@@ -1617,66 +1705,12 @@ resource 'STR#' (130, "Prompts", purgeable) {
 		/* [10] */
 		"An icon with the ID <ID> already exists "
 		"in the file “<file name>.” Do you wish t"
-		"o replace it?"
-	}
-};
-
-resource 'STR#' (162, "Windows Balloon Help", purgeable) {
-	{	/* array StringArray: 3 elements */
-		/* [1] */
-		"Windows Menu\n\nThis menu can be used to s"
-		"how and hide the palettes used by Iconog"
-		"rapher, and to move among the icons open"
-		".",
-		/* [2] */
-		"Windows Menu\n\nThis menu can be used to s"
-		"how and hide the palettes used by Iconog"
-		"rapher, and to move among the icons open"
-		".\n\nNot available because windows cannot "
-		"be manipulated at the moment.",
-		/* [3] */
-		"Toggles the visibility of the colors pal"
-		"ette, a floating window which contains v"
-		"arious devices used to select colors."
-	}
-};
-
-resource 'STR#' (128, "Default Names", purgeable) {
-	{	/* array StringArray: 14 elements */
-		/* [1] */
-		"Iconographer",
-		/* [2] */
-		"Iconographer Preferences",
-		/* [3] */
-		"OK",
-		/* [4] */
-		"Save",
-		/* [5] */
-		"Cancel",
-		/* [6] */
-		"Don’t Save",
-		/* [7] */
-		"Register",
-		/* [8] */
-		"Not Yet",
-		/* [9] */
-		":Register",
-		/* [10] */
-		"Not Registered",
+		"o replace it?",
 		/* [11] */
-		"mailto:mihai@mscape.com",
-		/* [12] */
-		"http://www.mscape.com/",
-		/* [13] */
-		"Show Colors Palette",
-		/* [14] */
-		"Hide Colors Palette"
+		"Do you want to revert to the previously "
+		"saved version of the <app name> document"
+		" “<file name>”?"
 	}
-};
-
-data 'Mngl' (0, "Owner resource") {
-	$"18A9 2031 3939 382D 3920 4D69 6861 6920"            /* .© 1998-9 Mihai  */
-	$"5061 7270 6172 6974 61"                             /* Parparita */
 };
 
 data 'hmnu' (128, "Apple", purgeable) {
@@ -1896,49 +1930,6 @@ resource 'CNTL' (2001, "Old Types Pop-up", purgeable) {
 	409,
 	0,
 	"Icon Format:"
-};
-
-resource 'BNDL' (128) {
-	'Mngl',
-	0,
-	{	/* array TypeArray: 2 elements */
-		/* [1] */
-		'ICN#',
-		{	/* array IDArray: 7 elements */
-			/* [1] */
-			0, 128,
-			/* [2] */
-			1, 0,
-			/* [3] */
-			2, 129,
-			/* [4] */
-			3, 0,
-			/* [5] */
-			4, 0,
-			/* [6] */
-			5, 130,
-			/* [7] */
-			6, 131
-		},
-		/* [2] */
-		'FREF',
-		{	/* array IDArray: 7 elements */
-			/* [1] */
-			0, 128,
-			/* [2] */
-			1, 129,
-			/* [3] */
-			2, 130,
-			/* [4] */
-			3, 131,
-			/* [5] */
-			4, 132,
-			/* [6] */
-			5, 133,
-			/* [7] */
-			6, 134
-		}
-	}
 };
 
 resource 'icl4' (-16455) {
@@ -3206,28 +3197,6 @@ resource 'xmnu' (130, "Edit Menu") {
 	}
 };
 
-resource 'xmnu' (132, "Transform") {
-	versionZero {
-		{	/* array ItemExtensions: 2 elements */
-			/* [1] */
-			skipItem {
-
-			}			,
-			/* [2] */
-			dataItem {
-				1061109567,
-				0x1,
-				currScript,
-				1061109567,
-				1061109567,
-				noHierID,
-				sysFont,
-				naturalGlyph
-			}
-		}
-	}
-};
-
 resource 'xmnu' (133, "Paste Menu") {
 	versionZero {
 		{	/* array ItemExtensions: 4 elements */
@@ -3261,39 +3230,6 @@ resource 'xmnu' (133, "Paste Menu") {
 			dataItem {
 				1061109567,
 				0x4,
-				currScript,
-				1061109567,
-				1061109567,
-				noHierID,
-				sysFont,
-				naturalGlyph
-			}
-		}
-	}
-};
-
-resource 'xmnu' (134, "Copy Menu") {
-	versionZero {
-		{	/* array ItemExtensions: 3 elements */
-			/* [1] */
-			skipItem {
-
-			}			,
-			/* [2] */
-			dataItem {
-				1061109567,
-				0x1,
-				currScript,
-				1061109567,
-				1061109567,
-				noHierID,
-				sysFont,
-				naturalGlyph
-			},
-			/* [3] */
-			dataItem {
-				1061109567,
-				0x2,
 				currScript,
 				1061109567,
 				1061109567,
@@ -3362,6 +3298,88 @@ resource 'xmnu' (131, "Select") {
 			dataItem {
 				1061109567,
 				0x1,
+				currScript,
+				1061109567,
+				1061109567,
+				noHierID,
+				sysFont,
+				naturalGlyph
+			}
+		}
+	}
+};
+
+resource 'xmnu' (134, "Copy Menu") {
+	versionZero {
+		{	/* array ItemExtensions: 3 elements */
+			/* [1] */
+			skipItem {
+
+			}			,
+			/* [2] */
+			dataItem {
+				1061109567,
+				0x1,
+				currScript,
+				1061109567,
+				1061109567,
+				noHierID,
+				sysFont,
+				naturalGlyph
+			},
+			/* [3] */
+			dataItem {
+				1061109567,
+				0x4,
+				currScript,
+				1061109567,
+				1061109567,
+				noHierID,
+				sysFont,
+				naturalGlyph
+			}
+		}
+	}
+};
+
+resource 'xmnu' (132, "Transform") {
+	versionZero {
+		{	/* array ItemExtensions: 7 elements */
+			/* [1] */
+			skipItem {
+
+			}			,
+			/* [2] */
+			dataItem {
+				1061109567,
+				0x1,
+				currScript,
+				1061109567,
+				1061109567,
+				noHierID,
+				sysFont,
+				naturalGlyph
+			},
+			/* [3] */
+			skipItem {
+
+			},
+			/* [4] */
+			skipItem {
+
+			},
+			/* [5] */
+			skipItem {
+
+			},
+			/* [6] */
+			skipItem {
+
+			},
+			/* [7] */
+			dataItem {
+				1061109567,
+				0x2,
 				currScript,
 				1061109567,
 				1061109567,
@@ -7369,5 +7387,53 @@ resource 'PICT' (128, "About Pic") {
 	$"0079 0045 1F61 7265 206E 6565 6465 6420"
 	$"746F 2073 6565 2074 6869 7320 7069 6374"
 	$"7572 652E 0000 00FF"
+};
+
+resource 'BNDL' (128) {
+	'Mngl',
+	0,
+	{	/* array TypeArray: 2 elements */
+		/* [1] */
+		'ICN#',
+		{	/* array IDArray: 7 elements */
+			/* [1] */
+			0, 128,
+			/* [2] */
+			1, 0,
+			/* [3] */
+			2, 129,
+			/* [4] */
+			3, 0,
+			/* [5] */
+			4, 0,
+			/* [6] */
+			5, 130,
+			/* [7] */
+			6, 131
+		},
+		/* [2] */
+		'FREF',
+		{	/* array IDArray: 7 elements */
+			/* [1] */
+			0, 128,
+			/* [2] */
+			1, 129,
+			/* [3] */
+			2, 130,
+			/* [4] */
+			3, 131,
+			/* [5] */
+			4, 132,
+			/* [6] */
+			5, 133,
+			/* [7] */
+			6, 134
+		}
+	}
+};
+
+data 'Mngl' (0, "Owner resource") {
+	$"1BA9 2031 3939 382D 3230 3030 204D 6968"            /* .© 1998-2000 Mih */
+	$"6169 2050 6172 7061 7269 7461"                      /* ai Parparita */
 };
 
