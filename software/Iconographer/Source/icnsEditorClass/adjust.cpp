@@ -65,7 +65,7 @@ void icnsEditorClass::Adjust(void)
 	GetDialogItemAsControl(adjustDialog, iBrightnessField, &dialogData.brightnessField);
 	GetDialogItemAsControl(adjustDialog, iContrastField, &dialogData.contrastField);
 	
-	if ((**statics.preferences.data).flags & prefsRealTimePreviews)
+	if (statics.preferences.FeatureEnabled(prefsRealTimePreviews))
 		SetControlValue(dialogData.preview, 1);
 	else
 		SetControlValue(dialogData.preview, 0);
@@ -77,6 +77,8 @@ void icnsEditorClass::Adjust(void)
 	FieldToSlider(dialogData.contrastField, dialogData.contrastSlider);
 			
 	SetWRefCon(adjustDialog, long(&dialogData));
+	
+	MWindow::DeactivateAll();
 	
 	ShowWindow(adjustDialog);
 	
@@ -90,9 +92,9 @@ void icnsEditorClass::Adjust(void)
 		{
 			case iOK:
 				if (GetControlValue(dialogData.preview))
-					(**statics.preferences.data).flags |= prefsRealTimePreviews;
+					statics.preferences.EnableFeature(prefsRealTimePreviews);
 				else
-					(**statics.preferences.data).flags &= ~prefsRealTimePreviews;
+					statics.preferences.DisableFeature(prefsRealTimePreviews);
 				UpdateEffects(&dialogData);
 				dialogDone = true;
 				break;
@@ -102,11 +104,11 @@ void icnsEditorClass::Adjust(void)
 				break;
 				
 			
-			case iHueSlider: UpdateEffects(&dialogData); break;
+			/*case iHueSlider: UpdateEffects(&dialogData); break;
 			case iSaturationSlider: UpdateEffects(&dialogData); break;
 			
 			case iBrightnessSlider: UpdateEffects(&dialogData); break;
-			case iContrastSlider: UpdateEffects(&dialogData); break;
+			case iContrastSlider: UpdateEffects(&dialogData); break;*/
 			
 			case iHueField:
 				FieldToSlider(dialogData.hueField, dialogData.hueSlider);
@@ -205,6 +207,8 @@ void icnsEditorClass::Adjust(void)
 	
 	DisposeDialog(adjustDialog);
 	
+	MWindow::ActivateAll();
+	
 	//DisplayValue(FreeMem() - mem);
 	
 	if (itemHit != iCancel) // if there was painting performed...
@@ -255,11 +259,10 @@ pascal bool AdjustDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* i
 				   theControl == dialogData->saturationSlider ||
 				   theControl == dialogData->brightnessSlider ||
 				   theControl == dialogData->contrastSlider)
-				{
 					TrackControl(theControl,theMouse,dialogData->sliderActionFunctionUPP);
-					//handledEvent = true;
-				}
+				UpdateEffects(dialogData);
 			}
+			
 			RESTOREGWORLD;
 			break;
 		case keyDown:
@@ -339,7 +342,7 @@ void UpdateEffects(AdjustDialogDataPtr dialogData)
 	else
 		clippingRgn = dialogData->parentEditor->selectionRgn;
 		
-	if ((**dialogData->parentEditor->statics.preferences.data).flags & prefsDither)
+	if (icnsEditorClass::statics.preferences.FeatureEnabled(prefsDither))
 		copyMode = srcCopy + ditherCopy;
 	else
 		copyMode = srcCopy;
@@ -370,7 +373,7 @@ pascal void SliderActionFunction(ControlHandle theControl,short partCode)
 	ControlHandle field;
 	short		fieldNo;
 	
-	dialogData = AdjustDialogDataPtr(GetWRefCon((**theControl).contrlOwner));
+	dialogData = AdjustDialogDataPtr(GetWRefCon(GetControlOwner(theControl)));
 	
 	NumToString(GetControlValue(theControl), tempString);
 	
@@ -381,8 +384,8 @@ pascal void SliderActionFunction(ControlHandle theControl,short partCode)
 	
 	
 	SetControlText(field, tempString);
-	SetKeyboardFocus((**theControl).contrlOwner, field, kControlEditTextPart);
-	SelectDialogItemText((**theControl).contrlOwner, fieldNo, 0, 32767);
+	SetKeyboardFocus(GetControlOwner(theControl), field, kControlEditTextPart);
+	SelectDialogItemText(GetControlOwner(theControl), fieldNo, 0, 32767);
 	Draw1Control(field);
 	
 	if (GetControlValue(dialogData->preview))

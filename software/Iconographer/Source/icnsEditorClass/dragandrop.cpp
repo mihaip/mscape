@@ -10,19 +10,23 @@ pascal OSErr ApproveDragReference (DragReference theDragRef, bool *approved, icn
 	FlavorType		flavorType;
 	Point			theMouse;
 	ItemReference	theItem;
+	Rect			wellRect, previewRect;
 	
 	GetDragMouse(theDragRef, &theMouse, 0);
 	GlobalToLocal(&theMouse);
 	
+	GetControlBounds(parentEditor->controls.iconEditWell, &wellRect);
+	GetControlBounds(parentEditor->controls.display. preview, &previewRect);
+	
 	*approved = false;
-	if (PtInRect(theMouse, &(**parentEditor->controls.iconEditWell).contrlRect) ||
+	if (PtInRect(theMouse, &wellRect) ||
 		PtInRect(theMouse, &parentEditor->controls.display.iconHugeRect)		||
 		PtInRect(theMouse, &parentEditor->controls.display.iconLargeRect)		||
 		PtInRect(theMouse, &parentEditor->controls.display.iconSmallRect)		||
 		PtInRect(theMouse, &parentEditor->controls.display.maskHugeRect)		||
 		PtInRect(theMouse, &parentEditor->controls.display.maskLargeRect)		||
 		PtInRect(theMouse, &parentEditor->controls.display.maskSmallRect)		||
-		PtInRect(theMouse, &(**parentEditor->controls.display. preview).contrlRect))
+		PtInRect(theMouse, &previewRect))
 	if (!(err = GetDragAttributes (theDragRef,&dragAttrs)))
 	if (!(PtInRect(theMouse, &parentEditor->dragSrcRect)))
 	//if (!(dragAttrs & kDragInsideSenderWindow))
@@ -50,9 +54,13 @@ pascal OSErr DrawDragHilite(DragReference theDragRef, icnsEditorPtr parentEditor
 	OSErr err = noErr;
 	Point	theMouse;
 	bool	approved;
+	Rect	wellRect, previewRect;
 	
 	GetDragMouse(theDragRef, &theMouse, 0);
 	GlobalToLocal(&theMouse);
+	
+	GetControlBounds(parentEditor->controls.iconEditWell, &wellRect);
+	GetControlBounds(parentEditor->controls.display. preview, &previewRect);
 
 	RgnHandle hiliteRgn = NewRgn ( );
 	if (!hiliteRgn)
@@ -64,8 +72,8 @@ pascal OSErr DrawDragHilite(DragReference theDragRef, icnsEditorPtr parentEditor
 			Rect	tempRect = {-1, -1, 0, 0};
 			RectRgn(hiliteRgn, &tempRect);
 		}
-		else if (PtInRect(theMouse, &(**parentEditor->controls.iconEditWell).contrlRect))
-			RectRgn(hiliteRgn,&(**parentEditor->controls.iconEditWell).contrlRect);
+		else if (PtInRect(theMouse, &wellRect))
+			RectRgn(hiliteRgn,&wellRect);
 		else if (PtInRect(theMouse, &parentEditor->controls.display.iconHugeRect))
 			RectRgn(hiliteRgn,&parentEditor->controls.display.iconHugeRect);
 		else if (PtInRect(theMouse, &parentEditor->controls.display.iconLargeRect))
@@ -78,9 +86,9 @@ pascal OSErr DrawDragHilite(DragReference theDragRef, icnsEditorPtr parentEditor
 			RectRgn(hiliteRgn, &parentEditor->controls.display.maskLargeRect);
 		else if (PtInRect(theMouse, &parentEditor->controls.display.maskSmallRect))
 			RectRgn(hiliteRgn, &parentEditor->controls.display.maskSmallRect);
-		else if (PtInRect(theMouse, &(**parentEditor->controls.display.preview).contrlRect))
+		else if (PtInRect(theMouse, &previewRect))
 		{
-			RectRgn(hiliteRgn, &(**parentEditor->controls.display.preview).contrlRect);
+			RectRgn(hiliteRgn, &previewRect);
 			InsetRgn(hiliteRgn, 1, 1);
 		}
 		else
@@ -189,6 +197,7 @@ pascal OSErr DragReceiveHandler (WindowPtr theWindow, void *, DragReference theD
 	long			picSize;
 	Rect			targetRect = {0, 0, 0, 0};
 	RgnHandle		updateRgn;
+	Rect			previewRect;
 	
 	GetDragMouse(theDragRef, &theMouse, 0);
 	localMouse = theMouse;
@@ -213,13 +222,14 @@ pascal OSErr DragReceiveHandler (WindowPtr theWindow, void *, DragReference theD
 			err = GetFlavorDataSize(theDragRef, theItem, 'PICT', &picSize);
 			pic = (PicHandle)NewHandle(picSize);			
 			err = GetFlavorData (theDragRef,theItem,'PICT',(void*)*pic,&picSize,0);
-			if (PtInRect(localMouse, &(**parentEditor->controls.iconEditWell).contrlRect))
+			GetControlBounds(parentEditor->controls.display.preview, &previewRect);
+			if (PtInRect(localMouse, &parentEditor->editWellRect))
 			{
 				targetGW = parentEditor->currentGW;
 				targetPix = parentEditor->currentPix;
 				targetName = parentEditor->currentPixName;
 			}
-			else if (PtInRect(localMouse, &(**parentEditor->controls.display.preview).contrlRect))
+			else if (PtInRect(localMouse, &previewRect))
 			{
 				replaceIcon = true;
 				targetGW = parentEditor->il32GW;

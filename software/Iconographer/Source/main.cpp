@@ -10,9 +10,8 @@
 
 // globals, only the minimum necessary
 bool			gIsDone; // true when the application is ready to quit
-icnsEditorPtr	gFirstEditor; // the head of the editor linked list
-icnsEditorPtr	gLastEditor; // the tail of the editor linked list
 Str255			gAppName; // the name of the application (loaded from a resource)
+MWindowPtr		gLastFrontWindow = (MWindow*)-1;
 
 
 // __________________________________________________________________________________________
@@ -49,16 +48,17 @@ void Initialize()
 	OSErr			err; // used to check if functions returned errors or not
 	
 	gIsDone = false; // we're not ready to quit...
+	MenuHandle	windowsMenu;
+	Str255 		menuItemText;
+	
+	
 	GetIndString(gAppName, rDefaultNames, eAppName);
 	// this is used in lots of places, but for easy localization we get it from a resource
 	
 	//InitToolbox(); // initializing all the default managers
 	
 	if (!ConfigurationSupported()) // we check if we can run on this setup
-	{
-		DoError(rStdErrors, eRequirementsNotFulfilled);
 		CleanUp();
-	}
 	
 #ifdef EXPIRES	
 	GetTime(&theDate); // and if we haven't expired
@@ -102,6 +102,21 @@ void Initialize()
 		DeleteMenuItem(menu, iRegister);
 	}
 	
+	if (icnsEditorClass::statics.preferences.FeatureEnabled(prefsColorsPaletteVisible))
+	{
+		icnsEditorClass::statics.colorsPalette->GrabColors();
+		icnsEditorClass::statics.colorsPalette->Show();
+		GetIndString(menuItemText, rDefaultNames, eHideColorsPalette);
+	}
+	else
+	{
+		icnsEditorClass::statics.colorsPalette->Hide();
+		GetIndString(menuItemText, rDefaultNames, eShowColorsPalette);
+	}
+	
+	windowsMenu = GetMenu(mWindows);
+	SetMenuItemText(windowsMenu, iToggleColorsPalette, menuItemText);
+	
 	icnsEditorClass::statics.ChangeCursor(rArrow);
 }
 
@@ -116,17 +131,26 @@ void Initialize()
 
 bool ConfigurationSupported(void)
 {
-	char systemVersion[4];
-	
-	if (Gestalt(gestaltSystemVersion, (long *)systemVersion) != noErr)
-		return false;
+	if (GestaltVersion(gestaltSystemVersion, 0x07, 0x53))
+	{
+		long appearanceInfo;
+		
+		if (Gestalt(gestaltAppearanceAttr, &appearanceInfo) != noErr)
+		{
+			DoError(rStdErrors, eAppearanceNotInstalled);
+			return false;
+		}
+		else if (appearanceInfo & (1 << gestaltAppearanceExists))
+			return true;
+		else
+		{
+			DoError(rStdErrors, eAppearanceNotInstalled);
+			return false;
+		}
+	}
 	else
 	{
-		if (systemVersion[2] > 0x7)
-			return true;
-		else if ((systemVersion[2] == 0x7) && systemVersion[3] >= 0x53)
-				return true;
-		
+		DoError(rStdErrors, eRequirementsNotFulfilled);
 		return false;
 	}
 }
@@ -142,7 +166,6 @@ OSErr InitMenuBar()
 {
 	Handle		menuBar; // handle to the menubar resource
 	MenuHandle	menu; // handle to individual menu resources
-	char		quickTimeVersion[4];
 	
 	menuBar = GetNewMBar( rMenuBarID ); // we load the menu bar resource...
 	if (menuBar != NULL)
@@ -155,14 +178,6 @@ OSErr InitMenuBar()
 		AppendResMenu(menu, 'DRVR' );
 		// we're adding all the items in the Apple Menu Items folder,
 		// like any good mac app should
-	else
-		return resNotFound;
-	
-	
-	menu = GetMenu(mOpen);
-	if(menu != NULL)
-		InsertMenu(menu,hierMenu); // the select menu is not directly in the menubar,
-							       // rather it is a submenu of the edit menu
 	else
 		return resNotFound;
 	
@@ -213,11 +228,6 @@ OSErr InitMenuBar()
 		return resNotFound;
 		
 	//ToggleMenus(); // we disable what's not needed
-	
-	if (Gestalt(gestaltQuickTimeVersion, (long *)quickTimeVersion) != noErr)
-		DisableMenuItem(mOpen, iMacOSXIcon);
-	else if (quickTimeVersion[0] < 4)
-		DisableMenuItem(mOpen, iMacOSXIcon);
 	
 	DrawMenuBar(); // and draw the menubar
 	
@@ -311,6 +321,7 @@ void DoEvent(EventRecord *eventPtr)
 
 void DoIdle(void)
 {
+	MWindowPtr		currentWindow;
 	icnsEditorPtr	currentEditor, // variable used to go through all the open editors
 					frontEditor; // pointer to the editor class belonging to the front most window
 	Handle			pic, // handle the picture in the clipboard (if any)
@@ -318,36 +329,45 @@ void DoIdle(void)
 	MenuHandle		menu; // handle to various menu resources...
 	long			offset; // used when calling GetScrap, ignored here
 	
-	currentEditor = gFirstEditor;
+	if (gLastFrontWindow != MWindow::GetFront())
+		RebuildWindowsMenu();
 	
-	while (currentEditor != NULL)
+	gLastFrontWindow = MWindow::GetFront();
+	
+	currentWindow = MWindow::GetFirst();
+	
+	if (icnsEditorClass::statics.colorsPalette->IsVisible())
+		icnsEditorClass::statics.colorsPalette->readoutChanged = false;
+	
+	while (currentWindow != NULL)
 	// we loop through the editors to make sure that they are all OK
 	{
-		if (currentEditor->status & outOfMemory)
-		{
-			if (currentEditor->status & canUndo)
+		currentEditor = GetEditor(currentWindow->GetWindow());
+		if (currentEditor != NULL)
+			if (currentEditor->status & outOfMemory)
 			{
-				// we must scuttle the drawing states in order to make room in the memory
-				currentEditor->DisposeStates();
-				DoError(rStdErrors, eLowOnMemory);
-				currentEditor->status &= ~outOfMemory;
+				if (currentEditor->status & canUndo)
+				{
+					// we must scuttle the drawing states in order to make room in the memory
+					currentEditor->DisposeStates();
+					DoError(rStdErrors, eLowOnMemory);
+					currentEditor->status &= ~outOfMemory;
+				}
+				else
+				{
+					// if we've already gotten rid of the drawing states and there still isn't
+					// enough memory, then we must close this editor
+					icnsEditorClass::statics.ReclaimEmergencyMemory();
+					// we must make some room in memory in order to be able to display the error
+					// message
+					DoError(rStdErrors, eOutOfMemory);
+					MWindowPtr(currentEditor)->Select();
+					Close(noCancel);
+					icnsEditorClass::statics.AllocateEmergencyMemory();
+					// we take the emergency memory back, so that it can be used in the future
+				}
 			}
-			else
-			{
-				// if we've already gotten rid of the drawing states and there still isn't
-				// enough memory, then we must close this editor
-				icnsEditorClass::statics.ReclaimEmergencyMemory();
-				// we must make some room in memory in order to be able to display the error
-				// message
-				DoError(rStdErrors, eOutOfMemory);
-				BringToFront(currentEditor->window);
-				CloseIcon(noCancel);
-				icnsEditorClass::statics.AllocateEmergencyMemory();
-				// we take the emergency memory back, so that it can be used in the future
-			}
-			
-		}
-		currentEditor = currentEditor->nextEditor;
+		currentWindow = currentWindow->GetNext();
 	}
 	
 	frontEditor = GetFrontEditor();
@@ -440,7 +460,12 @@ void DoIdle(void)
 		else
 			DisableMenuItem(mEdit, iRedo);
 		
-		EnableMenuItem(mIcon, 0);
+		if (!IsMenuItemEnabled(mIcon, 0))
+		{
+			EnableMenuItem(mIcon, 0);
+			DrawMenuBar();
+		}
+		
 		if (frontEditor->status & canZoomIn) // if we're not at the max magnification
 			EnableMenuItem(mIcon, iZoomIn);
 		else
@@ -451,16 +476,62 @@ void DoIdle(void)
 		else
 			DisableMenuItem(mIcon, iZoomOut);
 			
+		DisableMenuItem(mIcon, iInsertIcon);
+			
 		if (frontEditor->CurrentDepthSupportsColors())
+		{
 			EnableMenuItem(mIcon, iColors);
+			
+			menu = GetMenuHandle(mColors);
+			
+			switch (frontEditor->GetColors())
+			{
+				case iMacOSColors :
+					CheckItem(menu, iMacOSColors, true);
+					CheckItem(menu, iWinColors, false);
+					break;
+				case iWinColors :
+					CheckItem(menu, iMacOSColors, false);
+					CheckItem(menu, iWinColors, true);
+					break;
+			}
+		}
 		else
 			DisableMenuItem(mIcon, iColors);
-		
-		frontEditor->DoIdle(); // we also let the editor do its own thing
 	}
 	else
-	{	
-		DisableMenuItem(mFile, iClose);
+	{
+		if (GetFrontBrowser() != NULL)
+		{
+			EnableMenuItem(mFile, iClose);
+			if (GetFrontBrowser()->GetSelection() != -1)
+				EnableMenuItem(mEdit, iClear);
+			else
+				DisableMenuItem(mEdit, iClear);
+				
+			if (!IsMenuItemEnabled(mIcon, 0))
+			{
+				EnableMenuItem(mIcon, 0);
+				DrawMenuBar();
+			}
+			DisableMenuItem(mIcon, iZoomIn);
+			DisableMenuItem(mIcon, iZoomOut);
+			DisableMenuItem(mIcon, iColors);
+			EnableMenuItem(mIcon, iInsertIcon);
+			DisableMenuItem(mIcon, iIconInfo);	
+		}
+		else
+		{
+			DisableMenuItem(mFile, iClose);
+			DisableMenuItem(mEdit, iClear);
+			DisableMenuItem(mIcon, iInsertIcon);
+			if (IsMenuItemEnabled(mIcon, 0))
+			{
+				DisableMenuItem(mIcon, 0);
+				DrawMenuBar();
+			}
+		}
+			
 		DisableMenuItem(mFile, iSave);
 		DisableMenuItem(mFile, iSaveAs);
 		DisableMenuItem(mFile, iSaveInto);
@@ -470,7 +541,6 @@ void DoIdle(void)
 		DisableMenuItem(mEdit, iCut);
 		DisableMenuItem(mEdit, iCopy);
 		DisableMenuItem(mEdit, iPaste);
-		DisableMenuItem(mEdit, iClear);
 		DisableMenuItem(mEdit, iSelect);
 		DisableMenuItem(mEdit, iAdjust);
 		DisableMenuItem(mEdit, iTransform);
@@ -478,10 +548,27 @@ void DoIdle(void)
 		//DisableMenuItem(mPaste, 0);
 		DisableMenuItem(mSelect, 0);
 		//DisableMenuItem(mTransform, 0);
-		
-		DisableMenuItem(mIcon, 0);
 	}
 	//DrawMenuBar(); // and draw the menubar
+	
+	
+	currentWindow = MWindow::GetFirst();
+	icnsEditorClass::statics.cursorChanged = false;
+	while (currentWindow != NULL)
+	{
+		if (currentWindow == MWindow::GetFront() ||
+			currentWindow->GetType() == kFloaterType)
+			currentWindow->DoIdle();
+			
+		currentWindow = currentWindow->GetNext();
+	}
+	if (!icnsEditorClass::statics.cursorChanged)
+		icnsEditorClass::statics.ChangeCursor(rArrow);
+	
+	if (icnsEditorClass::statics.colorsPalette->IsVisible())
+		if (!icnsEditorClass::statics.colorsPalette->readoutChanged)
+			icnsEditorClass::statics.colorsPalette->UpdateReadout(-1, -1, kPickerNeverUsedColor);
+		
 }
 
 // __________________________________________________________________________________________
@@ -497,10 +584,10 @@ void HandleMouseDown(EventRecord *eventPtr)
 	WindowPtr		theWindow; // winder where the click occured
 	GDHandle		mainScreen; // the screen in which the window can be moved
 	long			menuChoice; // the selected menu command
-	icnsEditorPtr	currentEditor; // the editor class beloging to the window that was clicked
+	MWindowPtr	currentWindow; // the editor class beloging to the window that was clicked
 	
 	part = FindWindow(eventPtr->where, &theWindow);
-	currentEditor = GetEditor(theWindow);
+	currentWindow = GetWindow(theWindow);
 	switch (part) // depending on where the click was, we take different actions
 	{
 		case inMenuBar : // if it was in the menubar, we handle the menu command
@@ -509,26 +596,29 @@ void HandleMouseDown(EventRecord *eventPtr)
 			break;
 		case inSysWindow : // if the user clicked in a different window, then we deactivate
 						   // this one
-			if (currentEditor != NULL)
-				currentEditor->Deactivate();
+			if (currentWindow != NULL)
+				currentWindow->Deactivate();
 			SystemClick(eventPtr, theWindow);
 			break;
 		case inDrag : // the user is attempting to drag the window
 			mainScreen = GetMainDevice();
-			DragWindow(theWindow, eventPtr->where, &( ( *mainScreen )->gdRect ));
+			currentWindow->Drag(eventPtr->where, (**mainScreen).gdRect);
 			break;
 		case inGoAway: // the user has the mouse on the close box
 			if (TrackGoAway(theWindow, eventPtr->where)) // if he release it...
-				if (currentEditor != NULL)
-					CloseIcon(0); // we close the icon
+				if (currentWindow != NULL)
+					if (currentWindow->GetType() == kFloaterType)
+						ToggleColorsPalette();
+					else
+						Close(0); // we close the icon
 			break;
 		case inContent: // if it's a contect click we pass it on the class
-			if (currentEditor != NULL)
-				currentEditor->HandleContentClick(eventPtr);
+			if (currentWindow != NULL)
+				currentWindow->HandleContentClick(eventPtr);
 			break;
 		case inGrow: // same for clicks in the grow box
-			if (currentEditor != NULL)
-				currentEditor->HandleGrow(eventPtr->where);
+			if (currentWindow != NULL)
+				currentWindow->HandleGrow(eventPtr->where);
 			break;
 	}
 }
@@ -544,16 +634,16 @@ void HandleMouseDown(EventRecord *eventPtr)
 void HandleKeyDown(EventRecord *eventPtr)
 {
 	long			menuEvent; // the key which was pressed
-	icnsEditorPtr	frontEditor; // the editor class belonging to the front most window
+	MWindowPtr	frontWindow; // the editor class belonging to the front most window
 	
 	menuEvent = MenuEvent(eventPtr);
 	if (((menuEvent & 0xFFFF0000) >> 16) != 0)
 		DoMenuCommand(menuEvent);
 	else // otherwise we pass it onto the editor
 	{
-		frontEditor = GetFrontEditor();
-		if (frontEditor != NULL)
-			frontEditor->HandleKeyDown(eventPtr);
+		frontWindow = MWindow::GetFront();
+		if (frontWindow != NULL)
+			frontWindow->HandleKeyDown(eventPtr);
 	}
 }
 
@@ -568,18 +658,18 @@ void HandleActivate(EventRecord *eventPtr)
 {
 	 WindowPtr  	theWindow; // window which is becoming (in)active
 	 bool	    	becomingActive;	// are we activating or deactivating?
-	 icnsEditorPtr	currentEditor; // the editor class belonging to the window which we are
+	 MWindowPtr		currentWindow; // the editor class belonging to the window which we are
 	 							   // dealing with
 
 	 theWindow = (WindowPtr) eventPtr->message; 
-	 currentEditor = GetEditor(theWindow);
-	 if (currentEditor != NULL)
+	 currentWindow = GetWindow(theWindow);
+	 if (currentWindow != NULL)
 	 {
 		 becomingActive = ((eventPtr->modifiers & activeFlag) == activeFlag);
 		 if (becomingActive)
-		 	currentEditor->Activate();
+		 	currentWindow->Activate();
 		 else
-		 	currentEditor->Deactivate();
+		 	currentWindow->Deactivate();
 	}
 }
 
@@ -593,12 +683,12 @@ void HandleActivate(EventRecord *eventPtr)
 void HandleUpdate(EventRecord *eventPtr)
 {
 	WindowPtr		windowToUpdate; // the window which we must update
-	icnsEditorPtr	currentEditor; // the editor which owns the window above
+	MWindowPtr	currentWindow; // the editor which owns the window above
 	
 	windowToUpdate = (WindowPtr)eventPtr->message;
-	currentEditor = GetEditor(windowToUpdate);
-	if (currentEditor != NULL)
-		currentEditor->Refresh(); // we just pass on the updating to the editor class
+	currentWindow = GetWindow(windowToUpdate);
+	if (currentWindow != NULL)
+		currentWindow->Refresh(); // we just pass on the updating to the editor class
 }
 
 // __________________________________________________________________________________________
@@ -611,24 +701,106 @@ void HandleUpdate(EventRecord *eventPtr)
 
 void HandleOSEvent(EventRecord *eventPtr)
 {
-	icnsEditorPtr	frontEditor; // pointer to the class belonging to the front most editor
 	switch((eventPtr->message >> 24) & 0x000000FF)
 	{
 		case suspendResumeMessage: // if the application is being brought to the foreground or
 								   // put into the background
-			if (FrontWindow() != NULL)
+			
+			if (eventPtr->message & resumeFlag)
 			{
-				frontEditor = GetFrontEditor();
-				if (frontEditor != NULL)
+				short part;
+				WindowPtr	theWindow;
+				MWindowPtr	currentWindow;
+				
+				MWindow::ShowFloaters();
+				MWindow::ActivateAll();
+				
+				part = FindWindow(eventPtr->where, &theWindow);
+				currentWindow = GetWindow(theWindow);
+				
+				if (part == inDrag)
 				{
-					if (eventPtr->message & resumeFlag)
-						frontEditor->Activate(); // we active the front window
-					else
-						frontEditor->Deactivate(); // or deactivate it
+					currentWindow->Select();
 				}
+				
+			}
+			else
+			{
+				MWindow::HideFloaters();
+				MWindow::DeactivateAll();
 			}
 			break;
 	}
+}
+
+void RebuildWindowsMenu()
+{
+	MWindowPtr	currentWindow;
+	//int				currentID;
+	MenuHandle		windowsMenu;
+	Str255			menuTitle;
+	int				editorsInsertionPoint = iEditorsInsertionPoint,
+					browsersInsertionPoint = iBrowsersInsertionPoint,
+					*insertionPoint;
+	
+	windowsMenu = GetMenu(mWindows);
+	
+	for (int i=CountMItems(windowsMenu); i >= iEditorsInsertionPoint; i--)
+		DeleteMenuItem(windowsMenu, i);
+		
+	InsertMenuItem(windowsMenu, "\p-", iEditorsInsertionPoint - 1);
+	InsertMenuItem(windowsMenu, "\p-", iBrowsersInsertionPoint - 1);
+	
+	for (currentWindow = MWindow::GetFirst(); currentWindow != NULL; currentWindow = currentWindow->GetNext())
+	{
+		//currentID = MWindow::GetNthWindowID(i);
+		
+		//currentWindow = MWindow::GetWindow(currentID);
+		
+		currentWindow->GetTitle(menuTitle);
+		
+		switch (currentWindow->GetType())
+		{
+			case kEditorType:
+				insertionPoint = &editorsInsertionPoint;
+				browsersInsertionPoint++;
+				break;
+			case kBrowserType:
+				insertionPoint = &browsersInsertionPoint;
+				break;
+			default:
+				insertionPoint = NULL;
+				break;
+		}
+		
+		if (insertionPoint)
+		{
+			InsertMenuItem(windowsMenu, "\pscratch", (*insertionPoint)++);
+			SetMenuItemText(windowsMenu, *insertionPoint, menuTitle);
+			
+			SetMenuItemRefCon(windowsMenu, *insertionPoint, UInt32(currentWindow));
+			
+			EnableMenuItem(windowsMenu, *insertionPoint);
+			if (currentWindow == MWindow::GetFront())
+				CheckItem(windowsMenu, *insertionPoint, true);
+			else
+				CheckItem(windowsMenu, *insertionPoint, false);
+		}
+	}
+	
+	if (editorsInsertionPoint == iEditorsInsertionPoint)
+	{
+		DeleteMenuItem(windowsMenu, editorsInsertionPoint);
+		if (browsersInsertionPoint == iBrowsersInsertionPoint)
+			DeleteMenuItem(windowsMenu, browsersInsertionPoint - 1);
+	}
+	
+	if (browsersInsertionPoint == iBrowsersInsertionPoint + (editorsInsertionPoint - iEditorsInsertionPoint))
+		DeleteMenuItem(windowsMenu, browsersInsertionPoint);
+	
+	InsertMenu(windowsMenu, mWindows);
+	
+	DrawMenuBar();
 }
 
 // __________________________________________________________________________________________
@@ -681,20 +853,13 @@ void DoMenuCommand(long menuResult)
 			case mFile :
 				switch (item)
 				{
+					case iOpenIcon : OpenIcon(NULL); break;
 					case iNewIcon : NewIcon(true); break;
-					case iClose : CloseIcon(0); break;
+					case iClose : Close(0); break;
 					case iSave: SaveIcon(0); break;
 					case iSaveAs : SaveIcon(saveAs); break;
 					case iSaveInto : SaveIcon(saveInto); break;
 					case iQuit :gIsDone = true; break;
-				}
-				break;
-			case mOpen:
-				switch (item)
-				{
-					case iMacOSIcon : OpenIcon(NULL); break;
-					case iWindowsIcon: OpenICO(NULL); break;
-					case iMacOSXIcon: OpenTIFF(NULL); break;
 				}
 				break;
 			case mEdit :
@@ -711,10 +876,12 @@ void DoMenuCommand(long menuResult)
 				else
 					switch (item)
 					{
+						case iClear: if (GetFrontBrowser()) GetFrontBrowser()->Clear(); break;
 						case iPreferences : icnsEditorClass::statics.preferences.Edit(); break;
 					}
 				break;
 			case mSelect:
+				HiliteMenu(mEdit);
 				if (frontEditor != NULL)
 					switch (item)
 					{
@@ -725,6 +892,7 @@ void DoMenuCommand(long menuResult)
 					}
 				break;
 			case mTransform:
+				HiliteMenu(mEdit);
 				if (frontEditor != NULL)
 					switch (item)
 					{
@@ -736,6 +904,7 @@ void DoMenuCommand(long menuResult)
 					}
 				break;
 			case mPaste:
+				HiliteMenu(mEdit);
 				if (frontEditor != NULL)
 					switch (item)
 					{
@@ -746,6 +915,7 @@ void DoMenuCommand(long menuResult)
 					}
 				break;
 			case mCopy:
+				HiliteMenu(mEdit);
 				if (frontEditor != NULL)
 					switch (item)
 					{
@@ -760,10 +930,16 @@ void DoMenuCommand(long menuResult)
 					{
 						case iZoomIn : frontEditor->ZoomIn(); break;
 						case iZoomOut : frontEditor->ZoomOut(); break;
-						case iIconInfo : frontEditor->EditIconInfo(); break;
+						case iIconInfo : frontEditor->EditIconInfo(kIconInfo); break;
+					}
+				else if (GetFrontBrowser != NULL)
+					switch (item)
+					{
+						case iInsertIcon: InsertIcon(); break;
 					}
 				break;
 			case mColors :
+				HiliteMenu(mIcon);
 				if (frontEditor != NULL)
 				{
 					MenuHandle theMenu;
@@ -775,21 +951,106 @@ void DoMenuCommand(long menuResult)
 						case iMacOSColors :
 							CheckItem(theMenu, iMacOSColors, true);
 							CheckItem(theMenu, iWinColors, false);
-							frontEditor->ChangeColors(macOSColors);
+							frontEditor->ChangeColors(macOSColors, true);
 							break;
 						case iWinColors :
 							CheckItem(theMenu, iMacOSColors, false);
 							CheckItem(theMenu, iWinColors, true);
-							frontEditor->ChangeColors(winColors);
+							frontEditor->ChangeColors(winColors, true);
 							break;
 					}
 				}
+				break;
+			case mWindows:
+				switch (item)
+				{
+					case iToggleColorsPalette:
+						ToggleColorsPalette();
+						break;
+					default:
+						MenuHandle		windowsMenu;
+						//unsigned long	windowID;
+						MWindowPtr		selectedWindow;
+						
+						
+						windowsMenu = GetMenu(mWindows);
+						
+						GetMenuItemRefCon(windowsMenu, item, (UInt32*)&selectedWindow);
+						//selectedWindow = MWindow::GetWindow(windowID);
+						
+						selectedWindow->Select();
+						
+						//RebuildWindowsMenu();
+						break;
+				}	
 				break;
 		}
 		
 		while (LMGetTicks() < startTicks + 4) {;}
 		
 		HiliteMenu(0); // after the command has been executed, we must unhilite the menu
+	}
+}
+
+void ToggleColorsPalette()
+{
+	MenuHandle	windowsMenu;
+	Str255 		menuItemText;
+						
+	if (icnsEditorClass::statics.colorsPalette->IsVisible())
+	{
+		icnsEditorClass::statics.colorsPalette->Hide();
+		GetIndString(menuItemText, rDefaultNames, eShowColorsPalette);
+	}
+	else
+	{
+		icnsEditorClass::statics.colorsPalette->GrabColors();
+		icnsEditorClass::statics.colorsPalette->Show();
+		GetIndString(menuItemText, rDefaultNames, eHideColorsPalette);
+	}
+	windowsMenu = GetMenu(mWindows);
+	SetMenuItemText(windowsMenu, iToggleColorsPalette, menuItemText);
+}
+
+void InsertIcon()
+{
+	icnsEditorPtr	newIcon;
+	
+	if (NewIcon(false) != noErr)
+		return;
+	
+	newIcon = GetEditor(MWindow::GetLast()->GetWindow());
+	
+	if (newIcon == NULL)
+		return;
+	
+	newIcon->srcFileSpec = GetFrontBrowser()->srcFileSpec;
+	if (newIcon->EditIconInfo(kInsertIcon) == iOK)
+	{
+		newIcon->Save();
+		newIcon->members = (icni | icnm);
+		newIcon->RefreshWindowTitle();
+		
+		newIcon->SetBestMember();
+		
+		SAVEGWORLD;
+		SetPort(newIcon->GetWindow()); // we must invalidate the window so that it can be
+		InvalRgn(newIcon->GetWindow()->visRgn); // redrawn
+		newIcon->Refresh();
+		
+		RESTOREGWORLD;
+		
+		newIcon->Show();
+		
+		DoIdle();
+		DrawMenuBar();
+		
+		RefreshIconBrowser(true);
+	}
+	else
+	{
+		newIcon->Close();
+		delete newIcon;
 	}
 }
 
@@ -818,6 +1079,8 @@ void AboutBox()
 		DoError(rStdErrors, eResourceMissing);
 		return;
 	}
+	
+	MWindow::DeactivateAll();
 	
 	SetDialogDefaultItem(aboutBox, iAboutPic); // when the user hits return, this item is "clicked"
 	
@@ -849,12 +1112,15 @@ void AboutBox()
 	}
 	DisposeRoutineDescriptor(eventFilterUPP);
 	DisposeDialog(aboutBox);
+	
+	MWindow::ActivateAll();
 }
 
 pascal bool AboutBoxEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *itemHit)
 {
 	bool	handledEvent; // if true then our function tool care of the event
-
+	Rect	picRect, controlRect;
+	
 	handledEvent = false; // by default we didn't handle the event
 	
 	switch (eventPtr->what)
@@ -870,17 +1136,12 @@ pascal bool AboutBoxEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *
 			{
 				Str255			name, company, regCode;
 				ControlHandle	control;
-				short			fontNum;
 				PicHandle		aboutPic;
 				RGBColor		textColor = {.28 * 65535, .16 * 65535, .12 * 65535};
 				
 				aboutPic = GetPicture(rAboutPic);
 				if (icnsEditorClass::statics.preferences.IsRegistered())
-				{
-					CopyString(name, (**icnsEditorClass::statics.preferences.data).name);
-					CopyString(company, (**icnsEditorClass::statics.preferences.data).company);
-					CopyString(regCode, (**icnsEditorClass::statics.preferences.data).regCode);
-				}
+					icnsEditorClass::statics.preferences.GetRegistrationInfo(name, company, regCode);
 				else
 				{
 					GetIndString(name, rDefaultNames, eNotRegistered);
@@ -894,12 +1155,13 @@ pascal bool AboutBoxEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *
 				SetPort(dialog);
 				
 				GetDialogItemAsControl(dialog, iAboutPic, &control);
+				GetControlBounds(control, &picRect);
 				
-				DrawPicture(aboutPic, &(**control).contrlRect);
+				
+				DrawPicture(aboutPic, &picRect);
 				
 				RGBForeColor(&textColor);
-				GetFNum("\pGeneva", &fontNum);
-				TextFont(fontNum);
+				TextFont(applFont);
 				TextSize(9);
 				TextFace(bold);
 				
@@ -908,85 +1170,28 @@ pascal bool AboutBoxEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *
 				name[0] = i - 1;
 				
 				GetDialogItemAsControl(dialog, iNameDisplayField, &control);
-				MoveTo((**control).contrlRect.right - StringWidth(name), (**control).contrlRect.bottom);
+				GetControlBounds(control, &controlRect);
+				MoveTo(controlRect.right - StringWidth(name), controlRect.bottom);
 				DrawString(name);
 				
 				TextFace(normal);
 			
 				GetDialogItemAsControl(dialog, iCompanyDisplayField, &control);
-				MoveTo((**control).contrlRect.right - StringWidth(company), (**control).contrlRect.bottom);
+				GetControlBounds(control, &controlRect);
+				MoveTo(controlRect.right - StringWidth(company), controlRect.bottom);
 				DrawString(company);
 				
 				GetDialogItemAsControl(dialog, iRegCodeDisplayField, &control);
-				MoveTo((**control).contrlRect.right - StringWidth(regCode), (**control).contrlRect.bottom);
+				GetControlBounds(control, &controlRect);
+				MoveTo(controlRect.right - StringWidth(regCode), controlRect.bottom);
 				DrawString(regCode);
 				
 				TextFace(normal);
 				TextSize(12);
+				TextFont(0);
 				
 				RESTORECOLORS;
 				RESTOREGWORLD;
-				
-				//KillPicture(aboutPic);
-				
-				
-				//handledEvent = true;
-				/*
-				
-				SAVEGWORLD; // we must save the current port
-				SAVECOLORS;
-				
-				SetPort(dialog);
-				//GetDialogItem(dialog, iAboutPic, &itemType, &item, &targetRect);
-				GetDialogItemAsControl(dialog, iAboutPic, &item);
-				targetRect = (**item).contrlRect;
-				NewGWorld(&tempGW, 32, &targetRect, NULL, NULL, 0);
-				tempPix = GetGWorldPixMap(tempGW);
-				LockPixels(tempPix);
-				SetGWorld(tempGW, NULL);
-				
-				DrawDialogBackground(item, targetRect);
-						 
-				NewGWorld(&picGW, 32, &targetRect, NULL, NULL, 0);
-				picPix = GetGWorldPixMap(picGW);
-				LockPixels(picPix);
-				SetGWorld(picGW, NULL);
-				
-				DrawPicture(GetPicture(rAboutPic), &targetRect);
-				
-				NewGWorld(&maskGW, 32, &targetRect, NULL, NULL, 0);
-				maskPix = GetGWorldPixMap(maskGW);
-				LockPixels(maskPix);
-				SetGWorld(maskGW, NULL);
-				
-				DrawPicture(GetPicture(rAboutMask), &targetRect);
-				
-				CopyDeepMask((BitMap*)*picPix,
-							 (BitMap*)*maskPix,
-							 (BitMap*)*tempPix,
-							 &targetRect,
-							 &targetRect,
-							 &targetRect,
-							 srcCopy,
-							 NULL);
-					 
-				CopyBits((BitMap*)*tempPix,
-						 &dialog->portBits,
-						 &targetRect,
-						 &targetRect,
-						 srcCopy,
-						 dialog->visRgn);
-				
-				  
-				RESTOREGWORLD;
-				RESTORECOLORS;	
-				
-				UnlockPixels(tempPix);
-				DisposeGWorld(tempGW);
-				UnlockPixels(picPix);
-				DisposeGWorld(picGW);
-				UnlockPixels(maskPix);
-				DisposeGWorld(maskGW);*/
 			}
 			break;
 		default:
@@ -1078,23 +1283,18 @@ OSErr NewIcon(bool showWindow)
 {
 	icnsEditorPtr newEditor; // pointer to the editor which we will create
 	
-	newEditor = new icnsEditorClass(gLastEditor); // we make the editor...
+	newEditor = new icnsEditorClass(); // we make the editor...
 	if (!(newEditor->status & outOfMemory)) // if we're ok
-	{
-		gLastEditor = newEditor;
-			// we set the last item in the linked list to the one we just made
-		if (gFirstEditor == NULL) // if there were't any editor before then
-		{
-			//ToggleMenus(); // we must enable the menus
-			gFirstEditor = newEditor;
-				// and set the first item in the list to the one we just made
-		}
-		
+	{		
 		if (showWindow)
-			gLastEditor->Show();
+		{
+			newEditor->SetBestMember();
+			newEditor->Show();
+		}
 		
 		DoIdle();
 		DrawMenuBar();
+		
 		return noErr;
 	}
 	else // if we failed
@@ -1105,473 +1305,250 @@ OSErr NewIcon(bool showWindow)
 	}
 }
 
-// __________________________________________________________________________________________
-// Name			: GetIconFile
-// Input		: None
-// Output		: fileSpec: the file/folder that the user chose
-//				  OSErr: reason why we failed, if any
-// Description	: This function presents a file/folder choice dialogs, thus allowing the user
-//				  to open one
-
-OSErr GetIconFile(FSSpec* fileSpec, int prompt, int title)
+OSErr NewBrowser(FSSpec file, int format)
 {
-	if (NavServicesAvailable())
+	iconBrowserPtr	newBrowser; // pointer to the browser which we will create
+	MWindowPtr		currentWindow;
+	iconBrowserPtr	currentBrowser;
+	
+	currentWindow = MWindow::GetFirst();
+	while (currentWindow != NULL)
 	{
-		NavReplyRecord		theReply;
-		NavDialogOptions	dialogOptions;
-		OSErr				theErr = noErr;
-		NavEventUPP			eventUPP = NewNavEventProc(NavEventFilter);
-		Str255				openPromptText;
-		Str255				windowTitle;
+		currentBrowser = GetBrowser(currentWindow->GetWindow());
 		
-		theErr = NavGetDefaultDialogOptions(&dialogOptions);
-		
-		GetIndString(dialogOptions.message,rPrompts,eSelectFile);
-		
-		dialogOptions.preferenceKey = 13654;
-		dialogOptions.dialogOptionFlags -= kNavAllowMultipleFiles;
-		dialogOptions.dialogOptionFlags += kNavNoTypePopup;
-		dialogOptions.dialogOptionFlags += kNavAllowPreviews;
-		CopyString(dialogOptions.clientName, gAppName);
-		GetIndString(windowTitle, rPrompts, title); // we get the prompt string
-		CopyString(dialogOptions.windowTitle, windowTitle);
-		GetIndString(openPromptText, rPrompts, prompt); // we get the prompt string	
-		CopyString(dialogOptions.message, openPromptText);
-		
-		
-		theErr = NavChooseObject(NULL,
-								 &theReply,
-								 &dialogOptions,
-								 eventUPP,
-								 NULL,
-								 NULL);
-		
-		DisposeRoutineDescriptor(eventUPP);
-
-		if ((theReply.validRecord)&&(theErr == noErr))
-		{
-			// grab the target FSSpec from the AEDesc:	
-			AEDesc 	resultDesc;
-
-			if ((theErr = AECoerceDesc(&(theReply.selection),typeFSS,&resultDesc)) == noErr)
+		if (currentBrowser != NULL)
+			if (SameFile(currentBrowser->srcFileSpec, file))
 			{
-				GetFSSpecFromAEDesc(resultDesc, *fileSpec);
-				FSMakeFSSpec(fileSpec->vRefNum, fileSpec->parID, fileSpec->name, fileSpec);
+			    currentBrowser->Select();
+			    return noErr;
 			}
-			AEDisposeDesc(&resultDesc);
-			
-			theErr = NavDisposeReply(&theReply);
-		}
-			
-		return theErr;
+		
+		currentWindow = currentWindow->GetNext();
 	}
-	else
+	
+	newBrowser = new iconBrowserClass(file, OpenIconFromBrowser, format); // we make the browser...
+	if (!(newBrowser->status & outOfMemory)) // if we're ok
 	{
-		StandardFileReply theReply;
-		FileFilterYDUPP 	invisiblesExcludedCustomFilterUPP;
-		
-		invisiblesExcludedCustomFilterUPP = NewFileFilterYDProc(OnlyVisibleObjectsCustomFileFilter);
-		
-		StandardGetObject(invisiblesExcludedCustomFilterUPP, HandleUpdate, &theReply);
-		
-		DisposeRoutineDescriptor(invisiblesExcludedCustomFilterUPP);
-		
-		if ( theReply.sfGood)
-		{
-			*fileSpec = theReply.sfFile;
-			return noErr;
-		}
-		else
-			return userCanceledErr;
+		DoIdle();
+		DrawMenuBar();
+		return noErr;
+	}
+	else // if we failed
+	{
+		delete newBrowser; // then we dispose of what we just created
+		DoError(rStdErrors, eCantMakeEditor); // and imform the user
+		return memFullErr;
 	}
 }
 
-// __________________________________________________________________________________________
-// Name			: OpenIcon
-// Input		: fileToOpen: Pointer to a file spec if the file to be opened has already been
-//				  chosen.
-// Output		: None
-// Description	: Allows the user to open an icon. If the fileToOpen parameter is set to NULL
-//				  then the file that's to be opened must be chosen first, otherwise we can
-//				  proceed to the next step, the Icon Browser which allows you to choose an
-//				  icon to edit from that file. After an icon has been chosem, then we use
-//				  the icnsEditorClass function to load the new editor and the icon.
-
-void OpenIcon(FSSpec *fileToOpen)
+bool HandleSimpleCases(FSSpec fileSpec, long* ID)
 {
-	long			ID;
-	OSStatus		err1 = noErr, err2 = noErr;
-	bool			needToDispose = false;
+	Handle			currentIcon;
+	short			file, oldFile;
+	unsigned long	iconTypes[] = {'icns', 'icl8', 'ics8', 'ics4', 'icl4', 'ICN#', 'ics#'};
+	unsigned long	maxCountType = 0;
+	int				count=-1;
+	int				typeCount = sizeof(iconTypes)/sizeof(iconTypes[0]);
+	short			temp;
+	bool			simpleCase = false;
+	Str255			name;
+	unsigned char isFolder, ignored;
 	
-	if (fileToOpen == NULL) // if don't already have a file to open...
+	ResolveAliasFile(&fileSpec,true,&isFolder, &ignored);
+			
+	if (isFolder)
 	{
-		fileToOpen = new FSSpec;
-		
-		needToDispose = true;
-		
-		err1 = GetIconFile(fileToOpen, eSelectFile, eOpenTitle);
+		*ID = 820127;
+		return true;
 	}
-	if (err1 == noErr)
-	{
-		unsigned char isFolder, ignored;
-		ResolveAliasFile(fileToOpen,true,&isFolder, &ignored);
 		
-		if (!isFolder)
-		{						 
-		err1 = IconBrowser(*fileToOpen, &ID, HandleUpdate); // we let the user choose the icon ID they want
-											 			   // to edit
-		if (err1 == canceledErr) // if there was a problem with the icon browser
+	oldFile = CurResFile();
+	file = FSpOpenResFile(&fileSpec, fsRdPerm);
+	if (file == -1 && ResError() == eofErr)
+	{
+		*ID = 820127;
+		return true;
+	}
+	UseResFile(file);
+	
+	for (int i=0; i < typeCount; i++)
+	{
+		temp = Count1Resources(iconTypes[i]);
+		if (temp > count)
+		{
+			count = temp;
+			maxCountType = iconTypes[i];
+		}
+	}
+	
+	if (count == 0)
+	{
+		*ID = 820127;
+		simpleCase = true;
+	}
+	else if (count == 1)
+	{
+		currentIcon = Get1IndResource(maxCountType, 1);
+		GetResInfo(currentIcon, &temp, &maxCountType, name);
+		*ID = temp;
+		simpleCase = true;
+		ReleaseResource(currentIcon);
+	}
+		
+	
+	CloseResFile(file);
+	UseResFile(oldFile);
+	
+	return simpleCase;
+	
+}
+
+icnsEditorPtr GetEmptyEditor(FSSpec fileToOpen, long ID, int format)
+{
+	MWindowPtr		currentWindow;
+	icnsEditorPtr	currentEditor;
+	OSErr			err;
+	
+	currentWindow = MWindow::GetFirst();
+	while (currentWindow != NULL)
+	{
+		currentEditor = GetEditor(currentWindow->GetWindow());
+		
+		if (currentEditor != NULL)
+			if (SameFile(currentEditor->srcFileSpec, fileToOpen) &&
+			    (currentEditor->ID == ID || (ID == 820127 && currentEditor->ID == -16455)) &&
+			    (currentEditor->format == format))
+			{
+			    MWindowPtr(currentEditor)->Select();
+			    return NULL;
+			}
+			else if (currentEditor->srcFileSpec.vRefNum == 0 &&
+					 currentEditor->srcFileSpec.parID == 0 &&
+					 !(currentEditor->status & canUndo) &&
+					 !(currentEditor->status & canRedo))
+			{
+				return currentEditor;
+			}
+		
+		currentWindow = currentWindow->GetNext();
+	}
+	
+	err = NewIcon(false);
+	
+	if (err == noErr)
+		return GetEditor(MWindow::GetLast()->GetWindow());
+	else
+		return NULL;
+}
+
+void OpenIcon(FSSpec *inFile)
+{
+	icnsEditorPtr	newEditor;
+	FSSpec			fileToOpen;
+	long			ID = -16455;
+	long			format;
+	
+	format = icnsEditorClass::statics.preferences.GetDefaultFormat();
+	
+	if (inFile == NULL)
+	{
+		if (GetIconFile(&fileToOpen, &format, false) != noErr)
 			return;
-		else if (err1 == opWrErr)
-			DoError(rStdErrors, eFileOpen);
-		}
-		
-		icnsEditorPtr currentEditor;
-		
-		currentEditor = gFirstEditor;
-		while (currentEditor != NULL)
-		{
-			if (currentEditor->srcFileSpec.vRefNum == fileToOpen->vRefNum &&
-			    currentEditor->srcFileSpec.parID == fileToOpen->parID &&
-			    EqualString(currentEditor->srcFileSpec.name, fileToOpen->name, true, true) &&
-			    (currentEditor->ID == ID || (ID == 820127 && currentEditor->ID == -16455)))
-			{
-			    SelectWindow(currentEditor->window);
-			    if (needToDispose)
-			    	delete fileToOpen;
-			    return;
-			}
-			currentEditor = currentEditor->nextEditor;
-		}
-		
-		if (gLastEditor == gFirstEditor &&
-			gLastEditor != NULL &&
-			gLastEditor->srcFileSpec.vRefNum == 0 &&
-			gLastEditor->srcFileSpec.parID == 0 &&
-			!(gLastEditor->status & canUndo))
-			err2 = noErr; // we already have a new, open, but empty editor, no use in making another
-		else
-			err2 = NewIcon(false);
-		if (err2 == noErr) // if were able to make a new editor
-		{
-			
-			gLastEditor->srcFileSpec = *fileToOpen;
-			
-			if (err1 == fileIconSelected || ID == 820127 || isFolder)
-			{
-				gLastEditor->ID = -16455;
-				gLastEditor->LoadFileIcon();
-			}
-			else
-			{
-				gLastEditor->ID = ID; // then we load the icon the user has chosen into it
-				gLastEditor->Load();
-			}
-			
-			
-			
-			SAVEGWORLD;
-			SetPort(gLastEditor->window); // we must invalidate the window so that it can be
-			InvalRgn(gLastEditor->window->visRgn); // redrawn
-			gLastEditor->Refresh();
-			
-			RESTOREGWORLD;
-			
-			gLastEditor->Show();
-			
-			DoIdle();
-			DrawMenuBar();
-		}
-	}
-	
-	if (needToDispose)
-		delete fileToOpen;
-}
-
-OSErr GetICOFile(FSSpec* fileSpec)
-{
-	if (NavServicesAvailable())
-	{
-		NavReplyRecord		theReply;
-		NavDialogOptions	dialogOptions;
-		OSErr				theErr = noErr;
-		NavEventUPP			eventUPP = NewNavEventProc(NavEventFilter);
-		NavObjectFilterUPP	filterUPP = NewNavObjectFilterProc(NavICOFilter);
-		Str255				openPromptText;
-		
-		theErr = NavGetDefaultDialogOptions(&dialogOptions);
-		
-		dialogOptions.preferenceKey = 5631;
-		dialogOptions.dialogOptionFlags -= kNavAllowMultipleFiles;
-		dialogOptions.dialogOptionFlags += kNavNoTypePopup;
-		dialogOptions.dialogOptionFlags -= kNavAllowPreviews;
-		CopyString(dialogOptions.clientName, gAppName);
-		GetIndString(openPromptText, rPrompts, eSelectICO); // we get the prompt string	
-		CopyString(dialogOptions.message, openPromptText);
-		
-		
-		theErr = NavGetFile(NULL,
-							&theReply,
-							&dialogOptions,
-							eventUPP,
-							NULL,
-							filterUPP,
-							NULL,
-							NULL);
-		
-		DisposeRoutineDescriptor(eventUPP);
-		DisposeRoutineDescriptor(filterUPP);
-
-		if ((theReply.validRecord)&&(theErr == noErr))
-		{
-			// grab the target FSSpec from the AEDesc:	
-			AEDesc 	resultDesc;
-
-			if ((theErr = AECoerceDesc(&(theReply.selection),typeFSS,&resultDesc)) == noErr)
-			{
-				GetFSSpecFromAEDesc(resultDesc, *fileSpec);
-				FSMakeFSSpec(fileSpec->vRefNum, fileSpec->parID, fileSpec->name, fileSpec);
-			}
-			AEDisposeDesc(&resultDesc);
-			
-			theErr = NavDisposeReply(&theReply);
-		}
-			
-		return theErr;
 	}
 	else
 	{
-		StandardFileReply theReply;
-		FileFilterUPP 	standardICOFilterUPP;
+		fileToOpen = *inFile;	
+	}
+	
+	format = GetFileFormat(fileToOpen);
 		
-		standardICOFilterUPP = NewFileFilterProc(StandardICOFilter);
+	if ((format == formatMacOSUniversal ||
+		format == formatMacOSNew ||
+		format == formatMacOSOld) &&
+		!HandleSimpleCases(fileToOpen, &ID))
+	{
+		NewBrowser(fileToOpen, format);
+		return;
+	}
+	
+	newEditor = GetEmptyEditor(fileToOpen, ID, format);
+	
+	if (newEditor != NULL)
+	{
+		newEditor->srcFileSpec = fileToOpen;
 		
-		StandardGetFile(standardICOFilterUPP, 0, NULL, &theReply);
-		
-		DisposeRoutineDescriptor(standardICOFilterUPP);
-		
-		if ( theReply.sfGood)
+		newEditor->format = format;
+		if (ID != 820127)
 		{
-			*fileSpec = theReply.sfFile;
-			return noErr;
+			newEditor->ID = ID;
+			newEditor->Load();
 		}
 		else
-			return userCanceledErr;
+		{
+			newEditor->ID = -16455;
+			newEditor->LoadFileIcon();
+		}
+		
+		SAVEGWORLD;
+		SetPort(newEditor->GetWindow()); // we must invalidate the window so that it can be
+		InvalRgn(newEditor->GetWindow()->visRgn); // redrawn
+		newEditor->Refresh();
+		
+		RESTOREGWORLD;
+		
+		newEditor->Show();
+		
+		DoIdle();
+		DrawMenuBar();
 	}
+	
+	//RebuildWindowsMenu();
 }
 
-OSErr GetTIFFFile(FSSpec* fileSpec)
+void OpenIconFromBrowser(FSSpec *fileToOpen, short ID, long format, long member)
 {
-	if (NavServicesAvailable())
-	{
-		NavReplyRecord		theReply;
-		NavDialogOptions	dialogOptions;
-		OSErr				theErr = noErr;
-		NavEventUPP			eventUPP = NewNavEventProc(NavEventFilter);
-		NavObjectFilterUPP	filterUPP = NewNavObjectFilterProc(NavTIFFFilter);
-		Str255				openPromptText;
-		
-		theErr = NavGetDefaultDialogOptions(&dialogOptions);
-		
-		dialogOptions.preferenceKey = 13565;
-		dialogOptions.dialogOptionFlags -= kNavAllowMultipleFiles;
-		dialogOptions.dialogOptionFlags += kNavNoTypePopup;
-		dialogOptions.dialogOptionFlags -= kNavAllowPreviews;
-		CopyString(dialogOptions.clientName, gAppName);
-		GetIndString(openPromptText, rPrompts, eSelectTIFF); // we get the prompt string	
-		CopyString(dialogOptions.message, openPromptText);
-		
-		
-		theErr = NavGetFile(NULL,
-							&theReply,
-							&dialogOptions,
-							eventUPP,
-							NULL,
-							filterUPP,
-							NULL,
-							NULL);
-		
-		DisposeRoutineDescriptor(eventUPP);
-		DisposeRoutineDescriptor(filterUPP);
+	icnsEditorPtr newEditor;
 
-		if ((theReply.validRecord)&&(theErr == noErr))
-		{
-			// grab the target FSSpec from the AEDesc:	
-			AEDesc 	resultDesc;
+	newEditor = GetEmptyEditor(*fileToOpen, ID, format);	
 
-			if ((theErr = AECoerceDesc(&(theReply.selection),typeFSS,&resultDesc)) == noErr)
-			{
-				GetFSSpecFromAEDesc(resultDesc, *fileSpec);
-				FSMakeFSSpec(fileSpec->vRefNum, fileSpec->parID, fileSpec->name, fileSpec);
-			}
-			AEDisposeDesc(&resultDesc);
+	if (newEditor != NULL)
+	{		
+		newEditor->srcFileSpec = *fileToOpen;
 			
-			theErr = NavDisposeReply(&theReply);
-		}
-			
-		return theErr;
-	}
-	else
-	{
-		StandardFileReply theReply;
-		FileFilterUPP 	standardTIFFFilterUPP;
-		
-		standardTIFFFilterUPP = NewFileFilterProc(StandardTIFFFilter);
-		
-		StandardGetFile(standardTIFFFilterUPP, 0, NULL, &theReply);
-		
-		DisposeRoutineDescriptor(standardTIFFFilterUPP);
-		
-		if ( theReply.sfGood)
+		if (ID == 820127)
 		{
-			*fileSpec = theReply.sfFile;
-			return noErr;
+			newEditor->ID = -16455;
+			newEditor->format = formatMacOSUniversal;
+			newEditor->LoadFileIcon();
 		}
 		else
-			return userCanceledErr;
-	}
-}
-
-void OpenICO(FSSpec *fileToOpen)
-{
-	long			ID = -16455;
-	OSStatus		err1 = noErr, err2 = noErr;
-	bool			needToDispose = false;
-	
-	if (fileToOpen == NULL) // if don't already have a file to open...
-	{
-		fileToOpen = new FSSpec;
-		
-		needToDispose = true;
-		
-		err1 = GetICOFile(fileToOpen);
-	}
-	if (err1 == noErr)
-	{
-		icnsEditorPtr currentEditor;
-		
-		currentEditor = gFirstEditor;
-		while (currentEditor != NULL)
 		{
-			if (currentEditor->srcFileSpec.vRefNum == fileToOpen->vRefNum &&
-			    currentEditor->srcFileSpec.parID == fileToOpen->parID &&
-			    EqualString(currentEditor->srcFileSpec.name, fileToOpen->name, true, true) &&
-			    (currentEditor->ID == ID || (ID == 820127 && currentEditor->ID == -16455)))
-			{
-			    SelectWindow(currentEditor->window);
-			    if (needToDispose)
-			    	delete fileToOpen;
-			    return;
-			}
-			currentEditor = currentEditor->nextEditor;
+			newEditor->ID = ID;
+			newEditor->format = format;
+			newEditor->Load();
 		}
 		
-		if (gLastEditor == gFirstEditor &&
-			gLastEditor != NULL &&
-			gLastEditor->srcFileSpec.vRefNum == 0 &&
-			gLastEditor->srcFileSpec.parID == 0 &&
-			!(gLastEditor->status & canUndo))
-			err2 = noErr; // we already have a new, open, but empty editor, no use in making another
-		else
-			err2 = NewIcon(false);
-		if (err2 == noErr) // if were able to make a new editor
+		if (member != -1)
 		{
-			
-			gLastEditor->srcFileSpec = *fileToOpen;
-			
-			gLastEditor->ID = -16455;
-			gLastEditor->LoadICO();
-			
-			SAVEGWORLD;
-			SetPort(gLastEditor->window); // we must invalidate the window so that it can be
-			InvalRgn(gLastEditor->window->visRgn); // redrawn
-			gLastEditor->Refresh();
-			
-			RESTOREGWORLD;
-			
-			gLastEditor->Show();
-			
-			MenuHandle theMenu;
-			theMenu = GetMenuHandle(mColors);
-					
-			CheckItem(theMenu, iMacOSColors, false);
-			CheckItem(theMenu, iWinColors, true);
-			
-			DoIdle();
-			DrawMenuBar();
-		}
-	}
-	
-	if (needToDispose)
-		delete fileToOpen;
-}
-
-void OpenTIFF(FSSpec *fileToOpen)
-{
-	long			ID = -16455;
-	OSStatus		err1 = noErr, err2 = noErr;
-	bool			needToDispose = false;
-	
-	if (fileToOpen == NULL) // if don't already have a file to open...
-	{
-		fileToOpen = new FSSpec;
-		
-		needToDispose = true;
-		
-		err1 = GetTIFFFile(fileToOpen);
-	}
-	if (err1 == noErr)
-	{
-		icnsEditorPtr currentEditor;
-		
-		currentEditor = gFirstEditor;
-		while (currentEditor != NULL)
-		{
-			if (currentEditor->srcFileSpec.vRefNum == fileToOpen->vRefNum &&
-			    currentEditor->srcFileSpec.parID == fileToOpen->parID &&
-			    EqualString(currentEditor->srcFileSpec.name, fileToOpen->name, true, true) &&
-			    (currentEditor->ID == ID || (ID == 820127 && currentEditor->ID == -16455)))
-			{
-			    SelectWindow(currentEditor->window);
-			    if (needToDispose)
-			    	delete fileToOpen;
-			    return;
-			}
-			currentEditor = currentEditor->nextEditor;
+			newEditor->SetCurrentMember(member);
+			newEditor->ResetStates();
 		}
 		
-		if (gLastEditor == gFirstEditor &&
-			gLastEditor != NULL &&
-			gLastEditor->srcFileSpec.vRefNum == 0 &&
-			gLastEditor->srcFileSpec.parID == 0 &&
-			!(gLastEditor->status & canUndo))
-			err2 = noErr; // we already have a new, open, but empty editor, no use in making another
-		else
-			err2 = NewIcon(false);
-		if (err2 == noErr) // if were able to make a new editor
-		{
-			
-			gLastEditor->srcFileSpec = *fileToOpen;
-			
-			gLastEditor->ID = -16455;
-			gLastEditor->LoadTIFF();
-			
-			SAVEGWORLD;
-			SetPort(gLastEditor->window); // we must invalidate the window so that it can be
-			InvalRgn(gLastEditor->window->visRgn); // redrawn
-			gLastEditor->Refresh();
-			
-			RESTOREGWORLD;
-			
-			gLastEditor->Show();
-			
-			DoIdle();
-			DrawMenuBar();
-		}
+		SAVEGWORLD;
+		SetPort(newEditor->GetWindow()); // we must invalidate the window so that it can be
+		InvalRgn(newEditor->GetWindow()->visRgn); // redrawn
+		newEditor->Refresh();
+		
+		RESTOREGWORLD;
+		
+		newEditor->Show();
+		MWindowPtr(newEditor)->Select();
+		
+		DoIdle();
+		DrawMenuBar();
 	}
 	
-	if (needToDispose)
-		delete fileToOpen;
+	//RebuildWindowsMenu();
 }
 
 // __________________________________________________________________________________________
@@ -1585,7 +1562,7 @@ void OpenTIFF(FSSpec *fileToOpen)
 //				  if the user clicks the first or the last, we save the icon (if requested)
 //				  and then close the window. We also update the menus if neccesary.
 
-bool CloseIcon(int flags)
+bool Close(int flags)
 {
 	icnsEditorPtr	frontEditor; // pointer to the front most editor (which is the one that is
 								 // going to be closed
@@ -1599,8 +1576,12 @@ bool CloseIcon(int flags)
 		{
 			switch (WantToSave(frontEditor->srcFileSpec, flags)) // we prompt the user
 			{
-				case kAlertStdAlertOKButton: SaveIcon(false); closed = true; break;
-				// we save the icon and close it
+				case kAlertStdAlertOKButton: // we save the icon and close it
+					if (SaveIcon(false) == noErr)
+						closed = true;
+					else
+						closed = false;
+					break;
 				case kAlertStdAlertOtherButton: closed = true; break;
 				// we close the icon (but don't save)
 				case kAlertStdAlertCancelButton: closed = false; break;
@@ -1613,109 +1594,33 @@ bool CloseIcon(int flags)
 	
 		if (closed) // if the user chose close
 		{
-			// we must keep the linked list "linked"
-			if (gLastEditor == frontEditor)
-				gLastEditor = frontEditor->previousEditor;
-			if (gFirstEditor == frontEditor)
-				gFirstEditor = frontEditor->nextEditor;
-			frontEditor->Close(); // the actual closing of the editor
-		}
-	}
-	
-	DoIdle();
-	DrawMenuBar();
-		
-	return closed; // return what the user actually chose to do
-}
-
-OSErr SaveFile(FSSpec* fileSpec)
-{
-	if (NavServicesAvailable())
-	//if (0)
-	{
-		NavDialogOptions	dialogOptions;
-		NavReplyRecord		reply;
-		AEDesc				resultDesc;
-		OSStatus			theErr;
-		NavEventUPP			eventUPP = NewNavEventProc(NavSaveEventFilter);
-		long				fileType;
-		
-		NavGetDefaultDialogOptions ( &dialogOptions );
-		dialogOptions.dialogOptionFlags &= ~kNavAllowMultipleFiles;
-		dialogOptions.dialogOptionFlags |= kNavNoTypePopup;
-		dialogOptions.dialogOptionFlags &= ~kNavAllowPreviews;
-		CopyString(dialogOptions.clientName, gAppName);
-		CopyString(dialogOptions.savedFileName, fileSpec->name);
-		GetIndString((unsigned char*)&dialogOptions.message, rPrompts, eSaveFile);
-		
-		
-		if (IsICOFile(fileSpec->name))
-			fileType = icoFileType;
-		else if (IsTIFFFile(fileSpec->name))
-			fileType = tiffFileType;
-		else
-			fileType = iconFileType;
-		
-		theErr = NavPutFile(NULL,
-				   			&reply,
-				   			&dialogOptions,
-				   			eventUPP,
-				   			fileType,
-				   			creatorCode,
-				   			NULL);
-				   
-		DisposeRoutineDescriptor(eventUPP);
-						
-		
-		if (reply.validRecord)
-		{
-			AEGetNthDesc( &(reply.selection), 1, typeFSS, NULL, &resultDesc );
-
-			GetFSSpecFromAEDesc(resultDesc, *fileSpec);
-			
-			NavDisposeReply(&reply);
-			AEDisposeDesc(&resultDesc);
-			return noErr;
-		}
-		else
-		{
-			NavDisposeReply(&reply);
-			return paramErr;
+			frontEditor->Close();
+			delete frontEditor;
 		}
 	}
 	else
 	{
-		Str255	prompt;
-		Point	thePt = {-1, -1};
-		StandardFileReply reply;
-		ModalFilterYDUPP	modalFilterUPP;
+		iconBrowserPtr frontBrowser;
 		
-		GetIndString((unsigned char*)prompt, rPrompts, eSaveFile);
+		frontBrowser = GetFrontBrowser();
 		
-		modalFilterUPP = NewModalFilterYDProc(SaveEventFilter);
-		
-		CustomPutFile(prompt,
-					  fileSpec->name,
-					  &reply,
-					  rOldSaveDialog,
-					  thePt,
-					  NULL,
-					  modalFilterUPP,
-					  NULL,
-					  NULL,
-					  NULL);
-					  
-		DisposeRoutineDescriptor(modalFilterUPP);
-		
-		if (reply.sfGood)
+		if (frontBrowser != NULL)
 		{
-			*fileSpec = reply.sfFile;
-			return noErr;
+			frontBrowser->Close();
+			delete frontBrowser;
 		}
-		else
-			return userCanceledErr;
+		
+		closed = true;
 	}
+	
+	DoIdle();
+	DrawMenuBar();
+	
+		
+	return closed; // return what the user actually chose to do
 }
+
+
 
 // __________________________________________________________________________________________
 // Name			: SaveIcon
@@ -1726,10 +1631,11 @@ OSErr SaveFile(FSSpec* fileSpec)
 //				  the user for a new location before actually calling the Save command of the
 //				  editor.
 
-void SaveIcon(int flags)
+OSErr SaveIcon(int flags)
 {
 	icnsEditorPtr	frontEditor; // pointer to the front most editor, this is the one that the
 							     // saving will be done on
+	bool			newIcon = false;
 	
 	frontEditor = GetFrontEditor(); // we get the pointer to it
 	
@@ -1740,9 +1646,17 @@ void SaveIcon(int flags)
 			FSSpec	oldSpec;
 			Handle	icnsHandle;
 			short 	oldFile, file;
+			OSErr	err;
 			
 			oldSpec = frontEditor->srcFileSpec;
-			GetIconFile(&frontEditor->srcFileSpec, eSaveIntoFile, eInsertTitle);
+			
+			if (frontEditor->format == formatWindows ||
+				frontEditor->format == formatMacOSXServer)
+				frontEditor->format = formatMacOSUniversal;
+			
+			err = GetIconFile(&frontEditor->srcFileSpec, &frontEditor->format, true);
+			
+			if (err != noErr) return err;
 			
 			oldFile = CurResFile();
 			file = FSpOpenResFile(&frontEditor->srcFileSpec, fsRdPerm);
@@ -1767,15 +1681,17 @@ void SaveIcon(int flags)
 				GetIndString(yesButton, rBasicStrings, eYesButton);
 				GetIndString(noButton, rBasicStrings, eNoButton);
 				
-				itemHit = icnsEditorClass::statics.DisplayAlert(text, yesButton, noButton, NULL);
+				itemHit = icnsEditorClass::statics.DisplayAlert(text, yesButton, noButton, "\p");
 				if (itemHit == 2)
 				{
 					CloseResFile(file);
 					UseResFile(oldFile);
 					frontEditor->srcFileSpec = oldSpec;
-					return;
+					return err;
 				}
 			}
+			else
+				newIcon = true;
 			
 			CloseResFile(file);
 			UseResFile(oldFile);
@@ -1789,20 +1705,17 @@ void SaveIcon(int flags)
 			OSErr	err; // used for testing for errors
 			long	fileType;
 			
-			err =SaveFile(&frontEditor->srcFileSpec);
+			frontEditor->format = icnsEditorClass::statics.preferences.GetDefaultFormat();
+			
+			err = SaveFile(&frontEditor->srcFileSpec, &frontEditor->format);
 						  		
 			if (err != noErr) // if there was a problem (most likely, the user cancelled)
-				return; // we go back
+				return err; // we go back
 				
 			FSpDelete(&frontEditor->srcFileSpec); // we delete that file that was already there
 												  // (if any)
 												  
-			if (IsICOFile(frontEditor->srcFileSpec.name))
-				fileType = icoFileType;
-			else if (IsTIFFFile(frontEditor->srcFileSpec.name))
-				fileType = tiffFileType;
-			else
-				fileType = iconFileType;
+			fileType = iconFormats[frontEditor->format];
 			
 			FSpCreate(&frontEditor->srcFileSpec, creatorCode, fileType, 0); // we create a new file
 			// 0 = roman encoding type 
@@ -1812,15 +1725,110 @@ void SaveIcon(int flags)
 			frontEditor->RefreshWindowTitle(); // must update the title of the window with the
 			// new file name
 		}
-		if (IsICOFile(frontEditor->srcFileSpec.name))
-			frontEditor->SaveICO();
-		else if (IsTIFFFile(frontEditor->srcFileSpec.name))
-			frontEditor->SaveTIFF();
-		else
-			frontEditor->Save();
+		
+		frontEditor->Save();
 		
 		if (!(icnsEditorClass::statics.preferences.IsRegistered()))
-			Nag();
+			Nag(false);
+	}
+	
+	RefreshIconBrowser(newIcon);
+	
+	return noErr;
+}
+
+void RefreshIconBrowser(bool newIcon)
+{
+	MWindowPtr		currentWindow = NULL;
+	icnsEditorPtr	frontEditor;
+	iconBrowserPtr	currentBrowser = NULL;
+	
+	frontEditor = GetFrontEditor();
+	if (frontEditor == NULL)
+		return;
+	
+	currentWindow = MWindow::GetFirst();
+	while (currentWindow != NULL)
+	{
+		if (currentWindow->GetType() == kBrowserType)
+		{
+			currentBrowser = (iconBrowserPtr)currentWindow;
+			if (SameFile(currentBrowser->srcFileSpec, frontEditor->srcFileSpec))
+				break;
+			else
+				currentBrowser = NULL;
+		}
+		currentWindow = currentWindow->GetNext();
+	}
+	
+	if (currentBrowser != NULL)
+	{
+		if (newIcon)
+		{
+			Str255 tableString, IDAsString;
+			ListDrawingData*	cellDrawingData;
+			
+			if (frontEditor->format == formatMacOSUniversal ||
+				frontEditor->format == formatMacOSNew)
+			{
+				if (frontEditor->name[0] != 0)
+					GetIndString(tableString, rIBStrings, eIBListName);
+				else
+					GetIndString(tableString, rIBStrings, eIBListNoName);
+					
+				NumToString(frontEditor->ID, IDAsString);
+				SubstituteString(tableString, "\p<ID>", IDAsString);
+				
+				if (frontEditor->name[0] != 0)
+					SubstituteString(tableString, "\p<name>", frontEditor->name);
+					
+				SubstituteString(tableString, "\p<type>", "\picns");
+				
+				cellDrawingData = new ListDrawingData;
+				
+				cellDrawingData->parentBrowser = currentBrowser;
+				cellDrawingData->icon = &currentBrowser->drawIcon;
+				cellDrawingData->members = frontEditor->members;
+				cellDrawingData->newType = true;
+				
+				currentBrowser->theList.InsertSorted(tableString,
+									 20 + frontEditor->GetLargestSize(),
+									 cellDrawingData);
+			}
+			
+			if (frontEditor->format == formatMacOSUniversal ||
+				frontEditor->format == formatMacOSOld)
+			{
+				if (frontEditor->name[0] != 0)
+					GetIndString(tableString, rIBStrings, eIBListName);
+				else
+					GetIndString(tableString, rIBStrings, eIBListNoName);
+					
+				NumToString(frontEditor->ID, IDAsString);
+				SubstituteString(tableString, "\p<ID>", IDAsString);
+				
+				if (frontEditor->name[0] != 0)
+					SubstituteString(tableString, "\p<name>", frontEditor->name);
+				
+				if (frontEditor->members & icni)
+					SubstituteString(tableString, "\p<type>", "\pICN#");
+				else
+					SubstituteString(tableString, "\p<type>", "\pics#");
+				
+				cellDrawingData = new ListDrawingData;
+				
+				cellDrawingData->parentBrowser = currentBrowser;
+				cellDrawingData->icon = &currentBrowser->drawIcon;
+				cellDrawingData->members = frontEditor->members;
+				cellDrawingData->members &= ~(ih32 | h8mk | ich8 | ichi | ichm | il32 | l8mk | is32 | s8mk);
+				cellDrawingData->newType = false;
+				
+				currentBrowser->theList.InsertSorted(tableString,
+									 20 + frontEditor->GetLargestSize(),
+									 cellDrawingData);
+			}
+		}
+		currentBrowser->RefreshList();
 	}
 }
 
@@ -1837,102 +1845,70 @@ void SaveIcon(int flags)
 
 int WantToSave(FSSpec fileSpec, int flags)
 {
-	AlertStdAlertParamRec	param; // parameters used to specify options about the alert
-	Str255					text, // the text which the alert wil display
-							saveButtonName,
-							cancelButtonName,
-							dontSaveButtonName;
-	OSStatus				err; // error checking
-	short					itemHit; // which item did the user click (OK, Cancel, Don't Save)
-	ModalFilterUPP			eventFilterUPP; // pointer to the function which will filter events
-	
-	GetIndString(saveButtonName, rDefaultNames, eSaveButton);
-	GetIndString(cancelButtonName, rDefaultNames, eCancelButton);
-	GetIndString(dontSaveButtonName, rDefaultNames, eDontSaveButton);
+	MAlert					alert;
+	Str255					text;
+	MString					temp;
+		
 	GetIndString(text, rPrompts, eWantToSave); // we get the message
 	
 	SubstituteString(text, "\p<app name>", gAppName); // substitute for the place holders
 	SubstituteString(text, "\p<file name>", fileSpec.name);
 	
-	eventFilterUPP = NewModalFilterProc((ProcPtr) AlertEventFilter); // get our event filter
+	alert.SetButtonName(kMAOK, rDefaultNames, eSaveButton);
+	if (!(flags & noCancel)) // if the user can't cancel
+		alert.SetButtonName(kMACancel, rDefaultNames, eCancelButton);
+	alert.SetButtonName(kMAOther, rDefaultNames, eDontSaveButton);
 	
-	// set the options
-	param.movable 		= true; // the user can move the dialog around
-	param.filterProc 	= eventFilterUPP; // the function which filters events
-	param.defaultText 	= saveButtonName; // the default button name
-	if (flags & noCancel) // if the user can't cancel
-	{
-		param.cancelText = NULL; // then there is no cancel button
-		param.cancelButton  = 0;
-	}
-	else
-	{
-		param.cancelText= cancelButtonName;
-		param.cancelButton  = kAlertStdAlertCancelButton;
-	}
-	param.otherText		= dontSaveButtonName;
-	param.helpButton 	= false; // we don't need a help button (at least not at this moment)
-	param.defaultButton = kAlertStdAlertOKButton; // hitting return will activate this button
-	param.position 		= kWindowCenterParentWindow; // we want the error to be centered on the
-	// window which contains the editor we are trying to save
+	alert.SetMovable(true);
+	alert.SetType(kAlertStopAlert);
 	
-	err = StandardAlert(kAlertStopAlert, text, NULL, &param, &itemHit);
-	// here we display the actual message and see what the user decides
+	alert.SetPosition(kWindowCenterParentWindow); // we want the error to be centered on the
 	
-	if (err != noErr) // if there was a problem (unlikely), we display its error code
-		DisplayValue(err);
-		
-	return itemHit;
+	temp = text;
+	
+	alert.SetError(temp);
+	
+	return alert.Display();
 }
 
-void Nag(void)
+void Nag(bool startup)
 {
-	AlertStdAlertParamRec	param; // very similar to above
-	Str255					text, registerButtonName, notYetButtonName, timesUsedAsString;
-	OSStatus				err;
-	short					itemHit;
-	ModalFilterUPP			eventFilterUPP;
 	int						i;
 	
-	(**icnsEditorClass::statics.preferences.data).timesUsed++;
-	i = (**icnsEditorClass::statics.preferences.data).timesUsed;
+	if (!startup)
+		icnsEditorClass::statics.preferences.IncrementTimesUsed();
+	i = icnsEditorClass::statics.preferences.GetTimesUsed();
 	
 	if (((i < 50) && (i % 10 == 0)) ||
 		((i >= 50) && (i < 100) && (i % 5 == 0)) ||
 		((i >= 100) && (i < 150) && (i % 3 == 0)) ||
 		((i >= 150) && (i < 200) && (i % 2 == 0)) ||
-		(i >= 200))
+		(i >= 200) ||
+		startup)
 	{
-		GetIndString(registerButtonName, rDefaultNames, eRegisterButton);
-		GetIndString(notYetButtonName, rDefaultNames, eNotYetButton);
-		GetIndString(text, rPrompts, eRegistrationReminder); // the message is loaded from the specified
-		// string in the specified resource
+		MAlert				nagAlert;
+		short				itemHit;
+		Str255				text, timesUsedAsString;
+		MString				temp;
+		
+		GetIndString(text, rPrompts, eRegistrationReminder); 
 		
 		SubstituteString(text, "\p<app name>", gAppName); // substitute
 		NumToString(i, timesUsedAsString);
 		SubstituteString(text, "\p<no of icons>", timesUsedAsString);
+		
+		nagAlert.SetButtonName(kMAOK, rDefaultNames, eRegisterButton);
+		nagAlert.SetButtonName(kMACancel, rDefaultNames, eNotYetButton);
+		
+		temp = text;
+		
+		nagAlert.SetError(temp);
+		nagAlert.SetBeep(true);
+		nagAlert.SetMovable(true);
+		
+		itemHit = nagAlert.Display();
 			
-		// the rest of the function is very similar to the WantToSave function described above,
-		// except that there is only one button, the OK one
-		
-		eventFilterUPP = NewModalFilterProc((ProcPtr) AlertEventFilter);
-		
-		param.movable 		= true;
-		param.filterProc 	= eventFilterUPP;
-		param.defaultText 	= registerButtonName;
-		param.cancelText	= notYetButtonName;
-		param.otherText		= NULL;
-		param.helpButton 	= false;
-		param.defaultButton = kAlertStdAlertOKButton;
-		param.cancelButton  = 0;
-		param.position 		= 0;
-		
-		SysBeep(6);
-		err = StandardAlert(kAlertNoteAlert, text, NULL, &param, &itemHit);
-		if (err != noErr)
-			DisplayValue(err);
-			
-		if (itemHit == kAlertStdAlertOKButton)
+		if (itemHit == kMAOK)
 			Register();
 	}
 }
@@ -1949,39 +1925,24 @@ void Nag(void)
 
 void DoError(int resourceID, int stringNo)
 {
-	AlertStdAlertParamRec	param; // very similar to above
-	Str255					text, okButtonName;
-	OSStatus				err;
-	short					itemHit;
-	ModalFilterUPP			eventFilterUPP;
+	Str255	text;
+	MAlert	alert;
+	MString	temp;
 	
-	GetIndString(okButtonName, rDefaultNames, eOKButton);
 	GetIndString(text, resourceID, stringNo); // the message is loaded from the specified
 	// string in the specified resource
 	
 	if (FindSubstring(text, "\p<app name>") != -1) // if there are placeholders, we must
 		SubstituteString(text, "\p<app name>", gAppName); // substitute
-		
-	// the rest of the function is very similar to the WantToSave function described above,
-	// except that there is only one button, the OK one
 	
-	eventFilterUPP = NewModalFilterProc((ProcPtr) AlertEventFilter);
+	alert.SetMovable(true);
+	alert.SetBeep(true);
+	alert.SetButtonName(kMAOK, rDefaultNames, eOKButton);
 	
-	param.movable 		= true;
-	param.filterProc 	= eventFilterUPP;
-	param.defaultText 	= okButtonName;
-	param.cancelText	= NULL;
-	param.otherText		= NULL;
-	param.helpButton 	= false;
-	param.defaultButton = kAlertStdAlertOKButton;
-	param.cancelButton  = 0;
-	param.position 		= 0;
+	temp = text;
+	alert.SetError(temp);
 	
-	err = StandardAlert(kAlertStopAlert, text, NULL, &param, &itemHit);
-	if (err != noErr)
-		DisplayValue(err);
-		
-	DisposeRoutineDescriptor(eventFilterUPP);
+	alert.Display();
 }
 
 // __________________________________________________________________________________________
@@ -2024,7 +1985,7 @@ pascal bool	AlertEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *ite
 				GetDialogItemAsControl(dialog, kAlertStdAlertOtherButton, &thirdButton);
 				if (thirdButton != NULL) // if there is a third button
 				{
-					CopyString(buttonName, (**thirdButton).contrlTitle); // we get its title
+					GetControlTitle(thirdButton, buttonName);
 					if (key == buttonName[1] || (key + 'A' - 'a') == buttonName[1])
 					// if the pressed key is the fist letter of the button (regardless of the case)
 					// then we simulate a click on it
@@ -2058,229 +2019,9 @@ pascal bool	AlertEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *ite
 	return(handledEvent);
 }
 
-pascal void NavEventFilter(NavEventCallbackMessage callBackSelector,
-						   NavCBRecPtr callBackParms, 
-						   NavCallBackUserData callBackUD)
-{
-#pragma unused (callBackUD)
 
-	switch (callBackSelector)
-		{
-		case kNavCBEvent:
-			{
-				switch (callBackParms->eventData.eventDataParms.event->what)
-					{
-					//case mouseDown:
-					//	HandleCustomMouseDown(callBackParms);
-					//	break;
-					
-					case activateEvt:
-					case updateEvt:
-						HandleUpdate(callBackParms->eventData.eventDataParms.event);
-					default:
-						break;
-					}
-			break;
-			}
-		}
-}
 
-pascal void NavSaveEventFilter(NavEventCallbackMessage callBackSelector, 
-							   NavCBRecPtr callBackParms, 
-							   NavCallBackUserData callBackUD)
-{
-#pragma unused (callBackUD)
-
-	OSErr		theErr = noErr;
-	ControlHandle	formatPopup;
-	Str255 fileName;
-	short realItem = 0, itemType;
-			Rect itemRect;
-
-	switch (callBackSelector)
-	{
-		case kNavCBEvent:
-			switch (callBackParms->eventData.eventDataParms.event->what)
-			{
-				case mouseDown:
-					Point where;
-					short theItem, partCode;
-					
-					where = callBackParms->eventData.eventDataParms.event->where;
-					
-					GlobalToLocal(&where);
-					theItem = FindDialogItem(callBackParms->window,where);	// get the item number of the control
-					partCode = FindControl(where,callBackParms->window,&formatPopup);	// get the control itself
-					
-					if ((formatPopup != NULL) && TrackControl(formatPopup, where, NULL))
-					{
-						Str255 fileName;
-						NavCustomControl(callBackParms->context,kNavCtlGetEditFileName,&fileName);
-						
-						SetFileName(formatPopup, fileName);
-						
-						NavCustomControl(callBackParms->context,kNavCtlSetEditFileName,&fileName);
-					}
-					break;
-				case keyDown:
-					theErr = noErr;
-					
-					//theErr = NavCustomControl(callBackParms->context,kNavCtlGetFirstControlID,&realItem);	// ask NavServices for our first control ID
-					//GetDialogItem(callBackParms->window, realItem + 1, &itemType, (Handle*)&formatPopup, &itemRect);
-					//theErr = GetDialogItemAsControl(callBackParms->window, realItem, &formatPopup);
-					
-					where.h = callBackParms->customRect.left + 10;
-					where.v = callBackParms->customRect.top + 10;
-					
-					FindControl(where, callBackParms->window, &formatPopup);
-					
-					NavCustomControl(callBackParms->context,kNavCtlGetEditFileName,&fileName);
-					
-					SyncPopupToName(fileName, formatPopup);
-					
-					break;
-				case activateEvt:
-				case updateEvt:
-					HandleUpdate(callBackParms->eventData.eventDataParms.event);
-				default:
-					break;
-			}
-			break;
-		case kNavCBCustomize:
-			{								
-			// here are the desired dimensions for our custom area:
-			short neededWidth = callBackParms->customRect.left + 260;
-			short neededHeight = callBackParms->customRect.top + 30;
-			
-			// check to see if this is the first round of negotiations:
-			if ((callBackParms->customRect.right == 0) && (callBackParms->customRect.bottom == 0))
-				{
-				// it is, so tell NavServices what dimensions we want:
-				callBackParms->customRect.right = neededWidth;
-				callBackParms->customRect.bottom = neededHeight;
-				}
-			else
-				{
-				if (callBackParms->customRect.right < neededWidth)	// is NavServices width too small for us?
-					callBackParms->customRect.right = neededWidth;
-
-				if (callBackParms->customRect.bottom < neededHeight)
-					callBackParms->customRect.bottom = neededHeight;
-				}
-			break;
-			}
-			
-		case kNavCBStart:
-			// add the rest of the custom controls via the DITL resource list:
-			formatPopup = GetNewControl(rTypesPopup, callBackParms->window);
-			if ((formatPopup != NULL) && (ResError() == noErr))
-				if ((theErr = NavCustomControl(callBackParms->context,kNavCtlAddControl,formatPopup)) == noErr)
-				{
-					ShowControl(formatPopup);
-					
-					// set the command popup selection
-					
-					NavCustomControl(callBackParms->context,kNavCtlGetEditFileName,&fileName);
-					
-					if (IsICOFile(fileName))
-						SetControlValue(formatPopup,iWindowsIcon);
-					else if (IsTIFFFile(fileName))
-						SetControlValue(formatPopup, iMacOSXIcon);
-					else SetControlValue(formatPopup, iMacOSIcon);
-				}
-				
-			break;
-			
-		case kNavCBTerminate:
-			theErr = NavCustomControl(callBackParms->context,kNavCtlGetFirstControlID,&realItem);	// ask NavServices for our first control ID
-			GetDialogItem(callBackParms->window, realItem, &itemType, (Handle*)&formatPopup, &itemRect);
-			
-			DisposeControl(formatPopup);
-			
-			break;
-		}
-}
-
-void SetFileName(ControlHandle formatPopup, Str255 fileName)
-{
-	switch (GetControlValue(formatPopup))
-	{
-		case iMacOSIcon:
-			if (IsICOFile(fileName))
-				fileName[0] -= 4;
-			else if (IsTIFFFile(fileName))
-				if (fileName[fileName[0] - 4] == '.')
-					fileName[0] -= 5;
-				else if (fileName[fileName[0] - 3] == '.')
-					fileName[0] -= 4;
-			break;
-		case iWindowsIcon:
-			if (!IsICOFile(fileName))
-			{
-				if (fileName[fileName[0] - 4] == '.')
-					fileName[0] -= 5;
-				else if (fileName[fileName[0] - 3] == '.')
-					fileName[0] -= 4;
-				else if (fileName[fileName[0] - 2] == '.')
-					fileName[0] -= 3;
-				else if (fileName[fileName[0] - 1] == '.')
-					fileName[0] -= 2;
-				else if (fileName[fileName[0]] == '.')
-					fileName[0] -= 1;
-				fileName[fileName[0] + 1] = '.';
-				fileName[fileName[0] + 2] = 'i';
-				fileName[fileName[0] + 3] = 'c';
-				fileName[fileName[0] + 4] = 'o';
-				fileName[0] += 4;
-			}
-			break;
-		case iMacOSXIcon:
-			if (!IsTIFFFile(fileName))
-			{
-				if (fileName[fileName[0] - 4] == '.')
-					fileName[0] -= 5;
-				else if (fileName[fileName[0] - 3] == '.')
-					fileName[0] -= 4;
-				else if (fileName[fileName[0] - 2] == '.')
-					fileName[0] -= 3;
-				else if (fileName[fileName[0] - 1] == '.')
-					fileName[0] -= 2;
-				else if (fileName[fileName[0]] == '.')
-					fileName[0] -= 1;
-				fileName[fileName[0] + 1] = '.';
-				fileName[fileName[0] + 2] = 't';
-				fileName[fileName[0] + 3] = 'i';
-				fileName[fileName[0] + 4] = 'f';
-				fileName[fileName[0] + 5] = 'f';
-				fileName[0] += 5;
-			}
-			break;
-	}
-}
-
-pascal bool NavICOFilter(AEDesc *theItem, void *info, void *callBackUD, NavFilterModes filterMode)
-{
-#pragma unused (callBackUD, filterMode)
-
-	FSSpec	fileSpec;
-	NavFileOrFolderInfo* theInfo = (NavFileOrFolderInfo*)info;
-	
-	if ( theItem->descriptorType == typeFSS )
-		if ( !theInfo->isFolder )
-		{
-			GetFSSpecFromAEDesc(*theItem, fileSpec);
-			FSMakeFSSpec(fileSpec.vRefNum, fileSpec.parID, fileSpec.name, &fileSpec);
-			if (IsICOFile(fileSpec.name))
-				return true;
-			else
-				return false;
-		}
-	
-	return true;
-
-}
-
-pascal bool StandardICOFilter(CInfoPBPtr myCInfoPBPtr)
+/*pascal bool StandardICOFilter(CInfoPBPtr myCInfoPBPtr)
 {
 	bool visibleFlag;
 	StringPtr name;
@@ -2330,113 +2071,9 @@ pascal bool StandardTIFFFilter(CInfoPBPtr myCInfoPBPtr)
 	// it" we need to invert the result that we return
 	
 	return !visibleFlag;
-}
-
-bool IsICOFile(Str255 name)
-{
-	return ((name[name[0]    ] == 'o' || name[name[0]    ] == 'O') &&
-		    (name[name[0] - 1] == 'c' || name[name[0] - 1] == 'C') &&
-		    (name[name[0] - 2] == 'i' || name[name[0] - 2] == 'I') &&
-		    (name[name[0] - 3] == '.'));
-}
+}*/
 
 
-bool IsTIFFFile(Str255 name)
-{
-	return ((name[name[0]    ] == 'f' || name[name[0]    ] == 'F') &&
-		    (name[name[0] - 1] == 'i' || name[name[0] - 1] == 'I') &&
-		    (name[name[0] - 2] == 't' || name[name[0] - 2] == 'T') &&
-		    (name[name[0] - 3] == '.')) ||
-		   ((name[name[0]    ] == 'f' || name[name[0]    ] == 'F') &&
-		    (name[name[0] - 1] == 'f' || name[name[0] - 1] == 'F') &&
-		    (name[name[0] - 2] == 'i' || name[name[0] - 2] == 'I') &&
-		    (name[name[0] - 3] == 't' || name[name[0] - 3] == 'T') &&
-		    (name[name[0] - 4] == '.'));
-}
-
-pascal bool SaveEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short *item, Ptr dataPtr)
-{
-#pragma unused (item, dataPtr)
-
-	bool handledEvent = false;
-	ControlHandle formatPopup, nameField;
-	Str255	fileName;
-	
-	switch (eventPtr->what)
-	{
-		case activateEvt: // if the window isn't the dialog, then we tell the update function
-		case updateEvt: //  to take care of it
-			if((WindowPtr) eventPtr->message != theDlgPtr)
-			{
-				HandleUpdate(eventPtr);
-				handledEvent = true;
-			}
-			break;
-		case mouseDown:
-			Point where;
-			short theItem, partCode, itemType;
-			Rect bounds;
-
-			
-			where = eventPtr->where;
-			
-			GlobalToLocal(&where);
-			
-			theItem = FindDialogItem(theDlgPtr, where);	// get the item number of the control
-			partCode = FindControl(where, theDlgPtr, &formatPopup);	// get the control itself
-			
-			//GetDialogItemAsControl(theDlgPtr, sfItemFileNameTextEdit, &nameField);
-			GetDialogItem(theDlgPtr, sfItemFileNameTextEdit, &itemType, (Handle*)&nameField, &bounds);
-			
-			if ((theItem == iFormatPopup) && (formatPopup != NULL) && TrackControl(formatPopup, where, NULL))
-			{
-				GetDialogItemText((Handle)nameField, fileName);
-				
-				SetFileName(formatPopup, fileName);
-				
-				SetDialogItemText((Handle)nameField, fileName);
-				
-				//Draw1Control(nameField);
-				
-				handledEvent = true;
-			}
-			
-			
-			break;
-		case keyDown:
-			if (WindowPeek(theDlgPtr)->refCon == sfMainDialogRefCon)
-			{
-				GetDialogItem(theDlgPtr, sfItemFileNameTextEdit, &itemType, (Handle*)&nameField, &bounds);
-				GetDialogItemText((Handle)nameField, fileName);
-				
-				fileName[fileName[0] + 1] = eventPtr->message & charCodeMask;
-				fileName[0]++;
-				
-				//GetDialogItemAsControl(theDlgPtr, 13, &formatPopup);
-				GetDialogItem(theDlgPtr, 13, &itemType, (Handle*)&formatPopup, &bounds);
-			
-				SyncPopupToName(fileName, formatPopup);
-			}
-			break;
-		default:
-			handledEvent = false;
-			break;
-	}
-	
-	return handledEvent;
-}
-
-void SyncPopupToName(Str255 fileName, ControlHandle formatPopup)
-{
-	if (IsICOFile(fileName))
-		SetControlValue(formatPopup, iWindowsIcon);
-	else if (IsTIFFFile(fileName))
-		SetControlValue(formatPopup, iMacOSXIcon);
-	else
-		SetControlValue(formatPopup, iMacOSIcon);
-		
-	Draw1Control(formatPopup);
-}
 
 
 // __________________________________________________________________________________________
@@ -2451,8 +2088,8 @@ void CleanUp(void)
 {
 	// note that we don't do this by looping through the list since the list order
 	// might not be the order in which the windows are stacked in
-	while (FrontWindow() != NULL)
-		if (!CloseIcon(0))
+	while (MWindow::GetFront() != NULL)
+		if (!Close(0))
 		{
 			gIsDone = false;
 			EventLoop();

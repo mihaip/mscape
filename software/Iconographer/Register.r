@@ -1194,18 +1194,6 @@ data 'TEXT' (202, "Net") {
 	$"6F3A 0D0D"                                          /* o:.. */
 };
 
-data 'TEXT' (310, "To Author") {
-	$"506C 6561 7365 2073 656E 6420 7468 6973"            /* Please send this */
-	$"2066 6F72 6D20 746F 204B 6167 6920 616E"            /*  form to Kagi an */
-	$"6420 7365 6E64 2061 6E79 2063 6F6D 6D65"            /* d send any comme */
-	$"6E74 7320 6162 6F75 7420 7468 6520 7072"            /* nts about the pr */
-	$"6F64 7563 7473 2064 6972 6563 746C 7920"            /* oducts directly  */
-	$"746F 2074 6865 204D 7363 6170 6520 536F"            /* to the Mscape So */
-	$"6674 7761 7265 2061 7420 3C6D 6968 6169"            /* ftware at <mihai */
-	$"406D 7363 6170 652E 636F 6D3E 2E20 200D"            /* @mscape.com>.  . */
-	$"0D"                                                 /* . */
-};
-
 data 'TEXT' (300, "Address") {
 	$"456D 6169 6C3A 2073 616C 6573 406B 6167"            /* Email: sales@kag */
 	$"692E 636F 6D0D 4641 583A 202B 3120 3531"            /* i.com.FAX: +1 51 */
@@ -1380,6 +1368,17 @@ data 'TEXT' (322, "No Send") {
 	$"6F72 6D20 7468 6174 2079 6F75 2063 616E"            /* orm that you can */
 	$"2073 656E 6420 7769 7468 2079 6F75 7220"            /*  send with your  */
 	$"7061 796D 656E 742E 0D0D"                           /* payment... */
+};
+
+data 'TEXT' (310, "To Author") {
+	$"506C 6561 7365 2073 656E 6420 7468 6973"            /* Please send this */
+	$"2066 6F72 6D20 746F 204B 6167 6920 616E"            /*  form to Kagi an */
+	$"6420 7365 6E64 2061 6E79 2063 6F6D 6D65"            /* d send any comme */
+	$"6E74 7320 6162 6F75 7420 7468 6520 7072"            /* nts about the pr */
+	$"6F64 7563 7473 2064 6972 6563 746C 7920"            /* oducts directly  */
+	$"746F 204D 7363 6170 6520 536F 6674 7761"            /* to Mscape Softwa */
+	$"7265 2061 7420 3C6D 7363 6170 6540 6B61"            /* re at <mscape@ka */
+	$"6769 2E63 6F6D 3E2E 2020 0D0D"                      /* gi.com>.  .. */
 };
 
 resource 'MENU' (200) {
@@ -1990,10 +1989,6 @@ resource 'dctb' (128) {
 resource 'dctb' (200) {
 	{	/* array ColorSpec: 0 elements */
 	}
-};
-
-data 'SCRL' (128) {
-	$"0658 5843 4F44 45"                                  /* .XXCODE */
 };
 
 resource 'ICON' (225) {
@@ -7144,5 +7139,9 @@ data 'PROG' (128) {
 	$"0032 00C8 0963 6C69 7032 6963 6E73 0004"            /* .2.È.clip2icns.. */
 	$"5145 4A49 0000 0000 0100 0100 0A00 0000"            /* QEJI............ */
 	$"6401 F400 0000 FA03 E8"                             /* d.ô...ú.è */
+};
+
+data 'SCRL' (128) {
+	$"0451 454A 4D"                                       /* .QEJM */
 };
 

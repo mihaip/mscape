@@ -54,11 +54,15 @@ pascal OSErr AEOpenApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long 
 	reply;
 	refCon;
 	
-	if (gLastEditor == NULL)
+	if (!(icnsEditorClass::statics.preferences.IsRegistered()) &&
+		(icnsEditorClass::statics.preferences.GetTimesUsed() > 50))
+		Nag(true);
+	
+	if (MWindow::GetFront() == NULL)
 	{
-		if ((**icnsEditorClass::statics.preferences.data).flags & prefsOpenIcon)
+		if (icnsEditorClass::statics.preferences.FeatureEnabled(prefsOpenIcon))
 			OpenIcon(NULL);
-		else if (!((**icnsEditorClass::statics.preferences.data).flags & prefsDontMakeNewEditor))
+		else if (!icnsEditorClass::statics.preferences.FeatureEnabled(prefsDontMakeNewEditor))
 			NewIcon(true);
 	}
 	return AEGotRequiredParams(theAppleEvent);
@@ -71,7 +75,7 @@ pascal OSErr AEOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long 
 	short		i;
 	long		count;
 	Size		actual;
-	FSSpec		desc;
+	FSSpec		fileToOpen;
 	AEKeyword	keyword;
 	DescType	type;
 
@@ -81,18 +85,16 @@ pascal OSErr AEOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long 
 	err = AEGetParamDesc(theAppleEvent, keyDirectObject, typeAEList, &fileSpecList);
 	
 	err = AECountItems(&fileSpecList, &count);
+	
+	if (!(icnsEditorClass::statics.preferences.IsRegistered()) &&
+		(icnsEditorClass::statics.preferences.GetTimesUsed() > 50))
+		Nag(true);
+		
 	for (i = 1; i <= count; i++)
 	{
-		err = AEGetNthPtr(&fileSpecList, i, typeFSS, &keyword, &type, (Ptr)&desc, sizeof(FSSpec), &actual);
+		err = AEGetNthPtr(&fileSpecList, i, typeFSS, &keyword, &type, (Ptr)&fileToOpen, sizeof(FSSpec), &actual);
 		if (err == noErr)
-		{
-			if (IsICOFile(desc.name))
-				OpenICO(&desc);
-			else if (IsTIFFFile(desc.name))
-				OpenTIFF(&desc);
-			else
-				OpenIcon(&desc);
-		}
+			OpenIcon(&fileToOpen);
 	}
 	return AEGotRequiredParams(theAppleEvent);
 }

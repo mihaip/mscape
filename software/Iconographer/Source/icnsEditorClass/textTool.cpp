@@ -31,11 +31,11 @@ OSErr GetTextAttributes(textSettings* lastTextSettings)
 	SetDialogCancelItem(textDialog, iCancel);
 	
 	GetDialogItemAsControl(textDialog, iFontPopup, &fontPopup);
-	fontMenu = (**(PopupPrivateDataHandle)(**fontPopup).contrlData).mHandle;
+	fontMenu = GetControlPopupMenuHandle(fontPopup);
 	GetDialogItemAsControl(textDialog, iStylePopup, &stylePopup);
-	styleMenu = (**(PopupPrivateDataHandle)(**stylePopup).contrlData).mHandle;
+	styleMenu = GetControlPopupMenuHandle(stylePopup);
 	GetDialogItemAsControl(textDialog, iSizePopup, &sizePopup);
-	sizeMenu = (**(PopupPrivateDataHandle)(**sizePopup).contrlData).mHandle;
+	sizeMenu = GetControlPopupMenuHandle(sizePopup);
 	GetDialogItemAsControl(textDialog, iTextField, &textField);
 	GetDialogItemAsControl(textDialog, iSizeField, &sizeField);	
 	
@@ -54,6 +54,10 @@ OSErr GetTextAttributes(textSettings* lastTextSettings)
 	style = lastTextSettings->style;
 	
 	StyleControl(textField, fontNo, size, style);
+	
+	MWindow::CenterOnFront(GetDialogWindow(textDialog));
+	
+	MWindow::DeactivateAll();
 	
 	ShowWindow(textDialog);
 	
@@ -121,6 +125,8 @@ OSErr GetTextAttributes(textSettings* lastTextSettings)
 	}
 	
 	DisposeDialog(textDialog);
+	
+	MWindow::ActivateAll();
 	
 	return err;
 }

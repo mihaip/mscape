@@ -12,15 +12,13 @@
 #include "commonfunctions.h"
 #include "icnsEditorClass.h"
 #include "editorStaticsClass.h"
-#include "iconBrowser.h"
+#include "iconBrowserClass.h"
 #include "AppleEvents.h"
+#include "MAlert.h"
 
 // file types
 
 const static long creatorCode = 'Mngl';
-const static long iconFileType = 'Icon';
-const static long icoFileType = 'ICO ';
-const static long tiffFileType = 'TIFF';
 const static long prefFileType = 'pref';
 
 // --- Constants --- //
@@ -50,7 +48,9 @@ enum defaultNames
 	eRegisterAppName = 9,
 	eNotRegistered = 10,
 	eEmailAddress = 11,
-	eHomepageAddress = 12
+	eHomepageAddress = 12,
+	eShowColorsPalette = 13,
+	eHideColorsPalette = 14
 };
 
 enum stdErrors
@@ -68,7 +68,8 @@ enum stdErrors
 	eOutOfMemory = 11,
 	eCouldntFindRegister = 12,
 	eBadRegCode = 13,
-	eThanksForRegistering = 14
+	eThanksForRegistering = 14,
+	eAppearanceNotInstalled = 15
 };
 
 enum prompts
@@ -98,6 +99,7 @@ enum manglerResources
 	// dialogs
 	rAboutBox = 128,
 	rRegister = 129,
+	rNavCustomItems = 2000,
 	
 	// pictures
 	rAboutPic = 128,
@@ -106,6 +108,7 @@ enum manglerResources
 	// others
 	rPrefs = 128,
 	rTypesPopup = 2000,
+	rOldOpenDialog = 3001,
 	rOldSaveDialog = 3002
 };
 
@@ -116,14 +119,14 @@ enum menus
 {
 	mApple = 128,
 	mFile = 129,
-	mOpen = 130,
-	mEdit = 131,
-	mSelect = 132,
-	mTransform = 133,
-	mPaste = 134,
-	mCopy = 135,
-	mIcon = 136,
-	mColors = 137
+	mEdit = 130,
+	mSelect = 131,
+	mTransform = 132,
+	mPaste = 133,
+	mCopy = 134,
+	mIcon = 135,
+	mColors = 136,
+	mWindows = 137
 };
 
 enum appleMenu
@@ -142,14 +145,6 @@ enum fileMenu
 	iSaveInto = 7,
 	iQuit = 9
 };
-
-enum openMenu
-{
-	iMacOSIcon = 1,
-	iWindowsIcon = 2,
-	iMacOSXIcon = 3
-};
-
 
 enum editMenu
 {
@@ -202,13 +197,21 @@ enum iconMenu
 	iZoomIn = 1,
 	iZoomOut = 2,
 	iColors = 4,
-	iIconInfo = 6
+	iInsertIcon = 6,
+	iIconInfo = 7
 };
 
 enum colorsMenu
 {
 	iMacOSColors = 1,
 	iWinColors = 2
+};
+
+enum windowsMenu
+{
+	iToggleColorsPalette = 1,
+	iEditorsInsertionPoint = 2,
+	iBrowsersInsertionPoint = 3
 };
 
 // dialog items
@@ -232,12 +235,20 @@ enum registerItems
 	iRegCodeField = 6
 };
 
+enum openItems
+{
+	iOpenSelect = 9,
+	iOpenPrompt = 10,
+	iOpenFormatPopup = 11
+};
+
 enum saveItems
 {
 	iSaveNameField = 9,
-	iFormatPopup = 12
+	iSaveFormatPopup = 12
 };
 
+typedef OSErr (*GetFileFuncPtr)(FSSpec* fileSpec);
 
 // --- Prototypes --- //
 void		Initialize(void);
@@ -257,40 +268,45 @@ void		AboutBox(void);
 pascal 		bool AboutBoxEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *itemHit);
 void		Register(void);
 OSErr		NewIcon(bool showWindow);
-OSErr		GetIconFile(FSSpec* fileToOpen, int prompt, int title);
-OSErr		GetICOFile(FSSpec* fileSpec);
-OSErr		GetTIFFFile(FSSpec* fileSpec);
+bool		HandleSimpleCases(FSSpec fileSpec, long* ID);
+OSErr		NewBrowser(FSSpec file, int format);
+OSErr 		GetIcon(FSSpec* fileSpec);
 void		OpenIcon(FSSpec *fileToOpen);
-void		OpenICO(FSSpec *fileToOpen);
-void		OpenTIFF(FSSpec *fileToOpen);
-bool		CloseIcon(int flags);
+bool		Close(int flags);
 int			WantToSave(FSSpec fileSpec, int flags);
-void		Nag(void);
+void		Nag(bool startup);
 pascal bool	AlertEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *itemHit);
-pascal void NavEventFilter(NavEventCallbackMessage callBackSelector,
+OSErr		SaveIcon(int flags);
+void RefreshIconBrowser(bool newIcon);
+void		CleanUp(void);
+extern void	DoError(int resourceID, int stringNo);
+void		OpenIconFromBrowser(FSSpec *fileToOpen, short ID, long format, long member);
+icnsEditorPtr GetEmptyEditor(FSSpec fileToOpen, long ID, int format);
+void		RebuildWindowsMenu();
+void		ToggleColorsPalette();
+void		InsertIcon();
+
+// file stuff
+
+pascal void NavOpenEventFilter(NavEventCallbackMessage callBackSelector,
 						   NavCBRecPtr callBackParms, 
 						   NavCallBackUserData callBackUD);
 pascal void NavSaveEventFilter(NavEventCallbackMessage callBackSelector, 
 							   NavCBRecPtr callBackParms, 
 							   NavCallBackUserData callBackUD);
 void		SetFileName(ControlHandle formatPopup, Str255 fileName);
-pascal bool NavICOFilter(AEDesc *theItem, void *info, void *callBackUD, NavFilterModes filterMode);
-pascal bool StandardICOFilter(CInfoPBPtr myCInfoPBPtr);
-pascal bool NavTIFFFilter(AEDesc *theItem, void *info, void *callBackUD, NavFilterModes filterMode);
-pascal bool StandardTIFFFilter(CInfoPBPtr myCInfoPBPtr);
-OSErr		SaveFile(FSSpec* fileSpec);
-void		SaveIcon(int flags);
-bool		IsICOFile(Str255 name);
-bool		IsTIFFFile(Str255 name);
+pascal bool NavOpenFileFilter(AEDesc *theItem, void *info, void *callBackUD, NavFilterModes filterMode);
+OSErr		SaveFile(FSSpec* fileSpec, long* format);
 pascal bool SaveEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short *item, Ptr dataPtr);
 void		SyncPopupToName(Str255 name, ControlHandle formatPopup);
-void		CleanUp(void);
-extern void DoError(int resourceID, int stringNo);
+pascal short OpenDialogHook(short item, DialogPtr theDlgPtr, Ptr dataPtr);
+pascal bool OpenEventFilter(DialogPtr theDlgPtr, EventRecord* eventPtr, short *item, Ptr dataPtr);
+OSErr		GetIconFile(FSSpec* fileSpec, long* format, bool save);
+pascal bool OpenFileFilter(CInfoPBPtr myCInfoPBPtr, Ptr dataPtr);
+
 
 // --- Globals --- //
 extern bool				gIsDone;
-extern icnsEditorPtr	gFirstEditor;
-extern icnsEditorPtr	gLastEditor;
 extern Str255			gAppName;
 
 

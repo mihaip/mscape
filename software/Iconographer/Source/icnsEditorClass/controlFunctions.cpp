@@ -18,15 +18,16 @@ pascal void PlacardDraw(ControlHandle theControl,SInt16 thePart)
 	Str255	placardText;
 	int h, v;
 	
-	parentEditor = GetEditor((**theControl).contrlOwner);
+	parentEditor = GetEditor(GetControlOwner(theControl));
 	
-	placardRect = (**theControl).contrlRect;
+	GetControlBounds(theControl, &placardRect);
 	
 	if (theControl == parentEditor->controls.zoomPlacard.control)
 		CopyString(placardText, parentEditor->controls.zoomPlacard.text);
 	else if (theControl == parentEditor->controls.infoPlacard.control)
 		CopyString(placardText, parentEditor->controls.infoPlacard.text);
 	
+	TextFont(applFont);
 	TextSize(9);
 	
 	h = placardRect.left + (placardRect.right - placardRect.left - StringWidth(placardText))/2;
@@ -35,20 +36,23 @@ pascal void PlacardDraw(ControlHandle theControl,SInt16 thePart)
 	
 	SAVECOLORS;
 	
-	switch ((**theControl).contrlHilite)
+	if (IsControlActive(theControl))
 	{
-		case kControlNoPart:
-			DrawThemePlacard(&placardRect, kThemeStateActive); 
-			SetThemeTextColor(kThemeTextColorPlacardActive, 32, true);
-			break;
-		case kControlIndicatorPart:
+		if (IsControlHilited(theControl))
+		{
 			DrawThemePlacard(&placardRect, kThemeStatePressed);
 			SetThemeTextColor(kThemeTextColorPlacardPressed, 32, true);
-			break;
-		case kControlInactivePart:
-			DrawThemePlacard(&placardRect, kThemeStateInactive);
-			SetThemeTextColor(kThemeTextColorPlacardInactive, 32, true);
-			break;
+		}
+		else
+		{
+			DrawThemePlacard(&placardRect, kThemeStateActive); 
+			SetThemeTextColor(kThemeTextColorPlacardActive, 32, true);
+		}
+	}
+	else
+	{
+		DrawThemePlacard(&placardRect, kThemeStateInactive);
+		SetThemeTextColor(kThemeTextColorPlacardInactive, 32, true);
 	}
 	
 	MoveTo(h, v);
@@ -57,6 +61,7 @@ pascal void PlacardDraw(ControlHandle theControl,SInt16 thePart)
 	
 	RESTORECOLORS;
 	
+	TextFont(0);
 	TextSize(12);
 	
 	
@@ -64,7 +69,11 @@ pascal void PlacardDraw(ControlHandle theControl,SInt16 thePart)
 
 pascal ControlPartCode PlacardHitTest(ControlHandle theControl, Point where)
 {
-	if (PtInRect(where, &(**theControl).contrlRect))
+	Rect	controlRect;
+	
+	GetControlBounds(theControl, &controlRect);
+	
+	if (PtInRect(where, &controlRect))
 		return kControlIndicatorPart;
 	else
 		return kControlNoPart;
@@ -74,25 +83,29 @@ pascal ControlPartCode	PlacardTracking(ControlHandle theControl, Point startPt, 
 {
 #pragma unused (startPt, actionProc)
 	Point theMouse;
+	Rect	controlRect;
+	
+	GetControlBounds(theControl, &controlRect);
+	
 	while (Button())
 	{
 		GetMouse(&theMouse);
-		if (PtInRect(theMouse, &(**theControl).contrlRect) && ((**theControl).contrlHilite != kControlIndicatorPart))
+		if (PtInRect(theMouse, &controlRect) && !IsControlHilited(theControl))
 		{
-			(**theControl).contrlHilite = kControlIndicatorPart;
+			HiliteControl(theControl, kControlIndicatorPart);
 			Draw1Control(theControl);
 		}
-		else if (!PtInRect(theMouse, &(**theControl).contrlRect) && (**theControl).contrlHilite != kControlNoPart)
+		else if (!PtInRect(theMouse, &controlRect) && IsControlHilited(theControl))
 		{
-			(**theControl).contrlHilite = kControlNoPart;
+			HiliteControl(theControl, kControlNoPart);
 			Draw1Control(theControl);
 		}
 	}
 	
-	(**theControl).contrlHilite = kControlNoPart;
+	HiliteControl(theControl,  kControlNoPart);
 	Draw1Control(theControl);
 	
-	if (PtInRect(theMouse, &(**theControl).contrlRect))
+	if (PtInRect(theMouse, &controlRect))
 		return kControlIndicatorPart;
 	else
 		return kControlNoPart;
@@ -115,13 +128,17 @@ pascal void	EditWellDraw(ControlHandle theControl,SInt16 thePart)
 	
 	icnsEditorPtr	parentEditor; // the editor to which this control belongs
 	
-	parentEditor = GetEditor((**theControl).contrlOwner);
+	parentEditor = GetEditor(GetControlOwner(theControl));
 	// get get the editor associated with the control's owner (the window)
 	
 	if (parentEditor != NULL) // if there is an editor
 	{
-		DrawImageWell(theControl, (**theControl).contrlRect); // then we draw the image well
-		parentEditor->Display((**theControl).contrlRect, current);
+		Rect	controlRect;
+	
+		GetControlBounds(theControl, &controlRect);
+		
+		DrawImageWell(theControl, controlRect); // then we draw the image well
+		parentEditor->Display(controlRect, current);
 		// and inside it the magnified icon
 	}
 }
@@ -136,7 +153,11 @@ pascal void	EditWellDraw(ControlHandle theControl,SInt16 thePart)
 
 pascal ControlPartCode EditWellHitTest(ControlHandle control, Point where)
 {
-	if (PtInRect(where, &(**control).contrlRect))
+	Rect	controlRect;
+	
+	GetControlBounds(control, &controlRect);
+	
+	if (PtInRect(where, &controlRect))
 	// if the click was in the control's rectangle, then we're inside
 		return kControlImageWellPart;
 	else // otherwise we're not
@@ -159,8 +180,9 @@ pascal void DisplayDraw(ControlHandle theControl,SInt16 thePart)
 	Rect			controlRect;
 	GWorldPtr		tempGW;
 	PixMapHandle	tempPix;
+	OSErr			err;
 	
-	parentEditor = GetEditor((**theControl).contrlOwner);
+	parentEditor = GetEditor(GetControlOwner(theControl));
 	
 	if (parentEditor == NULL) // if there isn't a parent editor, then we have nothing to do
 		return;
@@ -168,10 +190,11 @@ pascal void DisplayDraw(ControlHandle theControl,SInt16 thePart)
 	SAVEGWORLD;
 	SAVECOLORS;
 		
-	controlRect = (**theControl).contrlRect;
+	GetControlBounds(theControl, &controlRect);
 	InsetRect(&controlRect, -2, -2);
 	
-	NewGWorld(&tempGW, 32, &controlRect, NULL, NULL, 0);
+	err = NewGWorld(&tempGW, 32, &controlRect, NULL, NULL, 0);
+	if (err != noErr) {parentEditor->status |= outOfMemory; RESTOREGWORLD; RESTORECOLORS; return;}
 	tempPix = GetGWorldPixMap(tempGW);
 	LockPixels(tempPix);
 	SetGWorld(tempGW, NULL);
@@ -288,7 +311,7 @@ void DrawDisplayItem(icnsEditorPtr parentEditor, Rect targetRect, long targetNam
 		
 	if (targetName == parentEditor->currentPixName)
 	{
-		if ((**parentEditor->controls.display.iconDisplay).contrlHilite == kActiveHilite)
+		if (IsControlActive(parentEditor->controls.display.iconDisplay))
 			DrawThemeFocusRect(&targetRect, true);
 	}
 	
@@ -307,7 +330,7 @@ pascal ControlPartCode DisplayHitTest(ControlHandle theControl, Point where)
 {
 	icnsEditorPtr	parentEditor; // the editor which this control belongs to
 	
-	parentEditor = GetEditor((**theControl).contrlOwner);
+	parentEditor = GetEditor(GetControlOwner(theControl));
 	
 	if (parentEditor == NULL) // no owner, we're not gonna bother
 		return kControlNoPart;
@@ -394,15 +417,16 @@ pascal void PreviewDraw(ControlHandle theControl,SInt16 thePart)
 	icnsEditorPtr		parentEditor; // the owner of the control
 	long				iconSrc, maskSrc; // and mask, based on the
 										  // current selections
+	OSErr				err;
 	
-	parentEditor = GetEditor((**theControl).contrlOwner);
+	parentEditor = GetEditor(GetControlOwner(theControl));
 	if (parentEditor == NULL) // no use drawing without a parent editor
 		return;
 	
 	parentEditor->GetCurrentIconMask(&iconPix, &iconGW, &iconSrc, &maskPix, &maskGW, &maskSrc);
 	
 	// getting the control rect, and insetting it by one (since the image well has a border)
-	controlRect = (**theControl).contrlRect;
+	GetControlBounds(theControl, &controlRect);
 	InsetRect(&controlRect, 1, 1);
 	
 	// we don't dispose since the handle is held by the system, we just got a reference to it
@@ -415,10 +439,12 @@ pascal void PreviewDraw(ControlHandle theControl,SInt16 thePart)
 	tempRect = controlRect;
 	InsetRect(&tempRect, -2, -2);
 	
-	NewGWorld(&tempGW, 32, &tempRect, NULL, NULL, 0);
+	err = NewGWorld(&tempGW, 32, &tempRect, NULL, NULL, 0);
+	if (err != noErr) {parentEditor->status |= outOfMemory; RESTOREGWORLD; RESTORECOLORS; return;}
 	tempPix = GetGWorldPixMap(tempGW);
 	LockPixels(tempPix);
 	SetGWorld(tempGW, NULL);
+	
 	// we draw the image well
 	RGBBackColor(&oldBackColor);
 	EraseRect(&tempRect);
@@ -467,11 +493,11 @@ pascal void PreviewDraw(ControlHandle theControl,SInt16 thePart)
 	ForeColor(blackColor);
 	
 	CopyBits((BitMap*)*tempPix,
-			  &(**theControl).contrlOwner->portBits,
+			  &GetControlOwner(theControl)->portBits,
 			  &(**tempPix).bounds,
 			  &(**tempPix).bounds,
 			  srcCopy,
-			  (**theControl).contrlOwner->visRgn);
+			  GetControlOwner(theControl)->visRgn);
 			  
 	RESTOREGWORLD;
 	RESTORECOLORS;
@@ -490,7 +516,11 @@ pascal void PreviewDraw(ControlHandle theControl,SInt16 thePart)
 
 pascal ControlPartCode PreviewHitTest(ControlHandle theControl, Point where)
 {
-	if (PtInRect(where, &(**theControl).contrlRect))
+	Rect	controlRect;
+	
+	GetControlBounds(theControl, &controlRect);
+	
+	if (PtInRect(where, &controlRect))
 		return kControlImageWellPart;
 	else
 		return kControlNoPart;
@@ -499,12 +529,16 @@ pascal ControlPartCode PreviewHitTest(ControlHandle theControl, Point where)
 pascal ControlPartCode PreviewTracking(ControlHandle theControl, Point startPt, ControlActionUPP actionProc)
 {
 #pragma unused (startPt, actionProc)
-	while (Button()){;}
 	
 	Point theMouse;
+	Rect	controlRect;
+	
+	while (Button()){;}
+	
+	GetControlBounds(theControl, &controlRect);
 	GetMouse(&theMouse);
 	
-	if (PtInRect(theMouse, &(**theControl).contrlRect))
+	if (PtInRect(theMouse, &controlRect))
 		return kControlImageWellPart;
 	else
 		return kControlNoPart;
@@ -525,33 +559,21 @@ pascal void	ColorSwatchDraw(ControlHandle theControl,SInt16 thePart)
 	icnsEditorPtr	parentEditor; // the editor which owns this control
 	RGBColor		actualForeColor, actualBackColor; // the colors cast to the nearst ones
 													  // for the current pix
-	Rect			tempRect;
-	RgnHandle		tempRgn, tempRgn2;
+	Rect			tempRect, controlRect, canvasRect;
+	
 	SAVECOLORS; // we'll be changing the foreground/background colors
+	SAVEGWORLD;
 	
-	parentEditor = GetEditor((**theControl).contrlOwner);
+	parentEditor = GetEditor(GetControlOwner(theControl));
 	
-	//if (Button()) return;
+	GetControlBounds(theControl, &controlRect);
+	InsetRect(&controlRect, -2, -2);
+	canvasRect = controlRect;
+	OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top);
 	
-	tempRgn = NewRgn();
-	tempRgn2 = NewRgn();
+	SetGWorld(icnsEditorClass::statics.canvasGW, NULL);
 	
-	RectRgn(tempRgn, &(**theControl).contrlRect);
-	InsetRgn(tempRgn, -1, -1);
-	
-	RectRgn(tempRgn2, &parentEditor->controls.colorSwatch.backColorRect);
-	DiffRgn(tempRgn, tempRgn2, tempRgn);
-	RectRgn(tempRgn2, &parentEditor->controls.colorSwatch.foreColorRect);
-	DiffRgn(tempRgn, tempRgn2, tempRgn);
-	RectRgn(tempRgn2, &parentEditor->controls.colorSwatch.swapColorsRect);
-	DiffRgn(tempRgn, tempRgn2, tempRgn);
-	RectRgn(tempRgn2, &parentEditor->controls.colorSwatch.resetColorsRect);
-	DiffRgn(tempRgn, tempRgn2, tempRgn);
-
-	DrawDialogBackground(theControl, tempRgn);
-	
-	DisposeRgn(tempRgn);
-	DisposeRgn(tempRgn2);
+	DrawDialogBackground(theControl, canvasRect);
 	
 	if ((**parentEditor->currentPix).pixelSize == 32)
 	{
@@ -565,42 +587,60 @@ pascal void	ColorSwatchDraw(ControlHandle theControl,SInt16 thePart)
 	}
 	
 	// first we draw the background color swatch (since it must appear underneath)
-	DrawImageWell(theControl, parentEditor->controls.colorSwatch.backColorRect);
-	ForeColor(whiteColor);
-	PaintRect(&parentEditor->controls.colorSwatch.backColorRect);
-	RGBForeColor(&actualBackColor);
 	tempRect = parentEditor->controls.colorSwatch.backColorRect;
+	OffsetRect(&tempRect, -controlRect.left, -controlRect.top);
+	DrawImageWell(theControl, tempRect);
+	ForeColor(whiteColor);
+	PaintRect(&tempRect);
+	RGBForeColor(&actualBackColor);
 	InsetRect(&tempRect, 1, 1);
 	PaintRect(&tempRect);
 	
 	// then (partially on top of it) we draw the foreground color swatch
-	DrawImageWell(theControl, parentEditor->controls.colorSwatch.foreColorRect);
-	ForeColor(whiteColor);
-	PaintRect(&parentEditor->controls.colorSwatch.foreColorRect);
-	RGBForeColor(&actualForeColor);
 	tempRect = parentEditor->controls.colorSwatch.foreColorRect;
+	OffsetRect(&tempRect, -controlRect.left, -controlRect.top);
+	DrawImageWell(theControl, tempRect);
+	ForeColor(whiteColor);
+	PaintRect(&tempRect);
+	RGBForeColor(&actualForeColor);
 	InsetRect(&tempRect, 1, 1);
 	PaintRect(&tempRect);
 	
 	RESTORECOLORS; // we're done with the color changing
 	
 	// now we can draw the swap colors widget
-	EraseRect(&parentEditor->controls.colorSwatch.swapColorsRect);
+	tempRect = parentEditor->controls.colorSwatch.swapColorsRect;
+	OffsetRect(&tempRect, -controlRect.left, -controlRect.top);
+	EraseRect(&tempRect);
 	// we clean out the place where we'll be drawing
-	if (IsFrontProcess() && (**theControl).contrlOwner == FrontWindow())
+	if (IsFrontProcess() && GetControlOwner(theControl) == MWindow::GetFront()->GetWindow())
 	// if we're in the foreground and we're the frontmost window...
-		PlotCIcon(&parentEditor->controls.colorSwatch.swapColorsRect, // we draw the enabled
-				  parentEditor->statics.swapColorsIconEnabled);       // version
+		PlotCIcon(&tempRect, parentEditor->statics.swapColorsIconEnabled); 
 	else
-		PlotCIcon(&parentEditor->controls.colorSwatch.swapColorsRect, // otherwise the disabled
-				  parentEditor->statics.swapColorsIconDisabled);	  // one
+		PlotCIcon(&tempRect, parentEditor->statics.swapColorsIconDisabled);
 	
 	// same as above, except for the reset color widget
-	EraseRect(&parentEditor->controls.colorSwatch.resetColorsRect);
-	if (IsFrontProcess() && (**theControl).contrlOwner == FrontWindow())
-		PlotCIcon(&parentEditor->controls.colorSwatch.resetColorsRect, parentEditor->statics.resetColorsIconEnabled);
+	tempRect = parentEditor->controls.colorSwatch.resetColorsRect;
+	OffsetRect(&tempRect, -controlRect.left, -controlRect.top);
+	EraseRect(&tempRect);
+	if (IsFrontProcess() && GetControlOwner(theControl) == MWindow::GetFront()->GetWindow())
+		PlotCIcon(&tempRect, parentEditor->statics.resetColorsIconEnabled);
 	else
-		PlotCIcon(&parentEditor->controls.colorSwatch.resetColorsRect, parentEditor->statics.resetColorsIconDisabled);
+		PlotCIcon(&tempRect, parentEditor->statics.resetColorsIconDisabled);
+	
+	ForeColor(blackColor);
+	BackColor(whiteColor);
+		
+	RESTOREGWORLD;
+	
+	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
+			 &qd.thePort->portBits,
+			 &canvasRect,
+			 &controlRect,
+			 srcCopy,
+			 NULL);
+	
+	RESTORECOLORS;
 }
 
 // __________________________________________________________________________________________
@@ -615,7 +655,7 @@ pascal ControlPartCode ColorSwatchHitTest(ControlHandle theControl, Point where)
 {
 	icnsEditorPtr	parentEditor; // editor which owns the control
 	
-	parentEditor = GetEditor((**theControl).contrlOwner);
+	parentEditor = GetEditor(GetControlOwner(theControl));
 	if (parentEditor == NULL) // no editor, no use hit testing
 		return kControlNoPart;
 	
@@ -696,10 +736,10 @@ pascal void	PatternsDraw(ControlHandle theControl,SInt16 thePart)
 	RGBColor		actualForeColor, actualBackColor; // the colors cast to the nearst ones
 													  // for the current pix
 	Pattern			pattern;
-	Rect			tempRect;
-	SAVECOLORS; // we'll be changing the foreground/background colors
+	Rect			tempRect, controlRect, canvasRect;
 	
-	parentEditor = GetEditor((**theControl).contrlOwner);
+	
+	parentEditor = GetEditor(GetControlOwner(theControl));
 	
 	if ((**parentEditor->currentPix).pixelSize == 32)
 	{
@@ -713,12 +753,22 @@ pascal void	PatternsDraw(ControlHandle theControl,SInt16 thePart)
 	}
 	
 	
-	tempRect = (**theControl).contrlRect;
+	GetControlBounds(theControl, &controlRect);
+	InsetRect(&controlRect, -2, -2);
+	canvasRect = controlRect;
+	OffsetRect(&canvasRect, -canvasRect.left, -canvasRect.top);
+	
+	SAVEGWORLD;
+	SAVECOLORS; // we'll be changing the foreground/background colors
+	
+	SetGWorld(icnsEditorClass::statics.canvasGW, NULL);
 	
 	ForeColor(whiteColor);
 	
-	PaintRect(&tempRect);
+	PaintRect(&canvasRect);
 	
+	tempRect = canvasRect;
+	InsetRect(&tempRect, 2, 2);
 	DrawImageWell(theControl, tempRect);
 	
 	InsetRect(&tempRect, 1, 1);
@@ -729,25 +779,27 @@ pascal void	PatternsDraw(ControlHandle theControl,SInt16 thePart)
 	GetIndPattern(&pattern, rDrawingPatterns, parentEditor->pattern + 1);
 	FillRect(&tempRect, &pattern);
 	
-	
+	RESTOREGWORLD;
+	CopyBits((BitMap*)*icnsEditorClass::statics.canvasPix,
+		     &qd.thePort->portBits,
+		     &canvasRect,
+		     &controlRect,
+		     srcCopy,
+		     NULL);
 	
 	RESTORECOLORS;
 }
 
 pascal ControlPartCode PatternsHitTest(ControlHandle theControl, Point where)
 {
-		icnsEditorPtr	parentEditor; // editor which owns the control
+	Rect			controlRect;
 	
-	parentEditor = GetEditor((**theControl).contrlOwner);
-	if (parentEditor == NULL) // no editor, no use hit testing
-		return kControlNoPart;
+	GetControlBounds(theControl, &controlRect);
 	
-	// going through all of the rectangles which make up the control..
-	if (PtInRect(where, &(**parentEditor->controls.patterns).contrlRect))
+	if (PtInRect(where, &controlRect))
 		return kPatternsPart;
-	
-	// if we managed to get here, then nothing was hit
-	return kControlNoPart;
+	else
+		return kControlNoPart;
 }
 
 pascal void SwatchUpdate(RGBColor* color, void *clientData)
@@ -757,8 +809,7 @@ pascal void SwatchUpdate(RGBColor* color, void *clientData)
 	
 	parentEditor = (icnsEditorPtr)clientData;
 	
-	Draw1Control(parentEditor->controls.colorSwatch.control);
-	Draw1Control(parentEditor->controls.patterns);
+	parentEditor->ColorsChanged();
 }
 
 pascal void PatternMenuDraw(int number, int x, int y, int width, int height, void* clientData)
@@ -807,35 +858,36 @@ pascal void	BackgroundPaneDraw(ControlHandle theControl,SInt16 thePart)
 {
 #pragma unused (thePart)
 	Rect	controlRect;
-	RgnHandle	tempRgn, tempRgn2;
+	
 	icnsEditorPtr	parentEditor;
 	
-	controlRect = (**theControl).contrlRect;
-	parentEditor = GetEditor((**theControl).contrlOwner);
+	GetControlBounds(theControl, &controlRect);
+	parentEditor = GetEditor(GetControlOwner(theControl));
 	
 	//EraseRect(&controlRect);
 
-	tempRgn = parentEditor->GetControlsRegion();
-	tempRgn2 = NewRgn();
-	RectRgn(tempRgn2, &controlRect);
-	//CopyRgn(tempRgn2, tempRgn);
-	DiffRgn(tempRgn2, tempRgn, tempRgn);
-	DisposeRgn(tempRgn2);
-	DrawDialogBackground(theControl, tempRgn);
-	
-	if ((**theControl).contrlHilite == kActiveHilite)
+	if (GestaltExists('Colr'))
 	{
-		//SetThemeWindowBackground((**theControl).contrlOwner, kThemeBrushDialogBackgroundActive,true);
-		
-		DrawThemeModelessDialogFrame(&controlRect,true);
-	}
-	else if ((**theControl).contrlHilite == kInactiveHilite)
-	{
-		//SetThemeWindowBackground((**theControl).contrlOwner,kThemeBrushDialogBackgroundInactive,true);
-		DrawThemeModelessDialogFrame(&controlRect,false);
+		RgnHandle	tempRgn, tempRgn2;
+		tempRgn = parentEditor->GetControlsRegion();
+		tempRgn2 = NewRgn();
+		RectRgn(tempRgn2, &controlRect);
+		CopyRgn(tempRgn2, tempRgn);
+		DiffRgn(tempRgn2, tempRgn, tempRgn);
+		DisposeRgn(tempRgn2);
+		DrawDialogBackground(theControl, tempRgn);
+		DisposeRgn(tempRgn);
 	}
 	
-	DisposeRgn(tempRgn);
+	if (GestaltVersion(gestaltAppearanceVersion, 0x01, 0x01))
+	{
+		if (IsControlActive(theControl))
+			DrawThemeModelessDialogFrame(&controlRect,true);
+		else
+			DrawThemeModelessDialogFrame(&controlRect,false);
+	}
+	
+	
 }
 
 pascal ControlPartCode BackgroundPaneHitTest(ControlHandle theControl, Point where)
@@ -850,7 +902,7 @@ pascal void	ToolbarWellDraw(ControlHandle theControl,SInt16 thePart)
 #pragma unused (thePart)
 	Rect	controlRect;
 	
-	controlRect = (**theControl).contrlRect;
+	GetControlBounds(theControl, &controlRect);
 	
 	InsetRect(&controlRect, 1, 1);
 	

@@ -8,6 +8,7 @@
 #pragma once // we don't want any infinite inclusion loops
 
 // includes
+#include "MWindow.h"
 #include "icnsClass.h"
 #include "graphicalFunctions.h"
 #include "textTool.h"
@@ -20,6 +21,9 @@ const static char kDeleteGlyph = '';
 // unprintable using this font, it really looks something like this: <=|
 						
 const static int kSelectionDrawingDelay = 2;
+
+const static short rEditorWind = 200;
+const static long kEditorType = 'IcEd';
 
 // menu items
 const static int k32BitIcon = 1;
@@ -41,7 +45,6 @@ enum resources
 	mIDMenuCount = 7,
 	
 	// others	
-	rEditorWIND = 200,
 	rDrawingPatterns = 1001,
 	
 	// strings
@@ -66,7 +69,8 @@ enum iconInfoItems
 	iLocked = 11,
 	iProtected = 12,
 	iSystemHeap = 13,
-	iIDMenu = 15
+	iIDMenu = 15,
+	iFormatPopup = 16
 };
 
 enum adjustItems
@@ -100,7 +104,8 @@ enum basicStrings
 	eSmallMaskSync = 6,
 	eHugeMaskSync = 7,
 	eYesButton = 8,
-	eNoButton = 9
+	eNoButton = 9,
+	eInsertIconTitle = 10
 };
 
 enum labelStrings
@@ -110,14 +115,14 @@ enum labelStrings
 	sPreviewLabel = 3,
 	sForeColor = 4,
 	sBackColor = 5,
-	sSizeSuffix = 6
+	sSizeSuffix = 6,
+	sInfoLabelName = 7,
+	sInfoLabelNoName = 8
 };
 
 enum toolIDs
 {
 	rCopyCursor = -20486,
-	rArrow = 0, // not really an ID
-	rIBeam = 1, // ditto
 	rPen = 128,
 	rEyeDropper = 129,
 	rFill = 130,
@@ -296,6 +301,12 @@ enum modes
 	polygonal = 7
 };
 
+enum iconInfoModes
+{
+	kIconInfo,
+	kInsertIcon
+};
+
 // type definitions
 
 typedef struct toolbarControls
@@ -393,7 +404,7 @@ typedef drawingStateClass* drawingStatePtr;
 
 class editorStaticsClass;
 
-class icnsEditorClass : public icnsClass
+class icnsEditorClass : public icnsClass, public MWindow
 {
 	private:
 		OSStatus		CreateControls(void);
@@ -411,31 +422,35 @@ class icnsEditorClass : public icnsClass
 		void			GetColor(RGBColor* color, Point where, Str255 messageString);
 		void			HandlePatternsClick(Point where);
 		void			RefreshPopups();
+		void			UpdateInfoPlacard();
 		void			GetCurrentIconMask(PixMapHandle* iconPix, GWorldPtr* iconGW, long* iconName, 
 										   PixMapHandle* maskPix, GWorldPtr* maskGW, long* maskName);
 		void			ToggleIconMask(void);
 		void			CheckMaskSync(PixMapHandle basePix, PixMapHandle maskPix, int errorString);
+		void			ChangeColorsIconSet(long name, GWorldPtr* gWorld, PixMapHandle* pix, CTabHandle colorTable, bool saveState);
+		void			GetGWorldAndPix(long pixName, GWorldPtr* gW, PixMapHandle* pix);
 
-		void 			HandleDrawing(void);
-		void			HandleMarquee(void);
-		bool			HandleMove(void);
-		void			HandleLasso(void);
+		void 			HandleDrawing(Point theMouse);
+		void			HandleMarquee(Point startMouse);
+		bool			HandleMove(Point startMouse);
+		void			HandleLasso(Point startMouse);
 		void			HandleFreehandLasso(void);
 		void			HandlePolygonalLasso(void);
 		RgnHandle		TightenLasso(RgnHandle lassoSelectionRgn);
-		void			HandleMagicWand(void);
-		void			HandleFilling(void);
-		void 			HandlePen(void);
-		void 			HandleEyeDropper(void);
-		void			HandleLine(void);
-		void			HandleRectangle(void);
-		void			HandlePolygon(void);
-		void			HandleGradient(void);
-		void			HandleText(void);
+		void			HandleMagicWand(Point theMouse);
+		void			HandleFilling(Point theMouse);
+		void 			HandlePen(Point startMouse);
+		void 			HandleEyeDropper(Point theMouse);
+		void			HandleLine(Point startMouse);
+		void			HandleRectangle(Point startMouse);
+		void			HandlePolygon(Point startMouse);
+		void			HandleGradient(Point startMouse);
+		void			HandleText(Point theMouse);
 		void			SwapForeBackColors(void);
 		void			ResetForeBackColors(void);
+		void			ColorsChanged();
 		
-		inline void 	GetDrawingMousePosition(int *x, int *y, int flags);
+		inline void 	GetDrawingMousePosition(int *x, int *y, Point* theMouse, int flags);
 		void			Display(Rect targetRect, long flags);
 		void			DrawSelection(GWorldPtr targetGW, Rect targetRect, int source, bool drawGrid);
 		void			DrawGrid(GWorldPtr targetGW, Rect targetRect);
@@ -461,6 +476,7 @@ class icnsEditorClass : public icnsClass
 		int				currentTool;
 		
 		Rect			dragSrcRect;
+		Rect			editWellRect;
 		
 		PixMapHandle	currentPix;
 		GWorldPtr		currentGW;
@@ -486,7 +502,7 @@ class icnsEditorClass : public icnsClass
 		int				colors;
 		
 	public:
-						icnsEditorClass(icnsEditorPtr previousLastEditor);
+						icnsEditorClass(void);
 						~icnsEditorClass(void);
 						
 		void			Refresh(void);
@@ -499,6 +515,8 @@ class icnsEditorClass : public icnsClass
 		
 		void			Close();
 		void 			Load();
+		void			LoadNew();
+		void			LoadOld();
 		void 			LoadFileIcon();
 		void			LoadICO();
 		void			LoadTIFF();
@@ -507,6 +525,11 @@ class icnsEditorClass : public icnsClass
 		
 		void			Show();
 		void			Hide();
+		
+		void			SetCurrentMember(long member);
+		void 			SetBestMember();
+		
+		void			ResetStates();
 		
 		void 			Undo(void);
 		void			Redo(void);
@@ -523,17 +546,14 @@ class icnsEditorClass : public icnsClass
 		
 		void			ZoomIn();
 		void			ZoomOut();
-		void			EditIconInfo(void);
+		int				EditIconInfo(int mode);
 		
 		bool			CurrentDepthSupportsColors();
-		void			ChangeColors(int newColors);
+		int				GetColors();
+		void			ChangeColors(int newColors, bool saveState);
 		
-		
-		WindowPtr		window;
-		
-		icnsEditorPtr	nextEditor;
-		icnsEditorPtr	previousEditor;
-		
+		void			SetColors(RGBColor fore, RGBColor back);
+		void			GetColors(RGBColor* fore, RGBColor* back);
 		
 		void			RefreshWindowTitle();
 		void			DisposeStates(void);
@@ -565,6 +585,9 @@ class icnsEditorClass : public icnsClass
 	friend pascal OSErr		DrawDragHilite(DragReference dragRef, icnsEditorPtr parentEditor);
 	friend void 			InsertPicIntoIcon(icnsEditorPtr parentEditor, PicHandle pic);
 	friend class drawingStateClass;
+	friend class SystemColorPicker;
+	
+	friend pascal void	CPSwatchDraw(ControlHandle theControl,SInt16 thePart);
 };
 
 
@@ -623,11 +646,14 @@ extern pascal ControlPartCode	ToolbarWellHitTest (ControlHandle control, Point w
 
 extern icnsEditorPtr			GetFrontEditor(void);
 extern icnsEditorPtr			GetEditor(WindowPtr window);
+
 extern pascal bool StandardEditorDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit);
 extern pascal bool IconInfoDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit);
+extern void SplitMenuItem(Str255 text, long* ID, Str255 iconName);
 extern void GetIDMenu(int ID, MenuHandle* menu, int* item, Str255 name);
 extern void SetControlBalloonHelp(ControlHandle theControl, long stringNo);
 extern long GetControlBalloonHelp(ControlHandle theControl);
+extern void HandleBalloons(Point theMouse, WindowPtr window, int strings);
 
 extern pascal bool AdjustDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit);
 extern void FieldToSlider(ControlHandle field, ControlHandle slider);

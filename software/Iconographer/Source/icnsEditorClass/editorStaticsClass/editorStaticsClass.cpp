@@ -1,5 +1,6 @@
 #include "editorStaticsClass.h"
 #include "icnsEditorClass.h"
+#include "MAlert.h"
 
 // __________________________________________________________________________________________
 // Name			: editorStaticsClass::editorStaticsClass
@@ -31,22 +32,20 @@ editorStaticsClass::editorStaticsClass(void)
 	resetColorsIconDisabled = GetCIcon(rResetColorsIconDisabled);
 	HLock((Handle)resetColorsIconDisabled);
 
-	sys8PickerPic = GetPicture(r8BitSysPicker);
-	HLock((Handle)sys8PickerPic);
-	sys4PickerPic = GetPicture(r4BitSysPicker);
-	HLock((Handle)sys4PickerPic);
-	sys1PickerPic = GetPicture(r1BitSysPicker);
-	HLock((Handle)sys1PickerPic);
-	gray8PickerPic = GetPicture(r8BitGrayPicker);
-	HLock((Handle)gray8PickerPic);
+	LoadPicker(r8BitSysPicker, &sys8PickerPix, &sys8PickerGW, &sys8PickerRgn);
+	LoadPicker(r4BitSysPicker, &sys4PickerPix, &sys4PickerGW, &sys4PickerRgn);
+	LoadPicker(r1BitSysPicker, &sys1PickerPix, &sys1PickerGW, &sys1PickerRgn);
 	
-	win4PickerPic = GetPicture(r4BitWinPicker);
-	HLock((Handle)win4PickerPic);
+	LoadPicker(r8BitGrayPicker, &gray8PickerPix, &gray8PickerGW, &gray8PickerRgn);
+
+	LoadPicker(r8BitWinPicker, &win8PickerPix, &win8PickerGW, &win8PickerRgn);
+	LoadPicker(r4BitWinPicker, &win4PickerPix, &win4PickerGW, &win4PickerRgn);
 	
 	SetRect(&canvasRect, 0, 0, kMaxIconSize * kMaxMagnification, kMaxIconSize * kMaxMagnification);
 	NewGWorld(&canvasGW, 32, &canvasRect, NULL, NULL, 0);
 	canvasPix = GetGWorldPixMap(canvasGW);
 	LockPixels(canvasPix);
+
 	// we're making the canas GWorld/PixMap, which is used for compositing and as an
 	// intermediate step before copying the result to the main screen
 	
@@ -81,6 +80,45 @@ editorStaticsClass::editorStaticsClass(void)
 	lastTextSettings.style = normal;
 	
 	currentBalloon = 0;
+
+	colorsPalette = new ColorsPalette();
+}
+
+void editorStaticsClass::LoadPicker(int ID,
+									PixMapHandle* pickerPix,
+									GWorldPtr* pickerGW,
+									RgnHandle* pickerRgn)
+{
+	PicHandle	pickerPic;
+	Rect		pickerRect;
+	
+	SAVEGWORLD;
+	SAVECOLORS;
+	
+	pickerPic = GetPicture(ID);
+	HLock((Handle)pickerPic);
+	
+	pickerRect = (**pickerPic).picFrame;
+	OffsetRect(&pickerRect, -pickerRect.left, -pickerRect.top);
+	
+	NewGWorld(pickerGW, 32, &pickerRect, NULL, NULL, 0);
+	*pickerPix = GetGWorldPixMap(*pickerGW);
+	LockPixels(*pickerPix);
+	
+	SetGWorld(*pickerGW, NULL);
+	EraseRect(&pickerRect);
+	
+	DrawPicture(pickerPic, &pickerRect);
+	
+	RESTORECOLORS;
+	RESTOREGWORLD;
+	
+	*pickerRgn = NewRgn();
+	
+	PictureToRegion(pickerPic, pickerRect, *pickerRgn);
+	
+	HUnlock((Handle)pickerPic);
+	KillPicture(pickerPic);
 }
 
 // __________________________________________________________________________________________
@@ -104,11 +142,14 @@ editorStaticsClass::~editorStaticsClass(void)
 	HUnlock((Handle)resetColorsIconDisabled);
 	DisposeCIcon(resetColorsIconDisabled);
 	
-	HUnlock((Handle)sys8PickerPic);
-	HUnlock((Handle)sys4PickerPic);
-	HUnlock((Handle)sys1PickerPic);
-	HUnlock((Handle)gray8PickerPic);
-	HUnlock((Handle)win4PickerPic);
+	UnlockPixels(sys8PickerPix); DisposeGWorld(sys8PickerGW); DisposeRgn(sys8PickerRgn);
+	UnlockPixels(sys4PickerPix); DisposeGWorld(sys4PickerGW); DisposeRgn(sys4PickerRgn);
+	UnlockPixels(sys1PickerPix); DisposeGWorld(sys1PickerGW); DisposeRgn(sys1PickerRgn);
+	
+	UnlockPixels(gray8PickerPix); DisposeGWorld(gray8PickerGW); DisposeRgn(gray8PickerRgn);
+	
+	UnlockPixels(win8PickerPix); DisposeGWorld(win8PickerGW); DisposeRgn(win8PickerRgn);
+	UnlockPixels(win4PickerPix); DisposeGWorld(win4PickerGW); DisposeRgn(win4PickerRgn);
 	
 	delete [] iconPartNames;
 	
@@ -142,32 +183,28 @@ void editorStaticsClass::AllocateEmergencyMemory(void)
 
 short editorStaticsClass::DisplayAlert(Str255 message, Str255 button1, Str255 button2, Str255 button3)
 {
-	AlertStdAlertParamRec	param; // very similar to above
-	OSStatus				err;
-	short					itemHit;
-	ModalFilterUPP			eventFilterUPP;
+	MAlert		alert;
+	MString		temp;
 	
-	eventFilterUPP = NewModalFilterProc((ProcPtr) StandardEditorDialogFilter);
+	alert.SetMovable(true);
 	
-	param.movable 		= true;
-	param.filterProc 	= eventFilterUPP;
-	param.defaultText 	= button1;
-	param.cancelText	= button2;
-	param.otherText		= button3;
-	param.helpButton 	= false;
-	param.defaultButton = kAlertStdAlertOKButton;
-	param.cancelButton  = 0;
-	param.position 		= 0;
+	temp = button1;
+	alert.SetButtonName(kMAOK, temp);
 	
-	SysBeep(6);
+	temp = button2;
+	alert.SetButtonName(kMACancel, temp);
 	
-	err = StandardAlert(kAlertStopAlert, message, NULL, &param, &itemHit);
-	if (err != noErr)
-		DisplayValue(err);
-		
-	DisposeRoutineDescriptor(eventFilterUPP);
+	temp = button3;
+	alert.SetButtonName(kMAOther, temp);
 	
-	return itemHit;
+	temp = message;
+	alert.SetError(temp);
+	
+	alert.SetType(kAlertStopAlert);
+	
+	alert.SetBeep(true);
+	
+	return alert.Display();
 }
 
 // __________________________________________________________________________________________
@@ -179,6 +216,9 @@ short editorStaticsClass::DisplayAlert(Str255 message, Str255 button1, Str255 bu
 
 void editorStaticsClass::ChangeCursor(short ID)
 {
+	if (!IsFrontProcess())
+		return;
+		
 	if (currentCursor != ID) // if the cursor isn't already set to the new value
 	{
 		switch (ID)
@@ -188,35 +228,168 @@ void editorStaticsClass::ChangeCursor(short ID)
 			default: SetCursor(ID); break;
 			
 		}
-		currentCursor = ID; // and we change the current cursor
+		currentCursor = ID; // and we change the current cursor	
 	}
+	
+	cursorChanged = true;
+}
+
+void editorStaticsClass::GetPickerPix(long iconName, long colors, PixMapHandle* pix, GWorldPtr* gW, RgnHandle* shapeRgn)
+{
+	switch (iconName)
+	{
+		case h8mk: case l8mk: case s8mk:
+			*pix = gray8PickerPix; *gW = gray8PickerGW; *shapeRgn = gray8PickerRgn;
+			break;
+		case ich4: case icl4: case ics4:
+			if (colors == macOSColors)
+			{
+				*pix = sys4PickerPix; *gW = sys4PickerGW; *shapeRgn = sys4PickerRgn;
+			}
+			else
+			{
+				*pix = win4PickerPix; *gW = win4PickerGW; *shapeRgn = win4PickerRgn;
+			}
+			break;
+		case ichi: case icni: case icsi:
+		case ichm: case icnm: case icsm:
+			*pix = sys1PickerPix; *gW = sys1PickerGW; *shapeRgn = sys1PickerRgn;
+			break;
+		default:
+			if (colors == macOSColors)
+			{
+				*pix = sys8PickerPix; *gW = sys8PickerGW; *shapeRgn = sys8PickerRgn;
+			}
+			else
+			{
+				*pix = win8PickerPix; *gW = win8PickerGW; *shapeRgn = win8PickerRgn;
+			}
+			break;
+	}
+}
+
+Point editorStaticsClass::GetDefaultColorsPalettePosition(void)
+{
+	Point			position;
+	GDHandle		mainScreen;
+	Rect			titleRect, screenRect, windowRect;
+	RgnHandle		windowShape, titleBarRgn;
+	
+	titleBarRgn = NewRgn();
+	if (GestaltVersion(gestaltSystemVersion, 0x08, 0x10))
+	{
+		GetWindowRegion(colorsPalette->GetWindow(),
+						kWindowTitleBarRgn,
+						titleBarRgn);
+		titleRect = (**titleBarRgn).rgnBBox; 
+		position.v = LMGetMBarHeight() + 2 + (titleRect.bottom - titleRect.top);
+	}
+	else
+		position.v = LMGetMBarHeight() + 2 + 15;
+	
+	mainScreen = GetMainDevice();
+	screenRect = (**mainScreen).gdRect;
+	
+	windowShape = NewRgn();
+	if (GestaltVersion(gestaltSystemVersion, 0x08, 0x10))
+		GetWindowRegion(colorsPalette->GetWindow(),
+						kWindowStructureRgn,
+						windowShape);
+	else
+	{
+		RectRgn(windowShape, &colorsPalette->GetWindow()->portRect);
+		InsetRgn(windowShape, -3, -3);
+	}
+	windowRect = (**windowShape).rgnBBox;
+	position.h = screenRect.right - (windowRect.right - windowRect.left);
+	
+	DisposeRgn(titleBarRgn);
+	DisposeRgn(windowShape);
+	
+	return position;
+}
+
+Point editorStaticsClass::GetColorsPalettePosition(void)
+{
+	RgnHandle	contentRgn;
+	Point		position;
+	
+	contentRgn = NewRgn();
+	GetWindowRegion(colorsPalette->GetWindow(),
+					kWindowContentRgn,
+					contentRgn);
+	
+	position.h = (**contentRgn).rgnBBox.left;
+	position.v = (**contentRgn).rgnBBox.top;
+	
+	return position;
 }
 
 #pragma mark -
 
 void editorPreferencesClass::Load(int ID)
 {
+	bool				registered;
+	PreferencesHandle	tempData;
+	Str255				tempRegCode;
 	
-	data = (preferencesHandle)GetResource('Pref', ID);
+	tempData = (PreferencesHandle)Get1Resource('Pref', ID);
 	
-	if (data == NULL)
+	if (tempData == NULL)
+		tempData = (PreferencesHandle)GetResource('Pref', rDefaultPrefID);
+	
+	data = (PreferencesHandle)NewHandleClear(sizeof(PreferencesStruct));
+	
+	(**data) = (**tempData);
+	
+	ReleaseResource((Handle)tempData);
+	
+	switch ((**data).version)
 	{
-		DisplayAlert("Fatal error while loading prefs", NULL);
-		return;
-	}
+		case 1:
+		{
+			PreferencesHandle	defaultPreferences;
+			
+			if ((**data).flags & prefsGenerateOldStyle)
+				(**data).defaultFormat = formatMacOSUniversal;
+			else
+				(**data).defaultFormat = formatMacOSNew;
+				
+			(**data).flags |= prefsAntiAlias;
+			(**data).flags |= prefsColorsPaletteVisible;
+			(**data).colorsPaletteLocation.h = -1;
+			(**data).colorsPaletteLocation.v = -1;
+			
+			defaultPreferences = (PreferencesHandle)GetResource('Pref', rDefaultPrefID);
+			
+			for (int i=0; i < kFavoritesCPSampleYCount * kFavoritesCPSampleXCount; i++)
+				(**data).favoriteColors[i] = (**defaultPreferences).favoriteColors[i];
+				
+			ReleaseResource((Handle)defaultPreferences);
+		}
+		default:
+			(**data).version = 0x11;
+	}	
 	
-	DetachResource((Handle)data);
-	
-	Str255 tempRegCode;
 	
 	GenerateRegCode((**data).name, tempRegCode);
 	
-	if (!(EqualString(tempRegCode, (**data).regCode, true, true)))
+	registered = IsRegistered();
+	
+	if (!registered || (registered && !(EqualString(tempRegCode, (**data).regCode, true, true))))
 	{
 		CopyString((**data).name, "\pNot registered");
 		CopyString((**data).company, "\p");
 		CopyString((**data).regCode, "\p");
 	}
+	
+	if ((**data).colorsPaletteLocation.h == -1)
+		(**data).colorsPaletteLocation = icnsEditorClass::statics.GetDefaultColorsPalettePosition();
+	
+	MoveWindow(icnsEditorClass::statics.colorsPalette->GetWindow(),
+					   (**data).colorsPaletteLocation.h,
+					   (**data).colorsPaletteLocation.v,
+					   false);
 }
 
 static pascal void ZoomArrowsActionFunction(ControlHandle controlHdl,SInt16 partCode)
@@ -252,7 +425,7 @@ static pascal void ZoomArrowsActionFunction(ControlHandle controlHdl,SInt16 part
 
 		SetControlValue(controlHdl,controlValue);
 		
-		GetDialogItemAsControl((**controlHdl).contrlOwner, iDefaultZoomLevelField, &defaultZoomLevelField);
+		GetDialogItemAsControl(GetControlOwner(controlHdl), iDefaultZoomLevelField, &defaultZoomLevelField);
 		
 		NumToString(controlValue, tempString);
 		AppendString(tempString, "\p00%");
@@ -317,10 +490,12 @@ void editorPreferencesClass::Edit()
 						newEditor,
 						openIcon,
 						doNothing,
-						generateOldStyle;
+						defaultFormat,
+						antiAlias;
 	Str255				tempString;
 	short				itemHit;
 	bool				dialogDone;
+	MenuHandle			typesMenu;
 	ControlFontStyleRec	smallTextStyle; // text style used for the controls
 	
 	
@@ -329,6 +504,8 @@ void editorPreferencesClass::Edit()
 	smallTextStyle.size = 9;
 	
 	preferencesDialog = GetNewDialog(rPreferencesDialog, NULL, (WindowPtr)-1L);
+	
+	MWindow::DeactivateAll();
 	
 	eventFilterUPP = NewModalFilterProc(PreferencesDialogFilter);
 	
@@ -343,21 +520,26 @@ void editorPreferencesClass::Edit()
 	Draw1Control(defaultZoomLevelField);
 	
 	GetDialogItemAsControl(preferencesDialog, iDefaultZoomLevelArrows, &defaultZoomLevelArrows);
-	(**defaultZoomLevelArrows).contrlMin = kMinMagnification;
-	(**defaultZoomLevelArrows).contrlMax = kMaxMagnification;
-	(**defaultZoomLevelArrows).contrlValue = (**data).defaultZoomLevel;
+	SetControlMinimum(defaultZoomLevelArrows, kMinMagnification);
+	SetControlMaximum(defaultZoomLevelArrows, kMaxMagnification);
+	SetControlValue(defaultZoomLevelArrows, (**data).defaultZoomLevel);
 	
 	GetDialogItemAsControl(preferencesDialog, iDrawGrid, &drawGrid);
-	SetControlValue(drawGrid, (**data).flags & prefsDrawGrid);
+	SetControlValue(drawGrid, bool((**data).flags & prefsDrawGrid));
 	
 	GetDialogItemAsControl(preferencesDialog, iCheckSync, &checkSync);
-	SetControlValue(checkSync, !((**data).flags & prefsDontCheckSync));
+	SetControlValue(checkSync, !bool((**data).flags & prefsDontCheckSync));
 	
 	GetDialogItemAsControl(preferencesDialog, iDither, &dither);
 	SetControlValue(dither, bool((**data).flags & prefsDither));
 	
-	GetDialogItemAsControl(preferencesDialog, iGenerateOldStyle, &generateOldStyle);
-	SetControlValue(generateOldStyle, bool((**data).flags & prefsGenerateOldStyle));
+	GetDialogItemAsControl(preferencesDialog, iAntiAlias, &antiAlias);
+	SetControlValue(antiAlias, bool((**data).flags & prefsAntiAlias));
+	
+	GetDialogItemAsControl(preferencesDialog, iDefaultIconFormat, &defaultFormat);
+	SetControlValue(defaultFormat, (**data).defaultFormat);
+	typesMenu = GetControlPopupMenuHandle(defaultFormat);
+	DisableItem(typesMenu, formatMacOSXServer);
 	
 	GetDialogItemAsControl(preferencesDialog, iStartupCreateNewEditor, &newEditor);
 	SetControlValue(newEditor, bool(!((**data).flags & prefsDontMakeNewEditor)));
@@ -388,7 +570,8 @@ void editorPreferencesClass::Edit()
 				(**data).flags = (GetControlValue(drawGrid) << 0) |
 								 ((GetControlValue(checkSync) ^ 1) << 1) |
 								 (GetControlValue(dither) << 2) |
-								 (GetControlValue(generateOldStyle) << 5);
+								 (GetControlValue(antiAlias) << 7);
+				(**data).defaultFormat = GetControlValue(defaultFormat);
 				
 				if (GetControlValue(doNothing))
 				{
@@ -414,7 +597,7 @@ void editorPreferencesClass::Edit()
 			case iDrawGrid: ToggleCheckbox(drawGrid); break;
 			case iCheckSync: ToggleCheckbox(checkSync); break;
 			case iDither: ToggleCheckbox(dither); break;
-			case iGenerateOldStyle: ToggleCheckbox(generateOldStyle); break;
+			case iAntiAlias: ToggleCheckbox(antiAlias); break;
 			case iStartupCreateNewEditor :
 				SetControlValue(newEditor, 1);
 				SetControlValue(openIcon, 0);
@@ -434,21 +617,82 @@ void editorPreferencesClass::Edit()
 	}
 	
 	DisposeRoutineDescriptor(eventFilterUPP);
-	
 	DisposeDialog(preferencesDialog);
 	
+	MWindow::ActivateAll();
 }
 
 void editorPreferencesClass::Save(int ID)
 {
+	if (icnsEditorClass::statics.colorsPalette->IsVisible())
+		(**data).flags |= prefsColorsPaletteVisible;
+	else
+		(**data).flags &= ~prefsColorsPaletteVisible;
+	
+	(**data).colorsPaletteLocation = icnsEditorClass::statics.GetColorsPalettePosition();
+	
+	
 	AddResource((Handle)data, 'Pref', ID, "\p");
 	ChangedResource((Handle)data);
 	WriteResource((Handle)data);
 }
 
+bool editorPreferencesClass::FeatureEnabled(long flag)
+{
+	return (**data).flags & flag;
+}
+
+void editorPreferencesClass::EnableFeature(long flag)
+{
+	(**data).flags |= flag;
+}
+
+void editorPreferencesClass::DisableFeature(long flag)
+{
+	(**data).flags &= ~flag;
+}
+
+RGBColor editorPreferencesClass::GetFavoriteColor(int index)
+{
+	return (**data).favoriteColors[index];
+}
+
+void editorPreferencesClass::SetFavoriteColor(int index, RGBColor color)
+{
+	(**data).favoriteColors[index] = color;
+}
+
+int editorPreferencesClass::GetDefaultFormat()
+{
+	return (**data).defaultFormat;
+}
+
+int editorPreferencesClass::GetDefaultZoomLevel()
+{
+	return (**data).defaultZoomLevel;
+}
+
+void editorPreferencesClass::IncrementTimesUsed()
+{
+	(**data).timesUsed++;
+}
+
+int editorPreferencesClass::GetTimesUsed()
+{
+	return (**data).timesUsed;
+}
+
+void editorPreferencesClass::GetRegistrationInfo(Str255 name, Str255 company, Str255 regCode)
+{
+	CopyString(name, (**data).name);
+	CopyString(company, (**data).company);
+	CopyString(regCode, (**data).regCode);
+}	
+
 bool editorPreferencesClass::IsRegistered(void)
 {
-	return !(EqualString("\pNot registered", (**data).name, true, true));
+	return !(EqualString("\pNot registered", (**data).name, true, true) ||
+			EqualString("\pInpher                  ", (**data).name, true, true));
 }
 
 void editorPreferencesClass::GenerateRegCode(Str255 name, Str255 regCode)

@@ -23,12 +23,15 @@ drawingStateClass::drawingStateClass(drawingStatePtr previousLastState, icnsEdit
 {
 	drawingStatePtr	tempState, // temporary states used in the deletion of uneeded items
 					tempState2;
+	OSErr			err;
 					
-	SAVECOLORS; // we'll be doing some CopyBits so we need the colors to be rest
-	SAVEGWORLD;
-	
 	previousState = previousLastState; // linking the list
 	nextState = NULL; // we're insterting at the end
+	
+	selectionRgn = NULL;
+	drawingData = NULL;
+	selectionData = NULL;
+	selectionColorTable = NULL;
 	
 	if (previousLastState != NULL) // if there was a state before then...
 	{
@@ -49,7 +52,17 @@ drawingStateClass::drawingStateClass(drawingStatePtr previousLastState, icnsEdit
 	}
 		
 	selectionRgn = NewRgn(); // saving the selection
+	if (selectionRgn == NULL)
+	{
+		editor->status |= outOfMemory;
+		return;
+	}
 	CopyRgn(editor->selectionRgn, selectionRgn);
+	if (selectionRgn == NULL)
+	{
+		editor->status |= outOfMemory;
+		return;
+	}
 	
 	if (editor->status & selectionFloated) // if there's a floated selection
 	{
@@ -59,26 +72,40 @@ drawingStateClass::drawingStateClass(drawingStatePtr previousLastState, icnsEdit
 		if ((editor->currentPixName == h8mk) ||
 			(editor->currentPixName == l8mk) ||
 			(editor->currentPixName == s8mk))
-			selectionColorTable = GetCTable(40);
+			{
+				selectionColorTable = GetCTable(40);
+				if (selectionColorTable == NULL)
+				{
+					editor->status |= outOfMemory;
+					return;
+				}
+			}
 		else
-		selectionColorTable = NULL;
-		CompressPixMap(editor->selectionPix, &selectionData, &selectionDataSize);
+			selectionColorTable = NULL;
+		err = CompressPixMap(editor->selectionPix, &selectionData, &selectionDataSize);
+		if (err != noErr)
+		{
+			editor->status |= outOfMemory;
+			return;
+		}
 	}
 	
 	// and now we save the contents of the drawing itself
-	CompressPixMap(editor->currentPix, &drawingData, &drawingDataSize);
+	err = CompressPixMap(editor->currentPix, &drawingData, &drawingDataSize);
+	if (err != noErr)
+	{
+		editor->status |= outOfMemory;
+		return;
+	}
 	
 	// we also need to remember from which pixmap/gworld it was taken
-	drawingSrcPix = editor->currentPix;
-	drawingSrcGW = editor->currentGW;
 	drawingPixName = editor->currentPixName;
 	
 	// and also the status and the current icon sizes
 	status = editor->status;
 	members = editor->members;
 	
-	RESTOREGWORLD;
-	RESTORECOLORS; // we're done, so we can restore the colors
+	colors = editor->colors;
 }
 
 // __________________________________________________________________________________________
@@ -98,17 +125,20 @@ drawingStateClass::~drawingStateClass(void)
 		nextState->previousState = previousState;
 	
 	// we dispose of the saved selection
-	DisposeRgn(selectionRgn);
+	if (selectionRgn != NULL)
+		DisposeRgn(selectionRgn);
 	
 	if (status & selectionFloated)
 	{
 		// and of the selection contents (if any)
-		DisposePtr(selectionData);
+		if (selectionData != NULL)
+			DisposePtr(selectionData);
 		if (selectionColorTable != NULL)
 			DisposeCTable(selectionColorTable);
 	}
 	
-	DisposePtr(drawingData);
+	if (drawingData != NULL)
+		DisposePtr(drawingData);
 	
 }
 
@@ -124,12 +154,23 @@ drawingStateClass::~drawingStateClass(void)
 void drawingStateClass::RestoreState(icnsEditorPtr editor)
 {
 	OSStatus err = noErr; // used for error checking
+	PixMapHandle	targetPix = NULL;
+	GWorldPtr		targetGW = NULL;
 	
 	SAVEGWORLD;
 	SAVECOLORS; // again, we'll be doing some copying
 	
+	editor->ChangeColors(colors, false);
+	
+	editor->GetGWorldAndPix(drawingPixName, &targetGW, &targetPix);
+	
+	if (targetGW == NULL || targetPix == NULL)
+	{
+		SysBeep(6);
+	}
+	
 	// first we restore the drawing
-	DecompressToPixMap((unsigned char*)drawingData, drawingSrcPix);
+	DecompressToPixMap((unsigned char*)drawingData, targetPix);
 			   
 	if (status & selectionFloated)
 	// then the selection, if any
@@ -156,15 +197,17 @@ void drawingStateClass::RestoreState(icnsEditorPtr editor)
 	// the current pix).
 	if (!(status & dontRestoreCurrentPix))
 	{
-		editor->currentPix = drawingSrcPix;
-		editor->currentGW = drawingSrcGW;
 		editor->currentPixName = drawingPixName;
+		editor->currentGW = targetGW;
+		editor->currentPix = targetPix;
 		editor->RefreshPopups();
 	}
 	
 	// restoring the status
 	editor->status = status;
 	editor->members = members;
+	
+	editor->colors = colors;
 	
 	// if there's a selection, we should also update the magnified selection region
 	if (status & hasSelection)
