@@ -31,8 +31,9 @@ const static int mApple = 128;
 const static int iAbout = 1;
 
 const static int mFile = 129;
-const static int iInsertCicn = 1;
-const static int iQuit = 3;
+const static int iNewIcon = 1;
+const static int iInsertIcns = 2;
+const static int iQuit = 4;
 
 const static int mEdit = 130;
 const static int iUndo = 1;
@@ -49,17 +50,19 @@ const static int kAboutPic = 2;
 
 const static int kInsert = 1;
 const static int kCancel = 2;
-const static int kSmallIconPreview = 3;
-const static int kSmallMaskPreview = 4;
-const static int kLargeIconPreview = 5;
-const static int kLargeMaskPreview = 6;
-const static int kTypesPopup = 7;
-const static int kIconPopup = 8;
-const static int kIDField = 9;
-const static int kIncludeOldStyle = 10;
+const static int kTypesPopup = 3;
+const static int kIconPopup = 4;
+const static int kIDField = 5;
+const static int kIncludeOldStyle = 6;
+const static int kClipboardPreview = 8;
+const static int kCurrentIconPreview = 9;
 
 // --- Type Definitions -- //
-
+typedef enum tCicnCreateFlags
+{
+	includeOldStyle=1,
+	createFile=2
+} tCicnCreateFlags;
 
 // --- Prototypes --- //
 
@@ -74,7 +77,6 @@ OSErr DoOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
 OSErr DoPrintDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon);
 OSErr DoQuitApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon);
 #endif
-void		GetCurrentScheme(void);
 void		EventLoop(void);
 void		DoEvent(EventRecord *eventPtr);
 void		HandleMouseUp(EventRecord *eventPtr);
@@ -85,11 +87,16 @@ void		DoMenuCommand(long menuResult);
 void		HandleAppleChoice(int item);
 void		ShowAboutBox(void);
 void		HandleFileChoice(int item);
+void		NewIcon(void);
+OSStatus	NewIconNav(void);
+OSStatus	NewIconOld(void);
+void		Inserticns(void);
+bool		CheckClipboard(void);
 void		DrawImageWell(Rect bounds);
-OSStatus	GetSchemeNav(void);
-OSStatus	GetSchemeOld(void);
-void		GeticnsID(void);
-void		clip2icns(short icnsID, Str255 icnsName, bool includeOldStyle);
+OSStatus	GetFileNav(void);
+OSStatus	GetFileOld(void);
+void		GeticnsID(bool createFile);
+void		clip2icns(short icnsID, Str255 icnsName, int flags);
 void 		CloseScheme(void);
 void		HandleEditChoice(int item);
 

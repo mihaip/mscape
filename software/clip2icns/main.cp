@@ -39,53 +39,6 @@ void Initialize()
 	appFile = CurResFile();
 }
 
-void GetCurrentScheme()
-{
-/*	OSErr			myErr;
-	short			myVRef;	// volume ref num of Preferences folder
-	long			myDirID; // dir ID of Preferences folder
-	FSSpec			mySpec; // FSSpec for the preferences file
-	int				myRefNum, oldFile; // file reference number
-	AliasHandle		currentSchemeAlias;
-	unsigned char	ignored;
-	
-	// Find the Preferences folder in the System Folder
-	myErr = FindFolder(kOnSystemDisk, kPreferencesFolderType, kDontCreateFolder, &myVRef, &myDirID);
-	if (myErr == noErr)
-	{
-		myErr = FSMakeFSSpec(myVRef, myDirID, "\pKaleidoscope Preferences", &mySpec);
-	}
-	else
-	{
-		SysBeep(6);
-	}
-	if (myErr == noErr)
-	{
-		myRefNum = FSpOpenResFile(&mySpec, fsCurPerm);
-	}	
-	// read in the preferences
-	
-	oldFile = CurResFile();
-	UseResFile(myRefNum);
-	
-	currentSchemeAlias = (AliasHandle)GetResource('alis', 128);
-	HLock((Handle)currentSchemeAlias);
-	
-	
-	if ( currentSchemeAlias == nil )
-	{
-		DisplayAlert("Can't get the current scheme, make sure that you have Kaleidoscope 1.8 or later and that your preferences aren't corrupted", "");
-		ExitApplication();
-	}
-
-	ResolveAlias(NULL, currentSchemeAlias, &currentScheme, &ignored);
-	HUnlock((Handle)currentSchemeAlias);
-	
-	CloseResFile(myRefNum);
-	UseResFile(oldFile);
-*/
-}
-
 void InitMenuBar()
 {
 	Handle		menuBar;
@@ -157,16 +110,8 @@ OSErr DoOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
 			}
 			else
 			{
-				GetCurrentScheme();
-				if (desc.vRefNum == currentScheme.vRefNum && desc.parID == currentScheme.parID)
-				{
-					DisplayAlert("The scheme you chose is the active one.", "Editing the active scheme can corrupt it, please switch to another scheme and try again");
-				}
-				else
-				{
-					schemeSpec = desc;
-					GeticnsID();
-				}
+				schemeSpec = desc;
+				GeticnsID(false);	
 			}
 			return MyGotRequiredParams(theAppleEvent);
 		}
@@ -431,38 +376,117 @@ void ShowAboutBox()
 
 void HandleFileChoice(int item)
 {
-OSStatus	theErr;
 	switch (item)
 	{
-		case iInsertCicn :
-			if (navServicesAvailable)
-				theErr = GetSchemeNav();
-			else
-				theErr = GetSchemeOld();
-			if (theErr == noErr) GeticnsID();
-			break;
+		case iNewIcon : NewIcon(); break;
+		case iInsertIcns : Inserticns(); break;
 		case iQuit       :	isDone = true; break;
 	}
 }
 
-OSStatus GetSchemeNav()
+void NewIcon()
+{
+OSStatus	theErr;
+	if (CheckClipboard())
+	{
+		if (navServicesAvailable)
+			theErr = NewIconNav();
+		else
+			theErr = NewIconOld();
+		if (theErr == noErr)
+			GeticnsID(true);
+	}
+}
+
+OSStatus NewIconNav()
 {
 	NavDialogOptions	dialogOptions;
 	NavReplyRecord		reply;
 	NavEventUPP			eventUPP;
-	NavTypeListHandle	typeList;
 	AEDesc				resultDesc;
+	OSStatus			theErr;
+	
+	
+	UseResFile(appFile);
+	
+	eventUPP = NewNavEventProc(DummyFunction);
+	
+	NavGetDefaultDialogOptions ( &dialogOptions );
+	dialogOptions.dialogOptionFlags -= kNavAllowMultipleFiles;
+	dialogOptions.dialogOptionFlags += kNavNoTypePopup;
+	dialogOptions.dialogOptionFlags -= kNavAllowPreviews;
+	CopyString(dialogOptions.clientName, "\pclip2icns");
+	CopyString(dialogOptions.savedFileName, "\p32 Bit Icon");
+	
+	theErr = NavPutFile(NULL,	// use system's default location
+			   &reply,
+			   &dialogOptions,
+			   eventUPP,
+			   'Icon',
+			   'c2ci',
+			   NULL);
+					
+	DisposeRoutineDescriptor(eventUPP);
+	
+	if (reply.validRecord)
+	{
+		AEGetNthDesc( &(reply.selection), 1, typeFSS, NULL, &resultDesc );
+
+		GetFSSpecFromAEDesc(resultDesc, schemeSpec);
+		
+		NavDisposeReply(&reply);
+		AEDisposeDesc(&resultDesc);
+		return noErr;
+	}
+	else
+	{
+		NavDisposeReply(&reply);
+		return paramErr;
+	}		   
+}
+
+OSStatus NewIconOld()
+{
+	StandardFileReply reply;
+
+	StandardPutFile("\pCreate a new icon:", "\p32 Bit Icon", &reply);
+
+	if ( reply.sfGood )
+	{
+		schemeSpec = reply.sfFile;	
+		return noErr;
+	}
+	return paramErr;
+}
+
+
+
+void Inserticns()
+{
+OSStatus	theErr;
+	if (CheckClipboard())
+	{
+		if (navServicesAvailable)
+			theErr = GetFileNav();
+		else
+			theErr = GetFileOld();
+		if (theErr == noErr)
+			GeticnsID(false);
+	}
+}
+
+bool CheckClipboard()
+{
 	Handle				pic;
 	long				offset;
 	PictInfo			picInfo;
-	
-	UseResFile(appFile);
 	
 	pic = NewHandle (0);
 	if (GetScrap( pic, 'PICT', &offset ) < 0)
 	{
 		DisplayAlert("", "The clipboard is either empty or doesn't contain a picture");
-		return paramErr;
+		return false;
+		DisposeHandle(pic);
 	}
 	
 	GetPictInfo((PicHandle)pic, &picInfo, 0, 0, 0, 0);
@@ -477,17 +501,31 @@ OSStatus GetSchemeNav()
 	else
 	{
 		DisplayAlert("", "The clipboard picture isn't 80x32,64x32, or 16x32.");
-		return paramErr;
+		return false;
+		DisposeHandle(pic);
 	}
 	
+	return true;
 	DisposeHandle(pic);
+}
+
+OSStatus GetFileNav()
+{
+	NavDialogOptions	dialogOptions;
+	NavReplyRecord		reply;
+	NavEventUPP			eventUPP;
+	AEDesc				resultDesc;
+	
+	
+	UseResFile(appFile);
 	
 	eventUPP = NewNavEventProc(DummyFunction);
 	
 	NavGetDefaultDialogOptions ( &dialogOptions );
 	dialogOptions.dialogOptionFlags -= kNavAllowMultipleFiles;
+	dialogOptions.dialogOptionFlags += kNavNoTypePopup;
+	dialogOptions.dialogOptionFlags -= kNavAllowPreviews;
 	CopyString(dialogOptions.clientName, "\pclip2icns");
-	typeList = MakeTypeList ( 'Acid', 1, 'Colr');
 	
 	NavGetFile(NULL,
 			   &reply,
@@ -495,7 +533,7 @@ OSStatus GetSchemeNav()
 			   eventUPP,
 			   NULL,
 			   NULL,
-			   typeList,
+			   NULL,
 			   NULL);
 	
 	if (reply.validRecord)
@@ -518,47 +556,14 @@ OSStatus GetSchemeNav()
 }
 
 
-OSStatus GetSchemeOld()
+OSStatus GetFileOld()
 {
 	StandardFileReply	reply;
 	SFTypeList			typeList;
-	Handle				pic;
-	long				offset;
-	PictInfo			picInfo;
-
-	pic = NewHandle (0);
-	if (GetScrap( pic, 'PICT', &offset ) < 0)
-	{
-		DisplayAlert("", "The clipboard is either empty or doesn't contain a picture");
-		return paramErr;
-	}
 	
-	GetPictInfo((PicHandle)pic, &picInfo, 0, 0, 0, 0);
-	
-	if ((picInfo.sourceRect.bottom == 32) ||
-		(picInfo.sourceRect.right == 64) ||
-		(picInfo.sourceRect.right == 80) ||
-		(picInfo.sourceRect.right == 16))
-	{
-		;
-	}
-	else
-	{
-		DisplayAlert("", "The clipboard picture isn't 80x32,64x32, or 16x32.");
-		return paramErr;
-	}
-	
-	DisposeHandle(pic);
-	
-	GetCurrentScheme();
 	typeList[0] = schemeFileType;
 	
-	StandardGetFile(nil, 1, typeList, &reply);
-//	if (reply.sfFile.vRefNum == currentScheme.vRefNum && reply.sfFile.parID == currentScheme.parID)
-//	{
-//		DisplayAlert("The scheme you chose is the active one.", "Editing the active scheme can corrupt it, please switch to another scheme and try again");
-//		return paramErr;
-//	}
+	StandardGetFile(nil, 1, NULL, &reply);
 	if ( reply.sfGood)
 	{
 		schemeSpec = reply.sfFile;
@@ -623,10 +628,44 @@ void DrawImageWell(Rect bounds)
 	GetDialogItem(insertIcns, kIDField, &itemType, &item, &itemRect);\
 	SetDialogItemText(item, IDAsString);\
 	SelectDialogItemText( insertIcns, kIDField, 0, 32767);\
+	StringToNum(IDAsString, &ID);\
+	if (!createFile)\
+	{\
+		scheme = FSpOpenResFile(&schemeSpec, fsRdWrPerm);\
+		UseResFile(scheme);\
+		if (Get1Resource('icns', ID) || Get1Resource('icl8', ID) || Get1Resource('ics8', ID))\
+		{\
+			RegisterIconRefFromResource('c2ci', 'test', &schemeSpec, ID, &currentIconRef);\
+			FillCRect(&iconPreviewRect, desktopPattern);\
+			PlotIconRef(&currentLargeIconRect,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);\
+			PlotIconRef(&currentSmallIconRect,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);\
+			ReleaseIconRef(currentIconRef);\
+		}\
+		else\
+		{\
+			GetDialogItem(insertIcns, kCurrentIconPreview, &itemType, &item, &sourceRect);\
+			x = sourceRect.left + (sourceRect.right - sourceRect.left)/2 - StringWidth("\pNot Available")/2;\
+			y = sourceRect.top + (sourceRect.bottom - sourceRect.top)/2 + 6;\
+			FillCRect(&iconPreviewRect, desktopPattern);\
+			MoveTo(x, y);\
+			DrawString("\pNot Available");\
+		}\
+		CloseResFile(scheme);\
+		UseResFile(appFile);\
+	}\
+	else\
+	{\
+		GetDialogItem(insertIcns, kCurrentIconPreview, &itemType, &item, &sourceRect);\
+		x = sourceRect.left + (sourceRect.right - sourceRect.left)/2 - StringWidth("\pNot Available")/2;\
+		y = sourceRect.top + (sourceRect.bottom - sourceRect.top)/2 + 6;\
+		FillCRect(&iconPreviewRect, desktopPattern);\
+		MoveTo(x, y);\
+		DrawString("\pNot Available");\
+	}\
 }
 				
 
-void GeticnsID()
+void GeticnsID(bool createFile)
 {
 	DialogPtr			insertIcns;
 	bool				dialogDone;
@@ -635,7 +674,6 @@ void GeticnsID()
 	long				ID;
 	Handle				item;
 	short				itemType;
-	Rect				smallIconRect, smallMaskRect, largeIconRect, largeMaskRect, clipboardRect;
 	Handle				pic;
 	long				ignored;
 	short				scheme;
@@ -645,29 +683,38 @@ void GeticnsID()
 	int					selectedIcns, i, selectedType=1, currentMenuID = 201;
 	Str255				IDAsString, menuItemText;
 	int					includeOldStyle = 1;
-	GWorldPtr			clipboardGWorld;
-	PixMapHandle		clipboardPix;
-	Rect				sourceRect;
+	GWorldPtr			clipboardGWorld, tempGWorld;
+	PixMapHandle		clipboardPix, tempPix;
+	Rect				sourceRect, largeIconRect={0,0,32, 32}, smallIconRect = {0, 0, 16, 16};
 	RGBColor			currentForeColor, currentBackColor;
+	Rect				clipboardPreviewRect, iconPreviewRect, clipboardRect, tempRect;
+	Rect				clipLargeIconRect, clipLargeMaskRect, clipSmallIconRect, clipSmallMaskRect;
+	PixPatHandle		desktopPattern;
+	Rect				currentLargeIconRect, currentSmallIconRect;
+	IconRef				currentIconRef;
+	int					x, y;
 	
-	scheme = FSpOpenResFile(&schemeSpec, fsRdWrPerm);
-	if (scheme == -1)
+	if (!createFile)
 	{
-		if (ResError() == opWrErr)
+		scheme = FSpOpenResFile(&schemeSpec, fsRdWrPerm);
+		if (scheme == -1)
 		{
-			DisplayAlert("You can't edit this scheme since it's currently open in another application.", "Please close it and try again");
-			return;
+			if (ResError() == opWrErr)
+			{
+				DisplayAlert("You can't edit this scheme since it's currently open in another application.", "Please close it and try again");
+				return;
+			}
+			else
+			{
+				NumToString(ResError(), errorNumber);
+				DisplayPAlert("\pSomething happened that wasn't supposed to happen. Error of type: ", errorNumber);
+				return;
+			}
 		}
-		else
-		{
-			NumToString(ResError(), errorNumber);
-			DisplayPAlert("\pSomething happened that wasn't supposed to happen. Error of type: ", errorNumber);
-			return;
-		}
+		CloseResFile(scheme);
+		//FSClose(scheme);
+		UseResFile(appFile);
 	}
-	CloseResFile(scheme);
-	//FSClose(scheme);
-	UseResFile(appFile);
 	
 	insertIcns = GetNewDialog (insertCicnID, nil, (WindowPtr)-1L);
 	SetPort( insertIcns);
@@ -679,15 +726,14 @@ void GeticnsID()
 	
 	GetDialogItem(insertIcns, kIncludeOldStyle, &itemType, &item, &itemRect);
 	SetControlValue((ControlHandle)item, includeOldStyle);
-	
-	GetDialogItem(insertIcns, kSmallIconPreview, &itemType, &item, &smallIconRect);
-	DrawImageWell(smallIconRect);
-	GetDialogItem(insertIcns, kSmallMaskPreview, &itemType, &item, &smallMaskRect);
-	DrawImageWell(smallMaskRect);
-	GetDialogItem(insertIcns, kLargeIconPreview, &itemType, &item, &largeIconRect);
-	DrawImageWell(largeIconRect);
-	GetDialogItem(insertIcns, kLargeMaskPreview, &itemType, &item, &largeMaskRect);
-	DrawImageWell(largeMaskRect);
+		
+	desktopPattern = GetPixPat(16);
+	GetDialogItem(insertIcns, kClipboardPreview, &itemType, &item, &clipboardPreviewRect);
+	DrawImageWell(clipboardPreviewRect);
+	FillCRect(&clipboardPreviewRect, desktopPattern);
+	GetDialogItem(insertIcns, kCurrentIconPreview, &itemType, &item, &iconPreviewRect);
+	DrawImageWell(iconPreviewRect);
+	FillCRect(&iconPreviewRect, desktopPattern);
 	
 	GetForeColor(&currentForeColor);
 	GetBackColor(&currentBackColor);
@@ -695,61 +741,114 @@ void GeticnsID()
 	GetScrap( pic, 'PICT', &ignored );
 	clipboardRect = (*(PicHandle)pic)->picFrame;
 	OffsetRect(&clipboardRect, -clipboardRect.left, -clipboardRect.top);
+	
 	NewGWorld(&clipboardGWorld, 32, &clipboardRect, NULL, NULL, 0);
 	SetGWorld(clipboardGWorld, NULL);
 	DrawPicture((PicHandle)pic, &clipboardRect);
 	clipboardPix = GetGWorldPixMap(clipboardGWorld);
 	LockPixels(clipboardPix);
 	
-	SetPort(insertIcns);
+	NewGWorld(&tempGWorld, 32, &largeIconRect, NULL, NULL, 0);
+	SetGWorld(tempGWorld, NULL);
+	tempPix = GetGWorldPixMap(tempGWorld);
+	LockPixels(tempPix);
 	
 	ForeColor(blackColor);
 	BackColor(whiteColor);
 	
-	sourceRect.top = 0;
-	sourceRect.bottom = 32;
-	
 	if (clipboardRect.right == 80)
 	{
-		sourceRect.left = 16;
-		sourceRect.right = 48;
-		CopyBits((BitMap *)*clipboardPix, &qd.thePort->portBits, &sourceRect,&largeIconRect,srcCopy, NULL);
-		sourceRect.left += 32;
-		sourceRect.right += 32;
-		CopyBits((BitMap *)*clipboardPix, &qd.thePort->portBits, &sourceRect,&largeMaskRect,srcCopy, NULL);
-		sourceRect.left = 0;
-		sourceRect.right = 16;
-		sourceRect.bottom = 16;
-		CopyBits((BitMap *)*clipboardPix, &qd.thePort->portBits, &sourceRect,&smallIconRect,srcCopy, NULL);
-		sourceRect.top += 16;
-		sourceRect.bottom += 16;
-		CopyBits((BitMap *)*clipboardPix, &qd.thePort->portBits, &sourceRect,&smallMaskRect,srcCopy, NULL);
+		GetDialogItem(insertIcns, kClipboardPreview, &itemType, &item, &sourceRect);
+		sourceRect.left += (sourceRect.right - sourceRect.left)/2;
+		tempRect = largeIconRect;
+		MakeTargetRect(sourceRect, &tempRect);
+		CopyBits(&insertIcns->portBits, (BitMap *) *tempPix,&tempRect,&largeIconRect,srcCopy,NULL);
+		SetRect(&clipLargeIconRect, 16, 0, 48, 32);
+		SetRect(&clipLargeMaskRect, 48, 0, 80, 32);
+		CopyDeepMask((BitMap *) *clipboardPix,
+					 (BitMap *) *clipboardPix,
+					 &insertIcns->portBits,
+					 &clipLargeIconRect,
+					 &clipLargeMaskRect,
+				 	 &tempRect,
+					 srcCopy,
+					 NULL);
+		GetDialogItem(insertIcns, kClipboardPreview, &itemType, &item, &sourceRect);
+		sourceRect.right -= (sourceRect.right - sourceRect.left)/2;
+		tempRect = smallIconRect;
+		MakeTargetRect(sourceRect, &tempRect);
+		CopyBits(&insertIcns->portBits, (BitMap *) *tempPix,&tempRect,&smallIconRect,srcCopy,NULL);
+		SetRect(&clipSmallIconRect, 0, 0, 16, 16);
+		SetRect(&clipSmallMaskRect, 0, 16, 16, 32);
+		CopyDeepMask((BitMap *) *clipboardPix,
+					 (BitMap *) *clipboardPix,
+					 &insertIcns->portBits,
+					 &clipSmallIconRect,
+					 &clipSmallMaskRect,
+				 	 &tempRect,
+					 srcCopy,
+					 NULL);
 	}
 	if (clipboardRect.right == 64)
 	{
-		
-		sourceRect.left = 0;
-		sourceRect.right = 32;
-		CopyBits((BitMap *)*clipboardPix, &qd.thePort->portBits, &sourceRect,&largeIconRect,srcCopy, NULL);
-		sourceRect.left += 32;
-		sourceRect.right += 32;
-		CopyBits((BitMap *)*clipboardPix, &qd.thePort->portBits, &sourceRect,&largeMaskRect,srcCopy, NULL);
+		GetDialogItem(insertIcns, kClipboardPreview, &itemType, &item, &sourceRect);
+		tempRect = largeIconRect;
+		MakeTargetRect(sourceRect, &tempRect);
+		CopyBits(&insertIcns->portBits, (BitMap *) *tempPix,&tempRect,&largeIconRect,srcCopy,NULL);
+		SetRect(&clipLargeIconRect, 0, 0, 32, 32);
+		SetRect(&clipLargeMaskRect, 32, 0, 64, 32);
+		CopyDeepMask((BitMap *) *clipboardPix,
+					 (BitMap *) *clipboardPix,
+					 &insertIcns->portBits,
+					 &clipLargeIconRect,
+					 &clipLargeMaskRect,
+				 	 &tempRect,
+					 srcCopy,
+					 NULL);
 	}
 	if (clipboardRect.right == 16)
 	{
-		sourceRect.left = 0;
-		sourceRect.right = 16;
-		sourceRect.bottom = 16;
-		CopyBits((BitMap *)*clipboardPix, &qd.thePort->portBits, &sourceRect,&smallIconRect,srcCopy, NULL);
-		sourceRect.top += 16;
-		sourceRect.bottom += 16;
-		CopyBits((BitMap *)*clipboardPix, &qd.thePort->portBits, &sourceRect,&smallMaskRect,srcCopy, NULL);
+		GetDialogItem(insertIcns, kClipboardPreview, &itemType, &item, &sourceRect);
+		tempRect = smallIconRect;
+		MakeTargetRect(sourceRect, &tempRect);
+		CopyBits(&insertIcns->portBits, (BitMap *) *tempPix,&tempRect,&smallIconRect,srcCopy,NULL);
+		SetRect(&clipSmallIconRect, 0, 0, 16, 16);
+		SetRect(&clipSmallMaskRect, 0, 16, 16, 32);
+		CopyDeepMask((BitMap *) *clipboardPix,
+					 (BitMap *) *clipboardPix,
+					 &insertIcns->portBits,
+					 &clipSmallIconRect,
+					 &clipSmallMaskRect,
+				 	 &tempRect,
+					 srcCopy,
+					 NULL);
 	}
 	RGBForeColor(&currentForeColor);
 	RGBBackColor(&currentBackColor);
 	UnlockPixels(clipboardPix);
 	DisposeGWorld(clipboardGWorld);
+	UnlockPixels(tempPix);
+	DisposeGWorld(tempGWorld);
 	
+	SetPort(insertIcns);
+
+	GetDialogItem(insertIcns, kCurrentIconPreview, &itemType, &item, &sourceRect);
+	sourceRect.left += (sourceRect.right - sourceRect.left)/2;
+	currentLargeIconRect = largeIconRect;
+	MakeTargetRect(sourceRect, &currentLargeIconRect);
+	
+	GetDialogItem(insertIcns, kCurrentIconPreview, &itemType, &item, &sourceRect);
+	sourceRect.right -= (sourceRect.right - sourceRect.left)/2;
+	currentSmallIconRect = smallIconRect;
+	MakeTargetRect(sourceRect, &currentSmallIconRect);
+	
+	RegisterIconRefFromResource('c2ic', 'test', &schemeSpec, -16455, &currentIconRef); 
+	PlotIconRef(&currentLargeIconRect,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);
+	ReleaseIconRef(currentIconRef);
+	
+	RegisterIconRefFromResource('c2ic', 'test', &schemeSpec, -16455, &currentIconRef); 
+	PlotIconRef(&currentSmallIconRect,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);
+	ReleaseIconRef(currentIconRef);
 	
 	ShowWindow( insertIcns );
 
@@ -770,7 +869,10 @@ void GeticnsID()
 				//FSClose(scheme);
 				UseResFile(appFile);
 				SetGWorld(startupPort, startupDevice);
-				clip2icns(ID, icnsName, includeOldStyle);
+				if (createFile)
+					clip2icns(ID, icnsName, includeOldStyle + createFile);
+				else
+					clip2icns(ID, icnsName, includeOldStyle);
 				return;
 				break;
 			case kCancel:
@@ -822,15 +924,17 @@ void GeticnsID()
 		
 		
 	}
-	CloseResFile(scheme);
-	UseResFile(appFile);
-	//FSClose(scheme);
+	if (!createFile)
+	{
+		CloseResFile(scheme);
+		UseResFile(appFile);
+	}
 	DisposeDialog(insertIcns);
 	SetGWorld(startupPort, startupDevice);
 }
 
 
-void clip2icns(short icnsID, Str255 icnsName, bool includeOldStyle)
+void clip2icns(short icnsID, Str255 icnsName, int flags)
 {
 	long				large32BitSize = 0x1000;
 	long				small32BitSize = 0x1000 / 4;
@@ -873,7 +977,7 @@ void clip2icns(short icnsID, Str255 icnsName, bool includeOldStyle)
 	clipboardRect = (*(PicHandle)pic)->picFrame;
 	OffsetRect(&clipboardRect, -clipboardRect.left, -clipboardRect.top);
 	
-	grayscaleTable = GetCTable(128);
+	grayscaleTable = GetCTable(40);
 	HLock((Handle)grayscaleTable);
 	if (clipboardRect.right == 80)
 	{
@@ -1145,8 +1249,14 @@ void clip2icns(short icnsID, Str255 icnsName, bool includeOldStyle)
 	
 	scheme = FSpOpenResFile(&schemeSpec, fsRdWrPerm);
 	UseResFile(scheme);
-	
-	if (includeOldStyle)
+	if (flags & createFile)
+	{
+		FSpDelete(&schemeSpec);
+
+		FSpCreate(&schemeSpec, 'c2ci', 'Icon', 0); /*smRoman = 0*/
+		FSpCreateResFile(&schemeSpec, 'c2ci', 'Icon', 0); /*smRoman = 0*/
+	}
+	if (flags & includeOldStyle)
 	{
 		currentIcon = Get1Resource('ICN#', icnsID);
 		if (currentIcon != NULL)
