@@ -1,4 +1,4 @@
-/* Resource fork of software/releases/Glypher/Default Glyphs */
+/* Resource fork of software/Glypher/Default Glyphs */
 resource 'icns' (-3942, sysheap, purgeable) {
 	{	/* array elementArray: 8 elements */
 		/* [1] */

@@ -1,5 +1,4 @@
-#include <Navigation.h>
-#include <icnsClass.h>
+#include "glypher.h"
 
 // ui stuff
 bool		isDone;
@@ -8,9 +7,10 @@ GDHandle	startupDevice;
 bool		navServicesAvailable;
 
 // icon stuff
-FSSpec			badgesSpec;
+FSSpec			glyphsSpec;
 FSSpec			setSpec;
 short			appFile;
+PreferencesHandle preferences;
 
 // commonfunctions.h variables
 

@@ -1,4 +1,221 @@
-/* Resource fork of software/Glypher/glypher.µ.rsrc */
+/* Resource fork of software/Glypher/Glypher (PPC) */
+resource 'DITL' (3000, "Basic Alert") {
+	{	/* array DITLarray: 2 elements */
+		/* [1] */
+		{67, 311, 87, 369},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{8, 58, 60, 369},
+		StaticText {
+			disabled,
+			"^0 ^1."
+		}
+	}
+};
+
+resource 'DITL' (129) {
+	{	/* array DITLarray: 2 elements */
+		/* [1] */
+		{10, 7, 27, 71},
+		StaticText {
+			disabled,
+			"Merging:"
+		},
+		/* [2] */
+		{10, 69, 27, 144},
+		StaticText {
+			disabled,
+			""
+		}
+	}
+};
+
+resource 'DITL' (130) {
+	{	/* array DITLarray: 14 elements */
+		/* [1] */
+		{209, 228, 229, 296},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{209, 83, 229, 218},
+		Button {
+			enabled,
+			"Insert From Clipboard"
+		},
+		/* [3] */
+		{50, 29, 178, 157},
+		UserItem {
+			enabled
+		},
+		/* [4] */
+		{35, 57, 47, 129},
+		Control {
+			enabled,
+			128
+		},
+		/* [5] */
+		{78, 160, 150, 172},
+		Control {
+			enabled,
+			129
+		},
+		/* [6] */
+		{181, 57, 193, 129},
+		Control {
+			enabled,
+			130
+		},
+		/* [7] */
+		{78, 14, 150, 26},
+		Control {
+			enabled,
+			131
+		},
+		/* [8] */
+		{1, 6, 23, 308},
+		Control {
+			enabled,
+			200
+		},
+		/* [9] */
+		{44, 216, 108, 280},
+		UserItem {
+			enabled
+		},
+		/* [10] */
+		{29, 229, 41, 265},
+		Control {
+			enabled,
+			132
+		},
+		/* [11] */
+		{58, 283, 94, 295},
+		Control {
+			enabled,
+			133
+		},
+		/* [12] */
+		{111, 230, 123, 266},
+		Control {
+			enabled,
+			134
+		},
+		/* [13] */
+		{58, 201, 94, 213},
+		Control {
+			enabled,
+			135
+		},
+		/* [14] */
+		{139, 200, 187, 296},
+		UserItem {
+			enabled
+		}
+	}
+};
+
+resource 'DITL' (131) {
+	{	/* array DITLarray: 4 elements */
+		/* [1] */
+		{67, 126, 87, 194},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{22, 10, 38, 169},
+		RadioButton {
+			enabled,
+			"Glyphs File"
+		},
+		/* [3] */
+		{42, 10, 58, 169},
+		RadioButton {
+			enabled,
+			"Another File"
+		},
+		/* [4] */
+		{2, 11, 20, 141},
+		StaticText {
+			disabled,
+			"Get the base folder from:"
+		}
+	}
+};
+
+resource 'DITL' (128) {
+	{	/* array DITLarray: 8 elements */
+		/* [1] */
+		{181, 212, 201, 270},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{10, 10, 167, 290},
+		UserItem {
+			enabled
+		},
+		/* [3] */
+		{63, 121, 76, 271},
+		StaticText {
+			disabled,
+			"clip2icns registered to:"
+		},
+		/* [4] */
+		{77, 129, 91, 246},
+		StaticText {
+			disabled,
+			""
+		},
+		/* [5] */
+		{91, 129, 105, 246},
+		StaticText {
+			disabled,
+			""
+		},
+		/* [6] */
+		{115, 120, 133, 300},
+		StaticText {
+			disabled,
+			"by Mihai Parparita"
+		},
+		/* [7] */
+		{149, 120, 167, 300},
+		StaticText {
+			enabled,
+			"http://www.mscape.com/"
+		},
+		/* [8] */
+		{132, 120, 150, 300},
+		StaticText {
+			enabled,
+			"mihai@mscape.com"
+		}
+	}
+};
+
+resource 'ALRT' (3000) {
+	{40, 40, 134, 416},
+	3000,
+	{	/* array: 4 elements */
+		/* [1] */
+		OK, visible, sound1,
+		/* [2] */
+		OK, visible, sound1,
+		/* [3] */
+		OK, visible, sound1,
+		/* [4] */
+		OK, visible, sound1
+	},
+	alertPositionMainScreen
+};
+
 resource 'MENU' (130) {
 	130,
 	textMenuProc,
@@ -2163,190 +2380,6 @@ resource 'STR ' (128) {
 	"1"
 };
 
-resource 'DITL' (129) {
-	{	/* array DITLarray: 2 elements */
-		/* [1] */
-		{10, 7, 27, 71},
-		StaticText {
-			disabled,
-			"Merging:"
-		},
-		/* [2] */
-		{10, 69, 27, 144},
-		StaticText {
-			disabled,
-			""
-		}
-	}
-};
-
-resource 'DITL' (130) {
-	{	/* array DITLarray: 14 elements */
-		/* [1] */
-		{209, 228, 229, 296},
-		Button {
-			enabled,
-			"OK"
-		},
-		/* [2] */
-		{209, 83, 229, 218},
-		Button {
-			enabled,
-			"Insert From Clipboard"
-		},
-		/* [3] */
-		{50, 29, 178, 157},
-		UserItem {
-			enabled
-		},
-		/* [4] */
-		{35, 57, 47, 129},
-		Control {
-			enabled,
-			128
-		},
-		/* [5] */
-		{78, 160, 150, 172},
-		Control {
-			enabled,
-			129
-		},
-		/* [6] */
-		{181, 57, 193, 129},
-		Control {
-			enabled,
-			130
-		},
-		/* [7] */
-		{78, 14, 150, 26},
-		Control {
-			enabled,
-			131
-		},
-		/* [8] */
-		{1, 6, 23, 308},
-		Control {
-			enabled,
-			200
-		},
-		/* [9] */
-		{44, 216, 108, 280},
-		UserItem {
-			enabled
-		},
-		/* [10] */
-		{29, 229, 41, 265},
-		Control {
-			enabled,
-			132
-		},
-		/* [11] */
-		{58, 283, 94, 295},
-		Control {
-			enabled,
-			133
-		},
-		/* [12] */
-		{111, 230, 123, 266},
-		Control {
-			enabled,
-			134
-		},
-		/* [13] */
-		{58, 201, 94, 213},
-		Control {
-			enabled,
-			135
-		},
-		/* [14] */
-		{139, 200, 187, 296},
-		UserItem {
-			enabled
-		}
-	}
-};
-
-resource 'DITL' (131) {
-	{	/* array DITLarray: 4 elements */
-		/* [1] */
-		{67, 126, 87, 194},
-		Button {
-			enabled,
-			"OK"
-		},
-		/* [2] */
-		{22, 10, 38, 169},
-		RadioButton {
-			enabled,
-			"Glyphs File"
-		},
-		/* [3] */
-		{42, 10, 58, 169},
-		RadioButton {
-			enabled,
-			"Another File"
-		},
-		/* [4] */
-		{2, 11, 20, 141},
-		StaticText {
-			disabled,
-			"Get the base folder from:"
-		}
-	}
-};
-
-resource 'DITL' (128) {
-	{	/* array DITLarray: 8 elements */
-		/* [1] */
-		{181, 212, 201, 270},
-		Button {
-			enabled,
-			"OK"
-		},
-		/* [2] */
-		{10, 10, 167, 290},
-		UserItem {
-			enabled
-		},
-		/* [3] */
-		{63, 121, 76, 271},
-		StaticText {
-			disabled,
-			"clip2icns registered to:"
-		},
-		/* [4] */
-		{77, 129, 91, 246},
-		StaticText {
-			disabled,
-			""
-		},
-		/* [5] */
-		{91, 129, 105, 246},
-		StaticText {
-			disabled,
-			""
-		},
-		/* [6] */
-		{115, 120, 133, 300},
-		StaticText {
-			disabled,
-			"by Mihai Parparita"
-		},
-		/* [7] */
-		{149, 120, 167, 300},
-		StaticText {
-			enabled,
-			"http://www.mscape.com/"
-		},
-		/* [8] */
-		{132, 120, 150, 300},
-		StaticText {
-			enabled,
-			"mihai@mscape.com"
-		}
-	}
-};
-
 resource 'CNTL' (129, purgeable) {
 	{52, 164, 124, 176},
 	0,
@@ -3027,5 +3060,43 @@ resource 'icns' (-16455, "Item Icon ") {
 		$"0D55 6021 0000 0000 0000 0000 0000 0000"
 		$"0001 0100 0000 0000 0000 0000 0000 0000"
 	}
+};
+
+resource 'cfrg' (0) {
+	{	/* array memberArray: 1 elements */
+		/* [1] */
+		kPowerPCCFragArch,
+		kIsCompleteCFrag,
+		kNoVersionNum,
+		kNoVersionNum,
+		131072,
+		kNoAppSubFolder,
+		kApplicationCFrag,
+		kDataForkCFragLocator,
+		kZeroOffset,
+		kSegIDZero,
+		"Glypher (PPC)"
+	}
+};
+
+resource 'SIZE' (-1) {
+	reserved,
+	acceptSuspendResumeEvents,
+	reserved,
+	canBackground,
+	multiFinderAware,
+	backgroundAndForeground,
+	dontGetFrontClicks,
+	ignoreChildDiedEvents,
+	is32BitCompatible,
+	isHighLevelEventAware,
+	onlyLocalHLEvents,
+	notStationeryAware,
+	dontUseTextEditServices,
+	notDisplayManagerAware,
+	reserved,
+	reserved,
+	1048576,
+	1048576
 };
 

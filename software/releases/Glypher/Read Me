@@ -1,0 +1,39 @@
+Glypher 1.0d7
+by Mihai Parparita
+free for clip2icns users
+mihai@mscape.com
+http://www.mscape.com/
+
+Introduction
+
+This little utility is designed to help you create the system folder icons. It separates the icons into two layers, a glyph and a base folder. The idea is that the glyphs can be reused, and all you need to do is to make a different base folder. Glypher can make both the new 32-bit icons, and generate old ones as well.
+
+Usage
+
+<must write this>
+
+Purchasing Info
+
+Glypher looks for a registered copy of clip2icns when launching. clip2icns is a $10 shareware tool developer by me which allows you to insert and edit 32 bit icons. If you want to register clip2icns, you can use the included Register application or register online at http://order.kagi.com/?QEJ. Registrations for clip2icns are handled by the Kagi Shareware service run by Kee Nethery. In addition to cash in various currencies and US dollar checks drawn on US banks, Kagi Shareware also accepts credit card registrations by snail-mail or e-mail (your card number is scrambled). For organizations, they handle invoices and site licenses, too. You will receive a registration code from Kagi, and when you enter that and your name in the registration dialog (available from the Apple menu in clip2icns) you will be able to use Glypher. The reason why I'm tying these two products together is because there's an overlap in their capabilities and it would not make sense to have them as two different programs. Plus Glypher has much more limited appeal when compared to clip2icns.
+
+Version History
+
+1.0d8 December 2 1998
+ - small 1 bit mask (ics# resource) is generated properly
+ - app now places a watermark on icons when c2i's not registered instead of refusing to launch
+ - Default Glyphs set now includes old style resources so that the base folder won't get dithered under lower bit depths
+1.0d7 November 28 1998
+ - you can now drag the glyph around with the cursor to reposition it
+ - you can also use the arrow keys to shift the glyph around (hold down the option key to move around the small glyph)
+ - the merged icons can be inserted directly into a scheme
+ - there is an option of choosing a different file for the source of the base folder (make sure that the file has an icon with the ID -3999)
+ - when creating the old style merged icon, the icl8 of the base folder is used, instead of dithering down the 32 bit one
+ - new about box picture
+
+Future Plans
+
+I'm planning to add Glypher's capabilities to an icon editor that I'm developing right now (to be release some time next year).
+
+Thanks
+
+Testers, people at Mathemaesthetics, etc...

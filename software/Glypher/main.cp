@@ -15,7 +15,7 @@ void Initialize()
 	DateTimeRec		theDate;
 	StringHandle	doesExpire;
 	
-	InitToolBox();
+	InitToolbox();
 	
 	GetGWorld(&startupPort, &startupDevice);
 	
@@ -23,9 +23,9 @@ void Initialize()
 	doesExpire = GetString( 128 );
 	if (EqualString(*doesExpire, "\p1", true, true))
 	{
-		if (theDate.month >= 12 && theDate.day >= 1 && theDate.year >= 1998)
+		if (theDate.month >= 12 && theDate.day >= 31 && theDate.year >= 1998)
 		{
-			DisplayAlert("This beta of Badger expired on December 1, 1998.", "Please go to http://cafe.ambrosiasw.com/gui-central/clip2cicn.html to get a new version");
+			DisplayAlert("This beta of Glypher expired on December 31, 1998.", "Please contact Mihai to get a new version");
 			ExitApplication();
 		}
 	}
@@ -36,6 +36,71 @@ void Initialize()
 	isDone = false;
 	navServicesAvailable = NavServicesAvailable();
 	appFile = CurResFile();
+	
+	if (GetPreferences() != noErr)
+	{
+		DisplayAlert("In order to use Glypher you must have a registered copy of clip2icns.", "A watermark will be placed on all of your merged icons");
+		(**preferences).registered = false;
+		CopyString((**preferences).name, "\pNot registered");
+	}
+	else
+		(**preferences).registered = true;
+}
+
+OSStatus GetPreferences(void)
+{
+	OSStatus			err;
+	FSSpec				preferencesFile;
+	short				preferencesRefNum;
+	short				myVRef;
+	long				myDirID;
+	PreferencesHandle	preferencesRes;
+	Str255				testRegNo;
+	
+	preferences = (PreferencesHandle)NewHandleClear(sizeof(tPreferences));
+	HLock((Handle)preferences);
+	
+	err = FindFolder(kOnSystemDisk, kPreferencesFolderType, kDontCreateFolder, &myVRef, &myDirID);
+	if (err == noErr)
+		err = FSMakeFSSpec(myVRef, myDirID, "\pclip2icns Preferences", &preferencesFile);
+	
+	if (err == noErr)
+		preferencesRefNum = FSpOpenResFile(&preferencesFile, fsRdWrPerm);
+	else
+		return err;
+	
+	if ((preferencesRefNum != -1) && (err == noErr))
+	{
+		UseResFile(preferencesRefNum);
+		preferencesRes = (PreferencesHandle)Get1Resource('Pref', 128);
+		(**preferences).timesUsed = (**preferencesRes).timesUsed;
+		CopyString((**preferences).name, (**preferencesRes).name);
+		CopyString((**preferences).company, (**preferencesRes).company);
+		CopyString((**preferences).regNo, (**preferencesRes).regNo);
+		(**preferences).includeOldStyle = (**preferencesRes).includeOldStyle;
+		(**preferences).setBits = (**preferencesRes).setBits;
+		(**preferences).generateOldStyle = (**preferencesRes).generateOldStyle;
+		(**preferences).nameResources = (**preferencesRes).nameResources;
+		
+		if (GetResourceSizeOnDisk((Handle)preferencesRes) != 774)
+		{
+			// old preferences, some fields aren't in it	
+			(**preferences).generateOldStyle = true;
+			(**preferences).nameResources = true;
+		}
+		
+		if (!(EqualString((**preferences).name, "\pNot Registered", true, true)))
+		{
+			GenerateRegNo((**preferences).name, testRegNo);
+			if (!(EqualString((**preferences).regNo, testRegNo, true, true)))
+				return paramErr;
+		}
+		else
+			return paramErr;
+		CloseResFile(preferencesRefNum);
+		UseResFile(appFile);
+	}
+	return noErr;
 }
 
 void InitMenuBar()
@@ -48,6 +113,10 @@ void InitMenuBar()
 	
 	menu = GetMenuHandle ( mApple );
 	AppendResMenu (menu, 'DRVR' );
+	
+	menu = GetMenu(mNewHierarchical);
+	if(menu != NULL)
+		InsertMenu(menu,hierMenu);
 	
 	DrawMenuBar();
 }
@@ -101,12 +170,8 @@ OSErr DoOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
 		if (err == noErr)
 		{
 			
-			badgesSpec = desc;
-			if (navServicesAvailable)
-				NewIconSetNav();
-			else
-				NewIconSetOld();
-			MakeNewSet();	
+			glyphsSpec = desc;
+			PositionBadges();
 			return MyGotRequiredParams(theAppleEvent);
 		}
 	}
@@ -254,9 +319,10 @@ void DoMenuCommand(long menuResult)
 		menuItem = LoWord(menuResult);
 		switch (menuID)
 		{
-			case mApple :	HandleAppleChoice(menuItem); break;
-			case mFile :	HandleFileChoice(menuItem); break;
-			case mEdit :	HandleEditChoice(menuItem); break;
+			case mApple :			HandleAppleChoice(menuItem); break;
+			case mFile :			HandleFileChoice(menuItem); break;
+			case mNewHierarchical : HandleHierarchicalChoice(menuItem); break;
+			case mEdit :			HandleEditChoice(menuItem); break;
 		}
 		HiliteMenu(0);
 	}
@@ -279,6 +345,29 @@ void HandleAppleChoice(int item)
 	}
 }
 
+void GenerateRegNo(Str255 name, Str255 regNo)
+{
+	long i;
+	
+	regNo[0] = 6;
+	
+	for (i=1; i <= 6; i++)
+		regNo[i] = (name[i] % 10);
+	for (i=1; i <= 6; i++)
+		regNo[i] = ((regNo[i] + name[i+6]) % 10);
+	for (i=1; i <=6; i++)
+		regNo[i] = ((regNo[i] + name[i+12]) % 10);
+	for (i=1; i <=6; i++)
+		regNo[i] = ((regNo[i] + name[i+18]) % 10);
+	
+	regNo[1] = ((regNo[1] + 2) % 10) + '0';
+	regNo[2] = ((regNo[2] + 4) % 10) + '0';
+	regNo[3] = ((regNo[3] + 0) % 10) + '0';
+	regNo[4] = ((regNo[4] + 9) % 10) + '0';
+	regNo[5] = ((regNo[5] + 9) % 10) + '0';
+	regNo[6] = ((regNo[6] + 8) % 10) + '0';	
+}
+
 void ShowAboutBox()
 {
 	DialogPtr		aboutBox;
@@ -286,15 +375,25 @@ void ShowAboutBox()
 	short			itemHit;
 	GWorldPtr		picGWorld, maskGWorld, tempGWorld;
 	PixMapHandle	picPixMap, maskPixMap, tempPixMap;
-	Rect			targetRect, picRect;
+	Rect			targetRect, picRect, emailRect, homepageRect;
 	Handle			item;
 	short			itemType;
-	
+	Str255			address, tempString;
+	Point			theMouse;
 	
 	
 	
 	aboutBox = GetNewDialog (aboutBoxID, nil, (WindowPtr)-1L);
 	SetPort( aboutBox);
+	
+	GetDialogItem(aboutBox, kEmailAddress, &itemType, &item, &emailRect);
+	GetDialogItem(aboutBox, kHomepageAddress, &itemType, &item, &homepageRect);
+	
+	GetDialogItem(aboutBox, kNameField, &itemType, &item, &picRect);
+	SetDialogItemText(item, (**preferences).name);
+	GetDialogItem(aboutBox, kCompanyField, &itemType, &item, &picRect);
+	SetDialogItemText(item, (**preferences).company);
+	
 	SetDialogDefaultItem(aboutBox, kOk);
 	
 	ShowWindow( aboutBox );
@@ -306,7 +405,6 @@ void ShowAboutBox()
 	LockPixels(tempPixMap);
 	
 	NewGWorld(&picGWorld, 32, &picRect, NULL, NULL, 0);
-	
 	SetGWorld(picGWorld, NULL);
 	DrawPicture(GetPicture(aboutPicID), &picRect);
 	picPixMap = GetGWorldPixMap(picGWorld);
@@ -341,7 +439,9 @@ void ShowAboutBox()
 			 &targetRect,
 			 srcCopy + ditherCopy,
 			 NULL);	
-			 
+	
+	SetPort(aboutBox);
+		 
 	UnlockPixels(picPixMap);
 	UnlockPixels(maskPixMap);
 	UnlockPixels(tempPixMap);
@@ -356,10 +456,32 @@ void ShowAboutBox()
 	while (!dialogDone)
 	{
 		ModalDialog(nil, &itemHit);
-		
 		switch (itemHit)
 		{
-			case kOk: dialogDone = true;
+			case kOk: dialogDone = true; break;
+			case kAboutPic:
+				GetMouse(&theMouse);
+				if (PtInRect(theMouse, &emailRect))
+				{
+					GetDialogItem(aboutBox, kEmailAddress, &itemType, &item, &picRect);
+					GetDialogItemText(item, tempString);
+					CopyString(address, "\pmailto:");
+					for (int i = 1; i <= tempString[0]; i++)
+						address[7+i] = tempString[i];
+					address[0] += tempString[0];
+					dialogDone = true;
+					if (LaunchURL((ConstStr255Param)address) != noErr)
+						DisplayAlert("Can't launch URL.", "Internet Config must be installed");
+				}
+				if (PtInRect(theMouse, &homepageRect))
+				{
+					GetDialogItem(aboutBox, kHomepageAddress, &itemType, &item, &picRect);
+					GetDialogItemText(item, address);
+					dialogDone = true;
+					if (LaunchURL((ConstStr255Param)address) != noErr)
+						DisplayAlert("Can't launch URL.", "Internet Config must be installed");
+				}
+				break;
 		}
 		
 		
@@ -372,169 +494,51 @@ void HandleFileChoice(int item)
 {
 	switch (item)
 	{
-		case iNewIconSet : NewIconSet(); break;
+		
 		case iEditBadges : EditBadges(); break;
 		case iQuit       :	isDone = true; break;
+	}
+}
+
+void HandleHierarchicalChoice(int item)
+{
+	switch (item)
+	{
+		case iNewFile : NewIconSet(); break;
+		case iIntoScheme : IntoScheme(); break;
 	}
 }
 
 void NewIconSet()
 {
 	OSStatus	theErr;
+	icnsClass	baseicns;
 	
-	if (navServicesAvailable)
-	{
-		theErr = GetBadgesNav();
-		if (theErr == noErr)
-			theErr = NewIconSetNav();
-	}
-	else
-	{
-		theErr = GetBadgesOld();
-		if (theErr == noErr)
-			theErr = NewIconSetOld();
-	}
+	theErr = GetFile("\pGlypher", glypherCreator, glyphsFileType, &glyphsSpec);
 	if (theErr == noErr)
-		MakeNewSet();
-	
+		theErr = NewFile("\pMake a new folder set:", "\pUntitled Icon Set", "\pGlypher", glypherCreator, glyphsFileType, &setSpec);
+	if (theErr == noErr)
+		MakeNewSet(true);
 }
 
-OSStatus NewIconSetNav()
+void IntoScheme(void)
 {
-	NavDialogOptions	dialogOptions;
-	NavReplyRecord		reply;
-	NavEventUPP			eventUPP;
-	AEDesc				resultDesc;
-	OSStatus			theErr;
+	OSStatus	theErr;
 	
-	
-	UseResFile(appFile);
-	
-	eventUPP = NewNavEventProc(DummyFunction);
-	
-	NavGetDefaultDialogOptions ( &dialogOptions );
-	dialogOptions.dialogOptionFlags -= kNavAllowMultipleFiles;
-	dialogOptions.dialogOptionFlags += kNavNoTypePopup;
-	dialogOptions.dialogOptionFlags -= kNavAllowPreviews;
-	CopyString(dialogOptions.clientName, "\pGlypher");
-	CopyString(dialogOptions.savedFileName, "\pUntitled Icon Set");
-	
-	theErr = NavPutFile(NULL,	// use system's default location
-			   &reply,
-			   &dialogOptions,
-			   eventUPP,
-			   'rsrc',
-			   'RSED',
-			   NULL);
-					
-	DisposeRoutineDescriptor(eventUPP);
-	
-	if (reply.validRecord)
-	{
-		AEGetNthDesc( &(reply.selection), 1, typeFSS, NULL, &resultDesc );
-
-		GetFSSpecFromAEDesc(resultDesc, setSpec);
-		
-		NavDisposeReply(&reply);
-		AEDisposeDesc(&resultDesc);
-		return noErr;
-	}
-	else
-	{
-		NavDisposeReply(&reply);
-		return paramErr;
-	}		   
+	theErr = GetFile("\pGlypher", glypherCreator, glyphsFileType, &glyphsSpec);
+	if (theErr == noErr)
+		theErr = GetFile("\pGlypher", schemeCreator, schemeFileType, &setSpec);
+	if (theErr == noErr)
+		MakeNewSet(false);
 }
-
-OSStatus NewIconSetOld()
-{
-	StandardFileReply reply;
-
-	StandardPutFile("\pCreate a new icon set:", "\pUntitled Icon Set", &reply);
-
-	if ( reply.sfGood )
-	{
-		setSpec = reply.sfFile;	
-		return noErr;
-	}
-	return paramErr;
-}
-
-
 
 void EditBadges()
 {
 	OSStatus	theErr;
-	if (navServicesAvailable)
-		theErr = GetBadgesNav();
-	else
-		theErr = GetBadgesOld();
+
+	theErr = GetFile("\pGlypher", glypherCreator, glyphsFileType, &glyphsSpec);
 	if (theErr == noErr)
 		PositionBadges();
-}
-
-OSStatus GetBadgesNav()
-{
-	NavDialogOptions	dialogOptions;
-	NavReplyRecord		reply;
-	NavEventUPP			eventUPP;
-	AEDesc				resultDesc;
-	NavTypeListHandle	typeList;
-	
-	UseResFile(appFile);
-	
-	eventUPP = NewNavEventProc(DummyFunction);
-	
-	NavGetDefaultDialogOptions ( &dialogOptions );
-	dialogOptions.dialogOptionFlags -= kNavAllowMultipleFiles;
-	dialogOptions.dialogOptionFlags += kNavNoTypePopup;
-	dialogOptions.dialogOptionFlags -= kNavAllowPreviews;
-	CopyString(dialogOptions.clientName, "\pGlypher");
-	typeList = MakeTypeList ( 'Glph', 1, badgesFileType);
-	
-	NavGetFile(NULL,
-			   &reply,
-			   &dialogOptions,
-			   eventUPP,
-			   NULL,
-			   NULL,
-			   typeList,
-			   NULL);
-	
-	if (reply.validRecord)
-	{
-		AEGetNthDesc( &(reply.selection), 1, typeFSS, NULL, &resultDesc );
-
-		GetFSSpecFromAEDesc(resultDesc, badgesSpec);
-	
-		NavDisposeReply(&reply);
-		AEDisposeDesc(&resultDesc);
-		DisposeRoutineDescriptor(eventUPP);
-		return noErr;
-	}
-	else
-	{
-		DisposeRoutineDescriptor(eventUPP);
-		NavDisposeReply(&reply);
-		return paramErr;
-	}		   
-}
-
-
-OSStatus GetBadgesOld()
-{
-	StandardFileReply	reply;
-	SFTypeList			typeList;
-	
-	typeList[0] = badgesFileType;
-	
-	StandardGetFile(nil, 1, typeList, &reply);
-	if ( reply.sfGood)
-	{
-		badgesSpec = reply.sfFile;
-		return noErr;
-	}
-	return paramErr;
 }
 
 
@@ -587,9 +591,9 @@ void DrawImageWell(Rect bounds)
 #define DisposeAndReturn()\
 {\
 	SysBeep(6);\
-	HUnlock((Handle)badgeicnsHandle);\
-	DisposeHandle((Handle)badgeicnsHandle);\
-	CloseResFile(badges);\
+	HUnlock((Handle)glyphicnsHandle);\
+	DisposeHandle((Handle)glyphicnsHandle);\
+	CloseResFile(glyphs);\
 	UseResFile(appFile);\
 	return;\
 }
@@ -598,23 +602,23 @@ void MergeIcon(int ID, Str255 name, icnsClass* baseicns)
 {
 	GWorldPtr			tempGWorld;
 	PixMapHandle		tempPix;
-	Rect				largeIconRect={0,0,32, 32}, smallIconRect = {0, 0, 16, 16}, badgeRect, smallBadgeRect;
+	Rect				largeIconRect={0,0,32, 32}, smallIconRect = {0, 0, 16, 16}, glyphRect, smallGlyphRect;
 	CTabHandle			grayscaleTable;
 	RGBColor			currentForeColor, currentBackColor;
-	short				set, badges;
+	short				glyphs;
 	CGrafPtr			curPort;
 	GDHandle			curDevice;
 	tOffset**			offsetHandle;
 	int					hOffset=0, vOffset=0, smallHOffset=0, smallVOffset=0;
 	RgnHandle			ignoredRgn;
-	icnsClass			badgeicns, targeticns;
+	icnsClass			glyphicns, targeticns;
 
 	GetForeColor(&currentForeColor);
 	GetBackColor(&currentBackColor);
 	GetGWorld(&curPort, &curDevice);
 	
-	badges = FSpOpenResFile(&badgesSpec, fsRdPerm);
-	UseResFile(badges);
+	glyphs = FSpOpenResFile(&glyphsSpec, fsRdPerm);
+	UseResFile(glyphs);
 	
 	grayscaleTable = GetCTable(80);
 	
@@ -646,38 +650,56 @@ void MergeIcon(int ID, Str255 name, icnsClass* baseicns)
 		}
 	}
 
-	badgeicns.ID = ID;
-	badgeicns.Load();
+	glyphicns.ID = ID;
+	glyphicns.Load();
 	
-	CloseResFile(badges);
+	CloseResFile(glyphs);
 	UseResFile(appFile);
 	
 	targeticns.ID = ID;
 	
 	// loading the large version
 	SetGWorld(targeticns.icl8GW, NULL);
-	baseicns->Display(largeIconRect);
-	badgeRect = largeIconRect;
-	OffsetRect(&badgeRect, hOffset, vOffset);
-	badgeicns.Display(badgeRect);
+	//baseicns->Display(largeIconRect);
+	CopyBits((BitMap *) *(baseicns->icl8Pix),
+			 (BitMap *) *(targeticns.icl8Pix),
+			 &largeIconRect,
+			 &largeIconRect,
+			 srcCopy,
+			 NULL);
+	glyphRect = largeIconRect;
+	OffsetRect(&glyphRect, hOffset, vOffset);
+	glyphicns.Display(glyphRect);
 	
 	SetGWorld(targeticns.icl4GW, NULL);
-	baseicns->Display(largeIconRect);
-	badgeRect = largeIconRect;
-	OffsetRect(&badgeRect, hOffset, vOffset);
-	badgeicns.Display(badgeRect);
+	//baseicns->Display(largeIconRect);
+	CopyBits((BitMap *) *(baseicns->icl4Pix),
+			 (BitMap *) *(targeticns.icl4Pix),
+			 &largeIconRect,
+			 &largeIconRect,
+			 srcCopy,
+			 NULL);
+	glyphRect = largeIconRect;
+	OffsetRect(&glyphRect, hOffset, vOffset);
+	glyphicns.Display(glyphRect);
 	
 	SetGWorld(targeticns.icniGW, NULL);
-	baseicns->Display(largeIconRect);
-	badgeRect = largeIconRect;
-	OffsetRect(&badgeRect, hOffset, vOffset);
-	badgeicns.Display(badgeRect);
+	//baseicns->Display(largeIconRect);
+	CopyBits((BitMap *) *(baseicns->icniPix),
+			 (BitMap *) *(targeticns.icniPix),
+			 &largeIconRect,
+			 &largeIconRect,
+			 srcCopy,
+			 NULL);
+	glyphRect = largeIconRect;
+	OffsetRect(&glyphRect, hOffset, vOffset);
+	glyphicns.Display(glyphRect);
 	
-	SetGWorld(badgeicns.l8mkGW, NULL);
+	SetGWorld(glyphicns.l8mkGW, NULL);
 	ScrollRect(&largeIconRect, hOffset, vOffset, ignoredRgn);
-	SetGWorld(badgeicns.il32GW, NULL);
+	SetGWorld(glyphicns.il32GW, NULL);
 	ScrollRect(&largeIconRect, hOffset, vOffset, ignoredRgn);
-	SetGWorld(badgeicns.icnmGW, NULL);
+	SetGWorld(glyphicns.icnmGW, NULL);
 	ScrollRect(&largeIconRect, hOffset, vOffset, ignoredRgn);
 	
 	NewGWorld(&tempGWorld, 8, &largeIconRect, grayscaleTable, NULL, 0);
@@ -696,7 +718,7 @@ void MergeIcon(int ID, Str255 name, icnsClass* baseicns)
 			 srcCopy,
 			 NULL);
 	
-	CopyBits((BitMap *) *(badgeicns.icnmPix),
+	CopyBits((BitMap *) *(glyphicns.icnmPix),
 			 (BitMap *) *(targeticns.icnmPix),
 			 &largeIconRect,
 			 &largeIconRect,
@@ -710,7 +732,7 @@ void MergeIcon(int ID, Str255 name, icnsClass* baseicns)
 			 srcCopy,
 			 NULL);
 
-	CopyDeepMask((BitMap*) *(badgeicns.l8mkPix),
+	CopyDeepMask((BitMap*) *(glyphicns.l8mkPix),
 			 	 (BitMap*) *(baseicns->icnmPix),
 			 	 (BitMap*) *tempPix,
 				 &largeIconRect,
@@ -720,7 +742,7 @@ void MergeIcon(int ID, Str255 name, icnsClass* baseicns)
 				 NULL);
 
 	
-	CopyDeepMask((BitMap *) *(badgeicns.il32Pix),
+	CopyDeepMask((BitMap *) *(glyphicns.il32Pix),
 				 (BitMap *) *tempPix,
 				 (BitMap *) *(targeticns.il32Pix),
 				 &largeIconRect,
@@ -732,7 +754,7 @@ void MergeIcon(int ID, Str255 name, icnsClass* baseicns)
 	SetGWorld(baseicns->icnmGW, NULL);
 	InvertRect(&largeIconRect);
 	
-	CopyMask((BitMap *) *(badgeicns.il32Pix),
+	CopyMask((BitMap *) *(glyphicns.il32Pix),
 			 (BitMap *) *(baseicns->icnmPix),
 			 (BitMap *) *(targeticns.il32Pix),
 			 &largeIconRect,
@@ -759,41 +781,70 @@ void MergeIcon(int ID, Str255 name, icnsClass* baseicns)
 			 NULL);
 	
 	CopyDeepMask((BitMap *) *tempPix,
-			 (BitMap *) *(badgeicns.l8mkPix),
+			 (BitMap *) *(glyphicns.l8mkPix),
 			 (BitMap *) *(targeticns.l8mkPix),
 			 &largeIconRect,
 			 &largeIconRect,
 			 &largeIconRect,
 			 srcCopy,
 			 NULL);
+	if (!(**preferences).registered)
+	{
+		DrawWatermark(targeticns.il32GW, false);
+		DrawWatermark(targeticns.l8mkGW, true);
+		DrawWatermark(targeticns.icl8GW, false);
+		DrawWatermark(targeticns.icl4GW, false);
+		DrawWatermark(targeticns.icnmGW, true);
+		DrawWatermark(targeticns.icniGW, false);
+	}
+	
+	SetGWorld(curPort, curDevice);
 	
 	UnlockPixels(tempPix);
 	DisposeGWorld(tempGWorld);
 	
 	// loading the small version
 	SetGWorld(targeticns.ics8GW, NULL);
-	baseicns->Display(smallIconRect);
-	badgeRect = smallIconRect;
-	OffsetRect(&badgeRect, smallHOffset, smallVOffset);
-	badgeicns.Display(badgeRect);
+	//baseicns->Display(smallIconRect);
+	CopyBits((BitMap *) *(baseicns->ics8Pix),
+			 (BitMap *) *(targeticns.ics8Pix),
+			 &smallIconRect,
+			 &smallIconRect,
+			 srcCopy,
+			 NULL);
+	smallGlyphRect = smallIconRect;
+	OffsetRect(&smallGlyphRect, smallHOffset, smallVOffset);
+	glyphicns.Display(smallGlyphRect);
 	
 	SetGWorld(targeticns.ics4GW, NULL);
-	baseicns->Display(smallIconRect);
-	badgeRect = smallIconRect;
-	OffsetRect(&badgeRect, smallHOffset, smallVOffset);
-	badgeicns.Display(badgeRect);
+	//baseicns->Display(smallIconRect);
+	CopyBits((BitMap *) *(baseicns->ics4Pix),
+			 (BitMap *) *(targeticns.ics4Pix),
+			 &smallIconRect,
+			 &smallIconRect,
+			 srcCopy,
+			 NULL);
+	smallGlyphRect = smallIconRect;
+	OffsetRect(&smallGlyphRect, smallHOffset, smallVOffset);
+	glyphicns.Display(smallGlyphRect);
 	
 	SetGWorld(targeticns.icsiGW, NULL);
-	baseicns->Display(smallIconRect);
-	badgeRect = smallIconRect;
-	OffsetRect(&badgeRect, smallHOffset, smallVOffset);
-	badgeicns.Display(badgeRect);
+	//baseicns->Display(smallIconRect);
+	CopyBits((BitMap *) *(baseicns->icsiPix),
+			 (BitMap *) *(targeticns.icsiPix),
+			 &smallIconRect,
+			 &smallIconRect,
+			 srcCopy,
+			 NULL);
+	smallGlyphRect = smallIconRect;
+	OffsetRect(&smallGlyphRect, smallHOffset, smallVOffset);
+	glyphicns.Display(smallGlyphRect);
 	
-	SetGWorld(badgeicns.s8mkGW, NULL);
+	SetGWorld(glyphicns.s8mkGW, NULL);
 	ScrollRect(&smallIconRect, smallHOffset, smallVOffset, ignoredRgn);
-	SetGWorld(badgeicns.is32GW, NULL);
+	SetGWorld(glyphicns.is32GW, NULL);
 	ScrollRect(&smallIconRect, smallHOffset, smallVOffset, ignoredRgn);
-	SetGWorld(badgeicns.icsmGW, NULL);
+	SetGWorld(glyphicns.icsmGW, NULL);
 	ScrollRect(&smallIconRect, smallHOffset, smallVOffset, ignoredRgn);
 	
 	NewGWorld(&tempGWorld, 8, &smallIconRect, grayscaleTable, NULL, 0);
@@ -809,7 +860,7 @@ void MergeIcon(int ID, Str255 name, icnsClass* baseicns)
 			 srcCopy,
 			 NULL);
 	
-	CopyBits((BitMap *) *(badgeicns.icsmPix),
+	CopyBits((BitMap *) *(glyphicns.icsmPix),
 			 (BitMap *) *(targeticns.icsmPix),
 			 &smallIconRect,
 			 &smallIconRect,
@@ -823,7 +874,7 @@ void MergeIcon(int ID, Str255 name, icnsClass* baseicns)
 			 srcCopy,
 			 NULL);
 
-	CopyDeepMask((BitMap*) *(badgeicns.s8mkPix),
+	CopyDeepMask((BitMap*) *(glyphicns.s8mkPix),
 			 	 (BitMap*) *(baseicns->icsmPix),
 			 	 (BitMap*) *tempPix,
 				 &smallIconRect,
@@ -832,7 +883,7 @@ void MergeIcon(int ID, Str255 name, icnsClass* baseicns)
 				 srcCopy,
 				 NULL);
 	
-	CopyDeepMask((BitMap *) *(badgeicns.is32Pix),
+	CopyDeepMask((BitMap *) *(glyphicns.is32Pix),
 				 (BitMap *) *tempPix,
 				 (BitMap *) *(targeticns.is32Pix),
 				 &smallIconRect,
@@ -844,7 +895,7 @@ void MergeIcon(int ID, Str255 name, icnsClass* baseicns)
 	SetGWorld(baseicns->icsmGW, NULL);
 	InvertRect(&smallIconRect);
 	
-	CopyMask((BitMap *) *(badgeicns.is32Pix),
+	CopyMask((BitMap *) *(glyphicns.is32Pix),
 			 (BitMap *) *(baseicns->icsmPix),
 			 (BitMap *) *(targeticns.is32Pix),
 			 &smallIconRect,
@@ -871,7 +922,7 @@ void MergeIcon(int ID, Str255 name, icnsClass* baseicns)
 			 NULL);
 	
 	CopyDeepMask((BitMap *) *tempPix,
-			 (BitMap *) *(badgeicns.s8mkPix),
+			 (BitMap *) *(glyphicns.s8mkPix),
 			 (BitMap *) *(targeticns.s8mkPix),
 			 &smallIconRect,
 			 &smallIconRect,
@@ -879,8 +930,20 @@ void MergeIcon(int ID, Str255 name, icnsClass* baseicns)
 			 srcCopy,
 			 NULL);
 	
+	SetGWorld(curPort, curDevice);
+	
 	UnlockPixels(tempPix);
 	DisposeGWorld(tempGWorld);
+	
+	if (!(**preferences).registered)
+	{
+		DrawWatermark(targeticns.is32GW, false);
+		DrawWatermark(targeticns.s8mkGW, true);
+		DrawWatermark(targeticns.ics8GW, false);
+		DrawWatermark(targeticns.ics4GW, false);
+		DrawWatermark(targeticns.icsmGW, true);
+		DrawWatermark(targeticns.icsiGW, false);
+	}
 	
 	CopyString(targeticns.name, name);
 	targeticns.flags = resSysHeap + resPurgeable;
@@ -888,59 +951,149 @@ void MergeIcon(int ID, Str255 name, icnsClass* baseicns)
 	
 	DisposeCTable(grayscaleTable);
 	
-	SetGWorld(curPort, curDevice);
-	
 	RGBForeColor(&currentForeColor);
 	RGBBackColor(&currentBackColor);
 }
 
-void MakeNewSet()
+void DrawWatermark(GWorldPtr targetGW, bool isMask)
 {
-	DialogPtr			newSet;
+	Rect	bounds;
+	SAVEGWORLD;
+	
+	bounds = targetGW->portRect;
+	SetGWorld(targetGW, NULL);
+	TextSize(9);
+	TextFont(0);
+	TextFace(outline);
+	
+	if ((bounds.bottom - bounds.top) == 32)
+		MoveTo(26, 31);
+	else
+	{
+		MoveTo(11, 15);
+		TextSize(6);
+	}
+	
+	DrawString("\pG");
+	TextFace(normal);
+	if ((bounds.bottom - bounds.top) == 32)
+		MoveTo(26, 31);
+	else
+		MoveTo(11, 15);
+	DrawString("\pG");
+	if (!isMask)
+	{
+		TextMode(srcXor);
+		if ((bounds.bottom - bounds.top) == 32)
+			MoveTo(26, 31);
+		else
+			MoveTo(11, 15);
+		DrawString("\pG");
+	}
+	
+	RESTOREGWORLD;
+}
+
+void MakeNewSet(bool makeSetFile)
+{
+	DialogPtr			newSet, baseSource;
+	bool				dialogDone;
 	Rect				itemRect;
 	Handle				item;
-	short				itemType;
-	short				badges, set;
-	IconFamilyHandle	badgeicnsHandle, baseHandle;
+	short				itemHit, itemType;
+	short				glyphs, base;
+	IconFamilyHandle	glyphicnsHandle;
 	Str255				string;
 	int					resourceCount;
 	short				ID;
 	unsigned long		type;
-	long				handleSize;
 	icnsClass			baseicns;
-		
-	FSpDelete(&setSpec);
-
-	FSpCreate(&setSpec, 'RSED', 'rsrc', 0); /*smRoman = 0*/
-	FSpCreateResFile(&setSpec, 'RSED', 'rsrc', 0); /*smRoman = 0*/
+	int					pickedSource = kGlyphs;
+	ControlHandle		glyphsRadio, fileRadio;
+	FSSpec				baseSourceSpec;
 	
-	badges = FSpOpenResFile(&badgesSpec, fsRdPerm);
-	UseResFile(badges);
-	resourceCount = Count1Resources('icns');
+	if (makeSetFile)
+	{
+		FSpDelete(&setSpec);
+
+		FSpCreate(&setSpec, 'RSED', 'rsrc', 0); /*smRoman = 0*/
+		FSpCreateResFile(&setSpec, 'RSED', 'rsrc', 0); /*smRoman = 0*/
+	}
+	
+	baseSource = GetNewDialog(baseSourceID, NULL, (WindowPtr)-1L);
+	
+	SetPort(baseSource);
+	
+	SetDialogDefaultItem(baseSource, kOk);
+	GetDialogItem(baseSource, kGlyphs, &itemType, &((Handle)glyphsRadio), &itemRect);
+	GetDialogItem(baseSource, kFile, &itemType, &((Handle)fileRadio), &itemRect);
+
+	SetControlValue(glyphsRadio,kControlRadioButtonCheckedValue);
+	
+	ShowWindow(baseSource);
+	
+	dialogDone = false;
+	while (!dialogDone)
+	{
+		ModalDialog(nil, &itemHit);
+		
+		switch (itemHit)
+		{
+			case kOk: dialogDone = true; break;
+			case kFile:
+				SetControlValue(fileRadio,kControlRadioButtonCheckedValue);
+				SetControlValue(glyphsRadio,kControlRadioButtonUncheckedValue);
+				pickedSource = kFile;
+				break;
+			case kGlyphs:
+				SetControlValue(glyphsRadio,kControlRadioButtonCheckedValue);
+				SetControlValue(fileRadio,kControlRadioButtonUncheckedValue);
+				pickedSource = kGlyphs;
+				break;
+		}
+	}
+	DisposeDialog(baseSource);
+	SetGWorld(startupPort, startupDevice);
+	
+	switch (pickedSource)
+	{
+		case kGlyphs: baseSourceSpec = glyphsSpec; break;
+		case kFile: GetFile("\pGlypher", '****', '****', &baseSourceSpec); break;
+	}
+	
+	base = FSpOpenResFile(&baseSourceSpec, fsRdPerm);
+	UseResFile(base);
 	baseicns.ID = -3999;
 	baseicns.Load();
-	CloseResFile(badges);
+	baseicns.LoadOldStyle(false);
+	CloseResFile(base);
 	UseResFile(appFile);
 	
-	newSet = GetNewDialog (insertCicnID, nil, (WindowPtr)-1L);
+	glyphs = FSpOpenResFile(&glyphsSpec, fsRdPerm);
+	UseResFile(glyphs);
+	resourceCount = Count1Resources('icns');
+	CloseResFile(glyphs);
+	UseResFile(appFile);
+	
+	newSet = GetNewDialog (newSetID, nil, (WindowPtr)-1L);
 	
 	SetPort( newSet);
 	
 	ShowWindow( newSet );
 	
 	GetDialogItem(newSet, 1, &itemType, &item, &itemRect);
-	SetDialogItemText(item, "\pMerging");
+	SetDialogItemText(item, "\pMerging:");
 			
 	for (int i=1; i <= resourceCount; i++)
 	{
-		badges = FSpOpenResFile(&badgesSpec, fsRdPerm);
-		UseResFile(badges);
-		badgeicnsHandle = (IconFamilyHandle)Get1IndResource('icns', i);
-		HLock((Handle)badgeicnsHandle);
-		GetResInfo((Handle)badgeicnsHandle, &ID, &type, string);
-		HUnlock((Handle)badgeicnsHandle);
-		ReleaseResource((Handle)badgeicnsHandle);
-		CloseResFile(badges);
+		glyphs = FSpOpenResFile(&glyphsSpec, fsRdPerm);
+		UseResFile(glyphs);
+		glyphicnsHandle = (IconFamilyHandle)Get1IndResource('icns', i);
+		HLock((Handle)glyphicnsHandle);
+		GetResInfo((Handle)glyphicnsHandle, &ID, &type, string);
+		HUnlock((Handle)glyphicnsHandle);
+		ReleaseResource((Handle)glyphicnsHandle);
+		CloseResFile(glyphs);
 		UseResFile(appFile);
 		if (ID != -3999)
 		{
@@ -951,31 +1104,8 @@ void MakeNewSet()
 		}
 		else
 		{
-			badges = FSpOpenResFile(&badgesSpec, fsRdPerm);
-			UseResFile(badges);
-			badgeicnsHandle = (IconFamilyHandle)Get1Resource('icns', -3999);
-			HLock((Handle)badgeicnsHandle);
-			handleSize = (**badgeicnsHandle).resourceSize;
-			baseHandle = (IconFamilyHandle)NewHandleClear(handleSize);
-			HLock((Handle)baseHandle);
-			BlockMove(*badgeicnsHandle, *baseHandle, handleSize);
-			HUnlock((Handle)badgeicnsHandle);
-			ReleaseResource((Handle)badgeicnsHandle);
-			CloseResFile(badges);
-			UseResFile(appFile);
-			
-			set = FSpOpenResFile(&setSpec, fsRdWrPerm);
-			UseResFile(set);
-			DetachResource((Handle)baseHandle);
-			AddResource((Handle)baseHandle, 'icns', -3999, "\pBase Folder");
-			SetResAttrs((Handle)baseHandle, resSysHeap + resPurgeable);
-			ChangedResource((Handle)baseHandle);
-			WriteResource((Handle)baseHandle);
-			UpdateResFile(set);
-			CloseResFile(set);
-			UseResFile(appFile);
-			HUnlock((Handle)baseHandle);
-			DisposeHandle((Handle)baseHandle);
+			baseicns.flags = resSysHeap + resPurgeable;
+			baseicns.SaveToFile(setSpec, false, true);
 		}
 	}	
 	
@@ -985,17 +1115,17 @@ void MakeNewSet()
 
 #define WriteToDisk()\
 {\
-	badges = FSpOpenResFile(&badgesSpec, fsRdWrPerm);\
-	UseResFile(badges);\
+	glyphs = FSpOpenResFile(&glyphsSpec, fsRdWrPerm);\
+	UseResFile(glyphs);\
 	offsetHandle = (tOffset**)Get1Resource('Ofst', ID);\
 	if (offsetHandle != NULL)\
 	{\
 		RemoveResource((Handle)offsetHandle);\
-		UpdateResFile(badges);\
-		CloseResFile(badges);\
+		UpdateResFile(glyphs);\
+		CloseResFile(glyphs);\
 		UseResFile(appFile);\
-		badges = FSpOpenResFile(&badgesSpec, fsRdWrPerm);\
-		UseResFile(badges);\
+		glyphs = FSpOpenResFile(&glyphsSpec, fsRdWrPerm);\
+		UseResFile(glyphs);\
 	}\
 	offsetHandle = (tOffset**)NewHandleClear(sizeof(tOffset));\
 	HLock((Handle)offsetHandle);\
@@ -1007,35 +1137,31 @@ void MakeNewSet()
 	AddResource((Handle)offsetHandle, 'Ofst', ID, "\p");\
 	ChangedResource((Handle)offsetHandle);\
 	WriteResource((Handle)offsetHandle);\
-	UpdateResFile(badges);\
+	UpdateResFile(glyphs);\
 	HUnlock((Handle)offsetHandle);\
-	CloseResFile(badges);\
+	CloseResFile(glyphs);\
 	UseResFile(appFile);\
 }
 
 #define Refresh()\
 {\
-	NewGWorld(&iconGWorld, 32, &largeIconRect, NULL, NULL, 0);\
-	iconPix = GetGWorldPixMap(iconGWorld);\
 	LockPixels(iconPix);\
-	NewGWorld(&smallIconGWorld, 32, &smallIconRect, NULL, NULL, 0);\
-	smallIconPix = GetGWorldPixMap(smallIconGWorld);\
 	LockPixels(smallIconPix);\
 	SetGWorld(iconGWorld, NULL);\
 	ForeColor(blackColor);\
 	BackColor(whiteColor);\
 	EraseRect(&largeIconRect);\
-	badgeRect = largeIconRect;\
-	OffsetRect(&badgeRect, hOffset, vOffset);\
+	glyphRect = largeIconRect;\
+	OffsetRect(&glyphRect, hOffset, vOffset);\
 	baseicns.Display(largeIconRect);\
 	if (ID != 128)\
-		badgeicns.Display(badgeRect);\
+		glyphicns.Display(glyphRect);\
 	else\
 	{\
-		InsetRect(&badgeRect, 8, 8);\
-		FrameRect(&badgeRect);\
+		InsetRect(&glyphRect, 8, 8);\
+		FrameRect(&glyphRect);\
 	}\
-	CopyBits((BitMap *) (*iconPix),&positionBadges->portBits,&largeIconRect, &targetRect,srcCopy, NULL);\
+	CopyBits((BitMap *) (*iconPix),&positionGlyphs->portBits,&largeIconRect, &targetRect,srcCopy, NULL);\
 	\
 	SetGWorld(smallIconGWorld, NULL);\
 	ForeColor(blackColor);\
@@ -1045,22 +1171,18 @@ void MakeNewSet()
 	OffsetRect(&smallBadgeRect, smallHOffset, smallVOffset);\
 	baseicns.Display(smallIconRect);\
 	if (ID != 128)\
-		badgeicns.Display(smallBadgeRect);\
+		glyphicns.Display(smallBadgeRect);\
 	else\
 	{\
 		InsetRect(&smallBadgeRect, 4, 4);\
 		FrameRect(&smallBadgeRect);\
 	}\
-	CopyBits((BitMap *) (*smallIconPix),&positionBadges->portBits,&smallIconRect, &smallTargetRect,srcCopy, NULL);\
+	CopyBits((BitMap *) (*smallIconPix),&positionGlyphs->portBits,&smallIconRect, &smallTargetRect,srcCopy, NULL);\
 	\
-	UnlockPixels(iconPix);\
-	DisposeGWorld(iconGWorld);\
-	UnlockPixels(smallIconPix);\
-	DisposeGWorld(smallIconGWorld);\
-	SetPort(positionBadges);\
-	FillCRect(&desktopPreview, desktopPattern);\
-	RGBForeColor(&currentForeColor);\
-	RGBBackColor(&currentBackColor);\
+	SetGWorld(previewGWorld, NULL);\
+	ForeColor(blackColor);\
+	BackColor(whiteColor);\
+	FillCRect(&previewRect, desktopPattern);\
 	previewLargeBadge = previewLargeBase;\
 	previewSmallBadge = previewSmallBase;\
 	OffsetRect(&previewLargeBadge, hOffset, vOffset);\
@@ -1069,10 +1191,10 @@ void MakeNewSet()
 	baseicns.Display(previewSmallBase);\
 	if (ID != 128)\
 	{\
-		badgeicns.ID = ID;\
-		badgeicns.LoadFromFile(badgesSpec);\
-		badgeicns.Display(previewLargeBadge);\
-		badgeicns.Display(previewSmallBadge);\
+		glyphicns.ID = ID;\
+		glyphicns.LoadFromFile(glyphsSpec);\
+		glyphicns.Display(previewLargeBadge);\
+		glyphicns.Display(previewSmallBadge);\
 	}\
 	else\
 	{\
@@ -1081,32 +1203,48 @@ void MakeNewSet()
 		InsetRect(&previewSmallBadge, 4, 4);\
 		FrameRect(&previewSmallBadge);\
 	}\
+	CopyBits((BitMap*)*previewPix, &positionGlyphs->portBits, &previewRect, &desktopPreview, srcCopy, NULL);\
+	SetPort(positionGlyphs);\
+	RGBForeColor(&currentForeColor);\
+	RGBBackColor(&currentBackColor);\
 }\
 
 void PositionBadges(void)
 {
-	DialogPtr		positionBadges;
+	DialogPtr		positionGlyphs;
 	bool			dialogDone;
 	short			itemHit;
-	GWorldPtr		iconGWorld, smallIconGWorld;
-	PixMapHandle	iconPix, smallIconPix;
-	Rect			targetRect, smallTargetRect, badgeRect, smallBadgeRect, largeIconRect = {0,0,32,32}, smallIconRect = {0,0,16,16}, itemRect;
-	Rect			previewLargeBase, previewLargeBadge, previewSmallBase, previewSmallBadge, desktopPreview;
+	GWorldPtr		iconGWorld, smallIconGWorld, previewGWorld;
+	PixMapHandle	iconPix, smallIconPix, previewPix;
+	Rect			targetRect, smallTargetRect, glyphRect, smallBadgeRect, largeIconRect = {0,0,32,32}, smallIconRect = {0,0,16,16}, itemRect;
+	Rect			tempRect, previewRect, previewLargeBase, previewLargeBadge, previewSmallBase, previewSmallBadge, desktopPreview;
 	Handle			item;
 	short			itemType;
 	RGBColor		currentForeColor, currentBackColor;
 	long			ID=-20801;
-	short			badges;
-	short			hOffset=0, vOffset=0, i, defaultHOffset = 0, defaultVOffset = 0;
-	short			smallHOffset=0, smallVOffset = 0, smallDefaultHOffset = 0, smallDefaultVOffset = 0;
-	icnsClass		badgeicns, baseicns;
+	short			glyphs;
+	short			savedHOffset, savedVOffset, hOffset=0, vOffset=0, i, defaultHOffset = 0, defaultVOffset = 0;
+	short			savedSmallHOffset, savedSmallVOffset, smallHOffset=0, smallVOffset = 0, smallDefaultHOffset = 0, smallDefaultVOffset = 0;
+	icnsClass		glyphicns, baseicns;
 	long			selectedIcns;
-	Str255			IDAsString, menuItemText, string, icnsName="\pInternet Search Sites";
+	Str255			IDAsString, menuItemText, icnsName="\pInternet Search Sites";
 	tOffset**		offsetHandle;
 	PixPatHandle	desktopPattern;
+	Point			theMouse, anchorPoint = {-1,-1}, smallAnchorPoint = {-1, -1};
+	ControlHandle	iconPreview;
+	ModalFilterUPP	eventFilter;
+	int				increment;
 	
-	badges = FSpOpenResFile(&badgesSpec, fsRdPerm);
-	UseResFile(badges);
+	eventFilter = NewModalFilterProc(HandlePositionEvents);
+	
+	NewGWorld(&iconGWorld, 32, &largeIconRect, NULL, NULL, 0);
+	iconPix = GetGWorldPixMap(iconGWorld);
+	
+	NewGWorld(&smallIconGWorld, 32, &smallIconRect, NULL, NULL, 0);
+	smallIconPix = GetGWorldPixMap(smallIconGWorld);
+	
+	glyphs = FSpOpenResFile(&glyphsSpec, fsRdPerm);
+	UseResFile(glyphs);
 	offsetHandle = (tOffset**)Get1Resource('Ofst', 128);
 	if (offsetHandle != NULL)
 	{
@@ -1135,76 +1273,132 @@ void PositionBadges(void)
 	}
 	baseicns.ID = -3999;
 	baseicns.Load();
-	CloseResFile(badges);
+	CloseResFile(glyphs);
 	UseResFile(appFile);
 	
-	positionBadges = GetNewDialog (positionBadgesID, nil, (WindowPtr)-1L);
-	SetPort( positionBadges);
+	positionGlyphs = GetNewDialog (positionGlyphsID, nil, (WindowPtr)-1L);
+	SetPort( positionGlyphs);
 	
 	GetForeColor(&currentForeColor);
 	GetBackColor(&currentBackColor);
-	SetDialogDefaultItem(positionBadges, kOK);
+	SetDialogDefaultItem(positionGlyphs, kOK);
 	
-	GetDialogItem(positionBadges, kIconPreview, &itemType, &item, &targetRect);
+	GetDialogItem(positionGlyphs, kIconPreview, &itemType, & ((Handle)iconPreview), &targetRect);
 	DrawImageWell(targetRect);
 	
-	GetDialogItem(positionBadges, kSmallIconPreview, &itemType, &item, &smallTargetRect);
+	GetDialogItem(positionGlyphs, kSmallIconPreview, &itemType, &item, &smallTargetRect);
 	DrawImageWell(smallTargetRect);
 	
 	desktopPattern = GetPixPat(16);
-	GetDialogItem(positionBadges, kDesktopPreview, &itemType, &item, &desktopPreview);
-	FillCRect(&desktopPreview, desktopPattern);
+	GetDialogItem(positionGlyphs, kDesktopPreview, &itemType, &item, &desktopPreview);
 	DrawImageWell(desktopPreview);
 	
-	GetDialogItem(positionBadges, kDesktopPreview, &itemType, &item, &itemRect);
-	itemRect.left += (itemRect.right - itemRect.left)/2;
-	previewLargeBase = largeIconRect;
-	MakeTargetRect(itemRect, &previewLargeBase);
+	previewRect = desktopPreview;
+	OffsetRect(&previewRect, -previewRect.left, -previewRect.right);
+	NewGWorld(&previewGWorld, 32, &previewRect, NULL, NULL, 0);
+	previewPix = GetGWorldPixMap(previewGWorld);
 	
-	GetDialogItem(positionBadges, kDesktopPreview, &itemType, &item, &itemRect);
-	itemRect.right -= (itemRect.right - itemRect.left)/2;
+	tempRect = previewRect;
+	tempRect.left += (tempRect.right - tempRect.left)/2;
+	previewLargeBase = largeIconRect;
+	MakeTargetRect(tempRect, &previewLargeBase);
+	tempRect = previewRect;
+	tempRect.right -= (tempRect.right - tempRect.left)/2;
 	previewSmallBase = smallIconRect;
-	MakeTargetRect(itemRect, &previewSmallBase);
+	MakeTargetRect(tempRect, &previewSmallBase);
 	
 	if (!CheckClipboard(false))
 	{
-		GetDialogItem(positionBadges, kInsertClipboard, &itemType, &item, &itemRect);
+		GetDialogItem(positionGlyphs, kInsertClipboard, &itemType, &item, &itemRect);
 		HiliteControl((ControlHandle)item, 255);
 	}
 	
-	ShowWindow( positionBadges );
+	ShowWindow( positionGlyphs );
 	
-	badgeicns.ID = -20801;
-	badgeicns.LoadFromFile(badgesSpec);
+	glyphicns.ID = -20801;
+	glyphicns.LoadFromFile(glyphsSpec);
 	
 	Refresh();
 	
-	SetPort(positionBadges);
+	SetPort(positionGlyphs);
 	
 	dialogDone = false;
 	while (!dialogDone)
 	{
-		ModalDialog(nil, &itemHit);
-		
+		if (Button())
+		{
+			GetMouse(&theMouse);
+			
+			if (PtInRect(theMouse, &targetRect))
+			{
+				if (anchorPoint.h == -1)
+					anchorPoint = theMouse;
+				
+				theMouse.h -= anchorPoint.h;
+				theMouse.v -= anchorPoint.v;
+				
+				theMouse.h = theMouse.h/4;
+				theMouse.v = theMouse.v/4;
+				
+				vOffset = savedVOffset + theMouse.v;
+				hOffset = savedHOffset + theMouse.h;
+				
+				Refresh();
+			}
+			if (PtInRect(theMouse, &smallTargetRect))
+			{
+				if (smallAnchorPoint.h == -1)
+					smallAnchorPoint = theMouse;
+				
+				theMouse.h -= smallAnchorPoint.h;
+				theMouse.v -= smallAnchorPoint.v;
+				
+				theMouse.h = theMouse.h/4;
+				theMouse.v = theMouse.v/4;
+				
+				smallVOffset = savedSmallVOffset + theMouse.v;
+				smallHOffset = savedSmallHOffset + theMouse.h;
+				
+				Refresh();
+			}
+			continue;
+		}
+		else
+		{
+			savedHOffset = hOffset;
+			savedVOffset = vOffset;
+			anchorPoint.h = -1;
+			anchorPoint.v = -1;
+			
+			savedSmallHOffset = smallHOffset;
+			savedSmallVOffset = smallVOffset;
+			smallAnchorPoint.h = -1;
+			smallAnchorPoint.v = -1;
+		}
+		ModalDialog(eventFilter, &itemHit);
+		if (IsKeyPressed(0x38) || IsKeyPressed(0x3C))
+			increment = 10;
+		else
+			increment = 1;
 		switch (itemHit)
 		{
 			case kOK: WriteToDisk(); dialogDone = true; break;
 			case kInsertClipboard:
-				badgeicns.ImportFromClipboard();
-				badgeicns.SaveToFile(badgesSpec, false, true);
+				glyphicns.ImportFromClipboard();
+				glyphicns.SaveToFile(glyphsSpec, false, true);
 				Refresh();
 				break;
-			case kShiftUp: vOffset--; Refresh(); break;
-			case kShiftDown: vOffset++; Refresh(); break;
-			case kShiftLeft: hOffset--; Refresh(); break;
-			case kShiftRight: hOffset++; Refresh(); break;
-			case kSmallShiftUp: smallVOffset--; Refresh(); break;
-			case kSmallShiftDown: smallVOffset++; Refresh(); break;
-			case kSmallShiftLeft: smallHOffset--; Refresh(); break;
-			case kSmallShiftRight: smallHOffset++; Refresh(); break;
+			case kShiftUp: vOffset -= increment;Refresh(); break;
+			case kShiftDown: vOffset += increment; Refresh(); break;
+			case kShiftLeft: hOffset -= increment; Refresh(); break;
+			case kShiftRight: hOffset += increment; Refresh(); break;
+			case kSmallShiftUp: smallVOffset -= increment; Refresh(); break;
+			case kSmallShiftDown: smallVOffset += increment; Refresh(); break;
+			case kSmallShiftLeft: smallHOffset -= increment; Refresh(); break;
+			case kSmallShiftRight: smallHOffset += increment; Refresh(); break;
 			case kPopup:
 				WriteToDisk();
-				GetDialogItem(positionBadges, kPopup, &itemType, &item, &itemRect);
+				GetDialogItem(positionGlyphs, kPopup, &itemType, &item, &itemRect);
 				selectedIcns = GetControlValue((ControlHandle)item);
 				GetMenuItemText(GetMenu(200), selectedIcns, menuItemText);
 				CopyString(IDAsString, menuItemText);
@@ -1216,8 +1410,8 @@ void PositionBadges(void)
 				IDAsString[0] = i-1;
 				StringToNum(IDAsString, &ID);
 				
-				badges = FSpOpenResFile(&badgesSpec, fsRdWrPerm);
-				UseResFile(badges);
+				glyphs = FSpOpenResFile(&glyphsSpec, fsRdWrPerm);
+				UseResFile(glyphs);
 				
 				offsetHandle = (tOffset**)Get1Resource('Ofst', ID);
 				if (offsetHandle != NULL)
@@ -1236,15 +1430,15 @@ void PositionBadges(void)
 					smallHOffset = smallDefaultHOffset;
 					smallVOffset = smallDefaultVOffset;
 				}
-				CloseResFile(badges);
+				CloseResFile(glyphs);
 				UseResFile(appFile);
 				
 				DrawImageWell(targetRect);
 				DrawImageWell(smallTargetRect);
 				DrawImageWell(desktopPreview);
 				
-				badgeicns.ID = ID;
-				badgeicns.LoadFromFile(badgesSpec);
+				glyphicns.ID = ID;
+				glyphicns.LoadFromFile(glyphsSpec);
 				
 				Refresh();
 				break;
@@ -1252,10 +1446,52 @@ void PositionBadges(void)
 		
 		
 	}
+	UnlockPixels(previewPix);
+	DisposeGWorld(previewGWorld);
+	UnlockPixels(iconPix);
+	DisposeGWorld(iconGWorld);
+	UnlockPixels(smallIconPix);
+	DisposeGWorld(smallIconGWorld);
+	
 	DisposePixPat(desktopPattern);
 	SetGWorld(startupPort, startupDevice);
-	DisposeDialog(positionBadges);
+	DisposeDialog(positionGlyphs);	
+}
+
+pascal bool HandlePositionEvents(DialogPtr positionGlyphs, EventRecord* eventPtr, short* itemHit)
+{
+	char 	key;
+	bool	handledEvent = false;
 	
+	switch (eventPtr->what)
+	{
+		case keyDown:
+		case autoKey:
+			key = eventPtr->message & charCodeMask;
+			if ( (eventPtr->modifiers & optionKey) != 0)
+				switch (key)
+				{
+					case kUpArrowCharCode : *itemHit = kSmallShiftUp; handledEvent = true; break;
+					case kDownArrowCharCode: *itemHit = kSmallShiftDown; handledEvent = true; break;
+					case kLeftArrowCharCode: *itemHit = kSmallShiftLeft; handledEvent = true; break;
+					case kRightArrowCharCode: *itemHit = kSmallShiftRight; handledEvent = true; break;
+					default: handledEvent = StdFilterProc(positionGlyphs,eventPtr,itemHit); break;
+				}
+			else
+				switch (key)
+				{
+					case kUpArrowCharCode : *itemHit = kShiftUp; handledEvent = true; break;
+					case kDownArrowCharCode: *itemHit = kShiftDown; handledEvent = true; break;
+					case kLeftArrowCharCode: *itemHit = kShiftLeft; handledEvent = true; break;
+					case kRightArrowCharCode: *itemHit = kShiftRight; handledEvent = true; break;
+					default: handledEvent = StdFilterProc(positionGlyphs,eventPtr,itemHit); break;
+				}
+			break;
+		default:
+			handledEvent = StdFilterProc(positionGlyphs,eventPtr,itemHit);
+		break;
+	}
+	return handledEvent;
 }
 
 void HandleEditChoice(int item)
@@ -1263,5 +1499,3 @@ void HandleEditChoice(int item)
 	item;
 	SysBeep(6);
 }
-
-

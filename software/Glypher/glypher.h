@@ -1,9 +1,9 @@
 #pragma once
 
-#include <PictUtils.h>
-#include <MacMemory.h>
-#include <Controls.h>
-#include <AppleEvents.h>
+//#include <PictUtils.h>
+//#include <MacMemory.h>
+//#include <Controls.h>
+//#include <AppleEvents.h>
 #include <Navigation.h>
 #include "Icons.h"
 #include "icnsClass.h"
@@ -11,7 +11,11 @@
 
 // file types
 
-#define badgesFileType 'Glfs'
+const static long schemeCreator = 'Acid';
+const static long schemeFileType = 'Colr';
+
+const static long glypherCreator = 'Glph';
+const static long glyphsFileType='Glfs';
 
 // --- Constants --- //
 #define partsResourceType 'wnd#'
@@ -28,11 +32,16 @@ const static long				small8BitSize = 0x400 / 4;
 
 // app resource IDs
 const static int aboutBoxID = 128;
-const static int insertCicnID = 129;
-const static int positionBadgesID = 130;
+const static int newSetID = 129;
+const static int positionGlyphsID = 130;
+const static int baseSourceID = 131;
 
 const static int aboutPicID = 128;
 const static int aboutPicMaskID = 129;
+
+const static int kArrowCursor = 0; // not a real ID
+const static int kHandOpenCursor = 128;
+const static int kHandClosedCursor = 129;
 
 // menubar stuff
 const static int kMenuBarID = 128;
@@ -44,6 +53,11 @@ const static int mFile = 129;
 const static int iNewIconSet = 1;
 const static int iEditBadges = 2;
 const static int iQuit = 4;
+
+const static int mNewHierarchical = 131;
+const static int iNewFile = 1;
+const static int iIntoScheme = 2;
+const static int iNewTheme = 3;
 
 const static int mEdit = 130;
 const static int iUndo = 1;
@@ -57,8 +71,15 @@ const static int iPreferences = 9;
 // dialog items
 const static int kOk = 1;
 const static int kAboutPic = 2;
+const static int kNameField = 4;
+const static int kCompanyField = 5;
+const static int kHomepageAddress = 7;
+const static int kEmailAddress = 8;
 
 const static int kStatusField = 2;
+
+const static int kGlyphs = 2;
+const static int kFile = 3;
 
 const static int kOK = 1;
 const static int kInsertClipboard = 2;
@@ -90,13 +111,28 @@ typedef struct tOffset
 	short smallVOffset;
 } tOffset;
 
+typedef struct tPreferences
+{
+	short timesUsed;
+	Str255 name;
+	Str255 company;
+	Str255 regNo;
+	bool includeOldStyle;
+	bool setBits;
+	bool generateOldStyle;
+	bool nameResources;
+	bool registered;
+} tPreferences;
+
+typedef tPreferences** PreferencesHandle;
+
 // --- Prototypes --- //
 
 // MacOS stuff
 void		Initialize(void);
 void		InitMenuBar(void);
 void		AppleEventInit(void);
-void		GetCurrentScheme(void);
+OSStatus	GetPreferences(void);
 #if TARGET_CPU_PPC
 OSErr DoOpenApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon);
 OSErr DoOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon);
@@ -111,18 +147,19 @@ void		HandleKeyDown(EventRecord *eventPtr);
 void		HandleUpdate(EventRecord *eventPtr);
 void		DoMenuCommand(long menuResult);
 void		HandleAppleChoice(int item);
+void		GenerateRegNo(Str255 name, Str255 regNo);
 void		ShowAboutBox(void);
 void		HandleFileChoice(int item);
+void 		HandleHierarchicalChoice(int item);
 void		NewIconSet(void);
-OSStatus	NewIconSetNav(void);
-OSStatus	NewIconSetOld(void);
+void		IntoScheme(void);
 void		EditBadges(void);
 void		PositionBadges(void);
-void		MakeNewSet(void);
+pascal bool HandlePositionEvents(DialogPtr positionGlyphs, EventRecord* eventPtr, short* itemHit);
+void		MakeNewSet(bool makeSetFile);
 void 		MergeIcon(int ID, Str255 name, icnsClass* baseicns);
+void		DrawWatermark(GWorldPtr targetGW, bool isMask);
 void		DrawImageWell(Rect bounds);
-OSStatus	GetBadgesNav(void);
-OSStatus	GetBadgesOld(void);
 void		HandleEditChoice(int item);
 
 // --- Globals --- //
@@ -131,9 +168,10 @@ extern bool			isDone;
 extern bool			navServicesAvailable;
 extern CGrafPtr		startupPort;
 extern GDHandle		startupDevice;
-extern FSSpec		badgesSpec;
+extern FSSpec		glyphsSpec;
 extern FSSpec		setSpec;
 extern FSSpec		currentScheme;
 extern short		appFile;
+extern PreferencesHandle preferences;
 
 
