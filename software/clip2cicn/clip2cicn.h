@@ -12,9 +12,12 @@
 #define schemeFileType 'Colr'
 #define partsResourceType 'wnd#'
 
+const static int baseMenuID = 132;
+const static int menuCount = 34;
+
 // app resource IDs
 const static int aboutBoxID = 128;
-const static int insertCicnID = 129;
+const static int insertcicnID = 129;
 
 const static int aboutPicID = 128;
 const static int aboutPicMaskID = 129;
@@ -41,14 +44,16 @@ const static int iPreferences = 9;
 // dialog items
 const static int kOk = 1;
 const static int kAboutPic = 2;
+const static int kHomepageAddress = 4;
+const static int kEmailAddress = 5;
 
 const static int kInsert = 1;
-const static int kCancel = 2;
+const static int kClose = 2;
 const static int kTypesPopup = 3;
 const static int kcicnPopup = 4;
 const static int kIDField = 5;
 const static int kClipboardPreview = 7;
-const static int kCicnPreview = 8;
+const static int kcicnPreview = 8;
 
 // --- Type Definitions -- //
 typedef struct tResults
@@ -70,14 +75,12 @@ typedef struct tResults
 // MacOS stuff
 void		Initialize(void);
 void		InitMenuBar(void);
-void		AppleEventInit(void);
-void		GetCurrentScheme(void);
-#if TARGET_CPU_PPC
-OSErr DoOpenApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon);
-OSErr DoOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon);
-OSErr DoPrintDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon);
-OSErr DoQuitApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon);
-#endif
+OSErr		AEInit(void);
+OSErr		AEGotRequiredParams(const AppleEvent *theAppleEvent);
+pascal OSErr		AEOpenApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon);
+pascal OSErr		AEOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon);
+pascal OSErr		AEPrintDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon);
+pascal OSErr		AEQuitApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon);
 void		GetCurrentScheme(void);
 void		EventLoop(void);
 void		DoEvent(EventRecord *eventPtr);
@@ -92,10 +95,17 @@ void		HandleFileChoice(int item);
 void		DrawImageWell(Rect bounds);
 OSStatus	GetSchemeNav(void);
 OSStatus	GetSchemeOld(void);
-void		GetcicnID(void);
+void		Editcicn();
 void		clip2cicn(short cicnID, Str255 cicnName);
 void 		CloseScheme(void);
 void		HandleEditChoice(int item);
+
+pascal bool StandardDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit);
+void GetcicnMenu(Str255 IDAsString, int* group, int* item, Str255 name);
+void GetIDFromMenu(Str255 menuItemText);
+void GetNameFromMenu(int group, int item, Str255 menuItemtext);
+pascal bool StandardDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit);
+void RedrawEditDialog(DialogPtr dialog);
 
 // --- Globals --- //
 
