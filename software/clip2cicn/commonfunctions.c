@@ -348,3 +348,10 @@ void CopyString(Str255 dst, const Str255 src)
 		dst[k] = src[k];
 }
 
+void BlockFill(unsigned char *block, int fill, int size)
+{
+	register int k;
+
+	for (k = 0; k < size; k++) block[k] = (unsigned char)fill;
+}
+

@@ -4,7 +4,7 @@ CGrafPtr	startupPort;
 GDHandle	startupDevice;
 
 // k stuff
-FSSpec		oldScheme;
+FSSpec		schemeSpec;
 
 
 // commonfunctions.h variables

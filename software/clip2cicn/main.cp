@@ -1,4 +1,4 @@
-#include "clutinsertor.h"
+#include "clip2cicn.h"
 
 void main(void)
 {
@@ -16,9 +16,10 @@ void Initialize()
 	
 	InitMenuBar();
 	
+	AppleEventInit();
+	
 	GetGWorld(&startupPort, &startupDevice);
 
-	
 	isDone = false;
 }
 
@@ -36,6 +37,87 @@ void InitMenuBar()
 	DrawMenuBar();
 }
 
+static OSErr MyGotRequiredParams(const AppleEvent *theAppleEvent)
+{
+	DescType returnedType;
+	Size actualSize;
+
+	if ( AEGetAttributePtr(theAppleEvent, keyMissedKeywordAttr, typeWildCard, &returnedType, nil, 0, &actualSize) == errAEDescNotFound )
+		return noErr;
+	else
+		return errAEParamMissed;
+};
+
+
+OSErr DoOpenApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
+{
+	reply;
+	refCon;
+	return MyGotRequiredParams(theAppleEvent);
+};
+
+
+OSErr DoOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
+{
+	OSErr		err;
+	AEDescList	fileSpecList;
+	short		i;
+	long		count;
+	Size		actual;
+	FSSpec		desc;
+	AEKeyword	keyword;
+	DescType	type;
+
+	reply;
+	refCon;
+
+	err = AEGetParamDesc(theAppleEvent, keyDirectObject, typeAEList, &fileSpecList);
+	
+	err = AECountItems(&fileSpecList, &count);
+	for (i = 1; i <= count; i++)
+	{
+		err = AEGetNthPtr(&fileSpecList, i, typeFSS, &keyword, &type, (Ptr)&desc, sizeof(FSSpec), &actual);
+		if (err == noErr)
+		{
+			schemeSpec = desc;
+			GetcicnID();
+			return MyGotRequiredParams(theAppleEvent);
+		}
+	}
+	return MyGotRequiredParams(theAppleEvent);
+};
+
+OSErr DoPrintDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
+{
+	theAppleEvent;
+	reply;
+	refCon;
+	return errAEEventNotHandled;
+};
+
+OSErr DoQuitApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
+{
+	reply;
+	refCon;
+	isDone = true;
+	return MyGotRequiredParams(theAppleEvent);
+};
+
+RoutineDescriptor DoOpenAppRD = BUILD_ROUTINE_DESCRIPTOR(uppAEEventHandlerProcInfo, DoOpenApp);
+RoutineDescriptor DoOpenDocRD = BUILD_ROUTINE_DESCRIPTOR(uppAEEventHandlerProcInfo, DoOpenDoc);
+RoutineDescriptor DoPrintDocRD = BUILD_ROUTINE_DESCRIPTOR(uppAEEventHandlerProcInfo, DoPrintDoc);
+RoutineDescriptor DoQuitAppRD = BUILD_ROUTINE_DESCRIPTOR(uppAEEventHandlerProcInfo, DoQuitApp);
+
+
+void AppleEventInit()
+{
+		OSErr error;
+
+		error = AEInstallEventHandler(kCoreEventClass, kAEOpenApplication, &DoOpenAppRD, 0L, false);
+		error = AEInstallEventHandler(kCoreEventClass, kAEOpenDocuments, &DoOpenDocRD, 0L, false);
+		error = AEInstallEventHandler(kCoreEventClass, kAEPrintDocuments, &DoPrintDocRD, 0L, false);
+		error = AEInstallEventHandler(kCoreEventClass, kAEQuitApplication, &DoQuitAppRD, 0L, false);
+};
 
 void EventLoop(void)
 {
@@ -59,6 +141,10 @@ void DoEvent(EventRecord *eventPtr)
 		case keyDown: HandleKeyDown(eventPtr); break;
 		case updateEvt: HandleUpdate(eventPtr); break;
 		case activateEvt: break;
+		case kHighLevelEvent: 
+				if (AEProcessAppleEvent(eventPtr) != noErr)
+				{ /* error - ignored */ };
+				break;
 	}
 }
 
@@ -147,6 +233,7 @@ void ShowAboutBox()
 	CGrafPtr	oldPort;
 	GDHandle	oldDevice;
 	
+	
 	GetGWorld(&oldPort, &oldDevice);
 	
 	aboutBox = GetNewDialog (aboutBoxID, nil, (WindowPtr)-1L);
@@ -174,141 +261,179 @@ void HandleFileChoice(int item)
 {
 	switch (item)
 	{
-		case iTestScheme :		TestScheme(); break;
-		case iQuit :		isDone = true; break;
+		case iInsertCicn :	InsertCicn(); break;
+		case iQuit       :	isDone = true; break;
 	}
 }
 
-void TestScheme(void)
+void InsertCicn()
 {
-/*	StandardFileReply	reply;
+	DialogPtr			insertCicn;
+	bool				dialogDone;
+	short				itemHit;
+	CGrafPtr			oldPort;
+	GDHandle			oldDevice;
+	Str255				IDasString;
+	Rect				itemRect;
+	long				ID;
+	Handle				item;
+	short				itemType;
+	StandardFileReply	reply;
 	SFTypeList			typeList;
-	FSSpec				clutFileSpec;
-	short				scheme, clutFile, oldFile;
-	CTabHandle 			colorTable;
-	CIconHandle			cicn;
-	PicHandle			pic;
-	Handle				icn;	
-	Handle				icl8;
-	Rect				bounds = {0, 0, 32, 32};
-	int					depth = 8;
-	int 				bitmapSize = 4 * 32;
+	int					selectedCicn, i;
+	Str255				menuItemText;
+	PopupPrivateDataPtr	popupDataPtr;
 	
-
-	if (FSMakeFSSpec(0, 0, "\p:clut resource", &clutFileSpec) == noErr)
+	
+	
+	typeList[0] = schemeFileType;
+	StandardGetFile(nil, 1, typeList, &reply);
+	if ( reply.sfGood)
 	{
-	
-		oldFile = CurResFile();
-		
-		clutFile = FSpOpenResFile(&clutFileSpec, fsRdWrPerm);
-		UseResFile(clutFile);
-		colorTable = GetCTable(128);
-		pic = GetPicture(128);
-		icn = GetResource( 'ICN#', 128 );
-		icl8 = GetResource( 'icl8', 128 );
-		
-		HLock( icn );
-		HNoPurge( icn );
-	
-		HLock( icl8 );
-		HNoPurge( icl8 );
-		
-		cicn = (CIconHandle)NewHandleClear( (long)sizeof( CIcon ) );
-		(**cicn).iconBMap.baseAddr				= nil;
-		(**cicn).iconBMap.rowBytes				= 4;
-		(**cicn).iconBMap.bounds				= bounds;
-
-	
-		
-		(**cicn).iconMask.baseAddr				= nil;
-		(**cicn).iconMask.rowBytes				= 4;
-		(**cicn).iconMask.bounds				= bounds;
-		
-		
-		
-		(**cicn).iconPMap.baseAddr				= nil;
-		(**cicn).iconPMap.rowBytes				= (((bounds.right - bounds.left) * depth) / 8) | 0x8000;
-		(**cicn).iconPMap.bounds				= bounds;
-		(**cicn).iconPMap.pmVersion				= 0;
-		(**cicn).iconPMap.packType				= 0;
-		(**cicn).iconPMap.packSize				= 0;
-		(**cicn).iconPMap.hRes					= 72;
-		(**cicn).iconPMap.vRes					= 72;
-		(**cicn).iconPMap.pixelSize				= depth;
-		(**cicn).iconPMap.planeBytes			= 0;
-		(**cicn).iconPMap.pmReserved			= 0;
-		(**cicn).iconPMap.pixelType				= 0;
-		(**cicn).iconPMap.cmpCount				= 1;
-		(**cicn).iconPMap.cmpSize				= depth;
-		(**cicn).iconPMap.pmTable				= GetCTable( depth );
-
-	
-		
-		(**cicn).iconData = (Handle)icl8;
-		
-		
-		
-		SetHandleSize( (Handle)cicn, sizeof( CIcon ) + (bitmapSize * 2) );
-		
-
-		BlockMove( *icn, &(**cicn).iconMaskData[bitmapSize / 2], bitmapSize );		
-		BlockMove( *icn + (long)bitmapSize, (**cicn).iconMaskData, bitmapSize );
-    	AddResource((Handle)cicn, 'cicn', 128, "\ptest cicn");
-    	ChangedResource((Handle)cicn);
-    	WriteResource((Handle)cicn);
-    	UpdateResFile(clutFile);
-    	CloseResFile(clutFile);
-    	UseResFile(oldFile);
-		
-		
-		DisplayAlert("", "clut 128 written to cicn -14335");
+		schemeSpec = reply.sfFile;
+		GetcicnID();
 	}
-*/
+}
+
+void GetcicnID()
+{
+	DialogPtr			insertCicn;
+	bool				dialogDone;
+	short				itemHit;
+	CGrafPtr			oldPort;
+	GDHandle			oldDevice;
+	Str255				IDasString;
+	Rect				itemRect;
+	long				ID;
+	Handle				item;
+	short				itemType;
+	int					selectedCicn, i;
+	Str255				menuItemText;
+	PopupPrivateDataPtr	popupDataPtr;
+	
+	
+		
+	insertCicn = GetNewDialog (insertCicnID, nil, (WindowPtr)-1L);
+	SetPort( insertCicn);
+	SetDialogDefaultItem(insertCicn, kInsert);
+	SetDialogCancelItem( insertCicn, kCancel );
+	
+	ShowWindow( insertCicn );
+	dialogDone = false;
+	while (!dialogDone)
+	{
+		ModalDialog(nil, &itemHit);
+		
+		switch (itemHit)
+		{
+			case kInsert: 
+				GetDialogItem(insertCicn, kIDField, &itemType, &item, &itemRect);
+				GetDialogItemText(item, IDasString);
+				StringToNum(IDasString, &ID);
+				clip2cicn(ID);
+				dialogDone = true;
+				break;
+			case kCancel:
+				dialogDone = true;
+				break;
+			case kTypesPopup:
+				GetDialogItem(insertCicn, kTypesPopup, &itemType, &item, &itemRect);
+				switch (GetControlValue((ControlHandle)item))
+				{
+					case iDocWindow:
+						
+						GetDialogItem(insertCicn, kcicnPopup, &itemType, &item, &itemRect);
+						(**(PopupPrivateDataHandle)(**(ControlHandle)item).contrlData).mID = mDocWindow;
+						(**(PopupPrivateDataHandle)(**(ControlHandle)item).contrlData).mHandle = GetMenu(mDocWindow);
+						Draw1Control((ControlHandle)item);
+						break;
+					case iDialog:
+						
+						GetDialogItem(insertCicn, kcicnPopup, &itemType, &item, &itemRect);
+						popupDataPtr = (*(PopupPrivateDataHandle)(**(ControlHandle)item).contrlData);
+						popupDataPtr->mID = mDialog;
+						popupDataPtr->mHandle = GetMenu(mDialog);
+						Draw1Control((ControlHandle)item);
+						break;
+				}
+			case kcicnPopup:
+				GetDialogItem(insertCicn, kcicnPopup, &itemType, &item, &itemRect);
+				selectedCicn = GetControlValue((ControlHandle)item);
+				
+				GetMenuItemText(GetMenu((**(PopupPrivateDataHandle)(**(ControlHandle)item).contrlData).mID), selectedCicn, menuItemText);
+				CopyString(IDasString, menuItemText);
+				for (i=IDasString[0]; i > 0 && IDasString[i] == ' '; i--){;}
+				for (; i > 0 && IDasString[i] != ' '; i--){;}
+				IDasString[i] = IDasString[0] - i;
+				GetDialogItem(insertCicn, kIDField, &itemType, &item, &itemRect);
+				SetDialogItemText(item, &IDasString[i]);
+				
+				
+				
+		}
+		
+		
+	}
+	DisposeDialog(insertCicn);
+	SetGWorld(startupPort, startupDevice);
+}
+
+
+void clip2cicn(short cicnID)
+{
 	long			bitmapSize;		/* Size of the icon's bitmap. */
-	short			clutFile, oldFile;
-	FSSpec			clutFileSpec;
+	short			scheme, oldFile;
 	CIconHandle		cicn;
-	PicHandle		pic;
+	Handle			pic;
 	PictInfo		picInfo, pixMapInfo;
 	long			colorTableSize;
 	CTabHandle		colorTable;
 	GWorldPtr		picGWorld;
 	PixMapHandle	picPixMap;
 	long			picSize;
+	long			offset;
+	Handle			oldCicn;
 
-	FSMakeFSSpec(0, 0, "\p:clut resource", &clutFileSpec);
-	
-	
+
+	pic = NewHandle (0);
+	if (GetScrap( pic, 'PICT', &offset ) < 0)
+	{
+		UseResFile(oldFile);
+		DisplayAlert("", "The clipboard is either empty or doesn't contain a picture");
+		return;
+	}
+
+/*
 	oldFile = CurResFile();
-		
+	FSMakeFSSpec(0, 0, "\p:resource", &clutFileSpec);
 	clutFile = FSpOpenResFile(&clutFileSpec, fsRdWrPerm);
 	UseResFile(clutFile);
-	pic = GetPicture(128);
-	GetPictInfo(pic, &picInfo, returnColorTable, 256, popularMethod, 0);
-	colorTable = picInfo.theColorTable;
+	(PicHandle)pic = GetPicture(128);
+*/
 	
+	
+
+	GetPictInfo((PicHandle)pic, &picInfo, returnColorTable, 256, popularMethod, 0);
+	colorTable = picInfo.theColorTable;
+
+	HLock((Handle) pic );
+	HLock((Handle) colorTable );
+	if (pic == NULL || colorTable == NULL)
+	{
+		DisplayAlert("", "Can't load the picture or the clut");
+		ExitApplication();
+	}
 	NewGWorld(&picGWorld, 8, &picInfo.sourceRect, colorTable, NULL, 0);
 	SetGWorld(picGWorld, NULL);
-	DrawPicture(pic, &picInfo.sourceRect);
+	BackColor(whiteColor);
+	EraseRect(&qd.thePort->portRect);
+	DrawPicture((PicHandle)pic, &picInfo.sourceRect);
 	picPixMap = GetGWorldPixMap(picGWorld);
 	LockPixels(picPixMap);
 	SetGWorld(startupPort, startupDevice);
 	picSize =  ((**picPixMap).rowBytes & 0x7FFF) * ((**picPixMap).bounds.bottom - (**picPixMap).bounds.top);
-							
-	/* Load and lock the 'icl8' and 'ICN#' resources used to build the 'cicn'. */
+	GetPixMapInfo(picPixMap, &pixMapInfo, returnColorTable, 256, popularMethod, 0);
 	
-	
-	HLock((Handle) pic );
-	HNoPurge((Handle) pic );
-	
-	HLock((Handle) colorTable );
-	HNoPurge((Handle) colorTable );
-	
-	if (pic == NULL || colorTable == NULL)
-	{
-		SysBeep(6);
-		ExitApplication();
-	}
 		
 	/* Allocate memory for the 'cicn'. */
 	
@@ -317,16 +442,17 @@ void TestScheme(void)
 	/* Fill in the cicn's bitmap fields. */ 
 	
 	(**cicn).iconBMap.baseAddr				= nil;
-	(**cicn).iconBMap.rowBytes				= (picInfo.sourceRect.right - picInfo.sourceRect.left + 7)/8;
+	(**cicn).iconBMap.rowBytes				= (pixMapInfo.sourceRect.right - pixMapInfo.sourceRect.left + 7)/8;
 	(**cicn).iconBMap.rowBytes			   += (**cicn).iconBMap.rowBytes & 1;
-	(**cicn).iconBMap.bounds				= picInfo.sourceRect;
+	(**cicn).iconBMap.bounds				= pixMapInfo.sourceRect;
 	bitmapSize = ((**cicn).iconBMap.bounds.bottom - (**cicn).iconBMap.bounds.top) * (**cicn).iconBMap.rowBytes;
+
 
 	/* Fill in the cicn's mask bitmap fields. */
 	
 	(**cicn).iconMask.baseAddr				= nil;
 	(**cicn).iconMask.rowBytes				= (**cicn).iconBMap.rowBytes;
-	(**cicn).iconMask.bounds				= picInfo.sourceRect;
+	(**cicn).iconMask.bounds				= pixMapInfo.sourceRect;
 	
 	/* Fill in the cicn's pixmap fields. */
 	
@@ -336,23 +462,22 @@ void TestScheme(void)
 	(**cicn).iconPMap.pmVersion				= 0;
 	(**cicn).iconPMap.packType				= 0;
 	(**cicn).iconPMap.packSize				= 0;
-	(**cicn).iconPMap.hRes					= picInfo.hRes;
-	(**cicn).iconPMap.vRes					= picInfo.vRes;
-	(**cicn).iconPMap.pixelSize				= picInfo.depth;
+	(**cicn).iconPMap.hRes					= pixMapInfo.hRes;
+	(**cicn).iconPMap.vRes					= pixMapInfo.vRes;
+	(**cicn).iconPMap.pixelSize				= pixMapInfo.depth;
 	(**cicn).iconPMap.planeBytes			= 0;
 	(**cicn).iconPMap.pmReserved			= 0;
 	(**cicn).iconPMap.pixelType				= 0;
 	(**cicn).iconPMap.cmpCount				= 1;
-	(**cicn).iconPMap.cmpSize				= picInfo.depth;
+	(**cicn).iconPMap.cmpSize				= pixMapInfo.depth;
 	(**cicn).iconPMap.pmTable				= colorTable;
 
-	/* Set the 'icl8' pixel image to the iconData field. */
+	/* Set the picture pixmap to the iconData field. */
 	
 	(**cicn).iconData = (Handle)picPixMap;
 	
-	/* Resize the 'cicn' for the bitmap image and mask. */
+	/* Resize the 'cicn' for the bitmap image, mask, color table and color image */
 	colorTableSize = sizeof(ColorTable) + ((**((**cicn).iconPMap.pmTable)).ctSize) * sizeof(ColorSpec);
-
 	
 	SetHandleSize( (Handle)cicn, sizeof( CIcon ) + (bitmapSize * 2) + colorTableSize + picSize);
 	
@@ -360,24 +485,37 @@ void TestScheme(void)
 	/* Note1: This is an array of shorts, so divide bitmapSize by 2. */
 	/* Note2: The mask comes before the image.  The is opposite of an 'ICN#' */
 
-	BlockZero(&(**cicn).iconMaskData[bitmapSize / 2], bitmapSize );		/* The 1bit image. */
-	BlockZero((**cicn).iconMaskData, bitmapSize );	/* The mask. */
+	BlockFill((unsigned char*)&(**cicn).iconMaskData[bitmapSize / 2], 0, bitmapSize );		/* The 1bit image. */
+	BlockFill((unsigned char*)(**cicn).iconMaskData, 0, bitmapSize );	/* The mask. */
 	BlockMove( *((**cicn).iconPMap.pmTable), &(**cicn).iconMaskData[bitmapSize], colorTableSize);
 	BlockMove( (*picPixMap)->baseAddr, &(**cicn).iconMaskData[bitmapSize + colorTableSize/2], picSize);
+	//PlotCIcon( &pixMapInfo.sourceRect, cicn );
 	
-	PlotCIcon( &picInfo.sourceRect, cicn );
-	UnlockPixels(picPixMap);
-	DisposeGWorld(picGWorld);
+	oldFile = CurResFile();
+	scheme = FSpOpenResFile(&schemeSpec, fsRdWrPerm);
+	UseResFile(scheme);
+	oldCicn = GetResource('cicn', cicnID);
+	if (oldCicn != NULL)
+	{
+		RemoveResource(oldCicn);
+		UpdateResFile(scheme);
+		CloseResFile(scheme);
+		scheme = FSpOpenResFile(&schemeSpec, fsRdWrPerm);
+		UseResFile(scheme);
+	}
 	DetachResource((Handle)cicn);
-	AddResource((Handle)cicn, 'cicn', 128, "\ptest cicn");
-	//ChangedResource((Handle)cicn);
+	AddResource((Handle)cicn, 'cicn', cicnID, "\pcreated with clip2cicn");
+	SetResAttrs((Handle)cicn, resSysHeap + resPurgeable);
+	ChangedResource((Handle)cicn);
 	WriteResource((Handle)cicn);
-	UpdateResFile(clutFile);
-	CloseResFile(clutFile);
+	UpdateResFile(scheme);
+	CloseResFile(scheme);
 	UseResFile(oldFile);
 	
-	
-
+	UnlockPixels(picPixMap);
+	DisposeGWorld(picGWorld);
+	HUnlock(pic);
+	HUnlock((Handle)colorTable);
 }
 
 void CloseScheme(void)
