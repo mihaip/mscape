@@ -1,10 +1,14 @@
+#include <Navigation.h>
+
 // ui stuff
 bool		isDone;
 CGrafPtr	startupPort;
 GDHandle	startupDevice;
+bool		navServicesAvailable;
 
 // k stuff
 FSSpec		schemeSpec;
+short		appFile;
 FSSpec		currentScheme;
 
 

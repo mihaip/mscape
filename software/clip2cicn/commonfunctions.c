@@ -113,6 +113,13 @@ void DisplayAlert(const char *error, const char *reason)
 	SetGWorld(curPort, curDevice);
 }
 
+void DisplayValue(int value)
+{
+	char buff[255];
+	sprintf(buff, "%d", value);
+	DisplayAlert(buff, "");
+}
+
 void DisplayPAlert(Str255 error, Str255 reason)
 {
 	CGrafPtr			curPort;
@@ -459,3 +466,90 @@ void MakeTargetRect(Rect src, Rect* target)
 	}
 }
 
+OSType GetApplSignature ( )
+{
+	ProcessSerialNumber	PSN;
+	ProcessInfoRec		info;
+	Str31				processName;
+	FSSpec				FileSpec;
+	info.processInfoLength = sizeof ( ProcessInfoRec );	 					
+	info.processName = processName;
+	info.processAppSpec = &FileSpec;
+	OSErr err = GetCurrentProcess(&PSN);
+	GetProcessInformation(&PSN, &info);
+	return info.processSignature;
+}
+
+NavTypeListHandle MakeTypeList ( OSType applSignature, int numTypes, ... )
+{
+	va_list		argptrs;		
+	va_start ( argptrs, numTypes );
+	NavTypeListHandle h = (NavTypeListHandle) NewHandleClear ( sizeof (NavTypeList) + 
+																(sizeof (OSType) * (numTypes-1)) );
+	if ( h != nil )
+	{
+		(*h)->componentSignature = (applSignature == 0L) ? 
+									GetApplSignature ( ) : applSignature;
+		(*h)->reserved = 0;
+		(*h)->osTypeCount = numTypes;
+		for ( int i = 0; i < numTypes; i++ )
+		{
+			OSType theType = va_arg ( argptrs, OSType );
+			(*h)->osType[i] = theType;
+		}
+	}
+	va_end ( argptrs );
+	return h;
+}
+
+void DummyFunction(void){}
+
+int GetDepth(int noOfColors)
+{
+	if (noOfColors <= 2)
+		return 1;
+	else if (noOfColors <= 4)
+		return 2;
+	else if (noOfColors <= 16)
+		return 4;
+	else if (noOfColors <= 256)
+		return 8;
+	
+	return 8; // default value
+}
+
+void CropPixMap(PixMapHandle pixMap, int targetRowBytes)
+{
+	int oldRowBytes;
+	short flags;
+	
+	oldRowBytes = (**pixMap).rowBytes & 0x3FFF;
+	flags = (**pixMap).rowBytes & 0xC000;
+	(**pixMap).rowBytes = targetRowBytes + flags;
+	for (int i = 0; i < (**pixMap).bounds.bottom - (**pixMap).bounds.top; i++)
+		BlockMove((*pixMap)->baseAddr + i*oldRowBytes, (*pixMap)->baseAddr + i*targetRowBytes, targetRowBytes);
+}
+
+void GetFSSpecFromAEDesc ( AEDesc &inDesc, FSSpec &outValue )
+{
+	Handle	dataH;
+	AEDesc	coerceDesc = {typeNull, nil};
+
+	if (inDesc.descriptorType == typeFSS) {
+		dataH = inDesc.dataHandle;		// Descriptor is the type we want
+		
+	} else {							// Try to coerce to the desired type
+		if (AECoerceDesc(&inDesc, typeFSS, &coerceDesc) == noErr) {
+										// Coercion succeeded
+			dataH = coerceDesc.dataHandle;
+
+		} else {						// Coercion failed
+			throw (errAETypeError);
+		}
+	}
+	
+	outValue = **(FSSpec**) dataH;	// Extract value from Handle
+	if (coerceDesc.dataHandle != nil) {
+		AEDisposeDesc(&coerceDesc);
+	}
+}

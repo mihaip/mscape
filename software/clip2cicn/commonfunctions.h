@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <QDOffscreen.h>
 #include <Sound.h>
+#include <Navigation.h>
+#include <stdarg.h>
 
 // global variables
 extern unsigned short gMenuBarHeight;
@@ -14,6 +16,7 @@ extern RgnHandle	  gOriginalGrayRgn;
 // function prototypes
 extern void DisplayAlert(const char* error, const char* reason);
 extern void DisplayPAlert(Str255 error, Str255 reason);
+extern void DisplayValue(int value);
 extern void InitToolBox(void);
 extern char* C2Pas(char* cStr, Str255 pStr);
 extern void DrawPicture(int pictureID);
@@ -34,4 +37,10 @@ extern void BlockFill(unsigned char *block, int fill, int size);
 extern GrafPtr CreateGrafPort(Rect* bounds);
 extern void DisposeGrafPort(GrafPtr doomedPort );
 extern void MakeTargetRect(Rect src, Rect* target);
+extern OSType GetApplSignature ( );
+extern NavTypeListHandle MakeTypeList ( OSType applSignature, int numTypes, ... );
+extern void DummyFunction();
+extern void CropPixMap(PixMapHandle pixMap, int targetRowBytes);
+extern int GetDepth(int noOfColors);
+void GetFSSpecFromAEDesc ( AEDesc &inDesc, FSSpec &outValue );
 #endif

@@ -1,10 +1,6 @@
 #pragma once
 
 #include "commonfunctions.h"
-#include <PictUtils.h>
-#include <MacMemory.h>
-#include <Controls.h>
-#include <AppleEvents.h>
 
 // file types
 
@@ -94,7 +90,8 @@ void		HandleAppleChoice(int item);
 void		ShowAboutBox(void);
 void		HandleFileChoice(int item);
 void		DrawImageWell(Rect bounds);
-void		InsertCicn(void);
+OSStatus	GetSchemeNav(void);
+OSStatus	GetSchemeOld(void);
 void		GetcicnID(void);
 void		clip2cicn(short cicnID, Str255 cicnName);
 void 		CloseScheme(void);
@@ -103,10 +100,12 @@ void		HandleEditChoice(int item);
 // --- Globals --- //
 
 extern bool			isDone;
+extern bool			navServicesAvailable;
 extern CGrafPtr		startupPort;
 extern GDHandle		startupDevice;
 extern FSSpec		schemeSpec;
 extern FSSpec		currentScheme;
+extern short		appFile;
 
 
 

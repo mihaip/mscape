@@ -1,4 +1,4 @@
-/* Resource fork of software/clip2cicn/clip2cicn (68K) */
+/* Resource fork of software/clip2cicn/clip2cicn 1.1 */
 resource 'DITL' (3000, "Basic Alert") {
 	{	/* array DITLarray: 2 elements */
 		/* [1] */
@@ -646,7 +646,7 @@ resource 'MENU' (150) {
 		/* [10] */
 		"Small Off Inactive -9976", noIcon, noKey, noMark, plain,
 		/* [11] */
-		"Small Off Active -9975 ", noIcon, noKey, noMark, plain,
+		"Small Off Active -9975", noIcon, noKey, noMark, plain,
 		/* [12] */
 		"Small Pressed -9974", noIcon, noKey, noMark, plain,
 		/* [13] */
@@ -2293,6 +2293,27 @@ resource 'STR ' (128, "Change to \"0\" to remove expiration") {
 	"1"
 };
 
+resource 'SIZE' (-1) {
+	reserved,
+	acceptSuspendResumeEvents,
+	reserved,
+	canBackground,
+	multiFinderAware,
+	backgroundAndForeground,
+	dontGetFrontClicks,
+	ignoreChildDiedEvents,
+	is32BitCompatible,
+	isHighLevelEventAware,
+	onlyLocalHLEvents,
+	notStationeryAware,
+	dontUseTextEditServices,
+	notDisplayManagerAware,
+	reserved,
+	reserved,
+	1048576,
+	1048576
+};
+
 data 'CODE' (1, "First Segment", locked, protected, preload) {
 	$"0000 0001 9DCE 598F 2F3C 434F 4445 4267"            /* ....ùŒYè/<CODEBg */
 	$"A9A0 2017 6700 00F2 2040 2050 2E18 2C10"            /* ©† .g..Ú @ P..,. */
@@ -3341,24 +3362,20 @@ data 'DATA' (0, purgeable, protected) {
 	$"BFAC AA9F ADA0 BD8A 998A 9D87 0000 0000"            /* ø¨™ü≠†Ωäôäùá.... */
 };
 
-resource 'SIZE' (-1) {
-	reserved,
-	acceptSuspendResumeEvents,
-	reserved,
-	canBackground,
-	multiFinderAware,
-	backgroundAndForeground,
-	dontGetFrontClicks,
-	ignoreChildDiedEvents,
-	is32BitCompatible,
-	isHighLevelEventAware,
-	onlyLocalHLEvents,
-	notStationeryAware,
-	dontUseTextEditServices,
-	notDisplayManagerAware,
-	reserved,
-	reserved,
-	1048576,
-	1048576
+resource 'cfrg' (0) {
+	{	/* array memberArray: 1 elements */
+		/* [1] */
+		kPowerPCCFragArch,
+		kIsCompleteCFrag,
+		kNoVersionNum,
+		kNoVersionNum,
+		131072,
+		kNoAppSubFolder,
+		kApplicationCFrag,
+		kDataForkCFragLocator,
+		kZeroOffset,
+		kSegIDZero,
+		"clip2cicn (PPC)"
+	}
 };
 
