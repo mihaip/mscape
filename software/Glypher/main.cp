@@ -12,13 +12,14 @@ void main(void)
 
 void Initialize()
 {
-	DateTimeRec		theDate;
-	StringHandle	doesExpire;
+//	DateTimeRec		theDate;
+//	StringHandle	doesExpire;
 	
 	InitToolbox();
 	
 	GetGWorld(&startupPort, &startupDevice);
 	
+	/*
 	GetTime(&theDate);
 	doesExpire = GetString( 128 );
 	if (EqualString(*doesExpire, "\p1", true, true))
@@ -29,6 +30,7 @@ void Initialize()
 			ExitApplication();
 		}
 	}
+	*/
 	InitMenuBar();
 	
 	AppleEventInit();
@@ -514,9 +516,9 @@ void NewIconSet()
 	OSStatus	theErr;
 	icnsClass	baseicns;
 	
-	theErr = GetFile("\pGlypher", glypherCreator, glyphsFileType, &glyphsSpec);
+	theErr = GetFile("\pGlypher", "\pPick the glyph set you want to merge.", glypherCreator, glyphsFileType, &glyphsSpec);
 	if (theErr == noErr)
-		theErr = NewFile("\pMake a new folder set:", "\pUntitled Icon Set", "\pGlypher", glypherCreator, glyphsFileType, &setSpec);
+		theErr = NewFile("\pChoose the location where the merged set should be saved.", "\pUntitled Icon Set", "\pGlypher", glypherCreator, glyphsFileType, &setSpec);
 	if (theErr == noErr)
 		MakeNewSet(true);
 }
@@ -525,9 +527,9 @@ void IntoScheme(void)
 {
 	OSStatus	theErr;
 	
-	theErr = GetFile("\pGlypher", glypherCreator, glyphsFileType, &glyphsSpec);
+	theErr = GetFile("\pGlypher", "\pPick the glyph set you want to merge.", glypherCreator, glyphsFileType, &glyphsSpec);
 	if (theErr == noErr)
-		theErr = GetFile("\pGlypher", schemeCreator, schemeFileType, &setSpec);
+		theErr = GetFile("\pGlypher", "\pPick a scheme to insert the merged set into.", schemeCreator, schemeFileType, &setSpec);
 	if (theErr == noErr)
 		MakeNewSet(false);
 }
@@ -536,7 +538,7 @@ void EditBadges()
 {
 	OSStatus	theErr;
 
-	theErr = GetFile("\pGlypher", glypherCreator, glyphsFileType, &glyphsSpec);
+	theErr = GetFile("\pGlypher", "\pPick the glyph set you want to edit.", glypherCreator, glyphsFileType, &glyphsSpec);
 	if (theErr == noErr)
 		PositionBadges();
 }
@@ -651,7 +653,7 @@ void MergeIcon(int ID, Str255 name, icnsClass* baseicns)
 	}
 
 	glyphicns.ID = ID;
-	glyphicns.Load();
+	glyphicns.LoadFromFile(glyphsSpec);
 	
 	CloseResFile(glyphs);
 	UseResFile(appFile);
@@ -946,6 +948,7 @@ void MergeIcon(int ID, Str255 name, icnsClass* baseicns)
 	}
 	
 	CopyString(targeticns.name, name);
+	targeticns.sizes |= (large | small);
 	targeticns.flags = resSysHeap + resPurgeable;
 	targeticns.SaveToFile(setSpec, false, true);
 	
@@ -1058,7 +1061,7 @@ void MakeNewSet(bool makeSetFile)
 	switch (pickedSource)
 	{
 		case kGlyphs: baseSourceSpec = glyphsSpec; break;
-		case kFile: GetFile("\pGlypher", '****', '****', &baseSourceSpec); break;
+		case kFile: GetFile("\pGlypher", "\pPick a source file for the base folder.", '****', '****', &baseSourceSpec); break;
 	}
 	
 	base = FSpOpenResFile(&baseSourceSpec, fsRdPerm);
@@ -1145,8 +1148,6 @@ void MakeNewSet(bool makeSetFile)
 
 #define Refresh()\
 {\
-	LockPixels(iconPix);\
-	LockPixels(smallIconPix);\
 	SetGWorld(iconGWorld, NULL);\
 	ForeColor(blackColor);\
 	BackColor(whiteColor);\
@@ -1161,7 +1162,6 @@ void MakeNewSet(bool makeSetFile)
 		InsetRect(&glyphRect, 8, 8);\
 		FrameRect(&glyphRect);\
 	}\
-	CopyBits((BitMap *) (*iconPix),&positionGlyphs->portBits,&largeIconRect, &targetRect,srcCopy, NULL);\
 	\
 	SetGWorld(smallIconGWorld, NULL);\
 	ForeColor(blackColor);\
@@ -1177,7 +1177,6 @@ void MakeNewSet(bool makeSetFile)
 		InsetRect(&smallBadgeRect, 4, 4);\
 		FrameRect(&smallBadgeRect);\
 	}\
-	CopyBits((BitMap *) (*smallIconPix),&positionGlyphs->portBits,&smallIconRect, &smallTargetRect,srcCopy, NULL);\
 	\
 	SetGWorld(previewGWorld, NULL);\
 	ForeColor(blackColor);\
@@ -1203,7 +1202,10 @@ void MakeNewSet(bool makeSetFile)
 		InsetRect(&previewSmallBadge, 4, 4);\
 		FrameRect(&previewSmallBadge);\
 	}\
+	SetGWorld(startupPort, startupDevice);\
 	CopyBits((BitMap*)*previewPix, &positionGlyphs->portBits, &previewRect, &desktopPreview, srcCopy, NULL);\
+	CopyBits((BitMap *) (*iconPix),&positionGlyphs->portBits,&largeIconRect, &targetRect,srcCopy, NULL);\
+	CopyBits((BitMap *) (*smallIconPix),&positionGlyphs->portBits,&smallIconRect, &smallTargetRect,srcCopy, NULL);\
 	SetPort(positionGlyphs);\
 	RGBForeColor(&currentForeColor);\
 	RGBBackColor(&currentBackColor);\
@@ -1239,9 +1241,11 @@ void PositionBadges(void)
 	
 	NewGWorld(&iconGWorld, 32, &largeIconRect, NULL, NULL, 0);
 	iconPix = GetGWorldPixMap(iconGWorld);
+	LockPixels(iconPix);
 	
 	NewGWorld(&smallIconGWorld, 32, &smallIconRect, NULL, NULL, 0);
 	smallIconPix = GetGWorldPixMap(smallIconGWorld);
+	LockPixels(smallIconPix);
 	
 	glyphs = FSpOpenResFile(&glyphsSpec, fsRdPerm);
 	UseResFile(glyphs);
@@ -1281,6 +1285,7 @@ void PositionBadges(void)
 	
 	GetForeColor(&currentForeColor);
 	GetBackColor(&currentBackColor);
+	
 	SetDialogDefaultItem(positionGlyphs, kOK);
 	
 	GetDialogItem(positionGlyphs, kIconPreview, &itemType, & ((Handle)iconPreview), &targetRect);
@@ -1297,6 +1302,7 @@ void PositionBadges(void)
 	OffsetRect(&previewRect, -previewRect.left, -previewRect.right);
 	NewGWorld(&previewGWorld, 32, &previewRect, NULL, NULL, 0);
 	previewPix = GetGWorldPixMap(previewGWorld);
+	LockPixels(previewPix);
 	
 	tempRect = previewRect;
 	tempRect.left += (tempRect.right - tempRect.left)/2;
@@ -1384,7 +1390,7 @@ void PositionBadges(void)
 		{
 			case kOK: WriteToDisk(); dialogDone = true; break;
 			case kInsertClipboard:
-				glyphicns.ImportFromClipboard();
+				glyphicns.ImportFromClipboard(true);
 				glyphicns.SaveToFile(glyphsSpec, false, true);
 				Refresh();
 				break;

@@ -1,4 +1,4 @@
-Glypher 1.0d7
+Glypher 1.0
 by Mihai Parparita
 free for clip2icns users
 mihai@mscape.com
@@ -10,7 +10,20 @@ This little utility is designed to help you create the system folder icons. It s
 
 Usage
 
-<must write this>
+First some terminology:
+Glyph: little badge on the system folders that shows what kind of folder it is.
+Base folder: the folder icon onto which all the glyphs are stamped on in the final set.
+Merging: the action of "stamping" the glyph onto the base folder, and saving the result in a different icon.
+
+Glypher has two modes of operation, merging of a glyph set, and editing of a glyph set.
+
+Merging
+As mentioned above, merging involves taking a glyph set, and combining the base folder with the glyphs to get a completed icon set that can be used in Kaleidoscope schemes, etc. There are two possibilities for merging, Merge Glyphs Into New File, or Merge Glyphs Into Scheme. As their names suggest, the former outputs the result into a new file while the latter puts the merged icons into a Kaleidoscope scheme (note that the merging process will take longer since there many more resources in the file, thus increasing the time it takes to load and save). When you have chosen either of these commands, you will be presented with a file selection dialog, which asks you for the glyph set you wish to merge. Once you have selected one you will either be shown a save dialog, or another selection dialog asking you for a Kaleidoscope scheme to insert into, depending on which command you chose.
+The final step before the actual merging process is to select a source for the base folder. You can either use the one in the glyphs file (the default MacOS one is in the Default Glyphs file) or one from a different file (Glypher looks for an icon with the ID -3999, the usual ID used to store the blank folder icon). The reasoning behind this is that in this way you can share glyph sets between different base folders without having to duplicate the entire glyph file.
+
+Editing
+Editing involves positioning the glyph onto the base folder, and inserting new glyphs if necessary. Positioning determines the location onto which the glyph will be stamped on the base folder. There are three ways in which you can position the glyph. You can use the four buttons around each size (large and small) to move it in one pixel increments. You can click and drag to move it around with the mouse. Finally, you can offset it by using the arrows on the keyboard (hold down option to move the small glyph instead of the large one). You can also hold down shift to move the glyph in 10 pixel increments. To edit a different glyph choose a different one from the pop-up menu.
+The editing dialog also has an Insert from Clipboard button. This command is very similar to clip2icns's, it takes an 80x32 image from the clipboard and inserts into the current glyphs. Note that if you have edit many glyphs it is recommended to use clip2icns, since it has a better interface for this kind of work.
 
 Purchasing Info
 
@@ -18,10 +31,21 @@ Glypher looks for a registered copy of clip2icns when launching. clip2icns is a 
 
 Version History
 
+1.0 February 14, 1999
+ - application does not quit anymore if Internet Config is not installed 
+ - no more weird colors in the positioning dialog when in thousands of colors
+1.0b1 February 10, 1999
+ - File selection dialogs now contain prompts to make it clearer what must be chosen.
+ - added some missing glyphs to the default file
+ - fixed a bug which caused folder sets not to merge properly
+1.0d9 December 3 11998
+ - fixed a rare bug whuch could cause compression problems
+ - included additional glyphs in the default glyphs file
 1.0d8 December 2 1998
  - small 1 bit mask (ics# resource) is generated properly
  - app now places a watermark on icons when c2i's not registered instead of refusing to launch
  - Default Glyphs set now includes old style resources so that the base folder won't get dithered under lower bit depths
+ - when holding shift down the glyph is moved in 10 pixel increments (both when pressing the buttons and when using the arrow keys)
 1.0d7 November 28 1998
  - you can now drag the glyph around with the cursor to reposition it
  - you can also use the arrow keys to shift the glyph around (hold down the option key to move around the small glyph)
@@ -32,8 +56,4 @@ Version History
 
 Future Plans
 
-I'm planning to add Glypher's capabilities to an icon editor that I'm developing right now (to be release some time next year).
-
-Thanks
-
-Testers, people at Mathemaesthetics, etc...
+I'm planning to add Glypher's capabilities to an icon editor that I'm developing right now (to be release some time this spring).

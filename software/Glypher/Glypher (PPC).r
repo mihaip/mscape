@@ -367,16 +367,14 @@ resource 'MENU' (200) {
 resource 'MENU' (131) {
 	131,
 	textMenuProc,
-	0x7FFFFFFB,
+	allEnabled,
 	enabled,
 	"Merge Glyphs Submenu",
-	{	/* array: 3 elements */
+	{	/* array: 2 elements */
 		/* [1] */
 		"New File", noIcon, "N", noMark, plain,
 		/* [2] */
-		"Scheme", noIcon, "S", noMark, plain,
-		/* [3] */
-		"Theme", noIcon, "T", noMark, plain
+		"Scheme", noIcon, "S", noMark, plain
 	}
 };
 
@@ -953,21 +951,21 @@ resource 'MBAR' (128) {
 resource 'vers' (1) {
 	0x1,
 	0x0,
-	development,
-	0x8,
+	release,
+	0x0,
 	14,
-	"1.0d8",
-	"©1998 Mihai Parparita"
+	"1.0",
+	"©1998-9 Mihai Parparita"
 };
 
 resource 'vers' (2) {
 	0x1,
 	0x0,
-	development,
-	0x8,
+	release,
+	0x0,
 	14,
-	"1.0d8",
-	"glypher 1.0d8"
+	"1.0",
+	"Glypher 1.0"
 };
 
 resource 'dlgx' (-6043) {
