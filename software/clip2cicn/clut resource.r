@@ -1,4 +1,4 @@
-/* Resource fork of software/clutInsertor/clut resource */
+/* Resource fork of software/clip2cicn/clut resource */
 resource 'PICT' (128) {
 	3562,
 	{0, 0, 68, 164},

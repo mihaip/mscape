@@ -1,4 +1,4 @@
-/* Resource fork of software/clutInsertor/main.cp */
+/* Resource fork of software/clip2cicn/main.cp */
 data 'MPSR' (1005) {
 	$"0009 4D6F 6E61 636F 0000 0000 0000 0000"            /* ..Monaco........ */
 	$"0000 0000 0000 0000 0000 0000 0000 0000"            /* ................ */

@@ -1,4 +1,4 @@
-/* Resource fork of software/clutInsertor/clutinsertor.µ.rsrc */
+/* Resource fork of software/clip2cicn/clutinsertor.µ.rsrc */
 resource 'icl8' (128) {
 	$"0000 0000 0000 0000 0000 0000 0000 0000"
 	$"0000 0000 0000 0000 0000 0000 0000 0000"

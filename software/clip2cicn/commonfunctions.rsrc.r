@@ -1,4 +1,4 @@
-/* Resource fork of software/clutInsertor/commonfunctions.rsrc */
+/* Resource fork of software/clip2cicn/commonfunctions.rsrc */
 resource 'DITL' (3000, "Basic Alert") {
 	{	/* array DITLarray: 2 elements */
 		/* [1] */
