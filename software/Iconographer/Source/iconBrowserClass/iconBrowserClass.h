@@ -113,6 +113,7 @@ class iconBrowserClass : public MDocumentWindow
 		void	HandleContentClick(EventRecord* eventPtr);
 		void	HandleGrow(Point where);
 		void	HandleKeyDown(EventRecord* eventPtr);
+		void	HandleWheelMove(Point location, int modifiers, EventMouseWheelAxis axis, long delta);
 		
 		bool				HasSelection();
 		void				EditIconInfo();

@@ -29,7 +29,7 @@ resource 'CNTL' (130, "About Box: Version", purgeable) {
 	0,
 	288,
 	0,
-	"Version 2.2"
+	"Version 2.3"
 };
 
 resource 'CNTL' (131, "About Box: Registration Info", purgeable) {
@@ -95,5 +95,18 @@ resource 'WIND' (128, "About Box", purgeable) {
 	0x0,
 	"About Iconographer",
 	centerMainScreen
+};
+
+resource 'cctb' (130) {
+	{	/* array ColorSpec: 4 elements */
+		/* [1] */
+		cFrameColor, 0, 0, 0,
+		/* [2] */
+		cBodyColor, 65535, 65535, 65535,
+		/* [3] */
+		cTextColor, 0, 0, 0,
+		/* [4] */
+		cElevatorColor, 65535, 65535, 65535
+	}
 };
 

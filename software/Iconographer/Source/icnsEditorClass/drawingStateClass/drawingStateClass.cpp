@@ -92,6 +92,7 @@ drawingStateClass::drawingStateClass(drawingStatePtr previousLastState, icnsEdit
 	members = editor->members;
 	usedMembers = editor->usedMembers;
 	colors = editor->colors;
+	format = editor->format;
 }
 
 // __________________________________________________________________________________________
@@ -187,6 +188,7 @@ void drawingStateClass::RestoreState(icnsEditorPtr editor)
 	editor->members = members;
 	editor->usedMembers = usedMembers;
 	editor->colors = colors;
+	editor->format = format;
 	
 	// if there's a selection, we should also update the magnified selection region
 	if (status & hasSelection)

@@ -27,7 +27,10 @@ WindowRef		gWindowPtrUnderMouse = NULL;
 #if TARGET_API_MAC_CARBON
 AboutBoxPtr		gAboutBox = NULL;
 #endif
+DMExtendedNotificationUPP	gRezChangeNotificationUPP;
+	
 
+int startTicks = -1, oldTicks = -1;
 
 // __________________________________________________________________________________________
 // Name			: main
@@ -40,6 +43,8 @@ AboutBoxPtr		gAboutBox = NULL;
 void main(void)
 {
 	Initialize();
+	
+	DEBUGTIMING("\pDone initializing: ");
 	
 	EventLoop();
 	
@@ -58,12 +63,14 @@ void main(void)
 void Initialize()
 {
 #ifdef EXPIRES
-	DateTimeRec		theDate; // will be used to store the current date
+	DateTimeRec				theDate; // will be used to store the current date
 #endif
-	OSErr			err; // used to check if functions returned errors or not
+	OSErr					err; // used to check if functions returned errors or not
 	
 	MUtilities::InitToolbox(); // since this function is called before anything else, we must initialize
 				   // the toolbox before doing anything else
+	
+	DEBUGTIMING("\pInited the toolbox: ");
 	
 	gIsDone = false; // we're not ready to quit...
 	
@@ -90,7 +97,11 @@ void Initialize()
 	}
 #endif
 
+	DEBUGTIMING("\pTested the config: ");
+
 	LoadPreferences();
+	
+	DEBUGTIMING("\pLoaded the prefs: ");
 	
 	err = InitMenuBar(); // and set up the menubar
 	if (err != noErr)
@@ -99,7 +110,11 @@ void Initialize()
 		gIsDone = true;
 	}
 	
+	DEBUGTIMING("\pInited the menubar: ");
+	
 	icnsEditorClass::statics.Load();
+	
+	DEBUGTIMING("\pInited the statics: ");
 	
 	err = AEInit(); // and the AppleEvents
 	if (err != noErr)
@@ -108,15 +123,22 @@ void Initialize()
 		gIsDone = true;
 	}
 	
+	DEBUGTIMING("\pInited the apple events: ");
+	
 	if (NavServicesAvailable())
 		NavLoad();
+	
+	DEBUGTIMING("\pInited the navigation services: ");
 	
 	if (icnsEditorClass::statics.preferences.IsRegistered())
 	{
 		MenuHandle menu;
 		menu = GetMenuHandle(mApple);
 		DeleteMenuItem(menu, iRegister);
+		
+		DEBUGTIMING("\pRemoved the register item: ");
 	}
+	
 	
 	SetupPalette(icnsEditorClass::statics.colorsPalette,
 				 prefsColorsPaletteVisible,
@@ -142,12 +164,17 @@ void Initialize()
 				 eShowToolPalette,
 				 eHideToolPalette);
 	
+	DEBUGTIMING("\pSetup the palettes: ");
+	
 	MUtilities::ChangeCursor(rArrow);
 
 #if TARGET_API_MAC_CARBON
 	gAboutBox = new AboutBox;
 #endif
+
+	DEBUGTIMING("\pCreated the about box: ");
 }
+
 
 // __________________________________________________________________________________________
 // Name			: ConfigurationSupported
@@ -215,6 +242,8 @@ OSErr InitMenuBar()
 	else
 		return resNotFound;
 
+	DEBUGTIMING("\pSet the menubar: ");
+
 #if !TARGET_API_MAC_CARBON
 	menu = GetMenuHandle( mApple );
 	if (menu != NULL)
@@ -266,6 +295,8 @@ OSErr InitMenuBar()
 	else
 		return resNotFound;
 		
+	DEBUGTIMING("\pSetup the hierarchical menus: ");	
+		
 	RebuildRecentFilesMenu();
 
 	SetupPixelGrid();
@@ -305,6 +336,8 @@ OSErr InitMenuBar()
 	GetIndString(menuItemText, rDefaultNames, eIconographerHomepage);
 	InsertMenuItem(gHelpMenu, menuItemText, menuItemCount++);
 
+	DEBUGTIMING("\pSetup the help menu: ");
+
 #if TARGET_API_MAC_CARBON
 	if (MUtilities::GestaltTest(gestaltMenuMgrAttr, gestaltMenuMgrAquaLayoutMask))
 	{
@@ -330,6 +363,8 @@ OSErr InitMenuBar()
 		DeleteMenuItem(menu, iPreferences);
 		DeleteMenuItem(menu, iPreferences - 1);
 	}
+	
+	DEBUGTIMING("\pMade the layout Aqua style: ");
 	
 	MenuRef 		oldMenu;
 	Str255			text;
@@ -364,6 +399,8 @@ OSErr InitMenuBar()
 	DeleteMenu(mWindows);
 	DisposeMenu(oldMenu);
 	
+	DEBUGTIMING("\pCreated the windows menu: ");
+	
 	menu = GetMenuHandle(mEdit);
 	
 	SetMenuItemCommandID(menu, iUndo, kHICommandUndo);
@@ -384,8 +421,12 @@ OSErr InitMenuBar()
 #else
 	gWindowMenu = GetMenuHandle(mWindows);
 #endif
+
+	DEBUGTIMING("\pFinished with the window menu: ");
 	
-	DrawMenuBar(); // and draw the menubar
+	//DrawMenuBar(); // and draw the menubar
+	
+	DEBUGTIMING("\pDrew the menubar: ");
 	
 	return noErr;
 }
@@ -716,6 +757,7 @@ void UpdateMenuBar(int status)
 			EnableMenuItem(menu, iNone); 
 			EnableMenuItem(menu, iInverse);
 			EnableMenuItem(menu, iExpandContract);
+			EnableMenuItem(menu, iStroke);
 			
 			MyEnableMenuItem(mPaste, iPasteIntoSelection);
 			MyEnableMenuItem(mCopy, iCopyNormally);
@@ -730,6 +772,7 @@ void UpdateMenuBar(int status)
 			DisableMenuItem(menu, iNone);
 			DisableMenuItem(menu, iInverse);
 			DisableMenuItem(menu, iExpandContract);
+			DisableMenuItem(menu, iStroke);
 			
 			MyDisableMenuItem(mPaste, iPasteIntoSelection);
 			MyDisableMenuItem(mCopy, iCopyNormally);
@@ -1339,6 +1382,7 @@ void DoMenuCommand(long menuResult)
 						case iNone : frontEditor->MakeSelection(none); break;
 						case iInverse : frontEditor->MakeSelection(inverse); break;
 						case iExpandContract: frontEditor->MakeSelection(expandContract); break;
+						case iStroke: frontEditor->MakeSelection(stroke); break;
 					}
 				break;
 			case mTransform:
@@ -1380,6 +1424,8 @@ void DoMenuCommand(long menuResult)
 					{
 						case iZoomIn : frontEditor->ZoomIn(); break;
 						case iZoomOut : frontEditor->ZoomOut(); break;
+						case iZoomFit: frontEditor->ZoomFit(); break;
+						case iZoomActual: frontEditor->ZoomActual(); break;
 						case iInsertIcon: frontEditor->AddMember(); break;
 						case iIconInfo : frontEditor->EditIconInfo(); break;
 						case iPixelGrid: TogglePixelGrid(); frontEditor->Invalidate(); frontEditor->Refresh(); break;
@@ -1500,6 +1546,113 @@ void DoMenuCommand(long menuResult)
 		while (TickCount() < startTicks + 4) {;}
 		
 		HiliteMenu(0); // after the command has been executed, we must unhilite the menu
+	}
+}
+
+#pragma mark -
+
+void SetupResolutionHandling()
+{
+	ProcessSerialNumber		currentPSN;
+	Rect					oldBounds, currentBounds;
+	
+	oldBounds = icnsEditorClass::statics.preferences.GetLastScreenBounds();
+	currentBounds = MUtilities::GetUsableScreenRect();
+	
+	if ((oldBounds.right - oldBounds.left) != (currentBounds.right - currentBounds.left) ||
+		(oldBounds.bottom - oldBounds.top) != (currentBounds.bottom - currentBounds.top))
+		HandleResolutionChange(false);
+	
+	gRezChangeNotificationUPP = NewDMExtendedNotificationUPP(ResolutionChangeNotification);
+	MacGetCurrentProcess(&currentPSN);
+	DMRegisterExtendedNotifyProc(gRezChangeNotificationUPP, NULL, kFullNotify, &currentPSN);
+}
+
+pascal void ResolutionChangeNotification(void *userData, short theMessage, void *notifyData)
+{
+#pragma unused (userData, notifyData)
+
+	switch (theMessage)
+	{
+		case kDMNotifyPrep: break;
+		case kDMNotifyEvent:
+			AppleEvent* event;
+			AEDescList	displayList;
+			AEDescList	displayID;
+			AERecord	oldConfig, newConfig;
+			AEKeyword	tempWord;
+			DescType	returnType;
+			Size		size;
+			bool		rezChanged = false;
+			OSErr		err;
+			long		count;
+			Rect		newRect, oldRect;
+			
+			event = (AppleEvent*)notifyData;
+			
+			err = AEGetParamDesc(event, kAEDisplayNotice, typeWildCard, &displayList); DebugAssert(err == noErr);
+			
+			// count the elements in the list
+			err = AECountItems(&displayList,&count); DebugAssert(err == noErr);
+			
+			for (int i=0; i < count; i++)
+			{
+				err = AEGetNthDesc(&displayList, i + 1, typeWildCard, &tempWord, &displayID); DebugAssert(err == noErr);
+				err = AEGetNthDesc(&displayID, 1, typeWildCard, &tempWord, &oldConfig); DebugAssert(err == noErr);
+				err = AEGetKeyPtr(&oldConfig, keyDeviceRect, typeWildCard, &returnType, &oldRect, 8, &size); DebugAssert(err == noErr);
+				err = AEGetNthDesc(&displayID, 2, typeWildCard, &tempWord, &newConfig); DebugAssert(err == noErr);
+				err = AEGetKeyPtr(&newConfig, keyDeviceRect, typeWildCard, &returnType, &newRect, 8, &size); DebugAssert(err == noErr);
+			
+				if ((oldRect.right - oldRect.left) != (newRect.right - newRect.left) ||
+					(oldRect.bottom - oldRect.top) != (newRect.bottom - newRect.top))
+				{
+					rezChanged = true;
+					break;
+				}
+			}
+			
+			if (rezChanged)
+				HandleResolutionChange(true);
+			break;
+	}
+}
+
+void HandleResolutionChange(bool fromEvent)
+{
+	MAlert		alert;
+	Str255		text;
+	MString		temp;
+	
+	if (fromEvent)
+		GetIndString(text, rStdErrors, eRezChangeEvent); 
+	else
+		GetIndString(text, rStdErrors, eRezChangeStartup);
+		
+	SubstituteString(text, "\p<app name>", gAppName);
+	SubstituteString(text, "\p<app name>", gAppName);
+	
+	alert.SetButtonName(kMAOK, rDefaultNames, eRepositionButton);
+	alert.SetButtonName(kMACancel, rDefaultNames, eCancelButton);
+	
+	temp = text;
+	
+	alert.SetError(temp);
+	alert.SetBeep(false);
+	alert.SetMovable(true);
+	alert.SetPosition(kWindowCenterMainScreen);
+		
+	switch (alert.Display())
+	{
+		case kMAOK:
+			icnsEditorClass::statics.preferences.ResetPaletteLocations();
+			icnsEditorClass::statics.preferences.SetupPaletteLocations();
+			
+			for (MWindowPtr currentWindow = MWindow::GetFirst(); currentWindow; currentWindow = currentWindow->GetNext())
+				if (currentWindow->GetType() == kEditorType)
+					icnsEditorPtr(currentWindow)->EnsureOnScreenPosition();					
+			break;
+		case kMACancel:
+			break;
 	}
 }
 
@@ -2298,6 +2451,8 @@ void PostOpen()
 	
 	if (icnsEditorClass::statics.firstTime)
 		ShowFirstTimeDialog();
+	
+	SetupResolutionHandling();
 }
 
 void ShowFirstTimeDialog()
@@ -2425,7 +2580,7 @@ bool Close(WindowPtr windowToClose, int flags)
 
 OSErr SaveIcon(icnsEditorPtr frontEditor, int flags)
 {
-	bool			newIcon = false;
+	bool			newIcon = false, createdFile = false;
 	OSErr			err;
 	int				deletedIcon = kIDNone, deletedIconFormat = -1;
 	
@@ -2436,22 +2591,22 @@ OSErr SaveIcon(icnsEditorPtr frontEditor, int flags)
 			FSSpec	oldSpec, editorFile;
 			Handle	icnsHandle;
 			short 	oldFile, file;
+			long	saveFormat;
 			
 			oldSpec = frontEditor->file.GetAssociatedFile();
 			
-			if (frontEditor->format == formatWindows ||
-				frontEditor->format == formatWindowsXP ||
-				frontEditor->format == formatMacOSXServer)
-			{
-				frontEditor->format = formatMacOSUniversal;
-				frontEditor->usedMembers = kDefaultMembers[formatMacOSUniversal];
-			}
+			if (frontEditor->format != formatMacOSNew &&
+				frontEditor->format != formatMacOSOld &&
+				frontEditor->format != formatMacOSUniversal)
+				saveFormat = formatMacOSUniversal;
 			
 			editorFile = frontEditor->file.GetAssociatedFile();
-			err = GetIconFile(&editorFile, &frontEditor->format, true);
-			frontEditor->file.SetAssociatedFile(editorFile);
-			
+			err = GetIconFile(&editorFile, &saveFormat, true);
 			if (err != noErr) return err;
+			
+			frontEditor->usedMembers &= kDefaultMembers[saveFormat];
+			frontEditor->format = saveFormat;
+			frontEditor->file.SetAssociatedFile(editorFile);
 			
 			oldFile = CurResFile();
 			file = frontEditor->file.OpenResourceFork(fsRdPerm);
@@ -2518,6 +2673,8 @@ OSErr SaveIcon(icnsEditorPtr frontEditor, int flags)
 				
 			frontEditor->file.SetAssociatedFile(targetFile);
 			frontEditor->RefreshWindowTitle(); // must update the title of the window with the new file name
+			
+			createdFile = true;
 		}
 		else if (frontEditor->IDChanged())
 		{
@@ -2533,7 +2690,16 @@ OSErr SaveIcon(icnsEditorPtr frontEditor, int flags)
 		{
 			frontEditor->file.Reset();
 			
-			SaveIcon(frontEditor, flags);
+			return SaveIcon(frontEditor, flags);
+		}
+		else if (err == userCanceledErr && createdFile)
+		{
+			frontEditor->file.Delete();
+			frontEditor->file.Reset();
+			
+			frontEditor->RefreshWindowTitle();
+			
+			return err;
 		}
 		
 		if (!(icnsEditorClass::statics.preferences.IsRegistered()))
@@ -2765,6 +2931,8 @@ pascal Boolean AlertEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *
 
 void CleanUp(void)
 {
+	ProcessSerialNumber		currentPSN;
+	
 	// note that we don't do this by looping through the list since the list order
 	// might not be the order in which the windows are stacked in
 	while (MWindow::GetFront() != NULL)
@@ -2773,6 +2941,10 @@ void CleanUp(void)
 			gIsDone = false;
 			EventLoop();
 		}
+		
+	MacGetCurrentProcess(&currentPSN);
+	DMRemoveExtendedNotifyProc(gRezChangeNotificationUPP, NULL, &currentPSN, 0);
+	DisposeDMExtendedNotificationUPP(gRezChangeNotificationUPP);
 	
 	if (NavServicesAvailable())
 		NavUnload();

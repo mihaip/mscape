@@ -78,7 +78,8 @@ enum defaultNames
 	eInsertIcon = 32,
 	eOpenHelp = 33,
 	eContinue = 34,
-	eRegisteredTo = 35
+	eRegisteredTo = 35,
+	eRepositionButton = 36
 };
 
 enum stdErrors
@@ -100,7 +101,9 @@ enum stdErrors
 	eAppearanceNotInstalled = 15,
 	eNeedInternetConfigRegistration = 16,
 	eCantOpenFile = 17,
-	eNeedCarbonLib = 18
+	eNeedCarbonLib = 18,
+	eRezChangeStartup = 19,
+	eRezChangeEvent = 20
 };
 
 enum prompts
@@ -204,7 +207,8 @@ enum selectMenu
 	iSimilar = 2,
 	iNone = 3,
 	iInverse = 4,
-	iExpandContract = 5
+	iExpandContract = 5,
+	iStroke = 6
 };
 
 enum transformMenu
@@ -235,15 +239,18 @@ enum iconMenu
 {
 	iZoomIn = 1,
 	iZoomOut = 2,
-	iColors = 4,
-	iInsertIcon = 6,
-	iIconInfo = 7,
-	iPixelGrid = 8,
+	iZoomFit = 3,
+	iZoomActual = 4,
 	
-	iGenerateMask = 10,
-	iCompleteIcon = 11,
+	iColors = 6,
+	iInsertIcon = 8,
+	iIconInfo = 9,
+	iPixelGrid = 10,
 	
-	iOpenInExternalEditor = 13
+	iGenerateMask = 12,
+	iCompleteIcon = 13,
+	
+	iOpenInExternalEditor = 15
 };
 
 enum colorsMenu
@@ -326,6 +333,11 @@ void		HandleKeyDown(EventRecord *eventPtr);
 void		HandleUpdate(EventRecord *eventPtr);
 void		HandleActivate(EventRecord *eventStrucPtr);
 void		HandleOSEvent(EventRecord *eventPtr);
+
+void		SetupResolutionHandling();
+pascal void ResolutionChangeNotification(void *userData, short theMessage, void *notifyData);
+void		HandleResolutionChange(bool fromEvent);
+
 void		DoMenuCommand(long menuResult);
 void		ShowAboutBox(void);
 void		ShowFirstTimeDialog(void);

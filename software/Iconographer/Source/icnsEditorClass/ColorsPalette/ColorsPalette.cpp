@@ -5,10 +5,11 @@
 ControlActionUPP RGBColorPicker::sliderActionUPP = NewControlActionUPP(RGBColorPicker::SliderAction);
 ControlActionUPP HSVColorPicker::sliderActionUPP = NewControlActionUPP(HSVColorPicker::SliderAction);
 
-
 ColorsPalette::ColorsPalette()
 			  :MFloater(rCPWindow, kColorsPaletteType)
 {
+	DEBUGTIMING("\p		Initialized the base class: ");
+	
 	SetThemeWindowBackground(window, kThemeBrushDialogBackgroundActive, false);
 	
 	currentColor = kCPFore;
@@ -19,24 +20,38 @@ ColorsPalette::ColorsPalette()
 	currentX = currentY = -1;
 	currentReadoutColor = kNeverUsedColorAsRGB;
 	
+	DEBUGTIMING("\p		Set the constants: ");
+	
 	CreateControls();
+	
+	DEBUGTIMING("\p		Created the controls: ");
 
 	rgb.SetDisplayArea(this, controls.colorPickerArea);
 	rgb.CreateControls();
 	
+	DEBUGTIMING("\p		Created the rgb pane: ");
+	
 	hsv.SetDisplayArea(this, controls.colorPickerArea);
 	hsv.CreateControls();
+	
+	DEBUGTIMING("\p		Created the hsv pane: ");
 	
 	system.SetDisplayArea(this, controls.colorPickerArea);
 	system.CreateControls();
 	
+	DEBUGTIMING("\p		Created the system pane: ");
+	
 	favorites.SetDisplayArea(this, controls.colorPickerArea);
 	favorites.CreateControls();
+	
+	DEBUGTIMING("\p		Created the favorites pane: ");
 	
 	rgb.Show();
 	hsv.Hide();
 	system.Hide();
 	favorites.Hide();
+	
+	DEBUGTIMING("\p		Set the control visibility: ");
 	
 	currentColorPicker = &rgb;
 }
@@ -336,8 +351,7 @@ void ColorsPalette::CreateControls()
 	EmbedControl(controls.swatch, controls.backgroundPane);
 	SetControlUserPaneDraw(controls.swatch, CPSwatchDraw);
 	SetControlUserPaneHitTest(controls.swatch, CPSwatchHitTest);
-	SetControlBalloonHelp(controls.swatch, hCPSwatch);
-	
+	SetControlBalloonHelp(controls.swatch, hCPSwatch);	
 
 	foreColorRgn = NewRgn();
 	GetControlBounds(controls.swatch, &tempRect);

@@ -68,7 +68,8 @@ enum resources
 	rAdjust = 1010,
 	rAdjustHuePane = 1011,
 	rAdjustBrightnessPane = 1012,
-	rExpandContractDialog = 1020
+	rExpandContractDialog = 1020,
+	rStrokeDialog = 1021
 };
 
 enum addMemberItems
@@ -109,6 +110,15 @@ enum expandContractItems
 	iPixelsLabel = 5
 };
 
+enum strokeItems
+{
+	iStrokePrompt = 3,
+	iLocationPrompt = 6,
+	iInside = 7,
+	iCenter = 8,
+	iOutside = 9
+};
+
 enum basicStrings
 {
 	sUntitledName = 1,
@@ -130,7 +140,12 @@ enum basicStrings
 	
 	eIconClippingName = 14,
 	
-	eMaskSyncExplanation = 15
+	eMaskSyncExplanation = 15,
+	
+	eWindowsTooManyMembersError = 16,
+	eWindowsTooManyMembersExplanation = 17,
+	
+	eContinueButton = 18
 };
 
 enum labelStrings
@@ -172,7 +187,8 @@ enum selectionTypes
 	inverse = 4,
 	additive = 5,
 	subtractive = 6,
-	expandContract = 7
+	expandContract = 7,
+	stroke = 8
 };
 
 enum pasteTypes
@@ -279,6 +295,15 @@ typedef struct AdjustDialogData
 	PixMapHandle		tempPix, tempPix2;
 } AdjustDialogData, *AdjustDialogDataPtr;
 
+typedef struct
+{
+	long	usedMembers;
+	int		magnification;
+	long	currentPixName;
+} IconSaveInfo, *IconSaveInfoPtr, **IconSaveInfoHandle;
+
+const static OSType kIconSaveInfoResourceType = 'Mngl';
+
 class drawingStateClass;
 
 typedef drawingStateClass* drawingStatePtr;
@@ -290,12 +315,12 @@ class icnsEditorClass : public MIcon, public MDocumentWindow
 	private:
 		OSStatus		CreateControls(void);
 		void			InstallDraggingHandlers(void);
-		void			RepositionControls(void);
+		void			RepositionControls();
 		void			InvalidateDrawingArea(void);
 		
 		void			PostLoad();
-		void			LoadUsedMembers();
-		void			SaveUsedMembers();
+		void			LoadSaveInfo(bool* setCurrentMember);
+		void			StoreSaveInfo();
 		bool			HasNonIconDataFork();
 		
 		void			HandleToolDoubleClick(long tool);
@@ -357,6 +382,7 @@ class icnsEditorClass : public MIcon, public MDocumentWindow
 		void 			DragSelection(Point startMouse, int anchorX, int anchorY);
 		//void			ResizeWindow();
 		
+		void			PostZoom();
 		void			ZoomFitWindow();
 		void 			ClampScrollValues();
 		void			MakeEditAreaRect(int h, int v, Rect* areaRect);
@@ -372,9 +398,22 @@ class icnsEditorClass : public MIcon, public MDocumentWindow
 		void			SaveState(long name);
 		void			SaveMembers(void);
 		
+		void			ExpandContract();
+		void			Stroke();
+		
 		void			BuildMembersMenu(MenuHandle menu, int startingPoint, int membersToList);
 		
+		void			DragScroll();
+		
 		static pascal void	ScrollbarAction(ControlHandle theControl, SInt16 thePart);
+		
+		pascal static void	DragScrollTimer(EventLoopTimerRef timer, void *userData);
+		
+		EventLoopTimerRef	dragScrollTimer;
+		
+		Point			lastTrackingMouse;
+		Rect			limitRect;
+		bool			draggingStarted;
 		
 		drawingStatePtr	firstState;
 		drawingStatePtr	currentState;
@@ -421,6 +460,9 @@ class icnsEditorClass : public MIcon, public MDocumentWindow
 		Point			zoomPosition;
 		Point			zoomDimensions;
 		int				zoomMagnification;
+		
+		Point			lastPenClick;
+
 	public:
 						icnsEditorClass(void);
 						~icnsEditorClass(void);
@@ -435,6 +477,10 @@ class icnsEditorClass : public MIcon, public MDocumentWindow
 		void			HandleGrow(Point where);
 		void			Drag(Point startPoint, Rect draggingBounds);
 		void			ToggleZoom();
+		void			EnsureOnScreenPosition();
+		
+		void 			HandleWheelMove(Point location, int modifiers, EventMouseWheelAxis axis, long delta);
+		void 			HandleBoundsChange(int attributes, Rect* originalBounds, Rect* previousBounds, Rect* currentBounds);
 		
 		void			Close();
 		void 			Load();
@@ -447,6 +493,8 @@ class icnsEditorClass : public MIcon, public MDocumentWindow
 		
 		void			SetCurrentMember(long member, int facinessLevel);
 		void 			SetBestMember();
+		
+		void			RemoveMember(int member);
 		
 		void			ResetStates();
 		
@@ -465,6 +513,9 @@ class icnsEditorClass : public MIcon, public MDocumentWindow
 		
 		void			ZoomIn();
 		void			ZoomOut();
+		void			ZoomFit();
+		void			ZoomActual();
+		
 		void			EditIconInfo();
 		void			AddMember();
 		void			GenerateMask();
@@ -519,7 +570,8 @@ extern void						DragPixMap(Rect dragSourceRect,
 										   RgnHandle dragShapeRgn,
 										   PixMapHandle dragContentsPix,
 										   RgnHandle dragContentsRgn,
-										   long dragType);
+										   long dragType,
+										   MFile* dragTarget);
 extern void						InsertPicIntoIcon(icnsEditorPtr parentEditor, PicHandle pic);
 
 

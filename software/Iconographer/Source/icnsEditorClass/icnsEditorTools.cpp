@@ -2,6 +2,8 @@
 #include "drawingStateClass.h"
 #include "editorStaticsClass.h"
 
+const static EventTimerInterval kDragScrollDelay = kEventDurationMillisecond;
+
 // __________________________________________________________________________________________
 // Name			: icnsEditorClass::HandleDrawing
 // Input		: None
@@ -16,6 +18,15 @@ void icnsEditorClass::HandleDrawing(Point theMouse)
 	StartPan();
 	
 	cycleSelectionPattern = false;
+	draggingStarted = false;
+	
+#if TARGET_API_MAC_CARBON
+	EventLoopTimerUPP timerUPP;
+	
+	timerUPP = NewEventLoopTimerUPP(icnsEditorClass::DragScrollTimer);
+	InstallEventLoopTimer(GetMainEventLoop(), kDragScrollDelay, kDragScrollDelay, timerUPP, this, &dragScrollTimer);
+#endif
+
 	
 	switch (statics.toolPalette->GetCurrentTool())
 	// based on the current tool we call on the appropriate function to handle the drawing
@@ -39,6 +50,16 @@ void icnsEditorClass::HandleDrawing(Point theMouse)
 	}
 	
 	cycleSelectionPattern = true;
+	
+#if TARGET_API_MAC_CARBON
+	if (dragScrollTimer)
+	{
+		RemoveEventLoopTimer(dragScrollTimer);
+		dragScrollTimer = NULL;
+	}
+#endif
+
+	SetRect(&limitRect, 0, 0, 0,0);
 	
 	FinishPan();
 	
@@ -168,7 +189,6 @@ void icnsEditorClass::HandleGradient(Point startMouse)
 	DrawCross(6);
 	RESTOREGWORLD;
 	
-	
 	// first we must make sure the starting cross gets drawn
 	oldMouse = startMouse;
 	currentMouse = startMouse;
@@ -275,11 +295,12 @@ void icnsEditorClass::HandleGradient(Point startMouse)
 
 void icnsEditorClass::HandleText(Point theMouse)
 {
-	int x, y, width, height, oneLineHeight;
-	Rect	tempRect;
-	GWorldPtr	tempGW;
-	PixMapHandle tempPix;
+	int				x, y, width, height, oneLineHeight;
+	Rect			tempRect;
+	GWorldPtr		tempGW;
+	PixMapHandle	tempPix;
 	RGBColor		textColor;
+	FontInfo 		info;
 	
 	if (status & hasSelection)
 	{
@@ -300,8 +321,6 @@ void icnsEditorClass::HandleText(Point theMouse)
 	TextFace(statics.lastTextSettings.style);
 	TextSize(statics.lastTextSettings.size);
 	
-	FontInfo info;
-	
 	GetFontInfo(&info);
 	
 	y += info.descent;
@@ -319,13 +338,10 @@ void icnsEditorClass::HandleText(Point theMouse)
 	tempPix = GetGWorldPixMap(tempGW);
 	LockPixels(tempPix);
 	SetGWorld(tempGW, NULL);
-	//SetGWorld(currentGW, NULL);
 	
 	TextFont(statics.lastTextSettings.fontNo);
 	TextFace(statics.lastTextSettings.style);
 	TextSize(statics.lastTextSettings.size);
-	
-	
 	
 	EraseRect(&tempRect);
 	MoveTo(x, y - info.descent);
@@ -333,8 +349,9 @@ void icnsEditorClass::HandleText(Point theMouse)
 	DrawLinedString(statics.lastTextSettings.text);
 
 	BitMapToRegion(selectionRgn, (BitMap*)*tempPix);
-	//RectRgn(selectionRgn, &tempRect);
 	MagnifySelectionRgn();
+	
+	GetRegionBounds(selectionRgn, &tempRect);
 	
 	UnlockPixels(selectionPix);
 	DisposeGWorld(selectionGW);
@@ -343,7 +360,6 @@ void icnsEditorClass::HandleText(Point theMouse)
 	LockPixels(selectionPix);
 	SetGWorld(selectionGW, NULL);
 	MoveTo(x, y);
-	DrawString("\ptext");
 	EraseRect(&tempRect);
 	statics.toolPalette->GetColors(&textColor, NULL);
 	RGBForeColor(&textColor);
@@ -746,6 +762,7 @@ void icnsEditorClass::HandlePolygon(Point startMouse)
 		   firstTime)
 	{
 		MUtilities::GetMouseLocation(GetWindowPort(window), &currentMouse);
+		
 		GetDrawingMousePosition(&x, &y, &currentMouse, 0);
 		x += xOffset;
 		y += yOffset;
@@ -1102,9 +1119,10 @@ void icnsEditorClass::HandleLasso(Point startMouse)
 	// and shrink it down to the size of the current pixmap
 	MapRgn(lassoSelectionRgn, &currentBounds, &(**currentPix).bounds);
 	
-	//RectRgn(lassoSelectionRgn, &(**currentPix).bounds);
-	
-	tightenedRgn = TightenLasso(lassoSelectionRgn);
+	if (!EmptyRgn(lassoSelectionRgn))
+		tightenedRgn = TightenLasso(lassoSelectionRgn);
+	else
+		tightenedRgn = NewRgn();
 	
 	switch (mode)
 	{
@@ -1117,7 +1135,7 @@ void icnsEditorClass::HandleLasso(Point startMouse)
 	MagnifySelectionRgn();
 	
 	// dispose with the regions
-	//DisposeRgn(tightenedRgn);
+	DisposeRgn(tightenedRgn);
 	DisposeRgn(lassoSelectionRgn);
 	
 	// and with the overlay
@@ -1281,6 +1299,7 @@ RgnHandle icnsEditorClass::TightenLasso(RgnHandle lassoSelectionRgn)
 	tightenedRgn = NewRgn();
 	// then we calculate the tightened selection shape
 	GetRegionBounds(lassoSelectionRgn, &lassoBounds);
+	
 	tempRect = lassoBounds;
 	OffsetRect(&tempRect, -tempRect.left, -tempRect.top);
 #if TARGET_API_MAC_CARBON
@@ -1521,6 +1540,8 @@ bool icnsEditorClass::HandleMove(Point startMouse)
 			Rect			selectionBounds, bounds, sourceBounds, windowRect;
 			RgnHandle 		dragRgn;
 			
+			draggingStarted = true;
+			
 			GetRegionBounds(selectionRgn, &selectionBounds);
 			
 			boundsX = selectionBounds.left;
@@ -1541,7 +1562,6 @@ bool icnsEditorClass::HandleMove(Point startMouse)
 			
 			UpdateEditArea();
 			
-			
 			windowRect = GetPortRect();
 			
 			MUtilities::GetMouseLocation(GetWindowPort(window), &localMouse);
@@ -1555,10 +1575,7 @@ bool icnsEditorClass::HandleMove(Point startMouse)
 			LocalToGlobal(&event.where);
 			event.modifiers = 0;
 			
-			
 			dragSrcRect = editAreaRect;
-			
-			
 			
 			bounds = (**selectionPix).bounds;
 			MagnifyRect(&bounds, magnification);
@@ -1583,7 +1600,7 @@ bool icnsEditorClass::HandleMove(Point startMouse)
 					   localMouse.h - magnification * (x - boundsX),
 					   localMouse.v - magnification * (y - boundsY));
 			
-			DragPixMap(sourceBounds, &event, dragPix, dragRgn, selectionPix, selectionRgn, selection);
+			DragPixMap(sourceBounds, &event, dragPix, dragRgn, selectionPix, selectionRgn, selection, NULL);
 			
 			SetRect(&dragSrcRect, 0, 0, 0, 0);
 			
@@ -2349,6 +2366,12 @@ void icnsEditorClass::HandlePen(Point initialMouse)
 	
 	PenSize(statics.preferences.GetLineThickness(), statics.preferences.GetLineThickness());
 
+	if (ISSHIFTDOWN && lastPenClick.h != -1)
+	{
+		MoveTo(lastPenClick.h, lastPenClick.v);
+		LineTo(oldX, oldY);
+	}
+
 	MoveTo(oldX, oldY); // we must draw the first pixel (which is on no matter what)
 	LineTo(oldX, oldY);
 	
@@ -2394,6 +2417,9 @@ void icnsEditorClass::HandlePen(Point initialMouse)
 		}
 	}
 	
+	lastPenClick.h = x;
+	lastPenClick.v = y;
+	
 	SetGWorld(targetGW, NULL);
 	
 	if (savedClip != NULL) // if we changed the clipping region
@@ -2418,21 +2444,20 @@ void icnsEditorClass::HandlePen(Point initialMouse)
 
 inline void icnsEditorClass::GetDrawingMousePosition(int *x, int *y, Point* theMouse, int flags)
 {
-	Point	originalMouse, mousePosition; // the mouse position in terms of the window
-	Rect	boundsRect, // the boundaries of the editing ares (magnified or not)
-			limitRect;
+	Point	mousePosition; // the mouse position in terms of the window
+	Rect	boundsRect; // the boundaries of the editing ares (magnified or not)
 	long	returnedPoint; // the "point" that we get from PinRect, upper half is x coordinate,
 						   // lower half is y coordinate
 	
 	if (theMouse == NULL)
-		MUtilities::GetMouseLocation(GetWindowPort(window), &originalMouse);
+		MUtilities::GetMouseLocation(GetWindowPort(window), &lastTrackingMouse);
 	else
-		originalMouse = *theMouse;
+		lastTrackingMouse = *theMouse;
 	
 	boundsRect = (**currentPix).bounds;
 	
 	// we want the coordinates relative to the edit area
-	mousePosition = originalMouse;
+	mousePosition = lastTrackingMouse;
 	mousePosition.h = mousePosition.h  - editAreaRect.left + hScrollbarValue; 
 	mousePosition.v = mousePosition.v - editAreaRect.top + vScrollbarValue;
 	 // if we want the magnified view (so the coordinate range is from 0 to currentSize *
@@ -2459,22 +2484,35 @@ inline void icnsEditorClass::GetDrawingMousePosition(int *x, int *y, Point* theM
 		limitRect = editAreaRect;
 		InsetRect(&limitRect, magnification * 2, magnification * 2);
 	}
+
+#if !TARGET_API_MAC_CARBON	
+	DragScroll();
+#endif
 	
-	if (!PtInRect(originalMouse, &limitRect))
+	if (theMouse != NULL)
+	{
+		theMouse->h = *x;
+		theMouse->v = *y;
+	}
+}
+
+void icnsEditorClass::DragScroll()
+{
+	if (!PtInRect(lastTrackingMouse, &limitRect) && !draggingStarted)
 	{
 		int scrollX, scrollY, previousH, previousV;
 		
-		if (originalMouse.h < limitRect.left)
-			scrollX = originalMouse.h - limitRect.left;
-		else if (originalMouse.h > limitRect.right)
-			scrollX = originalMouse.h - limitRect.right;
+		if (lastTrackingMouse.h < limitRect.left)
+			scrollX = lastTrackingMouse.h - limitRect.left;
+		else if (lastTrackingMouse.h > limitRect.right)
+			scrollX = lastTrackingMouse.h - limitRect.right;
 		else
 			scrollX = 0;
 		
-		if (originalMouse.v < limitRect.top)
-			scrollY = originalMouse.v - limitRect.top;
-		else if (originalMouse.v > limitRect.bottom)
-			scrollY = originalMouse.v - limitRect.bottom;
+		if (lastTrackingMouse.v < limitRect.top)
+			scrollY = lastTrackingMouse.v - limitRect.top;
+		else if (lastTrackingMouse.v > limitRect.bottom)
+			scrollY = lastTrackingMouse.v - limitRect.bottom;
 		else
 			scrollY = 0;
 			
@@ -2492,10 +2530,22 @@ inline void icnsEditorClass::GetDrawingMousePosition(int *x, int *y, Point* theM
 		
 		PanEditArea(hScrollbarValue - previousH, vScrollbarValue - previousV);
 	}
+}
+
+pascal void icnsEditorClass::DragScrollTimer(EventLoopTimerRef timer, void *userData)
+{
+#pragma unused(timer)
+	icnsEditorPtr	parent;
 	
-	if (theMouse != NULL)
+	parent = icnsEditorPtr(userData);
+	
+	if (!EmptyRect(&parent->limitRect))
 	{
-		theMouse->h = *x;
-		theMouse->v = *y;
+		SAVEGWORLD;
+		parent->SetPort();
+		parent->DragScroll();
+	
+		RESTOREGWORLD;
 	}
 }
+		

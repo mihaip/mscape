@@ -12,7 +12,7 @@
 
 Introduction
 
-Iconographer is a an icon editor. It allows you to both change the icons of items, as well as edit the icon resources used by various programs. Iconographer has been created from the ground up to deal with many icon formats. These include: classic Mac OS (8-bit icons only), Mac OS 8.5+ (32-bit icons with 8-bit icons), Mac OS X (128 x 128 icons in .icns files), Windows and Windows XP (.ico files), and Mac OS X Server (48 x 48 icons in .tiff files).
+Iconographer is a an icon editor. It allows you to both change the icons of items, as well as edit the icon resources used by various programs. Iconographer has been created from the ground up to deal with many icon formats. These include: classic Mac OS (8-bit icons only), Mac OS 8.5+ (32-bit icons with 8-bit masks), Mac OS X (128 x 128 icons in .icns files), Windows and Windows XP (.ico files), and Mac OS X Server (48 x 48 icons in .tiff files).
 
 Due to its flexibility, Iconographer is useful to both beginners and advanced users. It can be used for a wide range of tasks, ranging from simply creating some customized folder icons to editing complex resource files for an application to converting icons between platforms.
 
@@ -42,6 +42,12 @@ Registrations for Iconographer are handled by the Kagi Shareware service run by 
 To register please use the enclosed Register application or register online at http://order.kagi.com/?QEJ. You will receive a registration code from Kagi, and when you enter that and your name in the registration dialog (available from the Apple menu) the reminder will be disabled.
 
 Version History
+2.3 February 27, 2002
+ - Additional navigation and selection commands
+ - Documentation additions
+ - Mac OS X performance and user interface improvements 
+ - Other bug fixes and tweaks
+
 2.2 October 18, 2001
  - Support for loading and editing of Windows XP icons
  - Support for editing of icons contained in .rsrc files

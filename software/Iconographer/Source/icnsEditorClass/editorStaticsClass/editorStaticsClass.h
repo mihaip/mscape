@@ -95,7 +95,8 @@ enum preferencesDialogItems
 	iResetPaletteLocations = 75,
 	iMembersPaletteLabel = 76,
 	iStartupLabel = 77,
-	iSettingsLabel = 78
+	iSettingsLabel = 78,
+	iSaveExtraInfo = 79
 };
 
 enum preferencesTabs
@@ -104,13 +105,6 @@ enum preferencesTabs
 	kPrefsDefaultsPane = 2,
 	kPrefsExternalEditorPane = 3
 };
-
-/*enum prefsSaveForks
-{
-	dataAndResourceForks,
-	dataFork,
-	resourceFork
-};*/
 
 enum prefsExternalEditorFormat
 {
@@ -123,6 +117,13 @@ enum prefsExternalEditorFormat
 enum setExternalEditorShortcutDialogItems
 {
 	iShortcutDisplay = 2
+};
+
+enum prefsStrokeLocations
+{
+	strokeInside = 1,
+	strokeCenter = 2,
+	strokeOutside = 3
 };
 
 typedef struct preferencesStruct
@@ -158,6 +159,9 @@ typedef struct preferencesStruct
 	int			recentFilesCount;
 	RGBColor	previewBackgroundColor;
 	int			lastSelectionExpansion;
+	int			lastSelectionStrokeAmount;
+	int			lastSelectionStrokeLocation;
+	Rect		lastScreenBounds;
 } PreferencesStruct;
 
 typedef PreferencesStruct** PreferencesHandle;
@@ -178,6 +182,7 @@ class editorPreferencesClass
 							showOnlyLoadedMembers,
 							checkSync,
 							dither,
+							saveExtraInfo,
 							newEditor,
 							openIcon,
 							doNothing,
@@ -194,6 +199,11 @@ class editorPreferencesClass
 							previewSizeField;
 		Handle				generalControls, defaultsControls, externalEditorControls;
 		MenuHandle			typesMenu;
+
+#if TARGET_API_MAC_CARBON
+		bool				dialogLoaded;
+#endif
+	
 		int					currentPane;
 		
 		static pascal Boolean	PreferencesDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit);
@@ -248,6 +258,12 @@ class editorPreferencesClass
 		int					GetLastSelectionExpansion();
 		void				SetLastSelectionExpansion(int expansion);
 		
+		int					GetLastSelectionStrokeAmount();
+		void				SetLastSelectionStrokeAmount(int stroke);
+		
+		int					GetLastSelectionStrokeLocation();
+		void				SetLastSelectionStrokeLocation(int stroke);
+		
 		int					GetPreviewBackground();
 		void				SetPreviewBackground(int background);
 		
@@ -259,6 +275,8 @@ class editorPreferencesClass
 		
 		void				SetupPaletteLocations();
 		void				ResetPaletteLocations();
+		
+		Rect				GetLastScreenBounds();
 		
 		void				IncrementTimesUsed();
 		int					GetTimesUsed();
@@ -289,7 +307,8 @@ enum preferencesFlags
 	prefsFilled = 					1 << 13,
 	prefsPreviewScaled = 			1 << 14,
 	prefsShowOnlyLoadedMembers = 	1 << 15,
-	prefsPreviewSelected =			1 << 16
+	prefsPreviewSelected =			1 << 16,
+	prefsSaveExtraInfo = 			1 << 17
 };
 
 typedef struct textSettings
@@ -382,6 +401,8 @@ class editorStaticsClass
 		
 		Point 			GetDefaultPalettePosition(MFloaterPtr palette);
 		Point			GetDefaultMembersPaletteDimensions();
+		
+		Rect			GetAvailableScreenRect();
 		
 		void			Stagger(MWindowPtr window);
 		Point			GetDefaultWindowPosition();

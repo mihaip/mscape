@@ -4658,7 +4658,7 @@ resource 'PICT' (2055, "Windows 8-bit Picker") {
 };
 
 resource 'STR#' (200, "Basic Strings", purgeable) {
-	{	/* array StringArray: 15 elements */
+	{	/* array StringArray: 18 elements */
 		/* [1] */
 		"Untitled",
 		/* [2] */
@@ -4700,7 +4700,18 @@ resource 'STR#' (200, "Basic Strings", purgeable) {
 		"icon",
 		/* [15] */
 		"If not fixed, this can cause problems wh"
-		"en viewing the icon in the Finder."
+		"en viewing the icon in the Finder.",
+		/* [16] */
+		"Windows icons should only contain 10 mem"
+		"bers at the most (this icon has <number>"
+		").",
+		/* [17] */
+		"Icons with too many members cannot be pr"
+		"operly displayed by Windows 95/98/Me/NT/"
+		"2000. Would you like to continue with th"
+		"e saving or delete some members?",
+		/* [18] */
+		"Continue"
 	}
 };
 

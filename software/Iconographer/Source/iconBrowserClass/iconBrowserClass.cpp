@@ -428,6 +428,18 @@ void iconBrowserClass::HandleKeyDown(EventRecord* eventPtr)
 	}
 }
 
+void iconBrowserClass::HandleWheelMove(Point location, int modifiers, EventMouseWheelAxis axis, long delta)
+{
+#pragma unused (location, axis)
+	int multiplier = -1 * delta;
+
+	if (modifiers & optionKey)
+		multiplier *= kOptionScrollingMultiplier;
+	
+	SetControlValue(controls.scrollBar, GetControlValue(controls.scrollBar) + scrollingIncrement * multiplier);
+	
+	Draw1Control(controls.list);
+}
 void iconBrowserClass::HandleContentClick(EventRecord* eventPtr)
 {
 	Point 				where, oldMouse = {-1, -1}, currentMouse;
@@ -596,9 +608,7 @@ void iconBrowserClass::BrowserMenuUpdate(struct EnhancedPlacardData* data, int f
 		
 		SetControlTitle(controls.menu, iconTypes);
 		
-		theList.Filter();
-		
-		
+		theList.Filter();	
 	}
 }*/
 

@@ -23,6 +23,7 @@ class drawingStateClass
 		long			status;
 		long			members, usedMembers;
 		long			colors;
+		int				format;
 		
 	public:
 		// linked list items

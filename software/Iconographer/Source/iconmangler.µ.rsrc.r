@@ -466,7 +466,7 @@ resource 'MENU' (132) {
 	allEnabled,
 	enabled,
 	"Select",
-	{	/* array: 5 elements */
+	{	/* array: 6 elements */
 		/* [1] */
 		"All", noIcon, "A", noMark, plain,
 		/* [2] */
@@ -476,7 +476,9 @@ resource 'MENU' (132) {
 		/* [4] */
 		"Inverse", noIcon, "I", noMark, plain,
 		/* [5] */
-		"Expand/Contract", noIcon, "E", noMark, plain
+		"Expand/Contract", noIcon, "E", noMark, plain,
+		/* [6] */
+		"Stroke", noIcon, noKey, noMark, plain
 	}
 };
 
@@ -541,35 +543,39 @@ resource 'MENU' (135) {
 resource 'MENU' (136) {
 	136,
 	textMenuProc,
-	0x7FFFF6EB,
+	0x7FFFDBAF,
 	enabled,
 	"Icon",
-	{	/* array: 13 elements */
+	{	/* array: 15 elements */
 		/* [1] */
 		"Zoom In", noIcon, "=", noMark, plain,
 		/* [2] */
 		"Zoom Out", noIcon, "-", noMark, plain,
 		/* [3] */
-		"-", noIcon, noKey, noMark, plain,
+		"Fit on Screen", noIcon, "0", noMark, plain,
 		/* [4] */
-		"Colors", noIcon, hierarchicalMenu, "â", plain,
+		"Actual Pixels", noIcon, "0", noMark, plain,
 		/* [5] */
 		"-", noIcon, noKey, noMark, plain,
 		/* [6] */
-		"Insert…", noIcon, "K", noMark, plain,
+		"Colors", noIcon, hierarchicalMenu, "â", plain,
 		/* [7] */
-		"Info…", noIcon, "I", noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [8] */
-		"Show Pixel Grid", noIcon, "G", noMark, plain,
+		"Insert…", noIcon, "K", noMark, plain,
 		/* [9] */
-		"-", noIcon, noKey, noMark, plain,
+		"Info…", noIcon, "I", noMark, plain,
 		/* [10] */
-		"Generate Mask", noIcon, "M", noMark, plain,
+		"Show Pixel Grid", noIcon, "G", noMark, plain,
 		/* [11] */
-		"Complete Icon", noIcon, noKey, noMark, plain,
-		/* [12] */
 		"-", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"Generate Mask", noIcon, "M", noMark, plain,
 		/* [13] */
+		"Complete Icon", noIcon, noKey, noMark, plain,
+		/* [14] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [15] */
 		"Open In External Editor", noIcon, noKey, noMark, plain
 	}
 };
@@ -608,6 +614,10 @@ resource 'MENU' (138) {
 		/* [6] */
 		"-", noIcon, noKey, noMark, plain
 	}
+};
+
+data 'Mcmd' (136) {
+	$"0000"                                               /* .. */
 };
 
 data 'Pref' (129, "Default Preferences") {
@@ -712,7 +722,7 @@ data 'Pref' (129, "Default Preferences") {
 };
 
 resource 'STR#' (128, "Default Names", purgeable) {
-	{	/* array StringArray: 35 elements */
+	{	/* array StringArray: 36 elements */
 		/* [1] */
 		"Iconographer",
 		/* [2] */
@@ -783,12 +793,14 @@ resource 'STR#' (128, "Default Names", purgeable) {
 		/* [34] */
 		"Continue",
 		/* [35] */
-		"Registered To:"
+		"Registered To:",
+		/* [36] */
+		"Reposition"
 	}
 };
 
 resource 'STR#' (129, "Standard Errors", purgeable) {
-	{	/* array StringArray: 18 elements */
+	{	/* array StringArray: 20 elements */
 		/* [1] */
 		"The file you selected is already open in"
 		" another program.",
@@ -857,7 +869,18 @@ resource 'STR#' (129, "Standard Errors", purgeable) {
 		"occurred. ",
 		/* [18] */
 		"<app name> X requires Mac OS X 10.0 or l"
-		"ater."
+		"ater.",
+		/* [19] */
+		"The usable screen area has changed since"
+		" <app name> was last used, and windows m"
+		"ay not be positioned properly. Would you"
+		" like <app name> to reposition all of it"
+		"s windows?",
+		/* [20] */
+		"The screen resolution has just changed, "
+		"and windows may not be positioned proper"
+		"ly. Would you like <app name> to reposit"
+		"ion all of its windows?"
 	}
 };
 
@@ -1422,6 +1445,23 @@ resource 'dlgx' (3002) {
 	}
 };
 
+resource 'mctb' (136) {
+	{	/* array MCTBArray: 1 elements */
+		/* [1] */
+		mctbLast, 0,
+		{	/* array: 4 elements */
+			/* [1] */
+			0, 0, 0,
+			/* [2] */
+			0, 0, 0,
+			/* [3] */
+			0, 0, 0,
+			/* [4] */
+			0, 0, 0
+		}
+	}
+};
+
 resource 'xmnu' (129, "File Menu") {
 	versionZero {
 		{	/* array ItemExtensions: 7 elements */
@@ -1631,6 +1671,36 @@ resource 'xmnu' (135, "Copy Menu") {
 			dataItem {
 				1061109567,
 				0x4,
+				currScript,
+				1061109567,
+				1061109567,
+				noHierID,
+				sysFont,
+				naturalGlyph
+			}
+		}
+	}
+};
+
+resource 'xmnu' (136, "Icon Menu") {
+	versionZero {
+		{	/* array ItemExtensions: 4 elements */
+			/* [1] */
+			skipItem {
+
+			}			,
+			/* [2] */
+			skipItem {
+
+			}			,
+			/* [3] */
+			skipItem {
+
+			}			,
+			/* [4] */
+			dataItem {
+				1061109567,
+				0x2,
 				currScript,
 				1061109567,
 				1061109567,

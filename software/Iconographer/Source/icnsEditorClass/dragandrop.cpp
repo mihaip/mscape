@@ -344,7 +344,8 @@ void DragPixMap(Rect dragSourceRect,
 				RgnHandle dragShapeRgn,
 				PixMapHandle dragContentsPix,
 				RgnHandle dragContentsRgn,
-				long dragType)
+				long dragType,
+				MFile* dragLocation)
 {
 	DragReference	dragRef;
 	RgnHandle		dragRgn, tempRgn, maskRgn;
@@ -403,6 +404,21 @@ void DragPixMap(Rect dragSourceRect,
 	DisposeRgn(dragRgn);
 	DisposeRgn(tempRgn);
 	DisposeHandle((Handle)dragPic);
+	
+	if (dragLocation)
+	{
+		AEDesc	desc;
+		OSErr	err;
+		
+		err = GetDropLocation(dragRef, &desc);
+		
+		if (err == noErr)
+		{
+			dragLocation->SetAssociatedAEDesc(&desc);
+			
+			AEDisposeDesc(&desc);
+		}
+	}
 	
 	DisposeDrag(dragRef);
 }

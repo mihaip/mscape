@@ -121,9 +121,14 @@ void ToolPalette::DoIdle(MWindowPtr windowUnderMouse)
 				currentTool = toolPan;
 			}
 		}
+		else if (ISSPACEDOWN && ISCOMMANDDOWN)
+		{
+			currentTool = toolZoom;
+		}
 		else if ((currentTool == toolEyeDropper && !ISOPTIONDOWN) ||
 				(currentTool == toolMove && !ISCOMMANDDOWN) ||
-				(currentTool == toolPan && !ISSPACEDOWN))
+				(currentTool == toolPan && !ISSPACEDOWN) ||
+				(currentTool == toolZoom && !(ISSPACEDOWN && ISCOMMANDDOWN)))
 		{
 			currentTool = oldTool;
 			oldTool = toolNone;
@@ -386,6 +391,16 @@ void ToolPalette::SetCurrentTool(int newTool)
 	currentTool = newTool;
 	oldTool = toolNone;
 	ChangeCursor(oldStatus);
+	
+	if (newTool == toolPen)
+	{
+		icnsEditorPtr	frontEditor;
+		
+		frontEditor = GetFrontEditor();
+		
+		if (frontEditor)
+			frontEditor->lastPenClick.h = frontEditor->lastPenClick.v = -1;
+	}
 }
 
 int ToolPalette::GetToolMode(int tool)
@@ -597,14 +612,13 @@ void ToolPalette::CreateControls()
 									   
 	controls.backgroundPane = GetNewControl(rTPBackgroundPane, window);
 	SetControlUserPaneDraw(controls.backgroundPane, BackgroundPaneDraw);
-	SetControlUserPaneHitTest(controls.backgroundPane, GenericHitTest);
+	//SetControlUserPaneHitTest(controls.backgroundPane, GenericHitTest);
 	
 	controls.colorSwatch = GetNewControl(rTPColorSwatch, window);
 	EmbedControl(controls.colorSwatch, controls.backgroundPane);
 	SetControlUserPaneDraw(controls.colorSwatch, ColorSwatchDraw);
 	SetControlUserPaneHitTest(controls.colorSwatch, ColorSwatchHitTest);
 	//SetControlBalloonHelp(controls.colorSwatch.control, 18);
-	
 	
 	// here we create the rects that determine the subareas of the control
 	GetControlBounds(controls.colorSwatch, &controlRect);

@@ -96,6 +96,8 @@ icnsEditorClass::icnsEditorClass(void) :
 	members = il32; // by default we only have the large size, other sizes are added as the
 				   // user needs them
 	
+	SetRect(&limitRect, 0, 0, 0,0);
+	
 	format = statics.preferences.GetDefaultFormat();
 	colors = macOSColors;
 	usedMembers = statics.preferences.GetDefaultUsedMembers();
@@ -119,6 +121,8 @@ icnsEditorClass::icnsEditorClass(void) :
 	statics.Stagger(this);
 	
 	SetProxyIcon(MUtilities::GetFrontProcessCreator(),iconFormats[format]);
+	
+	lastPenClick.h = lastPenClick.v = -1;
 }
 
 // __________________________________________________________________________________________
@@ -685,7 +689,7 @@ void icnsEditorClass::HandleContentClick(EventRecord *eventPtr)
 		}
 		else
 			Select(); // bring it to the front
-	}	
+	}
 	else
 	{
 		SetPort(); 
@@ -788,25 +792,10 @@ void icnsEditorClass::HandleToolDoubleClick(long tool)
 			DisposeRgn(temp2Rgn);
 			break;
 		case toolZoom:
-			magnification = 1;
-			ZoomFitWindow();
-			ClampScrollValues();
-			RepositionControls();
-			UpdateZoom();
+			ZoomActual();
 			break;
 		case toolPan:
-			Point tempPosition;
-			
-			tempPosition = statics.GetDefaultWindowPosition();
-			tempPosition.h += GetBorderThickness(borderLeft) + kDefaultWindowSeparation;
-			tempPosition.v += GetBorderThickness(borderTop);
-			SetPosition(tempPosition);
-		
-			magnification = GetMaxMagnification();
-			ZoomFitWindow();
-			ClampScrollValues();
-			RepositionControls();
-			UpdateZoom();
+			ZoomFit();
 			break;
 	}
 	
@@ -1013,7 +1002,7 @@ void icnsEditorClass::CompleteIcon()
 	{
 		targetName = kMembers[i].name;
 		
-		if (targetName & usedMembers && !(targetName & members))
+		if ((targetName & usedMembers) && !(targetName & members))
 		{
 			GetGWorldAndPix(targetName, &targetGW, &targetPix);
 			
@@ -1073,8 +1062,10 @@ void icnsEditorClass::RepositionControls()
 	v = magnification * (**currentPix).bounds.bottom - (**currentPix).bounds.top;
 	MakeEditAreaRect(h, v, &editAreaRect);
 	
-	if (editAreaRect.top != 0 || editAreaRect.left != 0)
-		HideControl(controls.rootControl);
+	//if (editAreaRect.top != 0 || editAreaRect.left != 0)
+	//	HideControl(controls.rootControl);
+	
+	SetControlVisibility(controls.rootControl, false, false);
 	
 	SAVEGWORLD;
 	SetPort(); // we'll be changing controls in this window, so the coordinates must
@@ -1111,8 +1102,6 @@ void icnsEditorClass::RepositionControls()
 	SetRect(&controlRect, windowRect.right, -1, windowRect.right + 16, windowRect.bottom + 1);
 	SetControlBounds(controls.vScrollbar, &controlRect);
 	
-	SetControlBounds(controls.editArea, &editAreaRect);
-	
 	SetControlMaximum(controls.hScrollbar, h - (editAreaRect.right - editAreaRect.left));
 	SetControlMaximum(controls.vScrollbar, v - (editAreaRect.bottom - editAreaRect.top));
 	
@@ -1125,11 +1114,14 @@ void icnsEditorClass::RepositionControls()
 		SetControlViewSize(controls.vScrollbar, editAreaRect.bottom - editAreaRect.top);
 	}
 	
+	SetControlBounds(controls.editArea, &editAreaRect);
 	
-	if (!IsControlVisible(controls.rootControl))
-		ShowControl(controls.rootControl);
-	else
-		Draw1Control(controls.rootControl);
+	//if (!IsControlVisible(controls.rootControl))
+	//	ShowControl(controls.rootControl);
+	//else
+	//	Draw1Control(controls.rootControl);
+	
+	SetControlVisibility(controls.rootControl, true, true);
 	
 	RESTOREGWORLD;
 }
@@ -1237,6 +1229,16 @@ void icnsEditorClass::MakeEditAreaRect(int h, int v, Rect* areaRect)
 	}
 }
 
+void icnsEditorClass::PostZoom()
+{
+	zoomPosition.h = zoomPosition.v = zoomDimensions.h = zoomDimensions.v = -1;
+	
+	ZoomFitWindow();
+	ClampScrollValues();
+	RepositionControls();
+	UpdateZoom();
+}
+
 void icnsEditorClass::ZoomFitWindow()
 {
 	Point	newDimensions, maxDimensions;
@@ -1277,27 +1279,13 @@ void icnsEditorClass::ClampScrollValues()
 
 Point icnsEditorClass::GetMaxDimensions()
 {
-	Point		maximum, currentPosition, limits, temp;
-	Rect		usableRect;
+	Point		maximum, currentPosition, limits;
+	Rect		availableRect;
 	
-	usableRect = MUtilities::GetUsableScreenRect();
+	availableRect = statics.GetAvailableScreenRect();
 	
-	if ((statics.preferences.FeatureEnabled(prefsPreviewPaletteVisible) &&
-		PointsNear(statics.GetDefaultPalettePosition(statics.previewPalette), statics.previewPalette->GetPosition(), 5, 32767)) &&
-		(statics.preferences.FeatureEnabled(prefsMembersPaletteVisible) &&
-		PointsNear(statics.GetDefaultPalettePosition(statics.membersPalette), statics.membersPalette->GetPosition(), 5, 32767)) &&
-		(statics.preferences.FeatureEnabled(prefsColorsPaletteVisible) &&
-		PointsNear(statics.GetDefaultPalettePosition(statics.colorsPalette), statics.colorsPalette->GetPosition(), 5, 32767)))
-	{
-		temp = statics.previewPalette->GetPosition();
-		limits.h = temp.h - statics.previewPalette->GetBorderThickness(borderLeft);
-	}
-	else
-	{
-		limits.h = usableRect.right;
-	}
-	
-	limits.v = usableRect.bottom;
+	limits.h = availableRect.right;
+	limits.v = availableRect.bottom;
 	
 	currentPosition = GetPosition();
 	
@@ -1392,13 +1380,34 @@ void icnsEditorClass::UpdateZoom()
 	}
 }*/
 
+void icnsEditorClass::HandleBoundsChange(int attributes, Rect* originalBounds, Rect* previousBounds, Rect* currentBounds)
+{
+#pragma unused (attributes, originalBounds, previousBounds, currentBounds)
+/*	if (attributes & kWindowBoundsChangeUserResize)
+		RepositionControls(currentBounds);*/
+}
+
 void icnsEditorClass::HandleGrow(Point where)
 {
+
 	Point 	initialDimensions, maxDimensions,
 			currentDimensions, initial, previousDimensions, usableRectOffset;
 	Rect	usableRect;
 	
 	previousDimensions = initialDimensions = GetDimensions();
+	
+#if 0 //TARGET_API_MAC_CARBON
+	Rect	maxGrowRect;
+	long	growSize;
+	
+	SetRect(&maxGrowRect, kMinWidth, kMinHeight, magnification * (**currentPix).bounds.right + 15, magnification * (**currentPix).bounds.bottom + 15);
+	
+	growSize = GrowWindow(window, where, &maxGrowRect);
+	
+	currentDimensions.h = growSize & 0x0000FFFF;
+	currentDimensions.v = (growSize >> 16) & 0x0000FFFF;
+
+#else	
 	initial = where;
 	
 	maxDimensions.h = magnification * (**currentPix).bounds.right + 15;
@@ -1434,7 +1443,7 @@ void icnsEditorClass::HandleGrow(Point where)
 		if (currentDimensions.v < kMinHeight) currentDimensions.v = kMinHeight;
 
 #if TARGET_API_MAC_CARBON
-		DisableScreenUpdates();
+	DisableScreenUpdates();
 #endif
 		if (currentDimensions.h != previousDimensions.h ||
 			currentDimensions.v != previousDimensions.v)
@@ -1442,14 +1451,14 @@ void icnsEditorClass::HandleGrow(Point where)
 			SizeWindow(window, currentDimensions.h, currentDimensions.v, false);
 		
 			RepositionControls();
-		}
-
+		}	
 #if TARGET_API_MAC_CARBON
-		EnableScreenUpdates();
+	EnableScreenUpdates();
 #endif
-		
+
 		previousDimensions = currentDimensions;
 	}
+#endif
 	
 	if (abs(initialDimensions.h - currentDimensions.h) > kZoomThreshold ||
 		abs(initialDimensions.v - currentDimensions.v) > kZoomThreshold)
@@ -1540,12 +1549,9 @@ void icnsEditorClass::ZoomIn(void)
 	if (magnification != kMaxMagnification)
 	// this should never be the case, but just to be sure...
 	{
-		zoomPosition.h = zoomPosition.v = zoomDimensions.h = zoomDimensions.v = -1;
 		magnification++;
-		ZoomFitWindow();
-		ClampScrollValues();
-		RepositionControls();
-		UpdateZoom();
+		
+		PostZoom();
 	}
 }
 
@@ -1560,13 +1566,31 @@ void icnsEditorClass::ZoomOut(void)
 	if (magnification != kMinMagnification)
 	// this should never be the case, but just to be sure...
 	{
-		zoomPosition.h = zoomPosition.v = zoomDimensions.h = zoomDimensions.v = -1;
 		magnification--;
-		ZoomFitWindow();
-		ClampScrollValues();
-		RepositionControls();
-		UpdateZoom();
+		
+		PostZoom();
 	}
+}
+
+void icnsEditorClass::ZoomActual()
+{
+	magnification = 1;
+			
+	PostZoom();
+}
+
+void icnsEditorClass::ZoomFit()
+{
+	Point tempPosition;
+	
+	tempPosition = statics.GetDefaultWindowPosition();
+	tempPosition.h += GetBorderThickness(borderLeft) + kDefaultWindowSeparation;
+	tempPosition.v += GetBorderThickness(borderTop);
+	SetPosition(tempPosition);
+
+	magnification = GetMaxMagnification();
+	
+	PostZoom();			
 }
 
 void icnsEditorClass::ToggleZoom()
@@ -1611,6 +1635,23 @@ void icnsEditorClass::ToggleZoom()
 	ClampScrollValues();
 	RepositionControls();
 	UpdateZoom();
+}
+
+void icnsEditorClass::EnsureOnScreenPosition()
+{
+	Rect	usableRect, windowRect, result;
+	
+	usableRect = statics.GetAvailableScreenRect();
+	windowRect = GetPhysicalBounds();
+	
+	UnionRect(&windowRect, &usableRect, &result);
+	
+	if (!EqualRect(&result, &usableRect))
+	{
+		zoomDimensions.h = zoomDimensions.v = zoomPosition.h = zoomPosition.v = -1;
+		
+		ToggleZoom();
+	}
 }
 
 #pragma mark -
@@ -1658,28 +1699,31 @@ void icnsEditorClass::LoadDataFork()
 
 void icnsEditorClass::PostLoad()
 {
+	bool setCurrentMember;
+	
 	SetAssociatedFile(&file);
 	
-	LoadUsedMembers();
+	LoadSaveInfo(&setCurrentMember);
 	
-	if (members)
-	{
-		for (int i=0; i < kPreferredMembersCount; i++)
-			if (members & kPreferredMembers[i])
-			{
-				SetCurrentMember(kPreferredMembers[i], 0);
-				break;
-			}
-	}
-	else
-	{
-		for (int i=0; i < kPreferredMembersCount; i++)
-			if (usedMembers & kPreferredMembers[i])
-			{
-				SetCurrentMember(kPreferredMembers[i], 0);
-				break;
-			}
-	}
+	if (!setCurrentMember)	
+		if (members)
+		{
+			for (int i=0; i < kPreferredMembersCount; i++)
+				if (members & kPreferredMembers[i])
+				{
+					SetCurrentMember(kPreferredMembers[i], 0);
+					break;
+				}
+		}
+		else
+		{
+			for (int i=0; i < kPreferredMembersCount; i++)
+				if (usedMembers & kPreferredMembers[i])
+				{
+					SetCurrentMember(kPreferredMembers[i], 0);
+					break;
+				}
+		}
 	
 	ResetStates();
 	
@@ -1687,91 +1731,98 @@ void icnsEditorClass::PostLoad()
 	statics.membersPalette->RefreshMemberPanes(this);
 }
 
-void icnsEditorClass::LoadUsedMembers()
+void icnsEditorClass::LoadSaveInfo(bool* setCurrentMember)
 {
-	if (statics.preferences.FeatureEnabled(prefsShowOnlyLoadedMembers))
+	short oldFile, targetFile;
+		
+	*setCurrentMember = false;
+	
+	SetupFileSpec(false);
+	
+	oldFile = CurResFile();
+	targetFile = file.OpenResourceFork(fsRdWrPerm);
+	
+	if (targetFile != -1 && ResError() == noErr)
 	{
-		usedMembers = kDefaultMembers[format] & members;
-	}
-	else
-	{
-		short oldFile, targetFile;
-		Handle	usedMembersResource;
+		IconSaveInfoHandle	info;
+	
+		UseResFile(targetFile);
 		
-		SetupFileSpec(false);
+		info = IconSaveInfoHandle(Get1Resource(kIconSaveInfoResourceType, ID));
 		
-		oldFile = CurResFile();
-		targetFile = file.OpenResourceFork(fsRdWrPerm);
-		
-		if (targetFile != -1 && ResError() == noErr)
+		if (info != NULL)
 		{
-			UseResFile(targetFile);
-			
-			usedMembersResource = Get1Resource('Mngl', ID);
-			
-			if (usedMembersResource != NULL &&
-				GetHandleSize(usedMembersResource) == sizeof(long))
+			switch (GetHandleSize(Handle(info)))
 			{
-				usedMembers = **((long**)usedMembersResource);
-				ReleaseResource(usedMembersResource);
+				case sizeof(long):
+					usedMembers = (**info).usedMembers;			
+					break;
+				case sizeof(IconSaveInfo):
+					usedMembers = (**info).usedMembers;
+					if (magnification != (**info).magnification)
+					{
+						magnification = (**info).magnification;
+						PostZoom();
+					}
+					SetCurrentMember((**info).currentPixName, 0);
+					*setCurrentMember = true;
+					break;
+				default: // unknown size, best not to do anything
+					usedMembers |= members;
+					break;
 			}
-			else
-				usedMembers |= members;
-			
-			CloseResFile(targetFile);
-			UseResFile(oldFile);
+			ReleaseResource(Handle(info));
 		}
-		CleanupFileSpec();
+		
+		CloseResFile(targetFile);
+		UseResFile(oldFile);
 	}
+	
+	CleanupFileSpec();
 	
 	usedMembers &= kDefaultMembers[format];
 	members &= usedMembers;
 }
 
-void icnsEditorClass::SaveUsedMembers()
+void icnsEditorClass::StoreSaveInfo()
 {
-	if (statics.preferences.FeatureEnabled(prefsShowOnlyLoadedMembers))
+	short				oldFile, targetFile;
+	IconSaveInfoHandle	info;
+	Handle				old;
+	
+	SetupFileSpec(false);
+	
+	oldFile = CurResFile();
+	targetFile = file.OpenResourceFork(fsRdWrPerm);
+	
+	UseResFile(targetFile);
+	
+	do
 	{
-		;
-	}
-	else
-	{
-		short oldFile, targetFile;
-		Handle	usedMembersResource;
-		
-		SetupFileSpec(false);
-		
-		oldFile = CurResFile();
-		targetFile = file.OpenResourceFork(fsRdWrPerm);
-		
-		UseResFile(targetFile);
-		
-		do
+		old = Get1Resource(kIconSaveInfoResourceType, ID);
+		if (old != NULL)
 		{
-			usedMembersResource = Get1Resource('Mngl', ID);
-			if (usedMembersResource != NULL)
-			{
-				RemoveResource(usedMembersResource);
-				UpdateResFile(targetFile);
-			}
-		} while (usedMembersResource != NULL);
-		
-		usedMembersResource = NewHandleClear(sizeof(usedMembers));
-		
-		BlockMoveData(&usedMembers, *usedMembersResource, sizeof(usedMembers));
-		
-		DetachResource(usedMembersResource);
-		AddResource(usedMembersResource, 'Mngl', ID, "\p");
-		
-		ChangedResource(usedMembersResource);
-		WriteResource(usedMembersResource);
-		
-		UpdateResFile(targetFile);
-		CloseResFile(targetFile);
-		UseResFile(oldFile);
-		
-		CleanupFileSpec();
-	}
+			RemoveResource(old);
+			UpdateResFile(targetFile);
+		}
+	} while (old != NULL);
+	
+	info = IconSaveInfoHandle(NewHandleClear(sizeof(IconSaveInfo)));
+	
+	(**info).usedMembers = usedMembers;
+	(**info).magnification = magnification;
+	(**info).currentPixName = currentPixName;
+	
+	AddResource(Handle(info), kIconSaveInfoResourceType, ID, "\p");
+	
+	ChangedResource(Handle(info));
+	WriteResource(Handle(info));
+	
+	UpdateResFile(targetFile);
+	CloseResFile(targetFile);
+	UseResFile(oldFile);
+	
+	CleanupFileSpec();
 }
 
 void icnsEditorClass::CheckMaskSync(int basePixName, int maskName, int size)
@@ -1852,7 +1903,8 @@ void icnsEditorClass::GenerateMask(int maskName)
 
 OSErr icnsEditorClass::Save(void)
 {
-	OSErr err;
+	OSErr	err;
+	int		membersCount;
 	
 	if (!statics.preferences.FeatureEnabled(prefsDontCheckMasks))
 	{
@@ -1867,6 +1919,25 @@ OSErr icnsEditorClass::Save(void)
 		if (members & largeSize && !(members & (l8mk | icnm))) GenerateMask(icnm);
 		if (members & smallSize && !(members & (s8mk | icsm))) GenerateMask(icsm);
 		if (members & miniSize && !(members & icmm)) GenerateMask(icmm);
+	}
+	
+	membersCount = CountMembers();
+	
+	if (format == formatWindows && membersCount > 10)
+	{
+		Str255	text, explanation, membersCountAsText, continueButton, cancelButton;
+		
+		GetIndString(text, rBasicStrings, eWindowsTooManyMembersError);
+		GetIndString(explanation, rBasicStrings, eWindowsTooManyMembersExplanation);
+		
+		NumToString(membersCount, membersCountAsText);
+		SubstituteString(text, "\p<number>", membersCountAsText);
+		
+		GetIndString(continueButton, rBasicStrings, eContinueButton);
+		GetIndString(cancelButton, rIconInfoStrings, eInfoCancelButton);
+		
+		if (MUtilities::DisplayAlert(text, explanation, continueButton, cancelButton, "\p", kAlertCautionAlert, kWindowAlertPositionParentWindow) == kMACancel)
+			return userCanceledErr;
 	}
 	
 	if ((format != formatWindows && format != formatWindowsXP) && colors == winColors)
@@ -1884,7 +1955,8 @@ OSErr icnsEditorClass::Save(void)
 	if (err != noErr)
 		return err;
 	
-	SaveUsedMembers();
+	if (statics.preferences.FeatureEnabled(prefsSaveExtraInfo))
+		StoreSaveInfo();
 	
 	status &= ~needToSave; // we don't need to save (at least until the user modifies the
 						   // icon)
@@ -1914,7 +1986,7 @@ void icnsEditorClass::OpenInExternalEditor()
 		
 		GetIndString(error, rBasicStrings, eExternalEditorError);
 		GetIndString(prefsButton, rBasicStrings, eOpenPreferences);
-		GetIndString(cancelButton, rBasicStrings, eInfoCancelButton);
+		GetIndString(cancelButton, rIconInfoStrings, eInfoCancelButton);
 		
 		if (MUtilities::DisplayAlert(error, NULL, prefsButton, cancelButton, "\p", kAlertStopAlert, kWindowAlertPositionMainScreen) == 1)
 		{
@@ -2002,7 +2074,8 @@ void icnsEditorClass::OpenInExternalEditor()
 				case exportFormatPhotoshop:
 					ExportPixMap32ToQTFile(statics.canvasPix, bounds,
 										  exportFile, creator, kQTFileTypePhotoShop,
-										  kPlanarRGBCodecType, NULL); 		
+										  kPlanarRGBCodecType, NULL); 
+					break;
 				case exportFormatTIFF:
 					ExportPixMap32ToQTFile(statics.canvasPix, bounds,
 										   exportFile, creator, kQTFileTypeTIFF,
@@ -2286,7 +2359,6 @@ void icnsEditorClass::SetBestMember()
 	{
 		case formatMacOSUniversal:
 		case formatMacOSNew:
-		case formatMacOSXServer:
 			SetCurrentMember(il32, 1);
 			break;
 		case formatMacOSOld:
@@ -2295,8 +2367,12 @@ void icnsEditorClass::SetBestMember()
 		case formatWindows:
 			SetCurrentMember(il32, 1);
 			break;
+		case formatMacOSXServer:
 		case formatWindowsXP:
 			SetCurrentMember(ih32, 1);
+			break;
+		case formatMacOSX:
+			SetCurrentMember(it32, 1);
 			break;
 	}
 	
@@ -2343,6 +2419,35 @@ void icnsEditorClass::ToggleIconMask()
 	Draw1Control(controls.editArea);
 
 	statics.UpdatePalettes(this, 0);
+}
+
+void icnsEditorClass::RemoveMember(int member)
+{
+	GWorldPtr		memberGW;
+	PixMapHandle	memberPix;
+	
+	GetGWorldAndPix(member, &memberGW, &memberPix);
+	
+	if (member != currentPixName)
+		SaveState(member);
+	
+	SAVEGWORLD;
+	SetGWorld(memberGW, NULL);
+	
+	SAVECOLORS;
+	EraseRect(&(**memberPix).bounds);
+	RESTORECOLORS;
+	
+	RESTOREGWORLD;
+	
+	members &= ~member;
+	
+	if (member != currentPixName)
+		SaveState(member);
+		
+	currentState = new drawingStateClass(currentState, this);
+	
+	status |= needsUpdate;
 }
 
 #pragma mark-
@@ -2404,6 +2509,16 @@ void icnsEditorClass::SaveState(long name)
 }
 
 #pragma mark -
+
+void icnsEditorClass::HandleWheelMove(Point location, int modifiers, EventMouseWheelAxis axis, long delta)
+{
+#pragma unused(location, modifiers, axis)
+
+	if (delta < 0)
+		ZoomIn();
+	else if (delta > 0)
+		ZoomOut();
+}
 
 // __________________________________________________________________________________________
 // Name			: icnsEditorClass::HandleKeyDown
@@ -3085,65 +3200,8 @@ void icnsEditorClass::MakeSelection(int selectionType)
 			
 			MagnifySelectionRgn();
 			break;
-		case expandContract:
-			DialogPtr		expandContractDialog;
-			ModalFilterUPP	eventFilterUPP;
-			MWindowPtr		expandContractDialogWindow;
-			bool			dialogDone = false;
-			short			itemHit;
-			ControlHandle	pixels;
-			long			expandAmount;
-			Str255			expandAmountAsString;
-			
-			expandContractDialog = GetNewDialog(rExpandContractDialog, NULL, (WindowPtr)-1L);
-			
-			SetDialogDefaultItem(expandContractDialog, iOK);
-			SetDialogCancelItem(expandContractDialog, iCancel);
-			
-			expandContractDialogWindow = new MWindow(GetDialogWindow(expandContractDialog), kDialogType);
-			MWindow::CenterOnFront(expandContractDialogWindow);
-
-			GetDialogItemAsControl(expandContractDialog, iNoOfPixels, &pixels);
-			NumToString(statics.preferences.GetLastSelectionExpansion(), expandAmountAsString);
-			SetControlText(pixels, expandAmountAsString);
-			SelectDialogItemText(expandContractDialog, iNoOfPixels, 0, 32767);
-			
-			MWindow::DeactivateAll();
-			
-			ShowWindow(GetDialogWindow(expandContractDialog));
-
-			eventFilterUPP = NewModalFilterUPP(MWindow::StandardDialogFilter);
-			
-			while (itemHit != iOK && itemHit != iCancel)
-				ModalDialog(eventFilterUPP, &itemHit);
-			
-			if (itemHit == iOK)
-			{
-				Str255 tempString;
-				
-				GetControlText(pixels, tempString);
-				StringToNum(tempString, &expandAmount);
-				statics.preferences.SetLastSelectionExpansion(expandAmount);
-			}
-			else
-				expandAmount = 0;
-			
-			DisposeModalFilterUPP(eventFilterUPP);
-			DisposeDialog(expandContractDialog);
-			
-			MWindow::ActivateAll();
-			
-			delete expandContractDialogWindow;
-			
-			if (expandAmount)
-			{
-				InsetRgn(selectionRgn, -expandAmount, -expandAmount);
-				MagnifySelectionRgn();
-			}
-			else
-				return;
-			
-			break;
+		case expandContract: ExpandContract(); break;
+		case stroke: Stroke(); break;
 	}
 	
 	if (!EmptyRgn(selectionRgn)) // if there's still a selection...
@@ -3154,6 +3212,177 @@ void icnsEditorClass::MakeSelection(int selectionType)
 	status |= needsUpdate;
 	
 	currentState = new drawingStateClass(currentState, this);
+}
+
+void icnsEditorClass::ExpandContract()
+{
+	DialogPtr		expandContractDialog;
+	ModalFilterUPP	eventFilterUPP;
+	MWindowPtr		expandContractDialogWindow;
+	short			itemHit;
+	ControlHandle	pixels;
+	long			expandAmount;
+	Str255			expandAmountAsString;
+
+	expandContractDialog = GetNewDialog(rExpandContractDialog, NULL, (WindowPtr)-1L);
+
+	SetDialogDefaultItem(expandContractDialog, iOK);
+	SetDialogCancelItem(expandContractDialog, iCancel);
+
+	expandContractDialogWindow = new MWindow(GetDialogWindow(expandContractDialog), kDialogType);
+	MWindow::CenterOnFront(expandContractDialogWindow);
+
+	GetDialogItemAsControl(expandContractDialog, iNoOfPixels, &pixels);
+	NumToString(statics.preferences.GetLastSelectionExpansion(), expandAmountAsString);
+	SetControlText(pixels, expandAmountAsString);
+	SelectDialogItemText(expandContractDialog, iNoOfPixels, 0, 32767);
+
+	MWindow::DeactivateAll();
+
+	ShowWindow(GetDialogWindow(expandContractDialog));
+
+	eventFilterUPP = NewModalFilterUPP(MWindow::StandardDialogFilter);
+
+	do
+	{
+		ModalDialog(eventFilterUPP, &itemHit);
+	} while (itemHit != iOK && itemHit != iCancel);
+
+	if (itemHit == iOK)
+	{
+		Str255 tempString;
+		
+		GetControlText(pixels, tempString);
+		StringToNum(tempString, &expandAmount);
+		statics.preferences.SetLastSelectionExpansion(expandAmount);
+	}
+	else
+		expandAmount = 0;
+
+	DisposeModalFilterUPP(eventFilterUPP);
+	DisposeDialog(expandContractDialog);
+
+	MWindow::ActivateAll();
+
+	delete expandContractDialogWindow;
+
+	if (expandAmount)
+	{
+		InsetRgn(selectionRgn, -expandAmount, -expandAmount);
+		MagnifySelectionRgn();
+	}		
+}
+
+void icnsEditorClass::Stroke()
+{
+	DialogPtr		strokeDialog;
+	ModalFilterUPP	eventFilterUPP;
+	MWindowPtr		strokeDialogWindow;
+	short			itemHit = 0;
+	ControlHandle	pixels, inside, center, outside;
+	long			strokeAmount;
+	Str255			strokeAmountAsString;
+	int				location;
+
+	strokeDialog = GetNewDialog(rStrokeDialog, NULL, (WindowPtr)-1L);
+
+	SetDialogDefaultItem(strokeDialog, iOK);
+	SetDialogCancelItem(strokeDialog, iCancel);
+
+	strokeDialogWindow = new MWindow(GetDialogWindow(strokeDialog), kDialogType);
+	MWindow::CenterOnFront(strokeDialogWindow);
+
+	GetDialogItemAsControl(strokeDialog, iNoOfPixels, &pixels);
+	NumToString(statics.preferences.GetLastSelectionStrokeAmount(), strokeAmountAsString);
+	SetControlText(pixels, strokeAmountAsString);
+	SelectDialogItemText(strokeDialog, iNoOfPixels, 0, 32767);
+	
+	GetDialogItemAsControl(strokeDialog, iInside, &inside); SetControlValue(inside, 0);
+	GetDialogItemAsControl(strokeDialog, iCenter, &center); SetControlValue(center, 0);
+	GetDialogItemAsControl(strokeDialog, iOutside, &outside); SetControlValue(outside, 0);
+	switch (location = statics.preferences.GetLastSelectionStrokeLocation())
+	{
+		case strokeInside: SetControlValue(inside, 1); break;
+		case strokeCenter: SetControlValue(center, 1); break;
+		case strokeOutside: SetControlValue(outside, 1); break;
+	}
+	
+#if TARGET_API_MAC_CARBON
+	ControlFontStyleRec	alignedTextStyle;
+	ControlHandle		label;
+	
+	alignedTextStyle.flags = kControlUseJustMask;
+	alignedTextStyle.just = teFlushRight;
+	
+	GetDialogItemAsControl(strokeDialog, iStrokePrompt, &label);
+	SetControlFontStyle(label, &alignedTextStyle);
+	
+	GetDialogItemAsControl(strokeDialog, iLocationPrompt, &label);
+	SetControlFontStyle(label, &alignedTextStyle);
+#endif
+
+	MWindow::DeactivateAll();
+
+	ShowWindow(GetDialogWindow(strokeDialog));
+
+	eventFilterUPP = NewModalFilterUPP(MWindow::StandardDialogFilter);
+
+	do
+	{
+		ModalDialog(eventFilterUPP, &itemHit);
+		switch (itemHit)
+		{
+			case iInside: SetControlValue(inside, 1); SetControlValue(center, 0); SetControlValue(outside, 0); location = strokeInside; break;
+			case iCenter: SetControlValue(inside, 0); SetControlValue(center, 1); SetControlValue(outside, 0); location = strokeCenter; break;
+			case iOutside: SetControlValue(inside, 0); SetControlValue(center, 0); SetControlValue(outside, 1); location = strokeOutside; break;
+		}
+	}
+	while (itemHit != iOK && itemHit != iCancel);
+
+	if (itemHit == iOK)
+	{
+		Str255 tempString;
+		
+		GetControlText(pixels, tempString);
+		StringToNum(tempString, &strokeAmount);
+		statics.preferences.SetLastSelectionStrokeAmount(strokeAmount);
+		statics.preferences.SetLastSelectionStrokeLocation(location);
+	}
+	else
+		strokeAmount = 0;
+
+	DisposeModalFilterUPP(eventFilterUPP);
+	DisposeDialog(strokeDialog);
+
+	MWindow::ActivateAll();
+
+	delete strokeDialogWindow;
+
+	if (strokeAmount)
+	{
+		RgnHandle	strokeRgn = NewRgn();
+		SAVEGWORLD;
+		
+		SetGWorld(currentGW, NULL);
+		
+		CopyRgn(selectionRgn, strokeRgn);
+		InsetRgn(strokeRgn, -float(strokeAmount)/2.0 - 0.5, -float(strokeAmount)/2.0 - 0.5);
+		
+		switch (location)
+		{
+			case strokeInside: InsetRgn(strokeRgn, strokeAmount/2, strokeAmount/2); break;
+			case strokeOutside: InsetRgn(strokeRgn, -strokeAmount/2, -strokeAmount/2); break;
+		}
+		
+		PenSize(strokeAmount, strokeAmount);
+		
+		FrameRgn(strokeRgn);
+		
+		DisposeRgn(strokeRgn);
+		
+		RESTOREGWORLD;
+	}
+			
 }
 
 void icnsEditorClass::GetSelectionColors(RGBColor** colors, int* noOfColors)
@@ -3514,3 +3743,4 @@ void HandleBalloon(int strings, int index, Rect balloonRect, Point theMouse)
 	icnsEditorClass::statics.currentBalloon = index;
 }
 #endif
+

@@ -1,48 +1,44 @@
 UNCONFIRMED
-- drag and drop in members palette sometimes yields rainbow cursor of death
-- copy from photoshop results in rainbow cursor of death when returning to iconographer
+- copy from photoshop results in rainbow cursor of death when returning to iconographer (bug fix in 10.1.2 or 9.2.2?)
 - icon browser scrolling "dirt"
 
 TODO
-2.3
-- turn on resource file mapping
-- use FNNotify to tell Finder about icon changes?
-- fix photoshop actions (update readme, don't depend on the background being white)
-- handle Windows XP 24 x 24 icon size
-- shift clicking with pen tool should connect (like Photoshop)
-- default zoom level field is inconsistent (should actually be editable or look static)
-- command + space for temporary magnification tool
+2.4
+- quicktime effects
+- get display area/edit rect to update properly when new one is smaller
+- update welcome text with proper version
+- see why there's too many screen updates for os x version
+- deal with files being in use better
+- look into rotatio/undo bug
+- fix 32 bit icons and 8 bit icons in docs/page
+- make customized text drawing (esp. in members palette) use drawthemetextbox
+- look into why there are window positioning issues when dock is on the left and pinned to the bottom (lithe setup)
+- make localized versions link to the translated online ordering page (and get the text translated for that too)
+- merge all language versions for Carbon version by using bundle
 - look into optimizing display of lines/gradient feedback by updating less pixels
-- figure out how to get OS X Finder to update icons sooner
+- figure out how to get OS X Finder to update icons sooner (use FNNotify?)
 - take into account used members when caching members palette
-- grid button next to zoom placard (like in apple specs)
-- dragging to trash from members palette should remove that member
-- fix "swatches get hidden when clicking on background" bug under os 9
-- warn about windows icons having more than 10 members
-- remember format for undo/redo
-- add mac os x IDs to the pop-up menu
-- add "zoom to fit" and "zoom to actual size" to icon menu (same functionaly as double clicking on pan and zoom tools)
 - some polygonal lasso drawing issues
 - option while closing should close all windows
 - help tags
 - preferences and adjust balloon help
-- preference for not hiding floaters when in background
-- remember zoom levels for saved documents (and other stuff, but make it a preference)
 - redo colors palette (merge sliders tab, bring back favorites)
 - hovering over RGB/HSB slider previews should show color in readout
-- fix issues with drag scrolling (both in edit area and in memebers palette) under carbon by using timers
-- make prefs dialog movable modeless
-- support pasting of TIFF data from Cocoa apps (also PNG?)
-- move palettes on screen if not within new screen bounds (when res changes, etc.)
 - readout should show up when in another editor's drawing area
-- 8-bit system palette balloon help should explain each section
+- 8-bit system palette balloon help/help tags should explain each section
 
 post 2.3
+- save into file icon replacing only checks for 'icns'
+- write some kind of step by step tutorial
+- include docs for using icons with new apps/RB projects
+- make prefs dialog movable modeless
+- refactor MIcon so that we don't statically allocate all members (and make it more generic to support any size)
+- quickmask mode (a la photoshop)
+- smooth brush
 - turn alerts, info, add member into sheets
 - anti-aliased text
 - palette position snapping
 - snap colors in color floater to current palette, system, web, grays, etc.
-- refactor MIcon so that we don't statically allocate all members
 - different centering styles for MAlert
 - settable default button for MAlert
 - 8 bit selections (so that text can be anti-aliased, and dragged data can be placed into a proper selection).
@@ -55,7 +51,6 @@ post 2.3
 - multiple views
 - proper .tiff and .png support for linux icons
 
-
 OPTIMIZATION
 - calling UpdatePalettes twice when closing editors
 - too many updates at startup/application switching
@@ -64,9 +59,38 @@ OPTIMIZATION
 - calling with updateAll for MembersPalette when opening/closing, not quite necessary?
 - adjust WNE sleep value when in background, when in TrackMouseLocation, etc.
 - for live previewing of hue/saturation effects, cache image stored as HSV.
+- look into why isfrontprocess takes so long in memberspalette doidle
+- add caching to other palettes too, not just members one
 
 CHANGES
-2.2:
+2.3
+- added "fit on screen" and "actual pixels" to icon menu
+- added mac os x IDs to the icon info popup menu
+- stroke selection command
+- command + space for temporary magnification tool
+- fixed "swatches get hidden when clicking on background" tool palette bug under os 9
+- remember format for undo/redo
+- warn about windows icons having more than 10 members
+- shift-clicking with the pen tool connects to the previous endpoint
+- default zoom level field is now consistent (looks static since it's not editable)
+- added FAQs to docs
+- members palette dragging improvements (drag scroll now works under os x and drags are accepted when they should be)
+- drag scroll also works under os x for the main editing area
+- palettes and windows are moved to appropriate positions if the screen resolution changes
+- dragging to trash from members palette removes that member (os 9 only at the moment due to os x bug)
+- added preference to store extra info (used members, zoom level, current member) along with a saved icon
+- tweaked the included photoshop actions
+- make scroll wheel over editor window zooms in/out (a la windows version of photoshop)
+- icon browser window supports scroll wheel too (members palette can't due to os x limitations)
+- external editor can be a packaged app now
+- let os x server 1.x importing handle 128 x 128 as well
+- prevents user from using "save into file..." with os x icon format
+- thumbnail size is selected by default when making a new os x icon
+- crash when using lasso with small (under 1 pixel) selections
+- polygon tool (and polygonal lasso) now updates properly under os x
+- text tool creates floated selection properly
+
+2.2 October 19, 2001
 - windows xp icon format loading and saving
 - redone windows format support (it actually works under os x now)
 - .rsrc file support
@@ -166,7 +190,7 @@ CHANGES
 
 2.0x8 September 1, 2000
 - updated documentation
-- "add member" command (in Icon menu and at the bottom of the members palette), hold down shit or option for the "current" source to be selected by default
+- "add member" command (in Icon menu and at the bottom of the members palette), hold down shift or option for the "current" source to be selected by default
 - info and add member buttons now have a text label in addition to a minuscule icon
 - updating when returning from an external editor can be undone
 - updated balloon help for icon info dialog

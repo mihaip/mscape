@@ -2,6 +2,8 @@
 #include "icnsEditorClass.h"
 #include "drawingStateClass.h"
 
+const static EventTimerInterval kDragScrollDelay = kEventDurationMillisecond;
+
 MembersPalette::MembersPalette()
 			   :MFloater(rMPWindow, kMembersPaletteType)
 {
@@ -97,6 +99,21 @@ void MembersPalette::DoIdle(MWindowPtr windowUnderMouse)
 	RESTOREGWORLD; // we can now restore the gworld
 }
 
+void MembersPalette::HandleWheelMove(Point location, int modifiers, EventMouseWheelAxis axis, long delta)
+{
+#pragma unused (location, axis)
+	int multiplier = -1 * delta;
+
+	if (modifiers & optionKey)
+		multiplier *= kOptionScrollingMultiplier;
+	
+	SetControlValue(controls.scrollbar, GetControlValue(controls.scrollbar) + kScrollingIncrement * multiplier);
+	
+	scrollValue = GetControlValue(controls.scrollbar);
+	
+	RefreshMemberPanes();
+}
+
 void MembersPalette::HandleContentClick(EventRecord* eventPtr)
 {
 	Point 				where;
@@ -182,10 +199,12 @@ void MembersPalette::HandleMemberPaneClick(ControlHandle pane, short controlPart
 		WaitMouseMoved(eventPtr->where)) // if the user moved the mouse while it as down,
 										 // we're dragging
 	{
-		Rect	tempRect;
+		Rect	tempRect, dragSrcRect;
+		MFile	dragLocation;
 		
 		GetControlBounds(pane, &tempRect);
 		
+		dragSrcControl = pane;
 		GetPaneRect(memberIndex, tempRect, &dragSrcRect);
 		
 		// we must know which gworld/pixmap we are dragging
@@ -233,14 +252,15 @@ void MembersPalette::HandleMemberPaneClick(ControlHandle pane, short controlPart
 			dragType = srcPixName;
 		}
 		RESTOREGWORLD; // we must restore the port
-		DragPixMap(dragSrcRect, eventPtr, dragPix, NULL, dragPix, NULL, dragType); // the actual dragging
-		SetRect(&dragSrcRect, 0, 0, 0, 0);
+		DragPixMap(dragSrcRect, eventPtr, dragPix, NULL, dragPix, NULL, dragType, &dragLocation); // the actual dragging
+		dragSrcControl = NULL;
 		if (needToDispose) // if we need to dipose...
 		{
 			UnlockPixels(dragPix);
 			DisposeGWorld(dragGW); // then we do
 		}
-		//RESTORECOLORS; // and the colors so that we can drag
+		if (dragLocation.IsValid() && dragLocation.IsSpecialFolder(kTrashFolderType))
+			frontEditor->RemoveMember(srcPixName);
 	}
 	else // just a normal click, we just set the currentPix/GW/Name to whatever the user
 		 // clicked on
@@ -799,20 +819,34 @@ pascal OSErr MembersPalette::DragTrackingHandler(DragTrackingMessage message, Wi
 	switch (message)
 	{
 		case kDragTrackingEnterWindow:
+#if TARGET_API_MAC_CARBON
+			EventLoopTimerUPP timerUPP;
 			
+			timerUPP = NewEventLoopTimerUPP(MembersPalette::DragScrollTimer);
+			InstallEventLoopTimer(GetMainEventLoop(), kDragScrollDelay, kDragScrollDelay, timerUPP, parent, &parent->dragScrollTimer);
+#endif
 			break;
-
 		case kDragTrackingInWindow:
-			parent->DragScroll(theDragRef);
+#if !TARGET_API_MAC_CARBON
+			Point theMouse;
+			
+			GetDragMouse(theDragRef, &theMouse, 0);
+			GlobalToLocal(&theMouse);
+	
+			parent->DragScroll(theMouse);
+#endif
 			DrawDragHilite(theDragRef, parent);
 			break;
 
 		case kDragTrackingLeaveWindow:
-
-			//(void) HideDragHilite (theDragRef);
-			//Draw1Control(parentEditor->controls.rootControl);
-			// fall thru
-
+#if TARGET_API_MAC_CARBON
+			if (parent->dragScrollTimer)
+			{
+				RemoveEventLoopTimer(parent->dragScrollTimer);
+				parent->dragScrollTimer = NULL;
+			}
+#endif			
+			break;
 		default :
 			break;
 	}
@@ -828,6 +862,15 @@ pascal OSErr MembersPalette::DragReceiveHandler(WindowPtr theWindow, void *, Dra
 	
 	parent = MembersPalettePtr(::GetWindow(theWindow));
 	
+	
+#if TARGET_API_MAC_CARBON
+	if (parent->dragScrollTimer)
+	{
+		RemoveEventLoopTimer(parent->dragScrollTimer);
+		parent->dragScrollTimer = NULL;
+	}
+#endif	
+
 	if (parent->dragHiliteRgn != NULL)
 	{
 		DisposeRgn(parent->dragHiliteRgn);
@@ -922,11 +965,9 @@ bool MembersPalette::ApproveDragReference(DragReference theDragRef, Rect* hilite
 		GetDragMouse(theDragRef, &theMouse, 0);
 		GlobalToLocal(&theMouse);
 		
-		if (PtInRect(theMouse, &dragSrcRect))
-			return false;
-		
 		for (int i=0; i < kMembersCount; i++)
-			if (IsControlVisible(controls.members[i]))
+			if (controls.members[i] != dragSrcControl &&
+			    IsControlVisible(controls.members[i]))
 			{
 				GetControlBounds(controls.members[i], &controlRect);
 				GetPaneRect(i, controlRect, &currentPaneRect);
@@ -1026,14 +1067,10 @@ void MembersPalette::HiliteRegion(RgnHandle inHiliteRgn)
 	RESTORECOLORS;
 }
 
-void MembersPalette::DragScroll(DragReference theDragRef)
+void MembersPalette::DragScroll(Point theMouse)
 {
-	Point		theMouse;
 	Rect		windowRect, testRect;
 	int			oldValue, scrollInterval;
-	
-	GetDragMouse(theDragRef, &theMouse, 0);
-	GlobalToLocal(&theMouse);
 	
 	windowRect = GetPortRect();
 	
@@ -1068,6 +1105,23 @@ void MembersPalette::DragScroll(DragReference theDragRef)
 
 		RefreshMemberPanes();
 	}
+}
+
+pascal void MembersPalette::DragScrollTimer(EventLoopTimerRef timer, void *userData)
+{
+#pragma unused (timer)
+	MembersPalettePtr	parent;
+	Point				theMouse;
+	SAVEGWORLD;
+	
+	parent = MembersPalettePtr(userData);
+	
+	parent->SetPort();
+	GetMouse(&theMouse);
+	
+	parent->DragScroll(theMouse);
+	
+	RESTOREGWORLD;
 }
 
 #pragma mark -

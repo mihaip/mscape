@@ -80,6 +80,7 @@ class MembersPalette : public MFloater
 		
 		void 					HandleContentClick(EventRecord* eventPtr);
 		void					HandleGrow(Point where);
+		void 					HandleWheelMove(Point location, int modifiers, EventMouseWheelAxis axis, long delta);
 		
 		void					Update(bool updateAll);
 		void					Update(icnsEditorPtr frontEditor, bool updateAll);
@@ -96,7 +97,7 @@ class MembersPalette : public MFloater
 		icnsEditorPtr			parentEditor;
 		
 		RgnHandle				dragHiliteRgn;
-		Rect					dragSrcRect;
+		ControlHandle			dragSrcControl;
 		
 		RgnHandle				oldClip;
 		
@@ -112,6 +113,9 @@ class MembersPalette : public MFloater
 		int						previousCurrentPixName;
 		int						previousCurrentControlIndex;
 		
+		EventLoopTimerRef		dragScrollTimer;
+		
+		pascal static void		DragScrollTimer(EventLoopTimerRef timer, void *userData);
 				
 		static pascal short		MemberPaneHitTest(ControlHandle theControl, Point where);
 		static pascal void		MemberPaneDraw(ControlHandle theControl, short thePart);
@@ -149,7 +153,7 @@ class MembersPalette : public MFloater
 		static void 			DrawDragHilite(DragReference theDragRef, MembersPalettePtr parent);
 		bool					ApproveDragReference(DragReference theDragRef, Rect* hiliteRect, int* memberIndex);
 		void 					HiliteRegion(RgnHandle inHiliteRgn);
-		void					DragScroll(DragReference theDragRef);
+		void					DragScroll(Point theMouse);
 
 
 		

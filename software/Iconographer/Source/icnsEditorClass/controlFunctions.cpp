@@ -54,12 +54,13 @@ void icnsEditorClass::ZoomPlacardUpdate(struct EnhancedPlacardData* data, int fl
 		
 		StringToNum(currentMenuItem, (long*)&parentEditor->magnification);
 		
-		parentEditor->zoomPosition.h = parentEditor->zoomPosition.v = parentEditor->zoomDimensions.h = parentEditor->zoomDimensions.v = -1;
+		parentEditor->PostZoom();
+		/*parentEditor->zoomPosition.h = parentEditor->zoomPosition.v = parentEditor->zoomDimensions.h = parentEditor->zoomDimensions.v = -1;
 		
 		parentEditor->UpdateZoom();
 		parentEditor->ZoomFitWindow();
 		parentEditor->ClampScrollValues();
-		parentEditor->RepositionControls();
+		parentEditor->RepositionControls();*/
 	}
 }
 
