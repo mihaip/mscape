@@ -10,13 +10,12 @@
 
 // file types
 
-#define fileCreator 'SBnc'
+#define fileCreator 'c2ic'
 #define prefFileType 'Pref'
 
 // --- Constants --- //
 
-#define schemeFileType 'Colr'
-#define partsResourceType 'wnd#'
+//#define __expires__
 
 // app resource IDs
 const static int aboutBoxID = 128;
@@ -29,6 +28,9 @@ const static int aboutPicID = 128;
 const static int aboutPicMaskID = 129;
 
 // menubar stuff
+const static int baseMenuID = 201;
+const static int menuCount = 7;
+
 const static int kMenuBarID = 128;
 
 const static int mApple = 128;
@@ -70,6 +72,8 @@ const static int kRegNoField = 6;
 
 const static int kIncludeOldStyle = 3;
 const static int kSetBits = 4;
+const static int kGenerateOldStyle = 5;
+const static int kNameResources = 6;
 
 const static int kExport = 1;
 const static int kIconPreview = 7;
@@ -89,6 +93,8 @@ typedef struct tPreferences
 	Str255 regNo;
 	bool includeOldStyle;
 	bool setBits;
+	bool generateOldStyle;
+	bool nameResources;
 } tPreferences;
 
 typedef tPreferences** PreferencesHandle;
@@ -129,6 +135,7 @@ void		DrawImageWell(Rect bounds);
 OSStatus	GetFileNav(void);
 OSStatus	GetFileOld(void);
 void		GeticnsID(bool createFile);
+void		GetIconName(int ID, Str255 name);
 void		GetExporticns(void);
 void		clip2icns(short icnsID, Str255 icnsName, int flags);
 void 		CloseScheme(void);

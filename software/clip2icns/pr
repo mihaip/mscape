@@ -1,0 +1,20 @@
+Hello,
+
+I'd like to announce my latest tool, clip2icns. This utility lets you edit the 32 bit icons that appear under MacOS 8.5. Since Apple has shown no signs that they want to release their editor, this is the only publically available tool that lets you create them. If you think that this is significant please mention it on your site. The press release is below:
+
+So you bought MacOS 8.5, and now you're staring at the beautiful 32 bit icons and cursing Apple for not letting you edit them. Well, curse no more because help has arrived. clip2icns is a new tool designed specifically to help you create and edit the new 32 bit icons. This new utility takes a picture from any graphics program and creates a 32 bit icon out of it, complete with 8 bit mask. Now there's nothing stopping you from creating true translucent iMac icons, cool drop shadows and anti-aliasing effects.
+
+Detailed information:
+clip2icns 1.0
+Created by: Mscape Software
+Short description: The only tool available that lets you create and edit the new MacOS 8.5 32 bit icons.
+Requirements:
+System 7 and above
+Any graphics program that supports copying to the clipboard
+Price: $10 Shareware
+Availability: Exclusively from GUI Central:
+http://cafe.ambrosiasw.com/gui-central/main.html
+
+Thanks,
+Mihai
+

@@ -1,4 +1,4 @@
-/* Resource fork of software/releases/clip2icns/clip2icns 1.0b3 */
+/* Resource fork of software/clip2icns/clip2icns (PPC) */
 resource 'MENU' (130) {
 	130,
 	textMenuProc,
@@ -96,126 +96,6 @@ resource 'MENU' (206) {
 		"Ð20786 Locked Badge", noIcon, noKey, noMark, plain,
 		/* [5] */
 		"Ð20740 Script Badge", noIcon, noKey, noMark, plain
-	}
-};
-
-resource 'MENU' (202) {
-	202,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"System Folders",
-	{	/* array: 55 elements */
-		/* [1] */
-		"Ð20801 Internet Search Sites", noIcon, noKey, noMark, plain,
-		/* [2] */
-		"Ð20797 Scripts", noIcon, noKey, noMark, plain,
-		/* [3] */
-		"Ð20792 ColorSync Profiles", noIcon, noKey, noMark, plain,
-		/* [4] */
-		"Ð20744 Internet", noIcon, noKey, noMark, plain,
-		/* [5] */
-		"Ð20724 Speakable Items", noIcon, noKey, noMark, plain,
-		/* [6] */
-		"Ð20729 Favorites", noIcon, noKey, noMark, plain,
-		/* [7] */
-		"Ð20723 Appearance", noIcon, noKey, noMark, plain,
-		/* [8] */
-		"Ð3999 Generic Folder", noIcon, noKey, noMark, plain,
-		/* [9] */
-		"Ð3997 Open Folder", noIcon, noKey, noMark, plain,
-		/* [10] */
-		"Ð3994 Private Folder", noIcon, noKey, noMark, plain,
-		/* [11] */
-		"Ð3993 Trash Empty", noIcon, noKey, noMark, plain,
-		/* [12] */
-		"Ð3992 Desktop", noIcon, noKey, noMark, plain,
-		/* [13] */
-		"Ð3984 Trash Full", noIcon, noKey, noMark, plain,
-		/* [14] */
-		"Ð3983 System Folder", noIcon, noKey, noMark, plain,
-		/* [15] */
-		"Ð3982 Apple Menu Items", noIcon, noKey, noMark, plain,
-		/* [16] */
-		"Ð3981 Startup Items", noIcon, noKey, noMark, plain,
-		/* [17] */
-		"Ð3980 Shared Folder", noIcon, noKey, noMark, plain,
-		/* [18] */
-		"Ð3979 Drop Folder", noIcon, noKey, noMark, plain,
-		/* [19] */
-		"Ð3978 Share Point", noIcon, noKey, noMark, plain,
-		/* [20] */
-		"Ð3977 Mounted Folder", noIcon, noKey, noMark, plain,
-		/* [21] */
-		"Ð3976 Control Panels", noIcon, noKey, noMark, plain,
-		/* [22] */
-		"Ð3975 Print Spool", noIcon, noKey, noMark, plain,
-		/* [23] */
-		"Ð3974 Preferences", noIcon, noKey, noMark, plain,
-		/* [24] */
-		"Ð3973 Extensions", noIcon, noKey, noMark, plain,
-		/* [25] */
-		"Ð3972 File Server", noIcon, noKey, noMark, plain,
-		/* [26] */
-		"Ð3968 Fonts", noIcon, noKey, noMark, plain,
-		/* [27] */
-		"Ð3966 Recent Documents", noIcon, noKey, noMark, plain,
-		/* [28] */
-		"Ð3965 Recent Applications", noIcon, noKey, noMark, plain,
-		/* [29] */
-		"Ð3964 Recent Servers", noIcon, noKey, noMark, plain,
-		/* [30] */
-		"Ð3963 MacOS Read Me Files", noIcon, noKey, noMark, plain,
-		/* [31] */
-		"Ð3962 Control Strip Modules", noIcon, noKey, noMark, plain,
-		/* [32] */
-		"Ð3961 Sounds", noIcon, noKey, noMark, plain,
-		/* [33] */
-		"Ð3960 Help", noIcon, noKey, noMark, plain,
-		/* [34] */
-		"Ð3959 Scripting Additions", noIcon, noKey, noMark, plain,
-		/* [35] */
-		"Ð3958 Internet Plug-ins", noIcon, noKey, noMark, plain,
-		/* [36] */
-		"Ð3957 Language Support", noIcon, noKey, noMark, plain,
-		/* [37] */
-		"Ð3956 Shared Libraries", noIcon, noKey, noMark, plain,
-		/* [38] */
-		"Ð3955 Text Encodings", noIcon, noKey, noMark, plain,
-		/* [39] */
-		"Ð3954 Printer Drivers", noIcon, noKey, noMark, plain,
-		/* [40] */
-		"Ð3953 Printer Descriptions", noIcon, noKey, noMark, plain,
-		/* [41] */
-		"Ð3952 Voices", noIcon, noKey, noMark, plain,
-		/* [42] */
-		"Ð3951 Control Panels (Disabled)", noIcon, noKey, noMark, plain,
-		/* [43] */
-		"Ð3950 Extensions (Disabled)", noIcon, noKey, noMark, plain,
-		/* [44] */
-		"Ð3949 Startup Items (Disabled)", noIcon, noKey, noMark, plain,
-		/* [45] */
-		"Ð3948 Shutdown Items (Disabled)", noIcon, noKey, noMark, plain,
-		/* [46] */
-		"Ð3947 System Extensions (Disabled)", noIcon, noKey, noMark, plain,
-		/* [47] */
-		"Ð3946 Assistants", noIcon, noKey, noMark, plain,
-		/* [48] */
-		"Ð3945 Utilities", noIcon, noKey, noMark, plain,
-		/* [49] */
-		"Ð3944 Application Support", noIcon, noKey, noMark, plain,
-		/* [50] */
-		"Ð3943 Apple Extras", noIcon, noKey, noMark, plain,
-		/* [51] */
-		"Ð3942 Contextual Menu Items", noIcon, noKey, noMark, plain,
-		/* [52] */
-		"Ð3812 Workgroup", noIcon, noKey, noMark, plain,
-		/* [53] */
-		"Ð3811 User", noIcon, noKey, noMark, plain,
-		/* [54] */
-		"Ð3774 System Folder (protected)", noIcon, noKey, noMark, plain,
-		/* [55] */
-		"Ð3773 Applications Folder (protected)", noIcon, noKey, noMark, plain
 	}
 };
 
@@ -351,130 +231,6 @@ resource 'MENU' (205) {
 	}
 };
 
-resource 'MENU' (204) {
-	204,
-	textMenuProc,
-	allEnabled,
-	enabled,
-	"Internet Icons",
-	{	/* array: 12 elements */
-		/* [1] */
-		"Ð20795 FTP Server", noIcon, noKey, noMark, plain,
-		/* [2] */
-		"Ð20793 AppleShare Server", noIcon, noKey, noMark, plain,
-		/* [3] */
-		"Ð20726 AppleTalk", noIcon, noKey, noMark, plain,
-		/* [4] */
-		"Ð20796 AppleTalk Zone", noIcon, noKey, noMark, plain,
-		/* [5] */
-		"Ð20739 Location", noIcon, noKey, noMark, plain,
-		/* [6] */
-		"Ð20738 Newsgroup", noIcon, noKey, noMark, plain,
-		/* [7] */
-		"Ð20737 E-mail", noIcon, noKey, noMark, plain,
-		/* [8] */
-		"Ð20736 File", noIcon, noKey, noMark, plain,
-		/* [9] */
-		"Ð20735 AppleShare Server", noIcon, noKey, noMark, plain,
-		/* [10] */
-		"Ð20734 FTP Server", noIcon, noKey, noMark, plain,
-		/* [11] */
-		"Ð20733 Homepage", noIcon, noKey, noMark, plain,
-		/* [12] */
-		"Ð20731 IP File Server", noIcon, noKey, noMark, plain
-	}
-};
-
-resource 'MENU' (207) {
-	207,
-	textMenuProc,
-	0x7AFB7FB7,
-	enabled,
-	"Others",
-	{	/* array: 40 elements */
-		/* [1] */
-		"Ð16386 Apple Menu Icon", noIcon, noKey, noMark, plain,
-		/* [2] */
-		"Ð20798 Unlocked", noIcon, noKey, noMark, plain,
-		/* [3] */
-		"Ð3823 Locked", noIcon, noKey, noMark, plain,
-		/* [4] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [5] */
-		"Ð20791 Descending Sort Order", noIcon, noKey, noMark, plain,
-		/* [6] */
-		"Ð20790 Ascending Sort Order", noIcon, noKey, noMark, plain,
-		/* [7] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [8] */
-		"Ð20751 Privileges: Writable", noIcon, noKey, noMark, plain,
-		/* [9] */
-		"Ð20750 Privileges: Uknown", noIcon, noKey, noMark, plain,
-		/* [10] */
-		"Ð20749 Privileges: N/A", noIcon, noKey, noMark, plain,
-		/* [11] */
-		"Ð20748 Privileges: Read", noIcon, noKey, noMark, plain,
-		/* [12] */
-		"Ð20747 Privileges: Read/Write", noIcon, noKey, noMark, plain,
-		/* [13] */
-		"Ð3784 Privileges: No Folders", noIcon, noKey, noMark, plain,
-		/* [14] */
-		"Ð3783 Privileges: No Write", noIcon, noKey, noMark, plain,
-		/* [15] */
-		"Ð3782 Privileges: No Files", noIcon, noKey, noMark, plain,
-		/* [16] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [17] */
-		"Ð20746 Snap to Grid", noIcon, noKey, noMark, plain,
-		/* [18] */
-		"Ð20745 Keep Arranged", noIcon, noKey, noMark, plain,
-		/* [19] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [20] */
-		"Ð20741 Backwards Arrow", noIcon, noKey, noMark, plain,
-		/* [21] */
-		"Ð20742 Forward Arrow Icon", noIcon, noKey, noMark, plain,
-		/* [22] */
-		"Ð20730 Recent Items Icon", noIcon, noKey, noMark, plain,
-		/* [23] */
-		"Ð20729 Favorite Items", noIcon, noKey, noMark, plain,
-		/* [24] */
-		"Ð20728 Shortcut Icon", noIcon, noKey, noMark, plain,
-		/* [25] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [26] */
-		"Ð20271 Help Icon", noIcon, noKey, noMark, plain,
-		/* [27] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [28] */
-		"Ð16509 Clipboard", noIcon, noKey, noMark, plain,
-		/* [29] */
-		"Ð16494 System Suitcase", noIcon, noKey, noMark, plain,
-		/* [30] */
-		"Ð16482 Finder", noIcon, noKey, noMark, plain,
-		/* [31] */
-		"Ð3828 MacOS Logo", noIcon, noKey, noMark, plain,
-		/* [32] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [33] */
-		"Ð3822 Stop Icon", noIcon, noKey, noMark, plain,
-		/* [34] */
-		"Ð3821 Caution Icon", noIcon, noKey, noMark, plain,
-		/* [35] */
-		"Ð3820 Note Icon", noIcon, noKey, noMark, plain,
-		/* [36] */
-		"-", noIcon, noKey, noMark, plain,
-		/* [37] */
-		"Ð3816 Group", noIcon, noKey, noMark, plain,
-		/* [38] */
-		"Ð3815 Owner", noIcon, noKey, noMark, plain,
-		/* [39] */
-		"Ð3814 User", noIcon, noKey, noMark, plain,
-		/* [40] */
-		"Ð3814 Guest User", noIcon, noKey, noMark, plain
-	}
-};
-
 resource 'MENU' (129) {
 	129,
 	textMenuProc,
@@ -492,6 +248,252 @@ resource 'MENU' (129) {
 		"-", noIcon, noKey, noMark, plain,
 		/* [5] */
 		"Quit", noIcon, "Q", noMark, plain
+	}
+};
+
+resource 'MENU' (202) {
+	202,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"System Folders",
+	{	/* array: 55 elements */
+		/* [1] */
+		"Ð20801 Internet Search Sites", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Ð20797 Scripts", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Ð20792 ColorSync Profiles", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"Ð20744 Internet", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"Ð20729 Favorites", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"Ð20724 Speakable Items", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"Ð20723 Appearance", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"Ð3999 Generic Folder", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"Ð3997 Open Folder", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"Ð3994 Private Folder", noIcon, noKey, noMark, plain,
+		/* [11] */
+		"Ð3993 Trash Empty", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"Ð3992 Desktop", noIcon, noKey, noMark, plain,
+		/* [13] */
+		"Ð3984 Trash Full", noIcon, noKey, noMark, plain,
+		/* [14] */
+		"Ð3983 System Folder", noIcon, noKey, noMark, plain,
+		/* [15] */
+		"Ð3982 Apple Menu Items", noIcon, noKey, noMark, plain,
+		/* [16] */
+		"Ð3981 Startup Items", noIcon, noKey, noMark, plain,
+		/* [17] */
+		"Ð3980 Shared Folder", noIcon, noKey, noMark, plain,
+		/* [18] */
+		"Ð3979 Drop Folder", noIcon, noKey, noMark, plain,
+		/* [19] */
+		"Ð3978 Share Point", noIcon, noKey, noMark, plain,
+		/* [20] */
+		"Ð3977 Mounted Folder", noIcon, noKey, noMark, plain,
+		/* [21] */
+		"Ð3976 Control Panels", noIcon, noKey, noMark, plain,
+		/* [22] */
+		"Ð3975 Print Spool", noIcon, noKey, noMark, plain,
+		/* [23] */
+		"Ð3974 Preferences", noIcon, noKey, noMark, plain,
+		/* [24] */
+		"Ð3973 Extensions", noIcon, noKey, noMark, plain,
+		/* [25] */
+		"Ð3972 File Server", noIcon, noKey, noMark, plain,
+		/* [26] */
+		"Ð3968 Fonts", noIcon, noKey, noMark, plain,
+		/* [27] */
+		"Ð3966 Recent Documents", noIcon, noKey, noMark, plain,
+		/* [28] */
+		"Ð3965 Recent Applications", noIcon, noKey, noMark, plain,
+		/* [29] */
+		"Ð3964 Recent Servers", noIcon, noKey, noMark, plain,
+		/* [30] */
+		"Ð3963 MacOS Read Me Files", noIcon, noKey, noMark, plain,
+		/* [31] */
+		"Ð3962 Control Strip Modules", noIcon, noKey, noMark, plain,
+		/* [32] */
+		"Ð3961 Sounds", noIcon, noKey, noMark, plain,
+		/* [33] */
+		"Ð3960 Help", noIcon, noKey, noMark, plain,
+		/* [34] */
+		"Ð3959 Scripting Additions", noIcon, noKey, noMark, plain,
+		/* [35] */
+		"Ð3958 Internet Plug-ins", noIcon, noKey, noMark, plain,
+		/* [36] */
+		"Ð3957 Language Support", noIcon, noKey, noMark, plain,
+		/* [37] */
+		"Ð3956 Shared Libraries", noIcon, noKey, noMark, plain,
+		/* [38] */
+		"Ð3955 Text Encodings", noIcon, noKey, noMark, plain,
+		/* [39] */
+		"Ð3954 Printer Drivers", noIcon, noKey, noMark, plain,
+		/* [40] */
+		"Ð3953 Printer Descriptions", noIcon, noKey, noMark, plain,
+		/* [41] */
+		"Ð3952 Voices", noIcon, noKey, noMark, plain,
+		/* [42] */
+		"Ð3951 Control Panels (Disabled)", noIcon, noKey, noMark, plain,
+		/* [43] */
+		"Ð3950 Extensions (Disabled)", noIcon, noKey, noMark, plain,
+		/* [44] */
+		"Ð3949 Startup Items (Disabled)", noIcon, noKey, noMark, plain,
+		/* [45] */
+		"Ð3948 Shutdown Items (Disabled)", noIcon, noKey, noMark, plain,
+		/* [46] */
+		"Ð3947 System Extensions (Disabled)", noIcon, noKey, noMark, plain,
+		/* [47] */
+		"Ð3946 Assistants", noIcon, noKey, noMark, plain,
+		/* [48] */
+		"Ð3945 Utilities", noIcon, noKey, noMark, plain,
+		/* [49] */
+		"Ð3944 Application Support", noIcon, noKey, noMark, plain,
+		/* [50] */
+		"Ð3943 Apple Extras", noIcon, noKey, noMark, plain,
+		/* [51] */
+		"Ð3942 Contextual Menu Items", noIcon, noKey, noMark, plain,
+		/* [52] */
+		"Ð3812 Workgroup", noIcon, noKey, noMark, plain,
+		/* [53] */
+		"Ð3811 User", noIcon, noKey, noMark, plain,
+		/* [54] */
+		"Ð3774 System Folder (protected)", noIcon, noKey, noMark, plain,
+		/* [55] */
+		"Ð3773 Applications Folder (protected)", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (207) {
+	207,
+	textMenuProc,
+	0x75F6FF6D,
+	enabled,
+	"Others",
+	{	/* array: 41 elements */
+		/* [1] */
+		"Ð16386 Apple Menu Icon", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Ð20798 Unlocked", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"Ð3823 Locked", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"Ð20791 Descending Sort Order", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"Ð20790 Ascending Sort Order", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"Ð20751 Privileges: Writable", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"Ð20750 Privileges: Uknown", noIcon, noKey, noMark, plain,
+		/* [11] */
+		"Ð20749 Privileges: N/A", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"Ð20748 Privileges: Read", noIcon, noKey, noMark, plain,
+		/* [13] */
+		"Ð20747 Privileges: Read/Write", noIcon, noKey, noMark, plain,
+		/* [14] */
+		"Ð3784 Privileges: No Folders", noIcon, noKey, noMark, plain,
+		/* [15] */
+		"Ð3783 Privileges: No Write", noIcon, noKey, noMark, plain,
+		/* [16] */
+		"Ð3782 Privileges: No Files", noIcon, noKey, noMark, plain,
+		/* [17] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [18] */
+		"Ð20746 Snap to Grid", noIcon, noKey, noMark, plain,
+		/* [19] */
+		"Ð20745 Keep Arranged", noIcon, noKey, noMark, plain,
+		/* [20] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [21] */
+		"Ð20741 Backwards Arrow", noIcon, noKey, noMark, plain,
+		/* [22] */
+		"Ð20742 Forward Arrow Icon", noIcon, noKey, noMark, plain,
+		/* [23] */
+		"Ð20730 Recent Items Icon", noIcon, noKey, noMark, plain,
+		/* [24] */
+		"Ð20729 Favorite Items", noIcon, noKey, noMark, plain,
+		/* [25] */
+		"Ð20728 Shortcut Icon", noIcon, noKey, noMark, plain,
+		/* [26] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [27] */
+		"Ð20271 Help Icon", noIcon, noKey, noMark, plain,
+		/* [28] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [29] */
+		"Ð16509 Clipboard", noIcon, noKey, noMark, plain,
+		/* [30] */
+		"Ð16494 System Suitcase", noIcon, noKey, noMark, plain,
+		/* [31] */
+		"Ð16482 Finder", noIcon, noKey, noMark, plain,
+		/* [32] */
+		"Ð3828 MacOS Logo", noIcon, noKey, noMark, plain,
+		/* [33] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [34] */
+		"Ð3822 Stop Icon", noIcon, noKey, noMark, plain,
+		/* [35] */
+		"Ð3821 Caution Icon", noIcon, noKey, noMark, plain,
+		/* [36] */
+		"Ð3820 Note Icon", noIcon, noKey, noMark, plain,
+		/* [37] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [38] */
+		"Ð3816 Group", noIcon, noKey, noMark, plain,
+		/* [39] */
+		"Ð3815 Owner", noIcon, noKey, noMark, plain,
+		/* [40] */
+		"Ð3813 Guest User", noIcon, noKey, noMark, plain,
+		/* [41] */
+		"Ð3814 User", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (204) {
+	204,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Internet Icons",
+	{	/* array: 12 elements */
+		/* [1] */
+		"Ð20796 AppleTalk Zone", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Ð20795 FTP Server", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Ð20793 AppleShare Server", noIcon, noKey, noMark, plain,
+		/* [4] */
+		"Ð20739 Generic Location", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"Ð20738 Newsgroup Location", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"Ð20737 E-mail Location", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"Ð20736 File Location", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"Ð20735 AppleShare Location", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"Ð20734 FTP Location", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"Ð20733 HTTP Location", noIcon, noKey, noMark, plain,
+		/* [11] */
+		"Ð20731 IP File Server", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"Ð20726 AppleTalk", noIcon, noKey, noMark, plain
 	}
 };
 
@@ -518,14 +520,14 @@ resource 'DLOG' (128) {
 };
 
 resource 'DLOG' (131) {
-	{259, 339, 349, 630},
+	{259, 339, 367, 629},
 	dBoxProc,
 	visible,
 	goAway,
 	0x0,
 	131,
 	"DITL 131 from clip2icns.µ.rsrc",
-	noAutoCenter
+	alertPositionMainScreen
 };
 
 resource 'DLOG' (129) {
@@ -547,7 +549,7 @@ resource 'DLOG' (132, purgeable) {
 	0x0,
 	132,
 	"DITL 132 from clip2icns.µ.rsrc",
-	noAutoCenter
+	alertPositionMainScreen
 };
 
 resource 'FREF' (128) {
@@ -914,21 +916,21 @@ resource 'MBAR' (128) {
 resource 'vers' (1) {
 	0x1,
 	0x0,
-	beta,
-	0x3,
+	release,
+	0x0,
 	14,
-	"1.0b3",
+	"1.0",
 	"©1998 Mihai Parparita"
 };
 
 resource 'vers' (2) {
 	0x1,
 	0x0,
-	beta,
-	0x3,
+	release,
+	0x0,
 	14,
-	"1.0b3",
-	"clip2icns 1.0b3"
+	"1.0",
+	"clip2icns 1.0"
 };
 
 resource 'dlgx' (-6043) {
@@ -2160,7 +2162,7 @@ resource 'DITL' (128) {
 		/* [2] */
 		{10, 10, 125, 270},
 		UserItem {
-			disabled
+			enabled
 		},
 		/* [3] */
 		{76, 144, 89, 226},
@@ -2191,15 +2193,15 @@ resource 'DITL' (128) {
 };
 
 resource 'DITL' (131) {
-	{	/* array DITLarray: 4 elements */
+	{	/* array DITLarray: 6 elements */
 		/* [1] */
-		{60, 212, 80, 280},
+		{82, 212, 102, 280},
 		Button {
 			enabled,
 			"OK"
 		},
 		/* [2] */
-		{60, 132, 80, 196},
+		{82, 132, 102, 196},
 		Button {
 			enabled,
 			"Cancel"
@@ -2211,10 +2213,22 @@ resource 'DITL' (131) {
 			"Include old style resources (if any)"
 		},
 		/* [4] */
-		{28, 8, 44, 213},
+		{45, 8, 61, 213},
 		CheckBox {
 			enabled,
 			"Set bits Kaleidoscope-style"
+		},
+		/* [5] */
+		{27, 8, 43, 263},
+		CheckBox {
+			enabled,
+			"Generate old style resources"
+		},
+		/* [6] */
+		{63, 8, 81, 213},
+		CheckBox {
+			enabled,
+			"Name resources"
 		}
 	}
 };
@@ -3078,7 +3092,7 @@ resource 'cfrg' (0) {
 		kDataForkCFragLocator,
 		kZeroOffset,
 		kSegIDZero,
-		"clip2icns 1.0b3"
+		"clip2icns (PPC)"
 	}
 };
 
