@@ -91,6 +91,9 @@ void ExitApplication(void)
 /*----------------------------------------------------------------------*/
 /* DisplayAlert(error, reason) -- draws an alert with the two parameters,
 								  error and reason, as it's contents
+								  
+								  also included is a variation that uses
+								  pascal strings
 /*----------------------------------------------------------------------*/
 
 
@@ -106,6 +109,17 @@ void DisplayAlert(const char *error, const char *reason)
 	C2Pas((char*)reason, PascalReason);
 	
 	ParamText(PascalError, PascalReason, nil, nil);
+	NoteAlert(3000,nil);
+	SetGWorld(curPort, curDevice);
+}
+
+void DisplayPAlert(Str255 error, Str255 reason)
+{
+	CGrafPtr			curPort;
+	GDHandle			curDevice;
+	
+	GetGWorld(&curPort, &curDevice);
+	ParamText(error, reason, nil, nil);
 	NoteAlert(3000,nil);
 	SetGWorld(curPort, curDevice);
 }

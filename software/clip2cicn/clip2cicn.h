@@ -96,7 +96,7 @@ void		HandleFileChoice(int item);
 void		DrawImageWell(Rect bounds);
 void		InsertCicn(void);
 void		GetcicnID(void);
-void		clip2cicn(short cicnID);
+void		clip2cicn(short cicnID, Str255 cicnName);
 void 		CloseScheme(void);
 void		HandleEditChoice(int item);
 

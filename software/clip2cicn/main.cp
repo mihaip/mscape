@@ -12,21 +12,21 @@ void main(void)
 
 void Initialize()
 {
-	DateTimeRec		theDate;
-	StringHandle	doesExpire;
+//	DateTimeRec		theDate;
+//	StringHandle	doesExpire;
 	
 	InitToolBox();
 	
-	GetTime(&theDate);
-	doesExpire = GetString( 128 );
-	if (EqualString(*doesExpire, "\p1", true, true))
-	{
-		if (theDate.month >= 7 && theDate.day >= 14 && theDate.year >= 1998)
-		{
-			DisplayAlert("This beta of clip2cicn expired on July 14, 1998.", "Please go to http://cafe.ambrosiasw.com/gui-central/ to get a new version");
-			ExitApplication();
-		}
-	}
+//	GetTime(&theDate);
+//	doesExpire = GetString( 128 );
+//	if (EqualString(*doesExpire, "\p1", true, true))
+//	{
+//		if (theDate.month >= 7 && theDate.day >= 14 && theDate.year >= 1998)
+//		{
+//			DisplayAlert("This beta of clip2cicn expired on July 14, 1998.", "Please go to http://cafe.ambrosiasw.com/gui-central/ to get a new version");
+//			ExitApplication();
+//		}
+//	}
 	InitMenuBar();
 
 	
@@ -526,8 +526,17 @@ void DrawImageWell(Rect bounds)
 		DrawString("\pNot available");\
 	}\
 	CloseResFile(scheme);\
-	//FSClose(scheme);\
 	UseResFile(app);\
+	
+#define GetCicnName();\
+	CopyString(cicnName, "\p");\
+	GetMenuItemText(GetMenu(131), selectedType, cicnName);\
+	GetMenuItemText(GetMenu(currentMenuID), selectedCicn, tempStr);\
+	cicnName[cicnName[0] + 1] = ' ';\
+	for (int j = cicnName[0]; j < cicnName[0] + i; j++)\
+		cicnName[j + 2] = tempStr[j - cicnName[0] + 1];\
+	cicnName[cicnName[0] + i + 1] = '¥';\
+	cicnName[0] += i + 1;\
 
 void GetcicnID()
 {
@@ -539,7 +548,7 @@ void GetcicnID()
 	long				ID;
 	Handle				item;
 	short				itemType;
-	int					selectedCicn, i, selectedType;
+	int					selectedCicn, i, selectedType=1;
 	Str255				menuItemText;
 	Rect				popupRect;
 	int					currentMenuID = 132;
@@ -551,9 +560,26 @@ void GetcicnID()
 	short				app, scheme;
 	CIconHandle			currentCicn;
 	RGBColor			currentForeColor;
+	Str255				cicnName = "\pDocument Window Inactive¥", tempStr;
+	Str255				errorNumber;
 	
 	app = CurResFile();
-		
+	
+	if (FSpOpenResFile(&schemeSpec, fsRdWrPerm) == -1)
+	{
+		if (ResError() == opWrErr)
+		{
+			DisplayAlert("You can't edit this scheme since it's currently open in another application.", "Please close it and try again");
+			return;
+		}
+		else
+		{
+			NumToString(ResError(), errorNumber);
+			DisplayPAlert("\pSomething happened that wasn't supposed to happen. Error of type: ", errorNumber);
+			return;
+		}
+	}
+	
 	insertCicn = GetNewDialog (insertCicnID, nil, (WindowPtr)-1L);
 	SetPort( insertCicn);
 	SetDialogDefaultItem(insertCicn, kInsert);
@@ -593,7 +619,7 @@ void GetcicnID()
 				dialogDone = true;
 				DisposeDialog( insertCicn );
 				SetGWorld(startupPort, startupDevice);
-				clip2cicn(ID);
+				clip2cicn(ID, cicnName);
 				return;
 				break;
 			case kCancel:
@@ -622,7 +648,8 @@ void GetcicnID()
 					SysBeep(20);
 				Draw1Control((ControlHandle)item);
 				
-				GetMenuItemText(GetMenu(currentMenuID), 1, menuItemText);				
+				selectedCicn = 1;
+				GetMenuItemText(GetMenu(currentMenuID), selectedCicn, menuItemText);				
 				CopyString(IDasString, menuItemText);
 				for (i=IDasString[0]; i > 0 && IDasString[i] == ' '; i--){;}
 				for (; i > 0 && IDasString[i] != ' '; i--){;}
@@ -632,6 +659,7 @@ void GetcicnID()
 				SelectDialogItemText( insertCicn, kIDField, 0, 32767);
 				
 				PreviewCicn();
+				GetCicnName();
 				
 				break;
 			case kcicnPopup:
@@ -648,7 +676,8 @@ void GetcicnID()
 				SelectDialogItemText( insertCicn, kIDField, 0, 32767);
 				
 				PreviewCicn();
-
+				GetCicnName();
+				
 				break;
 				
 				
@@ -657,13 +686,14 @@ void GetcicnID()
 		
 	}
 	CloseResFile(scheme);
+	UseResFile(app);
 	//FSClose(scheme);
 	DisposeDialog(insertCicn);
 	SetGWorld(startupPort, startupDevice);
 }
 
 
-void clip2cicn(short cicnID)
+void clip2cicn(short cicnID, Str255 cicnName)
 {
 	long			bitmapSize;		/* Size of the icon's bitmap. */
 	short			scheme, oldFile;
@@ -677,12 +707,10 @@ void clip2cicn(short cicnID)
 	long			picSize;
 	long			offset;
 	Handle			oldCicn;
-
-
+	
 	pic = NewHandle (0);
 	if (GetScrap( pic, 'PICT', &offset ) < 0)
 	{
-		UseResFile(oldFile);
 		DisplayAlert("", "The clipboard is either empty or doesn't contain a picture");
 		return;
 	}
@@ -855,7 +883,7 @@ void clip2cicn(short cicnID)
 		UseResFile(scheme);
 	}
 	DetachResource((Handle)cicn);
-	AddResource((Handle)cicn, 'cicn', cicnID, "\pcreated with clip2cicn");
+	AddResource((Handle)cicn, 'cicn', cicnID, cicnName);
 	SetResAttrs((Handle)cicn, resSysHeap + resPurgeable);
 	ChangedResource((Handle)cicn);
 	WriteResource((Handle)cicn);

@@ -13,6 +13,7 @@ extern RgnHandle	  gOriginalGrayRgn;
 
 // function prototypes
 extern void DisplayAlert(const char* error, const char* reason);
+extern void DisplayPAlert(Str255 error, Str255 reason);
 extern void InitToolBox(void);
 extern char* C2Pas(char* cStr, Str255 pStr);
 extern void DrawPicture(int pictureID);
