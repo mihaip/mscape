@@ -5,7 +5,10 @@
 // Last modified: April 1, 1999
 // Description	: this file contains graphical functions, such as flips, rotates and fills
 
+#include <QuickTimeComponents.h>
 #include "graphicalFunctions.h"
+
+pascal OSErr QTDataUnloadProc(Ptr imageData, long bytesNeeded, long refCon);
 
 // __________________________________________________________________________________________
 // Name			: PictureToRegion
@@ -483,7 +486,7 @@ void DrawGradient32(int x1, int y1, RGBColor startColor,
 		for	(int x = targetRect.left; x < targetRect.right; x++)
 		{
 			Point temp = {y, x};
-			if (PtInRgn(temp, clipRgn) || clipRgn == NULL)
+			if (clipRgn == NULL || PtInRgn(temp, clipRgn))
 				SetPixel32(x, y, RGBToLong(GetGradientColor(x, y, &params)), targetPix);
 		}
 }
@@ -564,20 +567,22 @@ RGBColor GetRadialGradientColor(int x, int y, gradientParams* params)
 // Description	: This function displays a color picker and allows the user to choose among
 //				  the displayed colors.
 
-void ColorPicker(RGBColor* color,
-				 WindowPtr window,
-				 Point where,
-				 PicHandle pickerPic,
-				 CTabHandle drawingTable,
-				 colorUpdateFn UpdateColors,
-				 void* clientData)
+/*void PixMapColorPicker(RGBColor* color,
+				 	   WindowPtr window,
+				 	   Point where,
+				 	   PixMapHandle pickerPix,
+				 	   GWorldPtr pickerGW,
+				 	   RgnHandle pickerRgn,
+				 	   CTabHandle drawingTable,
+				 	   colorUpdateFn UpdateColors,
+				 	   void* clientData)
 {
-	Rect			menuRect, pickerRect, saveRect;
-	GWorldPtr		savedGW, pickerGW;
-	PixMapHandle	savedPix, pickerPix;
+	Rect			menuRect, pickerRect, pickerTargetRect, saveRect;
+	GWorldPtr		savedGW;
+	PixMapHandle	savedPix;
 	OSErr			err;
-	RgnHandle		savedVis, pickerRgn, unclippedRgn, clippedRgn, hiliteRgn;
-	BitMapPtr		currentPortBits;
+	RgnHandle		savedVis, pickerTargetRgn, unclippedRgn, clippedRgn, hiliteRgn;
+	const BitMap*	currentPortBits = GetPortBitMapForCopyBits(GetQDGlobalsThePort());
 	Point			theMouse;
 	RGBColor		savedColor, nearestColor, newColor, tempColor, previousColor;
 	
@@ -589,11 +594,10 @@ void ColorPicker(RGBColor* color,
 	nearestColor = GetNearestColor(*color, drawingTable);
 	newColor = nearestColor;
 	
-	currentPortBits = &qd.thePort->portBits;
 	hiliteRgn = NewRgn();
 	
 	savedVis = NewRgn();
-	CopyRgn(window->visRgn, savedVis);
+	GetPortVisibleRegion(GetWindowPort(window), savedVis);
 	
 	unclippedRgn = NewRgn();
 	clippedRgn = NewRgn();
@@ -602,25 +606,18 @@ void ColorPicker(RGBColor* color,
 			   -32767,
 			   32767,
 			   32767);
-	CopyRgn(unclippedRgn, window->visRgn);
+	SetPortVisibleRegion(GetWindowPort(window), unclippedRgn);
 	
-	pickerRgn = NewRgn();
-	PictureToRegion(pickerPic, (**pickerPic).picFrame, pickerRgn);
-	OffsetRgn(pickerRgn, where.h, where.v);
+	pickerRect = (**pickerPix).bounds;
+	pickerTargetRect = pickerRect;
+	OffsetRect(&pickerTargetRect, where.h, where.v);
 	
-	SetRect(&pickerRect,
-			where.h,
-			where.v,
-			where.h + (**pickerPic).picFrame.right - (**pickerPic).picFrame.left,
-			where.v + (**pickerPic).picFrame.bottom - (**pickerPic).picFrame.top);
-			
-	NewGWorld(&pickerGW, 32, &pickerRect, NULL, NULL, 0);
-	pickerPix = GetGWorldPixMap(pickerGW);
-	LockPixels(pickerPix);
-	SetGWorld(pickerGW, NULL);
-	DrawPicture(pickerPic, &pickerRect);
+	pickerTargetRgn = NewRgn();
+	CopyRgn(pickerRgn, pickerTargetRgn);
+	OffsetRgn(pickerTargetRgn, where.h, where.v);
 	
 	menuRect = pickerRect;
+	OffsetRect(&menuRect, where.h, where.v);
 	InsetRect(&menuRect, -2, -2);
 	saveRect = menuRect,
 	//GetThemeMenuItemExtra(kThemeMenuTypePopUp, &paddingV, &paddingH);
@@ -637,6 +634,10 @@ void ColorPicker(RGBColor* color,
 	savedPix = GetGWorldPixMap(savedGW);
 	LockPixels(savedPix);
 	
+	SetGWorld(savedGW, NULL);
+	ForeColor(blackColor);
+	BackColor(whiteColor);
+	
 	CopyBits(currentPortBits,
 			 (BitMap*)*savedPix,
 			 &saveRect,
@@ -647,11 +648,19 @@ void ColorPicker(RGBColor* color,
 	RESTOREGWORLD;
 	RESTORECOLORS;
 	
+	ThemeSoundPlay(kThemeSoundMenuOpen);
+	
 	DrawThemeMenuBackground(&menuRect, kThemeMenuTypePopUp);
 	
-	DrawPicture(pickerPic, &pickerRect);
+	CopyBits((BitMap*)*pickerPix,
+			 currentPortBits,
+			 &pickerRect,
+			 &pickerTargetRect,
+			 srcCopy,
+			 pickerTargetRgn);
 	
 	GetSimilarColors(&nearestColor, 1,  pickerPix, pickerRgn, hiliteRgn);
+	OffsetRgn(hiliteRgn, where.h, where.v);
 	ForeColor(whiteColor);
 	InsetRgn(hiliteRgn, -1, -1);
 	FrameRgn(hiliteRgn);
@@ -664,10 +673,10 @@ void ColorPicker(RGBColor* color,
 		
 		GetMouse(&theMouse);
 		
-		if (PtInRgn(theMouse, pickerRgn))
+		if (PtInRgn(theMouse, pickerTargetRgn))
 		{
 			SetGWorld(pickerGW, NULL);
-			GetCPixel(theMouse.h, theMouse.v, &tempColor);
+			GetCPixel(theMouse.h - where.h, theMouse.v - where.v, &tempColor);
 			if (tempColor.red != 257 || tempColor.green != 0 || tempColor.blue != 0)
 				newColor = tempColor;
 			RESTOREGWORLD;
@@ -679,9 +688,9 @@ void ColorPicker(RGBColor* color,
 		{
 			*color = newColor;
 			
-			CopyRgn(clippedRgn, window->visRgn);
+			SetPortVisibleRegion(GetWindowPort(window), clippedRgn);
 			UpdateColors(color, clientData);
-			CopyRgn(unclippedRgn, window->visRgn);
+			SetPortVisibleRegion(GetWindowPort(window), unclippedRgn);
 			
 			ForeColor(blackColor);
 			BackColor(whiteColor);
@@ -689,13 +698,17 @@ void ColorPicker(RGBColor* color,
 			CopyBits((BitMap*)*pickerPix,
 					 currentPortBits,
 					 &pickerRect,
-					 &pickerRect,
+					 &pickerTargetRect,
 					 srcCopy,
-					 pickerRgn);
+					 pickerTargetRgn);
 			
 			GetSimilarColors(&newColor, 1, pickerPix, pickerRgn, hiliteRgn);
+			OffsetRgn(hiliteRgn, where.h, where.v);
 			ForeColor(whiteColor);
 			InsetRgn(hiliteRgn, -1, -1);
+			
+			ThemeSoundPlay(kThemeSoundMenuItemHilite);
+			
 			FrameRgn(hiliteRgn);
 			RESTORECOLORS;
 		}
@@ -706,6 +719,8 @@ void ColorPicker(RGBColor* color,
 	SetGWorld(savedGW, NULL);
 	ForeColor(blackColor);
 	BackColor(whiteColor);
+	
+	ThemeSoundPlay(kThemeSoundMenuClose);
 	
 	CopyBits((BitMap*)*savedPix,
 			 currentPortBits,
@@ -720,20 +735,19 @@ void ColorPicker(RGBColor* color,
 		 
 	UnlockPixels(savedPix);
 	DisposeGWorld(savedGW);
-	UnlockPixels(pickerPix);
-	DisposeGWorld(pickerGW);
 
-	CopyRgn(savedVis, window->visRgn);
+	SetPortVisibleRegion(GetWindowPort(window), savedVis);
 	DisposeRgn(savedVis);
 	
 	DisposeRgn(unclippedRgn);
 	DisposeRgn(clippedRgn);
+	DisposeRgn(pickerTargetRgn);
 	
 	if (!AreEqualRGB(newColor, nearestColor))
 		*color = newColor;
 	else
 		*color = savedColor;
-}
+}*/
 
 void GetSimilarColors(RGBColor* colorList, int noOfColors, PixMapHandle pix, RgnHandle clipRgn, RgnHandle region)
 {
@@ -741,7 +755,7 @@ void GetSimilarColors(RGBColor* colorList, int noOfColors, PixMapHandle pix, Rgn
 	PixMapHandle	tempPix, picPix;
 	register long	rowLongs;
 	long*			pos;
-	register long	top, bottom, left, right;
+	Rect			searchRect;
 	long			*colorLongList;
 	
 	SAVEGWORLD;
@@ -765,29 +779,33 @@ void GetSimilarColors(RGBColor* colorList, int noOfColors, PixMapHandle pix, Rgn
 	colorLongList = new long[noOfColors];
 	for (int i = 0; i < noOfColors; i++)
 		colorLongList[i] = RGBToLong(colorList[i]);
+		
+	if (clipRgn == NULL)
+		searchRect = (**pix).bounds;
+	else
+		GetRegionBounds(clipRgn, &searchRect);
 	
-	NewGWorld(&tempGW, 1, &(**pix).bounds, NULL, NULL, 0);
+	NewGWorld(&tempGW, 1, &searchRect, NULL, NULL, 0);
 	tempPix = GetGWorldPixMap(tempGW);
 	LockPixels(tempPix);
 	SetGWorld(tempGW, NULL);
-	EraseRect(&(**pix).bounds);
+	EraseRect(&searchRect);
 	
-	left = (**pix).bounds.left;
-	right = (**pix).bounds.right;
-	top = (**pix).bounds.top;
-	bottom = (**pix).bounds.bottom;
 	rowLongs = ((**picPix).rowBytes & 0x3FFF)/4;
-	pos = ((long*)(**picPix).baseAddr) - left;
+	pos = ((long*)(**picPix).baseAddr) + rowLongs * searchRect.top;
 	
-	for (int y = top; y < bottom; y++, pos += rowLongs)
-		for (int x = left; x < right; x++)
+	for (int y = 0; y < (searchRect.bottom - searchRect.top); y++, pos += rowLongs)
+		for (int x = searchRect.left; x < searchRect.right; x++)
 			for (int i = 0; i < noOfColors; i++)
-				if (pos[x] == colorLongList[i])
-					SetPixel1(x, y, 1, tempPix);
-				
+				if ((pos[x] & 0x00FFFFFF) == (colorLongList[i] & 0x00FFFFFF))
+					SetPixel1(x, y + searchRect.top, 1, tempPix);
+	
 	BitMapToRegion(region, (BitMap*)*tempPix);
 	if (clipRgn != NULL)
+	{
+		//OffsetRgn(region, (**clipRgn).rgnBBox.left, (**clipRgn).rgnBBox.top);
 		SectRgn(region, clipRgn, region);
+	}
 		
 	
 	RESTOREGWORLD;
@@ -1038,10 +1056,11 @@ void MergePix(PixMapHandle basePicPix,
 
 OSErr NewGWorldUnpadded(GWorldPtr* gWorld, short depth, const Rect* bounds, CTabHandle colorTable)
 {
-	PixMapHandle tempPix;
-	long realRowBytes, currentRowBytes;
-	Rect	tempBounds;
-	OSErr	err;
+	PixMapHandle	tempPix;
+	long 			realRowBytes, currentRowBytes;
+	Rect			tempBounds;
+	OSErr			err;
+	RgnHandle		newVisibleRegion;
 	
 	tempBounds = *bounds;
 	
@@ -1055,15 +1074,23 @@ OSErr NewGWorldUnpadded(GWorldPtr* gWorld, short depth, const Rect* bounds, CTab
 		tempBounds.right -= (tempBounds.right - tempBounds.left)/2;
 	
 	err = NewGWorld(gWorld, depth, &tempBounds,  colorTable, NULL, 0);
+	
 	if (err != noErr) return err;
+	
 	tempPix = GetGWorldPixMap(*gWorld);
 	LockPixels(tempPix);
 	currentRowBytes = (**tempPix).rowBytes & 0x3FFF;
-	(**gWorld).portRect = *bounds;
+	
+	SetPortBounds(*gWorld, bounds);
 	(**tempPix).bounds = *bounds;
-	(**(**gWorld).portPixMap).bounds = *bounds;
-	(**(**gWorld).visRgn).rgnBBox = *bounds;
+	
+	newVisibleRegion = NewRgn();
+	RectRgn(newVisibleRegion, bounds);
+	SetPortVisibleRegion(*gWorld, newVisibleRegion);
+	DisposeRgn(newVisibleRegion);
+	
 	CropPixMap(tempPix, realRowBytes);
+	
 	UnlockPixels(tempPix);
 	
 	return noErr;
@@ -1180,7 +1207,7 @@ void DrawPictureDithered(PicHandle srcPic, Rect* targetRect)
 	LockPixels(tempPix);
 	
 	SetGWorld(tempGW, NULL);
-	
+	EraseRect(targetRect);
 	tempRgn = NewRgn();
 	
 	PictureToRegion(srcPic, *targetRect, tempRgn);
@@ -1190,7 +1217,7 @@ void DrawPictureDithered(PicHandle srcPic, Rect* targetRect)
 	RESTOREGWORLD;
 	
 	CopyBits((BitMap*)*tempPix,
-			 &qd.thePort->portBits,
+			 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
 			 targetRect,
 			 targetRect,
 			 srcCopy + ditherCopy,
@@ -1204,6 +1231,8 @@ void DrawPictureDithered(PicHandle srcPic, Rect* targetRect)
 	
 	DisposeRgn(tempRgn);	
 }
+
+#pragma mark -
 
 void Mask8ToMask1(PixMapHandle mask8Pix, PixMapHandle mask1Pix)
 {
@@ -1221,6 +1250,31 @@ void Mask8ToMask1(PixMapHandle mask8Pix, PixMapHandle mask1Pix)
 			else
 				SetPixel1(x, y, 0, mask1Pix);
 }
+
+void MergePixMap32AndMask(PixMapHandle imagePix, PixMapHandle maskPix, Rect bounds)
+{
+	unsigned char *imageData, *maskData;
+				
+	if ((**maskPix).pixelSize == 8)				
+		for (int y=0; y < bounds.bottom - bounds.top; y++)
+		{
+			imageData = (unsigned char*)(**imagePix).baseAddr + y * ((**imagePix).rowBytes & 0x3FFF);
+			maskData = (unsigned char*)(**maskPix).baseAddr + y * ((**maskPix).rowBytes & 0x3FFF);
+			
+			for (int x=0; x < bounds.right - bounds.left; x++)
+				imageData[4 * x] = maskData[x];
+		}
+	else
+		for (int y=0; y < bounds.bottom - bounds.top; y++)
+		{
+			imageData = (unsigned char*)(**imagePix).baseAddr + y * ((**imagePix).rowBytes & 0x3FFF);
+			
+			for (int x=0; x < bounds.right - bounds.left; x++)
+				imageData[4 * x] = GetPixel1(x, y, maskPix) * 0xFF;
+		}
+}
+
+#pragma mark -
 
 PicHandle ARGBPixMapToPicture(PixMapHandle imagePix, PixMapHandle maskPix)
 {
@@ -1249,7 +1303,7 @@ PicHandle ARGBPixMapToPicture(PixMapHandle imagePix, PixMapHandle maskPix)
 	{ 
 		MoveHHi(compressedDataH);
 		HLock(compressedDataH);
-		compressedDataP = StripAddress(*compressedDataH);
+		compressedDataP = *compressedDataH;
 
 		theErr = CompressImage(imagePix,
 							   &bounds,
@@ -1286,7 +1340,7 @@ PicHandle ARGBPixMapToPicture(PixMapHandle imagePix, PixMapHandle maskPix)
 							 0, // buffer size
 							 NULL, // data loading proc
 							 NULL); // progress proc	
-		ClosePicture();
+			ClosePicture();
 		}
 		if ( theErr 
 		        || GetHandleSize((Handle)myPic) == sizeof(Picture) ) 
@@ -1301,35 +1355,226 @@ PicHandle ARGBPixMapToPicture(PixMapHandle imagePix, PixMapHandle maskPix)
 	return myPic;
 }
 
-inline int max(int a, int b, int c)
+void ExportPictureToPICTFile(PicHandle exportPic, FSSpec exportFile, long creator)
 {
-	if (a > b)
-		if (a > c)
-			return a;
-		else
-			return c;
-	else if (b > c)
-		return b;
-	else
-		return c;
+	short	pictFile;
+	long	zeroData, dataLength;
+	
+	FSpDelete(&exportFile);
+	FSpCreate(&exportFile, creator, 'PICT', 0);
+	FSpOpenDF(&exportFile, fsRdWrPerm, &pictFile);
+	
+	zeroData = 0;
+	dataLength = sizeof(zeroData);
+	
+	for (int i=0; i < 512 / dataLength; i++)
+		FSWrite(pictFile, &dataLength, &zeroData);
+		
+	dataLength = GetHandleSize(Handle(exportPic));
+	
+	HLock(Handle(exportPic));
+	FSWrite(pictFile, &dataLength, Ptr(*exportPic));
+	HUnlock(Handle(exportPic));
+	
+	FSClose(pictFile);
 }
 
-inline int constrain (int a, int lower, int upper)
+pascal OSErr QTDataUnloadProc(Ptr imageData, long bytesNeeded, long refCon)
 {
-	if (a < lower)
-		return lower;
-	if (a > upper)
-		return upper;
+	OSErr		err = noErr;
 	
-	return a;
+	if (imageData == NULL)
+		// if data is NULL, set a new position in the file from the current mark, offset by bytesNeeded
+		err = SetFPos(refCon, fsFromMark, bytesNeeded);
+	else
+		// otherwise, write the specified data to disk
+		err = FSWrite(refCon, &bytesNeeded, imageData);
+	
+	return err;
 }
+
+void ImportQTFileToGWorld(FSSpec file, GWorldPtr gWorld)
+{
+	GraphicsImportComponent		importer = NULL;
+	
+	GetGraphicsImporterForFile(&file, &importer);
+	
+	GraphicsImportSetGWorld(importer, gWorld, NULL);
+	
+	GraphicsImportDraw(importer);
+	
+	CloseComponent(importer);
+}
+
+void ExportPixMap32ToQTFile(PixMapHandle imagePix, Rect bounds,
+							FSSpec exportFile, long creator, long fileType,
+							CodecType codec, QTHeaderFunction headerFunction)
+{
+	ImageDescriptionHandle	 	imageDescription;
+	Handle						imageData;
+	ICMFlushProcRecord			flushProc;
+	short						file;
+	int							size;
+	
+	size = codecMinimumDataSize;
+	
+	imageDescription = (ImageDescriptionHandle)NewHandle(sizeof(ImageDescription));
+	
+	imageData = NewHandle(size);
+	
+	HLock(imageData);
+	
+	FSpDelete(&exportFile);												 	
+	FSpCreate(&exportFile, creator, fileType, 0);		
+	FSpOpenDF(&exportFile, fsRdWrPerm, &file);
+	
+	SetFPos(file, fsFromStart, 0);
+				
+	
+	flushProc.flushProc = NewICMFlushUPP(QTDataUnloadProc);
+	flushProc.flushRefCon = file;
+	
+	if (headerFunction != NULL)
+		headerFunction(file, imagePix, bounds);
+
+	FCompressImage(imagePix,
+				   &bounds,
+				   32,
+				   codecNormalQuality,
+				   codec,
+				   anyCodec,
+				   NULL,
+				   codecFlagWasCompressed,
+				   codecMinimumDataSize,
+				   &flushProc,
+				   NULL,
+				   imageDescription,
+				   *imageData);
+
+	//FSWrite(file, &(**imageDescription).dataSize, *imageData);
+
+	//SetFPos(file, fsFromStart, (**imageDescription).dataSize);
+
+	//SetEOF(file, (**imageDescription).dataSize);
+							 
+	FSClose(file);
+				
+	HUnlock(imageData);
+	DisposeHandle(imageData);
+				
+	DisposeICMFlushUPP(flushProc.flushProc);
+}
+
+/*void ExportPixMap32ToPhotoshopFile(PixMapHandle imagePix, Rect bounds, PixMapHandle maskPix, FSSpec exportFile, long creator)
+{
+	short 	file;
+	long	dataLength, longData;
+	short	shortData;
+	
+	FSpDelete(&exportFile);												 	
+	FSpCreate(&exportFile, creator, kQTFileTypePhotoShop, 0);		
+	FSpOpenDF(&exportFile, fsRdWrPerm, &file);
+	
+	
+	FSWrite4(file, '8BPS'); // signature
+	
+	FSWrite2(file, 1); // version
+	
+	FSWrite2(file, 0); // reserved
+	FSWrite2(file, 0); // reserved
+	FSWrite2(file, 0); // reserved
+	
+	FSWrite2(file, 3); // number of channels
+	
+	FSWrite4(file, bounds.bottom - bounds.top); // dimensions
+	FSWrite4(file, bounds.right - bounds.left);
+	
+	FSWrite2(file, 8); // bits per channel
+	
+	FSWrite2(file, 3); // mode, 3 = RGB
+	
+	FSWrite4(file, 0); // length of color data, we're in direct color, so not needed
+	
+	// image resource section
+	FSWrite4(file, 42); // length of entire section
+	
+	FSWrite4(file, '8BIM'); // signature
+	FSWrite2(file, 1005); // resolution info
+	FSWrite2(file, 0); // name, we don't have one...
+	FSWrite4(file, 16); // size, in this case 16 bytes
+	FSWrite4(file, 0x004800); // horizontal res, fixed == 72 dpi
+	FSWrite2(file, 1); // resolution unit, 1 = pixels/inch
+	FSWrite2(file, 1); // width unit, 1 = inches
+	FSWrite4(file, 0x004800); // vertical res, fixed == 72 dpi
+	FSWrite2(file, 1); // resolution unit, 1 = pixels/inch
+	FSWrite2(file, 1); // height unit, 1 = inches
+	
+	FSWrite4(file, '8BIM'); // signature
+	FSWrite2(file, 1024); // currently selected layer
+	FSWrite2(file, 0); // name, we don't have one...
+	FSWrite4(file, 2); // size, in this case 2 bytes
+	FSWrite2(file, 1); // index of the current layer, in this case 1
+	
+	
+	// layer and mask info section
+	FSWrite4(file, ****); // length of entire section
+	
+	// layer section
+	FSWrite4(file, ****); // length of layer section
+	FSWrite2(file, 2); // number of layers, in this case 2
+	
+	// layer 0
+	FSWrite4(file, 0); // layer top
+	FSWrite4(file, 0); // layer left
+	FSWrite4(file, bounds.bottom - bounds.top); // layer bottom
+	FSWrite4(file, bounds.right - bounds.left); // layer right
+	FSWrite2(file, 3); // number of channels
+	FSWrite2(file, 0); // channel 0
+	FSWrite4(file, 0x82); // length of channel info
+	FSWrite2(file, 1); // channel 1
+	FSWrite4(file, 0x82); // length of channel info
+	FSWrite2(file, 2); // channel 2
+	FSWrite4(file, 0x82); // length of channel info
+	
+	// blending stuff
+	FSWrite4(file, '8BIM'); // signature
+	FSWrite4(file, 'norm'); // normal blending
+	FSWrite1(file, 0xFF); // opacity, 0xFF = fully opaque
+	FSWrite1(file, 0); // clipping, 0 = base
+	FSWrite1(file, 0x09); // flags
+	FSWrite1(file, 0); // filler
+	FSWrite4(file, ****); // length of extra stuff
+	FSWrite4(file, 0); // no layer mask
+	
+	FSWrite4(file, 0x28); // length of layer blending ranges
+	FSWrite4(file, 0x0000FFFF); // blending black and white
+	FSWrite4(file, 0x0000FFFF); // composite gray blend destination
+	FSWrite4(file, 0x0000FFFF); // first channel source
+	FSWrite4(file, 0x0000FFFF); // first channel destination
+	FSWrite4(file, 0x0000FFFF); // second channel source
+	FSWrite4(file, 0x0000FFFF); // second channel destination
+	FSWrite4(file, 0x0000FFFF); // third channel source
+	FSWrite4(file, 0x0000FFFF); // third channel destination
+	FSWrite4(file, 0x0000FFFF); // third channel destination
+	FSWrite4(file, 0x0000FFFF); // third channel destination
+	FSWrite4(file, 0); // layer name, padded to 4 bytes
+	
+	// layer 1
+	
+	
+	FSClose(file);
+}*/
+
+
+#pragma mark -
 
 int GetAverageLuminance(PixMapHandle pix)
 {
-	int sum, numberOfPixels;
+	int numberOfPixels;
 	unsigned char* pixelData;
 	int	rowWidth;
 	Rect bounds;
+	double sum;
 	
 	bounds = (**pix).bounds;
 	
@@ -1341,7 +1586,7 @@ int GetAverageLuminance(PixMapHandle pix)
 	
 	for (int i=bounds.top; i < bounds.bottom; i++)
 	{
-		pixelData += rowWidth * i;
+		pixelData += rowWidth;
 		for (int j=0; j < (bounds.right - bounds.left) * 4; j+=4)
 		{
 		
@@ -1382,11 +1627,10 @@ void ChangeContrast(PixMapHandle pix, int contrast)
 
 void ColorizePixMap(PixMapHandle pix, int hue, float saturation)
 {
-	unsigned char value, r, g, b;
+	unsigned char value;
 	unsigned char* pixelData;
 	int			numberOfBytes;
-	//int i;
-    float h, v, s, f, p, q, t;
+    float		s;
     
     pixelData = (unsigned char*)(**pix).baseAddr;
 	
@@ -1400,67 +1644,459 @@ void ColorizePixMap(PixMapHandle pix, int hue, float saturation)
 		{
 			pixelData[j + 1] = pixelData[j + 2] = pixelData[j + 3] = value;
 		}
-		/*else if (pixelData[j + 1] == pixelData[j + 2] &&
-				 pixelData[j + 2] == pixelData[j + 3] &&
-				 pixelData[j + 3] == 255)
-		{
-			;
-		}*/
 		else
 		{
-			h = hue;
-			v = (float)value/255.0;
 			s = saturation;
-			if (v > 0.5)
-				s -= s*2*(v - 0.5);
-			//s -= s*v*v;
 			
-			h /= 60;                        // sector 0 to 5
-			if (h == 6.0) h = 0.0;
-	        //i = floor( h );
-	        f = h - (int)h;                      // factorial part of h
-	        p = v * ( 1 - s );
-	        q = v * ( 1 - s * f );
-	        t = v * ( 1 - s * ( 1 - f ) );
-
-	        switch((int)h)
-	        {
-				case 0:
-					r = v * 255;
-					g = t * 255;
-					b = p * 255;
-					break;
-				case 1:
-					r = q * 255;
-					g = v * 255;
-					b = p * 255;
-					break;
-				case 2:
-					r = p * 255;
-					g = v * 255;
-					b = t * 255;
-					break;
-				case 3:
-					r = p * 255;
-					g = q * 255;
-					b = v * 255;
-					break;
-				case 4:
-					r = t * 255;
-					g = p * 255;
-					b = v * 255;
-					break;
-				default:                // case 5:
-					r = v * 255;
-					g = p * 255;
-					b = q * 255;
-					break;
-        	}
-        	
-        	pixelData[j + 1] = r;
-        	pixelData[j + 2] = g;
-        	pixelData[j + 3] = b;
+			if (value > 127)
+				s -= s*2*(float(value)/255.0 - 0.5);
+				
+			HSV2RGBfc(hue, s, float(value)/255.0,
+					 &pixelData[j + 1], &pixelData[j + 2], &pixelData[j + 3]);
 		}
 	}
+}
+
+#pragma mark -
+
+void FrameOvalAA(Rect* targetRect, GWorldPtr canvasGW, PixMapHandle canvasPix)
+{
+	int			penX, penY;
+	Rect		largeRect, maskRect, colorRect;
+	RGBColor	penColor;
+	
+	GetPenSize(&penX, &penY);
+	
+	largeRect = *targetRect;
+	
+	largeRect.top *= 3;
+	largeRect.bottom *= 3;
+	largeRect.left *= 3;
+	largeRect.right *= 3;
+	
+	OffsetRect(&largeRect, -largeRect.left, -largeRect.top);
+	
+	maskRect = *targetRect;
+	OffsetRect(&maskRect, -maskRect.left, -maskRect.top);
+	OffsetRect(&maskRect, largeRect.right, 0);
+	
+	colorRect = *targetRect;
+	OffsetRect(&colorRect, -colorRect.left, -colorRect.top);
+	OffsetRect(&colorRect, largeRect.right, maskRect.bottom);
+	
+	GetForeColor(&penColor);
+	
+	SAVEGWORLD;
+	SAVECOLORS;
+	
+	SetGWorld(canvasGW, NULL);
+	ForeColor(blackColor);
+	BackColor(whiteColor);
+	
+	PenSize(3 * penX, 3 * penY);
+	EraseRect(&largeRect);	
+	FrameOval(&largeRect);
+	
+	PenSize(1, 1);
+
+	
+	CopyPixMap(canvasPix, canvasPix, &largeRect, &maskRect, srcCopy, NULL);
+		
+	RGBForeColor(&penColor);
+	PaintRect(&colorRect);
+	ForeColor(blackColor);
+	
+	RESTOREGWORLD;
+	
+	CopyDeepMask((BitMap*)*canvasPix,
+				 (BitMap*)*canvasPix,
+				 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
+				 &colorRect,
+				 &maskRect,
+				 targetRect,
+				 srcCopy,
+				 NULL);
+				 
+	RESTORECOLORS;
+}
+
+void FillAndFrameOvalAA(Rect* targetRect, Pattern* pattern, GWorldPtr canvasGW, PixMapHandle canvasPix)
+{
+	int			penX, penY;
+	Rect 		patternRect, largeRect, maskRect, mask2Rect, colorRect;
+	RGBColor	backColor, penColor;
+	
+	GetPenSize(&penX, &penY);
+	
+	largeRect = *targetRect;
+	
+	largeRect.top *= 3;
+	largeRect.bottom *= 3;
+	largeRect.left *= 3;
+	largeRect.right *= 3;
+	
+	OffsetRect(&largeRect, -largeRect.left, -largeRect.top);
+	
+	patternRect = *targetRect;
+	OffsetRect(&patternRect, -patternRect.left, -patternRect.top);
+	OffsetRect(&patternRect, 0, largeRect.bottom);
+	
+	mask2Rect = *targetRect;
+	OffsetRect(&mask2Rect, -mask2Rect.left, -mask2Rect.top);
+	OffsetRect(&mask2Rect, patternRect.right, largeRect.bottom);
+	
+	maskRect = *targetRect;
+	OffsetRect(&maskRect, -maskRect.left, -maskRect.top);
+	OffsetRect(&maskRect, largeRect.right, 0);
+	
+	colorRect = *targetRect;
+	OffsetRect(&colorRect, -colorRect.left, -colorRect.top);
+	OffsetRect(&colorRect, largeRect.right, maskRect.bottom);
+	
+	GetForeColor(&penColor);
+	GetBackColor(&backColor);
+	
+	SAVEGWORLD;
+	SAVECOLORS;
+	
+	SetGWorld(canvasGW, NULL);
+	ForeColor(blackColor);
+	BackColor(whiteColor);
+	
+	PenSize(3 * penX, 3 * penY);
+	EraseRect(&largeRect);	
+	PaintOval(&largeRect);
+
+	
+	
+	CopyPixMap(canvasPix, canvasPix, &largeRect, &maskRect, srcCopy, NULL);
+		
+	RGBForeColor(&penColor);
+	RGBBackColor(&backColor);
+	
+	Rect tempRect;
+	tempRect = *targetRect;
+	FillRect(&tempRect, pattern);
+	
+	ForeColor(blackColor);
+	BackColor(whiteColor);
+	
+	CopyPixMap(canvasPix, canvasPix, &tempRect, &patternRect, srcCopy, NULL);
+	
+	RGBForeColor(&penColor);
+	RGBBackColor(&backColor);
+	
+	PaintRect(&colorRect);
+	
+	InvertRect(&maskRect);
+	
+	ForeColor(blackColor);
+	BackColor(whiteColor);
+	
+	CopyDeepMask((BitMap*)*canvasPix,
+				 (BitMap*)*canvasPix,
+				 (BitMap*)*canvasPix,
+				 &colorRect,
+				 &maskRect,
+				 &patternRect,
+				 srcCopy,
+				 NULL);
+	
+	InvertRect(&maskRect);
+	
+	EraseRect(&largeRect);	
+	FrameOval(&largeRect);
+	
+	PenSize(1, 1);
+	
+	CopyPixMap(canvasPix, canvasPix, &largeRect, &mask2Rect, srcCopy, NULL);
+	
+	CopyDeepMask((BitMap*)*canvasPix,
+				 (BitMap*)*canvasPix,
+				 (BitMap*)*canvasPix,
+				 &colorRect,
+				 &mask2Rect,
+				 &patternRect,
+				 srcCopy,
+				 NULL);
+				 
+	/*PaintRect(&colorRect);
+	
+	CopyDeepMask((BitMap*)*canvasPix,
+				 (BitMap*)*canvasPix,
+				 (BitMap*)*canvasPix,
+				 &colorRect,
+				 &mask2Rect,
+				 &maskRect,
+				 srcCopy,
+				 NULL);*/
+	
+	RESTOREGWORLD;
+	
+	CopyDeepMask((BitMap*)*canvasPix,
+				 (BitMap*)*canvasPix,
+				 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
+				 &patternRect,
+				 &maskRect,
+				 targetRect,
+				 srcCopy,
+				 NULL);
+	
+	/*CopyBits((BitMap*)*canvasPix,
+			 &qd.thePort->portBits,
+			 &patternRect,
+			 targetRect,
+			 srcCopy,
+			 NULL);*/
+	
+				 
+	RESTORECOLORS;
+}
+
+void FramePolyAA(PolyHandle poly, GWorldPtr canvasGW, PixMapHandle canvasPix)
+{
+	int			penX, penY;
+	Rect 		largeRect, drawRect, targetRect, maskRect, colorRect;
+	PolyHandle	largePoly;
+	RGBColor 	penColor;
+	
+	GetPenSize(&penX, &penY);
+	
+	targetRect = (**poly).polyBBox;
+	
+	InsetRect(&targetRect, -penX, -penY);
+	
+	largeRect = (**poly).polyBBox;
+	
+	largeRect.top *= 3;
+	largeRect.bottom *= 3;
+	largeRect.left *= 3;
+	largeRect.right *= 3;
+	
+	drawRect = largeRect;
+	InsetRect(&drawRect, -3 * penX, -3 * penY);
+	
+	largePoly = OpenPoly();
+	
+	FramePoly(poly);
+	
+	ClosePoly();
+	
+	OffsetRect(&largeRect, -largeRect.left, -largeRect.top);
+	OffsetRect(&drawRect, -drawRect.left, -drawRect.top);
+	
+	MapPoly(largePoly, &(**poly).polyBBox, &largeRect);
+	OffsetPoly(largePoly, 3 * penX, 3 * penY);
+	
+	maskRect = targetRect;
+	OffsetRect(&maskRect, -maskRect.left, -maskRect.top);
+	OffsetRect(&maskRect, drawRect.right, 0);
+	
+	colorRect = targetRect;
+	OffsetRect(&colorRect, -colorRect.left, -colorRect.top);
+	OffsetRect(&colorRect, drawRect.right, maskRect.bottom);
+	
+	GetForeColor(&penColor);
+	
+	SAVEGWORLD;
+	SAVECOLORS;
+	
+	SetGWorld(canvasGW, NULL);
+	ForeColor(blackColor);
+	BackColor(whiteColor);
+	
+	PenSize(3 * penX, 3 * penY);
+	EraseRect(&drawRect);
+	
+	FramePoly(largePoly);
+	
+	PenSize(1, 1);
+	
+	CopyPixMap(canvasPix, canvasPix, &drawRect, &maskRect, srcCopy, NULL);
+		
+	RGBForeColor(&penColor);
+	PaintRect(&colorRect);
+	ForeColor(blackColor);
+	
+	RESTOREGWORLD;
+	
+	CopyDeepMask((BitMap*)*canvasPix,
+				 (BitMap*)*canvasPix,
+				 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
+				 &colorRect,
+				 &maskRect,
+				 &targetRect,
+				 srcCopy,
+				 NULL);
+				 
+	RESTORECOLORS;
+	
+	KillPoly(largePoly);
+}
+
+void LineToAA(int x, int y, GWorldPtr canvasGW, PixMapHandle canvasPix)
+{
+	Rect 		targetRect, largeRect, maskRect, colorRect;
+	RGBColor	penColor;
+	Point		start;
+	int			penX, penY;
+	
+	GetPenSize(&penX, &penY);
+	
+	GetPen(&start);
+	
+	if (start.h < x)
+	{
+		targetRect.left = start.h;
+		targetRect.right = x;
+	}
+	else
+	{
+		targetRect.left = x;
+		targetRect.right = start.h;
+	}
+	
+	if (start.v < y)
+	{
+		targetRect.top = start.v;
+		targetRect.bottom = y;
+	}
+	else
+	{
+		targetRect.top = y;
+		targetRect.bottom = start.v;
+	}
+	
+	InsetRect(&targetRect, -penX, -penY);
+	
+	largeRect = targetRect;
+	
+	largeRect.top *= 3;
+	largeRect.bottom *= 3;
+	largeRect.left *= 3;
+	largeRect.right *= 3;
+	
+	OffsetRect(&largeRect, -largeRect.left, -largeRect.top);
+	
+	maskRect = targetRect;
+	OffsetRect(&maskRect, -maskRect.left, -maskRect.top);
+	OffsetRect(&maskRect, largeRect.right, 0);
+	
+	colorRect = targetRect;
+	OffsetRect(&colorRect, -colorRect.left, -colorRect.top);
+	OffsetRect(&colorRect, largeRect.right, maskRect.bottom);
+	
+	GetForeColor(&penColor);
+	
+	SAVEGWORLD;
+	SAVECOLORS;
+	
+	SetGWorld(canvasGW, NULL);
+	ForeColor(blackColor);
+	BackColor(whiteColor);
+	
+	PenSize(3 * penX, 3 * penY);
+	EraseRect(&largeRect);
+	MoveTo(start.h * 3 - targetRect.left * 3,
+		   start.v * 3 - targetRect.top * 3);
+	LineTo(x * 3 - targetRect.left * 3,
+		   y * 3 - targetRect.top * 3);
+
+	PenSize(1, 1);
+
+	CopyPixMap(canvasPix, canvasPix, &largeRect, &maskRect, srcCopy, NULL);
+		
+	RGBForeColor(&penColor);
+	PaintRect(&colorRect);
+	ForeColor(blackColor);
+	
+	RESTOREGWORLD;
+	
+	CopyDeepMask((BitMap*)*canvasPix,
+				 (BitMap*)*canvasPix,
+				 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
+				 &colorRect,
+				 &maskRect,
+				 &targetRect,
+				 srcCopy,
+				 NULL);
+				 
+	RESTORECOLORS;
+}
+
+#pragma mark -
+
+void DarkenPixMap32(PixMapHandle pix, Rect rect, float intensity)
+{
+	unsigned char* currentPixel;
+	int				rowBytes;
+	
+	rowBytes = (**pix).rowBytes & 0x3FFF;
+	currentPixel = (unsigned char*)((**pix).baseAddr + rect.top * rowBytes + rect.left * 4);
+	
+	    	
+	for (int y = rect.top; y < rect.bottom; y++)
+	{
+		for (int x = 0; x < rect.right - rect.left; x++)
+		{
+			currentPixel[4 * x + 1] *= intensity;
+			currentPixel[4 * x + 2] *= intensity;
+			currentPixel[4 * x + 3] *= intensity;
+		}
+		currentPixel += rowBytes;
+	}
+}
+
+void AddPixMaps32(PixMapHandle srcPix, PixMapHandle dstPix, Rect bounds)
+{
+	unsigned char *src, *dst;
+	int		totalSize, temp;
+	
+	src = (unsigned char*)(**srcPix).baseAddr;
+	dst = (unsigned char*)(**dstPix).baseAddr;
+	
+	totalSize = ((**srcPix).rowBytes & 0x3FFF) * (bounds.bottom - bounds.top);
+	
+	for (int i=0; i < totalSize; i++)
+	{
+		temp = src[i] + dst[i];
+		if (temp > 0xFF) temp = 0xFF;
+		dst[i] = temp;
+	}
+}
+
+#pragma mark -
+
+void SetupCIcon(CIconHandle icon)
+{
+	int bitmapSize, maskSize, colorsSize;
+	Rect	bitmapBounds, maskBounds;
+	
+	bitmapBounds = (**icon).iconBMap.bounds;
+	maskBounds = (**icon).iconMask.bounds;
+	
+	bitmapSize = (bitmapBounds.bottom - bitmapBounds.top) * ((**icon).iconBMap.rowBytes & 0x3FFF);
+	maskSize = (maskBounds.bottom - maskBounds.top) * ((**icon).iconMask.rowBytes & 0x3FFF);
+	colorsSize = sizeof(ColorTable) + (**(**icon).iconPMap.pmTable).ctSize * sizeof(ColorSpec);
+	
+	(**icon).iconPMap.baseAddr = ((char*)((**icon).iconMaskData)) + maskSize + bitmapSize + colorsSize;
+	(**icon).iconMask.baseAddr = (char*)((**icon).iconMaskData);
+	(**icon).iconBMap.baseAddr = (char*)((**icon).iconMaskData) + maskSize;
+}
+
+void PlotCIconWithMode(Rect* target, CIconHandle icon, int mode)
+{
+	SAVECOLORS;
+	
+	CopyDeepMask(&(**icon).iconBMap,
+				 &(**icon).iconMask,
+				 GetPortBitMapForCopyBits(GetQDGlobalsThePort()),
+				 &(**icon).iconPMap.bounds,
+				 &(**icon).iconMask.bounds,
+				 target,
+				 mode,
+				 NULL);
+
+	RESTORECOLORS;
 }
 

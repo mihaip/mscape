@@ -1,28 +1,28 @@
 // __________________________________________________________________________________________
 // Program		: Icon Mangler
-// Filename		: icnsClass.cpp (C++)
+// Filename		: MIcon.cpp (C++)
 // Author		: Mihai Parparita (St. Mary's International School)
 // Last modified: April 1, 1999
-// Description	: This file contains the member functions of the icnsClass (which is used for
+// Description	: This file contains the member functions of the MIcon (which is used for
 //				  the loading and displaying of icons). It also contains some of the utility
 //				  used in the class
 
-#include "icnsClass.h"
+#include "MIcon.h"
 #include "graphicalFunctions.h"
 #include "MUtilities.h"
 #include "MWindow.h"
 
-GWorldPtr 		icnsClass::canvasGW = NULL;
-PixMapHandle	icnsClass::canvasPix = NULL;
+GWorldPtr 		MIcon::canvasGW = NULL;
+PixMapHandle	MIcon::canvasPix = NULL;
 
 // __________________________________________________________________________________________
-// Name			: icnsClass::icnsClass
+// Name			: MIcon::MIcon
 // Input		: None
 // Output		: None
-// Description	: constructor for icnsClass, allocates memory for the pixmaps of all the
+// Description	: constructor for MIcon, allocates memory for the pixmaps of all the
 //				  dephts, initializes default data
 
-icnsClass::icnsClass()
+MIcon::MIcon()
 {
 	CTabHandle		grayscaleTable; // color table where the grayscale table will be loaded
 	OSStatus		err;			// error used to check if everything went ok
@@ -39,7 +39,7 @@ icnsClass::icnsClass()
 	
 	err = noErr;
 	
-	// making the gworlds for the small icon sizes (16 x 16), refer to icnsClass.h for
+	// making the gworlds for the small icon sizes (16 x 16), refer to MIcon.h for
 	// meaning of each four letter code
 	err = NewIconSet(&icsiGW, &icsiPix, smallIconRect, 1, NULL);
 	err = NewIconSet(&icsmGW, &icsmPix, smallIconRect, 1, NULL);
@@ -102,13 +102,13 @@ icnsClass::icnsClass()
 }
 
 // __________________________________________________________________________________________
-// Name			: icnsClass::~icnsClass
+// Name			: MIcon::~MIcon
 // Input		: None
 // Output		: None
 // Description	: deallocates pixmaps for different depths, if they were allocated in the
 //				  first place
 
-icnsClass::~icnsClass()
+MIcon::~MIcon()
 {
 	// if the pixmaps exist, then we must unlock their handles, so that their respective
 	// gworld can be destroyed
@@ -180,7 +180,7 @@ icnsClass::~icnsClass()
 	if (ich4GW != NULL)  DisposeGWorld(ich4GW);
 }
 
-void icnsClass::Reset()
+void MIcon::Reset()
 {
 	SAVEGWORLD;
 #ifdef THUMBNAIL
@@ -220,7 +220,7 @@ void icnsClass::Reset()
 	members = 0;
 }
 
-void icnsClass::LoadFromIconFamily(IconFamilyHandle icnsHandle)
+void MIcon::LoadFromIconFamily(IconFamilyHandle icnsHandle)
 {
 	IconFamilyElement*	elementPtr; // pointer to the element within the icns resource
 	Handle iconData;
@@ -294,7 +294,7 @@ void icnsClass::LoadFromIconFamily(IconFamilyHandle icnsHandle)
 	}
 }
 
-void icnsClass::LoadFromIconSuite(IconSuiteRef theIconSuite)
+void MIcon::LoadFromIconSuite(IconSuiteRef theIconSuite)
 {
 	IconActionUPP extractionAction;
 	
@@ -309,7 +309,7 @@ void icnsClass::LoadFromIconSuite(IconSuiteRef theIconSuite)
 
 pascal OSErr IconExtractor(ResType iconType, Handle *theIcon, void *dataPtr)
 {
-	icnsClass* targetIcon;
+	MIcon* targetIcon;
 	Ptr		   iconData;
 	
 	if (theIcon == NULL || *theIcon == NULL)
@@ -318,7 +318,7 @@ pascal OSErr IconExtractor(ResType iconType, Handle *theIcon, void *dataPtr)
 	SAVECOLORS;
 	SAVEGWORLD;
 	
-	targetIcon = (icnsClass*)dataPtr;
+	targetIcon = (MIcon*)dataPtr;
 	
 	iconData = **theIcon;
 	
@@ -436,14 +436,14 @@ pascal OSErr IconExtractor(ResType iconType, Handle *theIcon, void *dataPtr)
 }
 
 // __________________________________________________________________________________________
-// Name			: icnsClass::Load
+// Name			: MIcon::Load
 // Input		: None
 // Output		: None
 // Description	: Loads data from icon resources, based on the ID field of the parent
-//				  icnsClass. If it can't find a new style resource ('icns' type) it calls the
+//				  MIcon. If it can't find a new style resource ('icns' type) it calls the
 //				  LoadOldStyle class function, which loads the icon from old-type resources
 
-void icnsClass::Load()
+void MIcon::Load()
 {
 	switch (format)
 	{
@@ -473,7 +473,7 @@ void icnsClass::Load()
 	usedMembers = kDefaultMembers[format];
 }
 
-void icnsClass::LoadDataFork()
+void MIcon::LoadDataFork()
 {
 	short file;
 	long readLength, iconType, iconSize;
@@ -511,7 +511,7 @@ void icnsClass::LoadDataFork()
 	usedMembers = kDefaultMembers[format];
 }
 
-OSErr icnsClass::LoadNew()
+OSErr MIcon::LoadNew()
 {
 	IconFamilyHandle	icnsHandle;
 	OSErr				returnErr;
@@ -548,7 +548,7 @@ OSErr icnsClass::LoadNew()
 	
 }
 
-OSErr icnsClass::LoadOld()
+OSErr MIcon::LoadOld()
 {
 	IconSuiteRef		oldStyleSuite;
 	ResType				ignoredType;
@@ -579,7 +579,7 @@ OSErr icnsClass::LoadOld()
 	return noErr;
 }
 
-void icnsClass::LoadFileIcon()
+void MIcon::LoadFileIcon()
 {	
 	if (MUtilities::GestaltVersion(gestaltSystemVersion, 0x08, 0x50))
 	{
@@ -610,13 +610,13 @@ void icnsClass::LoadFileIcon()
 }
 
 // __________________________________________________________________________________________
-// Name			: icnsClass::Display
+// Name			: MIcon::Display
 // Input		: targetRect: rectangle of target area, icons will be scaled if necessary
 // Output		: None
 // Description	: copies the 32 bit depth of the icon into the targetRect of the current port
 //				  the source size is determined by the size of the targetRect
 
-void icnsClass::Display(Rect targetRect, bool selected)
+void MIcon::Display(Rect targetRect, bool selected)
 {
 	PixMapHandle	iconPix = icniPix, maskPix = icnmPix;
 	GWorldPtr		iconGW = icniGW, maskGW = icnmGW;
@@ -719,7 +719,7 @@ void icnsClass::Display(Rect targetRect, bool selected)
 	RESTORECOLORS;
 }
 
-void icnsClass::DisplayMember(int member, Rect targetRect, bool selected)
+void MIcon::DisplayMember(int member, Rect targetRect, bool selected)
 {
 	GWorldPtr	selectedGW;
 	PixMapHandle selectedPix, iconPix = icniPix, maskPix = icmiPix;
@@ -832,7 +832,7 @@ void icnsClass::DisplayMember(int member, Rect targetRect, bool selected)
 	RESTORECOLORS;
 }
 
-void icnsClass::DrawMember(int member, Rect targetRect)
+void MIcon::DrawMember(int member, Rect targetRect)
 {
 	PixMapHandle	srcPix = NULL;
 	GWorldPtr		srcGW = NULL;
@@ -852,7 +852,7 @@ void icnsClass::DrawMember(int member, Rect targetRect)
 	RESTORECOLORS;
 }
 
-void icnsClass::RefreshIconMembers(void)
+void MIcon::RefreshIconMembers(void)
 {
 	members = 0;
 #ifdef THUMBNAIL
@@ -895,7 +895,7 @@ void icnsClass::RefreshIconMembers(void)
 	members &= usedMembers;
 }
 
-IconFamilyHandle icnsClass::Geticns(void)
+IconFamilyHandle MIcon::Geticns(void)
 {
 	long				icnsSize; // the size of the final icns resource
 						// the sizes of the compressed 32 bit data for each size
@@ -1013,7 +1013,7 @@ IconFamilyHandle icnsClass::Geticns(void)
 	return icnsHandle;
 }
 
-bool icnsClass::HasNonIconDataFork()
+bool MIcon::HasNonIconDataFork()
 {
 	short	file;
 	long	readLength, iconType;
@@ -1046,7 +1046,7 @@ bool icnsClass::HasNonIconDataFork()
 }
 
 
-OSErr icnsClass::PreFlight()
+OSErr MIcon::PreFlight()
 {
 	DEBUG("\pstarting preflight");
 	
@@ -1193,7 +1193,7 @@ OSErr icnsClass::PreFlight()
 }
 
 // __________________________________________________________________________________________
-// Name			: icnsClass::Save
+// Name			: MIcon::Save
 // Input		: flags: options for saving. Possible values are includeOldStyle which
 //				  incorporates old style resources into the icns, and generateOldStyle which
 //				  makes old style resources out of the icns.
@@ -1201,7 +1201,7 @@ OSErr icnsClass::PreFlight()
 // Description	: Saves the current class contents to the srcFileSpec, in the standard 'icns'
 //				   resource format. Has options for dealing with old style icons.
 
-OSErr icnsClass::Save()
+OSErr MIcon::Save()
 {
 	OSErr err;
 	
@@ -1239,13 +1239,13 @@ OSErr icnsClass::Save()
 	return err;
 }
 
-void icnsClass::SaveUniversal()
+void MIcon::SaveUniversal()
 {
 	SaveOld();
 	SaveNew();
 }
 
-void icnsClass::SetupFileSpec(bool erase)
+void MIcon::SetupFileSpec(bool erase)
 {
 	isFolder = MUtilities::IsFileFolder(srcFileSpec);
 	if (isFolder)
@@ -1275,13 +1275,13 @@ void icnsClass::SetupFileSpec(bool erase)
 	}
 }
 
-void icnsClass::CleanupFileSpec()
+void MIcon::CleanupFileSpec()
 {
 	if (isFolder)
 		srcFileSpec = savedSpec;
 }
 
-void icnsClass::PreSave()
+void MIcon::PreSave()
 {
 	int error;
 	
@@ -1327,7 +1327,7 @@ void icnsClass::PreSave()
 	}
 }
 
-void icnsClass::PostSave()
+void MIcon::PostSave()
 {
 	UpdateResFile(targetFile);
 	CloseResFile(targetFile);
@@ -1340,7 +1340,7 @@ void icnsClass::PostSave()
 	FSpBumpDate(&srcFileSpec);
 }
 
-void icnsClass::SaveNew()
+void MIcon::SaveNew()
 {
 	IconFamilyHandle	icnsHandle;
 	Handle				oldicns;
@@ -1365,13 +1365,13 @@ void icnsClass::SaveNew()
 }
 
 // __________________________________________________________________________________________
-// Name			: icnsClass::SaveOldStyle
+// Name			: MIcon::SaveOldStyle
 // Input		: None
 // Output		: None
 // Description	: takes the contents of the current class and saves them in old style resoures
 //				  ('icl8', 'ics4', 'ICN#', etc)
 
-void icnsClass::SaveOld()
+void MIcon::SaveOld()
 {
 	Handle			iconHandle;
 	bool			addedResource;
@@ -1436,7 +1436,7 @@ void icnsClass::SaveOld()
 	DEBUG("\pdone saving old style");
 }
 
-void icnsClass::SaveDataFork()
+void MIcon::SaveDataFork()
 {
 	short 				file;
 	long 				writeLength;
@@ -1465,7 +1465,7 @@ void icnsClass::SaveDataFork()
 	PostSave();
 }
 
-long icnsClass::GetSize()
+long MIcon::GetSize()
 {
 	long returnSize;
 	
@@ -1542,7 +1542,7 @@ long icnsClass::GetSize()
 	return returnSize;
 }
 
-long icnsClass::GetLargestSize()
+long MIcon::GetLargestSize()
 {
 #ifdef THUMBNAIL
 	if (members & (it32 | t8mk)) return 128;
@@ -1556,7 +1556,7 @@ long icnsClass::GetLargestSize()
 	return 32;
 }
 
-bool icnsClass::IDChanged()
+bool MIcon::IDChanged()
 {
 	return ((format == formatMacOSUniversal || format == formatMacOSNew || format == formatMacOSOld) &&
 			((ID != loadedID && loadedID != kIDNone && loadedID != kIDUseFileIcon && loadedID != kIDLoadDataFork) ||
@@ -1565,7 +1565,7 @@ bool icnsClass::IDChanged()
 
 #pragma mark -
 
-int icnsClass::GetPixName(int height, int depth, bool icon)
+int MIcon::GetPixName(int height, int depth, bool icon)
 {
 	if (height == 12)
 	{
@@ -1594,7 +1594,7 @@ int icnsClass::GetPixName(int height, int depth, bool icon)
 
 #define HASMEMBER(memberName) ((members & memberName) || (!strict && memberName & kDefaultMembers[format]))
 
-int icnsClass::GetBestMaskName(int height, int depth, bool strict)
+int MIcon::GetBestMaskName(int height, int depth, bool strict)
 {
 	int maskName;
 	
@@ -1614,7 +1614,7 @@ int icnsClass::GetBestMaskName(int height, int depth, bool strict)
 	}
 }
 
-int icnsClass::GetBestPixName(int height, int depth, bool strict)
+int MIcon::GetBestPixName(int height, int depth, bool strict)
 {
 	int pixName;
 	
@@ -1644,7 +1644,7 @@ int icnsClass::GetBestPixName(int height, int depth, bool strict)
 	}
 }
 
-void icnsClass::GetGWorldAndPix(long pixName, GWorldPtr* gW, PixMapHandle* pix)
+void MIcon::GetGWorldAndPix(long pixName, GWorldPtr* gW, PixMapHandle* pix)
 {
 	switch (pixName)
 	{
@@ -1682,7 +1682,7 @@ void icnsClass::GetGWorldAndPix(long pixName, GWorldPtr* gW, PixMapHandle* pix)
 	}
 }
 
-void icnsClass::GetMemberNameString(int name, Str255 nameString)
+void MIcon::GetMemberNameString(int name, Str255 nameString)
 {
 	int index = -1;
 	
@@ -1699,7 +1699,7 @@ void icnsClass::GetMemberNameString(int name, Str255 nameString)
 		CopyString(nameString, "\p");
 }
 
-void icnsClass::GetMemberResourceNameString(int name, Str255 nameString)
+void MIcon::GetMemberResourceNameString(int name, Str255 nameString)
 {
 	int index = -1;
 	
@@ -1719,7 +1719,7 @@ void icnsClass::GetMemberResourceNameString(int name, Str255 nameString)
 		CopyString(nameString, "\p");
 }
 
-MString	icnsClass::GetMembersListNames(long members)
+MString	MIcon::GetMembersListNames(long members)
 {
 	MString membersList("");
 	bool	first = true;
@@ -1760,7 +1760,7 @@ MString	icnsClass::GetMembersListNames(long members)
 	return membersList;
 }
 
-void icnsClass::GetSizeName(long size, Str255 sizeName)
+void MIcon::GetSizeName(long size, Str255 sizeName)
 {
 	for (int i=0; i < kMembersCount; i++)
 		if (kMembers[i].name & size)
@@ -1778,7 +1778,7 @@ void icnsClass::GetSizeName(long size, Str255 sizeName)
 	CopyString(sizeName, "\p");
 }
 
-MString icnsClass::GetSizeListNames(long members, long size)
+MString MIcon::GetSizeListNames(long members, long size)
 {
 	MString	list("");
 	Str255	sizeName;
@@ -1807,7 +1807,7 @@ MString icnsClass::GetSizeListNames(long members, long size)
 	return list;
 }
 
-int icnsClass::GetMemberIndex(int name)
+int MIcon::GetMemberIndex(int name)
 {
 	for (int i=0; i < kMembersCount; i++)
 		if (kMembers[i].name == name &&
@@ -1819,7 +1819,7 @@ int icnsClass::GetMemberIndex(int name)
 
 #pragma mark -
 
-void icnsClass::SetCanvas(GWorldPtr inCanvasGW, PixMapHandle inCanvasPix)
+void MIcon::SetCanvas(GWorldPtr inCanvasGW, PixMapHandle inCanvasPix)
 {
 	canvasGW = inCanvasGW;
 	canvasPix = inCanvasPix;

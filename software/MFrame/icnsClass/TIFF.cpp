@@ -1,6 +1,6 @@
-#include "icnsClass.h"
+#include "MIcon.h"
 
-void icnsClass::LoadTIFF(void)
+void MIcon::LoadTIFF(void)
 {
 	unsigned long				imageCount;
 	Rect						bounds;
@@ -86,7 +86,7 @@ bail:
 			CloseComponent(importer);
 }
 
-void icnsClass::SaveTIFF(void)
+void MIcon::SaveTIFF(void)
 {
 	GraphicsImportComponent exporer = NULL;
 	

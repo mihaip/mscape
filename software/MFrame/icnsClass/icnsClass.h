@@ -1,9 +1,9 @@
 // __________________________________________________________________________________________
 // Program		: Icon Mangler
-// Filename		: icnsClass.h (C++)
+// Filename		: MIcon.h (C++)
 // Author		: Mihai Parparita (St. Mary's International School)
 // Last modified: April 1, 1999
-// Description	: header file for the icnsClass, it includes both typedefs and some constants
+// Description	: header file for the MIcon, it includes both typedefs and some constants
 
 #pragma once
 #include "commonfunctions.h"
@@ -137,7 +137,7 @@ enum iconElementNames
 	selected = 1 << 26
 };
 
-enum icnsClassResources
+enum MIconResources
 {
 	// dialogs
 	rIconInfo = 4000,
@@ -323,7 +323,7 @@ typedef struct
 	int				currentItem, newItem;
 } EditIconInfoData;
 
-class icnsClass
+class MIcon
 {
 	private:
 		static GWorldPtr	canvasGW;
@@ -468,8 +468,8 @@ class icnsClass
 		long			format;
 		long			loadedFormat;
 		
-						icnsClass(void);
-						~icnsClass(void);
+						MIcon(void);
+						~MIcon(void);
 		void			Load();
 		
 		void			LoadFileIcon();
@@ -519,12 +519,12 @@ class icnsClass
 		
 		IconFamilyHandle Geticns();
 		
-	friend void MergeIcon(int ID, Str255 name, icnsClass* baseicns);
-	// external function used in another program (Glypher) which uses the icnsClass
+	friend void MergeIcon(int ID, Str255 name, MIcon* baseicns);
+	// external function used in another program (Glypher) which uses the MIcon
 	friend pascal OSErr IconExtractor(ResType iconType, Handle *theIcon, void *dataPtr);
 };
 
-typedef icnsClass* icnsClassPtr;
+typedef MIcon* MIconPtr;
 
 pascal OSErr IconExtractor(ResType iconType, Handle *theIcon, void *dataPtr);
 

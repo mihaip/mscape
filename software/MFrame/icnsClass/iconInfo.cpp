@@ -1,4 +1,4 @@
-#include "icnsClass.h"
+#include "MIcon.h"
 #include "MWindow.h"
 
 const static int kIconInfoPropertiesItems[] = {iIconIDLabel, iIconIDField,
@@ -19,26 +19,26 @@ const static int kIconInfoMembersItems[] = {iMembersGroupBox, iThumbnailBox,
 	iMaskLabel, i8BitMaskLabel, i1BitMaskLabel};
 const static int kIconInfoMembersItemsCount = sizeof(kIconInfoMembersItems)/sizeof(int);
 
-DialogPtr			icnsClass::infoDialog = NULL;
-Handle				icnsClass::propertiesControls = NULL;
-Handle				icnsClass::membersControls = NULL;
-ModalFilterUPP		icnsClass::eventFilterUPP;
-ControlHandle		icnsClass::IDField = NULL;
-ControlHandle		icnsClass::IDMenu = NULL;
-ControlHandle		icnsClass::nameField = NULL;
-ControlHandle		icnsClass::sizeField = NULL;
-ControlHandle		icnsClass::formatPopup = NULL;
-ControlHandle		icnsClass::sysHeapBox = NULL;
-ControlHandle		icnsClass::purgeableBox = NULL;
-ControlHandle		icnsClass::lockedBox = NULL;
-ControlHandle		icnsClass::protectedBox = NULL;
-ControlHandle		icnsClass::preloadBox = NULL;
-ControlHandle		icnsClass::tabs = NULL;
-MenuHandle			icnsClass::popupMenu = NULL;
-MenuHandle			icnsClass::formatMenu = NULL;
-MWindowPtr			icnsClass::infoDialogWindow = NULL;
-EditIconInfoData	icnsClass::dialogData;
-int					icnsClass::currentTab = -1;
+DialogPtr			MIcon::infoDialog = NULL;
+Handle				MIcon::propertiesControls = NULL;
+Handle				MIcon::membersControls = NULL;
+ModalFilterUPP		MIcon::eventFilterUPP;
+ControlHandle		MIcon::IDField = NULL;
+ControlHandle		MIcon::IDMenu = NULL;
+ControlHandle		MIcon::nameField = NULL;
+ControlHandle		MIcon::sizeField = NULL;
+ControlHandle		MIcon::formatPopup = NULL;
+ControlHandle		MIcon::sysHeapBox = NULL;
+ControlHandle		MIcon::purgeableBox = NULL;
+ControlHandle		MIcon::lockedBox = NULL;
+ControlHandle		MIcon::protectedBox = NULL;
+ControlHandle		MIcon::preloadBox = NULL;
+ControlHandle		MIcon::tabs = NULL;
+MenuHandle			MIcon::popupMenu = NULL;
+MenuHandle			MIcon::formatMenu = NULL;
+MWindowPtr			MIcon::infoDialogWindow = NULL;
+EditIconInfoData	MIcon::dialogData;
+int					MIcon::currentTab = -1;
 
 enum IconInfoTabs
 {
@@ -73,7 +73,7 @@ else\
 	DeactivateControl(tempControl);\
 }
 
-void icnsClass::SetMembersCheckboxes(DialogPtr dialog, long usedMembers, long format)
+void MIcon::SetMembersCheckboxes(DialogPtr dialog, long usedMembers, long format)
 {
 	ControlHandle	tempControl;
 	
@@ -117,7 +117,7 @@ if (GetControlValue(tempControl))\
 else\
 	*usedMembers &= ~member;\
 
-void icnsClass::GetMembersCheckboxes(DialogPtr dialog, long* usedMembers)
+void MIcon::GetMembersCheckboxes(DialogPtr dialog, long* usedMembers)
 {
 	ControlHandle	tempControl;
 	
@@ -152,7 +152,7 @@ void icnsClass::GetMembersCheckboxes(DialogPtr dialog, long* usedMembers)
 	GETMEMBERSCHECKBOX(iicmmBox, icmm);
 }
 
-void icnsClass::SetMinimumMembers(long* usedMembers, int format)
+void MIcon::SetMinimumMembers(long* usedMembers, int format)
 {
 	if (format == formatWindows)
 	{
@@ -170,7 +170,7 @@ void icnsClass::SetMinimumMembers(long* usedMembers, int format)
 	}
 }
 
-void icnsClass::HandleMembersCheckbox(DialogPtr dialog, int itemHit, long *usedMembers, int format)
+void MIcon::HandleMembersCheckbox(DialogPtr dialog, int itemHit, long *usedMembers, int format)
 {
 	ControlHandle	tempControl;
 	long			temp;
@@ -201,7 +201,7 @@ void icnsClass::HandleMembersCheckbox(DialogPtr dialog, int itemHit, long *usedM
 // Description	: This function displays a dialog which allows the user to change the icon's
 //				  attributes (ID, name, bits)
 
-void icnsClass::LoadInfoDialog()
+void MIcon::LoadInfoDialog()
 {
 	ControlHandle		label, tempControl;
 	ControlFontStyleRec	labelStyle, boldTextStyle;
@@ -319,7 +319,7 @@ void icnsClass::LoadInfoDialog()
 	infoDialogWindow->SetRefCon((int)&dialogData);
 }
 
-void icnsClass::DisposeInfoDialog()
+void MIcon::DisposeInfoDialog()
 {		
 	DisposeModalFilterUPP(eventFilterUPP);
 	DisposeDialog(infoDialog);
@@ -330,7 +330,7 @@ void icnsClass::DisposeInfoDialog()
 	delete infoDialogWindow;
 }
 
-int icnsClass::EditIconInfo(int mode)
+int MIcon::EditIconInfo(int mode)
 {
 	bool				dialogDone;
 	short				itemHit;
@@ -629,7 +629,7 @@ int icnsClass::EditIconInfo(int mode)
 	return itemHit;
 }
 
-void icnsClass::ToggleNonMacOSItems(DialogPtr infoDialog)
+void MIcon::ToggleNonMacOSItems(DialogPtr infoDialog)
 {
 	ControlHandle currentControl;
 	
@@ -649,7 +649,7 @@ void icnsClass::ToggleNonMacOSItems(DialogPtr infoDialog)
 #endif
 }
 
-void icnsClass::SplitMenuItem(Str255 text, long* ID, Str255 iconName)
+void MIcon::SplitMenuItem(Str255 text, long* ID, Str255 iconName)
 {
 	int IDEnd;
 	
@@ -673,7 +673,7 @@ void icnsClass::SplitMenuItem(Str255 text, long* ID, Str255 iconName)
 	CopyString(iconName, &text[IDEnd]);
 }
 
-void icnsClass::GetIDMenu(int ID, MenuHandle* menu, int* item, Str255 name)
+void MIcon::GetIDMenu(int ID, MenuHandle* menu, int* item, Str255 name)
 {
 	MenuHandle	currentMenu;
 	int			itemCount;
@@ -733,7 +733,7 @@ void icnsClass::GetIDMenu(int ID, MenuHandle* menu, int* item, Str255 name)
 
 }
 
-pascal Boolean icnsClass::IconInfoDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit)
+pascal Boolean MIcon::IconInfoDialogFilter(DialogPtr dialog, EventRecord* eventPtr, short* itemHit)
 {
 	bool	handledEvent = false;
 	

@@ -1,7 +1,7 @@
 #include "ICO.h"
-#include "icnsClass.h"
+#include "MIcon.h"
 
-void icnsClass::LoadICO()
+void MIcon::LoadICO()
 {
 	ICONDIR			iconDir;
 	unsigned char	*iconCursor, *maskCursor;
@@ -417,7 +417,7 @@ void icnsClass::LoadICO()
 	RESTORECOLORS;
 }
 
-void icnsClass::SaveICO(void)
+void MIcon::SaveICO(void)
 {
 	short file;
 	long writeLength, iconCount, dataOffset;
