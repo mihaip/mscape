@@ -1,4 +1,101 @@
-/* Resource fork of software/clip2cicn/clip2cicn.µ.rsrc */
+/* Resource fork of software/clip2cicn/clip2cicn (PPC) */
+resource 'DITL' (3000, "Basic Alert") {
+	{	/* array DITLarray: 2 elements */
+		/* [1] */
+		{66, 318, 86, 376},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{8, 58, 60, 376},
+		StaticText {
+			disabled,
+			"^0 ^1."
+		}
+	}
+};
+
+resource 'DITL' (128, "About Box") {
+	{	/* array DITLarray: 3 elements */
+		/* [1] */
+		{175, 210, 195, 268},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{10, 10, 120, 270},
+		UserItem {
+			disabled
+		},
+		/* [3] */
+		{120, 20, 169, 266},
+		StaticText {
+			disabled,
+			"by Mihai Parparita\nmihai@mscape.com\nhttp"
+			"://cafe.ambrosiasw.com/gui-central/"
+		}
+	}
+};
+
+resource 'DITL' (129, "Insert Cicn") {
+	{	/* array DITLarray: 6 elements */
+		/* [1] */
+		{106, 145, 126, 203},
+		Button {
+			enabled,
+			"Insert"
+		},
+		/* [2] */
+		{106, 75, 126, 133},
+		Button {
+			enabled,
+			"Cancel"
+		},
+		/* [3] */
+		{10, 10, 30, 205},
+		Control {
+			enabled,
+			128
+		},
+		/* [4] */
+		{40, 10, 60, 205},
+		Control {
+			enabled,
+			132
+		},
+		/* [5] */
+		{72, 150, 88, 200},
+		EditText {
+			enabled,
+			"-14336"
+		},
+		/* [6] */
+		{74, 12, 90, 31},
+		StaticText {
+			disabled,
+			"ID:"
+		}
+	}
+};
+
+resource 'ALRT' (3000) {
+	{40, 40, 138, 421},
+	3000,
+	{	/* array: 4 elements */
+		/* [1] */
+		OK, visible, sound1,
+		/* [2] */
+		OK, visible, sound1,
+		/* [3] */
+		OK, visible, sound1,
+		/* [4] */
+		OK, visible, sound1
+	},
+	alertPositionMainScreen
+};
+
 resource 'MENU' (128) {
 	128,
 	textMenuProc,
@@ -786,70 +883,6 @@ resource 'CNTL' (132, "Document Window") {
 	1008,
 	0,
 	"cicn:"
-};
-
-resource 'DITL' (128, "About Box") {
-	{	/* array DITLarray: 3 elements */
-		/* [1] */
-		{175, 210, 195, 268},
-		Button {
-			enabled,
-			"OK"
-		},
-		/* [2] */
-		{10, 10, 120, 270},
-		UserItem {
-			disabled
-		},
-		/* [3] */
-		{120, 20, 169, 266},
-		StaticText {
-			disabled,
-			"by Mihai Parparita\nmihai@mscape.com\nhttp"
-			"://cafe.ambrosiasw.com/gui-central/"
-		}
-	}
-};
-
-resource 'DITL' (129, "Insert Cicn") {
-	{	/* array DITLarray: 6 elements */
-		/* [1] */
-		{106, 145, 126, 203},
-		Button {
-			enabled,
-			"Insert"
-		},
-		/* [2] */
-		{106, 75, 126, 133},
-		Button {
-			enabled,
-			"Cancel"
-		},
-		/* [3] */
-		{10, 10, 30, 205},
-		Control {
-			enabled,
-			128
-		},
-		/* [4] */
-		{40, 10, 60, 205},
-		Control {
-			enabled,
-			132
-		},
-		/* [5] */
-		{72, 150, 88, 200},
-		EditText {
-			enabled,
-			"-14336"
-		},
-		/* [6] */
-		{74, 12, 90, 31},
-		StaticText {
-			disabled,
-			"ID:"
-		}
-	}
 };
 
 resource 'DLOG' (128) {
@@ -2051,5 +2084,43 @@ resource 'PICT' (129, "mask") {
 	$"8100 FD00 0006 8100 8100 FD00 0006 8100"
 	$"8100 FD00 0006 8100 8100 FD00 0006 8100"
 	$"8100 FD00 0006 8100 8100 FD00 00FF"
+};
+
+resource 'cfrg' (0) {
+	{	/* array memberArray: 1 elements */
+		/* [1] */
+		kPowerPCCFragArch,
+		kIsCompleteCFrag,
+		kNoVersionNum,
+		kNoVersionNum,
+		65536,
+		kNoAppSubFolder,
+		kApplicationCFrag,
+		kDataForkCFragLocator,
+		kZeroOffset,
+		kSegIDZero,
+		"clip2cicn (PPC)"
+	}
+};
+
+resource 'SIZE' (-1) {
+	reserved,
+	acceptSuspendResumeEvents,
+	reserved,
+	canBackground,
+	multiFinderAware,
+	backgroundAndForeground,
+	dontGetFrontClicks,
+	ignoreChildDiedEvents,
+	is32BitCompatible,
+	isHighLevelEventAware,
+	onlyLocalHLEvents,
+	notStationeryAware,
+	dontUseTextEditServices,
+	notDisplayManagerAware,
+	reserved,
+	reserved,
+	1048576,
+	1048576
 };
 

@@ -30,5 +30,6 @@ extern short ReadDataWord(Handle data, int *currentOffset);
 extern void DrawTranslucentRect(Rect* targetRect);
 extern void CopyString(Str255 dst, const Str255 src);
 extern void BlockFill(unsigned char *block, int fill, int size);
-
+extern GrafPtr CreateGrafPort(Rect* bounds);
+extern void DisposeGrafPort(GrafPtr doomedPort );
 #endif

@@ -47,7 +47,7 @@ char* C2Pas(char* cStr, Str255 pStr)
 	register int	k,
 					l;
 
-	for (k = 0; cStr[k]  && k < 255; k++); /* Pascal string lenght <= 255 */
+	for (k = 0; cStr[k]  && k < 255; k++){;} /* Pascal string lenght <= 255 */
 	for (l = k; k > 0; k--) pStr[k] = cStr[k - 1];
 	pStr[0] = l;
 	return((char*)pStr);
@@ -145,7 +145,7 @@ WindowPtr DisplayWindow(int windowID)
 void DrawPicture(int pictureID)
 {
 	Rect		pictureRect;
-	WindowPtr	window;
+//	WindowPtr	window;
 	PicHandle	picture;
 	char		errorBuffer[256];
 	
@@ -210,11 +210,11 @@ void HideMenubar( void )
 	GDHandle 	mainScreen;					// the information on the main screen
 	Rect 		mainScreenRect;				// the rect that bounds the menu bar
 	RgnHandle 	mainScreenRgn;				// the region of the menu bar
-	RgnHandle 	menubarRgn;
+//	RgnHandle 	menubarRgn;
 	RgnHandle	newGrayRgn;
 
 	
-	if (gOriginalGrayRgn != nil || GetMBarHeight == 0)
+	if (gOriginalGrayRgn != nil || GetMBarHeight() == 0)
 		return; // menubar already hidden
 		
 	// record the menu bar height
@@ -353,5 +353,59 @@ void BlockFill(unsigned char *block, int fill, int size)
 	register int k;
 
 	for (k = 0; k < size; k++) block[k] = (unsigned char)fill;
+}
+
+GrafPtr CreateGrafPort(Rect* bounds)	/* Originally written by Forrest Tanaka. */
+{
+	GrafPtr	savedPort;		/* Saved GrafPtr for later restore. */
+	GrafPtr	newPort;		/* New GrafPort. */
+	Rect	localBounds;	/* Local copy of bounds. */
+
+	GetPort( &savedPort );
+
+	/* Set the top-left corner of bounds to (0,0). */
+	localBounds = *bounds;
+	OffsetRect( &localBounds, -bounds->left, -bounds->top );
+
+	/* Allocate a new GrafPort. */
+	newPort = (GrafPtr)NewPtrClear( sizeof( GrafPort ) );
+	
+	if (newPort != nil)
+	{
+		/* Initialize the new port and make the current port. */
+		OpenPort( newPort );
+
+		/* Initialize and allocate the bitmap. */
+		newPort->portBits.bounds = localBounds;
+  		newPort->portBits.rowBytes = ((localBounds.right + 15) >> 4) << 1;
+		newPort->portBits.baseAddr =  NewPtrClear( newPort->portBits.rowBytes *
+													(long)localBounds.bottom );
+		if (newPort->portBits.baseAddr != nil)
+		{
+			/* Clean up the new port. */
+			newPort->portRect = localBounds;
+			ClipRect( &localBounds );
+			RectRgn( newPort->visRgn, &localBounds );
+			BackColor(whiteColor);
+			EraseRect( &localBounds );
+		}
+		else
+		{
+			/* Allocation failed; deallocate the port. */
+			ClosePort( newPort );
+			DisposePtr( (Ptr)newPort );
+			newPort = nil;
+		}
+	}
+	
+	SetPort( savedPort );
+	return newPort;
+}
+
+void DisposeGrafPort(GrafPtr doomedPort )		/* Originally written by Forrest Tanaka. */
+{
+	ClosePort( doomedPort );
+	DisposePtr( doomedPort->portBits.baseAddr );
+	DisposePtr( (Ptr)doomedPort );
 }
 

@@ -12,15 +12,72 @@ void main(void)
 
 void Initialize()
 {
+	DateTimeRec		theDate;
 	InitToolBox();
 	
+	GetTime(&theDate);
+	
+	if (theDate.month >= 7 && theDate.day >= 7 && theDate.year >= 1998)
+	{
+		DisplayAlert("This beta of clip2cicn expired on July 1, 1998.", "Please go to http://cafe.ambrosiasw.com/gui-central/ to get a new version");
+		ExitApplication();
+	}
+	
 	InitMenuBar();
+
 	
 	AppleEventInit();
 	
 	GetGWorld(&startupPort, &startupDevice);
 
 	isDone = false;
+}
+
+void GetCurrentScheme()
+{
+/*	OSErr			myErr;
+	short			myVRef;	// volume ref num of Preferences folder
+	long			myDirID; // dir ID of Preferences folder
+	FSSpec			mySpec; // FSSpec for the preferences file
+	int				myRefNum, oldFile; // file reference number
+	AliasHandle		currentSchemeAlias;
+	unsigned char	ignored;
+	
+	// Find the Preferences folder in the System Folder
+	myErr = FindFolder(kOnSystemDisk, kPreferencesFolderType, kDontCreateFolder, &myVRef, &myDirID);
+	if (myErr == noErr)
+	{
+		myErr = FSMakeFSSpec(myVRef, myDirID, "\pKaleidoscope Preferences", &mySpec);
+	}
+	else
+	{
+		SysBeep(6);
+	}
+	if (myErr == noErr)
+	{
+		myRefNum = FSpOpenResFile(&mySpec, fsCurPerm);
+	}	
+	// read in the preferences
+	
+	oldFile = CurResFile();
+	UseResFile(myRefNum);
+	
+	currentSchemeAlias = (AliasHandle)GetResource('alis', 128);
+	HLock((Handle)currentSchemeAlias);
+	
+	
+	if ( currentSchemeAlias == nil )
+	{
+		DisplayAlert("Can't get the current scheme, make sure that you have Kaleidoscope 1.8 or later and that your preferences aren't corrupted", "");
+		ExitApplication();
+	}
+
+	ResolveAlias(NULL, currentSchemeAlias, &currentScheme, &ignored);
+	HUnlock((Handle)currentSchemeAlias);
+	
+	CloseResFile(myRefNum);
+	UseResFile(oldFile);
+*/
 }
 
 void InitMenuBar()
@@ -48,16 +105,22 @@ static OSErr MyGotRequiredParams(const AppleEvent *theAppleEvent)
 		return errAEParamMissed;
 };
 
-
+#if TARGET_CPU_68K
+pascal static OSErr DoOpenApp(const AppleEvent *theAppleEvent, AppleEvent *reply, unsigned long refCon)
+#else
 OSErr DoOpenApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
+#endif
 {
 	reply;
 	refCon;
 	return MyGotRequiredParams(theAppleEvent);
 };
 
-
+#if TARGET_CPU_68K
+pascal static OSErr DoOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, unsigned long refCon)
+#else
 OSErr DoOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
+#endif
 {
 	OSErr		err;
 	AEDescList	fileSpecList;
@@ -67,6 +130,8 @@ OSErr DoOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
 	FSSpec		desc;
 	AEKeyword	keyword;
 	DescType	type;
+	Handle		pic;
+	long		offset;
 
 	reply;
 	refCon;
@@ -79,15 +144,35 @@ OSErr DoOpenDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
 		err = AEGetNthPtr(&fileSpecList, i, typeFSS, &keyword, &type, (Ptr)&desc, sizeof(FSSpec), &actual);
 		if (err == noErr)
 		{
-			schemeSpec = desc;
-			GetcicnID();
+			pic = NewHandle (0);
+			if (GetScrap( pic, 'PICT', &offset ) < 0)
+			{
+				DisplayAlert("", "The clipboard is either empty or doesn't contain a picture");
+			}
+			else
+			{
+				GetCurrentScheme();
+				if (desc.vRefNum == currentScheme.vRefNum && desc.parID == currentScheme.parID)
+				{
+					DisplayAlert("The scheme you chose is the active one.", "Editing the active scheme can corrupt it, please switch to another scheme and try again");
+				}
+				else
+				{
+					schemeSpec = desc;
+					GetcicnID();
+				}
+			}
 			return MyGotRequiredParams(theAppleEvent);
 		}
 	}
 	return MyGotRequiredParams(theAppleEvent);
 };
 
+#if TARGET_CPU_68K
+pascal static OSErr DoPrintDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, unsigned long refCon)
+#else
 OSErr DoPrintDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
+#endif
 {
 	theAppleEvent;
 	reply;
@@ -95,7 +180,11 @@ OSErr DoPrintDoc(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon
 	return errAEEventNotHandled;
 };
 
+#if TARGET_CPU_68K
+pascal static OSErr DoQuitApp(const AppleEvent *theAppleEvent, AppleEvent *reply, unsigned long refCon)
+#else
 OSErr DoQuitApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
+#endif
 {
 	reply;
 	refCon;
@@ -103,20 +192,27 @@ OSErr DoQuitApp(const AppleEvent *theAppleEvent, AppleEvent *reply, long refCon)
 	return MyGotRequiredParams(theAppleEvent);
 };
 
+#if TARGET_CPU_PPC
 RoutineDescriptor DoOpenAppRD = BUILD_ROUTINE_DESCRIPTOR(uppAEEventHandlerProcInfo, DoOpenApp);
 RoutineDescriptor DoOpenDocRD = BUILD_ROUTINE_DESCRIPTOR(uppAEEventHandlerProcInfo, DoOpenDoc);
 RoutineDescriptor DoPrintDocRD = BUILD_ROUTINE_DESCRIPTOR(uppAEEventHandlerProcInfo, DoPrintDoc);
 RoutineDescriptor DoQuitAppRD = BUILD_ROUTINE_DESCRIPTOR(uppAEEventHandlerProcInfo, DoQuitApp);
-
+#endif
 
 void AppleEventInit()
 {
 		OSErr error;
-
-		error = AEInstallEventHandler(kCoreEventClass, kAEOpenApplication, &DoOpenAppRD, 0L, false);
-		error = AEInstallEventHandler(kCoreEventClass, kAEOpenDocuments, &DoOpenDocRD, 0L, false);
-		error = AEInstallEventHandler(kCoreEventClass, kAEPrintDocuments, &DoPrintDocRD, 0L, false);
-		error = AEInstallEventHandler(kCoreEventClass, kAEQuitApplication, &DoQuitAppRD, 0L, false);
+#if TARGET_CPU_68K
+	error = AEInstallEventHandler(kCoreEventClass, kAEOpenApplication, DoOpenApp, 0L, false);
+	error = AEInstallEventHandler(kCoreEventClass, kAEOpenDocuments, DoOpenDoc, 0L, false);
+	error = AEInstallEventHandler(kCoreEventClass, kAEPrintDocuments, DoPrintDoc, 0L, false);
+	error = AEInstallEventHandler(kCoreEventClass, kAEQuitApplication, DoQuitApp, 0L, false);
+#else
+	error = AEInstallEventHandler(kCoreEventClass, kAEOpenApplication, &DoOpenAppRD, 0L, false);
+	error = AEInstallEventHandler(kCoreEventClass, kAEOpenDocuments, &DoOpenDocRD, 0L, false);
+	error = AEInstallEventHandler(kCoreEventClass, kAEPrintDocuments, &DoPrintDocRD, 0L, false);
+	error = AEInstallEventHandler(kCoreEventClass, kAEQuitApplication, &DoQuitAppRD, 0L, false);
+#endif
 };
 
 void EventLoop(void)
@@ -138,6 +234,7 @@ void DoEvent(EventRecord *eventPtr)
 	{
 		case mouseUp: HandleMouseUp(eventPtr); break;
 		case mouseDown: HandleMouseDown(eventPtr); break;
+		case autoKey:
 		case keyDown: HandleKeyDown(eventPtr); break;
 		case updateEvt: HandleUpdate(eventPtr); break;
 		case activateEvt: break;
@@ -159,13 +256,22 @@ void HandleMouseDown(EventRecord *eventPtr)
 	int 		part;
 	WindowPtr	thisWindow;
 	GDHandle	mainScreen;
+	long		menuChoice;
 
 	part = FindWindow(eventPtr->where, &thisWindow);
 	switch (part)
 	{
-		case inMenuBar :	DoMenuCommand(MenuSelect(eventPtr->where)); break;
-		case inSysWindow :	SystemClick(eventPtr, thisWindow); break;
-		case inDrag :		mainScreen = GetMainDevice(); DragWindow( thisWindow, eventPtr->where, &( ( *mainScreen )->gdRect )); break;
+		case inMenuBar :
+			menuChoice = MenuSelect( eventPtr->where);
+			DoMenuCommand(menuChoice);
+			break;
+		case inSysWindow :
+			SystemClick(eventPtr, thisWindow);
+			break;
+		case inDrag :
+			mainScreen = GetMainDevice();
+			DragWindow( thisWindow, eventPtr->where, &( ( *mainScreen )->gdRect ));
+			break;
 		//case inGoAway : if (TrackGoAway(previewWindow, eventPtr->where) ) CloseScheme(); break;	
 	}
 }
@@ -193,19 +299,22 @@ void HandleUpdate(EventRecord *eventPtr)
 	}
 }
 
-void DoMenuCommand(int menuResult)
+void DoMenuCommand(long menuResult)
 {
 	int	menuID, menuItem;
 	
-	menuID = HiWord(menuResult);
-	menuItem = LoWord(menuResult);
-	switch (menuID)
+	if (menuResult != 0)
 	{
-		case mApple :	HandleAppleChoice(menuItem); break;
-		case mFile :	HandleFileChoice(menuItem); break;
-		case mEdit :	HandleEditChoice(menuItem); break;
+		menuID = HiWord(menuResult);
+		menuItem = LoWord(menuResult);
+		switch (menuID)
+		{
+			case mApple :	HandleAppleChoice(menuItem); break;
+			case mFile :	HandleFileChoice(menuItem); break;
+			case mEdit :	HandleEditChoice(menuItem); break;
+		}
+		HiliteMenu(0);
 	}
-	HiliteMenu(0);
 }
 
 void HandleAppleChoice(int item)
@@ -227,20 +336,77 @@ void HandleAppleChoice(int item)
 
 void ShowAboutBox()
 {
-	DialogPtr	aboutBox;
-	bool		dialogDone;
-	short		itemHit;
-	CGrafPtr	oldPort;
-	GDHandle	oldDevice;
+	DialogPtr		aboutBox;
+	bool			dialogDone;
+	short			itemHit;
+	GWorldPtr		picGWorld, maskGWorld, tempGWorld;
+	PixMapHandle	picPixMap, maskPixMap, tempPixMap;
+	Rect			targetRect, picRect;
+	Handle			item;
+	short			itemType;
 	
 	
-	GetGWorld(&oldPort, &oldDevice);
+	
 	
 	aboutBox = GetNewDialog (aboutBoxID, nil, (WindowPtr)-1L);
 	SetPort( aboutBox);
 	SetDialogDefaultItem(aboutBox, kOk);
 	
 	ShowWindow( aboutBox );
+	GetDialogItem(aboutBox, kAboutPic, &itemType, &item, &picRect);
+	targetRect = picRect;
+	OffsetRect(&picRect, -picRect.left, -picRect.top);
+	NewGWorld(&tempGWorld, 32, &picRect, NULL, NULL, 0);
+	tempPixMap = GetGWorldPixMap(tempGWorld);
+	LockPixels(tempPixMap);
+	
+	NewGWorld(&picGWorld, 32, &picRect, NULL, NULL, 0);
+	
+	SetGWorld(picGWorld, NULL);
+	DrawPicture(GetPicture(aboutPicID), &picRect);
+	picPixMap = GetGWorldPixMap(picGWorld);
+	LockPixels(picPixMap);
+	NewGWorld(&maskGWorld, 32, &picRect, NULL, NULL, 0);
+	SetGWorld(maskGWorld, NULL);
+	DrawPicture(GetPicture(aboutPicMaskID), &picRect);
+	maskPixMap = GetGWorldPixMap(maskGWorld);
+	LockPixels(maskPixMap);
+	
+	SetGWorld(picGWorld, NULL);
+	
+	CopyBits(&aboutBox->portBits,
+			 (BitMap *) &(tempGWorld->portPixMap),
+			 &targetRect,
+			 &picRect,
+			 srcCopy,
+			 NULL);	
+	
+	CopyDeepMask((BitMap *) &(picGWorld->portPixMap),
+				 (BitMap *) &(maskGWorld->portPixMap),
+				 (BitMap *) &(tempGWorld->portPixMap),
+				 &picRect,
+				 &picRect,
+				 &picRect,
+				 srcCopy,
+				 NULL);
+
+	CopyBits((BitMap *) &(tempGWorld->portPixMap),
+			 &aboutBox->portBits,
+			 &picRect,
+			 &targetRect,
+			 srcCopy + ditherCopy,
+			 NULL);	
+			 
+	UnlockPixels(picPixMap);
+	UnlockPixels(maskPixMap);
+	UnlockPixels(tempPixMap);
+	
+	DisposeGWorld(picGWorld);
+	DisposeGWorld(maskGWorld);
+	DisposeGWorld(tempGWorld);
+
+	SetPort(aboutBox);
+	
 	dialogDone = false;
 	while (!dialogDone)
 	{
@@ -254,7 +420,7 @@ void ShowAboutBox()
 		
 	}
 	DisposeDialog(aboutBox);
-	SetGWorld(oldPort, oldDevice);
+	SetGWorld(startupPort, startupDevice);
 }
 
 void HandleFileChoice(int item)
@@ -268,30 +434,33 @@ void HandleFileChoice(int item)
 
 void InsertCicn()
 {
-	DialogPtr			insertCicn;
-	bool				dialogDone;
-	short				itemHit;
-	CGrafPtr			oldPort;
-	GDHandle			oldDevice;
-	Str255				IDasString;
-	Rect				itemRect;
-	long				ID;
-	Handle				item;
-	short				itemType;
 	StandardFileReply	reply;
 	SFTypeList			typeList;
-	int					selectedCicn, i;
-	Str255				menuItemText;
+	Handle				pic;
+	long				offset;
+
+	pic = NewHandle (0);
+	if (GetScrap( pic, 'PICT', &offset ) < 0)
+	{
+		DisplayAlert("", "The clipboard is either empty or doesn't contain a picture");
+		return;
+	}
 	
-	
-	
+	GetCurrentScheme();
 	typeList[0] = schemeFileType;
+	
 	StandardGetFile(nil, 1, typeList, &reply);
+	if (reply.sfFile.vRefNum == currentScheme.vRefNum && reply.sfFile.parID == currentScheme.parID)
+	{
+		DisplayAlert("The scheme you chose is the active one.", "Editing the active scheme can corrupt it, please switch to another scheme and try again");
+		return;
+	}
 	if ( reply.sfGood)
 	{
 		schemeSpec = reply.sfFile;
 		GetcicnID();
 	}
+	
 }
 
 void GetcicnID()
@@ -299,8 +468,6 @@ void GetcicnID()
 	DialogPtr			insertCicn;
 	bool				dialogDone;
 	short				itemHit;
-	CGrafPtr			oldPort;
-	GDHandle			oldDevice;
 	Str255				IDasString;
 	Rect				itemRect;
 	long				ID;
@@ -308,8 +475,6 @@ void GetcicnID()
 	short				itemType;
 	int					selectedCicn, i, selectedType;
 	Str255				menuItemText;
-	PopupPrivateDataPtr	popupDataPtr;
-	ControlHandle		cicnTypePopup;
 	Rect				popupRect = {40, 10, 60, 205};
 	int					currentMenuID = 132;
 	
@@ -333,8 +498,11 @@ void GetcicnID()
 				GetDialogItem(insertCicn, kIDField, &itemType, &item, &itemRect);
 				GetDialogItemText(item, IDasString);
 				StringToNum(IDasString, &ID);
-				clip2cicn(ID);
 				dialogDone = true;
+				DisposeDialog( insertCicn );
+				SetGWorld(startupPort, startupDevice);
+				clip2cicn(ID);
+				return;
 				break;
 			case kCancel:
 				dialogDone = true;
@@ -361,6 +529,16 @@ void GetcicnID()
 				if ((ControlHandle)item == NULL)
 					SysBeep(20);
 				Draw1Control((ControlHandle)item);
+				
+				GetMenuItemText(GetMenu(currentMenuID), 1, menuItemText);				
+				CopyString(IDasString, menuItemText);
+				for (i=IDasString[0]; i > 0 && IDasString[i] == ' '; i--){;}
+				for (; i > 0 && IDasString[i] != ' '; i--){;}
+				IDasString[i] = IDasString[0] - i;
+				GetDialogItem(insertCicn, kIDField, &itemType, &item, &itemRect);
+				SetDialogItemText(item, &IDasString[i]);
+				SelectDialogItemText( insertCicn, kIDField, 0, 32767);
+				
 				break;
 			case kcicnPopup:
 				GetDialogItem(insertCicn, kcicnPopup, &itemType, &item, &itemRect);
@@ -373,6 +551,7 @@ void GetcicnID()
 				IDasString[i] = IDasString[0] - i;
 				GetDialogItem(insertCicn, kIDField, &itemType, &item, &itemRect);
 				SetDialogItemText(item, &IDasString[i]);
+				SelectDialogItemText( insertCicn, kIDField, 0, 32767);
 				break;
 				
 				
@@ -396,10 +575,11 @@ void clip2cicn(short cicnID)
 	CTabHandle		colorTable;
 	GWorldPtr		picGWorld, bwGWorld, maskGWorld;
 	PixMapHandle	picPixMap, bwPixMap, maskPixMap;
+	GrafPtr		mask;
+	RGBColor	seedColor;
 	long			picSize;
 	long			offset;
 	Handle			oldCicn;
-	CTabHandle		bwColorTable;
 
 
 	pic = NewHandle (0);
@@ -431,76 +611,42 @@ void clip2cicn(short cicnID)
 	picPixMap = GetGWorldPixMap(picGWorld);
 	LockPixels(picPixMap);
 	
-	// use CalcMask to get the mask of the cicn
-	bwColorTable = GetCTable(128);
-	
-	NewGWorld(&maskGWorld, 8, &picInfo.sourceRect, bwColorTable, NULL, 0);
-	SetGWorld(maskGWorld, NULL);
-	BackColor(whiteColor);
-	EraseRect(&qd.thePort->portRect);
-	maskPixMap = GetGWorldPixMap(maskGWorld);
-	LockPixels(maskPixMap);
-	
-	( *( ( *maskPixMap ) -> pmTable ) ) ->ctSeed = ( *( ( *picPixMap ) -> pmTable ) ) ->ctSeed;
-	CopyBits((BitMap *)*picPixMap,
-			 (BitMap *)*maskPixMap,
-			 &(**picPixMap).bounds,
-			 &(**maskPixMap).bounds,
-			 srcCopy,
-			 NULL);
-	
-	
-	NewGWorld(&bwGWorld, 1, &picInfo.sourceRect, NULL, NULL, 0);
-	SetGWorld(bwGWorld, NULL);
-	BackColor(whiteColor);
-	EraseRect(&qd.thePort->portRect);
-	bwPixMap = GetGWorldPixMap(bwGWorld);
-	LockPixels(bwPixMap);
-	
-	CopyBits((BitMap *)*maskPixMap,
-			 (BitMap *)*bwPixMap,
-			 &(**maskPixMap).bounds,
-			 &(**bwPixMap).bounds,
-			 srcCopy,
-			 NULL);
-	
-	UnlockPixels(maskPixMap);
-	DisposeGWorld(maskGWorld);
-	
-	NewGWorld(&maskGWorld, 1, &picInfo.sourceRect, NULL, NULL, 0);
-	SetGWorld(maskGWorld, NULL);
-	BackColor(whiteColor);
-	EraseRect(&qd.thePort->portRect);
-	maskPixMap = GetGWorldPixMap(maskGWorld);
-	LockPixels(maskPixMap);
-	
-	CalcMask((**bwPixMap).baseAddr,
-	         (**maskPixMap).baseAddr,
-	         (**bwPixMap).rowBytes & 0x7FFF,
-	         (**maskPixMap).rowBytes & 0x7FFF,
-	         ((**maskPixMap).bounds.bottom - (**maskPixMap).bounds.top),
-	         ((**maskPixMap).rowBytes & 0x7FFF)/2);
-	
-	
-/*	SetGWorld(startupPort, startupDevice);
-	CopyBits((BitMap *)*maskPixMap,
-			 &qd.thePort->portBits,
-			 &picInfo.sourceRect,
-			 &picInfo.sourceRect,
-			 srcCopy,
-			 NULL);
-*/
-	UnlockPixels(bwPixMap);
-	DisposeGWorld(bwGWorld);
-	  
 	// draw the pict in a 1-bit GWorld, to be used for the black and white version of the cicn
 	NewGWorld(&bwGWorld, 1, &picInfo.sourceRect, NULL, NULL, 0);
 	SetGWorld(bwGWorld, NULL);
-	BackColor(whiteColor);
 	EraseRect(&qd.thePort->portRect);
 	DrawPicture((PicHandle)pic, &picInfo.sourceRect);
 	bwPixMap = GetGWorldPixMap(bwGWorld);
-	LockPixels(bwPixMap);        
+	LockPixels(bwPixMap);
+	
+	// use CalcCMask to get the mask of the cicn
+	NewGWorld(&maskGWorld, 1, &picInfo.sourceRect, NULL, NULL, 0);
+	SetGWorld(maskGWorld, NULL);
+	EraseRect(&qd.thePort->portRect);
+	maskPixMap = GetGWorldPixMap(maskGWorld);
+	LockPixels(maskPixMap);
+
+	mask = CreateGrafPort(&picInfo.sourceRect);
+	
+	seedColor.red = seedColor.green = seedColor.blue = 0xFFFF;
+
+	CalcCMask((BitMap *)*picPixMap,
+			  &mask->portBits,
+			  &picInfo.sourceRect,
+			  &picInfo.sourceRect,
+			  &seedColor,
+			  0,
+			  0L);
+	
+	CopyBits(&mask->portBits,
+			 (BitMap *)*maskPixMap,
+			 &picInfo.sourceRect,
+			 &picInfo.sourceRect,
+			 notSrcCopy, // invert
+			 NULL);
+	
+	DisposeGrafPort(mask);  
+
 	SetGWorld(startupPort, startupDevice);
 
 
@@ -590,22 +736,6 @@ void clip2cicn(short cicnID)
 	HUnlock(pic);
 	HUnlock((Handle)colorTable);
 }
-
-void CloseScheme(void)
-{
-	/*MenuHandle	menu;
-	
-	menu = GetMenuHandle(mFile);
-	EnableItem(menu, iOpenScheme);
-	DisableItem(menu, iCloseScheme);
-	menu = GetMenuHandle(mParts);
-	DisableItem(menu, 0);
-
-
-	CloseWindow(previewWindow);
-	*/
-}
-
 
 void HandleEditChoice(int item)
 {

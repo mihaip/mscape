@@ -21,13 +21,13 @@ resource 'ALRT' (3000) {
 	3000,
 	{	/* array: 4 elements */
 		/* [1] */
-		OK, visible, silent,
+		OK, visible, sound1,
 		/* [2] */
-		OK, visible, silent,
+		OK, visible, sound1,
 		/* [3] */
-		OK, visible, silent,
+		OK, visible, sound1,
 		/* [4] */
-		OK, visible, silent
+		OK, visible, sound1
 	},
 	alertPositionMainScreen
 };
