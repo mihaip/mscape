@@ -1,4 +1,4 @@
-/* Resource fork of software/releases/clip2icns/Goodies/Gradient Test */
+/* Resource fork of software/releases/clip2icns/Goodies/Sample Icons (ready to paste)/Gradient Test */
 resource 'PICT' (256) {
 	4456,
 	{0, 0, 32, 80},

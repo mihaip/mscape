@@ -1,4 +1,4 @@
-/* Resource fork of software/releases/clip2icns/Goodies/Translucent iMac Folder */
+/* Resource fork of software/releases/clip2icns/Goodies/Sample Icons (ready to paste)/Translucent iMac Folder */
 resource 'PICT' (256) {
 	2940,
 	{0, 0, 32, 80},

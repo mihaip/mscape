@@ -1,4 +1,4 @@
-clip2icns 1.1
+clip2icns 1.1.1
 by Mihai Parparita
 $10 Shareware
 mihai@mscape.com
@@ -52,6 +52,13 @@ Billy Martin
 
 Version History
 
+1.1.1 December 7 1998
+ - fixed a rare compression bug
+ - included a Photoshop Action which takes a layer and its mask and copies them to the clipboard, ready to be imported into clip2icns
+ - when Generate Old Style Icons is turned on, icl4 resources are generated too
+ - improved keyboard handling in dialogs
+ - fixed a sporadic clipboard export bug
+
 1.1 October 31 1998
  - fixed a serious compression bug
  - when you type in an ID in the insertion or export dialogs, that icon will be previewed and the menu will show its name
@@ -66,12 +73,16 @@ Version History
 
 Future Plans
 
-I'm planning to turn this tool into a Photoshop plug-in which takes a layer and it's transparency data and converts it into an icon (thus greatly easing icon creation if you use many transparency effects).
+Two words: Icon Editor.
+
 
 Thanks
 
 All the beta testers, who put up with my very informal releases.
 Emy Parparita for helping me out with the compression.
 Mathemaesthetics for creating Resorcerer, the only tool that can currently disassemble (and soon view) icns.
-All the people who helped with clip2icns.
-Arlo Rose for giving me the icns specs. Although, no thanks to him for not shipping my hat properly or not telling me about the compression :p
+All the people who helped with clip2cicn.
+
+No Thanks
+
+Arlo Rose: where's my stuff?

@@ -55,6 +55,8 @@ const static int iPreferences = 9;
 // dialog items
 const static int kOk = 1;
 const static int kAboutPic = 2;
+const static int kHomepageAddress = 7;
+const static int kEmailAddress = 8;
 
 const static int kInsert = 1;
 const static int kCancel = 2;
@@ -135,8 +137,9 @@ void		DrawImageWell(Rect bounds);
 OSStatus	GetFileNav(void);
 OSStatus	GetFileOld(void);
 void		GeticnsID(bool createFile);
-void		GetIconName(int ID, Str255 name);
+void		GetIconMenu(int ID, int* group, int* item, Str255 name);
 void		GetExporticns(void);
+pascal bool StandardDialogFilter(DialogPtr positionGlyphs, EventRecord* eventPtr, short* itemHit);
 void		clip2icns(short icnsID, Str255 icnsName, int flags);
 void 		CloseScheme(void);
 void		HandleEditChoice(int item);

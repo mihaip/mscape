@@ -1,0 +1,24 @@
+Photoshop Action
+by Mihai Parparita
+part of the clip2icns package
+mihai@mscape.com
+http://www.mscape.com/
+
+Introduction
+
+This Photoshop Action is designed to help those you who use Photoshop for your graphics work. It takes a layer and its mask and places it into the keyboard in the format required by clip2icns.
+
+Usage
+
+The first step is to import the action into the Photoshop Actions palette. First you must show you Actions palette, if it is not already on the screen. To do this select Show Actions from the Windows menu. Then click on the little triangle in the top right corner of the palette. From the menu that shows up, select Load Actions.... Locate the actions file (it's in the Photoshop Action folder, which is in the Goodies folder within your clip2icns folder). You should have a new folder in your actions palette, Split Layer + Mask. If necessary, click on the disclosure triangle to the right of the folder in order to open it. Within the folder you should see an action called Copy Icons to Clipboard. This is the action that we will use.
+
+You must make sure that your Photoshop file contains two layers, one name large and one name small. Also, each layer should be in the shape of a 32x32 and 16x16 square respectively (their position on the canvas does not matter, but their dimensions do). You Layers palette should contain something like this:
+
+Ê
+
+
+
+
+When you have set up the layers, simply select the action in the Actions pallette, press play, and you should end up with a new file that contains the icons and masks placed in the clip2icns arrangement, and the icon in the clipboard ready to be pasted in using clip2icns.
+
+

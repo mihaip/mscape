@@ -1,4 +1,4 @@
-/* Resource fork of software/releases/clip2icns/Goodies/Default Folder */
+/* Resource fork of software/releases/clip2icns/Goodies/Sample Icons (ready to paste)/Default Folder */
 resource 'PICT' (256) {
 	4030,
 	{0, 0, 32, 80},
