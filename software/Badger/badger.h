@@ -1,11 +1,12 @@
 #pragma once
 
-#include "commonfunctions.h"
 #include <PictUtils.h>
 #include <MacMemory.h>
 #include <Controls.h>
 #include <AppleEvents.h>
 #include <Navigation.h>
+#include "Icons.h"
+#include "commonfunctions.h"
 
 // file types
 
@@ -116,6 +117,7 @@ OSStatus	NewIconSetNav(void);
 OSStatus	NewIconSetOld(void);
 void		EditBadges(void);
 void		PositionBadges(void);
+bool 		CheckClipboard(void);
 void		MakeNewSet(void);
 void 		MergeIcon(int ID);
 void		DrawImageWell(Rect bounds);
@@ -123,8 +125,8 @@ OSStatus	GetBadgesNav(void);
 OSStatus	GetBadgesOld(void);
 IconFamilyElement* GetIcon(long iconType, IconFamilyHandle icnsHandle);
 void		GetBaseFolder(void);
-void 		CloseScheme(void);
 void		HandleEditChoice(int item);
+void		clip2icns(short icnsID, Str255 icnsName, int flags);
 
 // --- Globals --- //
 
@@ -136,9 +138,10 @@ extern FSSpec		badgesSpec;
 extern FSSpec		setSpec;
 extern FSSpec		currentScheme;
 extern short		appFile;
-extern GWorldPtr	baseLarge8BitIconGWorld, baseLargeIconGWorld, baseLargeMaskGWorld, baseSmallIconGWorld, baseSmallMaskGWorld, baseLarge1BitMaskGWorld;
-extern PixMapHandle	baseLarge8BitIconPix, baseLargeIconPix, baseLargeMaskPix, baseSmallIconPix, baseSmallMaskPix, baseLarge1BitMaskPix;	
-
+extern GWorldPtr	baseLarge8BitIconGWorld, baseLargeIconGWorld, baseLargeMaskGWorld, baseLarge1BitMaskGWorld;
+extern GWorldPtr	baseSmall8BitIconGWorld, baseSmallIconGWorld, baseSmallMaskGWorld, baseSmall1BitMaskGWorld; 
+extern PixMapHandle	baseLarge8BitIconPix, baseLargeIconPix, baseLargeMaskPix, baseLarge1BitMaskPix;
+extern PixMapHandle	baseSmall8BitIconPix, baseSmallIconPix, baseSmallMaskPix, baseSmall1BitMaskPix;
 
 
 

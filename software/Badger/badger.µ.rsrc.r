@@ -563,9 +563,9 @@ resource 'vers' (1) {
 	0x1,
 	0x0,
 	development,
-	0x2,
+	0x3,
 	14,
-	"1.0d2",
+	"1.0d3",
 	"©1998 Mihai Parparita"
 };
 
@@ -573,10 +573,10 @@ resource 'vers' (2) {
 	0x1,
 	0x0,
 	development,
-	0x2,
+	0x3,
 	14,
-	"1.0d2",
-	"badger 1.0d2"
+	"1.0d3",
+	"badger 1.0d3"
 };
 
 resource 'dlgx' (-6043) {

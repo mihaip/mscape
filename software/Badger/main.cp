@@ -1,4 +1,3 @@
-#include "Icons.h"
 #include "badger.h"
 
 void main(void)
@@ -634,8 +633,25 @@ void GetBaseFolder(void)
 	baseLarge8BitIconPix = GetGWorldPixMap(baseLarge8BitIconGWorld);
 	LockPixels(baseLarge8BitIconPix);
 	
+	NewGWorld(&baseSmallIconGWorld, 32, &smallIconRect, NULL, NULL, 0);
+	baseSmallIconPix = GetGWorldPixMap(baseSmallIconGWorld);
+	LockPixels(baseSmallIconPix);
+	
+	NewGWorld(&baseSmallMaskGWorld, 8, &smallIconRect, grayscaleTable, NULL, 0);
+	baseSmallMaskPix = GetGWorldPixMap(baseSmallMaskGWorld);
+	LockPixels(baseSmallMaskPix);
+	
+	NewGWorld(&baseSmall1BitMaskGWorld, 1,  &smallIconRect, NULL, NULL, 0);
+	baseSmall1BitMaskPix = GetGWorldPixMap(baseSmall1BitMaskGWorld);
+	LockPixels(baseSmall1BitMaskPix);
+	
+	NewGWorld(&baseSmall8BitIconGWorld, 8, &smallIconRect, NULL, NULL, 0);
+	baseSmall8BitIconPix = GetGWorldPixMap(baseSmall8BitIconGWorld);
+	LockPixels(baseSmall8BitIconPix);
+	
 	baseicnsHandle = (IconFamilyHandle)Get1Resource('icns', -3999);
 	
+	// getting large base folder
 	elementPtr = GetIcon('il32', baseicnsHandle);
 	CropPixMap(baseLargeIconPix, 128);
 	BlockMove(elementPtr->elementData, (*baseLargeIconPix)->baseAddr, large32BitSize);
@@ -651,11 +667,32 @@ void GetBaseFolder(void)
 	elementPtr = GetIcon('ICN#', baseicnsHandle);
 	CropPixMap(baseLarge1BitMaskPix, 4);
 	BlockMove(&(elementPtr->elementData[large1BitSize/2]), (*baseLarge1BitMaskPix)->baseAddr, large1BitSize/2);
+	
+	// getting small base folder
+	elementPtr = GetIcon('is32', baseicnsHandle);
+	CropPixMap(baseSmallIconPix, 64);
+	BlockMove(elementPtr->elementData, (*baseSmallIconPix)->baseAddr, small32BitSize);
+	
+	elementPtr = GetIcon('s8mk', baseicnsHandle);
+	CropPixMap(baseSmallMaskPix, 16);
+	BlockMove(elementPtr->elementData, (*baseSmallMaskPix)->baseAddr, small8BitMaskSize);
+	
+	elementPtr = GetIcon('ics8', baseicnsHandle);
+	CropPixMap(baseSmall8BitIconPix, 16);
+	BlockMove(elementPtr->elementData, (*baseSmall8BitIconPix)->baseAddr, small8BitSize);
+	
+	elementPtr = GetIcon('ics#', baseicnsHandle);
+	CropPixMap(baseSmall1BitMaskPix, 2);
+	BlockMove(&(elementPtr->elementData[small1BitSize/2]), (*baseSmall1BitMaskPix)->baseAddr, small1BitSize/2);
+	
+	DisposeCTable(grayscaleTable);
 }
 
-#define DisposeAndReturn();\
+#define DisposeAndReturn()\
 {\
+	SysBeep(6);\
 	HUnlock((Handle)badgeicnsHandle);\
+	DisposeHandle((Handle)badgeicnsHandle);\
 	CloseResFile(badges);\
 	UseResFile(appFile);\
 	return;\
@@ -663,11 +700,17 @@ void GetBaseFolder(void)
 
 void MergeIcon(int ID)
 {
-	GWorldPtr			badgeLargeIconGWorld, badgeLargeMaskGWorld, badgeSmallIconGWorld, badgeSmallMaskGWorld, badgeLarge1BitMaskGWorld, tempGWorld, targetIconGWorld, targetMaskGWorld, target8BitIconGWorld;
-	PixMapHandle		badgeLargeIconPix, badgeLargeMaskPix, badgeSmallIconPix, badgeSmallMaskPix, badgeLarge1BitMaskPix, tempPix, targetIconPix, targetMaskPix, target8BitIconPix;
-	Rect				largeIconRect={0,0,32, 32}, smallIconRect = {0, 0, 16, 16}, badgeRect;
+	GWorldPtr			badgeLargeIconGWorld, badgeLargeMaskGWorld, badgeLarge1BitMaskGWorld, tempGWorld;
+	GWorldPtr			badgeSmallIconGWorld, badgeSmallMaskGWorld, badgeSmall1BitMaskGWorld;
+	GWorldPtr			targetIconGWorld, targetMaskGWorld, target8BitIconGWorld;
+	GWorldPtr			targetSmallIconGWorld, targetSmallMaskGWorld, targetSmall8BitIconGWorld;
+	PixMapHandle		badgeLargeIconPix, badgeLargeMaskPix, badgeLarge1BitMaskPix, tempPix;
+	PixMapHandle		badgeSmallIconPix, badgeSmallMaskPix, badgeSmall1BitMaskPix;
+	PixMapHandle		targetIconPix, targetMaskPix, target8BitIconPix;
+	PixMapHandle		targetSmallIconPix, targetSmallMaskPix, targetSmall8BitIconPix;
+	Rect				largeIconRect={0,0,32, 32}, smallIconRect = {0, 0, 16, 16}, badgeRect, smallBadgeRect;
 	IconFamilyHandle	targeticnsHandle, badgeicnsHandle;
-	IconFamilyElement	*il32Ptr, *l8mkPtr, *ICNPtr, *elementPtr;
+	IconFamilyElement	*il32Ptr, *l8mkPtr, *ICNPtr, *elementPtr, *is32Ptr, *s8mkPtr, *icsPtr;
 	CTabHandle			grayscaleTable;
 	long				icnsSize;
 	RGBColor			currentForeColor, currentBackColor;
@@ -675,7 +718,7 @@ void MergeIcon(int ID)
 	CGrafPtr			curPort;
 	GDHandle			curDevice;
 	tOffset**			offsetHandle;
-	int					hOffset=0, vOffset=0;
+	int					hOffset=0, vOffset=0, smallHOffset=0, smallVOffset=0;
 	RgnHandle			ignoredRgn;
 	IconRef				iconRef;
 
@@ -694,7 +737,10 @@ void MergeIcon(int ID)
 		HLock((Handle)offsetHandle);
 		hOffset = (**offsetHandle).hOffset;
 		vOffset = (**offsetHandle).vOffset;
+		smallHOffset = (**offsetHandle).smallHOffset;
+		smallVOffset = (**offsetHandle).smallVOffset;
 		HUnlock((Handle)offsetHandle);
+		ReleaseResource((Handle)offsetHandle);
 	}
 	else
 	{
@@ -704,37 +750,46 @@ void MergeIcon(int ID)
 			HLock((Handle)offsetHandle);
 			hOffset = (**offsetHandle).hOffset;
 			vOffset = (**offsetHandle).vOffset;
+			smallHOffset = (**offsetHandle).smallHOffset;
+			smallVOffset = (**offsetHandle).smallVOffset;
 			HUnlock((Handle)offsetHandle);
+			ReleaseResource((Handle)offsetHandle);
 		}
 	}
 
 	badgeicnsHandle = (IconFamilyHandle)GetResource('icns', ID);
 	if (badgeicnsHandle == NULL)
-	{
-		DisplayValue(ID);
 		DisposeAndReturn();
-	}
+		
 	HLock((Handle)badgeicnsHandle);
+	
 	il32Ptr = GetIcon('il32', badgeicnsHandle);
 	if (il32Ptr == NULL)
-	{
 		DisposeAndReturn();
-	}
 	
 	l8mkPtr = GetIcon('l8mk', badgeicnsHandle);
 	if (l8mkPtr == NULL)
-	{
 		DisposeAndReturn();
-	}
 	
 	ICNPtr = GetIcon('ICN#', badgeicnsHandle);
 	if (ICNPtr == NULL)
-	{
 		DisposeAndReturn();
-	}
-
+	is32Ptr = GetIcon('is32', badgeicnsHandle);
+	if (is32Ptr == NULL)
+		DisposeAndReturn();
+	
+	s8mkPtr = GetIcon('s8mk', badgeicnsHandle);
+	if (s8mkPtr == NULL)
+		DisposeAndReturn();
+	
+	icsPtr = GetIcon('ics#', badgeicnsHandle);
+	if (icsPtr == NULL)
+		DisposeAndReturn();
+	
 	ForeColor(blackColor);
 	BackColor(whiteColor);
+	
+	grayscaleTable = GetCTable(40);
 	
 	NewGWorld(&targetIconGWorld, 32, &largeIconRect, NULL, NULL, 0);
 	targetIconPix = GetGWorldPixMap(targetIconGWorld);
@@ -760,7 +815,6 @@ void MergeIcon(int ID)
 	
 	CropPixMap(target8BitIconPix, 32);
 	
-	grayscaleTable = GetCTable(40);
 	NewGWorld(&targetMaskGWorld, 8, &largeIconRect, grayscaleTable, NULL, 0);
 	targetMaskPix = GetGWorldPixMap(targetMaskGWorld);
 	LockPixels(targetMaskPix);
@@ -773,7 +827,6 @@ void MergeIcon(int ID)
 	BlockMove(il32Ptr->elementData, (*badgeLargeIconPix)->baseAddr, large32BitSize);
 	ScrollRect(&largeIconRect, hOffset, vOffset, ignoredRgn);
 	
-	grayscaleTable = GetCTable(40);
 	NewGWorld(&badgeLargeMaskGWorld, 8, &largeIconRect, grayscaleTable, NULL, 0);
 	SetGWorld(badgeLargeMaskGWorld, NULL);
 	badgeLargeMaskPix = GetGWorldPixMap(badgeLargeMaskGWorld);
@@ -790,19 +843,11 @@ void MergeIcon(int ID)
 	BlockMove(&(ICNPtr->elementData[large1BitSize/2]), (*badgeLarge1BitMaskPix)->baseAddr, large1BitSize/2);
 	ScrollRect(&largeIconRect, hOffset, vOffset, ignoredRgn);
 	
-	DisposeRgn(ignoredRgn);
-	
-	HUnlock((Handle)badgeicnsHandle);
-	CloseResFile(badges);
-	UseResFile(appFile);
-	
 	NewGWorld(&tempGWorld, 8, &largeIconRect, grayscaleTable, NULL, 0);
 	SetGWorld(tempGWorld, NULL);
 	EraseRect(&largeIconRect);
 	tempPix = GetGWorldPixMap(tempGWorld);
 	LockPixels(tempPix);
-	
-	
 	
 	CopyBits((BitMap *) *baseLarge1BitMaskPix,
 			 (BitMap *) *badgeLarge1BitMaskPix,
@@ -847,6 +892,9 @@ void MergeIcon(int ID)
 	
 	CropPixMap(targetIconPix, 32*32/8);
 	
+	UnlockPixels(tempPix);
+	DisposeGWorld(tempGWorld);
+	
 	/*****************/		 
 	
 	CopyBits((BitMap *) *baseLargeMaskPix,
@@ -867,9 +915,141 @@ void MergeIcon(int ID)
 	InvertRect(&largeIconRect);
 	
 	CropPixMap(targetMaskPix, 32);
+
+/******************* small icon ************************/
+	NewGWorld(&targetSmallIconGWorld, 32, &smallIconRect, NULL, NULL, 0);
+	targetSmallIconPix = GetGWorldPixMap(targetSmallIconGWorld);
+	LockPixels(targetSmallIconPix);
 	
+	NewGWorld(&targetSmall8BitIconGWorld, 8, &smallIconRect, NULL, NULL, 0);
+	targetSmall8BitIconPix = GetGWorldPixMap(targetSmall8BitIconGWorld);
+	LockPixels(targetSmall8BitIconPix);
+	SetGWorld(targetSmall8BitIconGWorld, NULL);
+	
+	CopyBits((BitMap *) *baseSmall8BitIconPix,
+			 (BitMap *) *targetSmall8BitIconPix,
+			 &smallIconRect,
+			 &smallIconRect,
+			 srcCopy,
+			 NULL);
+	
+	smallBadgeRect = smallIconRect;
+	OffsetRect(&smallBadgeRect, smallHOffset, smallVOffset);
+	RegisterIconRefFromResource('Bdgr', 'test', &badgesSpec, ID, &iconRef);
+	PlotIconRef(&smallBadgeRect,atNone,ttNone,kIconServicesNormalUsageFlag,iconRef);
+	ReleaseIconRef(iconRef);
+	
+	CropPixMap(target8BitIconPix, 16);
+	
+	NewGWorld(&targetSmallMaskGWorld, 8, &smallIconRect, grayscaleTable, NULL, 0);
+	targetSmallMaskPix = GetGWorldPixMap(targetSmallMaskGWorld);
+	LockPixels(targetSmallMaskPix);
+	
+	NewGWorld(&badgeSmallIconGWorld, 32, &smallIconRect, NULL, NULL, 0);
+	SetGWorld(badgeSmallIconGWorld, NULL);
+	badgeSmallIconPix = GetGWorldPixMap(badgeSmallIconGWorld);
+	LockPixels(badgeSmallIconPix);
+	CropPixMap(badgeSmallIconPix, 64);
+	BlockMove(is32Ptr->elementData, (*badgeSmallIconPix)->baseAddr, small32BitSize);
+	ScrollRect(&smallIconRect, smallHOffset, smallVOffset, ignoredRgn);
+	
+	NewGWorld(&badgeSmallMaskGWorld, 8, &smallIconRect, grayscaleTable, NULL, 0);
+	SetGWorld(badgeSmallMaskGWorld, NULL);
+	badgeSmallMaskPix = GetGWorldPixMap(badgeSmallMaskGWorld);
+	LockPixels(badgeSmallMaskPix);
+	CropPixMap(badgeSmallMaskPix, 16);
+	BlockMove(s8mkPtr->elementData, (*badgeSmallMaskPix)->baseAddr, small8BitMaskSize);
+	ScrollRect(&smallIconRect, smallHOffset, smallVOffset, ignoredRgn);
+	
+	NewGWorld(&badgeSmall1BitMaskGWorld, 1,  &smallIconRect, NULL, NULL, 0);
+	SetGWorld(badgeSmall1BitMaskGWorld, NULL);
+	badgeSmall1BitMaskPix = GetGWorldPixMap(badgeSmall1BitMaskGWorld);
+	LockPixels(badgeSmall1BitMaskPix);
+	CropPixMap(badgeSmall1BitMaskPix, 2);
+	BlockMove(&(icsPtr->elementData[small1BitSize/2]), (*badgeSmall1BitMaskPix)->baseAddr, small1BitSize/2);
+	ScrollRect(&smallIconRect, smallHOffset, smallVOffset, ignoredRgn);
+	
+	DisposeRgn(ignoredRgn);
+	
+	HUnlock((Handle)badgeicnsHandle);
+	ReleaseResource((Handle)badgeicnsHandle);
+	CloseResFile(badges);
+	UseResFile(appFile);
+	
+	NewGWorld(&tempGWorld, 8, &smallIconRect, grayscaleTable, NULL, 0);
+	SetGWorld(tempGWorld, NULL);
+	EraseRect(&smallIconRect);
+	tempPix = GetGWorldPixMap(tempGWorld);
+	LockPixels(tempPix);
+	
+	CopyBits((BitMap *) *baseSmall1BitMaskPix,
+			 (BitMap *) *badgeSmall1BitMaskPix,
+			 &smallIconRect,
+			 &smallIconRect,
+			 srcOr,
+			 NULL);
+	
+	CopyBits((BitMap *) *baseSmallIconPix,
+			 (BitMap *) *targetSmallIconPix,
+			 &smallIconRect,
+			 &smallIconRect,
+			 srcCopy,
+			 NULL);
+	
+	CopyMask((BitMap*) *badgeSmallMaskPix,
+			 (BitMap*) *baseSmall1BitMaskPix,
+			 (BitMap*) *tempPix,
+			 &smallIconRect,
+			 &smallIconRect,
+			 &smallIconRect
+			);	
+	CopyDeepMask((BitMap *) *badgeSmallIconPix,
+				 (BitMap *) *tempPix,
+				 (BitMap *) *targetSmallIconPix,
+				 &smallIconRect,
+				 &smallIconRect,
+			 	 &smallIconRect,
+				 srcCopy,
+				 NULL);
+				 
+	SetGWorld(baseSmall1BitMaskGWorld, NULL);
+	InvertRect(&smallIconRect);
+	
+	CopyMask((BitMap*) *badgeSmallIconPix,
+			 (BitMap*) *baseSmall1BitMaskPix,
+			 (BitMap *) *targetSmallIconPix,
+			 &smallIconRect,
+			 &smallIconRect,
+			 &smallIconRect
+			);
+	
+	CropPixMap(targetSmallIconPix, 16*32/8);
+	
+	/*****************/		 
+	
+	CopyBits((BitMap *) *baseSmallMaskPix,
+			 (BitMap *) *targetSmallMaskPix,
+			 &smallIconRect,
+			 &smallIconRect,
+			 srcCopy,
+			 NULL);
+			 
+	CopyMask((BitMap*) *badgeSmallMaskPix,
+			 (BitMap*) *baseSmall1BitMaskPix,
+			 (BitMap *) *targetSmallMaskPix,
+			 &smallIconRect,
+			 &smallIconRect,
+			 &smallIconRect
+			);
+			
+	InvertRect(&smallIconRect);
+	
+	CropPixMap(targetSmallMaskPix, 16);
+	
+		
 	icnsSize = sizeof(IconFamilyResource) - sizeof(IconFamilyElement);
 	icnsSize += sizeof(IconFamilyElement) * 4 + large32BitSize - 4 + large8BitMaskSize - 4 + large1BitSize - 4 + large8BitSize - 4;
+	icnsSize += sizeof(IconFamilyElement) * 4 + small32BitSize - 4 + small8BitMaskSize - 4 + small1BitSize - 4 + small8BitSize - 4;
 	targeticnsHandle = (IconFamilyHandle) NewHandleClear(icnsSize);
 	
 	(**targeticnsHandle).resourceType = 'icns';
@@ -897,6 +1077,29 @@ void MergeIcon(int ID)
 	elementPtr->elementSize = large8BitSize + sizeof(IconFamilyElement) - 4;
 	BlockMove((*target8BitIconPix)->baseAddr, elementPtr->elementData, large8BitSize);
 	
+	// small stuff
+	elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
+	elementPtr->elementType = 'ics#';
+	elementPtr->elementSize = small1BitSize + sizeof(IconFamilyElement) - 4;
+	BlockMove( (*badgeSmall1BitMaskPix)->baseAddr,elementPtr->elementData, small1BitSize/2);
+	BlockMove( (*badgeSmall1BitMaskPix)->baseAddr, &elementPtr->elementData[small1BitSize / 2], small1BitSize/2);
+	
+	elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
+	elementPtr->elementType = 'is32';
+	elementPtr->elementSize = small32BitSize + sizeof(IconFamilyElement) - 4;
+	BlockMove( (*targetSmallIconPix)->baseAddr,elementPtr->elementData, small32BitSize);
+	
+	elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
+	elementPtr->elementType = 's8mk';
+	elementPtr->elementSize = small8BitMaskSize + sizeof(IconFamilyElement) - 4;
+	BlockMove((*targetSmallMaskPix)->baseAddr, elementPtr->elementData, small8BitMaskSize);
+	
+	elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
+	elementPtr->elementType = 'ics8';
+	elementPtr->elementSize = small8BitSize + sizeof(IconFamilyElement) - 4;
+	BlockMove((*targetSmall8BitIconPix)->baseAddr, elementPtr->elementData, small8BitSize);\
+	
+	
 	set = FSpOpenResFile(&setSpec, fsRdWrPerm);
 	UseResFile(set);
 	DetachResource((Handle)targeticnsHandle);
@@ -908,6 +1111,8 @@ void MergeIcon(int ID)
 	CloseResFile(set);
 	UseResFile(appFile);
 	
+	DisposeHandle((Handle)targeticnsHandle);
+	
 	UnlockPixels(badgeLargeIconPix);
 	DisposeGWorld(badgeLargeIconGWorld);
 	UnlockPixels(badgeLargeMaskPix);
@@ -915,13 +1120,31 @@ void MergeIcon(int ID)
 	UnlockPixels(badgeLarge1BitMaskPix);
 	DisposeGWorld(badgeLarge1BitMaskGWorld);
 	
+	UnlockPixels(badgeSmallIconPix);
+	DisposeGWorld(badgeSmallIconGWorld);
+	UnlockPixels(badgeSmallMaskPix);
+	DisposeGWorld(badgeSmallMaskGWorld);
+	UnlockPixels(badgeSmall1BitMaskPix);
+	DisposeGWorld(badgeSmall1BitMaskGWorld);
+	
 	UnlockPixels(targetIconPix);
 	DisposeGWorld(targetIconGWorld);
 	UnlockPixels(targetMaskPix);
 	DisposeGWorld(targetMaskGWorld);
+	UnlockPixels(target8BitIconPix);
+	DisposeGWorld(target8BitIconGWorld);
+	
+	UnlockPixels(targetSmallIconPix);
+	DisposeGWorld(targetSmallIconGWorld);
+	UnlockPixels(targetSmallMaskPix);
+	DisposeGWorld(targetSmallMaskGWorld);
+	UnlockPixels(targetSmall8BitIconPix);
+	DisposeGWorld(targetSmall8BitIconGWorld);
 	
 	UnlockPixels(tempPix);
 	DisposeGWorld(tempGWorld);
+	
+	DisposeCTable(grayscaleTable);
 	
 	SetGWorld(curPort, curDevice);
 	
@@ -971,7 +1194,7 @@ void MakeNewSet()
 		HLock((Handle)badgeicnsHandle);
 		GetResInfo((Handle)badgeicnsHandle, &ID, &type, string);
 		HUnlock((Handle)badgeicnsHandle);
-		DisposeHandle((Handle)badgeicnsHandle);
+		ReleaseResource((Handle)badgeicnsHandle);
 		CloseResFile(badges);
 		UseResFile(appFile);
 		if (ID != -3999)
@@ -991,13 +1214,54 @@ void MakeNewSet()
 	DisposeGWorld(baseLargeMaskGWorld);
 	UnlockPixels(baseLarge1BitMaskPix);
 	DisposeGWorld(baseLarge1BitMaskGWorld);
+	
+	UnlockPixels(baseSmallIconPix);
+	DisposeGWorld(baseSmallIconGWorld);
+	UnlockPixels(baseSmall8BitIconPix);
+	DisposeGWorld(baseSmall8BitIconGWorld);
+	UnlockPixels(baseSmallMaskPix);
+	DisposeGWorld(baseSmallMaskGWorld);
+	UnlockPixels(baseSmall1BitMaskPix);
+	DisposeGWorld(baseSmall1BitMaskGWorld);
 
 	
 	DisposeDialog(newSet);
 	SetGWorld(startupPort, startupDevice);
 }
 
-#define Refresh();\
+bool CheckClipboard()
+{
+	Handle				pic;
+	long				offset;
+	PictInfo			picInfo;
+	
+	pic = NewHandle (0);
+	if (GetScrap( pic, 'PICT', &offset ) < 0)
+	{
+		DisposeHandle(pic);
+		return false;
+	}
+	
+	GetPictInfo((PicHandle)pic, &picInfo, 0, 0, 0, 0);
+	
+	if ((picInfo.sourceRect.bottom == 32) ||
+		(picInfo.sourceRect.right == 64) ||
+		(picInfo.sourceRect.right == 80) ||
+		(picInfo.sourceRect.right == 16))
+	{
+		;
+	}
+	else
+	{
+		DisposeHandle(pic);
+		return false;
+		
+	}
+	DisposeHandle(pic);
+	return true;
+}
+
+#define WriteToDisk()\
 {\
 	badges = FSpOpenResFile(&badgesSpec, fsRdWrPerm);\
 	UseResFile(badges);\
@@ -1015,17 +1279,20 @@ void MakeNewSet()
 	HLock((Handle)offsetHandle);\
 	(**offsetHandle).hOffset = hOffset;\
 	(**offsetHandle).vOffset = vOffset;\
-	if (hOffset != defaultHOffset || vOffset != defaultVOffset)\
-	{\
-		DetachResource((Handle)offsetHandle);\
-		AddResource((Handle)offsetHandle, 'Ofst', ID, "\p");\
-		ChangedResource((Handle)offsetHandle);\
-		WriteResource((Handle)offsetHandle);\
-		UpdateResFile(badges);\
-	}\
+	(**offsetHandle).smallHOffset = smallHOffset;\
+	(**offsetHandle).smallVOffset = smallVOffset;\
+	DetachResource((Handle)offsetHandle);\
+	AddResource((Handle)offsetHandle, 'Ofst', ID, "\p");\
+	ChangedResource((Handle)offsetHandle);\
+	WriteResource((Handle)offsetHandle);\
+	UpdateResFile(badges);\
 	HUnlock((Handle)offsetHandle);\
 	CloseResFile(badges);\
 	UseResFile(appFile);\
+}
+
+#define Refresh()\
+{\
 	SetGWorld(iconGWorld, NULL);\
 	ForeColor(blackColor);\
 	BackColor(whiteColor);\
@@ -1039,9 +1306,37 @@ void MakeNewSet()
 	PlotIconRef(&badgeRect,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);\
 	ReleaseIconRef(currentIconRef);\
 	CopyBits((BitMap *) (*iconPix),&positionBadges->portBits,&largeIconRect, &targetRect,srcCopy, NULL);\
+	\
+	SetGWorld(smallIconGWorld, NULL);\
+	ForeColor(blackColor);\
+	BackColor(whiteColor);\
+	EraseRect(&smallIconRect);\
+	smallBadgeRect = smallIconRect;\
+	OffsetRect(&smallBadgeRect, smallHOffset, smallVOffset);\
+	RegisterIconRefFromResource('Bdgr', 'test', &badgesSpec, -3999, &currentIconRef);\
+	PlotIconRef(&smallIconRect,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);\
+	ReleaseIconRef(currentIconRef);\
+	RegisterIconRefFromResource('Bdgr', 'test', &badgesSpec, ID, &currentIconRef);\
+	PlotIconRef(&smallBadgeRect,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);\
+	ReleaseIconRef(currentIconRef);\
+	CopyBits((BitMap *) (*smallIconPix),&positionBadges->portBits,&smallIconRect, &smallTargetRect,srcCopy, NULL);\
+	\
 	SetPort(positionBadges);\
+	FillCRect(&desktopPreview, desktopPattern);\
 	RGBForeColor(&currentForeColor);\
 	RGBBackColor(&currentBackColor);\
+	previewLargeBadge = previewLargeBase;\
+	previewSmallBadge = previewSmallBase;\
+	OffsetRect(&previewLargeBadge, hOffset, vOffset);\
+	OffsetRect(&previewSmallBadge, smallHOffset, smallVOffset);\
+	RegisterIconRefFromResource('Bdgr', 'test', &badgesSpec, -3999, &currentIconRef);\
+	PlotIconRef(&previewLargeBase,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);\
+	PlotIconRef(&previewSmallBase,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);\
+	ReleaseIconRef(currentIconRef);\
+	RegisterIconRefFromResource('Bdgr', 'test', &badgesSpec, ID, &currentIconRef);\
+	PlotIconRef(&previewLargeBadge,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);\
+	PlotIconRef(&previewSmallBadge,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);\
+	ReleaseIconRef(currentIconRef);\
 }\
 
 void PositionBadges(void)
@@ -1049,19 +1344,22 @@ void PositionBadges(void)
 	DialogPtr		positionBadges;
 	bool			dialogDone;
 	short			itemHit;
-	GWorldPtr		iconGWorld;
-	PixMapHandle	iconPix;
-	Rect			targetRect, smallTargetRect, badgeRect, largeIconRect = {0,0,32,32}, itemRect;
+	GWorldPtr		iconGWorld, smallIconGWorld;
+	PixMapHandle	iconPix, smallIconPix;
+	Rect			targetRect, smallTargetRect, badgeRect, smallBadgeRect, largeIconRect = {0,0,32,32}, smallIconRect = {0,0,16,16}, itemRect;
+	Rect			previewLargeBase, previewLargeBadge, previewSmallBase, previewSmallBadge, desktopPreview;
 	Handle			item;
 	short			itemType;
 	RGBColor		currentForeColor, currentBackColor;
 	long			ID=-20801;
 	short			badges;
 	short			hOffset=0, vOffset=0, i, defaultHOffset = 0, defaultVOffset = 0;
+	short			smallHOffset=0, smallVOffset = 0, smallDefaultHOffset = 0, smallDefaultVOffset = 0;
 	IconRef			currentIconRef;
 	long			selectedIcns;
 	Str255			IDAsString, menuItemText, string;
 	tOffset**		offsetHandle;
+	PixPatHandle	desktopPattern;
 	
 	badges = FSpOpenResFile(&badgesSpec, fsRdPerm);
 	UseResFile(badges);
@@ -1073,6 +1371,11 @@ void PositionBadges(void)
 		hOffset = defaultHOffset;
 		defaultVOffset = (**offsetHandle).vOffset;
 		vOffset = defaultVOffset;
+		
+		smallDefaultHOffset = (**offsetHandle).smallHOffset;
+		smallHOffset = smallDefaultHOffset;
+		smallDefaultVOffset = (**offsetHandle).smallVOffset;
+		smallVOffset = smallDefaultVOffset;
 		HUnlock((Handle)offsetHandle);
 	}
 	offsetHandle = (tOffset**)Get1Resource('Ofst', ID);
@@ -1081,6 +1384,9 @@ void PositionBadges(void)
 		HLock((Handle)offsetHandle);
 		hOffset = (**offsetHandle).hOffset;
 		vOffset = (**offsetHandle).vOffset;
+		
+		smallHOffset = (**offsetHandle).smallHOffset;
+		smallVOffset = (**offsetHandle).smallVOffset;
 		HUnlock((Handle)offsetHandle);
 	}
 	CloseResFile(badges);
@@ -1096,11 +1402,39 @@ void PositionBadges(void)
 	GetDialogItem(positionBadges, kIconPreview, &itemType, &item, &targetRect);
 	DrawImageWell(targetRect);
 	
+	GetDialogItem(positionBadges, kSmallIconPreview, &itemType, &item, &smallTargetRect);
+	DrawImageWell(smallTargetRect);
+	
+	desktopPattern = GetPixPat(16);
+	GetDialogItem(positionBadges, kDesktopPreview, &itemType, &item, &desktopPreview);
+	FillCRect(&desktopPreview, desktopPattern);
+	DrawImageWell(desktopPreview);
+	
+	GetDialogItem(positionBadges, kDesktopPreview, &itemType, &item, &itemRect);
+	itemRect.left += (itemRect.right - itemRect.left)/2;
+	previewLargeBase = largeIconRect;
+	MakeTargetRect(itemRect, &previewLargeBase);
+	
+	GetDialogItem(positionBadges, kDesktopPreview, &itemType, &item, &itemRect);
+	itemRect.right -= (itemRect.right - itemRect.left)/2;
+	previewSmallBase = smallIconRect;
+	MakeTargetRect(itemRect, &previewSmallBase);
+	
+	if (!CheckClipboard())
+	{
+		GetDialogItem(positionBadges, kInsertClipboard, &itemType, &item, &itemRect);
+		HiliteControl((ControlHandle)item, 255);
+	}
+	
 	ShowWindow( positionBadges );
 	
 	NewGWorld(&iconGWorld, 32, &largeIconRect, NULL, NULL, 0);
 	iconPix = GetGWorldPixMap(iconGWorld);
 	LockPixels(iconPix);
+	
+	NewGWorld(&smallIconGWorld, 32, &smallIconRect, NULL, NULL, 0);
+	smallIconPix = GetGWorldPixMap(smallIconGWorld);
+	LockPixels(smallIconPix);
 	Refresh();
 	
 	SetPort(positionBadges);
@@ -1112,13 +1446,18 @@ void PositionBadges(void)
 		
 		switch (itemHit)
 		{
-			case kOK: dialogDone = true; break;
-			case kInsertClipboard: break;
+			case kOK: WriteToDisk(); dialogDone = true; break;
+			case kInsertClipboard: clip2icns(ID, "\p", 0); SetPort(positionBadges); Refresh(); break;
 			case kShiftUp: vOffset--; Refresh(); break;
 			case kShiftDown: vOffset++; Refresh(); break;
 			case kShiftLeft: hOffset--; Refresh(); break;
 			case kShiftRight: hOffset++; Refresh(); break;
+			case kSmallShiftUp: smallVOffset--; Refresh(); break;
+			case kSmallShiftDown: smallVOffset++; Refresh(); break;
+			case kSmallShiftLeft: smallHOffset--; Refresh(); break;
+			case kSmallShiftRight: smallHOffset++; Refresh(); break;
 			case kPopup:
+				WriteToDisk();
 				GetDialogItem(positionBadges, kPopup, &itemType, &item, &itemRect);
 				selectedIcns = GetControlValue((ControlHandle)item);
 				GetMenuItemText(GetMenu(200), selectedIcns, menuItemText);
@@ -1137,26 +1476,35 @@ void PositionBadges(void)
 					HLock((Handle)offsetHandle);
 					hOffset = (**offsetHandle).hOffset;
 					vOffset = (**offsetHandle).vOffset;
+					smallHOffset = (**offsetHandle).smallHOffset;
+					smallVOffset = (**offsetHandle).smallVOffset;
 					HUnlock((Handle)offsetHandle);
 				}
 				else
 				{
 					hOffset = defaultHOffset;
 					vOffset = defaultVOffset;
+					smallHOffset = smallDefaultHOffset;
+					smallVOffset = smallDefaultVOffset;
 				}
 				CloseResFile(badges);
 				UseResFile(appFile);
 				
 				DrawImageWell(targetRect);
+				DrawImageWell(smallTargetRect);
+				DrawImageWell(desktopPreview);
 				Refresh();
 				break;
 		}
 		
 		
 	}
+	DisposePixPat(desktopPattern);
 	SetGWorld(startupPort, startupDevice);
 	UnlockPixels(iconPix);
 	DisposeGWorld(iconGWorld);
+	UnlockPixels(smallIconPix);
+	DisposeGWorld(smallIconGWorld);
 	DisposeDialog(positionBadges);
 	
 }

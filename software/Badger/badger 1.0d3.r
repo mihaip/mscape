@@ -1,4 +1,4 @@
-/* Resource fork of software/Badger/badger 1.0d2 */
+/* Resource fork of software/Badger/badger 1.0d3 */
 resource 'DITL' (3000, "Basic Alert") {
 	{	/* array DITLarray: 2 elements */
 		/* [1] */
@@ -240,7 +240,7 @@ resource 'MENU' (200) {
 	allEnabled,
 	enabled,
 	"System Folders",
-	{	/* array: 55 elements */
+	{	/* array: 49 elements */
 		/* [1] */
 		"Ð20801 Internet Search Sites", noIcon, noKey, noMark, plain,
 		/* [2] */
@@ -256,100 +256,88 @@ resource 'MENU' (200) {
 		/* [7] */
 		"Ð20723 Appearance", noIcon, noKey, noMark, plain,
 		/* [8] */
-		"Ð3999 Generic Folder", noIcon, noKey, noMark, plain,
-		/* [9] */
-		"Ð3997 Open Folder", noIcon, noKey, noMark, plain,
-		/* [10] */
 		"Ð3994 Private Folder", noIcon, noKey, noMark, plain,
-		/* [11] */
-		"Ð3993 Trash Empty", noIcon, noKey, noMark, plain,
-		/* [12] */
-		"Ð3992 Desktop", noIcon, noKey, noMark, plain,
-		/* [13] */
-		"Ð3984 Trash Full", noIcon, noKey, noMark, plain,
-		/* [14] */
+		/* [9] */
 		"Ð3983 System Folder", noIcon, noKey, noMark, plain,
-		/* [15] */
+		/* [10] */
 		"Ð3982 Apple Menu Items", noIcon, noKey, noMark, plain,
-		/* [16] */
+		/* [11] */
 		"Ð3981 Startup Items", noIcon, noKey, noMark, plain,
-		/* [17] */
+		/* [12] */
 		"Ð3980 Shared Folder", noIcon, noKey, noMark, plain,
-		/* [18] */
+		/* [13] */
 		"Ð3979 Drop Folder", noIcon, noKey, noMark, plain,
-		/* [19] */
+		/* [14] */
 		"Ð3978 Share Point", noIcon, noKey, noMark, plain,
-		/* [20] */
+		/* [15] */
 		"Ð3977 Mounted Folder", noIcon, noKey, noMark, plain,
-		/* [21] */
+		/* [16] */
 		"Ð3976 Control Panels", noIcon, noKey, noMark, plain,
-		/* [22] */
+		/* [17] */
 		"Ð3975 Print Spool", noIcon, noKey, noMark, plain,
-		/* [23] */
+		/* [18] */
 		"Ð3974 Preferences", noIcon, noKey, noMark, plain,
-		/* [24] */
+		/* [19] */
 		"Ð3973 Extensions", noIcon, noKey, noMark, plain,
-		/* [25] */
-		"Ð3972 File Server", noIcon, noKey, noMark, plain,
-		/* [26] */
+		/* [20] */
 		"Ð3968 Fonts", noIcon, noKey, noMark, plain,
-		/* [27] */
+		/* [21] */
 		"Ð3966 Recent Documents", noIcon, noKey, noMark, plain,
-		/* [28] */
+		/* [22] */
 		"Ð3965 Recent Applications", noIcon, noKey, noMark, plain,
-		/* [29] */
+		/* [23] */
 		"Ð3964 Recent Servers", noIcon, noKey, noMark, plain,
-		/* [30] */
+		/* [24] */
 		"Ð3963 MacOS Read Me Files", noIcon, noKey, noMark, plain,
-		/* [31] */
+		/* [25] */
 		"Ð3962 Control Strip Modules", noIcon, noKey, noMark, plain,
-		/* [32] */
+		/* [26] */
 		"Ð3961 Sounds", noIcon, noKey, noMark, plain,
-		/* [33] */
+		/* [27] */
 		"Ð3960 Help", noIcon, noKey, noMark, plain,
-		/* [34] */
+		/* [28] */
 		"Ð3959 Scripting Additions", noIcon, noKey, noMark, plain,
-		/* [35] */
+		/* [29] */
 		"Ð3958 Internet Plug-ins", noIcon, noKey, noMark, plain,
-		/* [36] */
+		/* [30] */
 		"Ð3957 Language Support", noIcon, noKey, noMark, plain,
-		/* [37] */
+		/* [31] */
 		"Ð3956 Shared Libraries", noIcon, noKey, noMark, plain,
-		/* [38] */
+		/* [32] */
 		"Ð3955 Text Encodings", noIcon, noKey, noMark, plain,
-		/* [39] */
+		/* [33] */
 		"Ð3954 Printer Drivers", noIcon, noKey, noMark, plain,
-		/* [40] */
+		/* [34] */
 		"Ð3953 Printer Descriptions", noIcon, noKey, noMark, plain,
-		/* [41] */
+		/* [35] */
 		"Ð3952 Voices", noIcon, noKey, noMark, plain,
-		/* [42] */
+		/* [36] */
 		"Ð3951 Control Panels (Disabled)", noIcon, noKey, noMark, plain,
-		/* [43] */
+		/* [37] */
 		"Ð3950 Extensions (Disabled)", noIcon, noKey, noMark, plain,
-		/* [44] */
+		/* [38] */
 		"Ð3949 Startup Items (Disabled)", noIcon, noKey, noMark, plain,
-		/* [45] */
+		/* [39] */
 		"Ð3948 Shutdown Items (Disabled)", noIcon, noKey, noMark, plain,
-		/* [46] */
+		/* [40] */
 		"Ð3947 System Extensions (Disabled)", noIcon, noKey, noMark, plain,
-		/* [47] */
+		/* [41] */
 		"Ð3946 Assistants", noIcon, noKey, noMark, plain,
-		/* [48] */
+		/* [42] */
 		"Ð3945 Utilities", noIcon, noKey, noMark, plain,
-		/* [49] */
+		/* [43] */
 		"Ð3944 Application Support", noIcon, noKey, noMark, plain,
-		/* [50] */
+		/* [44] */
 		"Ð3943 Apple Extras", noIcon, noKey, noMark, plain,
-		/* [51] */
+		/* [45] */
 		"Ð3942 Contextual Menu Items", noIcon, noKey, noMark, plain,
-		/* [52] */
+		/* [46] */
 		"Ð3812 Workgroup", noIcon, noKey, noMark, plain,
-		/* [53] */
+		/* [47] */
 		"Ð3811 User", noIcon, noKey, noMark, plain,
-		/* [54] */
+		/* [48] */
 		"Ð3774 System Folder (protected)", noIcon, noKey, noMark, plain,
-		/* [55] */
+		/* [49] */
 		"Ð3773 Applications Folder (protected)", noIcon, noKey, noMark, plain
 	}
 };
@@ -752,9 +740,9 @@ resource 'vers' (1) {
 	0x1,
 	0x0,
 	development,
-	0x2,
+	0x3,
 	14,
-	"1.0d2",
+	"1.0d3",
 	"©1998 Mihai Parparita"
 };
 
@@ -762,10 +750,10 @@ resource 'vers' (2) {
 	0x1,
 	0x0,
 	development,
-	0x2,
+	0x3,
 	14,
-	"1.0d2",
-	"badger 1.0d2"
+	"1.0d3",
+	"badger 1.0d3"
 };
 
 resource 'dlgx' (-6043) {
@@ -3088,7 +3076,7 @@ resource 'cfrg' (0) {
 		kDataForkCFragLocator,
 		kZeroOffset,
 		kSegIDZero,
-		"badger 1.0d2"
+		"badger 1.0d3"
 	}
 };
 
