@@ -1,4 +1,4 @@
-clip2icns 1.1.1
+clip2icns 1.5.1
 by Mihai Parparita
 $10 Shareware
 mihai@mscape.com
@@ -27,18 +27,20 @@ Here are the steps used in creating or modifying icons:
 2. Paint the icon(s) and mask(s) in their appropriate positions (see the image above)
 3. Select the whole image and copy it to the clipboard.
 4. Open up clip2icns.
-5. Choose either New Icon From Clipboard… or Insert Icon Into File… from the File menu (you can also drag a file onto the application to insert an icon into it)
+5. Choose either New Icon File… or Open Icon File… from the File menu (you can also drag a file onto the application to insert an icon into it)
 6. Pick a file or choose a spot to save the new icon (depending on which command you chose)
 7. Pick an icon ID if necessary (the other IDs are only use useful for developers of Kaleidoscope schemes).
 8. Click the Insert button and voila, the icon has been created.
-
-There is another menu command, Extract Icon to Clipboard…, which does the opposite of the above commands. It takes an icon and generates an 80x32 picture that contains the icon and mask, as well as the small versions. This is useful if you want to tweak someone else's icons, or if you want to see how they've done a certain trick.
+9. There is also an Extract button, for taking the contenst of the current icon and putting them into the clipboard (the opposite of the insert command). This is useful if you want to tweak someone else's icons, or if you want to see how they've done a certain trick.
+10. When you are done with editing the icons click on the Close button to close the current file.
 
 Under the Edit menu there is a Preferences… command. You can use this to set a few global preferences.
 	 • Include old style resources (if any) will make clip2icns look for old style icons (which use icl8, ICN#, ics8, etc resources) and if they're found they will be included into the new icns resource. They will only be displayed if you're at lower bit depths and you're running MacOS 8.5. 
 	• Generate old style resources  will create icl8, ICN#, ics8, etc resources. However, chanes are that they will be horribly dithered.
 	• Set bits Kaleidoscope-style will set the Purgeable and System Heap bits for the icon. This is only useful if you develop Kaleidoscope schemes.  
 	• Name resources will give the resources names (based on the ones that appear in the menu). The only reason why you might want to turn this off is if you want to save a few extra bytes in file size.
+	• Dither  when making lower bit-depths This option allows you to turn on and off the dithering (use of a pattern to simulate colors) when making the 8 bit and lower color depths. Although dithered icons tend to look better, there can be higlighting problems when they are used with pre-8.5 systems. 
+ • Remember last ID selection  will set the ID selection pop-up menus to the previous selection when opening files, otherwise it will default to -16455.
 
 Shareware Info
 
@@ -51,6 +53,16 @@ folder, and extract the icons from that. Then once you've tweaked them to  your 
 Billy Martin
 
 Version History
+1.5.1 February 27 1999
+ - clip2icns should work again under pre 8.5 systems
+ - an error message is now displayed if a file that's in use is opened
+ - icons with custom IDs should be displayed properly
+
+1.5 February 10 1999
+ - interface greatly improved by making insertion dialog movable, and allowing switching to other applications
+ - the dialog now stays open after inserting an icon, thus greatly easing the insertion of more than a few icons into the same file
+ - new options for enabling/disabling dithering and remembering of the last selected ID
+ - file selection dialogs now show all files, including invisible ones
 
 1.1.1 December 7 1998
  - fixed a rare compression bug
@@ -74,15 +86,3 @@ Version History
 Future Plans
 
 Two words: Icon Editor.
-
-
-Thanks
-
-All the beta testers, who put up with my very informal releases.
-Emy Parparita for helping me out with the compression.
-Mathemaesthetics for creating Resorcerer, the only tool that can currently disassemble (and soon view) icns.
-All the people who helped with clip2cicn.
-
-No Thanks
-
-Arlo Rose: where's my stuff?
