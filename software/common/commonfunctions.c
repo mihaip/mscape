@@ -232,7 +232,7 @@ int targetTicks = TickCount() + sleepDuration;
 
 void HideMenubar( void )
 {
-	GDHandle 	mainScreen;					// the information on the main screen
+	/*GDHandle 	mainScreen;					// the information on the main screen
 	Rect 		mainScreenRect;				// the rect that bounds the menu bar
 	RgnHandle 	mainScreenRgn;				// the region of the menu bar
 //	RgnHandle 	menubarRgn;
@@ -263,7 +263,7 @@ void HideMenubar( void )
 	
 	
 	// draw the desktop
-	PaintOne( ( WindowRef )0L, newGrayRgn );
+	PaintOne( ( WindowRef )0L, newGrayRgn );*/
 }
 
 
@@ -275,7 +275,7 @@ void HideMenubar( void )
 
 void ShowMenubar( void )
 {
-	if (gOriginalGrayRgn == nil || GetMBarHeight() != 0)
+	/*if (gOriginalGrayRgn == nil || GetMBarHeight() != 0)
 		return;
 	
 	//set the menu bar to its normal height
@@ -288,7 +288,7 @@ void ShowMenubar( void )
 	
 	// draw the menu bar
 	DrawMenuBar();
-	
+	*/
 }
 
 
@@ -300,7 +300,7 @@ Boolean IsKeyPressed(short keyCode)
 	Boolean			isKeyPressed;
 	short			bitToCheck;
 	
-	GetKeys((long*)ourKeyMap);
+	GetKeys((unsigned long*)ourKeyMap);
 	keyMapIndex = ourKeyMap[keyCode/8];
 	bitToCheck = keyCode % 8;
 	isKeyPressed = (keyMapIndex >> bitToCheck) & 0x01;
@@ -384,6 +384,64 @@ void CopyString(Str255 dst, const Str255 src)
 	for (k=0, l=src[0]; k <= l; k++)
 		dst[k] = (unsigned char) src[k];
 }
+
+void AppendString(Str255 string1, Str255 string2)
+{
+	int s1Index, s2Index;
+	s1Index = string1[0] + 1;
+	s2Index = 1;
+	while (s2Index <= string2[0] || s2Index > 255)
+		string1[s1Index++] = string2[s2Index++];
+	string1[0]+= string2[0];
+}
+
+int FindSubstring(Str255 string, Str255 pattern)
+{
+	int currentIndex = 1;
+	bool found = false;
+	
+	while (currentIndex <= string[0] && !found)
+	{
+		if (string[currentIndex] == pattern[1])
+		{
+			found = true;
+			for (int i = 1; i < pattern[0]; i++)
+				if (string[currentIndex + i] == pattern[1 + i] && found)
+					found = true;
+				else
+					found = false;
+		}
+		currentIndex++;
+	}
+	
+	if (found)
+		return currentIndex - 2;
+	else
+		return -1;
+}
+
+void SubstituteString(Str255 string, Str255 pattern, Str255 replace)
+{
+	int insertionIndex, i;
+	Str255	temp;
+	
+	CopyString(temp, string);
+	
+	insertionIndex = FindSubstring(string, pattern);
+	
+	if (insertionIndex == -1)
+		return;
+		
+	string[0] += (replace[0] - pattern[0]);
+
+	for (i=1; i <= replace[0]; i++)
+		string[i + insertionIndex] = replace[i];
+		
+	i += insertionIndex;
+	
+	for (int j = insertionIndex + pattern[0] + 1; i <= string[0]; i++, j++)
+		string[i] = temp[j];
+} 
 
 void BlockFill(unsigned char *block, int fill, int size)
 {
@@ -677,7 +735,7 @@ void ToggleMenuItem(int menuID, int itemNo)
 		EnableItem(menu, itemNo);
 }
 
-OSStatus GetFile(Str255 client, long creator, long fileType, FSSpec* file)
+OSStatus GetFile(Str255 client, long creator, long fileType, Str255 message, FSSpec* file)
 {
 	if (NavServicesAvailable())
 	{
@@ -686,6 +744,7 @@ OSStatus GetFile(Str255 client, long creator, long fileType, FSSpec* file)
 		NavEventUPP			eventUPP;
 		AEDesc				resultDesc;
 		NavTypeListHandle	typeList;
+		OSErr				err;
 		
 		eventUPP = NewNavEventProc(DummyFunction);
 		
@@ -694,6 +753,7 @@ OSStatus GetFile(Str255 client, long creator, long fileType, FSSpec* file)
 		dialogOptions.dialogOptionFlags += kNavNoTypePopup;
 		dialogOptions.dialogOptionFlags -= kNavAllowPreviews;
 		CopyString(dialogOptions.clientName, client);
+		CopyString(dialogOptions.message, message);
 		if (creator == '****' && fileType == '****')
 		{
 			typeList = NULL;
@@ -702,7 +762,7 @@ OSStatus GetFile(Str255 client, long creator, long fileType, FSSpec* file)
 		else
 			typeList = MakeTypeList (creator, 1, fileType);
 		
-		NavGetFile(NULL,
+		err = NavGetFile(NULL,
 				   &reply,
 				   &dialogOptions,
 				   eventUPP,
@@ -750,7 +810,7 @@ OSStatus GetFile(Str255 client, long creator, long fileType, FSSpec* file)
 	}
 }
 
-OSStatus NewFile(Str255 promptText, Str255 defaultName, Str255 client, long creator, long fileType, FSSpec* file)
+OSStatus NewFile(Str255 client, long creator, long fileType, Str255 defaultName, Str255 message, FSSpec* file)
 {
 	if (NavServicesAvailable())
 	{
@@ -768,6 +828,7 @@ OSStatus NewFile(Str255 promptText, Str255 defaultName, Str255 client, long crea
 		dialogOptions.dialogOptionFlags -= kNavAllowPreviews;
 		CopyString(dialogOptions.clientName, client);
 		CopyString(dialogOptions.savedFileName, defaultName);
+		CopyString(dialogOptions.message, message);
 		
 		theErr = NavPutFile(NULL,	// use system's default location
 				   &reply,
@@ -799,7 +860,7 @@ OSStatus NewFile(Str255 promptText, Str255 defaultName, Str255 client, long crea
 	{
 		StandardFileReply reply;
 
-		StandardPutFile(promptText, defaultName, &reply);
+		StandardPutFile(message, defaultName, &reply);
 
 		if ( reply.sfGood )
 		{
@@ -810,9 +871,13 @@ OSStatus NewFile(Str255 promptText, Str255 defaultName, Str255 client, long crea
 	}
 }
 
+
 void SetPixel32(int x, int y, long color, PixMapHandle target)
 {
 	char	*pixelAddress;
+	
+	x -= (**target).bounds.left;
+	y -= (**target).bounds.top;
 	
 	pixelAddress = (**target).baseAddr + (y * ((**target).rowBytes & 0x3FFF)) + 4 * x;
 	*((long *)pixelAddress) = color;
@@ -821,6 +886,9 @@ void SetPixel32(int x, int y, long color, PixMapHandle target)
 long GetPixel32(int x, int y, PixMapHandle src)
 {
 	char	*pixelAddress;
+	
+	x -= (**src).bounds.left;
+	y -= (**src).bounds.top;
 	
 	pixelAddress = (**src).baseAddr + (y * ((**src).rowBytes & 0x3FFF)) + 4 * x;
 	return *(long*)pixelAddress;
@@ -849,6 +917,9 @@ void SetPixel8(int x, int y, long color, PixMapHandle target)
 {
 	char	*pixelAddress;
 	
+	x -= (**target).bounds.left;
+	y -= (**target).bounds.top;
+	
 	pixelAddress = (**target).baseAddr + (y * ((**target).rowBytes & 0x3FFF)) + x;
 	pixelAddress[0] = color;
 }
@@ -856,6 +927,9 @@ void SetPixel8(int x, int y, long color, PixMapHandle target)
 long GetPixel8(int x, int y, PixMapHandle src)
 {
 	char	*pixelAddress;
+	
+	x -= (**src).bounds.left;
+	y -= (**src).bounds.top;
 	
 	pixelAddress = (**src).baseAddr + (y * ((**src).rowBytes & 0x3FFF)) + x;
 	return pixelAddress[0];
@@ -865,6 +939,9 @@ long GetPixel4(int x, int y, PixMapHandle src)
 {
 	char	*pixelAddress;
 	long	pixelValue;
+	
+	x -= (**src).bounds.left;
+	y -= (**src).bounds.top;
 	
 	pixelAddress = (**src).baseAddr + (y * ((**src).rowBytes & 0x3FFF)) + x/2;
 	if (x & 1) // is odd, change bits 3..0
@@ -883,6 +960,9 @@ void SetPixel4(int x, int y, long color, PixMapHandle target)
 {
 	char	*pixelAddress;
 	
+	x -= (**target).bounds.left;
+	y -= (**target).bounds.top;
+	
 	pixelAddress = (**target).baseAddr + (y * ((**target).rowBytes & 0x3FFF)) + x/2;
 	if (x & 1) // is odd, change bits 3..0
 	{
@@ -894,11 +974,14 @@ void SetPixel4(int x, int y, long color, PixMapHandle target)
 	}
 }
 
-long GetPixel1(int x, int y, PixMapHandle target)
+long GetPixel1(int x, int y, PixMapHandle src)
 {
 	char	*pixelAddress;
 	
-	pixelAddress = (**target).baseAddr + (y * ((**target).rowBytes & 0x3FFF)) + x/8;
+	x -= (**src).bounds.left;
+	y -= (**src).bounds.top;
+	
+	pixelAddress = (**src).baseAddr + (y * ((**src).rowBytes & 0x3FFF)) + x/8;
 	return (*pixelAddress >> (7 - (x & 7))) & 0x1;
 } 
 
@@ -906,6 +989,9 @@ void SetPixel1(int x, int y, long color, PixMapHandle target)
 {
 	char	*pixelAddress;
 	int		bitMask;
+	
+	x -= (**target).bounds.left;
+	y -= (**target).bounds.top;
 	
 	pixelAddress = (**target).baseAddr + (y * ((**target).rowBytes & 0x3FFF)) + x/8;
 	bitMask = 1 << (7 - (x & 7));
@@ -931,7 +1017,13 @@ void PixMapToPicture(PixMapHandle srcPix, RgnHandle maskRgn, PicHandle *targetPi
 	Rect			picRect;
 	OpenCPicParams	picParams;
 	
-	picRect = (**srcPix).bounds;
+	SAVEGWORLD;
+	SAVECOLORS;
+	
+	if (maskRgn == NULL)
+		picRect = (**srcPix).bounds;
+	else
+		picRect = (**maskRgn).rgnBBox;
 	
 	picParams.srcRect = picRect;
 	picParams.hRes =  0x00480000;
@@ -946,165 +1038,9 @@ void PixMapToPicture(PixMapHandle srcPix, RgnHandle maskRgn, PicHandle *targetPi
 	BackColor(whiteColor);
 	CopyBits((BitMap*)*srcPix, &qd.thePort->portBits, &picRect, &picRect, srcCopy, maskRgn);
 	ClosePicture();
-}
-
-void FlipVertical(PixMapHandle srcPix)
-{
-	int				rowSize, height;
-	char			*tempRow, *topRow, *bottomRow;
 	
-	rowSize = (**srcPix).rowBytes & 0x3FFF;
-	height = (**srcPix).bounds.bottom - (**srcPix).bounds.top;
-	topRow = (**srcPix).baseAddr;
-	bottomRow = topRow + (height - 1) * rowSize;
-	
-	tempRow = NewPtr(rowSize);
-	if (tempRow == NULL)
-		return;
-	
-	for (int i=0; i < height/2; i++, topRow += rowSize, bottomRow -= rowSize)
-	{
-		BlockMove(topRow, tempRow, rowSize);
-		BlockMove(bottomRow, topRow, rowSize);
-		BlockMove(tempRow, bottomRow, rowSize);
-	}
-	
-	DisposePtr(tempRow);
-}
-
-void FlipHorizontal(PixMapHandle srcPix)
-{
-	int				rowSize, height, width;
-	char			*left, *right, tempChar;
-	long			temp;
-	
-	rowSize = (**srcPix).rowBytes & 0x3FFF;
-	height = (**srcPix).bounds.bottom - (**srcPix).bounds.top;
-	width = (**srcPix).bounds.right - (**srcPix).bounds.left;
-	
-	switch ((**srcPix).pixelSize)
-	{
-		case 1:
-			for(int y= 0; y < height; y++)
-				for (int x = 0; x < width/2; x++)
-				{
-					temp = GetPixel1(x, y, srcPix);
-					SetPixel1(x, y, GetPixel1(width - x - 1, y, srcPix), srcPix);
-					SetPixel1(width - x - 1, y, temp, srcPix);
-				}
-			break;
-		case 4:
-			for(int y= 0; y < height; y++)
-				for (int x = 0; x < width/2; x++)
-				{
-					temp = GetPixel4(x, y, srcPix);
-					SetPixel4(x, y, GetPixel4(width - x - 1, y, srcPix), srcPix);
-					SetPixel4(width - x - 1, y, temp, srcPix);
-				}
-			break;
-		case 8:
-			for(int i= 0; i < height; i++)
-			{
-				left = (**srcPix).baseAddr + i * rowSize;
-				right = left + (width - 1);
-				for (int j = 0; j < width/2; j++, left++, right--)
-				{
-					tempChar = *left;
-					*left = *right;
-					*right = tempChar;
-				}
-			}
-		break;
-		case 32:
-			for(int i= 0; i < height; i++)
-			{
-				left = (**srcPix).baseAddr + i * rowSize;
-				right = left + (width - 1) * 4;
-				for (int j = 0; j < width/2; j++, left+= 4, right-=4)
-				{
-					temp = *(long *)left;
-					*(long *)left = *(long *)right;
-					*(long *)right = temp;
-				}
-			}
-		break;
-	}
-}
-
-void Rotate(int angle, GWorldPtr *srcGW, PixMapHandle *srcPix)
-{
-	GetPixelFuncPtr	GetPixel;
-	SetPixelFuncPtr	SetPixel;
-	int				height, width;
-	GWorldPtr		tempGW;
-	PixMapHandle	tempPix;
-	Rect			bounds, rotatedBounds;
-	Point			savedOffset;
-	
-	savedOffset.h = (***srcPix).bounds.left;
-	savedOffset.v = (***srcPix).bounds.top;
-	
-	OffsetRect(&(***srcPix).bounds, -savedOffset.h, -savedOffset.v);
-	
-	bounds = (***srcPix).bounds;
-	
-	SetRect(&rotatedBounds,
-			bounds.top,
-			bounds.left,
-			bounds.bottom,
-			bounds.right);
-	
-	NewGWorld(&tempGW, (***srcPix).pixelSize, &rotatedBounds, (***srcPix).pmTable, NULL, 0);
-	tempPix = GetGWorldPixMap(tempGW);
-	LockPixels(tempPix);
-	
-	height = bounds.bottom - bounds.top;
-	width = bounds.right - bounds.left;
-	
-	switch ((***srcPix).pixelSize)
-	{
-		case 1: GetPixel = GetPixel1; SetPixel = SetPixel1; break;
-		case 4: GetPixel = GetPixel4; SetPixel = SetPixel4; break;
-		case 8: GetPixel = GetPixel8; SetPixel = SetPixel8; break;
-		case 32: GetPixel = GetPixel32; SetPixel = SetPixel32; break;
-	}
-	
-	switch (angle)
-	{
-		case 90:
-			for(int y= 0; y < height; y++)
-				for (int x = 0; x < width; x++)
-					SetPixel(height - y - 1, x, GetPixel(x, y, *srcPix), tempPix);
-			break;
-		case -90:
-			for(int y= 0; y < height; y++)
-				for (int x = 0; x < width; x++)
-					SetPixel(y, width - x - 1, GetPixel(x, y, *srcPix), tempPix);
-			break;
-	}
-	
-	SAVECOLORS;
-	UnlockPixels(*srcPix);
-	UpdateGWorld(srcGW, (***srcPix).pixelSize, &rotatedBounds, (***srcPix).pmTable, NULL, 0);
-	*srcPix = GetGWorldPixMap(*srcGW);
-	LockPixels(*srcPix);
-	CopyBits((BitMap*)*tempPix,(BitMap*)**srcPix,&rotatedBounds,&rotatedBounds,srcCopy, NULL);
+	RESTOREGWORLD;
 	RESTORECOLORS;
-	
-	OffsetRect(&(***srcPix).bounds, savedOffset.h, savedOffset.v);
-	
-	UnlockPixels(tempPix);
-	DisposeGWorld(tempGW);
-}
-
-void AppendString(Str255 string1, Str255 string2)
-{
-	int s1Index, s2Index;
-	s1Index = string1[0] + 1;
-	s2Index = 1;
-	while (s2Index <= string2[0] || s2Index > 255)
-		string1[s1Index++] = string2[s2Index++];
-	string1[0]+= string2[0];
 }
 
 void EnableMenuItem(int menuID, int item)
@@ -1156,4 +1092,158 @@ bool IsFrontProcess()
 		return true;
 	else
 		return false;
+}
+
+OSStatus MakeTwoColorTable(CTabHandle *colorTable, RGBColor color1, RGBColor color2)
+{
+	*colorTable = (CTabHandle)NewHandle(sizeof(ColorTable) + sizeof(ColorSpec));
+	
+	if (*colorTable == NULL)
+		return memFullErr;
+	
+	(***colorTable).ctSeed = 0;
+	(***colorTable).ctFlags = 0;
+	(***colorTable).ctSize = 1;
+	(***colorTable).ctTable[0].value = 0;
+	(***colorTable).ctTable[0].rgb = color1;
+	(***colorTable).ctTable[1].value = 1;
+	(***colorTable).ctTable[1].rgb = color2;
+	
+	return noErr;
+}
+
+bool pascal MaskColorSearch(RGBColor *color, int *result)
+{
+	RGBColor	matchColor;
+	CGrafPtr	oldPort;
+	GDHandle	oldDevice;
+	
+	GetGWorld(&oldPort, &oldDevice);
+	
+	matchColor.red = ((MatchRec*)(**oldDevice).gdRefCon)->red;
+	matchColor.green = ((MatchRec*)(**oldDevice).gdRefCon)->green;
+	matchColor.blue = ((MatchRec*)(**oldDevice).gdRefCon)->blue;
+	
+	if (color->red != matchColor.red || color->green != matchColor.green || color->blue != matchColor.blue)
+		*result = 1;
+	else
+		*result = 0;
+	return true;
+}
+
+// __________________________________________________________________________________________
+// Name			: Make1BitMask
+// Input		: srcPix: handle to a pixmap containing the source data
+// Output		: targetPix: handle to the pixmap where the generated mask will be put;
+// Description	: takes an 8 bit PixMap, and generates a mask out of it (using the system call
+//				  CalcCMask, and assuming that white on the border areas is meant to be trans-
+//				  parent). Masks are basically sillouettes of the drawing.
+
+OSStatus Make1BitMask(PixMapHandle srcPix, PixMapHandle targetPix)
+{
+	GrafPtr		mask;
+	Rect			bounds;
+	RGBColor		white = {0xFFFF, 0xFFFF, 0xFFFF};
+	ColorSearchUPP	maskColorSearchUPP;
+	OSStatus		err = noErr;
+	
+	SAVECOLORS;
+	
+	bounds = (**srcPix).bounds;
+	
+	if (srcPix == NULL || targetPix == NULL)
+		return paramErr;
+	
+	mask = CreateGrafPort(&bounds);
+	
+	maskColorSearchUPP = NewColorSearchProc(MaskColorSearch);
+	
+	CalcCMask((BitMap*)*srcPix, &mask->portBits, &bounds, &bounds , &white, maskColorSearchUPP, 0);
+	
+	CopyBits(&mask->portBits,
+			 (BitMap*)*targetPix,
+			 &bounds,
+			 &(**targetPix).bounds,
+			 srcCopy,
+			 NULL);
+	
+	RESTORECOLORS;
+	
+	DisposeRoutineDescriptor(maskColorSearchUPP);
+	
+	DisposeGrafPort(mask);
+	
+	return err;
+}
+
+void SetControlText(ControlHandle control, Str255 text)
+{
+	SetControlData(control,kControlNoPart,kControlStaticTextTextTag,text[0], (Ptr) &text[1]);
+}
+
+// __________________________________________________________________________________________
+// Name			: StandardEventFilter
+// Input		: dialog: pointer to the dialog for which we are filtering events
+//				  eventPtr: pointer to the event which just occured, which we must process
+// Output		: itemHit: which item (if any) we declare that it was hit.
+// Description	: Handles events in a dialog (in our case the WantToSave/DoError ones). It
+//				  takes care of updates, key downs, etc. In most cases it passes on the
+//				  processing to the standard system function (StdFilterProc).
+
+pascal bool	StandardEventFilter(DialogPtr dialog, EventRecord *eventPtr, short *itemHit)
+{
+	bool	handledEvent; // if true then our function tool care of the event
+
+	handledEvent = false; // by default we didn't handle the event
+	
+	switch (eventPtr->what)
+	{
+		case activateEvt: // if the window isn't the dialog, then we tell the update function
+		case updateEvt: //  to take care of it
+			if((WindowPtr) eventPtr->message != dialog)
+			{
+				((UpdateFunctionPtr)GetWRefCon(dialog))(eventPtr);
+				handledEvent = true;
+			}
+			break;
+		case keyDown: // if the user presses a key, and it matches the first letter of the
+		case autoKey: // third button, then we simulate a click on that button, complete
+					  // with highlighting
+			char key; // the character which symbolizes the key that was down
+			ControlHandle thirdButton; // the button for which we must check hits
+			Str255 buttonName; // the name of the button
+			
+			key = eventPtr->message & charCodeMask;
+			GetDialogItemAsControl(dialog, kAlertStdAlertOtherButton, &thirdButton);
+			if (thirdButton != NULL) // if there is a third button
+			{
+				CopyString(buttonName, (**thirdButton).contrlTitle); // we get its title
+				if (key == buttonName[1] || (key + 'A' - 'a') == buttonName[1])
+				// if the pressed key is the fist letter of the button (regardless of the case)
+				// then we simulate a click on it
+				{
+					*itemHit = kAlertStdAlertOtherButton;
+					HiliteControl(thirdButton, 1);
+					Sleep(9); // standard delay for highlighting, 9 ticks (9 * 1/60th of a second)
+					HiliteControl(thirdButton, 0);
+					handledEvent = true;
+				}
+				else
+					handledEvent = StdFilterProc(dialog, eventPtr, itemHit);
+					// if it was a different key then we let the system take care of it
+			}
+			break;
+		default:
+			// if it's not an event we support, then we let the system take care of it
+			SAVEGWORLD;
+			SetPort(dialog);
+
+			handledEvent = StdFilterProc(dialog, eventPtr, itemHit);
+
+			RESTOREGWORLD;
+		break;
+	}
+		 
+
+	return(handledEvent);
 }

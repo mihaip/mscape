@@ -846,21 +846,202 @@ Had exams again, but I did receive the latest copy of MacTech and my first shipm
 
 -------------------------------20/01/99-----------------------------------------
 
-Uploaded a development version for feedback, and i've got a few bugs reported already:
+Uploaded a new development version for feedback, and i've got a few bugs reported already:
 - cursor changes even when application is in the background: fixed by checking first if the current process is the front one
 - old style icons aren't displayed properly in the Icon Builder: fixed, i hadn't updated the code in the old style loader for setting the available sizes properly.
 - mask display turns black if the depth is thousands, not millions: not fixed, but I think I know what I need to do
 - open command doesn't do anything: can't reproduce on my machine (could be tied in with a similar bug I had while I was working on clip2icns, which I also couldn't reproduce at home. unfortunately this was before I was writing my journal, so I have no record of I fixed it.)
 
 -------------------------------21/01/99-----------------------------------------
+
+Today I worked on redoing the interface for clip2icns. Until now the insertion dialog was modal, and after you inserted an icon it would get dismissed. So if you were trying to put more than a few icons into the same file it would get very annoying, since you had to keep choosing the file, and go to the proper ID in the menus. So I made the dialog movable (using the experience I gained from the Icon Browser in Icon Mangler), and made it so that the dialog would stay there until you clicked on the close button. Now when you want to insert more than one icon you can move switch back and forth, and not have to select the file every time, since the insertion dialog stays open. I also combined this dialog with the extraction one, since they shared 90% of the resources. Finally I added two more preference options, dithering (used when making the lower bit depths) can be turned on and off, and there is a setting to remember the last selected ID in the pop-up menu. Even though I added all these features, the source code is now 400 lines smaller (and I replaced the ugly macro that I was using for handling refreshes in the dialog with a much nicer function). I wish this could be done for all programs :p
+
 -------------------------------22/01/99-----------------------------------------
+
+Didn't get that much work done today, but I did finish the documentation and the default glyph set for Glypher. I also sent final version of the new clip2icns (1.5) and Glypher (1.0) to the beta testers, and unless major issues show up they will be released Monday.
+
 -------------------------------23/01/99-----------------------------------------
+
+First thing I did today was to fix an undo bug. When switching between different sizes, the drawing area has to be resized (obviously). However, when undoing this change, the drawing area would not get resized. It turned out that when I redid the size switching part of the HandleContentClick function I changed the order in which the state was stored and the new size was set. While I was doing this I also removed some redundant MagnifySelectionRgn calls, and made the ones left in check to see if there was a selection in the first place.
+
+Then I found yet another undo bug, this time related to drag-and-drop. When dragging an item onto a different size, and then drawing in the original, the undo state seemed too be put out of order. This was fixed by changing the way the state was stored in the drop function.
+
+Then I worked on removing leaks in clip2icns (it leaked about 1K for each icon viewed, and 5K when the current icon was exported to the clipboard). Using Spotlight it was rather easy, it turned out I wasn't disposing of the picture after I had placed it in the clipboard. I had also missed disposing a GWorld.
+
+
 -------------------------------24/01/99-----------------------------------------
+
+[15 years ago the Mac 128K was introduced]
+
+I tweaked the state saving some more, so that when clicking on a different icon size, an undo would bring you back to your previous position.
+
 -------------------------------25/01/99-----------------------------------------
+
+I've found this very weird drag and drop related bug. When dragging from a size to the current size, the source gworld would get set to null. This is very weird since I'm not supposed to be changing it at all. Debugging was rather hard at school (since the debugger doesn't work :p) and I didn't have any time to work on it at home.
+
 -------------------------------26/01/99-----------------------------------------
+
+Tried to work some more on that bug some more, but the absence of the debugger prevented (I think it'll work once I install the 3.1 update, but it didn't finish downloading before class was over). Again, no time to work on it at home.
+
 -------------------------------27/01/99-----------------------------------------
+
+I finally managed to squash the bug. When dragging, if there is a selection, I have to merge it with the current icon contents, and put that into the drag image. After the drag I had a check to see if the temporary gworld was created (which contained the merged data) and it would dispose of it. The check for this was whether or not there was a floated selection. However when dragging to the current gworld, a floated selection wold be always created, so it would attempt to dispose of the temporary gworld (which wasn't there, and it was grabbing the source).
+
+Then I worked on one of the final human interface additions, the "Do you want to save...." alert. This was rather simple, I used the StandardAlert function to display a movable dialog, and specified the buttons as "Save", "Cancel", and "Don't Save". The hardest part was writing a string search and replace function, so that I could include the file name in the prompt string. I also made it so that these dialogs show up when quitting, if an icon hasn't been saved.
+
+
 -------------------------------28/01/99-----------------------------------------
+
+I've noticed that when quitting, if you clicked cancel, it would just keep asking you if you wanted to save. So I added a simple check to continue with the quitting process if the CloseIcon function returned true, otherwise we go back into the EventLoop function.
+
+Then I worked on improving the overlay. The overlay is used for the rectangle, line and lasso tools. Basically it provides another (temporary layer) for displaying stuff (ie for the rectangle it is used to show the size of the rectangle being drawn, and only when the user lets go is it actually drawn on the icon's pixmap). Until now, when I created the overlay I used the current depth and color table. However, I realized that this was unecessary. All it needed was to have a 2 color color table, with the foreground color, and the transparent one (actually until now I was using white for the transparent color, which caused problems when drawing white lines). The transparent color is the same one that's used for determining the shape of irregular selections pasted in from other programs, 0xFFFFFE. 
+
 -------------------------------29/01/99-----------------------------------------
+
+I only did a very simple thing today, but it'll aid me in testing. When the "Do you want to save..." dialog shows up, it has three buttons. The default is mapped to return/enter, cancel to escape, but the don't save one (which I'll most likely be using when testing has to be clicked manually). To get rid of this annoyance, I added a check in the custom dialog filter, to see if the the key being hit equaled the first letter of the third button, and if it did to simulate a click there. So now I can just hit the D key to click the "Don't Save" button. Very small, but otherwise when quitting i'd have to click thet button for each open editor.
+
 -------------------------------30/01/99-----------------------------------------
+
+Main thing I did today was to remove (yet another) annoying undo bug. Actually it was a couple of bugs. One was when I was restoring the selection, I was using UpdateGWorld to reset the selection GWorld to the proper size. However, once in a while it simply wouldn't change the selection bounds, resulting in part of the selection being garbage. When I replace the UpdateGWorld with a DisposeGWorld and NewGWorld, everything worked. Weird, but in some ways the new is even better (since UpdateGWorld allocates temporary memory to save the current contents, but I didn't care about that).
+
+The second bug was more of an error in thinking. When a selection was made, I didn't set the hasSelection bit of the status right away, instead that was in my DoIdle function, which periodically looked to see if the selection region was empty, and if it was then the bit would be set. However the storing of the state came before the DoIdle, so the status that was saved had the hasSelection bit off. Fixing this was rather simple, I added a check after the selection tools or commands were used, and this came before the state was saved.
+
+Finally I tried to make the code look much more professional by using a generic linked list class. My idea was to use templates, and then to derive my icns editor and drawing state classes from that (they both use linked lists to keep track of the open editors/saved states). I got to the point where I had a basic framework, and as a simple test (before I went in and tore out all the old code) I was making a simple program to have a linked list of integers. However, it won't compile, and the error it gives is that the constructor of the linked list class is bad. The Metrowerks site says that CodeWarrior Pro 4 has soem new features/fixes relating to templates, so I'll try it again on Monday, with the newest version (and if it works then I guess I'll have to upgrade). Speaking of CW Pro4, earlier I had said that it wasn't fully Appearance Manager savvy. However it turns out I was wrong. Instead it's Kaleidoscope's fault, since it doesn't patch all the AM controls (which CW seems to be using).
+
+Finally I worked on making the color swatch control more like Photoshop's. This meant adding the two little widgets in the top-right/bottom-left corners, the one to swap the fore/background colors and the one to reset them to black/white. This also involved adding icons (for the controls, with an active and inactive state each) to the statics structure (since they're shared by all the editors). All that remains now are the preferences, I hope.
+
 -------------------------------31/01/99-----------------------------------------
+
+Worked some more in the morning on the templated linked lists (I realized I had made some conceptual mistakes yesterday). However, still no luck, I still get errors I have no idea how to solve.
+
+-------------------------------February-----------------------------------------
+
+-------------------------------01/02/99-----------------------------------------
+
+[no time for programming today]
+
+-------------------------------02/02/99-----------------------------------------
+
+I've started to comment the Icon Mangler code. The first step was do "function headers", where I described the input and output of each function, had a simple description of what it did and notes if there was anything that should be kept in mind when using it. Ideally this would have been done in the beginning, as part of my top-down design, but I couln't really since I was learning how to do an icon editor at the same time. Eitherway, this hasn't been too hard, the only problems that I've encountered (other than boredom) are than some of my early code (I've started the commenting process with the base icnsClass) is rather messy and inefficient, so I'm getting tempted to rewrite it.
+
+-------------------------------03/02/99-----------------------------------------
+
+I couldn't stop myself, so I started to redo some things. First thing was my 1 bit mask generating function, which used a very messy code (it involved going through the color lookup table, which made it only work with indexed-color images, and setting all non-white colors to black). But now I've had more experience with CalcCMask system function (the lasso tool uses it), so I was able to rewrite it to be much more efficient. I also replaced some repeated code in the ImportFromClipboard function with calls to Make1BitMask, so the line size is down by quite a bit.
+
+Then I worked on the saving functions, specifically the compression part. Until now each icon had three member variables, arrays of chars for the compressed data for all three sizes (huge, large and medium). However I realized that these were only used when saving, and were takinging up memory the rest of the time. Looking around the compression code, I had also noticed that I had three special cases, for each size, when it could have obviously been turned into a generalized function. A similar thing also existed with the decompression, where I had three similar loops to decompress the data and merge the RGB channels, again one for each size. In the end I decided that what I needed were two functions, CompressPixMap and DecompressToPixMap, which would make the transitions between an uncompressed pixmap and the compressed data represented by an array of chars. I also spun-off the compression routines (the above two, plus two sub functions, PackData and UnpackData which are each called three times for each channel) into a separate file, since they make much more sense that way. When I was done everything the code looked much cleaner, and I had made each instance of the icnsClass (and thus the derived icnsEditorClass) take up around 15K less of memory.
+
+-------------------------------04/02/99-----------------------------------------
+-------------------------------05/02/99-----------------------------------------
+-------------------------------06/02/99-----------------------------------------
+-------------------------------07/02/99-----------------------------------------
+-------------------------------08/02/99-----------------------------------------
+-------------------------------09/02/99-----------------------------------------
+-------------------------------10/02/99-----------------------------------------
+-------------------------------11/02/99-----------------------------------------
+
+Didn't have much time to work during these days. I've been commenting the code, and fixing miscellaneous bugs. It turns out that when I had cleaned up the icnsClass code, I had made some mistakes, which I found while working on clip2icns, so I fixed those (I was attempting to generate the mask before I had put anything in the source GWorld). I've also gotten around to releasing clip2icns 1.5 and Glypher 1.0 to the public. Then I added a check for the proper system version (current 8.5+, but in the version that will released publically they will most likely be 8.0+, or even 7.x with the Appearance Manager installed. I'll also most likely be stripping out the 68K specific code (mostly AppleEvents stuff), since it'll just confuse the IB people. The commenting is progressing well, I'm done with the function headers, and now I have to do the actual code (nothing fancy, just cleaning possibly confusing sections).
+
+-------------------------------12/02/99-----------------------------------------
+----------------------------------to--------------------------------------------
+-------------------------------28/02/99-----------------------------------------
+
+(argh, I've written this before, but I crashed, so I have to do it again)
+
+Not much time for coding (big history rough draft was due, among other things). Major thing that happened was that I found (well, some users found, and they were registered so I had to pay attention) that clip2icns refused to work under pre 8.5 systems. It took me about a week to figure out why. The actual crash occured when I disposed of a PixMap in the Make1BitMask function. By selectively commenting out lines I had traced it to the call to CalcCMask (a system function). I beat my head against this for a few days, trying many things (including copying the source to a local PixMap, locking the source/target (again), taking out the customized color search function from CalcCMask, and other stuff). In the end I did a search at DejaNews (an archive of Usenet postings, including comp.sys.mac.programmer.*) and found my answer. It turns out that CalcCMask wants a real BitMap* for the target parameter. I was used to CopyBits, which also wants a BitMap*, but a casted PixMap* works too. Apparently this was changed in Mac OS 8.5, which is why I didn't happen while I was developing the function. And I didn't notice it before since I had used a different method of determining the mask (a much uglier one, which had been inhereted from clip2cicn, the first real (as in distributed) mac program I did, back in early June).
+
+I also had to do a workaround, this time for a documented bug (which was fixed in Mac OS 8.5). Apparently calling CopyDeepMask when the target is a 8 bit (or less) GWorld will yield nothing in it. What I had to do was to use a temporary 32 bit GWorld which I then transferred to the 8 bit by using CopyBits. All of this went into clip2icns 1.5.1. Speaking of clip2icns, the number of registrations has topped 50, so I'm halfway to my (just established) goal of 100.
+
+--------------------------------March-------------------------------------------
+
+-------------------------------01/03/99-----------------------------------------
+-------------------------------02/03/99-----------------------------------------
+
+No time for programming, various essays were due...
+
+-------------------------------03/03/99-----------------------------------------
+
+YESSSSSS! I have recursion in program. Thanks to a tip from James, I've redone my fill function to use a recursive algorithm (instead of just calling the system function, SeedCFill). The actual algorithm is pretty simple, I start with the source pixel, and look and its neghbors, and at the neighbors' neighbors and so on. It's a classical example of recursion (I've found some class notes on it online, and its in the Computer Graphics: Principles and Practice book I have too). It's not the best solution (a scanline algorithm might work better, but it would be more complicated), but it's a legitimate use of recursion.
+
+I had some problems with filling in selections, but it turned out that that was because my GetPixel/SetPixel functions assumed that the origin of the PixMap was at 0,0. However with selections, since they can be moved around, the origin varies. The fix was simple, all I had to do was to subtract from the passed x/y coordinates the coordinates of the origin.
+
+-------------------------------04/03/99-----------------------------------------
+
+I've started to think about the documentation for Icon Mangler. I was originally going to do it in a DocMaker format (self contained docs, but the layout capabilities are the same as SimpleText's). But in the end I decided to use HTML for two reasons: 1) it provides much better layout control than TextEdit (the Toolbox Manager used by DocMaker/SimpleText) and 2) Apple's new help system uses HTML for the storing of the help files (and the Help Viewer is a mini local web browser), so conversion to the new format (when the SDK is released, still waiting for it) should be even easier, and then the help will be available within the application. Actually I can do that even now, by using AppleEvents to open the help file from a menu item in the app.
+
+The only problem is that the Help Viewer, like most current browsers, has its own little quirks for displaying HTML. I want the end product to be visible in both the Viewer and in Netscape. But this is all secondary, since the IB people are not going to care about such issues.
+
+I've started to work on the toolbar part of the help, where each tool is explained, along with the keyshorts/modifiers. So far so good.
+
+-------------------------------05/03/99-----------------------------------------
+
+I've commented some more of the Icon Mangler code. This is what's done so far:
+- the icnsClass
+- the main.cp (which handles the events, and passes them on to the icnsEditorClass)
+
+The code that remains to be commented:
+- the icnsEditorClass (longest one)
+- the Icon Browser (must be included, since it uses a search function)
+- the compression code (must impress IB people)
+- the AppleEvents code (kinda messy, since originally it's not mine)
+- the drag and drop code (messy too, even though it is mine :p)
+
+I also fixed another bug in clip2icns, the window would not disable properly when put into the background. I'd known about this since when I was working on 1.5, but I could not figure out a way to fix it, without redrawing the window every second. I figured it out when I was commenting the Icon Mangler event loop; I remembered that when an app is put into the foreground/background it doesn't receive an activate event, rather an OS event. I don't plan to release a new version just for this, since it is only a visual glitch. Actually I think clip2icns has pretty much reached the end of its line, feature wise, unless the users have any more suggestions.
+
+-------------------------------06/03/99-----------------------------------------
+
+Did some work on making Icon Mangler more stable (got distracted while I was commenting). Until now it was the icnsEditorClass's job to see if it was out of memory, and to deal with it (by calling delete this). However that was not a very good method, since the linked list was not nto maintained properly, and it was not a good separation between the main program and the class. The best solution would have been to use exceptions, but I don't have the time to learn them properly before the program is due. Instead I added another bit to the status field of the class (which was used to communicate with the main program anyway), outOfMemory. When that us set after the constructor has been called, we assume that the construction failed, and dispose of the editor. In places within the program too, we call this, when making temporary GWorlds and so on. Then in the DoIdle of the main program we check through all the editors if they're out of memory. If they are we dispose of their saved undo states (which can free up quite a bit of memory if the user has been working for a while). If we have already done that, and there still isn't enough memory then we must close the editor. We display an alert, and let the user save if they want to. In order to make sure that there is enough memory to display the error message and the save dialog (even though we are supposedly out of memory), I allocate a chunk in the beginning of the program (for emergencies like this) and dispose of it in order to free up memory, then when I'm done I allocate it again for future use.
+
+So far this is working pretty well, except that the save dialog when using the Navigation Services wants about 100K of temporary memory, and making the emergency chunk that big is kind of a waste. This isn't an issue for the IB, but in the final program I think I can pre-load the Navigation Services library at the beginning of the program, and unload it at the end.
+
+Also, I'm still not checking whether I have enough memory to save the drawing state, so I need to do some work there too.
+
+On another note, I've thought about the future of Icon Mangler (post IB). I want to make it into a decent icon editor. One of the things that is lacking right now is the option to make only certain sizes/depths available. Right now if you add a 48 x 48 icon at a single depth, then when saving all the other depths are saved too, even though they are not used (so they are white). Also, when making a new icon, all the sizes/depths are allocated, even though they are not used. My solution for this (actually this would go in the base icnsClass, but it'll affect Icon Mangler too) is to have an array of pointers to the icon depth/sizes combinations. When the user adds a new size/depth then the respective pointer is allocated, and when saving only the ones that are used are actually saved. Deletion of depths/sizes should be easy too, since it's a simple matter of calling DisposePtr.
+
+For the actual editor, I think I might have a separate editorClass, from which I make a derived class called icnsEditorClass (which also has as its parent the icnsClass, so we have multiple inheritance :p). The editor class would do its drawing actions on a pixmap/gworld called drawingPix/drawingGWorld. Then in the icnsEditorClass its simply a matter of setting the pixmaphandle/gworldptr to the current size/depth. I'm not doing this just because it sounds fancy, but because it could be useful in the future. For example I could make an editor for other graphical resource types too, and then I wouldn't have to rip out the editor out of the icnsEditorClass and replace the icns specific parts with something else (this would also be a headache when adding features). Or conceivably I could spin off the editorClass as a program of its own, to edit simple pictures (or complicated ones, if I get to that level :p).
+
+Finally, I think that I could release the icnsClass (the newer version, not the current one) to the public as a library. Then developers interested in using the new 32 bit icons could use it without having to worry about learning the whole Icon Services API. In addition I already have my own functions for dealing with 32 bit icons under 8.1, so my class would provide compatibility there too (I could use a conditional statement to use the system functions on 8.5+ and my own functions for older systems, for maxium forward compatibility). Of course it would be free, perhaps even open source (although I doubt that I'd get much of a following). 
+
+-------------------------------07/03/99-----------------------------------------
+
+Didn't have much time for work today, it was the second day of the JOs (swim meet). Only thing I did really was to fix a bug, I wasn't allocating the emergency memory chunk when the program was starting up, so the first dispose would cause weird things to happen since it wasn't allocated.
+
+-------------------------------08/03/99-----------------------------------------
+
+I didn't have time to program today, but I can do the required 3 paragraphs on the required concepts for the IB dossier:
+
+Dynamic data structures:
+
+The main way in which I show this is through linked lists. Since there can be more than editor open at once, I keep track of them through a linked list. When a new editor is created, I add it onto the end of the list. When an editor is closed, I remove it from the list, and keep the links between the previous and the next element up to date. Also, within each editor I use a list to keep track of all the changes that user has done. When a drawing command is executed, the new state is saved to the end of the list. When the user wants to go back, I simply move to the previous stored state and restore it. If the user wants to go forward, I can move forward, and restore the state. If the user goes back, and then starts drawing again, the states that were ahead of it (if any) are disposed since they are not needed any more.
+
+Advanced operations on data structures:
+
+I'm not quite sure what they mean by this. I have a searching function, since I want to create a list of all the icons, sorted by ID (when I get them from the file, I get them in the order that they were stored in). So I insert into a sorted list.
+
+Recursion:
+
+See above.
+
+-------------------------------09/03/99-----------------------------------------
+-------------------------------10/03/99-----------------------------------------
+-------------------------------11/03/99-----------------------------------------
+-------------------------------12/03/99-----------------------------------------
+-------------------------------13/03/99-----------------------------------------
+-------------------------------14/03/99-----------------------------------------
+-------------------------------15/03/99-----------------------------------------
+-------------------------------16/03/99-----------------------------------------
+-------------------------------17/03/99-----------------------------------------
+-------------------------------18/03/99-----------------------------------------
+-------------------------------19/03/99-----------------------------------------
+-------------------------------20/03/99-----------------------------------------
+-------------------------------21/03/99-----------------------------------------
+-------------------------------22/03/99-----------------------------------------
+-------------------------------23/03/99-----------------------------------------
+-------------------------------24/03/99-----------------------------------------
+-------------------------------25/03/99-----------------------------------------
+-------------------------------26/03/99-----------------------------------------
+-------------------------------27/03/99-----------------------------------------
+-------------------------------28/03/99-----------------------------------------
+-------------------------------29/03/99-----------------------------------------
+-------------------------------30/03/99-----------------------------------------
+-------------------------------31/03/99-----------------------------------------
 

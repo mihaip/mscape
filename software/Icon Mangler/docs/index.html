@@ -1,0 +1,45 @@
+<HTML>
+<BODY BGCOLOR="#FFFFFF" background="images/background.gif">
+<TABLE BORDER=0>
+<TR>
+<TD>
+<IMG SRC="images/spacer.gif" WIDTH=90 HEIGHT=5>
+<BR>
+
+<FONT FACE="Verdana" SIZE=5><B>The<BR>Tool<BR>Palette</B></FONT>
+<CENTER>
+<TABLE CELLPADDING=0 CELLSPACING=0 BORDER=0 BGCOLOR="#DDDDDD" WIDTH=52>
+<TR>
+<TD><A HREF="#marquee"><IMG SRC="images/marquee.gif" HEIGHT=22 WIDTH=26 BORDER=0></A></TD>
+<TD><A HREF="#move"><IMG SRC="images/move.gif" HEIGHT=22 WIDTH=26 BORDER=0></A></TD>
+</TR><TR>
+<TD><A HREF="#lasso"><IMG SRC="images/lasso.gif" HEIGHT=22 WIDTH=26 BORDER=0></A></TD>
+<TD><A HREF="#magicwand"><IMG SRC="images/magicwand.gif" HEIGHT=22 WIDTH=26 BORDER=0></A></TD>
+</TR><TR>
+<TD><A HREF="#pencil"><IMG SRC="images/pencil.gif" HEIGHT=22 WIDTH=26 BORDER=0></A></TD>
+<TD><A HREF="#eyedropper"><IMG SRC="images/eyedropper.gif" HEIGHT=22 WIDTH=26 BORDER=0></A></TD>
+</TR><TR>
+<TD><A HREF="#bucket"><IMG SRC="images/marquee.gif" HEIGHT=22 WIDTH=26 BORDER=0></A></TD>
+<TD><A HREF="#eraser"><IMG SRC="images/eraser.gif" HEIGHT=22 WIDTH=26 BORDER=0></A></TD>
+</TR><TR>
+<TD><A HREF="#line"><IMG SRC="images/line.gif" HEIGHT=22 WIDTH=26 BORDER=0></A></TD>
+<TD><A HREF="#rectangle"><IMG SRC="images/rectangle.gif" HEIGHT=22 WIDTH=26 BORDER=0></A></TD>
+</TR><TR>
+<TD COLSPAN=2><CENTER><IMG SRC="images/spacer.gif" HEIGHT=5 WIDTH=1><BR><A HREF="#colorswatch"><IMG SRC="images/colorswatch.gif" HEIGHT=41 WIDTH=41 BORDER=0></A></CENTER></TD>
+</TR>
+</TABLE>
+</CENTER>
+
+</TD>
+<TD>
+YESSSSSS! I have recursion in program. Thanks to a tip from James, I've redone my fill function to use a recursive algorithm (instead of just calling the system function, SeedCFill). The actual algorithm is pretty simple, I start with the source pixel, and look and its neghbors, and at the neighbors' neighbors and so on. It's a classical example of recursion (I've found some class notes on it online, and its in the Computer Graphics: Principles and Practice book I have too). It's not the best solution (a scanline algorithm might work better, but it would be more complicated), but it's a legitimate use of recursion.
+
+I had some problems with filling in selections, but it turned out that that was because my GetPixel/SetPixel functions assumed that the origin of the PixMap was at 0,0. However with selections, since they can be moved around, the origin varies. The fix was simple, all I had to do was to subtract from the passed x/y coordinates the coordinates of the origin.
+</TD>
+</TR>
+</TABLE>
+<P>
+
+</BODY>
+</HTML>
+
