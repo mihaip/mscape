@@ -1,4 +1,4 @@
-/* Resource fork of software/releases/Icon Mangler/Icon Mangler 1.0d5 */
+/* Resource fork of software/releases/Iconographer/Icon Mangler 1.0d5 */
 resource 'MENU' (129) {
 	129,
 	textMenuProc,

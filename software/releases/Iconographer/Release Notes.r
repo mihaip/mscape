@@ -1,4 +1,4 @@
-/* Resource fork of software/releases/Icon Mangler/Release Notes */
+/* Resource fork of software/releases/Iconographer/Release Notes */
 data 'MPSR' (1005) {
 	$"0009 4D6F 6E61 636F 0030 FFC8 2D0A 007F"            /* ..Monaco.0ÿÈ-... */
 	$"226A 0000 0E25 5534 0E17 2774 0E25 0E25"            /* "j...%U4..'t.%.% */
