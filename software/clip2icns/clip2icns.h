@@ -20,8 +20,10 @@
 
 // app resource IDs
 const static int aboutBoxID = 128;
-const static int insertCicnID = 129;
+const static int inserticnsID = 129;
 const static int registrationID = 130;
+const static int preferencesID = 131;
+const static int exporticnsID = 132;
 
 const static int aboutPicID = 128;
 const static int aboutPicMaskID = 129;
@@ -36,7 +38,8 @@ const static int iRegister = 2;
 const static int mFile = 129;
 const static int iNewIcon = 1;
 const static int iInsertIcns = 2;
-const static int iQuit = 4;
+const static int iExportIcns = 3;
+const static int iQuit = 5;
 
 const static int mEdit = 130;
 const static int iUndo = 1;
@@ -56,9 +59,8 @@ const static int kCancel = 2;
 const static int kTypesPopup = 3;
 const static int kIconPopup = 4;
 const static int kIDField = 5;
-const static int kIncludeOldStyle = 6;
-const static int kClipboardPreview = 8;
-const static int kCurrentIconPreview = 9;
+const static int kClipboardPreview = 7;
+const static int kCurrentIconPreview = 8;
 
 const static int kRegister = 1;
 const static int kLaunchRegister = 3;
@@ -66,11 +68,17 @@ const static int kNameField = 4;
 const static int kCompanyField = 5;
 const static int kRegNoField = 6;
 
+const static int kIncludeOldStyle = 3;
+const static int kSetBits = 4;
+
+const static int kExport = 1;
+const static int kIconPreview = 7;
+const static int kExportPreview = 8;
+
 // --- Type Definitions -- //
 typedef enum tCicnCreateFlags
 {
-	includeOldStyle=1,
-	createFile=2
+	createFile=1
 } tCicnCreateFlags;
 
 typedef struct tPreferences
@@ -79,6 +87,8 @@ typedef struct tPreferences
 	Str255 name;
 	Str255 company;
 	Str255 regNo;
+	bool includeOldStyle;
+	bool setBits;
 } tPreferences;
 
 typedef tPreferences** PreferencesHandle;
@@ -113,14 +123,17 @@ void		NewIcon(void);
 OSStatus	NewIconNav(void);
 OSStatus	NewIconOld(void);
 void		Inserticns(void);
+void		Exporticns(void);
 bool		CheckClipboard(void);
 void		DrawImageWell(Rect bounds);
 OSStatus	GetFileNav(void);
 OSStatus	GetFileOld(void);
 void		GeticnsID(bool createFile);
+void		GetExporticns(void);
 void		clip2icns(short icnsID, Str255 icnsName, int flags);
 void 		CloseScheme(void);
 void		HandleEditChoice(int item);
+void		SetPreferences(void);
 void		CleanUp(void);
 
 // --- Globals --- //

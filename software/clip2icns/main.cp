@@ -1,4 +1,3 @@
-#include "Icons.h"
 #include "clip2icns.h"
 
 void main(void)
@@ -71,6 +70,8 @@ void LoadPreferences(void)
 	CopyString((**preferences).name, "\pNot Registered");
 	CopyString((**preferences).company, "\p");
 	CopyString((**preferences).regNo, "\p");
+	(**preferences).includeOldStyle = false;
+	(**preferences).setBits = true;
 		err = FindFolder(kOnSystemDisk, kPreferencesFolderType, kDontCreateFolder, &myVRef, &myDirID);
 	if (err == noErr)
 		err = FSMakeFSSpec(myVRef, myDirID, "\pclip2icns Preferences", &preferencesFile);
@@ -86,6 +87,8 @@ void LoadPreferences(void)
 		CopyString((**preferences).name, (**preferencesRes).name);
 		CopyString((**preferences).company, (**preferencesRes).company);
 		CopyString((**preferences).regNo, (**preferencesRes).regNo);
+		(**preferences).includeOldStyle = (**preferencesRes).includeOldStyle;
+		(**preferences).setBits = (**preferencesRes).setBits;
 		if (!(EqualString((**preferences).name, "\pNot Registered", true, true)))
 		{
 			GenerateRegNo((**preferences).name, testRegNo);
@@ -128,6 +131,8 @@ void LoadPreferences(void)
 		CopyString((**preferences).name, "\pNot Registered");
 		CopyString((**preferences).company, "\p");
 		CopyString((**preferences).regNo, "\p");
+		(**preferences).includeOldStyle = false;
+		(**preferences).setBits = true;
 	}
 }
 
@@ -352,7 +357,7 @@ void HandleAppleChoice(int item)
 		default :
 			appleMenu = GetMenuHandle (mApple);
 			GetMenuItemText(appleMenu, item, accName);
-			accNumber = OpenDeskAcc (accName);
+			accNumber = OpenDeskAcc(accName);
 			break;
 	}
 }
@@ -551,7 +556,8 @@ void HandleFileChoice(int item)
 	{
 		case iNewIcon : NewIcon(); break;
 		case iInsertIcns : Inserticns(); break;
-		case iQuit       :	isDone = true; break;
+		case iExportIcns : Exporticns(); break;
+		case iQuit :isDone = true; break;
 	}
 }
 
@@ -656,28 +662,35 @@ bool CheckClipboard()
 	if (GetScrap( pic, 'PICT', &offset ) < 0)
 	{
 		DisplayAlert("", "The clipboard is either empty or doesn't contain a picture");
-		return false;
 		DisposeHandle(pic);
+		return false;
 	}
 	
 	GetPictInfo((PicHandle)pic, &picInfo, 0, 0, 0, 0);
 	
-	if ((picInfo.sourceRect.bottom == 32) ||
-		(picInfo.sourceRect.right == 64) ||
+	if ((picInfo.sourceRect.bottom == 32) &&
+		((picInfo.sourceRect.right == 64) ||
 		(picInfo.sourceRect.right == 80) ||
-		(picInfo.sourceRect.right == 16))
+		(picInfo.sourceRect.right == 16)))
 	{
 		;
 	}
 	else
 	{
-		DisplayAlert("", "The clipboard picture isn't 80x32,64x32, or 16x32.");
-		return false;
+		DisplayAlert("", "The clipboard picture isn't 80x32,64x32, or 16x32");
 		DisposeHandle(pic);
+		return false;
 	}
 	
-	return true;
+	if ((picInfo.hRes != 0x00480000) || (picInfo.vRes != 0x00480000))
+	{
+		DisplayAlert("", "The clipboard picture must be at 72 dpi");
+		DisposeHandle(pic);
+		return false;
+	}
+	
 	DisposeHandle(pic);
+	return true;
 }
 
 OSStatus GetFileNav()
@@ -741,6 +754,18 @@ OSStatus GetFileOld()
 		return noErr;
 	}
 	return paramErr;
+}
+
+void Exporticns()
+{
+	OSStatus	theErr;
+	
+	if (navServicesAvailable)
+		theErr = GetFileNav();
+	else
+		theErr = GetFileOld();
+	if (theErr == noErr)
+		GetExporticns();
 }
 
 
@@ -848,23 +873,16 @@ void GeticnsID(bool createFile)
 	long				ID;
 	Handle				item;
 	short				itemType;
-	Handle				pic;
-	long				ignored;
 	short				scheme;
 	Str255				errorNumber;
 	Rect				popupRect;
 	int					selectedIcns, i, selectedType=1, currentMenuID = 201;
 	Str255				IDAsString, menuItemText, icnsName = "\p Item Icon";
-	int					includeOldStyle = 1;
-	GWorldPtr			clipboardGWorld;
-	PixMapHandle		clipboardPix;
 	Rect				sourceRect, largeIconRect={0,0,32, 32}, smallIconRect = {0, 0, 16, 16};
-	RGBColor			currentForeColor, currentBackColor;
-	Rect				clipboardPreviewRect, iconPreviewRect, clipboardRect, tempRect;
-	Rect				clipLargeIconRect, clipLargeMaskRect, clipSmallIconRect, clipSmallMaskRect;
+	Rect				clipboardPreviewRect, iconPreviewRect, tempRect;
 	PixPatHandle		desktopPattern;
 	Rect				currentLargeIconRect, currentSmallIconRect;
-	icnsClass			currenticns;
+	icnsClass			currenticns, clipboardicns;
 	int					x, y;
 	
 	if (!createFile)
@@ -889,16 +907,13 @@ void GeticnsID(bool createFile)
 		UseResFile(appFile);
 	}
 	
-	insertIcns = GetNewDialog (insertCicnID, nil, (WindowPtr)-1L);
+	insertIcns = GetNewDialog (inserticnsID, nil, (WindowPtr)-1L);
 	SetPort( insertIcns);
 	SetDialogDefaultItem(insertIcns, kInsert);
 	SetDialogCancelItem( insertIcns, kCancel );
 	SelectDialogItemText( insertIcns, kIDField, 0, 32767);
 	
 	GetDialogItem(insertIcns, kIconPopup, &itemType, &item, &popupRect);
-	
-	GetDialogItem(insertIcns, kIncludeOldStyle, &itemType, &item, &itemRect);
-	SetControlValue((ControlHandle)item, includeOldStyle);
 		
 	desktopPattern = GetPixPat(16);
 	GetDialogItem(insertIcns, kClipboardPreview, &itemType, &item, &clipboardPreviewRect);
@@ -908,94 +923,21 @@ void GeticnsID(bool createFile)
 	DrawImageWell(iconPreviewRect);
 	FillCRect(&iconPreviewRect, desktopPattern);
 	
-	GetForeColor(&currentForeColor);
-	GetBackColor(&currentBackColor);
-	pic = NewHandle (0);
-	GetScrap( pic, 'PICT', &ignored );
-	clipboardRect = (*(PicHandle)pic)->picFrame;
-	OffsetRect(&clipboardRect, -clipboardRect.left, -clipboardRect.top);
+	clipboardicns.ImportFromClipboard();
 	
-	NewGWorld(&clipboardGWorld, 32, &clipboardRect, NULL, NULL, 0);
-	SetGWorld(clipboardGWorld, NULL);
-	DrawPicture((PicHandle)pic, &clipboardRect);
-	clipboardPix = GetGWorldPixMap(clipboardGWorld);
-	LockPixels(clipboardPix);
+	GetDialogItem(insertIcns, kClipboardPreview, &itemType, &item, &sourceRect);
+	sourceRect.left += (sourceRect.right - sourceRect.left)/2;
+	tempRect = largeIconRect;
+	MakeTargetRect(sourceRect, &tempRect);
+	clipboardicns.Display(tempRect);
 	
-	ForeColor(blackColor);
-	BackColor(whiteColor);
-	
-	if (clipboardRect.right == 80)
-	{
-		GetDialogItem(insertIcns, kClipboardPreview, &itemType, &item, &sourceRect);
-		sourceRect.left += (sourceRect.right - sourceRect.left)/2;
-		tempRect = largeIconRect;
-		MakeTargetRect(sourceRect, &tempRect);
-		SetRect(&clipLargeIconRect, 16, 0, 48, 32);
-		SetRect(&clipLargeMaskRect, 48, 0, 80, 32);
-		
-		//CopyBits((BitMap*) *maskPix, &insertIcns->portBits, &largeIconRect, &tempRect, srcCopy, NULL);
-		CopyDeepMask((BitMap *) *clipboardPix,
-					 (BitMap *) *clipboardPix,
-					 &insertIcns->portBits,
-					 &clipLargeIconRect,
-					 &clipLargeMaskRect,
-				 	 &tempRect,
-					 srcCopy,
-					 NULL);
-		GetDialogItem(insertIcns, kClipboardPreview, &itemType, &item, &sourceRect);
-		sourceRect.right -= (sourceRect.right - sourceRect.left)/2;
-		tempRect = smallIconRect;
-		MakeTargetRect(sourceRect, &tempRect);
-		SetRect(&clipSmallIconRect, 0, 0, 16, 16);
-		SetRect(&clipSmallMaskRect, 0, 16, 16, 32);
-		CopyDeepMask((BitMap *) *clipboardPix,
-					 (BitMap *) *clipboardPix,
-					 &insertIcns->portBits,
-					 &clipSmallIconRect,
-					 &clipSmallMaskRect,
-				 	 &tempRect,
-					 srcCopy,
-					 NULL);
-	}
-	if (clipboardRect.right == 64)
-	{
-		GetDialogItem(insertIcns, kClipboardPreview, &itemType, &item, &sourceRect);
-		tempRect = largeIconRect;
-		MakeTargetRect(sourceRect, &tempRect);
-		SetRect(&clipLargeIconRect, 0, 0, 32, 32);
-		SetRect(&clipLargeMaskRect, 32, 0, 64, 32);
-		CopyDeepMask((BitMap *) *clipboardPix,
-					 (BitMap *) *clipboardPix,
-					 &insertIcns->portBits,
-					 &clipLargeIconRect,
-					 &clipLargeMaskRect,
-				 	 &tempRect,
-					 srcCopy,
-					 NULL);
-	}
-	if (clipboardRect.right == 16)
-	{
-		GetDialogItem(insertIcns, kClipboardPreview, &itemType, &item, &sourceRect);
-		tempRect = smallIconRect;
-		MakeTargetRect(sourceRect, &tempRect);
-		SetRect(&clipSmallIconRect, 0, 0, 16, 16);
-		SetRect(&clipSmallMaskRect, 0, 16, 16, 32);
-		CopyDeepMask((BitMap *) *clipboardPix,
-					 (BitMap *) *clipboardPix,
-					 &insertIcns->portBits,
-					 &clipSmallIconRect,
-					 &clipSmallMaskRect,
-				 	 &tempRect,
-					 srcCopy,
-					 NULL);
-	}
-	RGBForeColor(&currentForeColor);
-	RGBBackColor(&currentBackColor);
+	GetDialogItem(insertIcns, kClipboardPreview, &itemType, &item, &sourceRect);
+	sourceRect.right -= (sourceRect.right - sourceRect.left)/2;
+	tempRect = smallIconRect;
+	MakeTargetRect(sourceRect, &tempRect);
+	clipboardicns.Display(tempRect);
 	
 	SetPort(insertIcns);
-	
-	UnlockPixels(clipboardPix);
-	DisposeGWorld(clipboardGWorld);
 
 	GetDialogItem(insertIcns, kCurrentIconPreview, &itemType, &item, &sourceRect);
 	sourceRect.left += (sourceRect.right - sourceRect.left)/2;
@@ -1040,9 +982,9 @@ void GeticnsID(bool createFile)
 				UseResFile(appFile);
 				SetGWorld(startupPort, startupDevice);
 				if (createFile)
-					clip2icns(ID, icnsName, includeOldStyle + createFile);
+					clip2icns(ID, icnsName, createFile);
 				else
-					clip2icns(ID, icnsName, includeOldStyle);
+					clip2icns(ID, icnsName, 0);
 				return;
 				break;
 			case kCancel:
@@ -1084,12 +1026,6 @@ void GeticnsID(bool createFile)
 				Refresh();
 				
 				break;
-			case kIncludeOldStyle:
-				GetDialogItem(insertIcns, kIncludeOldStyle, &itemType, &item, &itemRect);
-				includeOldStyle = GetControlValue((ControlHandle)item);
-				includeOldStyle = 1 - includeOldStyle;
-				SetControlValue((ControlHandle)item, includeOldStyle);
-				
 		}
 		
 		
@@ -1104,517 +1040,241 @@ void GeticnsID(bool createFile)
 	SetGWorld(startupPort, startupDevice);
 }
 
+#define ExportRefresh()\
+{\
+	DrawImageWell(iconPreviewRect);\
+	DrawImageWell(exportPreviewRect);\
+	GetMenuItemText(GetMenu(currentMenuID), selectedIcns, menuItemText);\
+	CopyString(IDAsString, menuItemText);\
+	for (i=1; IDAsString[i] != ' '; i++){;}\
+	if (IDAsString[1] == 208) IDAsString[1] = '-';\
+	IDAsString[0] = i-1;\
+	GetDialogItem(exporticns, kIDField, &itemType, &item, &itemRect);\
+	SetDialogItemText(item, IDAsString);\
+	SelectDialogItemText( exporticns, kIDField, 0, 32767);\
+	StringToNum(IDAsString, &ID);\
+	scheme = FSpOpenResFile(&schemeSpec, fsRdPerm);\
+	UseResFile(scheme);\
+	if (Get1Resource('icns', ID) || Get1Resource('icl8', ID) || Get1Resource('ics8', ID))\
+	{\
+		FillCRect(&iconPreviewRect, desktopPattern);\
+		currenticns.ID = ID;\
+		currenticns.Load();\
+		currenticns.Display(currentLargeIconRect);\
+		currenticns.Display(currentSmallIconRect);\
+		currenticns.ExportToPixMap(clipboardPix);\
+		LockPixels(clipboardPix);\
+		GetForeColor(&oldForeColor);\
+		GetBackColor(&oldBackColor);\
+		ForeColor(blackColor);\
+		BackColor(whiteColor);\
+		CopyBits((BitMap*)*clipboardPix, &exporticns->portBits, &clipboardRect, &exportTargetRect, srcCopy, NULL);\
+		RGBForeColor(&oldForeColor);\
+		RGBBackColor(&oldBackColor);\
+		UnlockPixels(clipboardPix);\
+	}\
+	else\
+	{\
+		GetDialogItem(exporticns, kIconPreview, &itemType, &item, &sourceRect);\
+		x = sourceRect.left + (sourceRect.right - sourceRect.left)/2 - StringWidth("\pNot Available")/2;\
+		y = sourceRect.top + (sourceRect.bottom - sourceRect.top)/2 + 6;\
+		FillCRect(&iconPreviewRect, desktopPattern);\
+		MoveTo(x, y);\
+		DrawString("\pNot Available");\
+	}\
+	CloseResFile(scheme);\
+	UseResFile(appFile);\
+}
+				
+
+void GetExporticns(void)
+{
+	DialogPtr			exporticns;
+	bool				dialogDone;
+	short				itemHit;
+	Rect				itemRect;
+	long				ID;
+	Handle				item;
+	short				itemType;
+	short				scheme;
+	Str255				errorNumber;
+	Rect				popupRect;
+	int					selectedIcns=1, i, selectedType=1, currentMenuID = 201;
+	Str255				IDAsString, menuItemText;
+	GWorldPtr			clipboardGWorld;
+	PixMapHandle		clipboardPix;
+	Rect				clipboardRect = {0, 0, 32, 80};
+	Rect				sourceRect, largeIconRect={0,0,32, 32}, smallIconRect = {0, 0, 16, 16};
+	RGBColor			oldForeColor, oldBackColor;
+	Rect				iconPreviewRect, exportPreviewRect, exportTargetRect;
+	PixPatHandle		desktopPattern;
+	Rect				currentLargeIconRect, currentSmallIconRect;
+	icnsClass			currenticns;
+	int					x, y;
+	OpenCPicParams		picParams;
+	PicHandle			pic;
+	OSStatus			err;
+	
+	
+	scheme = FSpOpenResFile(&schemeSpec, fsRdPerm);
+	if (scheme == -1)
+	{
+		if (ResError() == opWrErr)
+		{
+			DisplayAlert("You can't edit this file since it's currently open in another application.", "Please close it and try again");
+			return;
+		}
+		else
+		{
+			NumToString(ResError(), errorNumber);
+			DisplayPAlert("\pSomething happened that wasn't supposed to happen. Error of type: ", errorNumber);
+			return;
+		}
+	}
+	CloseResFile(scheme);
+	UseResFile(appFile);
+	
+	
+	exporticns = GetNewDialog (exporticnsID, nil, (WindowPtr)-1L);
+	SetPort( exporticns);
+	SetDialogDefaultItem(exporticns, kExport);
+	SetDialogCancelItem( exporticns, kCancel );
+	SelectDialogItemText( exporticns, kIDField, 0, 32767);
+	
+	GetDialogItem(exporticns, kIconPopup, &itemType, &item, &popupRect);
+		
+	desktopPattern = GetPixPat(16);
+	GetDialogItem(exporticns, kIconPreview, &itemType, &item, &iconPreviewRect);
+	DrawImageWell(iconPreviewRect);
+	FillCRect(&iconPreviewRect, desktopPattern);
+	GetDialogItem(exporticns, kExportPreview, &itemType, &item, &exportPreviewRect);
+	DrawImageWell(exportPreviewRect);
+	exportTargetRect = clipboardRect;
+	MakeTargetRect(exportPreviewRect, &exportTargetRect);
+	
+	NewGWorld(&clipboardGWorld, 32, &clipboardRect, NULL, NULL, 0);
+	SetGWorld(clipboardGWorld, NULL);
+	clipboardPix = GetGWorldPixMap(clipboardGWorld);
+	
+	SetPort(exporticns);
+
+	GetDialogItem(exporticns, kIconPreview, &itemType, &item, &sourceRect);
+	sourceRect.left += (sourceRect.right - sourceRect.left)/2;
+	currentLargeIconRect = largeIconRect;
+	MakeTargetRect(sourceRect, &currentLargeIconRect);
+	
+	GetDialogItem(exporticns, kIconPreview, &itemType, &item, &sourceRect);
+	sourceRect.right -= (sourceRect.right - sourceRect.left)/2;
+	currentSmallIconRect = smallIconRect;
+	MakeTargetRect(sourceRect, &currentSmallIconRect);
+	
+	ExportRefresh();	
+	ShowWindow( exporticns );
+
+	dialogDone = false;
+	while (!dialogDone)
+	{
+		ModalDialog(nil, &itemHit);
+		switch (itemHit)
+		{
+			case kExport:
+				GetDialogItem(exporticns, kIDField, &itemType, &item, &itemRect);
+				GetDialogItemText(item, IDAsString);
+				StringToNum(IDAsString, &ID);
+				dialogDone = true;
+				scheme = FSpOpenResFile(&schemeSpec, fsRdWrPerm);
+				UseResFile(scheme);
+				currenticns.ID = ID;
+				currenticns.Load();
+				currenticns.ExportToPixMap(clipboardPix);
+				CloseResFile(scheme);
+				UseResFile(appFile);
+				picParams.srcRect = clipboardRect;
+				picParams.hRes =  0x00480000;
+				picParams.vRes =  0x00480000;
+				picParams.version = -2;
+				picParams.reserved1 = 0;
+				picParams.reserved2 = 0;
+				pic = OpenCPicture(&picParams);
+				ClipRect(&clipboardRect);
+				ForeColor(blackColor);
+				BackColor(whiteColor);
+				CopyBits((BitMap*)*clipboardPix, &qd.thePort->portBits, &clipboardRect, &clipboardRect, srcCopy, NULL);
+				ClosePicture();
+				ZeroScrap();
+				err = PutScrap(4556, 'PICT', *pic);
+				if (err != noErr)
+					DisplayValue(err);
+				//KillPicture(pic);
+				break;
+			case kCancel:
+				dialogDone = true;
+				break;
+			case kTypesPopup:
+
+				GetDialogItem(exporticns, kTypesPopup, &itemType, &item, &itemRect);
+				selectedType = GetControlValue((ControlHandle)item);
+				GetDialogItem(exporticns, kIconPopup, &itemType, &item, &itemRect);
+				DisposeControl((ControlHandle)item);
+				(ControlHandle)item = NewControl(exporticns,
+												 &popupRect,
+												 "\pIcon:",
+												 true,
+												 0,
+												 selectedType + 200,
+												 50,
+												 popupMenuProc + popupFixedWidth,
+												 0);
+				
+				currentMenuID = selectedType + 200;
+				(**(PopupPrivateDataHandle)(**(ControlHandle)item).contrlData).mID = currentMenuID;
+				(**(PopupPrivateDataHandle)(**(ControlHandle)item).contrlData).mHandle = GetMenu(currentMenuID);
+				if ((ControlHandle)item == NULL)
+					SysBeep(20);
+				Draw1Control((ControlHandle)item);
+				
+				selectedIcns = 1;
+				ExportRefresh();
+				
+				break;
+			case kIconPopup:
+				GetDialogItem(exporticns, kIconPopup, &itemType, &item, &itemRect);
+				selectedIcns = GetControlValue((ControlHandle)item);
+				
+				ExportRefresh();
+				
+				break;
+		}
+		
+		
+	}
+	DisposeGWorld(clipboardGWorld);
+	DisposePixPat(desktopPattern);
+	DisposeDialog(exporticns);
+	SetGWorld(startupPort, startupDevice);
+}
+
 
 void clip2icns(short icnsID, Str255 icnsName, int flags)
 {
-	long				large32BitSize = 0x1000;
-	long				small32BitSize = 0x1000 / 4;
-	long				large8BitMaskSize = 0x400;
-	long				small8BitMaskSize = 0x400 / 4;
-	long				large1BitSize = 0x100;
-	long				small1BitSize = 0x100 / 4;
-	long				large8BitSize = 0x400;
-	long				small8BitSize = 0x400 / 4;
-	Rect				clipboardRect;
-	Rect				smallIconRect = {0, 0, 16, 16};
-	Rect				smallMaskRect = {16, 0, 32, 16};
-	Rect				largeIconRect = {0, 0, 32, 32};
-	Rect				largeMaskRect = {0, 32, 32, 64};
-	Rect				standardIconRect = {0, 0, 32, 32};
-	GWorldPtr			clipboardGWorld, maskLarge8BitGWorld, colorLarge32BitGWorld, maskLarge1BitGWorld, bwLargeGWorld, tempGWorld, colorLarge8BitGWorld;
-	GWorldPtr			colorSmall8BitGWorld, colorSmall32BitGWorld, maskSmall1BitGWorld, bwSmallGWorld, maskSmall8BitGWorld;
-	char				*maskLarge8BitSrc, *colorLarge32BitSrc, *maskLarge1BitSrc, *bwLargeSrc, *colorLarge8BitSrc, *colorSmall8BitSrc, *colorSmall32BitSrc, *maskSmall1BitSrc, *bwSmallSrc, *maskSmall8BitSrc;
-	PixMapHandle		clipboardPix, maskLarge8BitPix, colorLarge32BitPix, maskLarge1BitPix, bwLargePix, tempPix, colorLarge8BitPix;
-	PixMapHandle		colorSmall8BitPix, colorSmall32BitPix, maskSmall1BitPix, bwSmallPix, maskSmall8BitPix;
-	long				icnsSize;
-	IconFamilyHandle	icnsHandle;
-	IconFamilyElement*	elementPtr;
-	long				offset;
-	Handle				pic;
-	CTabHandle			grayscaleTable;
-	short				scheme;
-	Handle				oldIcns;
-	FInfo				schemeInfo;
-	bool				hasLarge=true, hasSmall=false;
-	Handle				currentIcon;
-	
-	pic = NewHandle (0);
-	if (GetScrap( pic, 'PICT', &offset ) < 0)
-	{
-		DisplayAlert("", "The clipboard is either empty or doesn't contain a picture");
-		return;
-	}
-	
-	clipboardRect = (*(PicHandle)pic)->picFrame;
-	OffsetRect(&clipboardRect, -clipboardRect.left, -clipboardRect.top);
-	
-	grayscaleTable = GetCTable(40);
-	HLock((Handle)grayscaleTable);
-	if (clipboardRect.right == 80)
-	{
-		hasLarge = true;
-		hasSmall = true;
-		largeIconRect.left = 16;
-		largeIconRect.right = 48;
-		largeMaskRect.left = 48;
-		largeMaskRect.right = 80;
-	}
-	if (clipboardRect.right == 16)
-	{
-		hasSmall = true;
-		hasLarge = false;
-	} 
-	// first we draw the clipboard into a g world
-	NewGWorld(&clipboardGWorld, 32, &clipboardRect, NULL, NULL, 0);
-	SetGWorld(clipboardGWorld, NULL);
-	EraseRect(&qd.thePort->portRect);
-	clipboardPix = GetGWorldPixMap(clipboardGWorld);
-	LockPixels(clipboardPix);
-	DrawPicture((PicHandle)pic, &clipboardRect);
-	
-	
-	if (hasLarge)
-	{
-		// copying a piece of the clipboard into the 8 bit icon
-		NewGWorld(&colorLarge8BitGWorld, 8, &standardIconRect, NULL, NULL, 0);
-		SetGWorld(colorLarge8BitGWorld, NULL);
-		EraseRect(&qd.thePort->portRect);
-		colorLarge8BitPix = GetGWorldPixMap(colorLarge8BitGWorld);
-		LockPixels(colorLarge8BitPix);
-		
-		CopyBits((BitMap *)*clipboardPix,
-				 (BitMap *)*colorLarge8BitPix,
-				 &largeIconRect,
-				 &standardIconRect,
-				 srcCopy + ditherCopy,
-				 NULL);
-		
-		// now we're copying a piece of the clipboard into the 32 bit icon
-		NewGWorld(&colorLarge32BitGWorld, 32, &standardIconRect, NULL, NULL, 0);
-		SetGWorld(colorLarge32BitGWorld, NULL);
-		EraseRect(&qd.thePort->portRect);
-		colorLarge32BitPix = GetGWorldPixMap(colorLarge32BitGWorld);
-		LockPixels(colorLarge32BitPix);
-		
-		CopyBits((BitMap *)*clipboardPix,
-				 (BitMap *)*colorLarge32BitPix,
-				 &largeIconRect,
-				 &standardIconRect,
-				 srcCopy,
-				 NULL);
-		
-		// making the 1 bit mask		 
-		NewGWorld(&maskLarge1BitGWorld, 1, &standardIconRect, NULL, NULL, 0);
-		SetGWorld(maskLarge1BitGWorld, NULL);
-		EraseRect(&qd.thePort->portRect);
-		maskLarge1BitPix = GetGWorldPixMap(maskLarge1BitGWorld);
-		LockPixels(maskLarge1BitPix);
-		
-		NewGWorld(&tempGWorld, 8, &standardIconRect, grayscaleTable, NULL, 0);
-		SetGWorld(tempGWorld, NULL);
-		EraseRect(&qd.thePort->portRect);
-		tempPix = GetGWorldPixMap(tempGWorld);
-		CopyBits((BitMap *)*clipboardPix, (BitMap *)*tempPix, &largeMaskRect, &standardIconRect, srcCopy, NULL);
-		LockPixels(tempPix);
-				
-		for (int i = 0; i < (**(**tempPix).pmTable).ctSize + 1; i++)
-		{
-			if ((**(**tempPix).pmTable).ctTable[i].rgb.red != 0xFFFF &&
-			    (**(**tempPix).pmTable).ctTable[i].rgb.green != 0xFFFF &&
-			    (**(**tempPix).pmTable).ctTable[i].rgb.blue != 0xFFFF)
-			{
-				(**(**tempPix).pmTable).ctTable[i].rgb.red = 0;
-				(**(**tempPix).pmTable).ctTable[i].rgb.green = 0;
-				(**(**tempPix).pmTable).ctTable[i].rgb.blue = 0;
-			}
-		}
-		
-		CTabChanged((**tempPix).pmTable);
-		
-		//UpdateGWorld(&tempGWorld, 8, &standardIconRect, (**tempPix).pmTable, NULL, 0);
-		
-		CopyBits((BitMap *)*tempPix,
-				 (BitMap *)*maskLarge1BitPix,
-				 &standardIconRect,
-				 &standardIconRect,
-				 srcCopy,
-				 NULL);
-				 
-		UnlockPixels(tempPix);
-		DisposeGWorld(tempGWorld);
-		
-		// creating the bw version
-		
-		NewGWorld(&bwLargeGWorld, 1, &standardIconRect, NULL, NULL, 0);
-		SetGWorld(bwLargeGWorld, NULL);
-		EraseRect(&qd.thePort->portRect);
-		bwLargePix = GetGWorldPixMap(bwLargeGWorld);
-		LockPixels(bwLargePix);
-		
-		CopyBits((BitMap *)*colorLarge32BitPix,
-				 (BitMap *)*bwLargePix,
-				 &standardIconRect,
-				 &standardIconRect,
-				 srcCopy + ditherCopy,
-				 NULL);
-		
-		// now we copy the 8 bit mask
-		NewGWorld(&maskLarge8BitGWorld, 8, &standardIconRect, grayscaleTable, NULL, 0);
-		SetGWorld(maskLarge8BitGWorld, NULL);
-		EraseRect(&qd.thePort->portRect);
-		maskLarge8BitPix = GetGWorldPixMap(maskLarge8BitGWorld);
-		LockPixels(maskLarge8BitPix);
-		
-		CopyBits((BitMap *)*clipboardPix,
-				 (BitMap *)*maskLarge8BitPix,
-				 &largeMaskRect,
-				 &standardIconRect,
-				 srcCopy,
-				 NULL);
-		
-		CropPixMap(maskLarge1BitPix, 4);
-		CropPixMap(bwLargePix, 4);
-		CropPixMap(colorLarge8BitPix, 32);
-		CropPixMap(maskLarge8BitPix, 32);
-		CropPixMap(colorLarge32BitPix, 128);
-	}
-	if (hasSmall)
-	{
-		// copying a piece of the clipboard into the 8 bit icon
-		NewGWorld(&colorSmall8BitGWorld, 8, &smallIconRect, NULL, NULL, 0);
-		SetGWorld(colorSmall8BitGWorld, NULL);
-		EraseRect(&qd.thePort->portRect);
-		colorSmall8BitPix = GetGWorldPixMap(colorSmall8BitGWorld);
-		LockPixels(colorSmall8BitPix);
-		
-		CopyBits((BitMap *)*clipboardPix,
-				 (BitMap *)*colorSmall8BitPix,
-				 &smallIconRect,
-				 &smallIconRect,
-				 srcCopy + ditherCopy,
-				 NULL);
-		
-		// now we're copying a piece of the clipboard into the 32 bit icon
-		NewGWorld(&colorSmall32BitGWorld, 32, &smallIconRect, NULL, NULL, 0);
-		SetGWorld(colorSmall32BitGWorld, NULL);
-		EraseRect(&qd.thePort->portRect);
-		colorSmall32BitPix = GetGWorldPixMap(colorSmall32BitGWorld);
-		LockPixels(colorSmall32BitPix);
-		
-		CopyBits((BitMap *)*clipboardPix,
-				 (BitMap *)*colorSmall32BitPix,
-				 &smallIconRect,
-				 &smallIconRect,
-				 srcCopy,
-				 NULL);
-		
-		// making the 1 bit mask		 
-		NewGWorld(&maskSmall1BitGWorld, 1, &smallIconRect, NULL, NULL, 0);
-		SetGWorld(maskSmall1BitGWorld, NULL);
-		EraseRect(&qd.thePort->portRect);
-		maskSmall1BitPix = GetGWorldPixMap(maskSmall1BitGWorld);
-		LockPixels(maskSmall1BitPix);
-		
-		NewGWorld(&tempGWorld, 8, &smallIconRect, grayscaleTable, NULL, 0);
-		SetGWorld(tempGWorld, NULL);
-		EraseRect(&qd.thePort->portRect);
-		tempPix = GetGWorldPixMap(tempGWorld);
-		CopyBits((BitMap *)*clipboardPix, (BitMap *)*tempPix, &smallMaskRect, &smallIconRect, srcCopy, NULL);
-		LockPixels(tempPix);
-		
-		for (int i = 0; i < (**(**tempPix).pmTable).ctSize + 1; i++)
-		{
-			if ((**(**tempPix).pmTable).ctTable[i].rgb.red != 0xFFFF &&
-			    (**(**tempPix).pmTable).ctTable[i].rgb.green != 0xFFFF &&
-			    (**(**tempPix).pmTable).ctTable[i].rgb.blue != 0xFFFF)
-			{
-				(**(**tempPix).pmTable).ctTable[i].rgb.red = 0;
-				(**(**tempPix).pmTable).ctTable[i].rgb.green = 0;
-				(**(**tempPix).pmTable).ctTable[i].rgb.blue = 0;
-			}
-		}
-		
-		CTabChanged((**tempPix).pmTable);
-		
-		CopyBits((BitMap *)*tempPix,
-				 (BitMap *)*maskSmall1BitPix,
-				 &smallIconRect,
-				 &smallIconRect,
-				 srcCopy,
-				 NULL);
-/*		SetGWorld(startupPort, startupDevice);
-		CopyBits((BitMap *)*maskSmall1BitPix,
-				 &qd.thePort->portBits,
-				 &smallIconRect,
-				 &smallIconRect,
-				 srcCopy,
-				 NULL);
-*/		
-		UnlockPixels(tempPix);
-		DisposeGWorld(tempGWorld);
-		
-		// creating the bw version
-		
-		NewGWorld(&bwSmallGWorld, 1, &smallIconRect, NULL, NULL, 0);
-		SetGWorld(bwSmallGWorld, NULL);
-		EraseRect(&qd.thePort->portRect);
-		bwSmallPix = GetGWorldPixMap(bwSmallGWorld);
-		LockPixels(bwSmallPix);
-		
-		CopyBits((BitMap *)*colorSmall32BitPix,
-				 (BitMap *)*bwSmallPix,
-				 &smallIconRect,
-				 &smallIconRect,
-				 srcCopy + ditherCopy,
-				 NULL);
-		
-		// now we copy the 8 bit mask
-		NewGWorld(&maskSmall8BitGWorld, 8, &smallIconRect, grayscaleTable, NULL, 0);
-		SetGWorld(maskSmall8BitGWorld, NULL);
-		EraseRect(&qd.thePort->portRect);
-		maskSmall8BitPix = GetGWorldPixMap(maskSmall8BitGWorld);
-		LockPixels(maskSmall8BitPix);
-		
-		CopyBits((BitMap *)*clipboardPix,
-				 (BitMap *)*maskSmall8BitPix,
-				 &smallMaskRect,
-				 &smallIconRect,
-				 srcCopy,
-				 NULL);
-		
-		CropPixMap(maskSmall1BitPix, 2);
-		CropPixMap(bwSmallPix, 2);
-		CropPixMap(colorSmall8BitPix, 16);
-		CropPixMap(maskSmall8BitPix, 16);
-		CropPixMap(colorSmall32BitPix, 64);
-	}
-	
-	SetGWorld(startupPort, startupDevice);
-	
-	icnsSize = sizeof(IconFamilyResource) - sizeof(IconFamilyElement);
-	if (hasLarge)
-		icnsSize += sizeof(IconFamilyElement) * 4 + large32BitSize - 4 + large8BitMaskSize - 4 + large1BitSize - 4 + large8BitSize - 4;
-	if (hasSmall)
-		icnsSize += sizeof(IconFamilyElement) * 4 + small32BitSize - 4 + small8BitMaskSize - 4 + small1BitSize - 4 + small8BitSize - 4;
-	icnsHandle = (IconFamilyHandle) NewHandleClear(icnsSize);
+	icnsClass	clipboardicns;
 
-	HLock((Handle)icnsHandle);
+	clipboardicns.ImportFromClipboard();
 	
-	(**icnsHandle).resourceType = 'icns';
-	(**icnsHandle).resourceSize = icnsSize;
-	if (hasLarge)
-	{
-		bwLargeSrc = (*bwLargePix)->baseAddr;
-		maskLarge1BitSrc = (*maskLarge1BitPix)->baseAddr;
-		colorLarge8BitSrc = (*colorLarge8BitPix)->baseAddr;
-		colorLarge32BitSrc = (*colorLarge32BitPix)->baseAddr;
-		maskLarge8BitSrc = (*maskLarge8BitPix)->baseAddr;
-	}
-	if (hasSmall)
-	{
-		bwSmallSrc = (*bwSmallPix)->baseAddr;
-		maskSmall1BitSrc = (*maskSmall1BitPix)->baseAddr;
-		colorSmall8BitSrc = (*colorSmall8BitPix)->baseAddr;
-		colorSmall32BitSrc = (*colorSmall32BitPix)->baseAddr;
-		maskSmall8BitSrc = (*maskSmall8BitPix)->baseAddr;
-	}
-	
-	scheme = FSpOpenResFile(&schemeSpec, fsRdWrPerm);
-	UseResFile(scheme);
 	if (flags & createFile)
 	{
 		FSpDelete(&schemeSpec);
-
 		FSpCreate(&schemeSpec, 'c2ic', 'Icon', 0); /*smRoman = 0*/
 		FSpCreateResFile(&schemeSpec, 'c2ic', 'Icon', 0); /*smRoman = 0*/
 	}
-	if (flags & includeOldStyle)
-	{
-		currentIcon = Get1Resource('ICN#', icnsID);
-		if (currentIcon != NULL)
-		{
-			bwLargeSrc = *currentIcon;
-			maskLarge1BitSrc = &(*currentIcon)[large1BitSize/2];
-		}
-		currentIcon = Get1Resource('icl8', icnsID);
-		if (currentIcon != NULL)
-			colorLarge8BitSrc = *currentIcon;
-			
-		currentIcon = Get1Resource('ics#', icnsID);
-		if (currentIcon != NULL)
-		{
-			bwSmallSrc = *currentIcon;
-			maskSmall1BitSrc = &(*currentIcon)[small1BitSize/2];
-		}
-		currentIcon = Get1Resource('ics8', icnsID);
-		if (currentIcon != NULL)
-			colorSmall8BitSrc = *currentIcon;
-	}
 	
-	if (hasLarge && hasSmall)
-	{
-		(**icnsHandle).elements[0].elementType = 'ICN#';
-		(**icnsHandle).elements[0].elementSize = large1BitSize + sizeof(IconFamilyElement) - 4;
-		BlockMove( bwLargeSrc,(**icnsHandle).elements[0].elementData, large1BitSize/2);
-		BlockMove( maskLarge1BitSrc, &(**icnsHandle).elements[0].elementData[large1BitSize / 2], large1BitSize/2);
-	
-		elementPtr = (IconFamilyElement *)((char *)(**icnsHandle).elements + (**icnsHandle).elements[0].elementSize);
-		elementPtr->elementType = 'icl8';
-		elementPtr->elementSize = large8BitSize + sizeof(IconFamilyElement) - 4;
-		BlockMove(colorLarge8BitSrc, elementPtr->elementData, large8BitSize);
-		
-		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-		elementPtr->elementType = 'il32';
-		elementPtr->elementSize = large32BitSize + sizeof(IconFamilyElement) - 4;
-		BlockMove( colorLarge32BitSrc, elementPtr->elementData, large32BitSize);
-		
-		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-		elementPtr->elementType = 'l8mk';
-		elementPtr->elementSize = large8BitMaskSize + sizeof(IconFamilyElement) - 4;
-		BlockMove(maskLarge8BitSrc, elementPtr->elementData, large8BitMaskSize);
-		
-		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-		elementPtr->elementType = 'ics#';
-		elementPtr->elementSize = small1BitSize + sizeof(IconFamilyElement) - 4;
-		BlockMove( bwSmallSrc ,elementPtr->elementData, small1BitSize/2);
-		BlockMove( maskSmall1BitSrc, &elementPtr->elementData[small1BitSize / 2], small1BitSize/2);
-		
-		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-		elementPtr->elementType = 'ics8';
-		elementPtr->elementSize = small8BitSize + sizeof(IconFamilyElement) - 4;
-		BlockMove(colorSmall8BitSrc, elementPtr->elementData, small8BitSize);
-		
-		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-		elementPtr->elementType = 'is32';
-		elementPtr->elementSize = small32BitSize + sizeof(IconFamilyElement) - 4;
-		BlockMove(colorSmall32BitSrc, elementPtr->elementData, small32BitSize);
-		
-		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-		elementPtr->elementType = 's8mk';
-		elementPtr->elementSize = small8BitMaskSize + sizeof(IconFamilyElement) - 4;
-		BlockMove(maskSmall8BitSrc, elementPtr->elementData, small8BitMaskSize);	
-	}
-	
-	if (hasLarge && !hasSmall)
-	{
-		(**icnsHandle).elements[0].elementType = 'ICN#';
-		(**icnsHandle).elements[0].elementSize = large1BitSize + sizeof(IconFamilyElement) - 4;
-		BlockMove( bwLargeSrc,(**icnsHandle).elements[0].elementData, large1BitSize/2);
-		BlockMove( maskLarge1BitSrc, &(**icnsHandle).elements[0].elementData[large1BitSize / 2], large1BitSize/2);
-	
-		elementPtr = (IconFamilyElement *)((char *)(**icnsHandle).elements + (**icnsHandle).elements[0].elementSize);
-		elementPtr->elementType = 'icl8';
-		elementPtr->elementSize = large8BitSize + sizeof(IconFamilyElement) - 4;
-		BlockMove(colorLarge8BitSrc, elementPtr->elementData, large8BitSize);
-		
-		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-		elementPtr->elementType = 'il32';
-		elementPtr->elementSize = large32BitSize + sizeof(IconFamilyElement) - 4;
-		BlockMove(colorLarge32BitSrc, elementPtr->elementData, large32BitSize);
-		
-		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-		elementPtr->elementType = 'l8mk';
-		elementPtr->elementSize = large8BitMaskSize + sizeof(IconFamilyElement) - 4;
-		BlockMove(maskLarge8BitSrc, elementPtr->elementData, large8BitMaskSize);
-	}
-	
-	if (!hasLarge && hasSmall)
-	{
-		(**icnsHandle).elements[0].elementType = 'ics#';
-		(**icnsHandle).elements[0].elementSize = small1BitSize + sizeof(IconFamilyElement) - 4;
-		BlockMove( bwSmallSrc,(**icnsHandle).elements[0].elementData, small1BitSize/2);
-		BlockMove( maskSmall1BitSrc, &(**icnsHandle).elements[0].elementData[small1BitSize / 2], small1BitSize/2);
-		
-		elementPtr = (IconFamilyElement *)((char *)(**icnsHandle).elements + (**icnsHandle).elements[0].elementSize);
-		elementPtr->elementType = 'ics8';
-		elementPtr->elementSize = small8BitSize + sizeof(IconFamilyElement) - 4;
-		BlockMove(colorSmall8BitSrc, elementPtr->elementData, small8BitSize);
-		
-		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-		elementPtr->elementType = 'is32';
-		elementPtr->elementSize = small32BitSize + sizeof(IconFamilyElement) - 4;
-		BlockMove(colorSmall32BitSrc, elementPtr->elementData, small32BitSize);
-		
-		elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-		elementPtr->elementType = 's8mk';
-		elementPtr->elementSize = small8BitMaskSize + sizeof(IconFamilyElement) - 4;
-		BlockMove(maskSmall8BitSrc, elementPtr->elementData, small8BitMaskSize);	
-	}
-	
-	HUnlock((Handle)icnsHandle);
-	if (icnsID == -16455)
-	{
-		FSpGetFInfo(&schemeSpec, &schemeInfo);
-		schemeInfo.fdFlags |= kHasCustomIcon;
-		FSpSetFInfo(&schemeSpec, &schemeInfo); 
-			
-	}
-	
-	
-	
-	oldIcns = Get1Resource('icns', icnsID);
-	if (oldIcns != NULL)
-	{
-		RemoveResource(oldIcns);
-		UpdateResFile(scheme);
-		CloseResFile(scheme);
-		//FSClose(scheme);
-		UseResFile(appFile);
-		scheme = FSpOpenResFile(&schemeSpec, fsRdWrPerm);
-		UseResFile(scheme);
-	}
-	DetachResource((Handle)icnsHandle);
-	AddResource((Handle)icnsHandle, 'icns', icnsID, icnsName);
-	SetResAttrs((Handle)icnsHandle, resSysHeap + resPurgeable);
-	ChangedResource((Handle)icnsHandle);
-	WriteResource((Handle)icnsHandle);
-	UpdateResFile(scheme);
-	CloseResFile(scheme);
-	UseResFile(appFile);
-	//FSClose(scheme);
-
-	UnlockPixels(clipboardPix);
-	DisposeGWorld(clipboardGWorld);
-	
-	if (hasLarge)
-	{
-		UnlockPixels(colorLarge32BitPix);
-		UnlockPixels(colorLarge8BitPix);
-		UnlockPixels(maskLarge8BitPix);
-		UnlockPixels(maskLarge1BitPix);
-		UnlockPixels(bwLargePix);
-		
-		DisposeGWorld(colorLarge32BitGWorld);
-		DisposeGWorld(colorLarge8BitGWorld);
-		DisposeGWorld(maskLarge8BitGWorld);
-		DisposeGWorld(maskLarge1BitGWorld);
-		DisposeGWorld(bwLargeGWorld);
-	}
-	if (hasSmall)
-	{
-		UnlockPixels(colorSmall32BitPix);
-		UnlockPixels(colorSmall8BitPix);
-		UnlockPixels(maskSmall8BitPix);
-		UnlockPixels(maskSmall1BitPix);
-		UnlockPixels(bwSmallPix);
-		
-		DisposeGWorld(colorSmall32BitGWorld);
-		DisposeGWorld(colorSmall8BitGWorld);
-		DisposeGWorld(maskSmall8BitGWorld);
-		DisposeGWorld(maskSmall1BitGWorld);
-		DisposeGWorld(bwSmallGWorld);
-	}
-	DisposeHandle((Handle)grayscaleTable);
-	
-	HUnlock(pic);
-	DisposeHandle(pic);
-	
-	HUnlock((Handle)grayscaleTable);
-	DisposeHandle((Handle)grayscaleTable);
-	
-	DisposeHandle((Handle)icnsHandle);
+	if ((**preferences).setBits && icnsID != -16455)
+		clipboardicns.SaveToFile(schemeSpec, icnsID, icnsName, resSysHeap + resPurgeable, (**preferences).includeOldStyle);
+	else
+		clipboardicns.SaveToFile(schemeSpec, icnsID, icnsName, 0, (**preferences).includeOldStyle);
 	
 	(**preferences).timesUsed++;
+	
 	if ((((**preferences).timesUsed % 10 == 0) || ((**preferences).timesUsed >= 50)) && (EqualString((**preferences).name, "\pNot Registered", true, true)))
 	{
 		char	buff[255];
@@ -1625,8 +1285,52 @@ void clip2icns(short icnsID, Str255 icnsName, int flags)
 
 void HandleEditChoice(int item)
 {
-	item;
-	SysBeep(6);
+	switch (item)
+	{
+		case iPreferences : SetPreferences(); break;
+	}
+}
+
+void SetPreferences(void)
+{
+	bool			dialogDone = false;
+	DialogPtr		preferencesDialog;
+	ControlHandle	includeOldStyle, setBits;
+	Rect			itemRect;
+	short			itemHit, itemType;
+	
+	preferencesDialog = GetNewDialog(preferencesID, NULL, (WindowPtr)-1L);
+	SetPort(preferencesDialog);
+	
+	SetDialogDefaultItem(preferencesDialog, kOk);
+	SetDialogCancelItem(preferencesDialog, kCancel);
+	
+	GetDialogItem(preferencesDialog, kIncludeOldStyle, &itemType, &((Handle)includeOldStyle), &itemRect);
+	GetDialogItem(preferencesDialog, kSetBits, &itemType, &((Handle)setBits), &itemRect);
+	
+	SetControlValue(includeOldStyle, (**preferences).includeOldStyle);
+	SetControlValue(setBits, (**preferences).setBits);
+	
+	ShowWindow(preferencesDialog);
+	
+	while(!dialogDone)
+	{
+		ModalDialog(NULL, &itemHit);
+		switch (itemHit)
+		{
+			case kOk:
+				dialogDone = true;
+				(**preferences).includeOldStyle = GetControlValue(includeOldStyle);
+				(**preferences).setBits = GetControlValue(setBits);
+				break;
+			case kCancel: dialogDone = true; break;
+			case kIncludeOldStyle: ToggleCheckbox(includeOldStyle); break;
+			case kSetBits: ToggleCheckbox(setBits); break;
+		}
+	}
+
+	DisposeDialog(preferencesDialog);
+	SetGWorld(startupPort, startupDevice);
 }
 
 void CleanUp(void)
