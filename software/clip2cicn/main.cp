@@ -282,7 +282,6 @@ void InsertCicn()
 	SFTypeList			typeList;
 	int					selectedCicn, i;
 	Str255				menuItemText;
-	PopupPrivateDataPtr	popupDataPtr;
 	
 	
 	
@@ -307,9 +306,12 @@ void GetcicnID()
 	long				ID;
 	Handle				item;
 	short				itemType;
-	int					selectedCicn, i;
+	int					selectedCicn, i, selectedType;
 	Str255				menuItemText;
 	PopupPrivateDataPtr	popupDataPtr;
+	ControlHandle		cicnTypePopup;
+	Rect				popupRect = {40, 10, 60, 205};
+	int					currentMenuID = 132;
 	
 	
 		
@@ -317,15 +319,16 @@ void GetcicnID()
 	SetPort( insertCicn);
 	SetDialogDefaultItem(insertCicn, kInsert);
 	SetDialogCancelItem( insertCicn, kCancel );
+	SelectDialogItemText( insertCicn, kIDField, 0, 32767);
 	
 	ShowWindow( insertCicn );
 	dialogDone = false;
 	while (!dialogDone)
 	{
 		ModalDialog(nil, &itemHit);
-		
 		switch (itemHit)
 		{
+			
 			case kInsert: 
 				GetDialogItem(insertCicn, kIDField, &itemType, &item, &itemRect);
 				GetDialogItemText(item, IDasString);
@@ -337,37 +340,40 @@ void GetcicnID()
 				dialogDone = true;
 				break;
 			case kTypesPopup:
+
 				GetDialogItem(insertCicn, kTypesPopup, &itemType, &item, &itemRect);
-				switch (GetControlValue((ControlHandle)item))
-				{
-					case iDocWindow:
-						
-						GetDialogItem(insertCicn, kcicnPopup, &itemType, &item, &itemRect);
-						(**(PopupPrivateDataHandle)(**(ControlHandle)item).contrlData).mID = mDocWindow;
-						(**(PopupPrivateDataHandle)(**(ControlHandle)item).contrlData).mHandle = GetMenu(mDocWindow);
-						Draw1Control((ControlHandle)item);
-						break;
-					case iDialog:
-						
-						GetDialogItem(insertCicn, kcicnPopup, &itemType, &item, &itemRect);
-						popupDataPtr = (*(PopupPrivateDataHandle)(**(ControlHandle)item).contrlData);
-						popupDataPtr->mID = mDialog;
-						popupDataPtr->mHandle = GetMenu(mDialog);
-						Draw1Control((ControlHandle)item);
-						break;
-				}
+				selectedType = GetControlValue((ControlHandle)item);
+				GetDialogItem(insertCicn, kcicnPopup, &itemType, &item, &itemRect);
+				DisposeControl((ControlHandle)item);
+				(ControlHandle)item = NewControl(insertCicn,
+												 &popupRect,
+												 "\pcicn:",
+												 true,
+												 0,
+												 selectedType + 131,
+												 50,
+												 popupMenuProc + popupFixedWidth,
+												 0);
+				
+				currentMenuID = selectedType + 131;
+				(**(PopupPrivateDataHandle)(**(ControlHandle)item).contrlData).mID = currentMenuID;
+				(**(PopupPrivateDataHandle)(**(ControlHandle)item).contrlData).mHandle = GetMenu(currentMenuID);
+				if ((ControlHandle)item == NULL)
+					SysBeep(20);
+				Draw1Control((ControlHandle)item);
+				break;
 			case kcicnPopup:
 				GetDialogItem(insertCicn, kcicnPopup, &itemType, &item, &itemRect);
 				selectedCicn = GetControlValue((ControlHandle)item);
 				
-				GetMenuItemText(GetMenu((**(PopupPrivateDataHandle)(**(ControlHandle)item).contrlData).mID), selectedCicn, menuItemText);
+				GetMenuItemText(GetMenu(currentMenuID), selectedCicn, menuItemText);				
 				CopyString(IDasString, menuItemText);
 				for (i=IDasString[0]; i > 0 && IDasString[i] == ' '; i--){;}
 				for (; i > 0 && IDasString[i] != ' '; i--){;}
 				IDasString[i] = IDasString[0] - i;
 				GetDialogItem(insertCicn, kIDField, &itemType, &item, &itemRect);
 				SetDialogItemText(item, &IDasString[i]);
-				
+				break;
 				
 				
 		}
@@ -388,11 +394,12 @@ void clip2cicn(short cicnID)
 	PictInfo		picInfo, pixMapInfo;
 	long			colorTableSize;
 	CTabHandle		colorTable;
-	GWorldPtr		picGWorld;
-	PixMapHandle	picPixMap;
+	GWorldPtr		picGWorld, bwGWorld, maskGWorld;
+	PixMapHandle	picPixMap, bwPixMap, maskPixMap;
 	long			picSize;
 	long			offset;
 	Handle			oldCicn;
+	CTabHandle		bwColorTable;
 
 
 	pic = NewHandle (0);
@@ -402,15 +409,6 @@ void clip2cicn(short cicnID)
 		DisplayAlert("", "The clipboard is either empty or doesn't contain a picture");
 		return;
 	}
-
-/*
-	oldFile = CurResFile();
-	FSMakeFSSpec(0, 0, "\p:resource", &clutFileSpec);
-	clutFile = FSpOpenResFile(&clutFileSpec, fsRdWrPerm);
-	UseResFile(clutFile);
-	(PicHandle)pic = GetPicture(128);
-*/
-	
 	
 
 	GetPictInfo((PicHandle)pic, &picInfo, returnColorTable, 256, popularMethod, 0);
@@ -423,6 +421,8 @@ void clip2cicn(short cicnID)
 		DisplayAlert("", "Can't load the picture or the clut");
 		ExitApplication();
 	}
+	
+	// draw the color version
 	NewGWorld(&picGWorld, 8, &picInfo.sourceRect, colorTable, NULL, 0);
 	SetGWorld(picGWorld, NULL);
 	BackColor(whiteColor);
@@ -430,8 +430,82 @@ void clip2cicn(short cicnID)
 	DrawPicture((PicHandle)pic, &picInfo.sourceRect);
 	picPixMap = GetGWorldPixMap(picGWorld);
 	LockPixels(picPixMap);
+	
+	// use CalcMask to get the mask of the cicn
+	bwColorTable = GetCTable(128);
+	
+	NewGWorld(&maskGWorld, 8, &picInfo.sourceRect, bwColorTable, NULL, 0);
+	SetGWorld(maskGWorld, NULL);
+	BackColor(whiteColor);
+	EraseRect(&qd.thePort->portRect);
+	maskPixMap = GetGWorldPixMap(maskGWorld);
+	LockPixels(maskPixMap);
+	
+	( *( ( *maskPixMap ) -> pmTable ) ) ->ctSeed = ( *( ( *picPixMap ) -> pmTable ) ) ->ctSeed;
+	CopyBits((BitMap *)*picPixMap,
+			 (BitMap *)*maskPixMap,
+			 &(**picPixMap).bounds,
+			 &(**maskPixMap).bounds,
+			 srcCopy,
+			 NULL);
+	
+	
+	NewGWorld(&bwGWorld, 1, &picInfo.sourceRect, NULL, NULL, 0);
+	SetGWorld(bwGWorld, NULL);
+	BackColor(whiteColor);
+	EraseRect(&qd.thePort->portRect);
+	bwPixMap = GetGWorldPixMap(bwGWorld);
+	LockPixels(bwPixMap);
+	
+	CopyBits((BitMap *)*maskPixMap,
+			 (BitMap *)*bwPixMap,
+			 &(**maskPixMap).bounds,
+			 &(**bwPixMap).bounds,
+			 srcCopy,
+			 NULL);
+	
+	UnlockPixels(maskPixMap);
+	DisposeGWorld(maskGWorld);
+	
+	NewGWorld(&maskGWorld, 1, &picInfo.sourceRect, NULL, NULL, 0);
+	SetGWorld(maskGWorld, NULL);
+	BackColor(whiteColor);
+	EraseRect(&qd.thePort->portRect);
+	maskPixMap = GetGWorldPixMap(maskGWorld);
+	LockPixels(maskPixMap);
+	
+	CalcMask((**bwPixMap).baseAddr,
+	         (**maskPixMap).baseAddr,
+	         (**bwPixMap).rowBytes & 0x7FFF,
+	         (**maskPixMap).rowBytes & 0x7FFF,
+	         ((**maskPixMap).bounds.bottom - (**maskPixMap).bounds.top),
+	         ((**maskPixMap).rowBytes & 0x7FFF)/2);
+	
+	
+/*	SetGWorld(startupPort, startupDevice);
+	CopyBits((BitMap *)*maskPixMap,
+			 &qd.thePort->portBits,
+			 &picInfo.sourceRect,
+			 &picInfo.sourceRect,
+			 srcCopy,
+			 NULL);
+*/
+	UnlockPixels(bwPixMap);
+	DisposeGWorld(bwGWorld);
+	  
+	// draw the pict in a 1-bit GWorld, to be used for the black and white version of the cicn
+	NewGWorld(&bwGWorld, 1, &picInfo.sourceRect, NULL, NULL, 0);
+	SetGWorld(bwGWorld, NULL);
+	BackColor(whiteColor);
+	EraseRect(&qd.thePort->portRect);
+	DrawPicture((PicHandle)pic, &picInfo.sourceRect);
+	bwPixMap = GetGWorldPixMap(bwGWorld);
+	LockPixels(bwPixMap);        
 	SetGWorld(startupPort, startupDevice);
-	picSize =  ((**picPixMap).rowBytes & 0x7FFF) * ((**picPixMap).bounds.bottom - (**picPixMap).bounds.top);
+
+
+			 
+	picSize =  ((**picPixMap).rowBytes & 0x7FFF) * ((**picPixMap).bounds.bottom - (**picPixMap).bounds.top) - 2;
 	GetPixMapInfo(picPixMap, &pixMapInfo, returnColorTable, 256, popularMethod, 0);
 	
 		
@@ -442,8 +516,7 @@ void clip2cicn(short cicnID)
 	/* Fill in the cicn's bitmap fields. */ 
 	
 	(**cicn).iconBMap.baseAddr				= nil;
-	(**cicn).iconBMap.rowBytes				= (pixMapInfo.sourceRect.right - pixMapInfo.sourceRect.left + 7)/8;
-	(**cicn).iconBMap.rowBytes			   += (**cicn).iconBMap.rowBytes & 1;
+	(**cicn).iconBMap.rowBytes				= (**bwPixMap).rowBytes & 0x7FFF;
 	(**cicn).iconBMap.bounds				= pixMapInfo.sourceRect;
 	bitmapSize = ((**cicn).iconBMap.bounds.bottom - (**cicn).iconBMap.bounds.top) * (**cicn).iconBMap.rowBytes;
 
@@ -485,8 +558,8 @@ void clip2cicn(short cicnID)
 	/* Note1: This is an array of shorts, so divide bitmapSize by 2. */
 	/* Note2: The mask comes before the image.  The is opposite of an 'ICN#' */
 
-	BlockFill((unsigned char*)&(**cicn).iconMaskData[bitmapSize / 2], 0, bitmapSize );		/* The 1bit image. */
-	BlockFill((unsigned char*)(**cicn).iconMaskData, 0, bitmapSize );	/* The mask. */
+	BlockMove( (*bwPixMap)->baseAddr, &(**cicn).iconMaskData[bitmapSize / 2], bitmapSize);
+	BlockMove( (*maskPixMap)->baseAddr, (**cicn).iconMaskData, bitmapSize);
 	BlockMove( *((**cicn).iconPMap.pmTable), &(**cicn).iconMaskData[bitmapSize], colorTableSize);
 	BlockMove( (*picPixMap)->baseAddr, &(**cicn).iconMaskData[bitmapSize + colorTableSize/2], picSize);
 	//PlotCIcon( &pixMapInfo.sourceRect, cicn );
