@@ -23,9 +23,9 @@ void Initialize()
 	doesExpire = GetString( 128 );
 	if (EqualString(*doesExpire, "\p1", true, true))
 	{
-		if (theDate.month >= 10 && theDate.day >= 1 && theDate.year >= 1998)
+		if (theDate.month >= 12 && theDate.day >= 1 && theDate.year >= 1998)
 		{
-			DisplayAlert("This beta of clip2icns expired on October 1, 1998.", "Please go to http://cafe.ambrosiasw.com/gui-central/clip2cicn.html to get a new version");
+			DisplayAlert("This beta of Badger expired on December 1, 1998.", "Please go to http://cafe.ambrosiasw.com/gui-central/clip2cicn.html to get a new version");
 			ExitApplication();
 		}
 	}
@@ -579,114 +579,8 @@ void DrawImageWell(Rect bounds)
 	LineTo(bounds.right, bounds.top-2);
 	
 	RGBForeColor(&currentForeColor);
-}
+}				
 
-
-				
-IconFamilyElement* GetIcon(long iconType, IconFamilyHandle icnsHandle)
-{
-	IconFamilyElement*	elementPtr;
-	unsigned long				endingSize;
-	
-	elementPtr = (**icnsHandle).elements;
-	endingSize = (unsigned long)(*icnsHandle) + (**icnsHandle).resourceSize;
-	while (1)
-	{
-		if (elementPtr->elementType == iconType)
-		{
-			return elementPtr;
-		}
-		else
-		{
-			elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-			if ((unsigned long)elementPtr >= endingSize)
-			{
-				return NULL;
-			}
-		}
-	}
-}
-
-
-void GetBaseFolder(void)
-{
-	Rect				largeIconRect={0,0,32, 32}, smallIconRect = {0, 0, 16, 16};
-	CTabHandle			grayscaleTable;
-	IconFamilyHandle	baseicnsHandle;
-	IconFamilyElement*	elementPtr;
-	
-	
-	NewGWorld(&baseLargeIconGWorld, 32, &largeIconRect, NULL, NULL, 0);
-	baseLargeIconPix = GetGWorldPixMap(baseLargeIconGWorld);
-	LockPixels(baseLargeIconPix);
-	
-	grayscaleTable = GetCTable(40);
-	NewGWorld(&baseLargeMaskGWorld, 8, &largeIconRect, grayscaleTable, NULL, 0);
-	baseLargeMaskPix = GetGWorldPixMap(baseLargeMaskGWorld);
-	LockPixels(baseLargeMaskPix);
-	
-	NewGWorld(&baseLarge1BitMaskGWorld, 1,  &largeIconRect, NULL, NULL, 0);
-	baseLarge1BitMaskPix = GetGWorldPixMap(baseLarge1BitMaskGWorld);
-	LockPixels(baseLarge1BitMaskPix);
-	
-	NewGWorld(&baseLarge8BitIconGWorld, 8, &largeIconRect, NULL, NULL, 0);
-	baseLarge8BitIconPix = GetGWorldPixMap(baseLarge8BitIconGWorld);
-	LockPixels(baseLarge8BitIconPix);
-	
-	NewGWorld(&baseSmallIconGWorld, 32, &smallIconRect, NULL, NULL, 0);
-	baseSmallIconPix = GetGWorldPixMap(baseSmallIconGWorld);
-	LockPixels(baseSmallIconPix);
-	
-	NewGWorld(&baseSmallMaskGWorld, 8, &smallIconRect, grayscaleTable, NULL, 0);
-	baseSmallMaskPix = GetGWorldPixMap(baseSmallMaskGWorld);
-	LockPixels(baseSmallMaskPix);
-	
-	NewGWorld(&baseSmall1BitMaskGWorld, 1,  &smallIconRect, NULL, NULL, 0);
-	baseSmall1BitMaskPix = GetGWorldPixMap(baseSmall1BitMaskGWorld);
-	LockPixels(baseSmall1BitMaskPix);
-	
-	NewGWorld(&baseSmall8BitIconGWorld, 8, &smallIconRect, NULL, NULL, 0);
-	baseSmall8BitIconPix = GetGWorldPixMap(baseSmall8BitIconGWorld);
-	LockPixels(baseSmall8BitIconPix);
-	
-	baseicnsHandle = (IconFamilyHandle)Get1Resource('icns', -3999);
-	
-	// getting large base folder
-	elementPtr = GetIcon('il32', baseicnsHandle);
-	CropPixMap(baseLargeIconPix, 128);
-	BlockMove(elementPtr->elementData, (*baseLargeIconPix)->baseAddr, large32BitSize);
-	
-	elementPtr = GetIcon('l8mk', baseicnsHandle);
-	CropPixMap(baseLargeMaskPix, 32);
-	BlockMove(elementPtr->elementData, (*baseLargeMaskPix)->baseAddr, large8BitMaskSize);
-	
-	elementPtr = GetIcon('icl8', baseicnsHandle);
-	CropPixMap(baseLarge8BitIconPix, 32);
-	BlockMove(elementPtr->elementData, (*baseLarge8BitIconPix)->baseAddr, large8BitSize);
-	
-	elementPtr = GetIcon('ICN#', baseicnsHandle);
-	CropPixMap(baseLarge1BitMaskPix, 4);
-	BlockMove(&(elementPtr->elementData[large1BitSize/2]), (*baseLarge1BitMaskPix)->baseAddr, large1BitSize/2);
-	
-	// getting small base folder
-	elementPtr = GetIcon('is32', baseicnsHandle);
-	CropPixMap(baseSmallIconPix, 64);
-	BlockMove(elementPtr->elementData, (*baseSmallIconPix)->baseAddr, small32BitSize);
-	
-	elementPtr = GetIcon('s8mk', baseicnsHandle);
-	CropPixMap(baseSmallMaskPix, 16);
-	BlockMove(elementPtr->elementData, (*baseSmallMaskPix)->baseAddr, small8BitMaskSize);
-	
-	elementPtr = GetIcon('ics8', baseicnsHandle);
-	CropPixMap(baseSmall8BitIconPix, 16);
-	BlockMove(elementPtr->elementData, (*baseSmall8BitIconPix)->baseAddr, small8BitSize);
-	
-	elementPtr = GetIcon('ics#', baseicnsHandle);
-	CropPixMap(baseSmall1BitMaskPix, 2);
-	BlockMove(&(elementPtr->elementData[small1BitSize/2]), (*baseSmall1BitMaskPix)->baseAddr, small1BitSize/2);
-	
-	DisposeCTable(grayscaleTable);
-}
 
 #define DisposeAndReturn()\
 {\
@@ -698,21 +592,12 @@ void GetBaseFolder(void)
 	return;\
 }
 
-void MergeIcon(int ID, Str255 iconName)
+void MergeIcon(int ID, Str255 name, icnsClass* baseicns)
 {
-	GWorldPtr			badgeLargeIconGWorld, badgeLargeMaskGWorld, badgeLarge1BitMaskGWorld, tempGWorld;
-	GWorldPtr			badgeSmallIconGWorld, badgeSmallMaskGWorld, badgeSmall1BitMaskGWorld;
-	GWorldPtr			targetIconGWorld, targetMaskGWorld, target8BitIconGWorld;
-	GWorldPtr			targetSmallIconGWorld, targetSmallMaskGWorld, targetSmall8BitIconGWorld;
-	PixMapHandle		badgeLargeIconPix, badgeLargeMaskPix, badgeLarge1BitMaskPix, tempPix;
-	PixMapHandle		badgeSmallIconPix, badgeSmallMaskPix, badgeSmall1BitMaskPix;
-	PixMapHandle		targetIconPix, targetMaskPix, target8BitIconPix;
-	PixMapHandle		targetSmallIconPix, targetSmallMaskPix, targetSmall8BitIconPix;
+	GWorldPtr			tempGWorld;
+	PixMapHandle		tempPix;
 	Rect				largeIconRect={0,0,32, 32}, smallIconRect = {0, 0, 16, 16}, badgeRect, smallBadgeRect;
-	IconFamilyHandle	targeticnsHandle, badgeicnsHandle;
-	IconFamilyElement	*il32Ptr, *l8mkPtr, *ICNPtr, *elementPtr, *is32Ptr, *s8mkPtr, *icsPtr;
 	CTabHandle			grayscaleTable;
-	long				icnsSize;
 	RGBColor			currentForeColor, currentBackColor;
 	short				set, badges;
 	CGrafPtr			curPort;
@@ -720,7 +605,7 @@ void MergeIcon(int ID, Str255 iconName)
 	tOffset**			offsetHandle;
 	int					hOffset=0, vOffset=0, smallHOffset=0, smallVOffset=0;
 	RgnHandle			ignoredRgn;
-	IconRef				iconRef;
+	icnsClass			badgeicns, targeticns;
 
 	GetForeColor(&currentForeColor);
 	GetBackColor(&currentBackColor);
@@ -728,6 +613,8 @@ void MergeIcon(int ID, Str255 iconName)
 	
 	badges = FSpOpenResFile(&badgesSpec, fsRdPerm);
 	UseResFile(badges);
+	
+	grayscaleTable = GetCTable(80);
 	
 	ignoredRgn = NewRgn();
 	
@@ -757,90 +644,26 @@ void MergeIcon(int ID, Str255 iconName)
 		}
 	}
 
-	badgeicnsHandle = (IconFamilyHandle)GetResource('icns', ID);
-	if (badgeicnsHandle == NULL)
-		DisposeAndReturn();
-		
-	HLock((Handle)badgeicnsHandle);
+	badgeicns.ID = ID;
+	badgeicns.Load();
 	
-	il32Ptr = GetIcon('il32', badgeicnsHandle);
-	if (il32Ptr == NULL)
-		DisposeAndReturn();
+	CloseResFile(badges);
+	UseResFile(appFile);
 	
-	l8mkPtr = GetIcon('l8mk', badgeicnsHandle);
-	if (l8mkPtr == NULL)
-		DisposeAndReturn();
+	targeticns.ID = ID;
 	
-	ICNPtr = GetIcon('ICN#', badgeicnsHandle);
-	if (ICNPtr == NULL)
-		DisposeAndReturn();
-	is32Ptr = GetIcon('is32', badgeicnsHandle);
-	if (is32Ptr == NULL)
-		DisposeAndReturn();
-	
-	s8mkPtr = GetIcon('s8mk', badgeicnsHandle);
-	if (s8mkPtr == NULL)
-		DisposeAndReturn();
-	
-	icsPtr = GetIcon('ics#', badgeicnsHandle);
-	if (icsPtr == NULL)
-		DisposeAndReturn();
-	
-	ForeColor(blackColor);
-	BackColor(whiteColor);
-	
-	grayscaleTable = GetCTable(40);
-	
-	NewGWorld(&targetIconGWorld, 32, &largeIconRect, NULL, NULL, 0);
-	targetIconPix = GetGWorldPixMap(targetIconGWorld);
-	LockPixels(targetIconPix);
-	
-	NewGWorld(&target8BitIconGWorld, 8, &largeIconRect, NULL, NULL, 0);
-	target8BitIconPix = GetGWorldPixMap(target8BitIconGWorld);
-	LockPixels(target8BitIconPix);
-	SetGWorld(target8BitIconGWorld, NULL);
-	
-	CopyBits((BitMap *) *baseLarge8BitIconPix,
-			 (BitMap *) *target8BitIconPix,
-			 &largeIconRect,
-			 &largeIconRect,
-			 srcCopy,
-			 NULL);
-	
+	// loading the large version
+	SetGWorld(targeticns.icl8GW, NULL);
+	baseicns->Display(largeIconRect);
 	badgeRect = largeIconRect;
 	OffsetRect(&badgeRect, hOffset, vOffset);
-	RegisterIconRefFromResource('Bdgr', 'test', &badgesSpec, ID, &iconRef);
-	PlotIconRef(&badgeRect,atNone,ttNone,kIconServicesNormalUsageFlag,iconRef);
-	ReleaseIconRef(iconRef);
+	badgeicns.Display(badgeRect);
 	
-	CropPixMap(target8BitIconPix, 32);
-	
-	NewGWorld(&targetMaskGWorld, 8, &largeIconRect, grayscaleTable, NULL, 0);
-	targetMaskPix = GetGWorldPixMap(targetMaskGWorld);
-	LockPixels(targetMaskPix);
-	
-	NewGWorld(&badgeLargeIconGWorld, 32, &largeIconRect, NULL, NULL, 0);
-	SetGWorld(badgeLargeIconGWorld, NULL);
-	badgeLargeIconPix = GetGWorldPixMap(badgeLargeIconGWorld);
-	LockPixels(badgeLargeIconPix);
-	CropPixMap(badgeLargeIconPix, 128);
-	BlockMove(il32Ptr->elementData, (*badgeLargeIconPix)->baseAddr, large32BitSize);
+	SetGWorld(badgeicns.l8mkGW, NULL);
 	ScrollRect(&largeIconRect, hOffset, vOffset, ignoredRgn);
-	
-	NewGWorld(&badgeLargeMaskGWorld, 8, &largeIconRect, grayscaleTable, NULL, 0);
-	SetGWorld(badgeLargeMaskGWorld, NULL);
-	badgeLargeMaskPix = GetGWorldPixMap(badgeLargeMaskGWorld);
-	LockPixels(badgeLargeMaskPix);
-	CropPixMap(badgeLargeMaskPix, 32);
-	BlockMove(l8mkPtr->elementData, (*badgeLargeMaskPix)->baseAddr, large8BitMaskSize);
+	SetGWorld(badgeicns.il32GW, NULL);
 	ScrollRect(&largeIconRect, hOffset, vOffset, ignoredRgn);
-	
-	NewGWorld(&badgeLarge1BitMaskGWorld, 1,  &largeIconRect, NULL, NULL, 0);
-	SetGWorld(badgeLarge1BitMaskGWorld, NULL);
-	badgeLarge1BitMaskPix = GetGWorldPixMap(badgeLarge1BitMaskGWorld);
-	LockPixels(badgeLarge1BitMaskPix);
-	CropPixMap(badgeLarge1BitMaskPix, 4);
-	BlockMove(&(ICNPtr->elementData[large1BitSize/2]), (*badgeLarge1BitMaskPix)->baseAddr, large1BitSize/2);
+	SetGWorld(badgeicns.icnmGW, NULL);
 	ScrollRect(&largeIconRect, hOffset, vOffset, ignoredRgn);
 	
 	NewGWorld(&tempGWorld, 8, &largeIconRect, grayscaleTable, NULL, 0);
@@ -849,64 +672,55 @@ void MergeIcon(int ID, Str255 iconName)
 	tempPix = GetGWorldPixMap(tempGWorld);
 	LockPixels(tempPix);
 	
-	CopyBits((BitMap *) *baseLarge1BitMaskPix,
-			 (BitMap *) *badgeLarge1BitMaskPix,
-			 &largeIconRect,
-			 &largeIconRect,
-			 srcOr,
-			 NULL);
+	ForeColor(blackColor);
+	BackColor(whiteColor);
 	
-	CopyBits((BitMap *) *baseLargeIconPix,
-			 (BitMap *) *targetIconPix,
+	CopyBits((BitMap *) *(baseicns->icnmPix),
+			 (BitMap *) *(targeticns.icnmPix),
 			 &largeIconRect,
 			 &largeIconRect,
 			 srcCopy,
 			 NULL);
 	
-	CopyMask((BitMap*) *badgeLargeMaskPix,
-			 (BitMap*) *baseLarge1BitMaskPix,
-			 (BitMap*) *tempPix,
+	CopyBits((BitMap *) *(badgeicns.icnmPix),
+			 (BitMap *) *(targeticns.icnmPix),
 			 &largeIconRect,
 			 &largeIconRect,
-			 &largeIconRect
-			);	
-	CopyDeepMask((BitMap *) *badgeLargeIconPix,
+			 srcOr,
+			 NULL);
+	
+	CopyBits((BitMap *) *(baseicns->il32Pix),
+			 (BitMap *) *(targeticns.il32Pix),
+			 &largeIconRect,
+			 &largeIconRect,
+			 srcCopy,
+			 NULL);
+
+	CopyDeepMask((BitMap*) *(badgeicns.l8mkPix),
+			 	 (BitMap*) *(baseicns->icnmPix),
+			 	 (BitMap*) *tempPix,
+				 &largeIconRect,
+				 &largeIconRect,
+				 &largeIconRect,
+				 srcCopy,
+				 NULL);
+
+	
+	CopyDeepMask((BitMap *) *(badgeicns.il32Pix),
 				 (BitMap *) *tempPix,
-				 (BitMap *) *targetIconPix,
+				 (BitMap *) *(targeticns.il32Pix),
 				 &largeIconRect,
 				 &largeIconRect,
 			 	 &largeIconRect,
 				 srcCopy,
 				 NULL);
 				 
-	SetGWorld(baseLarge1BitMaskGWorld, NULL);
+	SetGWorld(baseicns->icnmGW, NULL);
 	InvertRect(&largeIconRect);
 	
-	CopyMask((BitMap*) *badgeLargeIconPix,
-			 (BitMap*) *baseLarge1BitMaskPix,
-			 (BitMap *) *targetIconPix,
-			 &largeIconRect,
-			 &largeIconRect,
-			 &largeIconRect
-			);
-	
-	CropPixMap(targetIconPix, 32*32/8);
-	
-	UnlockPixels(tempPix);
-	DisposeGWorld(tempGWorld);
-	
-	/*****************/		 
-	
-	CopyBits((BitMap *) *baseLargeMaskPix,
-			 (BitMap *) *targetMaskPix,
-			 &largeIconRect,
-			 &largeIconRect,
-			 srcCopy,
-			 NULL);
-			 
-	CopyMask((BitMap*) *badgeLargeMaskPix,
-			 (BitMap*) *baseLarge1BitMaskPix,
-			 (BitMap *) *targetMaskPix,
+	CopyMask((BitMap *) *(badgeicns.il32Pix),
+			 (BitMap *) *(baseicns->icnmPix),
+			 (BitMap *) *(targeticns.il32Pix),
 			 &largeIconRect,
 			 &largeIconRect,
 			 &largeIconRect
@@ -914,67 +728,47 @@ void MergeIcon(int ID, Str255 iconName)
 			
 	InvertRect(&largeIconRect);
 	
-	CropPixMap(targetMaskPix, 32);
-
-/******************* small icon ************************/
-	NewGWorld(&targetSmallIconGWorld, 32, &smallIconRect, NULL, NULL, 0);
-	targetSmallIconPix = GetGWorldPixMap(targetSmallIconGWorld);
-	LockPixels(targetSmallIconPix);
+	UnlockPixels(tempPix);
+	DisposeGWorld(tempGWorld);
 	
-	NewGWorld(&targetSmall8BitIconGWorld, 8, &smallIconRect, NULL, NULL, 0);
-	targetSmall8BitIconPix = GetGWorldPixMap(targetSmall8BitIconGWorld);
-	LockPixels(targetSmall8BitIconPix);
-	SetGWorld(targetSmall8BitIconGWorld, NULL);
+	NewGWorld(&tempGWorld, 8, &largeIconRect, grayscaleTable, NULL, 0);
+	SetGWorld(tempGWorld, NULL);
+	PaintRect(&largeIconRect);
+	tempPix = GetGWorldPixMap(tempGWorld);
+	LockPixels(tempPix);
 	
-	CopyBits((BitMap *) *baseSmall8BitIconPix,
-			 (BitMap *) *targetSmall8BitIconPix,
-			 &smallIconRect,
-			 &smallIconRect,
+	CopyBits((BitMap *) *(baseicns->l8mkPix),
+			 (BitMap *) *(targeticns.l8mkPix),
+			 &largeIconRect,
+			 &largeIconRect,
 			 srcCopy,
 			 NULL);
 	
-	smallBadgeRect = smallIconRect;
-	OffsetRect(&smallBadgeRect, smallHOffset, smallVOffset);
-	RegisterIconRefFromResource('Bdgr', 'test', &badgesSpec, ID, &iconRef);
-	PlotIconRef(&smallBadgeRect,atNone,ttNone,kIconServicesNormalUsageFlag,iconRef);
-	ReleaseIconRef(iconRef);
+	CopyDeepMask((BitMap *) *tempPix,
+			 (BitMap *) *(badgeicns.l8mkPix),
+			 (BitMap *) *(targeticns.l8mkPix),
+			 &largeIconRect,
+			 &largeIconRect,
+			 &largeIconRect,
+			 srcCopy,
+			 NULL);
 	
-	CropPixMap(targetSmall8BitIconPix, 16);
+	UnlockPixels(tempPix);
+	DisposeGWorld(tempGWorld);
 	
-	NewGWorld(&targetSmallMaskGWorld, 8, &smallIconRect, grayscaleTable, NULL, 0);
-	targetSmallMaskPix = GetGWorldPixMap(targetSmallMaskGWorld);
-	LockPixels(targetSmallMaskPix);
+	// loading the small version
+	SetGWorld(targeticns.ics8GW, NULL);
+	baseicns->Display(smallIconRect);
+	badgeRect = smallIconRect;
+	OffsetRect(&badgeRect, smallHOffset, smallVOffset);
+	badgeicns.Display(badgeRect);
 	
-	NewGWorld(&badgeSmallIconGWorld, 32, &smallIconRect, NULL, NULL, 0);
-	SetGWorld(badgeSmallIconGWorld, NULL);
-	badgeSmallIconPix = GetGWorldPixMap(badgeSmallIconGWorld);
-	LockPixels(badgeSmallIconPix);
-	CropPixMap(badgeSmallIconPix, 64);
-	BlockMove(is32Ptr->elementData, (*badgeSmallIconPix)->baseAddr, small32BitSize);
+	SetGWorld(badgeicns.s8mkGW, NULL);
 	ScrollRect(&smallIconRect, smallHOffset, smallVOffset, ignoredRgn);
-	
-	NewGWorld(&badgeSmallMaskGWorld, 8, &smallIconRect, grayscaleTable, NULL, 0);
-	SetGWorld(badgeSmallMaskGWorld, NULL);
-	badgeSmallMaskPix = GetGWorldPixMap(badgeSmallMaskGWorld);
-	LockPixels(badgeSmallMaskPix);
-	CropPixMap(badgeSmallMaskPix, 16);
-	BlockMove(s8mkPtr->elementData, (*badgeSmallMaskPix)->baseAddr, small8BitMaskSize);
+	SetGWorld(badgeicns.is32GW, NULL);
 	ScrollRect(&smallIconRect, smallHOffset, smallVOffset, ignoredRgn);
-	
-	NewGWorld(&badgeSmall1BitMaskGWorld, 1,  &smallIconRect, NULL, NULL, 0);
-	SetGWorld(badgeSmall1BitMaskGWorld, NULL);
-	badgeSmall1BitMaskPix = GetGWorldPixMap(badgeSmall1BitMaskGWorld);
-	LockPixels(badgeSmall1BitMaskPix);
-	CropPixMap(badgeSmall1BitMaskPix, 2);
-	BlockMove(&(icsPtr->elementData[small1BitSize/2]), (*badgeSmall1BitMaskPix)->baseAddr, small1BitSize/2);
+	SetGWorld(badgeicns.icsmGW, NULL);
 	ScrollRect(&smallIconRect, smallHOffset, smallVOffset, ignoredRgn);
-	
-	DisposeRgn(ignoredRgn);
-	
-	HUnlock((Handle)badgeicnsHandle);
-	ReleaseResource((Handle)badgeicnsHandle);
-	CloseResFile(badges);
-	UseResFile(appFile);
 	
 	NewGWorld(&tempGWorld, 8, &smallIconRect, grayscaleTable, NULL, 0);
 	SetGWorld(tempGWorld, NULL);
@@ -982,61 +776,51 @@ void MergeIcon(int ID, Str255 iconName)
 	tempPix = GetGWorldPixMap(tempGWorld);
 	LockPixels(tempPix);
 	
-	CopyBits((BitMap *) *baseSmall1BitMaskPix,
-			 (BitMap *) *badgeSmall1BitMaskPix,
-			 &smallIconRect,
-			 &smallIconRect,
-			 srcOr,
-			 NULL);
-	
-	CopyBits((BitMap *) *baseSmallIconPix,
-			 (BitMap *) *targetSmallIconPix,
+	CopyBits((BitMap *) *(baseicns->icsmPix),
+			 (BitMap *) *(targeticns.icsmPix),
 			 &smallIconRect,
 			 &smallIconRect,
 			 srcCopy,
 			 NULL);
 	
-	CopyMask((BitMap*) *badgeSmallMaskPix,
-			 (BitMap*) *baseSmall1BitMaskPix,
-			 (BitMap*) *tempPix,
+	CopyBits((BitMap *) *(badgeicns.icsmPix),
+			 (BitMap *) *(targeticns.icsmPix),
 			 &smallIconRect,
 			 &smallIconRect,
-			 &smallIconRect
-			);	
-	CopyDeepMask((BitMap *) *badgeSmallIconPix,
+			 srcOr,
+			 NULL);
+	
+	CopyBits((BitMap *) *(baseicns->is32Pix),
+			 (BitMap *) *(targeticns.is32Pix),
+			 &smallIconRect,
+			 &smallIconRect,
+			 srcCopy,
+			 NULL);
+
+	CopyDeepMask((BitMap*) *(badgeicns.s8mkPix),
+			 	 (BitMap*) *(baseicns->icsmPix),
+			 	 (BitMap*) *tempPix,
+				 &smallIconRect,
+				 &smallIconRect,
+				 &smallIconRect,
+				 srcCopy,
+				 NULL);
+	
+	CopyDeepMask((BitMap *) *(badgeicns.is32Pix),
 				 (BitMap *) *tempPix,
-				 (BitMap *) *targetSmallIconPix,
+				 (BitMap *) *(targeticns.is32Pix),
 				 &smallIconRect,
 				 &smallIconRect,
 			 	 &smallIconRect,
 				 srcCopy,
 				 NULL);
 				 
-	SetGWorld(baseSmall1BitMaskGWorld, NULL);
+	SetGWorld(baseicns->icsmGW, NULL);
 	InvertRect(&smallIconRect);
 	
-	CopyMask((BitMap*) *badgeSmallIconPix,
-			 (BitMap*) *baseSmall1BitMaskPix,
-			 (BitMap *) *targetSmallIconPix,
-			 &smallIconRect,
-			 &smallIconRect,
-			 &smallIconRect
-			);
-	
-	CropPixMap(targetSmallIconPix, 16*32/8);
-	
-	/*****************/		 
-	
-	CopyBits((BitMap *) *baseSmallMaskPix,
-			 (BitMap *) *targetSmallMaskPix,
-			 &smallIconRect,
-			 &smallIconRect,
-			 srcCopy,
-			 NULL);
-			 
-	CopyMask((BitMap*) *badgeSmallMaskPix,
-			 (BitMap*) *baseSmall1BitMaskPix,
-			 (BitMap *) *targetSmallMaskPix,
+	CopyMask((BitMap *) *(badgeicns.is32Pix),
+			 (BitMap *) *(baseicns->icsmPix),
+			 (BitMap *) *(targeticns.is32Pix),
 			 &smallIconRect,
 			 &smallIconRect,
 			 &smallIconRect
@@ -1044,105 +828,37 @@ void MergeIcon(int ID, Str255 iconName)
 			
 	InvertRect(&smallIconRect);
 	
-	CropPixMap(targetSmallMaskPix, 16);
+	UnlockPixels(tempPix);
+	DisposeGWorld(tempGWorld);
 	
-		
-	icnsSize = sizeof(IconFamilyResource) - sizeof(IconFamilyElement);
-	icnsSize += sizeof(IconFamilyElement) * 4 + large32BitSize - 4 + large8BitMaskSize - 4 + large1BitSize - 4 + large8BitSize - 4;
-	icnsSize += sizeof(IconFamilyElement) * 4 + small32BitSize - 4 + small8BitMaskSize - 4 + small1BitSize - 4 + small8BitSize - 4;
-	targeticnsHandle = (IconFamilyHandle) NewHandleClear(icnsSize);
+	NewGWorld(&tempGWorld, 8, &smallIconRect, grayscaleTable, NULL, 0);
+	SetGWorld(tempGWorld, NULL);
+	PaintRect(&smallIconRect);
+	tempPix = GetGWorldPixMap(tempGWorld);
+	LockPixels(tempPix);
 	
-	(**targeticnsHandle).resourceType = 'icns';
-	(**targeticnsHandle).resourceSize = icnsSize;
+	CopyBits((BitMap *) *(baseicns->s8mkPix),
+			 (BitMap *) *(targeticns.s8mkPix),
+			 &smallIconRect,
+			 &smallIconRect,
+			 srcCopy,
+			 NULL);
 	
-	
-	HLock((Handle)targeticnsHandle);
-	(**targeticnsHandle).elements[0].elementType = 'ICN#';
-	(**targeticnsHandle).elements[0].elementSize = large1BitSize + sizeof(IconFamilyElement) - 4;
-	BlockMove( (*badgeLarge1BitMaskPix)->baseAddr,(**targeticnsHandle).elements[0].elementData, large1BitSize/2);
-	BlockMove( (*badgeLarge1BitMaskPix)->baseAddr, &(**targeticnsHandle).elements[0].elementData[large1BitSize / 2], large1BitSize/2);
-	
-	elementPtr = (IconFamilyElement *)((char *)(**targeticnsHandle).elements + (**targeticnsHandle).elements[0].elementSize);
-	elementPtr->elementType = 'il32';
-	elementPtr->elementSize = large32BitSize + sizeof(IconFamilyElement) - 4;
-	BlockMove( (*targetIconPix)->baseAddr,elementPtr->elementData, large32BitSize);
-	
-	elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-	elementPtr->elementType = 'l8mk';
-	elementPtr->elementSize = large8BitMaskSize + sizeof(IconFamilyElement) - 4;
-	BlockMove((*targetMaskPix)->baseAddr, elementPtr->elementData, large8BitMaskSize);
-	
-	elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-	elementPtr->elementType = 'icl8';
-	elementPtr->elementSize = large8BitSize + sizeof(IconFamilyElement) - 4;
-	BlockMove((*target8BitIconPix)->baseAddr, elementPtr->elementData, large8BitSize);
-	
-	// small stuff
-	elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-	elementPtr->elementType = 'ics#';
-	elementPtr->elementSize = small1BitSize + sizeof(IconFamilyElement) - 4;
-	BlockMove( (*badgeSmall1BitMaskPix)->baseAddr,elementPtr->elementData, small1BitSize/2);
-	BlockMove( (*badgeSmall1BitMaskPix)->baseAddr, &elementPtr->elementData[small1BitSize / 2], small1BitSize/2);
-	
-	elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-	elementPtr->elementType = 'is32';
-	elementPtr->elementSize = small32BitSize + sizeof(IconFamilyElement) - 4;
-	BlockMove( (*targetSmallIconPix)->baseAddr,elementPtr->elementData, small32BitSize);
-	
-	elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-	elementPtr->elementType = 's8mk';
-	elementPtr->elementSize = small8BitMaskSize + sizeof(IconFamilyElement) - 4;
-	BlockMove((*targetSmallMaskPix)->baseAddr, elementPtr->elementData, small8BitMaskSize);
-	
-	elementPtr = (IconFamilyElement *)((char *)(elementPtr) + elementPtr->elementSize);
-	elementPtr->elementType = 'ics8';
-	elementPtr->elementSize = small8BitSize + sizeof(IconFamilyElement) - 4;
-	BlockMove((*targetSmall8BitIconPix)->baseAddr, elementPtr->elementData, small8BitSize);\
-	
-	
-	set = FSpOpenResFile(&setSpec, fsRdWrPerm);
-	UseResFile(set);
-	DetachResource((Handle)targeticnsHandle);
-	AddResource((Handle)targeticnsHandle, 'icns', ID, iconName);
-	SetResAttrs((Handle)targeticnsHandle, resSysHeap + resPurgeable);
-	ChangedResource((Handle)targeticnsHandle);
-	WriteResource((Handle)targeticnsHandle);
-	UpdateResFile(set);
-	CloseResFile(set);
-	UseResFile(appFile);
-	
-	DisposeHandle((Handle)targeticnsHandle);
-	
-	UnlockPixels(badgeLargeIconPix);
-	DisposeGWorld(badgeLargeIconGWorld);
-	UnlockPixels(badgeLargeMaskPix);
-	DisposeGWorld(badgeLargeMaskGWorld);
-	UnlockPixels(badgeLarge1BitMaskPix);
-	DisposeGWorld(badgeLarge1BitMaskGWorld);
-	
-	UnlockPixels(badgeSmallIconPix);
-	DisposeGWorld(badgeSmallIconGWorld);
-	UnlockPixels(badgeSmallMaskPix);
-	DisposeGWorld(badgeSmallMaskGWorld);
-	UnlockPixels(badgeSmall1BitMaskPix);
-	DisposeGWorld(badgeSmall1BitMaskGWorld);
-	
-	UnlockPixels(targetIconPix);
-	DisposeGWorld(targetIconGWorld);
-	UnlockPixels(targetMaskPix);
-	DisposeGWorld(targetMaskGWorld);
-	UnlockPixels(target8BitIconPix);
-	DisposeGWorld(target8BitIconGWorld);
-	
-	UnlockPixels(targetSmallIconPix);
-	DisposeGWorld(targetSmallIconGWorld);
-	UnlockPixels(targetSmallMaskPix);
-	DisposeGWorld(targetSmallMaskGWorld);
-	UnlockPixels(targetSmall8BitIconPix);
-	DisposeGWorld(targetSmall8BitIconGWorld);
+	CopyDeepMask((BitMap *) *tempPix,
+			 (BitMap *) *(badgeicns.s8mkPix),
+			 (BitMap *) *(targeticns.s8mkPix),
+			 &smallIconRect,
+			 &smallIconRect,
+			 &smallIconRect,
+			 srcCopy,
+			 NULL);
 	
 	UnlockPixels(tempPix);
 	DisposeGWorld(tempGWorld);
+	
+	CopyString(targeticns.name, name);
+	targeticns.flags = resSysHeap + resPurgeable;
+	targeticns.SaveToFile(setSpec, false, true);
 	
 	DisposeCTable(grayscaleTable);
 	
@@ -1165,8 +881,8 @@ void MakeNewSet()
 	short				ID;
 	unsigned long		type;
 	long				handleSize;
-	
-	
+	icnsClass			baseicns;
+		
 	FSpDelete(&setSpec);
 
 	FSpCreate(&setSpec, 'Bdgr', 'Icon', 0); /*smRoman = 0*/
@@ -1175,7 +891,8 @@ void MakeNewSet()
 	badges = FSpOpenResFile(&badgesSpec, fsRdPerm);
 	UseResFile(badges);
 	resourceCount = Count1Resources('icns');
-	GetBaseFolder();
+	baseicns.ID = -3999;
+	baseicns.Load();
 	CloseResFile(badges);
 	UseResFile(appFile);
 	
@@ -1201,7 +918,7 @@ void MakeNewSet()
 		UseResFile(appFile);
 		if (ID != -3999)
 		{
-			MergeIcon(ID, string);
+			MergeIcon(ID, string, &baseicns);
 			NumToString(ID, string);
 			GetDialogItem(newSet, kStatusField, &itemType, &item, &itemRect);
 			SetDialogItemText(item, string);
@@ -1236,59 +953,8 @@ void MakeNewSet()
 		}
 	}	
 	
-	UnlockPixels(baseLargeIconPix);
-	DisposeGWorld(baseLargeIconGWorld);
-	UnlockPixels(baseLarge8BitIconPix);
-	DisposeGWorld(baseLarge8BitIconGWorld);
-	UnlockPixels(baseLargeMaskPix);
-	DisposeGWorld(baseLargeMaskGWorld);
-	UnlockPixels(baseLarge1BitMaskPix);
-	DisposeGWorld(baseLarge1BitMaskGWorld);
-	
-	UnlockPixels(baseSmallIconPix);
-	DisposeGWorld(baseSmallIconGWorld);
-	UnlockPixels(baseSmall8BitIconPix);
-	DisposeGWorld(baseSmall8BitIconGWorld);
-	UnlockPixels(baseSmallMaskPix);
-	DisposeGWorld(baseSmallMaskGWorld);
-	UnlockPixels(baseSmall1BitMaskPix);
-	DisposeGWorld(baseSmall1BitMaskGWorld);
-
-	
 	DisposeDialog(newSet);
 	SetGWorld(startupPort, startupDevice);
-}
-
-bool CheckClipboard()
-{
-	Handle				pic;
-	long				offset;
-	PictInfo			picInfo;
-	
-	pic = NewHandle (0);
-	if (GetScrap( pic, 'PICT', &offset ) < 0)
-	{
-		DisposeHandle(pic);
-		return false;
-	}
-	
-	GetPictInfo((PicHandle)pic, &picInfo, 0, 0, 0, 0);
-	
-	if ((picInfo.sourceRect.bottom == 32) ||
-		(picInfo.sourceRect.right == 64) ||
-		(picInfo.sourceRect.right == 80) ||
-		(picInfo.sourceRect.right == 16))
-	{
-		;
-	}
-	else
-	{
-		DisposeHandle(pic);
-		return false;
-		
-	}
-	DisposeHandle(pic);
-	return true;
 }
 
 #define WriteToDisk()\
@@ -1335,12 +1001,18 @@ bool CheckClipboard()
 	EraseRect(&largeIconRect);\
 	badgeRect = largeIconRect;\
 	OffsetRect(&badgeRect, hOffset, vOffset);\
-	RegisterIconRefFromResource('Bdgr', 'test', &badgesSpec, -3999, &currentIconRef);\
-	PlotIconRef(&largeIconRect,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);\
-	ReleaseIconRef(currentIconRef);\
-	RegisterIconRefFromResource('Bdgr', 'test', &badgesSpec, ID, &currentIconRef);\
-	PlotIconRef(&badgeRect,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);\
-	ReleaseIconRef(currentIconRef);\
+	baseicns.Display(largeIconRect);\
+	if (ID != 128)\
+	{\
+		badgeicns.ID = ID;\
+		badgeicns.LoadFromFile(badgesSpec);\
+		badgeicns.Display(badgeRect);\
+	}\
+	else\
+	{\
+		InsetRect(&badgeRect, 8, 8);\
+		FrameRect(&badgeRect);\
+	}\
 	CopyBits((BitMap *) (*iconPix),&positionBadges->portBits,&largeIconRect, &targetRect,srcCopy, NULL);\
 	\
 	SetGWorld(smallIconGWorld, NULL);\
@@ -1349,12 +1021,18 @@ bool CheckClipboard()
 	EraseRect(&smallIconRect);\
 	smallBadgeRect = smallIconRect;\
 	OffsetRect(&smallBadgeRect, smallHOffset, smallVOffset);\
-	RegisterIconRefFromResource('Bdgr', 'test', &badgesSpec, -3999, &currentIconRef);\
-	PlotIconRef(&smallIconRect,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);\
-	ReleaseIconRef(currentIconRef);\
-	RegisterIconRefFromResource('Bdgr', 'test', &badgesSpec, ID, &currentIconRef);\
-	PlotIconRef(&smallBadgeRect,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);\
-	ReleaseIconRef(currentIconRef);\
+	baseicns.Display(smallIconRect);\
+	if (ID != 128)\
+	{\
+		badgeicns.ID = ID;\
+		badgeicns.LoadFromFile(badgesSpec);\
+		badgeicns.Display(smallBadgeRect);\
+	}\
+	else\
+	{\
+		InsetRect(&smallBadgeRect, 4, 4);\
+		FrameRect(&smallBadgeRect);\
+	}\
 	CopyBits((BitMap *) (*smallIconPix),&positionBadges->portBits,&smallIconRect, &smallTargetRect,srcCopy, NULL);\
 	\
 	UnlockPixels(iconPix);\
@@ -1369,14 +1047,22 @@ bool CheckClipboard()
 	previewSmallBadge = previewSmallBase;\
 	OffsetRect(&previewLargeBadge, hOffset, vOffset);\
 	OffsetRect(&previewSmallBadge, smallHOffset, smallVOffset);\
-	RegisterIconRefFromResource('Bdgr', 'test', &badgesSpec, -3999, &currentIconRef);\
-	PlotIconRef(&previewLargeBase,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);\
-	PlotIconRef(&previewSmallBase,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);\
-	ReleaseIconRef(currentIconRef);\
-	RegisterIconRefFromResource('Bdgr', 'test', &badgesSpec, ID, &currentIconRef);\
-	PlotIconRef(&previewLargeBadge,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);\
-	PlotIconRef(&previewSmallBadge,atNone,ttNone,kIconServicesNormalUsageFlag, currentIconRef);\
-	ReleaseIconRef(currentIconRef);\
+	baseicns.Display(previewLargeBase);\
+	baseicns.Display(previewSmallBase);\
+	if (ID != 128)\
+	{\
+		badgeicns.ID = ID;\
+		badgeicns.LoadFromFile(badgesSpec);\
+		badgeicns.Display(previewLargeBadge);\
+		badgeicns.Display(previewSmallBadge);\
+	}\
+	else\
+	{\
+		InsetRect(&previewLargeBadge, 8, 8);\
+		FrameRect(&previewLargeBadge);\
+		InsetRect(&previewSmallBadge, 4, 4);\
+		FrameRect(&previewSmallBadge);\
+	}\
 }\
 
 void PositionBadges(void)
@@ -1395,7 +1081,7 @@ void PositionBadges(void)
 	short			badges;
 	short			hOffset=0, vOffset=0, i, defaultHOffset = 0, defaultVOffset = 0;
 	short			smallHOffset=0, smallVOffset = 0, smallDefaultHOffset = 0, smallDefaultVOffset = 0;
-	IconRef			currentIconRef;
+	icnsClass		badgeicns, baseicns;
 	long			selectedIcns;
 	Str255			IDAsString, menuItemText, string, icnsName="\pInternet Search Sites";
 	tOffset**		offsetHandle;
@@ -1429,6 +1115,8 @@ void PositionBadges(void)
 		smallVOffset = (**offsetHandle).smallVOffset;
 		HUnlock((Handle)offsetHandle);
 	}
+	baseicns.ID = -3999;
+	baseicns.Load();
 	CloseResFile(badges);
 	UseResFile(appFile);
 	
@@ -1460,7 +1148,7 @@ void PositionBadges(void)
 	previewSmallBase = smallIconRect;
 	MakeTargetRect(itemRect, &previewSmallBase);
 	
-	if (!CheckClipboard())
+	if (!CheckClipboard(false))
 	{
 		GetDialogItem(positionBadges, kInsertClipboard, &itemType, &item, &itemRect);
 		HiliteControl((ControlHandle)item, 255);
@@ -1480,7 +1168,11 @@ void PositionBadges(void)
 		switch (itemHit)
 		{
 			case kOK: WriteToDisk(); dialogDone = true; break;
-			case kInsertClipboard: clip2icns(ID, icnsName, 0); SetPort(positionBadges); Refresh(); break;
+			case kInsertClipboard:
+				badgeicns.ImportFromClipboard();
+				badgeicns.SaveToFile(badgesSpec, false, true);
+				Refresh();
+				break;
 			case kShiftUp: vOffset--; Refresh(); break;
 			case kShiftDown: vOffset++; Refresh(); break;
 			case kShiftLeft: hOffset--; Refresh(); break;

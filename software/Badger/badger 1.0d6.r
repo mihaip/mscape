@@ -1,181 +1,4 @@
-/* Resource fork of software/Badger/badger 1.0d4 */
-resource 'DITL' (3000, "Basic Alert") {
-	{	/* array DITLarray: 2 elements */
-		/* [1] */
-		{66, 318, 86, 376},
-		Button {
-			enabled,
-			"OK"
-		},
-		/* [2] */
-		{8, 58, 60, 376},
-		StaticText {
-			disabled,
-			"^0 ^1."
-		}
-	}
-};
-
-resource 'DITL' (129) {
-	{	/* array DITLarray: 2 elements */
-		/* [1] */
-		{10, 7, 27, 71},
-		StaticText {
-			disabled,
-			"Merging:"
-		},
-		/* [2] */
-		{10, 69, 27, 144},
-		StaticText {
-			disabled,
-			""
-		}
-	}
-};
-
-resource 'DITL' (128) {
-	{	/* array DITLarray: 6 elements */
-		/* [1] */
-		{180, 210, 200, 268},
-		Button {
-			enabled,
-			"OK"
-		},
-		/* [2] */
-		{10, 10, 125, 270},
-		UserItem {
-			disabled
-		},
-		/* [3] */
-		{125, 10, 175, 289},
-		StaticText {
-			disabled,
-			"by Mihai Parparita\nmihai@mscape.com\nhttp"
-			"://cafe.ambrosiasw.com/gui-central/"
-		},
-		/* [4] */
-		{76, 144, 89, 226},
-		StaticText {
-			disabled,
-			"Registered to:"
-		},
-		/* [5] */
-		{90, 152, 104, 269},
-		StaticText {
-			disabled,
-			"Not registered"
-		},
-		/* [6] */
-		{107, 152, 121, 269},
-		StaticText {
-			disabled,
-			""
-		}
-	}
-};
-
-resource 'DITL' (130) {
-	{	/* array DITLarray: 14 elements */
-		/* [1] */
-		{214, 228, 234, 296},
-		Button {
-			enabled,
-			"OK"
-		},
-		/* [2] */
-		{214, 83, 234, 218},
-		Button {
-			enabled,
-			"Insert From Clipboard"
-		},
-		/* [3] */
-		{50, 29, 178, 157},
-		UserItem {
-			enabled
-		},
-		/* [4] */
-		{35, 57, 47, 129},
-		Control {
-			enabled,
-			128
-		},
-		/* [5] */
-		{78, 163, 150, 175},
-		Control {
-			enabled,
-			129
-		},
-		/* [6] */
-		{183, 57, 195, 129},
-		Control {
-			enabled,
-			130
-		},
-		/* [7] */
-		{78, 11, 150, 23},
-		Control {
-			enabled,
-			131
-		},
-		/* [8] */
-		{1, 6, 23, 308},
-		Control {
-			enabled,
-			200
-		},
-		/* [9] */
-		{44, 216, 108, 280},
-		UserItem {
-			enabled
-		},
-		/* [10] */
-		{29, 229, 41, 265},
-		Control {
-			enabled,
-			132
-		},
-		/* [11] */
-		{58, 286, 94, 298},
-		Control {
-			enabled,
-			133
-		},
-		/* [12] */
-		{111, 230, 123, 266},
-		Control {
-			enabled,
-			134
-		},
-		/* [13] */
-		{58, 198, 94, 210},
-		Control {
-			enabled,
-			135
-		},
-		/* [14] */
-		{139, 200, 187, 296},
-		UserItem {
-			enabled
-		}
-	}
-};
-
-resource 'ALRT' (3000) {
-	{40, 40, 138, 421},
-	3000,
-	{	/* array: 4 elements */
-		/* [1] */
-		OK, visible, sound1,
-		/* [2] */
-		OK, visible, sound1,
-		/* [3] */
-		OK, visible, sound1,
-		/* [4] */
-		OK, visible, sound1
-	},
-	alertPositionMainScreen
-};
-
+/* Resource fork of software/Badger/badger 1.0d6 */
 resource 'MENU' (130) {
 	130,
 	textMenuProc,
@@ -240,7 +63,7 @@ resource 'MENU' (200) {
 	allEnabled,
 	enabled,
 	"System Folders",
-	{	/* array: 49 elements */
+	{	/* array: 50 elements */
 		/* [1] */
 		"Ð20801 Internet Search Sites", noIcon, noKey, noMark, plain,
 		/* [2] */
@@ -338,7 +161,9 @@ resource 'MENU' (200) {
 		/* [48] */
 		"Ð3774 System Folder (protected)", noIcon, noKey, noMark, plain,
 		/* [49] */
-		"Ð3773 Applications Folder (protected)", noIcon, noKey, noMark, plain
+		"Ð3773 Applications Folder (protected)", noIcon, noKey, noMark, plain,
+		/* [50] */
+		"128 Default Position", noIcon, noKey, noMark, 2
 	}
 };
 
@@ -1903,6 +1728,167 @@ data 'c2ic' (0) {
 	$"7270 6172 6974 61"                                  /* rparita */
 };
 
+resource 'DITL' (129) {
+	{	/* array DITLarray: 2 elements */
+		/* [1] */
+		{10, 7, 27, 71},
+		StaticText {
+			disabled,
+			"Merging:"
+		},
+		/* [2] */
+		{10, 69, 27, 144},
+		StaticText {
+			disabled,
+			""
+		}
+	}
+};
+
+resource 'DITL' (128) {
+	{	/* array DITLarray: 6 elements */
+		/* [1] */
+		{180, 210, 200, 268},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{10, 10, 125, 270},
+		UserItem {
+			disabled
+		},
+		/* [3] */
+		{125, 10, 175, 289},
+		StaticText {
+			disabled,
+			"by Mihai Parparita\nmihai@mscape.com\nhttp"
+			"://cafe.ambrosiasw.com/gui-central/"
+		},
+		/* [4] */
+		{76, 144, 89, 226},
+		StaticText {
+			disabled,
+			"Registered to:"
+		},
+		/* [5] */
+		{90, 152, 104, 269},
+		StaticText {
+			disabled,
+			"Not registered"
+		},
+		/* [6] */
+		{107, 152, 121, 269},
+		StaticText {
+			disabled,
+			""
+		}
+	}
+};
+
+resource 'DITL' (130) {
+	{	/* array DITLarray: 14 elements */
+		/* [1] */
+		{214, 228, 234, 296},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{214, 83, 234, 218},
+		Button {
+			enabled,
+			"Insert From Clipboard"
+		},
+		/* [3] */
+		{50, 29, 178, 157},
+		UserItem {
+			enabled
+		},
+		/* [4] */
+		{35, 57, 47, 129},
+		Control {
+			enabled,
+			128
+		},
+		/* [5] */
+		{78, 163, 150, 175},
+		Control {
+			enabled,
+			129
+		},
+		/* [6] */
+		{183, 57, 195, 129},
+		Control {
+			enabled,
+			130
+		},
+		/* [7] */
+		{78, 11, 150, 23},
+		Control {
+			enabled,
+			131
+		},
+		/* [8] */
+		{1, 6, 23, 308},
+		Control {
+			enabled,
+			200
+		},
+		/* [9] */
+		{44, 216, 108, 280},
+		UserItem {
+			enabled
+		},
+		/* [10] */
+		{29, 229, 41, 265},
+		Control {
+			enabled,
+			132
+		},
+		/* [11] */
+		{58, 286, 94, 298},
+		Control {
+			enabled,
+			133
+		},
+		/* [12] */
+		{111, 230, 123, 266},
+		Control {
+			enabled,
+			134
+		},
+		/* [13] */
+		{58, 198, 94, 210},
+		Control {
+			enabled,
+			135
+		},
+		/* [14] */
+		{139, 200, 187, 296},
+		UserItem {
+			enabled
+		}
+	}
+};
+
+resource 'DITL' (3000, "Basic Alert") {
+	{	/* array DITLarray: 2 elements */
+		/* [1] */
+		{66, 318, 86, 376},
+		Button {
+			enabled,
+			"OK"
+		},
+		/* [2] */
+		{8, 58, 60, 376},
+		StaticText {
+			disabled,
+			"^0 ^1."
+		}
+	}
+};
+
 resource 'icns' (128, "created with clip2icns") {
 	{	/* array elementArray: 4 elements */
 		/* [1] */
@@ -3063,6 +3049,22 @@ resource 'mctb' (200) {
 	}
 };
 
+resource 'ALRT' (3000) {
+	{40, 40, 138, 421},
+	3000,
+	{	/* array: 4 elements */
+		/* [1] */
+		OK, visible, sound1,
+		/* [2] */
+		OK, visible, sound1,
+		/* [3] */
+		OK, visible, sound1,
+		/* [4] */
+		OK, visible, sound1
+	},
+	alertPositionMainScreen
+};
+
 resource 'cfrg' (0) {
 	{	/* array memberArray: 1 elements */
 		/* [1] */
@@ -3076,7 +3078,7 @@ resource 'cfrg' (0) {
 		kDataForkCFragLocator,
 		kZeroOffset,
 		kSegIDZero,
-		"badger 1.0d4"
+		"badger 1.0d5"
 	}
 };
 

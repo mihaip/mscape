@@ -63,7 +63,7 @@ resource 'MENU' (200) {
 	allEnabled,
 	enabled,
 	"System Folders",
-	{	/* array: 49 elements */
+	{	/* array: 50 elements */
 		/* [1] */
 		"Ð20801 Internet Search Sites", noIcon, noKey, noMark, plain,
 		/* [2] */
@@ -161,7 +161,9 @@ resource 'MENU' (200) {
 		/* [48] */
 		"Ð3774 System Folder (protected)", noIcon, noKey, noMark, plain,
 		/* [49] */
-		"Ð3773 Applications Folder (protected)", noIcon, noKey, noMark, plain
+		"Ð3773 Applications Folder (protected)", noIcon, noKey, noMark, plain,
+		/* [50] */
+		"128 Default Position", noIcon, noKey, noMark, 2
 	}
 };
 

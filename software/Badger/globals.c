@@ -1,4 +1,5 @@
 #include <Navigation.h>
+#include <icnsClass.h>
 
 // ui stuff
 bool		isDone;
@@ -10,11 +11,6 @@ bool		navServicesAvailable;
 FSSpec			badgesSpec;
 FSSpec			setSpec;
 short			appFile;
-GWorldPtr		baseLarge8BitIconGWorld, baseLargeIconGWorld, baseLargeMaskGWorld, baseLarge1BitMaskGWorld;
-GWorldPtr		baseSmall8BitIconGWorld, baseSmallIconGWorld, baseSmallMaskGWorld, baseSmall1BitMaskGWorld; 
-PixMapHandle	baseLarge8BitIconPix, baseLargeIconPix, baseLargeMaskPix, baseLarge1BitMaskPix;
-PixMapHandle	baseSmall8BitIconPix, baseSmallIconPix, baseSmallMaskPix, baseSmall1BitMaskPix;
-
 
 // commonfunctions.h variables
 

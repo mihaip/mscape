@@ -6,6 +6,7 @@
 #include <AppleEvents.h>
 #include <Navigation.h>
 #include "Icons.h"
+#include "icnsClass.h"
 #include "commonfunctions.h"
 
 // file types
@@ -117,16 +118,12 @@ OSStatus	NewIconSetNav(void);
 OSStatus	NewIconSetOld(void);
 void		EditBadges(void);
 void		PositionBadges(void);
-bool 		CheckClipboard(void);
 void		MakeNewSet(void);
-void 		MergeIcon(int ID, Str255 iconName);
+void 		MergeIcon(int ID, Str255 name, icnsClass* baseicns);
 void		DrawImageWell(Rect bounds);
 OSStatus	GetBadgesNav(void);
 OSStatus	GetBadgesOld(void);
-IconFamilyElement* GetIcon(long iconType, IconFamilyHandle icnsHandle);
-void		GetBaseFolder(void);
 void		HandleEditChoice(int item);
-void		clip2icns(short icnsID, Str255 icnsName, int flags);
 
 // --- Globals --- //
 
@@ -138,10 +135,5 @@ extern FSSpec		badgesSpec;
 extern FSSpec		setSpec;
 extern FSSpec		currentScheme;
 extern short		appFile;
-extern GWorldPtr	baseLarge8BitIconGWorld, baseLargeIconGWorld, baseLargeMaskGWorld, baseLarge1BitMaskGWorld;
-extern GWorldPtr	baseSmall8BitIconGWorld, baseSmallIconGWorld, baseSmallMaskGWorld, baseSmall1BitMaskGWorld; 
-extern PixMapHandle	baseLarge8BitIconPix, baseLargeIconPix, baseLargeMaskPix, baseLarge1BitMaskPix;
-extern PixMapHandle	baseSmall8BitIconPix, baseSmallIconPix, baseSmallMaskPix, baseSmall1BitMaskPix;
-
 
 
