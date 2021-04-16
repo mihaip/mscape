@@ -1,0 +1,7 @@
+*.h   filter=convert-cr
+*.c   filter=convert-cr
+*.cc   filter=convert-cr
+*.cp   filter=convert-cr
+*.cpp   filter=convert-cr
+*.r   filter=convert-cr
+Read Me   filter=convert-cr
