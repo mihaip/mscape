@@ -4,4 +4,4 @@
 *.cp   filter=convert-cr
 *.cpp   filter=convert-cr
 *.r   filter=convert-cr
-Read Me   filter=convert-cr
+"Read Me"   filter=convert-cr
