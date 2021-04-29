@@ -4,4 +4,11 @@
 *.cp   filter=convert-cr
 *.cpp   filter=convert-cr
 *.r   filter=convert-cr
+*.html   filter=convert-cr
 "Read Me"   filter=convert-cr
+"description"   filter=convert-cr
+"pr"   filter=convert-cr
+"blurb"   filter=convert-cr
+"Journal"   filter=convert-cr
+"TODO"   filter=convert-cr
+"Release Notes"   filter=convert-cr
