@@ -13,7 +13,7 @@
 "TODO"   filter=convert-cr
 "Release Notes"   filter=convert-cr
 
-# Lingust thinks that .r files are Rebol, try to convince it to not consider them at all
+# Linguist thinks that .r files are Rebol, try to convince it to not consider them at all
 # (it does not seem to have an option for Rez)
 *.r -linguist-detectable
 
